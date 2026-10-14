@@ -281,7 +281,10 @@ function stName(s){ return LANG==="en"?(STN_EN[s[0]]||s[0]):s[0]+"역"; }
 function hm(t){ return t.slice(0,2)+":"+t.slice(2); }
 // 열차 종류 — TAGO 는 SRT 를 「KTX」로 준다. 열차번호 300번대(경부)·600번대(호남)가 SRT (실측 2026-10-15)
 function trGrade(x){ var n=parseInt(x.no,10), g=String(x.g||"").replace(/\(.*?\)/g,"");
-  if(/^KTX/.test(g)&&((n>=300&&n<400)||(n>=600&&n<700))) return "SRT"; return g; }
+  if(/^KTX/.test(g)&&((n>=300&&n<400)||(n>=600&&n<700))) return "SRT";
+  if(LANG==="en"){ var E={"이음":"Eum","산천":"Sancheon","새마을":"Saemaeul","마음":"Maeum","청춘":"Cheongchun"}; g=g.replace(/(이음|산천|새마을|마음|청춘)/g,function(m){ return E[m]; })
+    .replace(/^무궁화호$/,"Mugunghwa").replace(/^새마을호$/,"Saemaeul").replace(/^누리로$/,"Nuriro").replace(/^통근열차$/,"Commuter").replace(/직통/," Express"); }
+  return g; }
 function trBadge(g){ var c=/^SRT/.test(g)?"#7b2d8e":/^KTX/.test(g)?"#1f4fa3":/ITX/.test(g)?"#0b7a5a":/무궁화|누리로|통근/.test(g)?"#c0392b":"#5b6474";
   return '<span style="display:inline-block;padding:2px 8px;border-radius:6px;background:'+c+';color:#fff;font-weight:800;font-size:12.5px;white-space:nowrap">'+esc(g)+'</span>'; }
 function trainBox(a,b){ var box=document.getElementById("trn"); if(!box) return; var A=STN[a], B=STN[b];
