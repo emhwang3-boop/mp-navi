@@ -35,7 +35,9 @@
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;-webkit-text-size-adjust:100%}
 .wrap{max-width:720px;margin:0 auto;padding:16px}
-.top{display:flex;align-items:center;gap:10px;margin:6px 0 18px;position:relative}
+.top{display:flex;align-items:center;gap:10px;margin:6px 0 18px;position:relative;flex-wrap:wrap;row-gap:8px}
+.top .logo{flex:0 0 auto}
+.tbs{display:flex;align-items:center;gap:10px;margin-left:auto}
 .logo{display:flex;align-items:center;gap:6px;white-space:nowrap;min-width:0;font-weight:900;font-size:21px;letter-spacing:-.4px;cursor:pointer}
 @media (max-width:420px){.logo{font-size:18px}}
 .logo img{height:32px;width:auto}
@@ -54,7 +56,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
 .dist{font-size:22px;font-weight:900;color:var(--green);margin:2px 0 4px}
 .trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}.trn td{padding:6px 4px;border-top:1px solid var(--line)}.trn td.f{text-align:right;font-weight:700}
 .trh{font-weight:800;margin:12px 0 2px}
-.res{margin-top:14px}
+.res{margin-top:14px;position:relative}
+.xbtn{position:absolute;top:6px;right:6px;z-index:2;width:34px;height:34px;border:0;border-radius:50%;background:var(--bg);color:var(--sub);font-size:20px;line-height:34px;cursor:pointer;padding:0}
+.xbtn:hover{background:var(--line);color:var(--ink)}
+#res > div:first-of-type{padding-right:44px}
 .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0}
 .item .t{font-weight:800;font-size:16px}
 .item .d{color:var(--sub);font-size:13.5px;margin:3px 0 8px}
@@ -67,12 +72,14 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
 <div class="wrap">
   <div class="top">
     <div class="logo" onclick="resetAll()"><img src="logo.png" alt=""><span style="white-space:nowrap">Money Puzzle<b style="margin-left:4px" id="ttl">- 내비</b></span></div>
+    <div class="tbs">
     <button id="inst" onclick="instGo()" hidden style="white-space:nowrap;margin-left:auto;border:0;border-radius:999px;padding:8px 14px;background:var(--blue);color:#fff;font-weight:700;font-size:13px;cursor:pointer">⬇ 앱 설치</button>
-    <button id="rs" onclick="resetAll()" class="tb" style="margin-left:auto">처음으로</button>
+    <button id="rs" onclick="resetAll()" class="tb">처음으로</button>
     <button id="lang" onclick="setLang(LANG==='ko'?'en':'ko')" class="tb">EN</button>
     <button id="sh" onclick="shOpen()" aria-label="share" class="tb">공유</button>
     <button id="th" onclick="thTog()" aria-label="theme" style="border:0;background:none;font-size:20px;line-height:1;padding:4px 4px;cursor:pointer">🌙</button>
     <button id="mb" onclick="mbTog(event)" aria-label="menu" style="border:0;background:none;font-size:24px;line-height:1;padding:4px 6px;cursor:pointer;color:var(--ink)">⋮</button>
+    </div>
     <div id="mm" hidden style="position:absolute;right:0;top:50px;z-index:20;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);min-width:200px;overflow:hidden">
       <a href="#" id="mcopy" hidden onclick="mbCopy();return false" class="mi">🔗 링크 복사</a>
       <a href="#" id="mref" onclick="location.reload();return false" class="mi" style="border-bottom:0">↻ 새로고침</a>
@@ -183,8 +190,8 @@ function isApp(){ return matchMedia("(display-mode: standalone)").matches||match
 function isOwner(){ try{ return !!localStorage.getItem("mp_owner"); }catch(e){ return false; } }
 function isInv(){ try{ return !!localStorage.getItem("mpv_inv")&&!localStorage.getItem("mp_owner"); }catch(e){ return false; } }
 var instEv=null;
-window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); instEv=e; if(!isApp()&&((isOwner()&&!/Android|iPhone|iPad/i.test(navigator.userAgent))||isInv())){ document.getElementById("inst").hidden=false; document.getElementById("rs").style.marginLeft="0"; } });
-function instGo(){ if(instEv){ instEv.prompt(); instEv.userChoice.then(function(){ instEv=null; document.getElementById("inst").hidden=true; document.getElementById("rs").style.marginLeft="auto"; }); } }
+window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); instEv=e; if(!isApp()&&((isOwner()&&!/Android|iPhone|iPad/i.test(navigator.userAgent))||isInv())){ document.getElementById("inst").hidden=false; } });
+function instGo(){ if(instEv){ instEv.prompt(); instEv.userChoice.then(function(){ instEv=null; document.getElementById("inst").hidden=true; }); } }
 function mbTog(e){ e.stopPropagation(); var m=document.getElementById("mm"); m.hidden=!m.hidden; }
 document.addEventListener("click",function(e){ var m=document.getElementById("mm"); if(m&&!m.hidden&&!e.target.closest("#mm")) m.hidden=true; });
 function mbCopy(){ document.getElementById("mm").hidden=true; var u=location.origin+location.pathname.replace(/index\.html$/,"");
@@ -295,6 +302,11 @@ function hitInit(){ var m=document.getElementById("map"), drag=null, tch=null, t
   m.addEventListener("touchend",function(e){ if(e.touches.length<2){ clearTimeout(tmr); tch=null; } });
   m.addEventListener("touchcancel",function(){ clearTimeout(tmr); tch=null; });
 }
+// 결과(장소·거리·열차·검색) 오른쪽 위 X — 누르면 지운다 (사장님 10-15)
+function resClear(){ document.getElementById("res").innerHTML=""; try{ dlDraw(null); }catch(e){} }
+(function(){ var r=document.getElementById("res");
+  new MutationObserver(function(){ if(r.firstElementChild&&!r.querySelector(":scope > .xbtn")){ var b=document.createElement("button"); b.className="xbtn"; b.type="button"; b.textContent="✕"; b.setAttribute("aria-label",T("닫기","Close")); b.onclick=resClear; r.insertBefore(b,r.firstChild); } }).observe(r,{childList:true});
+})();
 thPaint();
 paint();
 hitInit();
