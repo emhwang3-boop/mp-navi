@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="google" content="notranslate">
-<title>머니퍼즐 내비 · Money Puzzle Navi</title>
+<title>머니퍼즐 내비</title>
 <link rel="mp-manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -61,7 +61,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
   </form>
   <div class="res" id="res"></div>
   <div class="map"><img src="map.jpg" alt="대한민국 관광 지도" id="mapimg"></div>
-  <div class="foot">머니퍼즐 내비 · Money Puzzle Navi — 주식회사 부만</div>
+  <div class="foot" id="foot">머니퍼즐 내비 — 주식회사 부만</div>
 </div>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
@@ -76,6 +76,7 @@ function paint(){
   document.getElementById("gob").textContent=T("검색","Search");
   document.getElementById("mapimg").alt=T("대한민국 관광 지도","Korea travel map");
   document.title=T("머니퍼즐 내비","Money Puzzle Navi");
+  document.getElementById("foot").textContent=T("머니퍼즐 내비 — 주식회사 부만","Money Puzzle Navi — Booman Inc.");
 }
 function go(){
   var q=document.getElementById("q").value.trim(), out=document.getElementById("res"); if(!q){ out.innerHTML=""; return; }
