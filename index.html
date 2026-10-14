@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="google" content="notranslate">
+<title>머니퍼즐 내비 · Money Puzzle Navi</title>
+<link rel="mp-manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#2f9e44">
+<script>
+/* 머니퍼즐 내비 첫 화면 (사장님 2026-10-14) — 다른 앱과 같은 출입: 사장님 기기·초대 링크·홈페이지에서 온 사람만 */
+(function(){ try{
+  if(/[?&]me=EM2410/i.test(location.search)) localStorage.setItem("mp_owner","1");
+  if(/[?&]inv=MPNV26/i.test(location.search)){ localStorage.setItem("mpv_inv","1"); localStorage.setItem("mpv_ok","1"); }
+  var ok=!!localStorage.getItem("mp_owner")||!!localStorage.getItem("mpv_ok")||/^https:\/\/([a-z0-9-]+\.)?moneypuzzle\.co\.kr|^https:\/\/emhwang3-boop\.github\.io\/(home|mp-navi)/.test(document.referrer||"");
+  if(localStorage.getItem("mp_owner")||localStorage.getItem("mpv_inv")) document.addEventListener("DOMContentLoaded",function(){ var l=document.querySelector('link[rel="mp-manifest"]'); if(l) l.rel="manifest"; });
+  if(ok){ localStorage.setItem("mpv_ok","1"); return; }
+  location.replace("https://moneypuzzle.co.kr/");
+}catch(e){} })();
+</script>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#111827;--sub:#5b6474;--line:#e6e9ef;--green:#2f9e44}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:720px;margin:0 auto;padding:16px}
+.top{display:flex;align-items:center;gap:10px;margin:6px 0 18px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:900;font-size:21px;letter-spacing:-.4px}
+.logo img{height:30px;width:30px;border-radius:8px}
+.logo b{font-weight:600;color:var(--sub)}
+.lang{margin-left:auto;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-weight:700;cursor:pointer}
+.sbox{display:flex;flex-direction:column;align-items:center;gap:10px}
+.sbox input{width:100%;font-size:19px;padding:18px 22px;border-radius:999px;border:2px solid var(--green);background:#eefaf0;color:var(--ink);outline:none;box-shadow:0 2px 10px rgba(47,158,68,.12)}
+.sbox input::placeholder{color:#8a929c}
+@media (max-width:520px){.sbox input::placeholder{font-size:16px}}
+.sbox input:focus{border-color:#2b8a3e;box-shadow:0 0 0 4px rgba(47,158,68,.18)}
+.sbox button{border:0;background:var(--green);color:#fff;font-weight:800;font-size:17px;border-radius:999px;padding:12px 34px;cursor:pointer}
+.map{margin:18px 0 0;border-radius:18px;overflow:hidden;background:#96b2c4;box-shadow:0 2px 14px rgba(0,0,0,.08)}
+.map img{display:block;width:100%;height:auto}
+.res{margin-top:14px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0}
+.item .t{font-weight:800;font-size:16px}
+.item .d{color:var(--sub);font-size:13.5px;margin:3px 0 8px}
+.item a{display:inline-block;margin-right:6px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700;color:var(--ink);background:#f8fafc}
+.msg{color:var(--sub);text-align:center;padding:14px 0}
+.foot{color:var(--sub);font-size:12px;text-align:center;margin:22px 0 10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo"><img src="icon-192.png" alt=""><span id="ttl">머니퍼즐 <b>내비</b></span></div>
+    <button class="lang" id="lang" onclick="setLang(LANG==='ko'?'en':'ko')">EN</button>
+  </div>
+  <form class="sbox" onsubmit="go();return false">
+    <input id="q" autocomplete="off" placeholder="예: 경복궁, 해운대 맛집, 전주 한옥마을">
+    <button type="submit" id="gob">검색</button>
+  </form>
+  <div class="res" id="res"></div>
+  <div class="map"><img src="map.jpg" alt="대한민국 관광 지도" id="mapimg"></div>
+  <div class="foot">머니퍼즐 내비 · Money Puzzle Navi — 주식회사 부만</div>
+</div>
+<script>
+var HUB="https://brief-live-hub.emhwang3.workers.dev";
+var LANG="ko"; try{ LANG=localStorage.getItem("mpv_lang")||(/^ko/i.test(navigator.language)?"ko":"en"); }catch(e){}
+function T(k,e){ return LANG==="en"?e:k; }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); }
+function paint(){
+  document.getElementById("lang").textContent=LANG==="ko"?"EN":"한";
+  document.getElementById("ttl").innerHTML=LANG==="ko"?"머니퍼즐 <b>내비</b>":"Money Puzzle <b>Navi</b>";
+  document.getElementById("q").placeholder=T("예: 경복궁, 해운대 맛집, 전주 한옥마을","e.g. Gyeongbokgung, Haeundae food, Jeonju Hanok Village");
+  document.getElementById("gob").textContent=T("검색","Search");
+  document.getElementById("mapimg").alt=T("대한민국 관광 지도","Korea travel map");
+  document.title=T("머니퍼즐 내비","Money Puzzle Navi");
+}
+function go(){
+  var q=document.getElementById("q").value.trim(), out=document.getElementById("res"); if(!q){ out.innerHTML=""; return; }
+  out.innerHTML='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
+  fetch(HUB+"/kplace?q="+encodeURIComponent(q)).then(function(r){ return r.json(); }).then(function(j){
+    var it=(j&&j.ok&&j.items)||[];
+    if(!it.length){ out.innerHTML='<div class="msg">'+T("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words.")+'</div>'; return; }
+    out.innerHTML=it.slice(0,10).map(function(x){
+      var nm=encodeURIComponent(x.name), ll=x.y+","+x.x;
+      return '<div class="item"><div class="t">'+esc(x.name)+'</div><div class="d">'+esc(x.addr||"")+(x.cat?' · '+esc(String(x.cat).split(">").pop().trim()):'')+'</div>'
+        +'<a href="https://map.kakao.com/link/to/'+nm+','+x.y+','+x.x+'" target="_blank" rel="noopener">'+T("카카오맵 길찾기","Kakao Map route")+'</a>'
+        +'<a href="https://map.naver.com/p/search/'+nm+'" target="_blank" rel="noopener">'+T("네이버 지도","Naver Map")+'</a>'
+        +'<a href="https://www.google.com/maps/dir/?api=1&destination='+ll+'" target="_blank" rel="noopener">'+T("구글 지도","Google Maps")+'</a></div>';
+    }).join("");
+  }).catch(function(){ out.innerHTML='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>'; });
+}
+paint();
+</script>
+</body>
+</html>
