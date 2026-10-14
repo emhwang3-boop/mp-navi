@@ -65,6 +65,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
 .item .d{color:var(--sub);font-size:13.5px;margin:3px 0 8px}
 .item a{display:inline-block;margin-right:6px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700;color:var(--ink);background:#f8fafc}
 .msg{color:var(--sub);text-align:center;padding:14px 0}
+.desc{color:var(--sub);font-size:14px;margin:-2px 4px 0;text-align:center;line-height:1.5}
 .foot{color:var(--sub);font-size:12px;text-align:center;margin:22px 0 10px}
 </style>
 </head>
@@ -87,6 +88,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
   </div>
   <form class="sbox" onsubmit="go();return false">
     <input id="q" autocomplete="off" placeholder="예: 경복궁, 해운대 맛집, 전주 한옥마을">
+    <p class="desc" id="hint">가고 싶은 곳, 먹고 싶은 곳, 하고 싶은 것 등 아무거나 써 보세요. 뭐라도 추천해 드립니다.</p>
     <button type="submit" id="gob">검색</button>
   </form>
   <div class="res" id="res"></div>
@@ -113,6 +115,7 @@ function paint(){
   document.getElementById("mref").textContent=T("↻ 새로고침","↻ Refresh");
   document.getElementById("q").placeholder=T("예: 경복궁, 해운대 맛집, 전주 한옥마을","e.g. Gyeongbokgung, Haeundae food, Jeonju Hanok Village");
   document.getElementById("gob").textContent=T("검색","Search");
+  document.getElementById("hint").textContent=T("가고 싶은 곳, 먹고 싶은 곳, 하고 싶은 것 등 아무거나 써 보세요. 뭐라도 추천해 드립니다.","Type anything — places to go, food to eat, things to do. We'll recommend something.");
   document.getElementById("mapimg").alt=T("대한민국 관광 지도","Korea travel map");
   document.title=T("머니퍼즐 내비","Money Puzzle Navi");
   document.getElementById("foot").textContent=T("머니퍼즐 내비 — 주식회사 부만","Money Puzzle Navi — Booman Inc.");
