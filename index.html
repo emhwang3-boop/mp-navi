@@ -334,13 +334,15 @@ function routePlan(a,b,km){ var p=PLACES[a], q=PLACES[b], na=encodeURIComponent(
      :L(nv+"transit","네이버 대중교통 (고속·시외버스 포함)")+L(nv+"car","네이버 자동차")+L(go+"driving","구글 자동차"))};
 }
 var ODS_KEY="U9bSUqeZOqzFUTyakFc/HQ";
+// 버스 아이콘 — 서울 시내버스처럼 파랑 (사장님 10-15)
+var BUS_SVG='<svg viewBox="0 0 24 24" width="18" height="18" style="vertical-align:-3px" aria-hidden="true"><rect x="3" y="3" width="18" height="15" rx="3" fill="#2f5bd3"/><rect x="5" y="5.5" width="14" height="5.5" rx="1" fill="#dfeaff"/><rect x="5" y="12.5" width="3" height="2" rx=".6" fill="#ffe28a"/><rect x="16" y="12.5" width="3" height="2" rx=".6" fill="#ffe28a"/><rect x="9.5" y="12.8" width="5" height="1.4" rx=".5" fill="#1d3f9e"/><rect x="5" y="18" width="3.2" height="3" rx="1" fill="#222"/><rect x="15.8" y="18" width="3.2" height="3" rx="1" fill="#222"/><rect x="8" y="3.8" width="8" height="1" rx=".5" fill="#1d3f9e"/></svg>';
 function odsBox(a,b){ var box=document.getElementById("ods"); if(!box) return; var p=PLACES[a], q=PLACES[b], ck="ods:"+LANG+":"+a+":"+b, cached=null;
   try{ cached=JSON.parse(sessionStorage.getItem(ck)||"null"); }catch(e){}
   var draw=function(j){ var ps=(j&&j.result&&j.result.path)||[]; if(!ps.length){ box.innerHTML=""; return; }
     box.innerHTML='<div class="trh">🚇 '+T("대중교통 추천 경로","Best transit routes")+'</div>'+ps.slice(0,2).map(function(pt){ var f=pt.info||{};
       var steps=(pt.subPath||[]).map(function(s){ if(s.trafficType===3) return s.sectionTime?'🚶 '+s.sectionTime+T("분","m"):"";
         var ln=(s.lane&&s.lane[0])||{}, nm=s.trafficType===1?(ln.name||""):(T("버스 ","Bus ")+(ln.busNo||""));
-        return (s.trafficType===1?'🚇 ':'🚌 ')+'<b>'+esc(nm)+'</b> '+esc(s.startName||"")+' → '+esc(s.endName||"")+(s.stationCount?' ('+s.stationCount+T("정거장"," stops")+')':''); }).filter(Boolean).join('<br>');
+        return (s.trafficType===1?'🚇 ':BUS_SVG+' ')+'<b>'+esc(nm)+'</b> '+esc(s.startName||"")+' → '+esc(s.endName||"")+(s.stationCount?' ('+s.stationCount+T("정거장"," stops")+')':''); }).filter(Boolean).join('<br>');
       return '<div style="border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:6px 0"><div style="font-weight:800">'+(f.totalTime>=60?Math.floor(f.totalTime/60)+T("시간 ","h "):"")+(f.totalTime%60)+T("분","m")+' · '+(f.payment||0).toLocaleString()+T("원"," KRW")+'</div><div class="d" style="line-height:1.6;margin:4px 0 0">'+steps+'</div></div>'; }).join("")
       +'<div class="d" style="font-size:11px;text-align:right">powered by www.ODsay.com</div>'; };
   if(cached) return draw(cached);
