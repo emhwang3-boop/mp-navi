@@ -227,7 +227,8 @@ var HIT={keys:["bamboo", "beach", "beopju", "buyeo", "casino", "choji", "dokdo",
 var HG=(function(){ var g=new Uint8Array(65536), i=0; HIT.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; })();
 // 그림 근처만 눌러도 된다 — 바로 그 자리가 비면 손가락 한 마디(화면 24px) 안의 가장 가까운 그림 (사장님 10-15)
 // 도시 약도 — 서울 그림을 두 번 누르면 광화문 일대 약도가 같은 크기로 펼쳐진다 (사장님 10-15)
-var VIEW="kr", CITY={seoul:{img:"seoul.jpg",ko:"서울 · 광화문 일대",en:"Seoul · Gwanghwamun area",keys:["tower","myeong"],lat:37.5665,lng:126.984,zoom:14}};
+var VIEW="kr", CITY={seoulall:{img:"seoul_all.jpg",ko:"서울",en:"Seoul",keys:["tower","myeong"],lat:37.565,lng:126.975,zoom:11,parent:"kr",areas:{seoul:[0.4422, 0.4172, 0.5992, 0.5741]}},
+  seoul:{img:"seoul.jpg",ko:"서울 · 광화문 일대",en:"Seoul · Gwanghwamun area",keys:[],lat:37.5665,lng:126.984,zoom:14,parent:"seoulall"}};
 // 자세한 지도 — 네이버 지도(부동산 앱과 같은 키, navi 주소 등록함 10-15). 약도 ↔ 자세한 지도
 var NAVER_KEY="jbwyndpnp3", DET=false, _nm=null;
 function nmLoad(cb){ if(window.naver&&naver.maps) return cb(); var s=document.createElement("script");
@@ -242,9 +243,11 @@ function detSet(on){ DET=on; var c=CITY[VIEW], box=document.getElementById("nmap
     else { _nm.setCenter(ctr); _nm.setZoom(c.zoom); } }); }
 function viewSet(v){ clearTimeout(window._scT); VIEW=v; detSet(false); document.getElementById("vdet").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:"map.jpg";
   document.getElementById("vback").hidden=!c; var tt=document.getElementById("vttl"); tt.hidden=!c; if(c) tt.textContent=LANG==="en"?c.en:c.ko;
-  document.getElementById("vback").textContent=T("← 전국 지도","← Korea map");
+  document.getElementById("vback").textContent=c&&c.parent!=="kr"?T("← "+CITY[c.parent].ko,"← "+CITY[c.parent].en):T("← 전국 지도","← Korea map");
   try{ dlDraw(null); }catch(e){} ZM={s:1,tx:0,ty:0}; zApply(); }
-var _lastTap={k:null,t:0};
+var _lastTap={k:null,t:0}, _lastArea={a:null,t:0};
+function areaTap(cx,cy){ var c=CITY[VIEW]; if(!c||!c.areas) return; var r=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-r.left)/r.width, fy=(cy-r.top)/r.height, now=Date.now();
+  for(var a in c.areas){ var b=c.areas[a]; if(fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]){ if(_lastArea.a===a&&now-_lastArea.t<450){ _lastArea={a:null,t:0}; viewSet(a); } else _lastArea={a:a,t:now}; return; } } }
 function cityFor(k){ for(var c in CITY) if(CITY[c].keys.indexOf(k)>=0) return c; return null; }
 function hitAt(cx,cy){ if(VIEW!=="kr") return null; var r=document.getElementById("mapimg").getBoundingClientRect(); var fx=(cx-r.left)/r.width*256, fy=(cy-r.top)/r.height*256, gx=Math.floor(fx), gy=Math.floor(fy);
   if(gx<0||gy<0||gx>255||gy>255) return null; var v=HG[gy*256+gx]; if(v) return HIT.keys[v-1];
@@ -344,10 +347,11 @@ function hitInit(){ var m=document.getElementById("map"), drag=null, pan=null, m
   document.getElementById("zin").onclick=function(e){ e.stopPropagation(); zCenter(1.6); };
   document.getElementById("zout").onclick=function(e){ e.stopPropagation(); zCenter(1/1.6); };
   document.getElementById("zrs").onclick=function(e){ e.stopPropagation(); ZM={s:1,tx:0,ty:0}; zApply(); };
-  document.getElementById("vback").onclick=function(e){ e.stopPropagation(); viewSet("kr"); };
+  document.getElementById("vback").onclick=function(e){ e.stopPropagation(); viewSet((CITY[VIEW]&&CITY[VIEW].parent)||"kr"); };
   document.getElementById("vdet").onclick=function(e){ e.stopPropagation(); detSet(!DET); };
   window.addEventListener("resize",zApply);
-  m.addEventListener("click",function(e){ if(DET) return; if(e.button!==0||e.target.closest(".zb")||e.target.closest("#vback")) return; if(moved){ moved=false; return; } dlDraw(null); hitClick(hitAt(e.clientX,e.clientY)); });
+  m.addEventListener("click",function(e){ if(DET) return; if(e.button!==0||e.target.closest(".zb")||e.target.closest("#vback")||e.target.closest("#vdet")) return;
+    if(VIEW!=="kr"){ if(!moved) areaTap(e.clientX,e.clientY); moved=false; return; } if(moved){ moved=false; return; } dlDraw(null); hitClick(hitAt(e.clientX,e.clientY)); });
   m.addEventListener("wheel",function(e){ if(DET) return; e.preventDefault(); zAt(e.clientX,e.clientY,ZM.s*(e.deltaY<0?1.15:1/1.15)); },{passive:false});
   m.addEventListener("mousemove",function(e){
 if(DET) return;     if(pan){ var dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math.abs(dx)+Math.abs(dy)>4) moved=true; ZM.tx=pan.tx+dx; ZM.ty=pan.ty+dy; zApply(); m.style.cursor="grabbing"; return; }
