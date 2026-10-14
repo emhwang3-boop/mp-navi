@@ -229,9 +229,7 @@ function trGrade(x){ var n=parseInt(x.no,10), g=String(x.g||"").replace(/\(.*?\)
 function trBadge(g){ var c=/^SRT/.test(g)?"#7b2d8e":/^KTX/.test(g)?"#1f4fa3":/ITX/.test(g)?"#0b7a5a":/무궁화|누리로|통근/.test(g)?"#c0392b":"#5b6474";
   return '<span style="display:inline-block;padding:2px 8px;border-radius:6px;background:'+c+';color:#fff;font-weight:800;font-size:12.5px;white-space:nowrap">'+esc(g)+'</span>'; }
 function trainBox(a,b){ var box=document.getElementById("trn"); if(!box) return; var A=STN[a], B=STN[b];
-  if(!A||!B){ var no=[]; if(!A) no.push(pName(a)); if(!B) no.push(pName(b));
-    box.innerHTML='<div class="trh">🚆 '+T("열차","Trains")+'</div><div class="d">'+esc(no.join(", "))+T(" — 기차역이 없는 곳입니다."," — no train station there.")+'</div>'; return; }
-  if(A[1]===B[1]){ box.innerHTML='<div class="trh">🚆 '+T("열차","Trains")+'</div><div class="d">'+T("같은 역입니다.","Same station.")+'</div>'; return; }
+  if(!A||!B||A[1]===B[1]){ box.innerHTML=""; return; }
   box.innerHTML='<div class="trh">🚆 '+esc(stName(A))+' → '+esc(stName(B))+'</div><div class="d">'+T("열차 찾는 중…","Finding trains…")+'</div>';
   function load(add){ var d=kstDay(add);
     return fetch(HUB+"/train?dep="+A[1]+"&arr="+B[1]+"&date="+d).then(function(r){ return r.json(); }).then(function(j){
@@ -239,18 +237,48 @@ function trainBox(a,b){ var box=document.getElementById("trn"); if(!box) return;
       return { add:add, all:it, left:it.filter(function(x){ return x.dp>=now; }) }; }); }
   load(0).then(function(r){ return (r.left.length||!r.all.length)?r:load(1); }).then(function(r){
     var rows=r.add?r.all:r.left, hd='<div class="trh">🚆 '+esc(stName(A))+' → '+esc(stName(B))+(r.add?' · '+T("내일","Tomorrow"):' · '+T("오늘","Today"))+'</div>';
-    if(!rows.length){ box.innerHTML=hd+'<div class="d">'+T("바로 가는 열차가 없습니다. 갈아타야 합니다.","No direct train. You need to transfer.")+'</div>'; return; }
+    if(!rows.length){ box.innerHTML=""; return; }
     box.innerHTML=hd+'<table class="trn">'+rows.slice(0,8).map(function(x){ var m=(+x.ar.slice(0,2)*60+ +x.ar.slice(2))-(+x.dp.slice(0,2)*60+ +x.dp.slice(2)); if(m<0) m+=1440;
       return '<tr><td>'+trBadge(trGrade(x))+'</td><td>'+hm(x.dp)+' → '+hm(x.ar)+'</td><td>'+Math.floor(m/60)+T("시간 ","h ")+(m%60)+T("분","m")+'</td><td class="f">'+(x.fare?x.fare.toLocaleString()+T("원"," KRW"):"-")+'</td></tr>'; }).join("")+'</table>'
       +(rows.length>8?'<div class="d">'+T("외 ","+ ")+(rows.length-8)+T("편 더"," more")+'</div>':'')
       +'<a href="https://www.letskorail.com/" target="_blank" rel="noopener">'+T("코레일 예매","Book on Korail")+'</a>';
-  }).catch(function(){ box.innerHTML='<div class="d">'+T("열차 정보를 가져오지 못했습니다.","Could not load train info.")+'</div>'; }); }
+  }).catch(function(){ box.innerHTML=""; }); }
+function m3857(lat,lng){ return [lng*20037508.34/180, Math.log(Math.tan((90+lat)*Math.PI/360))/(Math.PI/180)*20037508.34/180]; }
+// 길찾기는 상황에 맞게 고른다 (사장님 10-15 「무조건 그렇게 하면 안 되고 네가 생각해야 해」)
+//   바다 건너(제주=비행기 · 울릉도/독도=배) · 가까움(60km 이하=지하철·버스·택시) · 멂(기차·고속버스·자동차, 택시 뺌)
+var ISLE={halla:"jeju",dolha:"jeju",ulleung:"ulleung",dokdo:"ulleung"};
+function routePlan(a,b,km){ var p=PLACES[a], q=PLACES[b], na=encodeURIComponent(p.ko), nb=encodeURIComponent(q.ko), A=m3857(p.lat,p.lng), B=m3857(q.lat,q.lng);
+  var nv="https://map.naver.com/p/directions/"+A[0]+","+A[1]+","+na+",,/"+B[0]+","+B[1]+","+nb+",,/-/";
+  var go="https://www.google.com/maps/dir/?api=1&origin="+p.lat+","+p.lng+"&destination="+q.lat+","+q.lng+"&travelmode=";
+  var kk="https://map.kakao.com/link/from/"+na+","+p.lat+","+p.lng+"/to/"+nb+","+q.lat+","+q.lng;
+  var L=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };
+  var ia=ISLE[a]||"land", ib=ISLE[b]||"land";
+  if(ia!==ib){
+    if(ia==="ulleung"||ib==="ulleung"){
+      var dk=(a==="dokdo"||b==="dokdo")&&(ia===ib||ia==="ulleung"&&ib==="ulleung");
+      return {train:false,html:'<div class="trh">⛴ '+T("배로 가야 합니다","By ferry")+'</div><div class="d">'
+        +T("포항·강릉·묵호·후포항에서 울릉도 가는 여객선을 탑니다. 독도는 울릉도에서 다시 배를 탑니다.","Ferries to Ulleungdo leave from Pohang, Gangneung, Mukho and Hupo. Dokdo boats leave from Ulleungdo.")+'</div>'
+        +L("https://island.haewoon.co.kr/",T("여객선 예매 (가보고 싶은 섬)","Ferry booking"))};
+    }
+    return {train:false,html:'<div class="trh">✈ '+T("비행기로 가야 합니다","By plane")+'</div><div class="d">'
+      +T("제주는 비행기(또는 목포·완도·여수 여객선)로 갑니다.","Jeju is reached by plane (or ferry from Mokpo, Wando or Yeosu).")+'</div>'
+      +L("https://www.google.com/travel/flights?q="+encodeURIComponent("flights to Jeju"),T("항공권 찾기","Find flights"))
+      +L("https://island.haewoon.co.kr/",T("여객선 예매","Ferry booking"))};
+  }
+  if(ia==="ulleung"&&ib==="ulleung") return {train:false,html:'<div class="trh">⛴ '+T("울릉도에서 독도 가는 배","Boat from Ulleungdo to Dokdo")+'</div>'+L("https://island.haewoon.co.kr/",T("여객선 예매","Ferry booking"))};
+  if(km<=60) return {train:false,html:'<div class="trh">'+(ia==="jeju"?'🚌 '+T("버스·택시","Bus, taxi"):'🚇 '+T("지하철·버스·택시","Subway, bus, taxi"))+'</div>'
+    +L(nv+"transit",T("네이버 대중교통","Naver transit"))+L(kk,T("카카오맵 길찾기","Kakao Map"))
+    +L(nv+"car",T("택시 (요금 보기)","Taxi (fare)"))+L(go+"transit",T("구글 지도","Google Maps"))};
+  return {train:ia==="land",html:'<div class="trh">🧭 '+T("고속버스·자동차","Express bus, car")+'</div>'
+    +L(nv+"transit",T("네이버 대중교통 (고속·시외버스 포함)","Naver transit (incl. intercity bus)"))
+    +L(nv+"car",T("네이버 자동차","Naver car"))+L(go+"driving",T("구글 자동차","Google driving"))};
+}
 function distShow(a,b,p0,p1){
   if(a==="ktx"||b==="ktx"){ ktxErr(); dlDraw(null); return; }
   if(!a||!b||a===b){ dlDraw(null); return; }
-  var km=kmBetween(a,b), t=(km<10?km.toFixed(1):Math.round(km).toLocaleString())+" km";
+  var km=kmBetween(a,b), rp=routePlan(a,b,km), t=(km<10?km.toFixed(1):Math.round(km).toLocaleString())+" km";
   dlDraw(p0,p1,t);
-  document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(pName(a))+' ↔ '+esc(pName(b))+'</div><div class="dist">'+t+'</div><div class="d">'+T("직선거리","Straight-line distance")+'</div><div id="trn"></div></div>'; trainBox(a,b); }
+  document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(pName(a))+' ↔ '+esc(pName(b))+'</div><div class="dist">'+t+'</div><div class="d">'+T("직선거리","Straight-line distance")+'</div><div id="trn"></div>'+rp.html+'</div>'; if(rp.train) trainBox(a,b); }
 function hitInit(){ var m=document.getElementById("map"), drag=null, tch=null, tmr=null;
   m.addEventListener("click",function(e){ if(e.button!==0) return; dlDraw(null); hitClick(hitAt(e.clientX,e.clientY)); });
   m.addEventListener("mousemove",function(e){ var k=hitAt(e.clientX,e.clientY); m.style.cursor=k?"pointer":"";
