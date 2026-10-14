@@ -1,0 +1,5 @@
+<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>t</title>
+<div id="m" style="width:600px;height:400px"></div><pre id="o">loading</pre>
+<script>window.navermap_authFailure=function(){document.getElementById("o").textContent="AUTH_FAIL";};</script>
+<script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=jbwyndpnp3"></script>
+<script>try{ new naver.maps.Map("m",{center:new naver.maps.LatLng(37.5665,126.978),zoom:12}); setTimeout(function(){ var o=document.getElementById("o"); if(o.textContent==="loading") o.textContent="OK"; },4000);}catch(e){document.getElementById("o").textContent="ERR "+e.message;}</script>
