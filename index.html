@@ -52,6 +52,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
 #dl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .err{color:#e03131;font-weight:800;text-align:center;padding:14px 0}
 .dist{font-size:22px;font-weight:900;color:var(--green);margin:2px 0 4px}
+.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}.trn td{padding:6px 4px;border-top:1px solid var(--line)}.trn td.f{text-align:right;font-weight:700}
+.trh{font-weight:800;margin:12px 0 2px}
 .res{margin-top:14px}
 .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0}
 .item .t{font-weight:800;font-size:16px}
@@ -216,12 +218,34 @@ function dlDraw(p0,p1,txt){ var s=document.getElementById("dl"), ob=document.get
   if(txt){ var d=document.createElement("div"); d.id="dlb"; d.textContent=txt;
     d.style.cssText="position:absolute;transform:translate(-50%,-50%);background:#e03131;color:#fff;font-weight:900;font-size:15px;padding:5px 10px;border-radius:999px;white-space:nowrap;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.25)";
     d.style.left=((p0[0]+p1[0])/20)+"%"; d.style.top=((p0[1]+p1[1])/20)+"%"; document.getElementById("map").appendChild(d); } }
+var STN={"tower": ["서울", "NAT010000"], "myeong": ["서울", "NAT010000"], "beach": ["부산", "NAT014445"], "trail": ["부산", "NAT014445"], "jeonju": ["전주", "NAT040257"], "seok": ["경주", "NATH13421"], "ski": ["진부", "NATN10787"], "casino": ["사북", "NAT650782"], "icn": ["인천공항T1", "NATC10580"], "tea": ["보성", "NAT882328"], "jiri": ["구례구", "NAT041285"], "turtle": ["여수EXPO", "NAT041993"], "jdj": ["정동진", "NAT601774"], "hahoe": ["안동", "NAT022558"], "unif": null, "pmj": null, "tunnel": null, "beopju": null, "halla": null, "dolha": null, "buyeo": null, "bamboo": null, "seorak": null, "ever": null, "dokdo": null, "ulleung": null, "jeond": null, "choji": null, "naksan": null, "sacheon": null};
+var STN_EN={"서울": "Seoul", "부산": "Busan", "전주": "Jeonju", "경주": "Gyeongju", "진부": "Jinbu", "사북": "Sabuk", "인천공항T1": "Incheon Airport T1", "보성": "Boseong", "구례구": "Guryegu", "여수EXPO": "Yeosu EXPO", "정동진": "Jeongdongjin", "안동": "Andong"};
+function kstDay(add){ var d=new Date(Date.now()+9*3600e3+(add||0)*864e5); return d.toISOString().slice(0,10).replace(/-/g,""); }
+function stName(s){ return LANG==="en"?(STN_EN[s[0]]||s[0]):s[0]+"역"; }
+function hm(t){ return t.slice(0,2)+":"+t.slice(2); }
+function trainBox(a,b){ var box=document.getElementById("trn"); if(!box) return; var A=STN[a], B=STN[b];
+  if(!A||!B){ var no=[]; if(!A) no.push(pName(a)); if(!B) no.push(pName(b));
+    box.innerHTML='<div class="trh">🚆 '+T("열차","Trains")+'</div><div class="d">'+esc(no.join(", "))+T(" — 기차역이 없는 곳입니다."," — no train station there.")+'</div>'; return; }
+  if(A[1]===B[1]){ box.innerHTML='<div class="trh">🚆 '+T("열차","Trains")+'</div><div class="d">'+T("같은 역입니다.","Same station.")+'</div>'; return; }
+  box.innerHTML='<div class="trh">🚆 '+esc(stName(A))+' → '+esc(stName(B))+'</div><div class="d">'+T("열차 찾는 중…","Finding trains…")+'</div>';
+  function load(add){ var d=kstDay(add);
+    return fetch(HUB+"/train?dep="+A[1]+"&arr="+B[1]+"&date="+d).then(function(r){ return r.json(); }).then(function(j){
+      var it=(j&&j.ok&&j.items)||[], now=kstDay(0)===d?new Date(Date.now()+9*3600e3).toISOString().slice(11,16).replace(":",""):"0000";
+      return { add:add, all:it, left:it.filter(function(x){ return x.dp>=now; }) }; }); }
+  load(0).then(function(r){ return (r.left.length||!r.all.length)?r:load(1); }).then(function(r){
+    var rows=r.add?r.all:r.left, hd='<div class="trh">🚆 '+esc(stName(A))+' → '+esc(stName(B))+(r.add?' · '+T("내일","Tomorrow"):' · '+T("오늘","Today"))+'</div>';
+    if(!rows.length){ box.innerHTML=hd+'<div class="d">'+T("바로 가는 열차가 없습니다. 갈아타야 합니다.","No direct train. You need to transfer.")+'</div>'; return; }
+    box.innerHTML=hd+'<table class="trn">'+rows.slice(0,8).map(function(x){ var m=(+x.ar.slice(0,2)*60+ +x.ar.slice(2))-(+x.dp.slice(0,2)*60+ +x.dp.slice(2)); if(m<0) m+=1440;
+      return '<tr><td>'+esc(x.g)+'</td><td>'+hm(x.dp)+' → '+hm(x.ar)+'</td><td>'+Math.floor(m/60)+T("시간 ","h ")+(m%60)+T("분","m")+'</td><td class="f">'+(x.fare?x.fare.toLocaleString()+T("원"," KRW"):"-")+'</td></tr>'; }).join("")+'</table>'
+      +(rows.length>8?'<div class="d">'+T("외 ","+ ")+(rows.length-8)+T("편 더"," more")+'</div>':'')
+      +'<a href="https://www.letskorail.com/" target="_blank" rel="noopener">'+T("코레일 예매","Book on Korail")+'</a>';
+  }).catch(function(){ box.innerHTML='<div class="d">'+T("열차 정보를 가져오지 못했습니다.","Could not load train info.")+'</div>'; }); }
 function distShow(a,b,p0,p1){
   if(a==="ktx"||b==="ktx"){ ktxErr(); dlDraw(null); return; }
   if(!a||!b||a===b){ dlDraw(null); return; }
   var km=kmBetween(a,b), t=(km<10?km.toFixed(1):Math.round(km).toLocaleString())+" km";
   dlDraw(p0,p1,t);
-  document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(pName(a))+' ↔ '+esc(pName(b))+'</div><div class="dist">'+t+'</div><div class="d">'+T("직선거리","Straight-line distance")+'</div></div>'; }
+  document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(pName(a))+' ↔ '+esc(pName(b))+'</div><div class="dist">'+t+'</div><div class="d">'+T("직선거리","Straight-line distance")+'</div><div id="trn"></div></div>'; trainBox(a,b); }
 function hitInit(){ var m=document.getElementById("map"), drag=null, tch=null, tmr=null;
   m.addEventListener("click",function(e){ if(e.button!==0) return; dlDraw(null); hitClick(hitAt(e.clientX,e.clientY)); });
   m.addEventListener("mousemove",function(e){ var k=hitAt(e.clientX,e.clientY); m.style.cursor=k?"pointer":"";
