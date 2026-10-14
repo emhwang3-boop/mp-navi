@@ -60,6 +60,8 @@ html,body{overflow-x:hidden}
 .map.zoomed{touch-action:none}
 .zb{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
 #vback{position:absolute;left:10px;top:10px;z-index:3;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+#vdet{position:absolute;right:10px;top:10px;z-index:4;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+#nmap{position:absolute;inset:0;z-index:2}
 #vttl{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:3;background:rgba(255,255,255,.85);color:#3a2e22;border-radius:999px;padding:5px 14px;font-weight:900;font-size:15px;pointer-events:none}
 .zb button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:21px;font-weight:800;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);padding:0}
 .err{color:#e03131;font-weight:800;text-align:center;padding:14px 0}
@@ -102,7 +104,7 @@ html,body{overflow-x:hidden}
     <button type="submit" id="gob">검색</button>
   </form>
   <div class="res" id="res"></div>
-  <div class="map" id="map"><div id="mz"><img src="map.jpg" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg></div><button type="button" id="vback" hidden>← 전국 지도</button><div id="vttl" hidden></div><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
+  <div class="map" id="map"><div id="mz"><img src="map.jpg" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg></div><div id="nmap" hidden></div><button type="button" id="vback" hidden>← 전국 지도</button><button type="button" id="vdet" hidden>🗺 자세한 지도</button><div id="vttl" hidden></div><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
   <div class="foot" id="foot">머니퍼즐 내비 — 주식회사 부만</div>
 </div>
 <div id="shBox" hidden style="position:fixed;inset:0;z-index:1030;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.hidden=true">
@@ -225,8 +227,20 @@ var HIT={keys:["bamboo", "beach", "beopju", "buyeo", "casino", "choji", "dokdo",
 var HG=(function(){ var g=new Uint8Array(65536), i=0; HIT.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; })();
 // 그림 근처만 눌러도 된다 — 바로 그 자리가 비면 손가락 한 마디(화면 24px) 안의 가장 가까운 그림 (사장님 10-15)
 // 도시 약도 — 서울 그림을 두 번 누르면 광화문 일대 약도가 같은 크기로 펼쳐진다 (사장님 10-15)
-var VIEW="kr", CITY={seoul:{img:"seoul.jpg",ko:"서울 · 광화문 일대",en:"Seoul · Gwanghwamun area",keys:["tower","myeong"]}};
-function viewSet(v){ clearTimeout(window._scT); VIEW=v; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:"map.jpg";
+var VIEW="kr", CITY={seoul:{img:"seoul.jpg",ko:"서울 · 광화문 일대",en:"Seoul · Gwanghwamun area",keys:["tower","myeong"],lat:37.5665,lng:126.984,zoom:14}};
+// 자세한 지도 — 네이버 지도(부동산 앱과 같은 키, navi 주소 등록함 10-15). 약도 ↔ 자세한 지도
+var NAVER_KEY="jbwyndpnp3", DET=false, _nm=null;
+function nmLoad(cb){ if(window.naver&&naver.maps) return cb(); var s=document.createElement("script");
+  s.src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId="+NAVER_KEY+"&language="+(LANG==="en"?"en":"ko"); s.onload=cb; document.head.appendChild(s); }
+function detSet(on){ DET=on; var c=CITY[VIEW], box=document.getElementById("nmap");
+  document.getElementById("vdet").textContent=on?T("🎨 약도로","🎨 Sketch map"):T("🗺 자세한 지도","🗺 Detailed map");
+  box.hidden=!on; document.querySelector(".zb").style.display=on?"none":""; document.getElementById("vttl").style.display=on?"none":"";
+  if(!on||!c) return;
+  nmLoad(function(){ var ctr=new naver.maps.LatLng(c.lat,c.lng);
+    if(!_nm){ _nm=new naver.maps.Map("nmap",{center:ctr,zoom:c.zoom,zoomControl:true,zoomControlOptions:{position:naver.maps.Position.RIGHT_BOTTOM}});
+      Object.keys(PLACES).forEach(function(k){ var p=PLACES[k]; new naver.maps.Marker({position:new naver.maps.LatLng(p.lat,p.lng),map:_nm,title:LANG==="en"?p.en:p.ko}); }); }
+    else { _nm.setCenter(ctr); _nm.setZoom(c.zoom); } }); }
+function viewSet(v){ clearTimeout(window._scT); VIEW=v; detSet(false); document.getElementById("vdet").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:"map.jpg";
   document.getElementById("vback").hidden=!c; var tt=document.getElementById("vttl"); tt.hidden=!c; if(c) tt.textContent=LANG==="en"?c.en:c.ko;
   document.getElementById("vback").textContent=T("← 전국 지도","← Korea map");
   try{ dlDraw(null); }catch(e){} ZM={s:1,tx:0,ty:0}; zApply(); }
@@ -331,20 +345,21 @@ function hitInit(){ var m=document.getElementById("map"), drag=null, pan=null, m
   document.getElementById("zout").onclick=function(e){ e.stopPropagation(); zCenter(1/1.6); };
   document.getElementById("zrs").onclick=function(e){ e.stopPropagation(); ZM={s:1,tx:0,ty:0}; zApply(); };
   document.getElementById("vback").onclick=function(e){ e.stopPropagation(); viewSet("kr"); };
+  document.getElementById("vdet").onclick=function(e){ e.stopPropagation(); detSet(!DET); };
   window.addEventListener("resize",zApply);
-  m.addEventListener("click",function(e){ if(e.button!==0||e.target.closest(".zb")||e.target.closest("#vback")) return; if(moved){ moved=false; return; } dlDraw(null); hitClick(hitAt(e.clientX,e.clientY)); });
-  m.addEventListener("wheel",function(e){ e.preventDefault(); zAt(e.clientX,e.clientY,ZM.s*(e.deltaY<0?1.15:1/1.15)); },{passive:false});
+  m.addEventListener("click",function(e){ if(DET) return; if(e.button!==0||e.target.closest(".zb")||e.target.closest("#vback")) return; if(moved){ moved=false; return; } dlDraw(null); hitClick(hitAt(e.clientX,e.clientY)); });
+  m.addEventListener("wheel",function(e){ if(DET) return; e.preventDefault(); zAt(e.clientX,e.clientY,ZM.s*(e.deltaY<0?1.15:1/1.15)); },{passive:false});
   m.addEventListener("mousemove",function(e){
-    if(pan){ var dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math.abs(dx)+Math.abs(dy)>4) moved=true; ZM.tx=pan.tx+dx; ZM.ty=pan.ty+dy; zApply(); m.style.cursor="grabbing"; return; }
+if(DET) return;     if(pan){ var dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math.abs(dx)+Math.abs(dy)>4) moved=true; ZM.tx=pan.tx+dx; ZM.ty=pan.ty+dy; zApply(); m.style.cursor="grabbing"; return; }
     var k=hitAt(e.clientX,e.clientY); m.style.cursor=k?"pointer":(ZM.s>1?"grab":"");
     if(drag){ dlDraw(drag.p,dlPt(e.clientX,e.clientY),""); } });
   m.addEventListener("contextmenu",function(e){ e.preventDefault(); });
-  m.addEventListener("mousedown",function(e){ if(e.target.closest(".zb")) return;
+  m.addEventListener("mousedown",function(e){ if(DET) return; if(e.target.closest(".zb")) return;
     if(e.button===0){ moved=false; if(ZM.s>1){ e.preventDefault(); pan={x:e.clientX,y:e.clientY,tx:ZM.tx,ty:ZM.ty}; } return; }
     if(e.button!==2) return; var k=hitAt(e.clientX,e.clientY); if(!k) return; e.preventDefault(); drag={k:k,p:dlPt(e.clientX,e.clientY)}; });
   window.addEventListener("mouseup",function(e){ if(e.button===0){ pan=null; return; } if(e.button!==2||!drag) return; var k=hitAt(e.clientX,e.clientY), d=drag; drag=null; distShow(d.k,k,d.p,dlPt(e.clientX,e.clientY)); });
   function dist2(a,b){ return Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); }
-  m.addEventListener("touchstart",function(e){ if(e.target.closest(".zb")) return; clearTimeout(tmr); tch=null; pin=null; one=null;
+  m.addEventListener("touchstart",function(e){ if(DET) return; if(e.target.closest(".zb")) return; clearTimeout(tmr); tch=null; pin=null; one=null;
     if(e.touches.length===1){ dlDraw(null); if(ZM.s>1){ var t=e.touches[0]; one={x:t.clientX,y:t.clientY,tx:ZM.tx,ty:ZM.ty}; } return; }
     if(e.touches.length!==2) return; e.preventDefault();
     var t0=e.touches[0], t1=e.touches[1], a=hitAt(t0.clientX,t0.clientY), b=hitAt(t1.clientX,t1.clientY);
@@ -352,7 +367,7 @@ function hitInit(){ var m=document.getElementById("map"), drag=null, pan=null, m
     tch={a:a,b:b,p0:dlPt(t0.clientX,t0.clientY),p1:dlPt(t1.clientX,t1.clientY)};
     tmr=setTimeout(function(){ if(tch&&pin&&!pin.go){ distShow(tch.a,tch.b,tch.p0,tch.p1); tch=null; pin=null; } },300); },{passive:false});
   m.addEventListener("touchmove",function(e){
-    if(e.touches.length===2&&pin){ e.preventDefault(); var t0=e.touches[0], t1=e.touches[1], d=dist2(t0,t1), cx=(t0.clientX+t1.clientX)/2, cy=(t0.clientY+t1.clientY)/2;
+if(DET) return;     if(e.touches.length===2&&pin){ e.preventDefault(); var t0=e.touches[0], t1=e.touches[1], d=dist2(t0,t1), cx=(t0.clientX+t1.clientX)/2, cy=(t0.clientY+t1.clientY)/2;
       if(!pin.go&&(Math.abs(d-pin.d)>12||Math.hypot(cx-pin.cx,cy-pin.cy)>12)){ pin.go=true; clearTimeout(tmr); tch=null; }   // 움직이면 줌, 가만히 0.3초면 거리
       if(pin.go){ var r=m.getBoundingClientRect(), ns=Math.max(1,Math.min(5,pin.s*d/pin.d)), px=pin.cx-r.left, py=pin.cy-r.top;
         ZM.s=ns; ZM.tx=px-(px-pin.tx)*ns/pin.s+(cx-pin.cx); ZM.ty=py-(py-pin.ty)*ns/pin.s+(cy-pin.cy); zApply(); } return; }
