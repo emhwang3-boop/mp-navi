@@ -61,7 +61,7 @@ html,body{overflow-x:hidden}
 .zb{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
 #vback{position:absolute;left:10px;top:10px;z-index:3;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 #vdet{position:absolute;right:10px;top:10px;z-index:4;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
-#nmap{position:absolute;inset:0;z-index:2}
+#nmapw{position:absolute;inset:0;z-index:2}#nmap{width:100%;height:100%}
 #vttl{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:3;background:rgba(255,255,255,.85);color:#3a2e22;border-radius:999px;padding:5px 14px;font-weight:900;font-size:15px;pointer-events:none}
 .zb button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:21px;font-weight:800;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);padding:0}
 .err{color:#e03131;font-weight:800;text-align:center;padding:14px 0}
@@ -104,7 +104,7 @@ html,body{overflow-x:hidden}
     <button type="submit" id="gob">검색</button>
   </form>
   <div class="res" id="res"></div>
-  <div class="map" id="map"><div id="mz"><img src="map.jpg" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg></div><div id="nmap" hidden></div><button type="button" id="vback" hidden>← 전국 지도</button><button type="button" id="vdet" hidden>🗺 자세한 지도</button><div id="vttl" hidden></div><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
+  <div class="map" id="map"><div id="mz"><img src="map.jpg" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg></div><div id="nmapw" hidden><div id="nmap"></div></div><button type="button" id="vback" hidden>← 전국 지도</button><button type="button" id="vdet" hidden>🗺 자세한 지도</button><div id="vttl" hidden></div><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
   <div class="foot" id="foot">머니퍼즐 내비 — 주식회사 부만</div>
 </div>
 <div id="shBox" hidden style="position:fixed;inset:0;z-index:1030;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.hidden=true">
@@ -232,7 +232,7 @@ var VIEW="kr", CITY={seoul:{img:"seoul.jpg",ko:"서울 · 광화문 일대",en:"
 var NAVER_KEY="jbwyndpnp3", DET=false, _nm=null;
 function nmLoad(cb){ if(window.naver&&naver.maps) return cb(); var s=document.createElement("script");
   s.src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId="+NAVER_KEY+"&language="+(LANG==="en"?"en":"ko"); s.onload=cb; document.head.appendChild(s); }
-function detSet(on){ DET=on; var c=CITY[VIEW], box=document.getElementById("nmap");
+function detSet(on){ DET=on; var c=CITY[VIEW], box=document.getElementById("nmapw");
   document.getElementById("vdet").textContent=on?T("🎨 약도로","🎨 Sketch map"):T("🗺 자세한 지도","🗺 Detailed map");
   box.hidden=!on; document.querySelector(".zb").style.display=on?"none":""; document.getElementById("vttl").style.display=on?"none":"";
   if(!on||!c) return;
