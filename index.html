@@ -223,6 +223,11 @@ var STN_EN={"서울": "Seoul", "부산": "Busan", "전주": "Jeonju", "경주": 
 function kstDay(add){ var d=new Date(Date.now()+9*3600e3+(add||0)*864e5); return d.toISOString().slice(0,10).replace(/-/g,""); }
 function stName(s){ return LANG==="en"?(STN_EN[s[0]]||s[0]):s[0]+"역"; }
 function hm(t){ return t.slice(0,2)+":"+t.slice(2); }
+// 열차 종류 — TAGO 는 SRT 를 「KTX」로 준다. 열차번호 300번대(경부)·600번대(호남)가 SRT (실측 2026-10-15)
+function trGrade(x){ var n=parseInt(x.no,10), g=String(x.g||"").replace(/\(.*?\)/g,"");
+  if(/^KTX/.test(g)&&((n>=300&&n<400)||(n>=600&&n<700))) return "SRT"; return g; }
+function trBadge(g){ var c=/^SRT/.test(g)?"#7b2d8e":/^KTX/.test(g)?"#1f4fa3":/ITX/.test(g)?"#0b7a5a":/무궁화|누리로|통근/.test(g)?"#c0392b":"#5b6474";
+  return '<span style="display:inline-block;padding:2px 8px;border-radius:6px;background:'+c+';color:#fff;font-weight:800;font-size:12.5px;white-space:nowrap">'+esc(g)+'</span>'; }
 function trainBox(a,b){ var box=document.getElementById("trn"); if(!box) return; var A=STN[a], B=STN[b];
   if(!A||!B){ var no=[]; if(!A) no.push(pName(a)); if(!B) no.push(pName(b));
     box.innerHTML='<div class="trh">🚆 '+T("열차","Trains")+'</div><div class="d">'+esc(no.join(", "))+T(" — 기차역이 없는 곳입니다."," — no train station there.")+'</div>'; return; }
@@ -236,7 +241,7 @@ function trainBox(a,b){ var box=document.getElementById("trn"); if(!box) return;
     var rows=r.add?r.all:r.left, hd='<div class="trh">🚆 '+esc(stName(A))+' → '+esc(stName(B))+(r.add?' · '+T("내일","Tomorrow"):' · '+T("오늘","Today"))+'</div>';
     if(!rows.length){ box.innerHTML=hd+'<div class="d">'+T("바로 가는 열차가 없습니다. 갈아타야 합니다.","No direct train. You need to transfer.")+'</div>'; return; }
     box.innerHTML=hd+'<table class="trn">'+rows.slice(0,8).map(function(x){ var m=(+x.ar.slice(0,2)*60+ +x.ar.slice(2))-(+x.dp.slice(0,2)*60+ +x.dp.slice(2)); if(m<0) m+=1440;
-      return '<tr><td>'+esc(x.g)+'</td><td>'+hm(x.dp)+' → '+hm(x.ar)+'</td><td>'+Math.floor(m/60)+T("시간 ","h ")+(m%60)+T("분","m")+'</td><td class="f">'+(x.fare?x.fare.toLocaleString()+T("원"," KRW"):"-")+'</td></tr>'; }).join("")+'</table>'
+      return '<tr><td>'+trBadge(trGrade(x))+'</td><td>'+hm(x.dp)+' → '+hm(x.ar)+'</td><td>'+Math.floor(m/60)+T("시간 ","h ")+(m%60)+T("분","m")+'</td><td class="f">'+(x.fare?x.fare.toLocaleString()+T("원"," KRW"):"-")+'</td></tr>'; }).join("")+'</table>'
       +(rows.length>8?'<div class="d">'+T("외 ","+ ")+(rows.length-8)+T("편 더"," more")+'</div>':'')
       +'<a href="https://www.letskorail.com/" target="_blank" rel="noopener">'+T("코레일 예매","Book on Korail")+'</a>';
   }).catch(function(){ box.innerHTML='<div class="d">'+T("열차 정보를 가져오지 못했습니다.","Could not load train info.")+'</div>'; }); }
