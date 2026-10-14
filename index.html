@@ -47,7 +47,9 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
 .sbox input:focus{border-color:#2b8a3e;box-shadow:0 0 0 4px rgba(47,158,68,.18)}
 .sbox button{border:0;background:var(--green);color:#fff;font-weight:800;font-size:17px;border-radius:999px;padding:12px 34px;cursor:pointer}
 .map{margin:18px 0 0;border-radius:18px;overflow:hidden;background:#96b2c4;box-shadow:0 2px 14px rgba(0,0,0,.08)}
-.map img{display:block;width:100%;height:auto}
+.map{position:relative}.map img{display:block;width:100%;height:auto}
+.spot{position:absolute;border:0;background:transparent;padding:0;margin:0;cursor:pointer;border-radius:10px}
+.spot:hover,.spot:focus-visible{background:rgba(255,255,255,.18);outline:2px solid rgba(47,158,68,.85)}
 .res{margin-top:14px}
 .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0}
 .item .t{font-weight:800;font-size:16px}
@@ -77,7 +79,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
     <button type="submit" id="gob">검색</button>
   </form>
   <div class="res" id="res"></div>
-  <div class="map"><img src="map.jpg" alt="대한민국 관광 지도" id="mapimg"></div>
+  <div class="map" id="map"><img src="map.jpg" alt="대한민국 관광 지도" id="mapimg"></div>
   <div class="foot" id="foot">머니퍼즐 내비 — 주식회사 부만</div>
 </div>
 <div id="shBox" hidden style="position:fixed;inset:0;z-index:1030;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.hidden=true">
@@ -89,7 +91,7 @@ var HUB="https://brief-live-hub.emhwang3.workers.dev";
 var LANG="ko"; try{ var _ql=(location.search.match(/[?&]lang=(ko|en)/i)||[])[1]; if(_ql) localStorage.setItem("mpv_lang",_ql.toLowerCase()); LANG=localStorage.getItem("mpv_lang")||(/^ko/i.test(navigator.language)?"ko":"en"); }catch(e){}
 function T(k,e){ return LANG==="en"?e:k; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); }
+function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ spotsDraw(); }catch(e){} }
 function paint(){
   document.getElementById("lang").textContent=LANG==="ko"?"EN":"한";
   document.getElementById("ttl").textContent=T("- 내비","- Navi");
@@ -104,8 +106,8 @@ function paint(){
   document.title=T("머니퍼즐 내비","Money Puzzle Navi");
   document.getElementById("foot").textContent=T("머니퍼즐 내비 — 주식회사 부만","Money Puzzle Navi — Booman Inc.");
 }
-function go(){
-  var q=document.getElementById("q").value.trim(), out=document.getElementById("res"); if(!q){ out.innerHTML=""; return; }
+function go(kq){
+  var q=(typeof kq==="string"&&kq)||document.getElementById("q").value.trim(), out=document.getElementById("res"); if(!q){ out.innerHTML=""; return; }
   out.innerHTML='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
   fetch(HUB+"/kplace?q="+encodeURIComponent(q)).then(function(r){ return r.json(); }).then(function(j){
     var it=(j&&j.ok&&j.items)||[];
@@ -187,8 +189,16 @@ function thDark(){ return document.documentElement.getAttribute("data-theme")===
 function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":"🌙"; }
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
+var SPOTS=[[4.39, 27.64, 21.29, 11.91, "인천국제공항", "Incheon Airport", "인천국제공항"], [55.47, 54.69, 13.96, 12.5, "해운대 해수욕장", "Haeundae Beach", "해운대해수욕장"], [57.62, 31.45, 10.06, 16.89, "석굴암", "Seokguram Grotto", "석굴암"], [75.88, 13.87, 15.43, 10.55, "울릉도", "Ulleungdo", "울릉도"], [10.94, 16.89, 12.3, 12.3, "강화 초지진", "Chojijin Fort", "초지진"], [29.1, 15.62, 10.64, 11.04, "N서울타워", "N Seoul Tower", "N서울타워"], [38.96, 29.1, 12.5, 8.89, "속리산 법주사", "Beopjusa Temple", "법주사"], [35.74, 55.66, 15.43, 6.25, "지리산 피아골", "Jirisan Piagol", "피아골"], [33.01, 33.11, 9.77, 9.77, "국립부여박물관 (금동대향로)", "Buyeo National Museum", "국립부여박물관"], [66.6, 27.15, 15.43, 6.05, "울릉도", "Ulleungdo", "울릉도"], [46.39, 2.44, 11.52, 8.01, "고성 통일전망대", "Goseong Unification Observatory", "고성 통일전망대"], [59.96, 32.91, 10.55, 8.5, "해파랑길", "Haeparang Trail", "해파랑길"], [41.8, 40.72, 13.48, 6.05, "안동 하회마을", "Andong Hahoe Village", "안동 하회마을"], [50.88, 17.77, 9.08, 8.2, "용평리조트", "Yongpyong Resort", "용평리조트"], [37.11, 19.63, 9.18, 7.62, "명동", "Myeongdong", "명동"], [39.55, 71.97, 9.57, 6.64, "여수 거북선", "Yeosu Turtle Ship", "여수 거북선"], [29.88, 65.53, 10.55, 5.96, "보성 녹차밭 (대한다원)", "Boseong Green Tea Field", "보성 대한다원"], [30.18, 53.52, 6.15, 8.79, "담양 죽녹원", "Damyang Juknokwon", "죽녹원"], [31.25, 27.44, 6.84, 7.81, "에버랜드", "Everland", "에버랜드"], [52.34, 12.3, 8.4, 5.76, "양양 낙산사", "Naksansa Temple", "낙산사"], [32.62, 47.07, 7.03, 6.84, "전주 비빔밥", "Jeonju Bibimbap", "전주 비빔밥"], [48.63, 27.34, 7.81, 5.86, "강원랜드", "Kangwon Land", "강원랜드"], [22.75, 87.6, 11.04, 3.81, "한라산", "Hallasan", "한라산"], [45.9, 11.72, 6.84, 6.05, "설악산", "Seoraksan", "설악산"], [23.34, 19.53, 7.52, 4.69, "강화 전등사", "Jeondeungsa Temple", "전등사"], [91.8, 27.44, 6.84, 4.2, "독도", "Dokdo", "독도"], [35.84, 10.45, 6.45, 4.1, "제3땅굴", "The Third Tunnel", "제3땅굴"], [28.22, 14.84, 7.62, 3.22, "판문점", "Panmunjom", "판문점"], [40.72, 63.38, 3.32, 6.25, "사천바다케이블카", "Sacheon Sea Cable Car", "사천바다케이블카"], [34.57, 27.44, 3.03, 5.66, "에버랜드", "Everland", "에버랜드"], [31.45, 84.96, 3.03, 4.88, "돌하르방", "Dol Hareubang", "제주 돌하르방"], [47.75, 62.01, 3.32, 4.3, "사천바다케이블카", "Sacheon Sea Cable Car", "사천바다케이블카"], [49.61, 14.94, 3.32, 3.03, "설악산", "Seoraksan", "설악산"], [46.29, 64.26, 2.25, 2.64, "사천바다케이블카", "Sacheon Sea Cable Car", "사천바다케이블카"], [42.68, 64.94, 2.15, 2.64, "사천바다케이블카", "Sacheon Sea Cable Car", "사천바다케이블카"], [44.53, 65.23, 2.05, 2.64, "사천바다케이블카", "Sacheon Sea Cable Car", "사천바다케이블카"]];
+function spotsDraw(){ var m=document.getElementById("map"); [].forEach.call(m.querySelectorAll(".spot"),function(b){ b.remove(); });
+  SPOTS.forEach(function(s){ var b=document.createElement("button"); b.className="spot"; b.type="button";
+    b.style.left=s[0]+"%"; b.style.top=s[1]+"%"; b.style.width=s[2]+"%"; b.style.height=s[3]+"%";
+    b.title=LANG==="en"?s[5]:s[4]; b.setAttribute("aria-label",b.title);
+    b.onclick=function(){ document.getElementById("q").value=LANG==="en"?s[5]:s[4]; go(s[6]); window.scrollTo({top:0,behavior:"smooth"}); };
+    m.appendChild(b); }); }
 thPaint();
 paint();
+spotsDraw();
 </script>
 </body>
 </html>
