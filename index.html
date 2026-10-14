@@ -135,12 +135,13 @@ function paint(){
 function go(kq){
   var q=(typeof kq==="string"&&kq)||document.getElementById("q").value.trim(), out=document.getElementById("res"); if(!q){ out.innerHTML=""; return; }
   out.innerHTML='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
-  fetch(HUB+"/kplace?q="+encodeURIComponent(q)).then(function(r){ return r.json(); }).then(function(j){
+  fetch(HUB+"/kplace?q="+encodeURIComponent(q)+(LANG==="en"?"&lang=en":"")).then(function(r){ return r.json(); }).then(function(j){
     var it=(j&&j.ok&&j.items)||[];
     if(!it.length){ out.innerHTML='<div class="msg">'+T("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words.")+'</div>'; return; }
     out.innerHTML=it.slice(0,10).map(function(x){
       var nm=encodeURIComponent(x.name), ll=x.y+","+x.x;
-      return '<div class="item"><div class="t">'+esc(x.name)+'</div><div class="d">'+esc(x.addr||"")+(x.cat?' · '+esc(String(x.cat).split(">").pop().trim()):'')+'</div>'
+      var en=LANG==="en"&&x.name_en, ttl=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
+      return '<div class="item"><div class="t">'+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div>'
         +'<a href="https://map.kakao.com/link/to/'+nm+','+x.y+','+x.x+'" target="_blank" rel="noopener">'+T("카카오맵 길찾기","Kakao Map route")+'</a>'
         +'<a href="https://map.naver.com/p/search/'+nm+'" target="_blank" rel="noopener">'+T("네이버 지도","Naver Map")+'</a>'
         +'<a href="https://www.google.com/maps/dir/?api=1&destination='+ll+'" target="_blank" rel="noopener">'+T("구글 지도","Google Maps")+'</a></div>';
