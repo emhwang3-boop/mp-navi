@@ -81,6 +81,7 @@ html,body{overflow-x:hidden}
 #lod{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}#lod>div{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;box-sizing:border-box}
 #lod .lt{background:#1f4fa3;color:#fff;font-weight:900;font-size:13px;line-height:1;height:32px;padding:0 10px;display:flex;align-items:center;border-radius:999px;white-space:nowrap;border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.35)}
 #lod .lp{border:2px solid #fff;border-radius:8px;background:#fff center/cover no-repeat;box-shadow:0 1px 6px rgba(0,0,0,.4)}
+#mz .mlb{position:absolute;pointer-events:none;white-space:nowrap;background:#fff;color:#c2410c;border:2px solid #e8590c;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;line-height:1.3;box-shadow:0 1px 4px rgba(0,0,0,.25)}
 #mz{position:relative;transform-origin:0 0;will-change:transform}
 .map.zoomed{touch-action:none}
 .zb{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
@@ -171,7 +172,7 @@ var HUB="https://brief-live-hub.emhwang3.workers.dev";
 var LANG="ko"; try{ var _ql=(location.search.match(/[?&]lang=(ko|en)/i)||[])[1]; if(_ql) localStorage.setItem("mpv_lang",_ql.toLowerCase()); LANG=localStorage.getItem("mpv_lang")||(/^ko/i.test(navigator.language)?"ko":"en"); }catch(e){}
 function T(k,e){ return LANG==="en"?e:k; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} }
+function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} }
 function paint(){
   document.getElementById("lang").textContent=LANG==="ko"?"EN":"한";
   document.getElementById("ttl").textContent=T("- 내비","- Navi");
@@ -295,12 +296,12 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="7366de56a7", NAVI_ROOT="kr";
+var NAVI_V="9106b72e4a", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
 function mapMerge(id,d){ var k, pl=d.places||{}; for(k in pl) if(!PLACES[k]) PLACES[k]=pl[k];
-  if(d.spots&&CITY[id]) CITY[id].spots=d.spots; if(d.subs&&CITY[id]){ CITY[id].subs=d.subs; if(id===VIEW) try{ lodDraw(); }catch(e){} }
+  if(d.spots&&CITY[id]) CITY[id].spots=d.spots; if(d.labels&&CITY[id]){ CITY[id].labels=d.labels; if(id===VIEW) try{ lblDraw(); }catch(e){} } if(d.subs&&CITY[id]){ CITY[id].subs=d.subs; if(id===VIEW) try{ lodDraw(); }catch(e){} }
   if(d.hit){ HIT=d.hit; HG=hgMake(HIT); } if(d.stn) STN=d.stn; if(d.stn_en) STN_EN=d.stn_en; if(d.isle) ISLE=d.isle;
   try{ nmMark(); }catch(e){} }
 // 약도 자료는 그 약도에 들어갈 때 받는다 (한 번 받으면 기억)
@@ -360,14 +361,14 @@ var ROOT_IMG=document.getElementById("mapimg").getAttribute("src");
 function viewSet(v){ clearTimeout(window._scT); VIEW=v; if(CITY[v]) mapLoad(v).catch(function(){}); detSet(false); document.getElementById("vdet").hidden=!CITY[v]; document.getElementById("vbar").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:ROOT_IMG;
   document.getElementById("vback").hidden=!c; var tt=document.getElementById("vttl"); tt.hidden=!c; if(c) tt.textContent=LANG==="en"?c.en:c.ko;
   var vb=document.getElementById("vback"); vb.textContent="←"; vb.title=vb.ariaLabel=c&&c.parent!=="kr"?T(CITY[c.parent].ko+"로",CITY[c.parent].en):T("전국 지도로","Korea map");
-  try{ dlDraw(null); }catch(e){} var w0=document.getElementById("map").clientWidth; ZM={s:1,tx:(c&&c.aspect>1)?-((c.fx||0.5)*w0*c.aspect-w0/2):0,ty:0}; zApply(); LOD.s0=ZM.s; }
+  try{ dlDraw(null); }catch(e){} try{ lblDraw(); }catch(e){} var w0=document.getElementById("map").clientWidth; ZM={s:1,tx:(c&&c.aspect>1)?-((c.fx||0.5)*w0*c.aspect-w0/2):0,ty:0}; zApply(); LOD.s0=ZM.s; }
 var _lastTap={k:null,t:0}, _lastArea={a:null,t:0};
 function areaTap(cx,cy){ var c=CITY[VIEW]; if(!c||!c.areas) return; var r=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-r.left)/r.width, fy=(cy-r.top)/r.height, now=Date.now();
   var a=null, bd=9; for(var k in c.areas){ var b=c.areas[k]; if(fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]){ var dd=Math.max(Math.abs(fx-(b[0]+b[2])/2)/(b[2]-b[0]),Math.abs(fy-(b[1]+b[3])/2)/(b[3]-b[1])); if(dd<bd){ bd=dd; a=k; } } }   // 겹친 네모는 가운데에 가까운 쪽
   if(!a) return; if(_lastArea.a===a&&now-_lastArea.t<450){ _lastArea={a:null,t:0}; viewSet(a); } else _lastArea={a:a,t:now}; }
 function cityFor(k){ for(var c in CITY) if(CITY[c].keys.indexOf(k)>=0) return c; return null; }
 function hitAt(cx,cy){ if(VIEW!=="kr"){ var cc=CITY[VIEW]; if(!cc||!cc.spots) return null; var rr=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-rr.left)/rr.width, fy=(cy-rr.top)/rr.height, best=null, ba=9;
-    for(var sk in cc.spots){ var b=cc.spots[sk], pad=0.012; if(fx>=b[0]-pad&&fx<=b[2]+pad&&fy>=b[1]-pad&&fy<=b[3]+pad){ var ar=(b[2]-b[0])*(b[3]-b[1]); if(ar<ba){ ba=ar; best=sk; } } } return best; } var r=document.getElementById("mapimg").getBoundingClientRect(); var fx=(cx-r.left)/r.width*256, fy=(cy-r.top)/r.height*256, gx=Math.floor(fx), gy=Math.floor(fy);
+    for(var sk in cc.spots){ var b=cc.spots[sk], pad=0.012; if(fx>=b[0]-pad&&fx<=b[2]+pad&&fy>=b[1]-pad&&fy<=b[3]+pad){ var ar=(b[2]-b[0])*(b[3]-b[1]); if(ar<ba){ ba=ar; best=sk; } } } return best?best.split("@")[0]:null; }   // 「키@무엇」 = 같은 장소의 두 번째 그림(예: 버스·매표소 표지판) var r=document.getElementById("mapimg").getBoundingClientRect(); var fx=(cx-r.left)/r.width*256, fy=(cy-r.top)/r.height*256, gx=Math.floor(fx), gy=Math.floor(fy);
   if(gx<0||gy<0||gx>255||gy>255) return null; var v=HG[gy*256+gx]; if(v) return HIT.keys[v-1];
   var R=Math.max(2,Math.ceil(24/(r.width/256))), best=0, bd=1e9;
   for(var y=Math.max(0,gy-R);y<=Math.min(255,gy+R);y++) for(var x=Math.max(0,gx-R);x<=Math.min(255,gx+R);x++){ var w=HG[y*256+x]; if(!w) continue; var d=(x+.5-fx)*(x+.5-fx)+(y+.5-fy)*(y+.5-fy); if(d<bd&&d<=R*R){ bd=d; best=w; } }
@@ -493,7 +494,12 @@ function zApply(){ var m=document.getElementById("map"), w=m.clientWidth, z=docu
   var mn=1/as; ZM.s=Math.max(mn,Math.min(ZMAX(),ZM.s));   // 가로로 긴 약도는 전체가 한 화면에 들어올 때까지 축소 (사장님 10-15)
   var iw=w*as*ZM.s, ih=w*ZM.s; ZM.tx=iw>=w?Math.min(0,Math.max(w-iw,ZM.tx)):(w-iw)/2; ZM.ty=ih>=w?Math.min(0,Math.max(w-ih,ZM.ty)):(w-ih)/2;
   z.style.transform="translate("+ZM.tx+"px,"+ZM.ty+"px) scale("+ZM.s+")"; m.classList.toggle("zoomed",ZM.s>1.001||ASP()>1);
-  var lb=document.getElementById("dlb"); if(lb) lb.style.transform="translate(-50%,-50%) scale("+(1/ZM.s)+")"; try{ lodDraw(); }catch(e){} }
+  var lb=document.getElementById("dlb"); if(lb) lb.style.transform="translate(-50%,-50%) scale("+(1/ZM.s)+")";
+  [].forEach.call(document.querySelectorAll("#mz .mlb"),function(e){ e.style.transform="translate("+(-e._ax*100)+"%,"+(-e._ay*100)+"%) scale("+(1/ZM.s)+")"; }); try{ lodDraw(); }catch(e){} }
+// 약도 글자 표시 — 자료 labels [[x,y,한글,영어,ax,ay],...] 를 지도 위 그 자리에 (글자 크기는 줌과 상관없이 같게, 매표소 등 · fix3 10-15)
+function lblDraw(){ [].forEach.call(document.querySelectorAll("#mz .mlb"),function(e){ e.remove(); }); var c=CITY[VIEW]; if(!c||!c.labels) return; var z=document.getElementById("mz");
+  c.labels.forEach(function(t){ var e=document.createElement("div"); e.className="mlb"; e.textContent=LANG==="en"?t[3]:t[2]; e._ax=t[4]||0; e._ay=t[5]||0; e.style.left=(t[0]*100)+"%"; e.style.top=(t[1]*100)+"%"; e.style.transformOrigin=(e._ax*100)+"% "+(e._ay*100)+"%";
+    e.style.transform="translate("+(-e._ax*100)+"%,"+(-e._ay*100)+"%) scale("+(1/ZM.s)+")"; z.appendChild(e); }); }
 // 빨간 네모 줌 단계 (사장님 10-15) — 보통 크기엔 이름표+대표 그림 1~2장, 당기면 그림이 제자리에 늘고, 네모가 화면 70% 넘게 차면 그 약도로 들어간다
 var LOD={el:{},s0:1,v:null,wt:null};
 function ZMAX(){ var c=CITY[VIEW], mx=5; if(c&&c.areas) for(var a in c.areas){ var b=c.areas[a]; mx=Math.max(mx,0.75/((b[2]-b[0])*ASP())); } return Math.min(20,mx); }
@@ -506,27 +512,23 @@ function lodDraw(){ var L=document.getElementById("lod"); if(!L) return; if(LOD.
   function X(f){ return ZM.tx+f*iw; } function Y(f){ return ZM.ty+f*ih; }
   function hit(r){ for(var i=0;i<put.length;i++){ var q=put[i]; if(r[0]<q[2]+3&&r[2]>q[0]-3&&r[1]<q[3]+3&&r[3]>q[1]-3) return true; } return false; }
   function inV(r){ return r[0]>=0&&r[1]>=0&&r[2]<=w&&r[3]<=h; }
-  var ks=Object.keys(c.areas).map(function(a){ var b=c.areas[a]; return {a:a,R:[X(b[0]),Y(b[1]),X(b[2]),Y(b[3])]}; })
-    .filter(function(o){ return o.R[2]>0&&o.R[0]<w&&o.R[3]>0&&o.R[1]<h; }).sort(function(p,q){ return (p.R[2]-p.R[0])*(p.R[3]-p.R[1])-(q.R[2]-q.R[0])*(q.R[3]-q.R[1]); });
-  ks.forEach(function(o){ var a=o.a, R=o.R, e=lodEl("t:"+a,"lt",a), tx=lodTag(a); used["t:"+a]=1; e.style.display="";
-    if(e.dataset.t!==tx){ e.textContent=tx; e.dataset.t=tx; }
-    var tw=e.offsetWidth, th=e.offsetHeight, cx=Math.max(2,Math.min(w-tw-2,(R[0]+R[2])/2-tw/2)), cy=(R[1]+R[3])/2-th/2, top=Math.max(2,R[1]+4), bot=Math.min(h-th-2,R[3]-th-4);
-    var wd=(R[2]-R[0])>=w*0.32, cand=(wd?[[cx,R[1]-th-3],[cx,R[3]+3],[cx,top]]:[[cx,top],[cx,R[1]-th-3]]).concat([[cx,R[3]+3],[cx,bot],[R[2]+3,cy],[R[0]-tw-3,cy],[cx,cy],[R[2]+3,R[1]-th-3],[R[0]-tw-3,R[1]-th-3],[R[2]+3,R[3]+3],[R[0]-tw-3,R[3]+3]]), pick=null;
-    [1,-1,2,-2,3,-3].forEach(function(k){ [0,1,-1].forEach(function(j){ cand.push([cx+j*(tw/2+4),cy+k*(th+4)]); }); });   // 그래도 겹치면 둘레를 조금씩 넓혀 본다
-    for(var i=0;i<cand.length&&!pick;i++){ var r=[cand[i][0],cand[i][1],cand[i][0]+tw,cand[i][1]+th]; if(inV(r)&&!hit(r)) pick=r; }
-    if(!pick){ var y0=Math.max(2,Math.min(h-th-2,top)); pick=[cx,y0,cx+tw,y0+th]; }   // 이름표는 늘 보인다
-    put.push(pick); o.T=pick; e.style.transform="translate("+Math.round(pick[0])+"px,"+Math.round(pick[1])+"px)"; });
+  // 이름표·작은 그림은 지도 한 점에 못 박는다 (사장님 10-15 「지도에 고정」) — 자리 찾기·화면 안으로 끌어오기 없음. 겹치면 옮기지 않고 숨긴다
+  var ks=Object.keys(c.areas).map(function(a){ var b=c.areas[a]; return {a:a,b:b,R:[X(b[0]),Y(b[1]),X(b[2]),Y(b[3])]}; })
+    .sort(function(p,q){ return (q.b[2]-q.b[0])*(q.b[3]-q.b[1])-(p.b[2]-p.b[0])*(p.b[3]-p.b[1]) || (p.a<q.a?-1:1); });   // 큰 네모 먼저(우선)
+  ks.forEach(function(o){ var a=o.a, R=o.R, e=lodEl("t:"+a,"lt",a), tx=lodTag(a);
+    if(R[2]<0||R[0]>w||R[3]<0||R[1]>h){ return; }
+    e.style.display=""; if(e.dataset.t!==tx){ e.textContent=tx; e.dataset.t=tx; }
+    var tw=e.offsetWidth, th=e.offsetHeight, x=(R[0]+R[2])/2-tw/2, y=R[1]+4, r=[x,y,x+tw,y+th];   // 네모 위쪽 가운데, 네모 안
+    if(hit(r)) return; put.push(r); used["t:"+a]=1; e.style.transform="translate("+Math.round(x)+"px,"+Math.round(y)+"px)"; });
   var mn=Math.max(32,Math.round(w*0.075)), mx=Math.max(mn,Math.min(110,Math.round(w*0.2)));
-  ks.forEach(function(o){ var a=o.a, R=o.R, S=c.subs&&c.subs[a]; if(!S||!S.length) return; var bw=R[2]-R[0], bh=R[3]-R[1], n=0;
-    var wide=bw>=w*0.32, q=Math.min(3,wide?Math.min(S.length,Math.max(2,Math.round(Math.min(bw,w)*Math.min(bh,h)/(64*64)))):Math.min(S.length,bw<w*0.12?1:2));   // 네모마다 작은 그림은 3개까지
-    for(var i=0;i<S.length&&n<q;i++){ var s=S[i], id="p:"+a+":"+s[0], sw=(s[3]-s[1])*iw, sh=(s[4]-s[2])*ih, k=Math.max(sw,sh), z=Math.max(mn,Math.min(mx,k)), pw=Math.round(z*sw/k), ph=Math.round(z*sh/k);
+  ks.forEach(function(o){ var a=o.a, R=o.R, S=c.subs&&c.subs[a]; if(!S||!S.length) return; var bw=R[2]-R[0];
+    var q=Math.min(S.length,bw<w*0.12?1:bw<w*0.32?2:3);   // 네모마다 작은 그림은 3개까지 — 늘 같은 차례(대표 먼저, 큰 것)
+    for(var i=0;i<q;i++){ var s=S[i], id="p:"+a+":"+s[0], sw=(s[3]-s[1])*iw, sh=(s[4]-s[2])*ih, k=Math.max(sw,sh,1), z=Math.max(mn,Math.min(mx,k)), pw=Math.round(z*sw/k), ph=Math.round(z*sh/k);
       if(pw<mn){ ph=Math.round(ph*mn/pw); pw=mn; } if(ph<mn){ pw=Math.round(pw*mn/ph); ph=mn; } ph=Math.min(ph,Math.round(pw*1.6)); pw=Math.min(pw,Math.round(ph*1.6));
-      var cand=[]; if(wide){ var px=X((s[1]+s[3])/2)-pw/2, py=Y((s[2]+s[4])/2)-ph/2, dx=pw*0.6, dy=ph*0.6; cand.push([px,py],[px+dx,py],[px-dx,py],[px,py+dy],[px,py-dy]); }
-      else { var T=o.T; cand.push([T[2]+3,(T[1]+T[3])/2-ph/2],[T[0]-pw-3,(T[1]+T[3])/2-ph/2],[(T[0]+T[2])/2-pw/2,T[3]+3],[(T[0]+T[2])/2-pw/2,T[1]-ph-3],[T[2]+pw+6,(T[1]+T[3])/2-ph/2]); }
-      var pick=null; for(var j=0;j<cand.length&&!pick;j++){ var r=[cand[j][0],cand[j][1],cand[j][0]+pw,cand[j][1]+ph]; if(inV(r)&&!hit(r)) pick=r; }
-      if(!pick) continue; put.push(pick); n++; used[id]=1;
-      var e=lodEl(id,"lp",a); e.dataset.k=s[0]; if(!e.dataset.src){ e.dataset.src=s[5]; e.style.backgroundImage="url('"+s[5]+"')"; e.title=pName(s[0])||""; }
-      e.style.display=""; e.style.width=pw+"px"; e.style.height=ph+"px"; e.style.transform="translate("+Math.round(pick[0])+"px,"+Math.round(pick[1])+"px)"; } });
+      var x=X((s[1]+s[3])/2)-pw/2, y=Y((s[2]+s[4])/2)-ph/2, r=[x,y,x+pw,y+ph];   // 그 그림 자리 한가운데
+      if(r[2]<0||r[0]>w||r[3]<0||r[1]>h||hit(r)) continue; put.push(r); used[id]=1;
+      var e=lodEl(id,"lp",a); e.dataset.k=s[0]; if(!e.dataset.src){ e.dataset.src=s[5]; e.style.backgroundImage="url('"+s[5]+"')"; e.title=pName(s[0].split("@")[0])||""; }
+      e.style.display=""; e.style.width=pw+"px"; e.style.height=ph+"px"; e.style.transform="translate("+Math.round(x)+"px,"+Math.round(y)+"px)"; } });
   for(var id in LOD.el) if(!used[id]) LOD.el[id].style.display="none"; }
 // 네모 안 비율(pfx,pfy)을 가운데에 두고 아래 약도로 — sC 를 주면 그 배율, 없으면 지금 보이는 넓이를 이어 받는다
 function lodEnter(a,pfx,pfy,sC){ var c=CITY[VIEW], b=c&&c.areas&&c.areas[a]; if(!b) return; var asP=ASP(), sP=ZM.s; viewSet(a);
