@@ -53,14 +53,15 @@ td.l,th.l{text-align:left;white-space:normal;min-width:120px}
 
   <div class="card" id="gate">
     <div class="row">
-      <input type="password" id="tok" placeholder="관리 토큰" autocomplete="off" style="flex:1;min-width:200px">
+      <input type="password" id="tok" placeholder="관리 비밀번호" autocomplete="off" style="flex:1;min-width:200px">
       <button onclick="login()">들어가기</button>
       <button class="g" onclick="logout()">이 기기에서 지우기</button>
     </div>
-    <div class="msg" id="gmsg">토큰은 이 기기 브라우저에만 저장됩니다.</div>
+    <div class="msg" id="gmsg">비밀번호는 이 기기 브라우저에만 저장됩니다. 5번 틀리면 15분 동안 잠깁니다.</div>
   </div>
 
   <div id="app" hidden>
+    <div class="row" style="justify-content:flex-end;margin-bottom:6px"><button class="g" onclick="show('pw')" title="비밀번호 변경">⚙ 비밀번호 변경</button></div>
     <div class="menu" id="menu"></div>
     <div id="pane"></div>
   </div>
@@ -74,18 +75,18 @@ function $(i){ return document.getElementById(i); }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function kday(add){ return new Date(Date.now()+9*3600e3+(add||0)*864e5).toISOString().slice(0,10); }
 function api(path,opt){ opt=opt||{}; opt.headers={"x-admin":TOK}; opt.cache="no-store";
-  return fetch(HUB+path,opt).then(function(r){ if(r.status===403) throw new Error("admin"); return r.json(); }); }
+  return fetch(HUB+path,opt).then(function(r){ if(r.status===403) throw new Error("admin"); if(r.status===429) throw new Error("locked"); return r.json(); }); }
 
 // ── 들어가기 — 허브가 토큰을 확인해야만 메뉴가 열린다 ──
 function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").textContent="토큰을 넣어 주세요."; return; }
   $("gmsg").textContent="확인 중…";
   api("/ntapstats?from="+kday(0)+"&to="+kday(0)).then(function(j){ if(!j.ok) throw new Error("x");
     try{ localStorage.setItem("mpadm_tok",TOK); }catch(e){} $("tok").value=""; $("gate").hidden=true; $("app").hidden=false; menu(); show("home");
-  }).catch(function(e){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(x){} $("gmsg").innerHTML='<span class="err">'+(e.message==="admin"?"토큰이 맞지 않습니다.":"허브에 닿지 못했습니다.")+'</span>'; });
+  }).catch(function(e){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(x){} $("gmsg").innerHTML='<span class="err">'+(e.message==="admin"?"비밀번호가 맞지 않습니다.":e.message==="locked"?"5번 틀려 15분 동안 잠겼습니다. 잠시 뒤 다시 넣어 주세요.":"허브에 닿지 못했습니다.")+'</span>'; });
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inv","초대 링크 발급","7일짜리 초대 링크"],["pay","이용권·결제 내역","장부 · 엑셀 받기"]];
+var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inv","초대 링크 발급","7일짜리 초대 링크"],["pay","이용권·결제 내역","장부 · 엑셀 받기"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
 function usd(n){ return "$"+(Math.round((n||0)*100)/100).toLocaleString(); }
 function tile(v,l){ return '<div class="tile"><b>'+v+'</b><span>'+l+'</span></div>'; }
@@ -127,6 +128,18 @@ function voiceLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>고객�
 function vRead(id){ api("/nvoice?read="+encodeURIComponent(id),{method:"POST"}).then(voiceLoad); }
 function vDel(id){ if(!confirm("이 글을 지울까요?")) return; api("/nvoice?del="+encodeURIComponent(id),{method:"POST"}).then(voiceLoad); }
 function vContact(b){ api("/nvoice?contact="+encodeURIComponent(b.dataset.id)).then(function(j){ var s=document.createElement("span"); s.textContent=j.contact||"(없음)"; s.style.padding="8px"; b.replaceWith(s); }); }
+// ── 비밀번호 변경 — 허브가 지금 비밀번호를 확인한 뒤에만 바꾼다 (저장은 소금+해시) ──
+function pwChange(){ var a=$("pw0").value, b=$("pw1").value, c=$("pw2").value, m=$("pwm");
+  if(!a){ m.innerHTML='<span class="err">지금 비밀번호를 넣어 주세요.</span>'; return; }
+  if([...b].length<10){ m.innerHTML='<span class="err">새 비밀번호는 10자 이상이어야 합니다.</span>'; return; }
+  if(b!==c){ m.innerHTML='<span class="err">새 비밀번호와 확인이 다릅니다.</span>'; return; }
+  if(b===a){ m.innerHTML='<span class="err">지금 비밀번호와 다른 것으로 정해 주세요.</span>'; return; }
+  $("pwb").disabled=true; m.textContent="바꾸는 중…";
+  fetch(HUB+"/nadminpw",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cur:a,"new":b}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ $("pwb").disabled=false;
+    if(j.ok){ TOK=b; try{ localStorage.setItem("mpadm_tok",b); }catch(e){} $("pw0").value=$("pw1").value=$("pw2").value="";
+      m.innerHTML='<b>바꿨습니다.</b> 이 기기에는 새 비밀번호로 저장했습니다. 다른 기기(폰 등)에서는 새 비밀번호를 다시 넣어 주세요.'; return; }
+    m.innerHTML='<span class="err">'+(j.err==="locked"?"5번 틀려 15분 동안 잠겼습니다.":j.err==="admin"?"지금 비밀번호가 맞지 않습니다.":j.err==="weak"?"새 비밀번호가 너무 짧습니다 (10자 이상).":"바꾸지 못했습니다.")+'</span>';
+  }).catch(function(){ $("pwb").disabled=false; m.innerHTML='<span class="err">허브에 닿지 못했습니다.</span>'; }); }
 // ── 이용권·결제 장부 ──
 var LG=null, PRN={"7d":"7일권","15d":"15일권","30d":"30일권"};
 function payLoad(){ var P=$("pane"), td=kday(0);
@@ -158,6 +171,8 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="voice"){ voiceLoad(); return; }
   if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
   if(id==="pay"){ payLoad(); return; }
+  if(id==="pw"){ P.innerHTML='<div class="card"><b>비밀번호 변경</b><div class="msg">새 비밀번호는 10자 이상 (한글·숫자·영문 섞어도 됩니다). 바꾸면 옛 비밀번호는 바로 안 통합니다.</div>'
+    +'<div style="display:grid;gap:8px;margin-top:10px;max-width:420px"><input type="password" id="pw0" placeholder="지금 비밀번호" autocomplete="current-password"><input type="password" id="pw1" placeholder="새 비밀번호 (10자 이상)" autocomplete="new-password"><input type="password" id="pw2" placeholder="새 비밀번호 확인" autocomplete="new-password"><button id="pwb" onclick="pwChange()">바꾸기</button></div><div class="msg" id="pwm"></div></div>'; return; }
 }
 function invMint(){ var o=$("invOut"); o.innerHTML='<div class="msg">만드는 중…</div>';
   fetch(HUB+"/invmint?app=navi&me=EM2410",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
