@@ -295,7 +295,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="5cebdafc8f", NAVI_ROOT="kr";
+var NAVI_V="a1a255b07d", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -502,6 +502,7 @@ function lodEl(id,cls,a){ var e=LOD.el[id]; if(!e){ e=document.createElement("di
 function lodDraw(){ var L=document.getElementById("lod"); if(!L) return; if(LOD.v!==VIEW){ L.innerHTML=""; LOD.el={}; LOD.v=VIEW; }
   var c=CITY[VIEW]; if(!c||!c.areas||DET){ L.style.display="none"; return; } L.style.display="";
   var m=document.getElementById("map"), w=m.clientWidth, h=w, iw=w*ASP()*ZM.s, ih=w*ZM.s, used={}, put=[];
+  var mr=m.getBoundingClientRect(); [".zb","#osm"].forEach(function(q){ var o=document.querySelector(q); if(!o||o.hidden) return; var r=o.getBoundingClientRect(); if(r.width) put.push([r.left-mr.left,r.top-mr.top,r.right-mr.left,r.bottom-mr.top]); });   // 줌 단추·© 글자 자리는 비운다
   function X(f){ return ZM.tx+f*iw; } function Y(f){ return ZM.ty+f*ih; }
   function hit(r){ for(var i=0;i<put.length;i++){ var q=put[i]; if(r[0]<q[2]+3&&r[2]>q[0]-3&&r[1]<q[3]+3&&r[3]>q[1]-3) return true; } return false; }
   function inV(r){ return r[0]>=0&&r[1]>=0&&r[2]<=w&&r[3]<=h; }
@@ -511,6 +512,7 @@ function lodDraw(){ var L=document.getElementById("lod"); if(!L) return; if(LOD.
     if(e.dataset.t!==tx){ e.textContent=tx; e.dataset.t=tx; }
     var tw=e.offsetWidth, th=e.offsetHeight, cx=Math.max(2,Math.min(w-tw-2,(R[0]+R[2])/2-tw/2)), cy=(R[1]+R[3])/2-th/2, top=Math.max(2,R[1]+4), bot=Math.min(h-th-2,R[3]-th-4);
     var wd=(R[2]-R[0])>=w*0.32, cand=(wd?[[cx,R[1]-th-3],[cx,R[3]+3],[cx,top]]:[[cx,top],[cx,R[1]-th-3]]).concat([[cx,R[3]+3],[cx,bot],[R[2]+3,cy],[R[0]-tw-3,cy],[cx,cy],[R[2]+3,R[1]-th-3],[R[0]-tw-3,R[1]-th-3],[R[2]+3,R[3]+3],[R[0]-tw-3,R[3]+3]]), pick=null;
+    [1,-1,2,-2,3,-3].forEach(function(k){ [0,1,-1].forEach(function(j){ cand.push([cx+j*(tw/2+4),cy+k*(th+4)]); }); });   // 그래도 겹치면 둘레를 조금씩 넓혀 본다
     for(var i=0;i<cand.length&&!pick;i++){ var r=[cand[i][0],cand[i][1],cand[i][0]+tw,cand[i][1]+th]; if(inV(r)&&!hit(r)) pick=r; }
     if(!pick){ var y0=Math.max(2,Math.min(h-th-2,top)); pick=[cx,y0,cx+tw,y0+th]; }   // 이름표는 늘 보인다
     put.push(pick); o.T=pick; e.style.transform="translate("+Math.round(pick[0])+"px,"+Math.round(pick[1])+"px)"; });
@@ -529,7 +531,7 @@ function lodDraw(){ var L=document.getElementById("lod"); if(!L) return; if(LOD.
 // 네모 안 비율(pfx,pfy)을 가운데에 두고 아래 약도로 — sC 를 주면 그 배율, 없으면 지금 보이는 넓이를 이어 받는다
 function lodEnter(a,pfx,pfy,sC){ var c=CITY[VIEW], b=c&&c.areas&&c.areas[a]; if(!b) return; var asP=ASP(), sP=ZM.s; viewSet(a);
   if(pfx==null) return; var cc=CITY[a], asC=cc.aspect||1, w=document.getElementById("map").clientWidth, h=w;
-  var cx=(pfx-b[0])/(b[2]-b[0]), cy=(pfy-b[1])/(b[3]-b[1]); if(sC==null) sC=(b[2]-b[0])*asP*sP/asC; sC=Math.max(1/asC,Math.min(ZMAX(),sC));
+  var cx=(pfx-b[0])/(b[2]-b[0]), cy=(pfy-b[1])/(b[3]-b[1]); if(sC==null) sC=(b[2]-b[0])*asP*sP/asC; sC=Math.max(1,Math.min(ZMAX(),sC));
   ZM={s:sC,tx:w/2-cx*w*asC*sC,ty:h/2-cy*w*sC}; zApply(); LOD.s0=ZM.s; }
 function lodAuto(){ var c=CITY[VIEW]; if(!c||!c.areas||DET||ZM.s<LOD.s0*1.25) return; var m=document.getElementById("map"), w=m.clientWidth, h=w, iw=w*ASP()*ZM.s, ih=w*ZM.s;
   var fx=(w/2-ZM.tx)/iw, fy=(h/2-ZM.ty)/ih, best=null, ba=9;
