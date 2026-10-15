@@ -97,15 +97,15 @@ function flags(){ var z=document.getElementById("mz"); if(!z) return; [].forEach
     var g=null; if(window.VIEW==="kr"){ for(var j=0;j<grp.length;j++) if(Math.abs(grp[j].f[0]-f[0])<0.03&&Math.abs(grp[j].f[1]-f[1])<0.03){ g=grp[j]; break; } }
     if(g) g.n.push(i+1); else grp.push({f:f,n:[i+1]}); });
   grp.forEach(function(g){ var e=document.createElement("div"); e.className="trf"; e.style.cssText="left:"+(g.f[0]*100)+"%;top:"+(g.f[1]*100)+"%;font-size:"+(sz*0.55)+"px;transform:translate(0,-100%) scale("+sc+")";
-    e.innerHTML='<b>'+(g.n.length>1?"📅"+g.n.length:g.n[0])+'</b>'; z.appendChild(e); }); }
+    e.innerHTML='<b>'+(g.n.length>1?"🛒"+g.n.length:g.n[0])+'</b>'; z.appendChild(e); }); }
 
 // ── 메뉴·칩 ──
 function refresh(){ var n=TR.items.length, mm=document.getElementById("mm");
   if(mm){ var a=document.getElementById("mtrip"); if(!a){ a=document.createElement("a"); a.id="mtrip"; a.href="#"; a.className="mi"; a.onclick=function(){ mm.hidden=true; openPanel(); return false; }; mm.insertBefore(a,mm.firstChild); }
-    a.textContent=T("📅 내 여행 ("+n+")","📅 My trip ("+n+")"); }
+    a.textContent=T("🛒 내 여행 ("+n+")","🛒 My trip ("+n+")"); }
   var tb=document.querySelector(".tbs"), c=document.getElementById("trchip");
   if(tb&&!c){ c=document.createElement("button"); c.id="trchip"; c.type="button"; c.className="tb"; c.onclick=openPanel; tb.insertBefore(c,document.getElementById("rs")); }
-  if(c){ c.hidden=!n; c.textContent="📅 "+n; c.title=T("내 여행","My trip"); }
+  if(c){ c.hidden=false; c.textContent="🛒 "+n; c.title=T("내 여행","My trip"); }
   flags(); }
 
 // ── 창 공통 ──
@@ -129,7 +129,7 @@ function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) 
     +HOTELS.map(function(h){ return '<option value="'+esc(h.k)+'"'+(o.hotel&&o.hotel.k===h.k?" selected":"")+'>🏨 '+esc(L()?h.en:h.ko)+'</option>'; }).join("")
     +(o.hotel&&o.hotel.type==="addr"?'<option value="__addr" selected>'+esc(hotelTxt(o.hotel))+'</option>':"")+'</select>';
   var days=""; for(var d=1;d<=7;d++) days+='<option'+(o.n===d?" selected":"")+' value="'+d+'">'+d+T("일"," day"+(d>1?"s":""))+'</option>';
-  box.innerHTML='<div class="trtop"><b>'+T("📅 내 여행","📅 My trip")+' ('+n+')</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trBox\')">✕</button></div>'
+  box.innerHTML='<div class="trtop"><b>'+T("🛒 내 여행","🛒 My trip")+' ('+n+')</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trBox\')">✕</button></div>'
     +(n?'<ol class="trl" id="trList">'+li+'</ol><button type="button" class="trbtn" id="trClearAll" style="margin:6px 0">'+T("🗑 모두 비우기","🗑 Clear all")+'</button><div class="d">'+T("☰ 를 끌어 순서를 바꿀 수 있어요 (일정 짜기는 동선에 맞게 다시 나눕니다)","Drag ☰ to reorder (planning re-arranges by route)")+'</div>'
       :'<div class="msg">'+T("아직 담은 곳이 없어요. 지도에서 그림을 누르고 「＋ 내 여행에 담기」를 누르세요.","Nothing added yet. Tap a picture on the map, then “＋ Add to my trip”.")+'</div>')
     +'<div class="trf2"><label>'+T("여행 일수","Days")+'<select id="trN">'+days+'</select></label>'
@@ -271,7 +271,7 @@ function legTxt(lg){ if(!lg) return ""; var d=lg.km<1?Math.round(lg.km*1000)+" m
   return T("🚄 장거리 이동 약 "+durTxt(lg.min)+" (기차·버스)","🚄 Long trip ~"+durTxt(lg.min)+" (train/bus)")+" · "+Math.round(lg.km)+" km"; }
 function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan; if(!box||!pl) return; var H=REPH, ai=pl.ai||{}, tips=ai.tips||{};
   var hn=pl.hotel?(pl.hotel.type==="here"?T("현재 위치","Current location"):(L()?pl.hotel.en:pl.hotel.ko)):"";
-  var h='<div class="trtop" data-html2canvas-ignore><b>'+T("📅 내 여행 일정","📅 My trip plan")+'</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trRep\')">✕</button></div>'
+  var h='<div class="trtop" data-html2canvas-ignore><b>'+T("🛒 내 여행 일정","🛒 My trip plan")+'</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trRep\')">✕</button></div>'
     +'<div class="trbar" data-html2canvas-ignore><button type="button" class="trbtn" id="trNext">'+T("➡ 다음 갈 곳","➡ Next stop")+'</button><button type="button" class="trbtn" id="trPdf">'+T("📄 PDF 받기","📄 Get PDF")+'</button><button type="button" class="trbtn" id="trShare">'+T("🔗 공유","🔗 Share")+'</button><button type="button" class="trbtn" id="trEdit">'+T("✏ 고치기","✏ Edit")+'</button><button type="button" class="trbtn ib" id="trInfo" aria-label="info">ⓘ</button></div>'
     +'<div id="trNextBox" data-html2canvas-ignore></div>'
     +'<div class="d" id="trAiS" data-html2canvas-ignore'+(pl.ai?" hidden":"")+'>'+T("설명을 쓰는 중… (없어도 일정은 그대로 쓸 수 있어요)","Writing notes… (the plan works without them)")+'</div>'
