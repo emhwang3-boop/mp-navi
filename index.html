@@ -775,7 +775,7 @@ function rvSend(){
   }).catch(function(){ window.__rvLast="fail"; m.textContent=T("보내지 못했습니다. 다시 시도해 주세요.","Could not send. Please try again."); })
   .then(function(){ b.disabled=false; }); }
 // 결과(장소·거리·열차·검색) 오른쪽 위 X — 누르면 지운다 (사장님 10-15)
-function resClear(){ window._cardK=null; document.getElementById("res").innerHTML=""; try{ dlDraw(null); }catch(e){} }
+function resClear(){ var wasPin=window._cardK==="__pin"; window._cardK=null; document.getElementById("res").innerHTML=""; try{ dlDraw(null); }catch(e){} if(wasPin){ try{ spinClear(); }catch(e){} } }   // 핀 카드를 ✕로 닫으면 빨간 핀도 지운다 (사장님 10-16)
 (function(){ var r=document.getElementById("res");
   new MutationObserver(function(){ if(r.firstElementChild&&!r.querySelector(":scope > .xbtn")){ var b=document.createElement("button"); b.className="xbtn"; b.type="button"; b.textContent="✕"; b.setAttribute("aria-label",T("닫기","Close")); b.onclick=resClear; r.insertBefore(b,r.firstChild); } }).observe(r,{childList:true});
 })();
