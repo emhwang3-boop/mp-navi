@@ -85,8 +85,8 @@ html,body{overflow-x:hidden}
 #mz{position:relative;transform-origin:0 0;will-change:transform}
 .map.zoomed{touch-action:none}
 .zb{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-.zb.det{top:10px;bottom:auto}
-.zb button.zme{width:auto;height:30px;padding:0 11px;border-radius:999px;font-size:13px;font-weight:800;white-space:nowrap;color:#1a73e8;margin-bottom:2px}
+/* ◎ 현재 위치 — 지도 왼쪽 아래 (사장님 10-15). © OpenStreetMap·네이버 로고/저작권 줄 바로 위에 얹어 그것들을 가리지 않는다 */
+#zme{position:absolute;left:8px;bottom:26px;z-index:4;height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:800;white-space:nowrap;color:#1a73e8;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);line-height:1}
 #me{position:absolute;z-index:3;pointer-events:none;transform-origin:50% 100%}#me img{display:block;width:100%;height:auto}#me i{position:absolute;left:50%;bottom:-6px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#1a73e8;border:2px solid #fff;box-shadow:0 0 0 4px rgba(26,115,232,.25)}#me.sel img{filter:drop-shadow(0 0 3px #1a73e8) drop-shadow(0 0 3px #1a73e8)}
 #vback{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 13px;font-weight:900;font-size:18px;line-height:1.2;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 #vdet{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
@@ -149,7 +149,7 @@ html,body{overflow-x:hidden}
   </form>
   <div class="res" id="res"></div>
   <div id="vbar" hidden><button type="button" id="vback" hidden>←</button><div id="vttl" hidden></div><button type="button" id="vdet" hidden>자세히</button></div>
-  <div class="map" id="map"><div id="mz"><img src="img/maps/kr.jpg?h=fe5465de" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg><div id="lod"></div></div><a id="osm" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" hidden>© OpenStreetMap</a><div id="nmapw" hidden><div id="nmap"></div></div><div class="zb"><button type="button" id="zme" class="zme" aria-label="my location">◎ 현재 위치</button><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
+  <div class="map" id="map"><div id="mz"><img src="img/maps/kr.jpg?h=fe5465de" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg><div id="lod"></div></div><a id="osm" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" hidden>© OpenStreetMap</a><div id="nmapw" hidden><div id="nmap"></div></div><button type="button" id="zme" aria-label="my location">◎ 현재 위치</button><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
   <div id="infob">
   <div id="infot">안내</div>
   <div id="infoboard"><div class="pl" id="pl0"></div><div class="pl" id="pl1"></div><div class="pl" id="pl2"></div><button type="button" id="infomore" hidden aria-label="more">⋮</button></div>
@@ -373,7 +373,7 @@ function nmRegion(v){ var t=v; while(CITY[t]&&CITY[t].parent!==NAVI_ROOT) t=CITY
   Object.keys(CITY).forEach(function(id){ var u=id; while(CITY[u]&&CITY[u].parent!==NAVI_ROOT) u=CITY[u].parent; if(u===t) mapLoad(id).catch(function(){}); }); }
 function detSet(on){ DET=on; if(on) nmRegion(VIEW); var c=CITY[VIEW], box=document.getElementById("nmapw");
   document.getElementById("vdet").textContent=on?T("약도","Sketch"):T("자세히","Detailed");
-  box.hidden=!on; var zb=document.querySelector(".zb"); zb.classList.toggle("det",on); ["zin","zout","zrs"].forEach(function(i){ document.getElementById(i).style.display=on?"none":""; });   /* 자세한 지도에선 ◎ 현재 위치만 (오른쪽 위) */ document.getElementById("vttl").style.display=on?"none":"";
+  box.hidden=!on; document.querySelector(".zb").style.display=on?"none":"";   /* ◎ 현재 위치는 .zb 밖(왼쪽 아래)이라 자세한 지도에서도 보인다 */ document.getElementById("vttl").style.display=on?"none":"";
   document.getElementById("osm").hidden=on||!c;
   if(!on||!c) return;
   nmLoad(function(){ var ctr=new naver.maps.LatLng(c.lat,c.lng);
@@ -585,7 +585,7 @@ function hitInit(){ var m=document.getElementById("map"), drag=null, pan=null, m
   document.getElementById("vback").onclick=function(e){ e.stopPropagation(); viewSet((CITY[VIEW]&&CITY[VIEW].parent)||"kr"); };
   document.getElementById("vdet").onclick=function(e){ e.stopPropagation(); detSet(!DET); };
   window.addEventListener("resize",zApply);
-  m.addEventListener("click",function(e){ if(DET) return; if(e.button!==0||e.target.closest(".zb")||e.target.closest("#vback")||e.target.closest("#vdet")||e.target.closest("#osm")) return;
+  m.addEventListener("click",function(e){ if(DET) return; if(e.button!==0||e.target.closest(".zb")||e.target.closest("#zme")||e.target.closest("#vback")||e.target.closest("#vdet")||e.target.closest("#osm")) return;
     if(e.target.closest("#lod [data-a]")){ if(moved){ moved=false; return; } dlDraw(null); lodTap(e); return; }
     if(VIEW!=="kr"){ if(!moved){ var hk=hitAt(e.clientX,e.clientY); if(hk){ dlDraw(null); hitClick(hk); } else areaTap(e.clientX,e.clientY); } moved=false; return; } if(moved){ moved=false; return; } dlDraw(null); hitClick(hitAt(e.clientX,e.clientY)); });
   m.addEventListener("wheel",function(e){ if(DET) return; e.preventDefault(); zAt(e.clientX,e.clientY,ZM.s*(e.deltaY<0?1.15:1/1.15)); clearTimeout(LOD.wt); LOD.wt=setTimeout(lodAuto,250); },{passive:false});
@@ -594,12 +594,12 @@ if(DET) return;     if(pan){ var dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math
     var k=hitAt(e.clientX,e.clientY); m.style.cursor=k?"pointer":(ZM.s>1?"grab":"");
     if(drag){ dlDraw(drag.p,dlPt(e.clientX,e.clientY),""); } });
   m.addEventListener("contextmenu",function(e){ e.preventDefault(); });
-  m.addEventListener("mousedown",function(e){ if(DET) return; if(e.target.closest(".zb")) return;
+  m.addEventListener("mousedown",function(e){ if(DET) return; if(e.target.closest(".zb")||e.target.closest("#zme")) return;
     if(e.button===0){ moved=false; if(ZM.s>1||ASP()>1){ e.preventDefault(); pan={x:e.clientX,y:e.clientY,tx:ZM.tx,ty:ZM.ty}; } return; }
     if(e.button!==2) return; var k=hitAt(e.clientX,e.clientY); if(!k) return; e.preventDefault(); drag={k:k,p:dlPt(e.clientX,e.clientY)}; });
   window.addEventListener("mouseup",function(e){ if(e.button===0){ pan=null; return; } if(e.button!==2||!drag) return; var k=hitAt(e.clientX,e.clientY), d=drag; drag=null; distShow(d.k,k,d.p,dlPt(e.clientX,e.clientY)); });
   function dist2(a,b){ return Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); }
-  m.addEventListener("touchstart",function(e){ if(DET) return; if(e.target.closest(".zb")) return; clearTimeout(tmr); tch=null; pin=null; one=null;
+  m.addEventListener("touchstart",function(e){ if(DET) return; if(e.target.closest(".zb")||e.target.closest("#zme")) return; clearTimeout(tmr); tch=null; pin=null; one=null;
     if(e.touches.length===1){ dlDraw(null); if(ZM.s>1||ASP()>1){ var t=e.touches[0]; one={x:t.clientX,y:t.clientY,tx:ZM.tx,ty:ZM.ty,h:ZM.s<=1.001}; } return; }
     if(e.touches.length!==2) return; e.preventDefault();
     var t0=e.touches[0], t1=e.touches[1], a=hitAt(t0.clientX,t0.clientY), b=hitAt(t1.clientX,t1.clientY);
