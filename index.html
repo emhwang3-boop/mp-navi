@@ -286,7 +286,7 @@ function mapLoad(id){ if(id!==NAVI_ROOT&&!(CITY[id]&&CITY[id].data)) return Prom
   return MAPD[id]=jget("maps/"+id+".json").then(function(d){ mapMerge(id,d); return d; },function(e){ delete MAPD[id]; throw e; }); }
 function placeShow(k){ var p=PLACES[k]; if(!p) return; var nm=LANG==="en"?p.en:p.ko, ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
-  document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(nm)+'</div>'+((LANG==="en"?p.den:p.dko)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LANG==="en"?p.den:p.dko)+'</div>':'')+'<div class="d">'+esc(LANG==="en"?(p.addr_en||p.addr):p.addr)+' · '+p.lat.toFixed(5)+', '+p.lng.toFixed(5)+'</div>'
+  document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(nm)+'</div>'+((LANG==="en"?p.den:p.dko)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LANG==="en"?p.den:p.dko)+'</div>':'')+'<div class="d">'+esc(LANG==="en"?(p.addr_en||p.addr):p.addr)+'</div>'
     +(LANG==="en"   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 (사장님 10-15)
       ?'<a href="https://www.google.com/maps/dir/?api=1'+(LANG==="en"?"&hl=en":"")+'&destination='+ll+'" target="_blank" rel="noopener">Google Maps (English)</a>'
        +'<a href="https://map.naver.com/p?c='+p.lng+','+p.lat+',15,0,0,0,dh" target="_blank" rel="noopener">Naver Map</a>'
