@@ -207,9 +207,10 @@ document.getElementById("q").addEventListener("input",qxSync);
 function go(kq){
   var q=(typeof kq==="string"&&kq)||document.getElementById("q").value.trim(), out=document.getElementById("res"); if(!q){ out.innerHTML=""; return; }
   out.innerHTML='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
-  (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(ps){   // 모든 검색에 내 위치(있으면) — 가까운 순 return fetch(HUB+"/kplace?q="+encodeURIComponent(q)+(LANG==="en"?"&lang=en":"")+(ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"")); }).then(function(r){ return r.json(); }).then(function(j){
+  var ps0=null;   // 모든 검색에 내 위치(있으면) — 가까운 순
+  (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(ps){ ps0=ps; return fetch(HUB+"/kplace?q="+encodeURIComponent(q)+(LANG==="en"?"&lang=en":"")+(ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"")); }).then(function(r){ return r.json(); }).then(function(j){
     var it=(j&&j.ok&&j.items)||[];
-    if(ps){ it.forEach(function(x){ if(x.dist==null) x.dist=Math.round(kmLL(ps,[+x.y,+x.x])*1000); });   // 거리는 화면에서 계산(위치는 안 남김)
+    var ps=ps0; if(ps){ it.forEach(function(x){ if(x.dist==null) x.dist=Math.round(kmLL(ps,[+x.y,+x.x])*1000); });   // 거리는 화면에서 계산(위치는 안 남김)
       if(/\s/.test(q)||poseForQuery(q,it)) it.sort(function(a,b){ return a.dist-b.dist; }); }   // 먹을 곳·카페처럼 고르는 검색·문장 검색은 가까운 순 (이름으로 찾는 곳은 이름 맞는 차례)
     if(!it.length){ out.innerHTML='<div class="msg">'+T("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words.")+'</div>'; return; }
     var gs=j.guess?'<div class="d" style="margin:0 4px 6px">'+T('「'+esc(q)+'」을(를) 「'+esc(j.guess)+'」(으)로 찾았습니다','Showing results for “'+esc(j.guess)+'” (from “'+esc(q)+'”)')+'</div>':'';
@@ -366,7 +367,7 @@ function areaTap(cx,cy){ var c=CITY[VIEW]; if(!c||!c.areas) return; var r=docume
 function cityFor(k){ for(var c in CITY) if(CITY[c].keys.indexOf(k)>=0) return c; return null; }
 function hitAt(cx,cy){ var me=document.getElementById("me"); if(me&&!me.hidden){ var mr=me.getBoundingClientRect(); if(cx>=mr.left&&cx<=mr.right&&cy>=mr.top&&cy<=mr.bottom+8) return "__me"; }
   if(VIEW!=="kr"){ var cc=CITY[VIEW]; if(!cc||!cc.spots) return null; var rr=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-rr.left)/rr.width, fy=(cy-rr.top)/rr.height, best=null, ba=9;
-    for(var sk in cc.spots){ var b=cc.spots[sk], pad=0.012; if(fx>=b[0]-pad&&fx<=b[2]+pad&&fy>=b[1]-pad&&fy<=b[3]+pad){ var ar=(b[2]-b[0])*(b[3]-b[1]); if(ar<ba){ ba=ar; best=sk; } } } return best?best.split("@")[0]:null; }   // 「키@무엇」 = 같은 장소의 두 번째 그림(예: 버스·매표소 표지판) var r=document.getElementById("mapimg").getBoundingClientRect(); var fx=(cx-r.left)/r.width*256, fy=(cy-r.top)/r.height*256, gx=Math.floor(fx), gy=Math.floor(fy);
+    for(var sk in cc.spots){ var b=cc.spots[sk], pad=0.012; if(fx>=b[0]-pad&&fx<=b[2]+pad&&fy>=b[1]-pad&&fy<=b[3]+pad){ var ar=(b[2]-b[0])*(b[3]-b[1]); if(ar<ba){ ba=ar; best=sk; } } } return best?best.split("@")[0]:null; }   /* 「키@무엇」 = 같은 장소의 두 번째 그림(예: 버스·매표소 표지판) */ var r=document.getElementById("mapimg").getBoundingClientRect(); var fx=(cx-r.left)/r.width*256, fy=(cy-r.top)/r.height*256, gx=Math.floor(fx), gy=Math.floor(fy);
   if(gx<0||gy<0||gx>255||gy>255) return null; var v=HG[gy*256+gx]; if(v) return HIT.keys[v-1];
   var R=Math.max(2,Math.ceil(24/(r.width/256))), best=0, bd=1e9;
   for(var y=Math.max(0,gy-R);y<=Math.min(255,gy+R);y++) for(var x=Math.max(0,gx-R);x<=Math.min(255,gx+R);x++){ var w=HG[y*256+x]; if(!w) continue; var d=(x+.5-fx)*(x+.5-fx)+(y+.5-fy)*(y+.5-fy); if(d<bd&&d<=R*R){ bd=d; best=w; } }
