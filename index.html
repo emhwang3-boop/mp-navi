@@ -246,7 +246,7 @@ function go(kq){
       var nm=encodeURIComponent(x.name), ll=x.y+","+x.x;
       var en=LANG==="en"&&x.name_en, ttl=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
       return '<div class="item"><div class="t">'+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
-        +linksTo(x.name,x.y,x.x,x.name)+'</div>';
+        +linksTo(x.name,x.y,x.x,x.name,x.addr)+'</div>';
     }).join("");
     try{ var ps2=poseForQuery(q,it); if(ps2) mePose(ps2,10000); }catch(e){}
   }).catch(function(){ out.innerHTML='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>'; });
@@ -340,7 +340,7 @@ function mapLoad(id){ if(id!==NAVI_ROOT&&!(CITY[id]&&CITY[id].data)) return Prom
 function placeShow(k){ var p=PLACES[k]; if(!p) return; ntap(k,"tap"); var nm=LANG==="en"?p.en:p.ko, ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
   document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(nm)+'</div>'+((LANG==="en"?p.den:p.dko)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LANG==="en"?p.den:p.dko)+'</div>':'')+'<div class="d">'+esc(LANG==="en"?(p.addr_en||p.addr):p.addr)+'</div>'
-    +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
+    +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng,null,p.addr))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
   /*nolink*/   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 · 출발지는 내 위치(있으면)
   if(k==="mpstat") document.getElementById("res").firstElementChild.insertAdjacentHTML("beforeend",'<div class="d" style="margin-top:6px">'+T("머니퍼즐 통계청 — 주식회사 부만","Money Puzzle Data Center — Booman Inc.")+'<br>'+T("사업자등록번호 297-81-03712 · 연락처 ","Business Reg. No. 297-81-03712 · Contact ")+'<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a></div>');   // 회사 카드 (10-15)
   ntMark(k);
@@ -484,7 +484,7 @@ function routePlan(a,b,km){ var p=PLACES[a], q=PLACES[b], na=encodeURIComponent(
   }
   if(ia==="ulleung"&&ib==="ulleung") return {train:false,html:'<div class="trh">⛴ '+T("울릉도에서 독도 가는 배","Boat from Ulleungdo to Dokdo")+'</div>'+L("https://island.haewoon.co.kr/",T("여객선 예매","Ferry booking"))};
   if(km<=60) return {train:false,ods:true,html:'<div id="ods"></div><div class="trh">'+(ia==="jeju"?'🚌 '+T("버스·택시","Bus, taxi"):'🚇 '+T("지하철·버스·택시","Subway, bus, taxi"))+'</div>'
-    +(LANG==="en"?L(go+"transit","Google Maps (English)")+L(nv+"transit","Naver transit")+L(nv+"car","Taxi (fare, Naver)")
+    +(LANG==="en"?L(go+"transit","Google Maps (English)")+L(nv+"transit","Naver transit")+L(nv+"car","Taxi (fare, Naver)")+krideL(q.ko,q.addr)
       +'<div class="d" style="margin-top:6px">Tip: in the Naver Map app, Settings → Language → English shows routes in English.</div>'
      :L(nv+"transit","네이버 대중교통")+L(kk,"카카오맵 길찾기")+L(nv+"car","택시 (요금 보기)")+L(go+"transit","구글 지도"))};
   return {train:ia==="land",html:'<div class="trh">🧭 '+T("고속버스·자동차","Express bus, car")+'</div>'
@@ -697,13 +697,28 @@ function meBtn(){ var b=document.getElementById("zme"); b.disabled=true;
     if(!p||!meGo()) document.getElementById("res").innerHTML='<div class="msg">'+T("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요.","Could not get your location — please allow location access.")+'</div>'; }); }
 // 길찾기 출발지 = 내 위치 (있을 때만)
 function meFrom(){ return ME.pos?{lat:ME.pos[0],lng:ME.pos[1]}:null; }
-function linksTo(nmKo,lat,lng,naverName){ lat=+lat; lng=+lng; var f=meFrom(), ll=lat+","+lng, nm=encodeURIComponent(nmKo);
+function linksTo(nmKo,lat,lng,naverName,addr){ lat=+lat; lng=+lng; var f=meFrom(), ll=lat+","+lng, nm=encodeURIComponent(nmKo);
   var go="https://www.google.com/maps/dir/?api=1"+(LANG==="en"?"&hl=en":"")+(f?"&origin="+f.lat+","+f.lng:"")+"&destination="+ll;
   var kk=f?"https://map.kakao.com/link/from/"+encodeURIComponent("내 위치")+","+f.lat+","+f.lng+"/to/"+nm+","+ll:"https://map.kakao.com/link/to/"+nm+","+ll;
   var nv; if(f){ var A=m3857(f.lat,f.lng), B=m3857(lat,lng); nv="https://map.naver.com/p/directions/"+A[0]+","+A[1]+","+encodeURIComponent("내 위치")+",,/"+B[0]+","+B[1]+","+nm+",,/-/transit"; }
   else nv=naverName?"https://map.naver.com/p/search/"+encodeURIComponent(naverName):"https://map.naver.com/p?c="+lng+","+lat+",15,0,0,0,dh";
   var L=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };
-  return LANG==="en"?L(go,"Google Maps (English)")+L(nv,"Naver Map"):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도"); }
+  return LANG==="en"?L(go,"Google Maps (English)")+L(nv,"Naver Map")+krideL(nmKo,addr):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도"); }
+// 영어 화면 — 외국인용 카카오 택시 앱 K.Ride (사장님 10-15). 주소·패키지는 스토어에서 확인함(2026-10-15):
+//   Play com.kakaomobility.kride · App Store id6474654222 · 소개 kride.kakaomobility.com
+//   안드로이드는 깔려 있으면 앱을 열고(MAIN/LAUNCHER 꼴) 없으면 Play 상세로, 아이폰은 App Store, PC 는 소개 페이지. 누르면 목적지 이름·주소를 복사한다
+var KRIDE_PLAY="https://play.google.com/store/apps/details?id=com.kakaomobility.kride", KRIDE_IOS="https://apps.apple.com/app/id6474654222", KRIDE_WEB="https://kride.kakaomobility.com/";
+function krideHref(){ var ua=navigator.userAgent||"";
+  if(/Android/i.test(ua)) return "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.kakaomobility.kride;S.browser_fallback_url="+encodeURIComponent(KRIDE_PLAY)+";end";
+  if(/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)) return KRIDE_IOS;
+  return KRIDE_WEB; }
+function krideL(ko,addr){ var h=krideHref(), app=/^intent:/.test(h);
+  return '<a href="'+esc(h)+'"'+(app?'':' target="_blank" rel="noopener"')+' class="kride" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'">🚕 Call a taxi (K.Ride)</a>'; }
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("a.kride"); if(!a) return;
+  var t=(a.dataset.ko||"")+(a.dataset.ad?" "+a.dataset.ad:""), m=a.parentNode.querySelector(".kmsg");
+  if(!m){ m=document.createElement("div"); m.className="d kmsg"; m.style.cssText="margin:6px 0 0;color:#1a73e8;font-weight:700"; a.insertAdjacentElement("afterend",m); }
+  m.textContent="Destination copied — paste it in K.Ride";
+  try{ navigator.clipboard.writeText(t).catch(function(){}); }catch(x){} },true);
 function poseForQuery(q,it){ var p=poseFor1(String(q).toLowerCase()); if(p) return p; return poseFor1((it||[]).slice(0,3).map(function(x){ return (x.cat||"")+" "+(x.cat_en||""); }).join(" ").toLowerCase()); }   /* 검색어가 먼저, 없으면 결과 종류 */
 function poseFor1(s){
   if(/맥주|호프|beer|pub|brew|이자카야|술집|포차/.test(s)) return "beer";
