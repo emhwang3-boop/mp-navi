@@ -923,6 +923,6 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
   myPos().then(function(p){ if(!p) return; meSet(p); meWatch(); if(VIEW==="kr"&&!DET) meGo(); });   // 앱을 열면 위치 한 번 — 못 받으면 지금처럼 전국 지도
   }).catch(function(e){ try{ console.error(e); }catch(x){} });
 </script>
-<script src="trip.js?v=1016c"></script>
+<script src="trip.js?v=1016d"></script>
 </body>
 </html>
