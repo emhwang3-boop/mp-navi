@@ -48,7 +48,6 @@ td.l,th.l{text-align:left;white-space:normal;min-width:120px}
 <div class="wrap">
   <!-- 머리 그림 자리 — 「머니퍼즐 통계청」 그림을 admin/hero.png 로 두면 나온다 (없으면 안 보임) -->
   <img id="hero" src="hero.png" alt="" onload="this.style.display='block'" onerror="this.remove()">
-  <div class="row" style="margin-bottom:6px"><button class="g" onclick="location.href='../'">← 지도로 나가기</button></div>
   <h1>머니퍼즐 통계청 · 관리자 메뉴판</h1>
   <div class="sub">주식회사 부만 · 머니퍼즐 내비</div>
 
@@ -57,12 +56,13 @@ td.l,th.l{text-align:left;white-space:normal;min-width:120px}
       <input type="password" id="tok" placeholder="관리 비밀번호" autocomplete="off" style="flex:1;min-width:200px">
       <button onclick="login()">들어가기</button>
       <button class="g" onclick="logout()">이 기기에서 지우기</button>
+      <button class="g" onclick="location.href='../'">← 지도로 나가기</button>
     </div>
     <div class="msg" id="gmsg">비밀번호는 이 기기 브라우저에만 저장됩니다. 5번 틀리면 15분 동안 잠깁니다.</div>
   </div>
 
   <div id="app" hidden>
-    <div class="row" style="justify-content:flex-end;margin-bottom:6px"><button class="g" onclick="show('pw')" title="비밀번호 변경">⚙ 비밀번호 변경</button><button class="g" onclick="TOK='';try{localStorage.removeItem('mpadm_tok')}catch(e){}location.href='../'" title="이 기기에서 비밀번호를 지우고 지도로">🔒 잠그고 나가기</button></div>
+    <div class="row" style="justify-content:flex-end;margin-bottom:6px"><button class="g" onclick="location.href='../'">← 지도로 나가기</button><button class="g" onclick="show('pw')" title="비밀번호 변경">⚙ 비밀번호 변경</button><button class="g" onclick="TOK='';try{localStorage.removeItem('mpadm_tok')}catch(e){}location.href='../'" title="이 기기에서 비밀번호를 지우고 지도로">🔒 잠그고 나가기</button></div>
     <div class="menu" id="menu"></div>
     <div id="pane"></div>
   </div>
