@@ -431,11 +431,12 @@ var ZM={s:1,tx:0,ty:0};
 function ASP(){ var c=CITY[VIEW]; return (c&&c.aspect)||1; }
 function zApply(){ var m=document.getElementById("map"), w=m.clientWidth, z=document.getElementById("mz"), as=ASP();
   z.style.width=(as*100)+"%";
-  ZM.s=Math.max(1,Math.min(5,ZM.s)); ZM.tx=Math.min(0,Math.max(w-w*as*ZM.s,ZM.tx)); ZM.ty=Math.min(0,Math.max(w-w*ZM.s,ZM.ty));
-  z.style.transform="translate("+ZM.tx+"px,"+ZM.ty+"px) scale("+ZM.s+")"; m.classList.toggle("zoomed",ZM.s>1.001);
+  var mn=1/as; ZM.s=Math.max(mn,Math.min(5,ZM.s));   // 가로로 긴 약도는 전체가 한 화면에 들어올 때까지 축소 (사장님 10-15)
+  var iw=w*as*ZM.s, ih=w*ZM.s; ZM.tx=iw>=w?Math.min(0,Math.max(w-iw,ZM.tx)):(w-iw)/2; ZM.ty=ih>=w?Math.min(0,Math.max(w-ih,ZM.ty)):(w-ih)/2;
+  z.style.transform="translate("+ZM.tx+"px,"+ZM.ty+"px) scale("+ZM.s+")"; m.classList.toggle("zoomed",ZM.s>1.001||ASP()>1);
   var lb=document.getElementById("dlb"); if(lb) lb.style.transform="translate(-50%,-50%) scale("+(1/ZM.s)+")"; }
 function zAt(cx,cy,ns){ var r=document.getElementById("map").getBoundingClientRect(), px=cx-r.left, py=cy-r.top;
-  ns=Math.max(1,Math.min(5,ns)); ZM.tx=px-(px-ZM.tx)*ns/ZM.s; ZM.ty=py-(py-ZM.ty)*ns/ZM.s; ZM.s=ns; zApply(); }
+  ns=Math.max(1/ASP(),Math.min(5,ns)); ZM.tx=px-(px-ZM.tx)*ns/ZM.s; ZM.ty=py-(py-ZM.ty)*ns/ZM.s; ZM.s=ns; zApply(); }
 function zCenter(f){ var r=document.getElementById("map").getBoundingClientRect(); zAt(r.left+r.width/2,r.top+r.height/2,ZM.s*f); }
 function hitInit(){ var m=document.getElementById("map"), drag=null, pan=null, moved=false, tch=null, tmr=null, pin=null, one=null;
   document.getElementById("zin").onclick=function(e){ e.stopPropagation(); zCenter(1.6); };
@@ -467,7 +468,7 @@ if(DET) return;     if(pan){ var dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math
   m.addEventListener("touchmove",function(e){
 if(DET) return;     if(e.touches.length===2&&pin){ e.preventDefault(); var t0=e.touches[0], t1=e.touches[1], d=dist2(t0,t1), cx=(t0.clientX+t1.clientX)/2, cy=(t0.clientY+t1.clientY)/2;
       if(!pin.go&&(Math.abs(d-pin.d)>12||Math.hypot(cx-pin.cx,cy-pin.cy)>12)){ pin.go=true; clearTimeout(tmr); tch=null; }   // 움직이면 줌, 가만히 0.3초면 거리
-      if(pin.go){ var r=m.getBoundingClientRect(), ns=Math.max(1,Math.min(5,pin.s*d/pin.d)), px=pin.cx-r.left, py=pin.cy-r.top;
+      if(pin.go){ var r=m.getBoundingClientRect(), ns=Math.max(1/ASP(),Math.min(5,pin.s*d/pin.d)), px=pin.cx-r.left, py=pin.cy-r.top;
         ZM.s=ns; ZM.tx=px-(px-pin.tx)*ns/pin.s+(cx-pin.cx); ZM.ty=py-(py-pin.ty)*ns/pin.s+(cy-pin.cy); zApply(); } return; }
     if(e.touches.length===1&&one){ var t=e.touches[0], dx=t.clientX-one.x, dy=t.clientY-one.y;
       if(one.h){ if(Math.abs(dx)<Math.abs(dy)) return; e.preventDefault(); ZM.tx=one.tx+dx; zApply(); return; }   // 넓은 약도 처음 크기 — 옆으로만 (위아래는 화면 넘김)
