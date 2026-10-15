@@ -197,7 +197,7 @@ function inqCss(){ if(document.getElementById("inqCss")) return; var s=document.
   s.textContent="#inqBox{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}"
    +"#inqIn{background:var(--card);color:var(--ink);width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px 22px;box-sizing:border-box}"
    +"#inqIn h3{margin:0 0 4px;font-size:18px}#inqIn .st{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0}#inqIn .st.ok{border-color:var(--green)}"
-   +"#inqIn label{display:block;font-size:13px;color:var(--sub);margin:8px 0 3px}#inqIn input,#inqIn textarea{width:100%;box-sizing:border-box;font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px}"
+   +"#inqIn label{display:block;font-size:13px;color:var(--sub);margin:8px 0 3px}#inqIn input,#inqIn textarea,#inqIn select{width:100%;box-sizing:border-box;font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px}"
    +"#inqIn textarea{min-height:96px;resize:vertical}#inqIn .rw{display:flex;gap:6px}#inqIn .rw input{flex:1}#inqIn button{font:inherit;border:0;border-radius:10px;padding:9px 12px;background:var(--blue);color:#fff;cursor:pointer;white-space:nowrap}"
    +"#inqIn button.g{background:transparent;color:var(--sub);border:1px solid var(--line)}#inqIn button:disabled,#inqIn fieldset:disabled{opacity:.5}#inqIn fieldset{border:0;padding:0;margin:0}"
    +"#inqIn .m{font-size:13px;margin-top:5px;color:var(--sub)}#inqIn .m.e{color:#e03131}#inqIn .m.o{color:var(--green)}#inqIn .agr{font-size:12.5px;color:var(--sub);background:var(--bg);border-radius:10px;padding:8px 10px;margin-top:10px;line-height:1.55}"
@@ -211,7 +211,7 @@ function inqOpen(){ inqCss(); var b=document.getElementById("inqBox"); if(b) b.r
    +'<div class="st" id="inqS2"><b>2. '+T("이메일 인증","Email verification")+'</b><div class="rw" style="margin-top:6px"><input id="inqEm" type="email" maxlength="120" placeholder="name@company.com" autocomplete="email"><button id="inqEmB" onclick="inqCode()">'+T("코드 받기","Send code")+'</button></div>'
    +'<div class="rw" style="margin-top:6px"><input id="inqCd" inputmode="numeric" maxlength="6" placeholder="'+T("6자리 코드","6-digit code")+'"><button id="inqCdB" onclick="inqVerify()">'+T("확인","Verify")+'</button></div><div class="m" id="inqEmM"></div></div>'
    +'<fieldset id="inqF" disabled><label>'+T("상호 / 회사명 *","Business / company name *")+'</label><input id="inqBiz" maxlength="60">'
-   +'<label>'+T("업종","Type of business")+'</label><input id="inqCat" maxlength="40" placeholder="'+T("예: 카페, 호텔, 여행사","e.g. cafe, hotel, travel agency")+'">'
+   +'<label>'+T("업종 *","Type of business *")+'</label><select id="inqCat0" onchange="inqCatSub()"></select><select id="inqCat1" hidden style="margin-top:6px"></select><input id="inqCatX" hidden maxlength="40" style="margin-top:6px" placeholder="'+T("업종을 적어 주세요","Please specify")+'">'
    +'<label>'+T("담당자 *","Contact person *")+'</label><input id="inqNm" maxlength="40">'
    +'<label>'+T("전화번호 (선택)","Phone (optional)")+'</label><input id="inqTel" inputmode="tel" maxlength="20">'
    +'<label>'+T("위치 (선택)","Location (optional)")+'</label><input id="inqLoc" maxlength="100" placeholder="'+T("가게·회사 주소","Shop or office address")+'">'
@@ -221,7 +221,16 @@ function inqOpen(){ inqCss(); var b=document.getElementById("inqBox"); if(b) b.r
        "Privacy notice — Purpose: replying to your inquiry · Items: business number, name, type, contact person, email, phone, location and message above · Retention: deleted 1 year after our reply. You can't send an inquiry without agreeing.")
    +'<label><input type="checkbox" id="inqAg"> '+T("개인정보 수집·이용에 동의합니다 *","I agree to the collection and use of this information *")+'</label></div>'
    +'<button id="inqGo" style="width:100%;margin-top:12px" onclick="inqSend()">'+T("문의 보내기","Send inquiry")+'</button><div class="m" id="inqM"></div></fieldset></div>';
-  document.body.appendChild(b); }
+  document.body.appendChild(b); inqCatLoad(); }
+// 업종 분류 — 코드표는 허브 한 곳(/ninq/cats). 저장은 "대분류" 또는 "대분류.소분류"
+function inqCatLoad(){ var go=function(cs){ window.__inqCats=cs; var s0=document.getElementById("inqCat0"); if(!s0) return;
+    s0.innerHTML='<option value="">'+T("— 고르세요 —","— Select —")+'</option>'+cs.map(function(c){ return '<option value="'+c.c+'">'+esc(LANG==="en"?c.en:c.ko)+'</option>'; }).join(""); inqCatSub(); };
+  if(window.__inqCats){ go(window.__inqCats); return; }
+  fetch(HUB+"/ninq/cats").then(function(r){ return r.json(); }).then(function(j){ if(j&&j.cats) go(j.cats); }).catch(function(){}); }
+function inqCatSub(){ var cs=window.__inqCats||[], v=document.getElementById("inqCat0").value, c=cs.filter(function(x){ return x.c===v; })[0], s1=document.getElementById("inqCat1");
+  if(c&&c.sub){ s1.innerHTML='<option value="">'+T("— 세부 업종 —","— Subcategory —")+'</option>'+c.sub.map(function(x){ return '<option value="'+x.c+'">'+esc(LANG==="en"?x.en:x.ko)+'</option>'; }).join(""); s1.hidden=false; } else { s1.innerHTML=""; s1.hidden=true; }
+  document.getElementById("inqCatX").hidden=v!=="etc"; }
+function inqCatVal(){ var a=document.getElementById("inqCat0").value, s1=document.getElementById("inqCat1"), b=s1.hidden?"":s1.value; if(!a||(!s1.hidden&&!b)) return ""; return a+(b?"."+b:""); }
 function inqM(id,t,c){ var m=document.getElementById(id); if(m){ m.textContent=t; m.className="m"+(c?" "+c:""); } }
 function inqPost(p,o,h){ return fetch(HUB+p,{method:"POST",headers:Object.assign({"Content-Type":"application/json"},h||{}),body:JSON.stringify(o),cache:"no-store"}).then(function(r){ return r.json().catch(function(){ return {ok:false}; }); }); }
 function inqUnlock(){ var on=!!(INQ.bno&&INQ.vt); document.getElementById("inqF").disabled=!on; if(on) inqM("inqM",T("확인이 끝났습니다. 내용을 적어 보내 주세요.","Verified. Please fill in and send."),"o"); }
@@ -244,15 +253,15 @@ function inqVerify(){ var e=document.getElementById("inqEm").value.trim(), c=doc
     inqM("inqEmM",j.err==="locked"?T("5번 틀려 이 코드는 잠겼습니다. 코드를 다시 받아 주세요","Too many tries — please request a new code"):j.err==="expired"?T("코드가 만료되었습니다. 다시 받아 주세요","Code expired — please request a new one"):T("코드가 맞지 않습니다","Wrong code")+(j.left!=null?" ("+j.left+")":""),"e"); })
   .catch(function(){ inqM("inqEmM",T("연결에 실패했습니다","Connection failed"),"e"); }); }
 function inqSend(){ if(INQ.busy) return; var g=function(i){ return document.getElementById(i).value.trim(); };
-  if(!g("inqBiz")||!g("inqNm")||!g("inqMsg")){ inqM("inqM",T("* 칸을 채워 주세요","Please fill in the * fields"),"e"); return; }
+  if(!g("inqBiz")||!g("inqNm")||!g("inqMsg")||!inqCatVal()||(inqCatVal()==="etc"&&!g("inqCatX"))){ inqM("inqM",T("* 칸을 채워 주세요","Please fill in the * fields"),"e"); return; }
   if(!document.getElementById("inqAg").checked){ inqM("inqM",T("개인정보 수집·이용에 동의해 주세요","Please agree to the privacy notice"),"e"); return; }
   var d=new Date(Date.now()+9*3600e3).toISOString().slice(0,10), c={d:d,n:0}; try{ var o=JSON.parse(localStorage.getItem("mpv_inq")||"null"); if(o&&o.d===d) c=o; }catch(e){}
   if(c.n>=3){ inqM("inqM",T("오늘은 더 보낼 수 없습니다 (하루 3건)","Daily limit reached (3 per day)"),"e"); return; }
   INQ.busy=true; document.getElementById("inqGo").disabled=true; inqM("inqM",T("보내는 중…","Sending…"));
-  inqPost("/ninq",{vt:INQ.vt,bno:INQ.bno,biz:g("inqBiz"),cat:g("inqCat"),name:g("inqNm"),contact:g("inqTel"),loc:g("inqLoc"),msg:g("inqMsg"),agree:true,lang:LANG,hp:document.getElementById("inqHp").value})
+  inqPost("/ninq",{vt:INQ.vt,bno:INQ.bno,biz:g("inqBiz"),cat:inqCatVal(),catx:inqCatVal()==="etc"?g("inqCatX"):"",name:g("inqNm"),contact:g("inqTel"),loc:g("inqLoc"),msg:g("inqMsg"),agree:true,lang:LANG,hp:document.getElementById("inqHp").value})
   .then(function(j){ INQ.busy=false; document.getElementById("inqGo").disabled=false; window.__inqLast=j&&j.ok?"ok":"fail";
     if(j.ok){ c.n++; try{ localStorage.setItem("mpv_inq",JSON.stringify(c)); }catch(e){} document.getElementById("inqIn").innerHTML='<h3>'+T("문의를 보냈습니다","Inquiry sent")+'</h3><div class="m" style="font-size:15px;color:var(--ink);margin:10px 0 16px">'+T("고맙습니다. 확인한 이메일로 답변 드리겠습니다.","Thank you. We will reply to your verified email.")+'</div><button onclick="document.getElementById(\'inqBox\').remove()" style="width:100%">'+T("닫기","Close")+'</button>'; return; }
-    var E={rate:T("오늘은 더 보낼 수 없습니다","Daily limit reached"),verify:T("확인 시간이 지났습니다. 창을 닫고 다시 해 주세요","Verification expired — please start again"),bno:T("사업자등록번호를 다시 확인해 주세요","Please check the business number"),contact:T("전화번호를 확인해 주세요","Please check the phone number"),long:T("글이 너무 깁니다","Too long")};
+    var E={rate:T("오늘은 더 보낼 수 없습니다","Daily limit reached"),verify:T("확인 시간이 지났습니다. 창을 닫고 다시 해 주세요","Verification expired — please start again"),bno:T("사업자등록번호를 다시 확인해 주세요","Please check the business number"),contact:T("전화번호를 확인해 주세요","Please check the phone number"),cat:T("업종을 골라 주세요","Please choose the type of business"),long:T("글이 너무 깁니다","Too long")};
     inqM("inqM",E[j.err]||T("보내지 못했습니다","Could not send"),"e"); })
   .catch(function(){ INQ.busy=false; document.getElementById("inqGo").disabled=false; inqM("inqM",T("연결에 실패했습니다","Connection failed"),"e"); }); }
 // 광고판 글자 — 장소 자료의 board [왼위x,왼위y,오위x,오위y,높이](약도 비율) 자리에 「입점 문의」/"Advertise here" 를 얹는다. 지도(#mz) 안이라 같이 커지고 작아진다
@@ -403,7 +412,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="9213c062d9", NAVI_ROOT="kr";
+var NAVI_V="5ad1d545cc", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
