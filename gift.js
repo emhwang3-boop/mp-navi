@@ -43,6 +43,8 @@ function css(){ if(document.getElementById("gfCss")) return; var s=document.crea
   +".gfad{display:inline-block;border:1px solid #f59f00;color:#e67700;border-radius:6px;font-size:11px;font-weight:900;padding:0 5px;margin-right:4px}"
   +".gftips{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}.gftips .h{font-weight:900;margin:2px 0 4px}"
   +".gftip{font-size:13.5px;line-height:1.55;padding:6px 0;border-top:1px solid var(--line)}.gftip:first-of-type{border-top:0}.gftip a{color:var(--sub);font-size:11.5px;margin-left:4px}"
+  +".gfdfs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#f1f3f5;border-radius:10px;padding:7px 10px;margin:4px 0 6px;font-size:13px;color:var(--ink)}.gfdfs span{flex:1;min-width:160px}"
+  +".gfdb{border:1px solid #1a73e8;background:#fff;color:#1a73e8;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap}[data-theme=dark] .gfdfs{background:#2b2f36}[data-theme=dark] .gfdb{background:transparent}"
   +".gfx{width:34px;height:34px;border:0;border-radius:50%;background:var(--card);color:var(--sub);font-size:20px;cursor:pointer}";
   document.head.appendChild(s); }
 function open(){ css(); var mm=document.getElementById("mm"); if(mm) mm.hidden=true;
@@ -60,13 +62,17 @@ function paint(){ var b=document.querySelector("#gfBox .gfin"); if(!b) return;
     h+='<div class="gfq">3. '+T("이런 선물을 추천해요","Our picks for you")+'</div>';
     h+=R.map(function(k,i){ var n=[k.note&&k.note[S.who],k.note&&k.note[S.bud]].filter(Boolean).map(function(a){ return '<div class="n">👉 '+esc(t2(a))+'</div>'; }).join("");
       return '<div class="gfk" data-kc="'+esc(k.c)+'"><div class="h"><span class="gfrank">'+(i+1)+'</span>'+k.i+' '+esc(nm(k))+'</div><div class="d">'+esc(L()?k.den:k.dko)+'</div>'+n
-        +'<div class="gfads"></div>'+k.stores.map(function(s,j){ return '<button type="button" class="gfs" data-gf="s" data-kc="'+esc(k.c)+'" data-j="'+j+'"><b>📍 '+esc(nm(s))+'</b><i>'+esc(s.area?t2(s.area):"")+'</i><span class="go">'+T("지도","Map")+' ›</span></button>'; }).join("")+'</div>'; }).join("");
+        +'<div class="gfads"></div>'+(k.dfs?dfsHtml():'')+k.stores.map(function(s,j){ return '<button type="button" class="gfs" data-gf="s" data-kc="'+esc(k.c)+'" data-j="'+j+'"><b>📍 '+esc(nm(s))+'</b><i>'+esc(s.area?t2(s.area):"")+'</i><span class="go">'+T("지도","Map")+' ›</span></button>'; }).join("")+'</div>'; }).join("");
     h+=tips(); }
   b.innerHTML=h;
   if(S.who&&S.bud) ranked().forEach(function(k){ adsFor(k).then(function(ads){ var box=b.querySelector('.gfk[data-kc="'+k.c+'"] .gfads'); if(!box||!ads.length) return;
     box.innerHTML=ads.map(function(a,j){ return '<button type="button" class="gfs" data-gf="a" data-kc="'+esc(k.c)+'" data-j="'+j+'"><b><span class="gfad">'+T("광고","Ad")+'</span>'+esc(L()?(a.en||a.ko):a.ko)+'</b><i>'+(a.dist!=null?(a.dist<1000?a.dist+" m":(a.dist/1000).toFixed(1)+" km"):"")+'</i><span class="go">'+T("지도","Map")+' ›</span></button>'; }).join(""); box._ads=ads; }); }); }
+// 면세점은 목록 대신 검색으로 (사장님 10-16) — 기존 검색 흐름(go) 그대로, 결과를 누르면 검색 핀
+function dfsHtml(){ return '<div class="gfdfs"><span>'+T("면세점에서도 살 수 있어요. 면세점은 검색으로 가까운 곳을 찾아가세요.","Also sold at duty-free shops. Search for the nearest duty-free shop.")+'</span><button type="button" class="gfdb" data-gf="dfs">'+T("🔎 면세점 찾기","🔎 Find duty-free shops")+'</button></div>'; }
+function dfsGo(){ close(); var q=document.getElementById("q"); if(q){ q.value=L()?"duty free":"면세점"; try{ qxSync(); }catch(e){} } try{ ntap("_dfs","gift"); }catch(e){}
+  go("면세점"); var r=document.getElementById("res"); if(r) setTimeout(function(){ window.scrollTo({top:r.getBoundingClientRect().top+scrollY-80,behavior:"smooth"}); },100); }
 function tips(){ if(!G.tips||!G.tips.length) return "";
-  return '<div class="gftips"><div class="h">'+T("💡 사기 전에","💡 Before you buy")+'</div>'+G.tips.map(function(x){ var u=String(x.src||"").split(" · ")[0];
+  return dfsHtml()+'<div class="gftips"><div class="h">'+T("💡 사기 전에","💡 Before you buy")+'</div>'+G.tips.map(function(x){ var u=String(x.src||"").split(" · ")[0];
     return '<div class="gftip">'+esc(L()?x.en:x.ko)+(/^https:\/\//.test(u)?'<a href="'+esc(u)+'" target="_blank" rel="noopener">'+T("출처","source")+'</a>':'')+'</div>'; }).join("")+'</div>'; }
 
 // ── 매장 누르기 → 약도 핀 + 카드 ──
@@ -80,6 +86,7 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   var g=t.dataset.gf, k;
   if(g==="open") return open();
   if(g==="x") return close();
+  if(g==="dfs") return dfsGo();
   if(g==="w"){ S.who=t.dataset.c; S.bud=S.bud||""; paint(); return; }
   if(g==="b"){ S.bud=t.dataset.c; paint(); var q=document.querySelectorAll("#gfBox .gfq"); if(q[2]) q[2].scrollIntoView({behavior:"smooth",block:"start"}); return; }
   if(g==="s"||g==="a"){ k=G.kinds.filter(function(x){ return x.c===t.dataset.kc; })[0]; if(!k) return; try{ ntap(k.c,"gift"); }catch(z){}
