@@ -138,7 +138,8 @@ function go(kq){
   fetch(HUB+"/kplace?q="+encodeURIComponent(q)+(LANG==="en"?"&lang=en":"")).then(function(r){ return r.json(); }).then(function(j){
     var it=(j&&j.ok&&j.items)||[];
     if(!it.length){ out.innerHTML='<div class="msg">'+T("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words.")+'</div>'; return; }
-    out.innerHTML=it.slice(0,10).map(function(x){
+    var gs=j.guess?'<div class="d" style="margin:0 4px 6px">'+T('「'+esc(q)+'」을(를) 「'+esc(j.guess)+'」(으)로 찾았습니다','Showing results for “'+esc(j.guess)+'” (from “'+esc(q)+'”)')+'</div>':'';
+    out.innerHTML=gs+it.slice(0,10).map(function(x){
       var nm=encodeURIComponent(x.name), ll=x.y+","+x.x;
       var en=LANG==="en"&&x.name_en, ttl=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
       return '<div class="item"><div class="t">'+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div>'
