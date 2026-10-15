@@ -91,7 +91,8 @@ html,body{overflow-x:hidden}
 #me.nono img{animation:meShake .5s ease-in-out 3}
 .nmnono img{animation:meShake2 .5s ease-in-out 3}@keyframes meShake2{0%,100%{transform:translateX(-50%)}20%,60%{transform:translateX(calc(-50% - 5px)) rotate(-4deg)}40%,80%{transform:translateX(calc(-50% + 5px)) rotate(4deg)}}
 #me .bub,.nmnono .bub{position:absolute;left:50%;bottom:100%;margin-bottom:4px;transform:translateX(-50%);background:#e03131;color:#fff;font-size:11px;font-weight:900;line-height:1.3;border-radius:999px;padding:2px 8px;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.3)}#me .bub{display:none}#me.nono .bub{display:block}
-#meedge{position:absolute;z-index:5;width:34px;height:34px;margin:-17px 0 0 -17px;cursor:pointer}#meedge b{display:block;width:34px;height:34px;border-radius:50%;border:2px solid #1a73e8;background:#fff center 8%/170% auto no-repeat;box-shadow:0 1px 6px rgba(0,0,0,.35);box-sizing:border-box}#meedge i{position:absolute;left:50%;top:50%;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid #1a73e8;margin-top:-7px;transform-origin:0 50%}#meedge span{position:absolute;left:50%;top:36px;transform:translateX(-50%);white-space:nowrap;background:#1a73e8;color:#fff;font-size:11px;font-weight:900;border-radius:999px;padding:1px 7px;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+#meedge{position:absolute;z-index:5;width:34px;height:34px;margin:-17px 0 0 -17px;cursor:pointer}#meedge b{display:block;width:34px;height:34px;border-radius:50%;border:2px solid #1a73e8;background:#fff center 8%/170% auto no-repeat;box-shadow:0 1px 6px rgba(0,0,0,.35);box-sizing:border-box}#meedge i{position:absolute;left:50%;top:50%;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid #1a73e8;margin-top:-7px;transform-origin:0 50%}#meedge.up span{top:auto;bottom:36px}#meedge i{z-index:1}
+#meedge span{position:absolute;left:50%;top:36px;transform:translateX(-50%);white-space:nowrap;background:#1a73e8;color:#fff;font-size:11px;font-weight:900;border-radius:999px;padding:1px 7px;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 #me{position:absolute;z-index:3;pointer-events:none;transform-origin:50% 100%}#me img{display:block;width:100%;height:auto}#me i{position:absolute;left:50%;bottom:-6px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#1a73e8;border:2px solid #fff;box-shadow:0 0 0 4px rgba(26,115,232,.25)}#me.sel img{filter:drop-shadow(0 0 3px #1a73e8) drop-shadow(0 0 3px #1a73e8)}
 #vback{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 13px;font-weight:900;font-size:18px;line-height:1.2;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 #vdet{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
@@ -851,11 +852,11 @@ function meEdge(){ var m=document.getElementById("map"); if(!m) return; var e=do
   if(!f){ e.hidden=true; return; } var px=ZM.tx+f[0]*iw, py=ZM.ty+f[1]*ih;
   if(f[0]>=0&&f[0]<=1&&f[1]>=0&&f[1]<=1&&px>=0&&px<=w&&py>=0&&py<=h){ e.hidden=true; return; }   // 보이면 화살표 없음
   var cx=w/2, cy=h/2, dx=px-cx, dy=py-cy, mg=28, t=Math.min(dx?(w/2-mg)/Math.abs(dx):1e9, dy?(h/2-mg)/Math.abs(dy):1e9), x=cx+dx*t, y=cy+dy*t;
-  y=Math.max(22,Math.min(h-54,y)); x=Math.max(22,Math.min(w-22,x));   // 아래 「나 3.2km」 글자까지 화면 안
+  var up=dy>0; e.classList.toggle("up",up); y=up?Math.max(54,Math.min(h-30,y)):Math.max(22,Math.min(h-54,y)); x=Math.max(22,Math.min(w-22,x));   // 화살표가 아래를 보면 글자는 위로 — 글자까지 화면 안
   if(x<130&&y>h-80) y=h-80;   // ◎ 현재 위치·© 글자 자리 비킴
   if(x>w-70&&y>h-170) x=w-75;   // 줌 단추 자리 비킴
   e.hidden=false; e.style.left=x+"px"; e.style.top=y+"px";
-  var ang=Math.atan2(dy,dx)*180/Math.PI; e.querySelector("i").style.transform="rotate("+ang+"deg) translateX(18px)";
+  var ang=Math.atan2(dy,dx)*180/Math.PI; e.querySelector("i").style.transform="rotate("+ang+"deg) translateX(19px)";
   var ctr=null;
   try{ var fx=(w/2-ZM.tx)/iw, fy=(h/2-ZM.ty)/ih; ctr=meGeoInv(VIEW,fx,fy); }catch(x){}
   var d=ctr?kmLL(ME.pos,ctr):null; e.querySelector("span").textContent=T("나","Me")+(d!=null?" "+(d<1?Math.round(d*1000)+"m":(d<10?d.toFixed(1):Math.round(d))+"km"):"");
