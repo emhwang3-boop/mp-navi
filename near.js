@@ -16,6 +16,8 @@ var KINDS={
 };
 var S={k:"",tab:0,base:null,src:"",items:null,err:""}, CACHE={}, PICK=null;
 function L(){ return window.LANG==="en"; }
+// 빨간·파란 단추 안 전화기 — 흰 선 그림(글자색 그대로, 사장님 10-16: 이모지는 분홍빛이라)
+var PH='<svg class="nrph" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function km(m){ return m<1000?Math.round(m)+" m":(m/1000).toFixed(1)+" km"; }
 
 function css(){ if(document.getElementById("nrCss")) return; var s=document.createElement("style"); s.id="nrCss";
@@ -36,6 +38,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".nrtel{color:var(--ink);font-weight:800;font-size:14px;text-decoration:none}"
   +".nrcall{display:inline-block;background:#e03131;color:#fff!important;border-radius:10px;padding:8px 16px;font-size:16px;font-weight:900;text-decoration:none}"
   +".nrrank{display:inline-block;min-width:20px;height:20px;line-height:20px;border-radius:50%;background:#1971c2;color:#fff;font-size:12px;text-align:center;vertical-align:1px}.nrem .nrrank{background:#e03131}"
+  +".nrph{display:inline-block;width:1em;height:1em;vertical-align:-0.14em;margin-right:5px;color:inherit}"
   +".nrbig{display:block;text-align:center;background:#e03131;color:#fff!important;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:900;text-decoration:none;margin:4px 0 10px}";
   document.head.appendChild(s); }
 
@@ -53,7 +56,7 @@ function pickBase(force){
 function fetchKind(t,p){ var en=L()?"&lang=en":"", key=t.c+"|"+p[0].toFixed(3)+","+p[1].toFixed(3)+en;
   if(CACHE[key]) return CACHE[key];
   var one=function(r){ return fetch(HUB+"/kplace?cat="+t.c+"&x="+p[1].toFixed(5)+"&y="+p[0].toFixed(5)+"&radius="+r+en).then(function(x){ return x.json(); }); };
-  return CACHE[key]=one(t.r).then(function(j){ if(j&&j.ok&&(j.items||[]).length>=3) return j; return one(10000); }).then(function(j){
+  return CACHE[key]=one(t.r).then(function(j){ if(j&&j.ok&&(j.items||[]).length>=(t.c==="HP8"||t.c==="PM9"?10:3)) return j; return one(10000); }).then(function(j){
     if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); return j.items||[]; },function(e){ delete CACHE[key]; throw e; }).catch(function(e){ delete CACHE[key]; throw e; }); }
 function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; paint();
   var my=S.k+S.tab+(L()?"en":"ko");
@@ -69,11 +72,11 @@ function open(k){ css(); var mm=document.getElementById("mm"); if(mm) mm.hidden=
   var o=document.getElementById("nrBox"); if(!o){ o=document.createElement("div"); o.id="nrBox"; o.innerHTML='<div class="nrin"></div>'; o.onclick=function(e){ if(e.target===o) close(); }; document.body.appendChild(o); }
   document.documentElement.classList.add("nrlock"); o.scrollTop=0; load(); }
 function close(){ var o=document.getElementById("nrBox"); if(o) o.remove(); document.documentElement.classList.remove("nrlock"); }
-function sos(){ return '<div class="nrsos"><a class="s119" href="tel:119">🚑 '+T("응급 119","Emergency 119")+'<small>'+T("구급·화재","Ambulance · Fire")+'</small></a>'
-  +'<a class="s1330" href="tel:+82-2-1330">☎ 1330<small>'+T("관광통역안내 (24시간)","Travel helpline · English 24h")+'</small></a></div>'; }
+function sos(){ return '<div class="nrsos"><a class="s119" href="tel:119">'+PH+T("응급 119","Emergency 119")+'<small>'+T("구급·화재","Ambulance · Fire")+'</small></a>'
+  +'<a class="s1330" href="tel:+82-2-1330">'+PH+'1330<small>'+T("관광통역안내 (24시간)","Travel helpline · English 24h")+'</small></a></div>'; }
 function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
   var tel=""; if(x.tel){ var shown=L()?(/^0/.test(x.tel)?"+82 "+x.tel.slice(1):"+82 "+x.tel):x.tel;
-    tel=em?'<a class="nrcall" href="tel:'+esc(telIntl(x.tel))+'">📞 '+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>':'<a class="nrtel" href="tel:'+esc(telIntl(x.tel))+'">📞 '+esc(shown)+'</a>'; }
+    tel=em?'<a class="nrcall" href="tel:'+esc(telIntl(x.tel))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>':'<a class="nrtel" href="tel:'+esc(telIntl(x.tel))+'">📞 '+esc(shown)+'</a>'; }
   return '<div class="nrit" data-nr="pick" data-i="'+i+'"><div class="h"><span class="nrrank">'+(i+1)+'</span><b>'+esc(nm)+'</b><i>'+km(x.dist)+'</i></div>'
     +(en?'<div class="ko">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div>'
     +'<div class="row">'+tel+'<span class="go">'+T("지도에 핀","Pin on map")+' ›</span></div></div>'; }
@@ -98,7 +101,7 @@ function pick(x){ var t=KINDS[S.k].tabs[S.tab]; try{ ntap(t.c.toLowerCase(),KIND
 // 긴급으로 고른 곳은 카드 맨 위에 큰 「전화」 단추
 var sc0=window.spinCard; if(typeof sc0==="function"&&!sc0._nr){ var sc1=function(){ var r=sc0.apply(this,arguments);
     try{ var p=PLACES.__pin; if(PICK&&PICK.em&&p&&p.tel&&Math.abs(+p.lat-PICK.lat)<1e-6&&Math.abs(+p.lng-PICK.lng)<1e-6){ var it=document.querySelector("#res .item");
-      if(it&&!it.querySelector(".nrbig")){ css(); var t=it.querySelector(".t"); var a='<a class="nrbig" href="tel:'+esc(telIntl(p.tel))+'">📞 '+T("전화 걸기","Call now")+'</a>'; if(t) t.insertAdjacentHTML("afterend",a); else it.insertAdjacentHTML("afterbegin",a); } } }catch(e){}
+      if(it&&!it.querySelector(".nrbig")){ css(); var t=it.querySelector(".t"); var a='<a class="nrbig" href="tel:'+esc(telIntl(p.tel))+'">'+PH+T("전화 걸기","Call now")+'</a>'; if(t) t.insertAdjacentHTML("afterend",a); else it.insertAdjacentHTML("afterbegin",a); } } }catch(e){}
     return r; }; sc1._nr=1; sc1._gf=sc0._gf; sc1._tr=sc0._tr; window.spinCard=sc1; }
 
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("[data-nr]"); if(!t||!t.closest("#nrBox,#gfchips,#mm")) return;
