@@ -851,6 +851,7 @@ function meEdge(){ var m=document.getElementById("map"); if(!m) return; var e=do
   if(!f){ e.hidden=true; return; } var px=ZM.tx+f[0]*iw, py=ZM.ty+f[1]*ih;
   if(f[0]>=0&&f[0]<=1&&f[1]>=0&&f[1]<=1&&px>=0&&px<=w&&py>=0&&py<=h){ e.hidden=true; return; }   // 보이면 화살표 없음
   var cx=w/2, cy=h/2, dx=px-cx, dy=py-cy, mg=28, t=Math.min(dx?(w/2-mg)/Math.abs(dx):1e9, dy?(h/2-mg)/Math.abs(dy):1e9), x=cx+dx*t, y=cy+dy*t;
+  y=Math.max(22,Math.min(h-54,y)); x=Math.max(22,Math.min(w-22,x));   // 아래 「나 3.2km」 글자까지 화면 안
   if(x<130&&y>h-80) y=h-80;   // ◎ 현재 위치·© 글자 자리 비킴
   if(x>w-70&&y>h-170) x=w-75;   // 줌 단추 자리 비킴
   e.hidden=false; e.style.left=x+"px"; e.style.top=y+"px";
