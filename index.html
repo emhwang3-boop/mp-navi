@@ -185,6 +185,7 @@ function ntap(k,e){ try{ if(!k||!/^[A-Za-z0-9_-]{1,64}$/.test(k)) return; var x=
   if(navigator.sendBeacon&&navigator.sendBeacon(HUB+"/ntap",new Blob([b],{type:"text/plain"}))) return;
   fetch(HUB+"/ntap",{method:"POST",body:b,keepalive:true}).catch(function(){});
 }catch(z){} }
+setTimeout(function(){ ntap("_app","visit"); },0);   // 앱 열림 — 오늘 방문 수 (관리자 계기판)
 function ntMark(k){ try{ window._ntK=k; window._ntEl=document.getElementById("res").firstElementChild; }catch(z){} }
 document.addEventListener("click",function(e){ try{ var a=e.target.closest&&e.target.closest("#res a"); if(a&&window._ntEl&&window._ntEl.contains(a)) ntap(window._ntK,"route"); }catch(z){} },true);
 // 관리자 입구 — 「머니퍼즐 통계청」(mpstat) 그림을 0.8초 이상 누르면 admin/ (손님 화면엔 표시 없음 · 장소가 없으면 아무 일 없음 · 사장님 10-15)
@@ -321,7 +322,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="ae179c9494", NAVI_ROOT="kr";
+var NAVI_V="d47a2600f5", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -400,9 +401,9 @@ function areaTap(cx,cy){ var c=CITY[VIEW]; if(!c||!c.areas) return; var r=docume
 function cityFor(k){ for(var c in CITY) if(CITY[c].keys.indexOf(k)>=0) return c; return null; }
 function hitAt(cx,cy){ var me=document.getElementById("me"); if(me&&!me.hidden){ var mr=me.getBoundingClientRect(); if(cx>=mr.left&&cx<=mr.right&&cy>=mr.top&&cy<=mr.bottom+8) return "__me"; }
   if(VIEW!=="kr"){ var cc=CITY[VIEW]; if(!cc||!cc.spots) return null; var rr=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-rr.left)/rr.width, fy=(cy-rr.top)/rr.height, best=null, ba=9;
-    for(var sk in cc.spots){ var b=cc.spots[sk], pad=0.012; if(fx>=b[0]-pad&&fx<=b[2]+pad&&fy>=b[1]-pad&&fy<=b[3]+pad){ var ar=(b[2]-b[0])*(b[3]-b[1]); if(ar<ba){ ba=ar; best=sk; } } } return best?best.split("@")[0]:null; }   /* 「키@무엇」 = 같은 장소의 두 번째 그림(예: 버스·매표소 표지판) */ var r=document.getElementById("mapimg").getBoundingClientRect(); var fx=(cx-r.left)/r.width*256, fy=(cy-r.top)/r.height*256, gx=Math.floor(fx), gy=Math.floor(fy);
+    for(var sk in cc.spots){ var b=cc.spots[sk], pad=sk==="mpstat"?0:0.004; if(fx>=b[0]-pad&&fx<=b[2]+pad&&fy>=b[1]-pad&&fy<=b[3]+pad){ var ar=(b[2]-b[0])*(b[3]-b[1]); if(ar<ba){ ba=ar; best=sk; } } } return best?best.split("@")[0]:null; }   /* 「키@무엇」 = 같은 장소의 두 번째 그림(예: 버스·매표소 표지판) */ var r=document.getElementById("mapimg").getBoundingClientRect(); var fx=(cx-r.left)/r.width*256, fy=(cy-r.top)/r.height*256, gx=Math.floor(fx), gy=Math.floor(fy);
   if(gx<0||gy<0||gx>255||gy>255) return null; var v=HG[gy*256+gx]; if(v) return HIT.keys[v-1];
-  var R=Math.max(2,Math.ceil(24/(r.width/256))), best=0, bd=1e9;
+  var R=Math.max(1,Math.ceil(8/(r.width/256))), best=0, bd=1e9;
   for(var y=Math.max(0,gy-R);y<=Math.min(255,gy+R);y++) for(var x=Math.max(0,gx-R);x<=Math.min(255,gx+R);x++){ var w=HG[y*256+x]; if(!w) continue; var d=(x+.5-fx)*(x+.5-fx)+(y+.5-fy)*(y+.5-fy); if(d<bd&&d<=R*R){ bd=d; best=w; } }
   return best?HIT.keys[best-1]:null; }
 function pName(k){ var p=PLACES[k]; return p?(LANG==="en"?p.en:p.ko):""; }
@@ -626,7 +627,7 @@ function rvSend(){
   if(!v){ m.textContent=T("내용을 적어 주세요.","Please write your message."); return; }
   if(!rvOk(cv)){ m.textContent=T("이메일이나 전화번호를 넣어 주세요.","Please enter your email or phone number."); return; }
   b.disabled=true; m.textContent=T("보내는 중…","Sending…");
-  fetch(HUB+"/hvoice",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:v,contact:cv,hp:document.getElementById("rvHp").value,page:location.href,src:"navi"})})
+  fetch(HUB+"/hvoice",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:v,contact:cv,hp:document.getElementById("rvHp").value,page:location.href,src:"navi",lang:LANG})})
   .then(function(r){ return r.json().catch(function(){ return {ok:false}; }); })
   .then(function(j){ window.__rvLast=j&&j.ok?"ok":"fail";
     if(j&&j.ok){ m.textContent=""; t.value=""; c.value=""; document.getElementById("rvCnt").textContent="0 / 500"; }
