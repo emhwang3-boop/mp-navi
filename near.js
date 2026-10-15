@@ -37,6 +37,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".nrit .row{display:flex;align-items:center;gap:8px;margin-top:6px}.nrit .row .go{margin-left:auto;color:#1a73e8;font-weight:800;font-size:13px;white-space:nowrap}"
   +".nrtel{color:var(--ink);font-weight:800;font-size:14px;text-decoration:none}"
   +".nrcall{display:inline-block;background:#e03131;color:#fff!important;border-radius:10px;padding:8px 16px;font-size:16px;font-weight:900;text-decoration:none}"
+  +".nrcall.am{background:#1971c2}"
   +".nrrank{display:inline-block;min-width:20px;height:20px;line-height:20px;border-radius:50%;background:#1971c2;color:#fff;font-size:12px;text-align:center;vertical-align:1px}.nrem .nrrank{background:#e03131}"
   +".nrph{display:inline-block;width:1em;height:1em;vertical-align:-0.14em;margin-right:5px;color:inherit}"
   +".nrbig{display:block;text-align:center;background:#e03131;color:#fff!important;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:900;text-decoration:none;margin:4px 0 10px}";
@@ -76,7 +77,7 @@ function sos(){ return '<div class="nrsos"><a class="s119" href="tel:119">'+PH+T
   +'<a class="s1330" href="tel:+82-2-1330">'+PH+'1330<small>'+T("관광통역안내 (24시간)","Travel helpline · English 24h")+'</small></a></div>'; }
 function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
   var tel=""; if(x.tel){ var shown=L()?(/^0/.test(x.tel)?"+82 "+x.tel.slice(1):"+82 "+x.tel):x.tel;
-    tel=em?'<a class="nrcall" href="tel:'+esc(telIntl(x.tel))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>':'<a class="nrtel" href="tel:'+esc(telIntl(x.tel))+'">📞 '+esc(shown)+'</a>'; }
+    tel=em?'<a class="nrcall" href="tel:'+esc(telIntl(x.tel))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>':'<a class="nrcall am" href="tel:'+esc(telIntl(x.tel))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>'; }   // 편의점·마트도 같은 흰 전화기 단추 (파랑)
   return '<div class="nrit" data-nr="pick" data-i="'+i+'"><div class="h"><span class="nrrank">'+(i+1)+'</span><b>'+esc(nm)+'</b><i>'+km(x.dist)+'</i></div>'
     +(en?'<div class="ko">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div>'
     +'<div class="row">'+tel+'<span class="go">'+T("지도에 핀","Pin on map")+' ›</span></div></div>'; }
