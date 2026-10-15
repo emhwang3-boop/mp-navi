@@ -347,7 +347,8 @@ function spinCat(c){ c=String(c||""); return /음식점|식당/.test(c)?"food":/
 function spinNorm(s){ return String(s||"").replace(/[\s·()\-_.,'’]/g,"").toLowerCase(); }
 function spinGo(id,lat,lng,s){ viewSet(id); if(s==null) s=VIEW==="kr"?2.5:(ASP()>1?1.5:2); var f=meGeoFrac(VIEW,lat,lng); if(!f) return; var w=document.getElementById("map").clientWidth, as=ASP();
   ZM={s:s,tx:w/2-f[0]*w*as*s,ty:w/2-f[1]*w*s}; zApply(); LOD.s0=ZM.s; }
-function spinShow(x){ var lat=+x.y, lng=+x.x, nb=spinNorm(x.name);
+function spinShow(x){ Promise.all(Object.keys(CITY).map(function(id){ return mapLoad(id).catch(function(){}); })).then(function(){ spinShow0(x); },function(){ spinShow0(x); }); }   /* 그림 있는 곳인지 보려면 약도 자료를 다 받아 둔다(작은 JSON) */
+function spinShow0(x){ var lat=+x.y, lng=+x.x, nb=spinNorm(x.name);
   for(var k in PLACES){ if(k.charAt(0)==="_") continue; var p=PLACES[k], a=spinNorm(p.ko); if(a&&(a===nb||a.indexOf(nb)>=0||nb.indexOf(a)>=0)&&kmLL([lat,lng],[+p.lat,+p.lng])<0.05){   // 그림 있는 곳
       var id0=meBest(+p.lat,+p.lng)||NAVI_ROOT; if(DET){ try{ _nm.setCenter(new naver.maps.LatLng(+p.lat,+p.lng)); }catch(e){} } else spinGo(id0===NAVI_ROOT?"kr":id0,+p.lat,+p.lng,null); placeShow(k); return; } }
   try{ ntap("sp_"+spinCat(x.cat),"search_pin"); }catch(e){}
