@@ -81,7 +81,7 @@ html,body{overflow-x:hidden}
 #lod{position:absolute;inset:0;pointer-events:none;z-index:1}#lod>div{position:absolute;pointer-events:auto;cursor:pointer;box-sizing:border-box}
 #lod .lt{background:#808080;color:#fff;font-weight:900;line-height:1;display:flex;align-items:center;white-space:nowrap;border:solid #fff;border-bottom:0;box-shadow:0 0 2px rgba(0,0,0,.35)}
 #lod .lp{border:solid #fff;background:#fff center/cover no-repeat;box-shadow:0 1px 6px rgba(0,0,0,.4)}
-#mz .mlb{position:absolute;pointer-events:none;white-space:nowrap;background:#fff;color:#c2410c;border:2px solid #e8590c;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;line-height:1.3;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+#mz .mlb{position:absolute;pointer-events:none;white-space:nowrap;background:#fff;color:#c2410c;border:solid #e8590c;border-radius:999px;font-weight:900;line-height:1.3;box-shadow:0 0 2px rgba(0,0,0,.25);z-index:2}
 #mz{position:relative;transform-origin:0 0;will-change:transform}
 .map.zoomed{touch-action:none}
 .zb{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
@@ -296,7 +296,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="e93c1a398e", NAVI_ROOT="kr";
+var NAVI_V="7aae4a7b04", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -494,12 +494,11 @@ function zApply(){ var m=document.getElementById("map"), w=m.clientWidth, z=docu
   var mn=1/as; ZM.s=Math.max(mn,Math.min(ZMAX(),ZM.s));   // 가로로 긴 약도는 전체가 한 화면에 들어올 때까지 축소 (사장님 10-15)
   var iw=w*as*ZM.s, ih=w*ZM.s; ZM.tx=iw>=w?Math.min(0,Math.max(w-iw,ZM.tx)):(w-iw)/2; ZM.ty=ih>=w?Math.min(0,Math.max(w-ih,ZM.ty)):(w-ih)/2;
   z.style.transform="translate("+ZM.tx+"px,"+ZM.ty+"px) scale("+ZM.s+")"; m.classList.toggle("zoomed",ZM.s>1.001||ASP()>1);
-  var lb=document.getElementById("dlb"); if(lb) lb.style.transform="translate(-50%,-50%) scale("+(1/ZM.s)+")";
-  [].forEach.call(document.querySelectorAll("#mz .mlb"),function(e){ e.style.transform="translate("+(-e._ax*100)+"%,"+(-e._ay*100)+"%) scale("+(1/ZM.s)+")"; }); try{ lodDraw(); }catch(e){} }
-// 약도 글자 표시 — 자료 labels [[x,y,한글,영어,ax,ay],...] 를 지도 위 그 자리에 (글자 크기는 줌과 상관없이 같게, 매표소 등 · fix3 10-15)
+  var lb=document.getElementById("dlb"); if(lb) lb.style.transform="translate(-50%,-50%) scale("+(1/ZM.s)+")"; try{ lodDraw(); }catch(e){} }
+// 약도 글자 표시 — 자료 labels [[x,y,한글,영어,ax,ay],...] 를 지도 위 그 자리에 (지도와 같이 커진다 — 이름표와 같은 원칙, 매표소 등 · fix3 10-15)
 function lblDraw(){ [].forEach.call(document.querySelectorAll("#mz .mlb"),function(e){ e.remove(); }); var c=CITY[VIEW]; if(!c||!c.labels) return; var z=document.getElementById("mz");
-  c.labels.forEach(function(t){ var e=document.createElement("div"); e.className="mlb"; e.textContent=LANG==="en"?t[3]:t[2]; e._ax=t[4]||0; e._ay=t[5]||0; e.style.left=(t[0]*100)+"%"; e.style.top=(t[1]*100)+"%"; e.style.transformOrigin=(e._ax*100)+"% "+(e._ay*100)+"%";
-    e.style.transform="translate("+(-e._ax*100)+"%,"+(-e._ay*100)+"%) scale("+(1/ZM.s)+")"; z.appendChild(e); }); }
+  c.labels.forEach(function(t){ var e=document.createElement("div"); e.className="mlb"; e.textContent=LANG==="en"?t[3]:t[2]; e._ax=t[4]||0; e._ay=t[5]||0; e.style.left=(t[0]*100)+"%"; e.style.top=(t[1]*100)+"%"; var w=document.getElementById("map").clientWidth, fs=Math.max(4,w*0.016);
+    e.style.fontSize=fs+"px"; e.style.padding=(fs*0.15)+"px "+(fs*0.6)+"px"; e.style.borderWidth=Math.max(0.6,fs*0.14)+"px"; e.style.transform="translate("+(-e._ax*100)+"%,"+(-e._ay*100)+"%)"; z.appendChild(e); }); }
 // 빨간 네모 줌 단계 (사장님 10-15) — 보통 크기엔 이름표+대표 그림 1~2장, 당기면 그림이 제자리에 늘고, 네모가 화면 70% 넘게 차면 그 약도로 들어간다
 var LOD={el:{},s0:1,v:null,wt:null};
 function ZMAX(){ var c=CITY[VIEW], mx=5; if(c&&c.areas) for(var a in c.areas){ var b=c.areas[a]; mx=Math.max(mx,0.75/((b[2]-b[0])*ASP())); } return Math.min(20,mx); }
