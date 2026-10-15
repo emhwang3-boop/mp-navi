@@ -653,7 +653,8 @@ function linksTo(nmKo,lat,lng,naverName){ lat=+lat; lng=+lng; var f=meFrom(), ll
   else nv=naverName?"https://map.naver.com/p/search/"+encodeURIComponent(naverName):"https://map.naver.com/p?c="+lng+","+lat+",15,0,0,0,dh";
   var L=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };
   return LANG==="en"?L(go,"Google Maps (English)")+L(nv,"Naver Map"):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도"); }
-function poseForQuery(q,it){ var s=(q+" "+(it||[]).slice(0,3).map(function(x){ return (x.cat||"")+" "+(x.cat_en||""); }).join(" ")).toLowerCase();
+function poseForQuery(q,it){ var p=poseFor1(String(q).toLowerCase()); if(p) return p; return poseFor1((it||[]).slice(0,3).map(function(x){ return (x.cat||"")+" "+(x.cat_en||""); }).join(" ").toLowerCase()); }   /* 검색어가 먼저, 없으면 결과 종류 */
+function poseFor1(s){
   if(/맥주|호프|beer|pub|brew|이자카야|술집|포차/.test(s)) return "beer";
   if(/카페|커피|cafe|coffee|디저트|dessert|베이커리|bakery/.test(s)) return "cafe";
   if(/서점|책방|book/.test(s)) return "book";
