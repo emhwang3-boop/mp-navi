@@ -85,6 +85,7 @@ html,body{overflow-x:hidden}
 #mz{position:relative;transform-origin:0 0;will-change:transform}
 .map.zoomed{touch-action:none}
 .zb{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.zb.det{top:10px;bottom:auto}
 .zb button.zme{width:auto;height:30px;padding:0 11px;border-radius:999px;font-size:13px;font-weight:800;white-space:nowrap;color:#1a73e8;margin-bottom:2px}
 #me{position:absolute;z-index:3;pointer-events:none;transform-origin:50% 100%}#me img{display:block;width:100%;height:auto}#me i{position:absolute;left:50%;bottom:-6px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#1a73e8;border:2px solid #fff;box-shadow:0 0 0 4px rgba(26,115,232,.25)}#me.sel img{filter:drop-shadow(0 0 3px #1a73e8) drop-shadow(0 0 3px #1a73e8)}
 #vback{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 13px;font-weight:900;font-size:18px;line-height:1.2;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
@@ -372,13 +373,20 @@ function nmRegion(v){ var t=v; while(CITY[t]&&CITY[t].parent!==NAVI_ROOT) t=CITY
   Object.keys(CITY).forEach(function(id){ var u=id; while(CITY[u]&&CITY[u].parent!==NAVI_ROOT) u=CITY[u].parent; if(u===t) mapLoad(id).catch(function(){}); }); }
 function detSet(on){ DET=on; if(on) nmRegion(VIEW); var c=CITY[VIEW], box=document.getElementById("nmapw");
   document.getElementById("vdet").textContent=on?T("약도","Sketch"):T("자세히","Detailed");
-  box.hidden=!on; document.querySelector(".zb").style.display=on?"none":""; document.getElementById("vttl").style.display=on?"none":"";
+  box.hidden=!on; var zb=document.querySelector(".zb"); zb.classList.toggle("det",on); ["zin","zout","zrs"].forEach(function(i){ document.getElementById(i).style.display=on?"none":""; });   /* 자세한 지도에선 ◎ 현재 위치만 (오른쪽 위) */ document.getElementById("vttl").style.display=on?"none":"";
   document.getElementById("osm").hidden=on||!c;
   if(!on||!c) return;
   nmLoad(function(){ var ctr=new naver.maps.LatLng(c.lat,c.lng);
     if(!_nm){ _nm=new naver.maps.Map("nmap",{center:ctr,zoom:c.zoom,zoomControl:true,zoomControlOptions:{position:naver.maps.Position.RIGHT_BOTTOM}});
       naver.maps.Event.addListener(_nm,"click",function(){ if(_niw) _niw.close(); }); nmMark(); }
-    else { _nm.setCenter(ctr); _nm.setZoom(c.zoom); } }); }
+    else { _nm.setCenter(ctr); _nm.setZoom(c.zoom); } try{ nmMe(); }catch(e){} }); }
+// 자세한 지도(네이버)에도 「나」 — 현재 자세 그림 + 발밑 파란 점. 위치가 없으면 안 보인다 (저장·전송 없음, 사장님 10-15)
+var _nmMe=null, _nmMeP="";
+function nmMe(){ if(!_nm||!window.naver||!naver.maps) return; if(!ME.pos){ if(_nmMe) _nmMe.setMap(null); return; }
+  var ll=new naver.maps.LatLng(ME.pos[0],ME.pos[1]), src="img/me/"+ME.pose+".png";
+  if(!_nmMe||_nmMeP!==src){ var ic={content:'<div style="position:relative;width:64px;height:64px;pointer-events:none"><img src="'+src+'" alt="" style="position:absolute;bottom:7px;left:50%;transform:translateX(-50%);max-width:60px;max-height:56px"><i style="position:absolute;left:26px;bottom:0;width:12px;height:12px;border-radius:50%;background:#1a73e8;border:2px solid #fff;box-shadow:0 0 0 4px rgba(26,115,232,.25)"></i></div>',anchor:new naver.maps.Point(32,58)};
+    if(_nmMe) _nmMe.setIcon(ic); else _nmMe=new naver.maps.Marker({position:ll,map:_nm,icon:ic,zIndex:200,clickable:false}); _nmMeP=src; }
+  _nmMe.setPosition(ll); if(_nmMe.getMap()!==_nm) _nmMe.setMap(_nm); }
 var ROOT_IMG=document.getElementById("mapimg").getAttribute("src");
 function viewSet(v){ clearTimeout(window._scT); VIEW=v; if(CITY[v]) mapLoad(v).catch(function(){}); detSet(false); document.getElementById("vdet").hidden=!CITY[v]; document.getElementById("vbar").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:ROOT_IMG;
   document.getElementById("vback").hidden=!c; var tt=document.getElementById("vttl"); tt.hidden=!c; if(c) tt.textContent=LANG==="en"?c.en:c.ko;
@@ -647,7 +655,7 @@ function meBest(lat,lng){ var best=null, bd=-1, ba=1e9;   // 손님이 들어 �
     if(d>bd||(d===bd&&ar<ba)){ bd=d; ba=ar; best=id; } }
   return best||(meInKR(lat,lng)?NAVI_ROOT:null); }
 function meEl(){ var e=document.getElementById("me"); if(!e){ e=document.createElement("div"); e.id="me"; e.innerHTML='<img alt=""><i></i>'; document.getElementById("mz").appendChild(e); } return e; }
-function meDraw(){ var e=meEl(); if(!ME.pos){ e.hidden=true; return; } var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]);
+function meDraw(){ try{ nmMe(); }catch(x){} var e=meEl(); if(!ME.pos){ e.hidden=true; return; } var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]);
   if(!f||f[0]<0||f[0]>1||f[1]<0||f[1]>1){ e.hidden=true; return; } e.hidden=false;
   var w=document.getElementById("map").clientWidth, iw=Math.round(w*0.07);
   e.style.left=(f[0]*100)+"%"; e.style.top=(f[1]*100)+"%"; e.style.width=iw+"px"; e.style.transform="translate(-50%,-100%) scale("+(1/ZM.s)+")";
@@ -667,6 +675,7 @@ function meGo(){ if(!ME.pos) return false; var id=meBest(ME.pos[0],ME.pos[1]); i
   ZM={s:s,tx:w/2-f[0]*w*as*s,ty:w/2-f[1]*w*s}; zApply(); LOD.s0=ZM.s; meDraw(); return true; }
 function meBtn(){ var b=document.getElementById("zme"); b.disabled=true;
   (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(p){ b.disabled=false; if(p&&!ME.pos) meSet(p); if(p) meWatch();
+    if(p&&DET&&_nm){ _nm.setCenter(new naver.maps.LatLng(p[0],p[1])); nmMe(); return; }   /* 자세한 지도면 그 지도 가운데로 */
     if(!p||!meGo()) document.getElementById("res").innerHTML='<div class="msg">'+T("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요.","Could not get your location — please allow location access.")+'</div>'; }); }
 // 길찾기 출발지 = 내 위치 (있을 때만)
 function meFrom(){ return ME.pos?{lat:ME.pos[0],lng:ME.pos[1]}:null; }
