@@ -74,7 +74,7 @@ var TOK=""; try{ TOK=localStorage.getItem("mpadm_tok")||""; }catch(e){}
 function $(i){ return document.getElementById(i); }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function kday(add){ return new Date(Date.now()+9*3600e3+(add||0)*864e5).toISOString().slice(0,10); }
-function api(path,opt){ opt=opt||{}; opt.headers={"x-admin":TOK}; opt.cache="no-store";
+function api(path,opt){ opt=opt||{}; opt.headers={"x-admin":encodeURIComponent(TOK)};   /* 한글 비밀번호도 머리줄에 실리게 */ opt.cache="no-store";
   return fetch(HUB+path,opt).then(function(r){ if(r.status===403) throw new Error("admin"); if(r.status===429) throw new Error("locked"); return r.json(); }); }
 
 // ── 들어가기 — 허브가 토큰을 확인해야만 메뉴가 열린다 ──
