@@ -79,7 +79,7 @@ html,body{overflow-x:hidden}
 .map{touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.map img{-webkit-user-drag:none;pointer-events:none}
 #dl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 #lod{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}#lod>div{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;box-sizing:border-box}
-#lod .lt{background:#1f4fa3;color:#fff;font-weight:900;font-size:13px;line-height:1;height:32px;padding:0 10px;display:flex;align-items:center;border-radius:999px;white-space:nowrap;border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.35)}
+#lod .lt{background:#808080;color:#fff;font-weight:900;font-size:9px;line-height:1;height:21px;padding:0 7px;display:flex;align-items:center;border-radius:999px;white-space:nowrap;border:1.5px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.35)}
 #lod .lp{border:2px solid #fff;border-radius:8px;background:#fff center/cover no-repeat;box-shadow:0 1px 6px rgba(0,0,0,.4)}
 #mz .mlb{position:absolute;pointer-events:none;white-space:nowrap;background:#fff;color:#c2410c;border:2px solid #e8590c;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;line-height:1.3;box-shadow:0 1px 4px rgba(0,0,0,.25)}
 #mz{position:relative;transform-origin:0 0;will-change:transform}
@@ -296,7 +296,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="9106b72e4a", NAVI_ROOT="kr";
+var NAVI_V="2869c100a9", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
