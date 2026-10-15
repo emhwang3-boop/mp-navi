@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="referrer" content="no-referrer">
-<title>관리자 메뉴판</title>
+<title>머니퍼즐 통계청</title>
 <style>
 :root{--bg:#f4f6fa;--card:#fff;--ink:#1b2230;--sub:#667085;--line:#e3e7ee;--acc:#2f5bd3;--bar:#5b8def;--bar2:#f59f00;--ok:#2b8a3e;--bad:#c92a2a}
 @media (prefers-color-scheme:dark){:root{--bg:#0f1420;--card:#171d2b;--ink:#e8ecf2;--sub:#9aa4b2;--line:#263044;--acc:#7aa2ff;--bar:#5b8def;--bar2:#f5b33b;--ok:#69db7c;--bad:#ff8787}}
@@ -48,7 +48,7 @@ td.l,th.l{text-align:left;white-space:normal;min-width:120px}
 <div class="wrap">
   <!-- 머리 그림 자리 — 「머니퍼즐 통계청」 그림을 admin/hero.png 로 두면 나온다 (없으면 안 보임) -->
   <img id="hero" src="hero.png" alt="" onload="this.style.display='block'" onerror="this.remove()">
-  <h1>머니퍼즐 내비 · 관리자 메뉴판</h1>
+  <h1>머니퍼즐 통계청 · 관리자 메뉴판</h1>
   <div class="sub">주식회사 부만 · 머니퍼즐 내비</div>
 
   <div class="card" id="gate">
@@ -80,23 +80,84 @@ function api(path,opt){ opt=opt||{}; opt.headers={"x-admin":TOK}; opt.cache="no-
 function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").textContent="토큰을 넣어 주세요."; return; }
   $("gmsg").textContent="확인 중…";
   api("/ntapstats?from="+kday(0)+"&to="+kday(0)).then(function(j){ if(!j.ok) throw new Error("x");
-    try{ localStorage.setItem("mpadm_tok",TOK); }catch(e){} $("tok").value=""; $("gate").hidden=true; $("app").hidden=false; menu(); show("tap");
+    try{ localStorage.setItem("mpadm_tok",TOK); }catch(e){} $("tok").value=""; $("gate").hidden=true; $("app").hidden=false; menu(); show("home");
   }).catch(function(e){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(x){} $("gmsg").innerHTML='<span class="err">'+(e.message==="admin"?"토큰이 맞지 않습니다.":"허브에 닿지 못했습니다.")+'</span>'; });
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","허브 방문 통계 화면"],["voice","고객의 소리","준비 중"],["inv","초대 링크 발급","7일짜리 초대 링크"],["pay","이용권·결제 내역","준비 중"]];
+var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inv","초대 링크 발급","7일짜리 초대 링크"],["pay","이용권·결제 내역","장부 · 엑셀 받기"]];
+function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
+function usd(n){ return "$"+(Math.round((n||0)*100)/100).toLocaleString(); }
+function tile(v,l){ return '<div class="tile"><b>'+v+'</b><span>'+l+'</span></div>'; }
+// ── 계기판 — 건물에 들어오면 바로 보이는 장부 ──
+function homeLoad(){ var P=$("pane"), td=kday(0), ms=td.slice(0,8)+"01";
+  P.innerHTML='<div class="card"><b>오늘 '+td+'</b><div id="hsum"><div class="msg">불러오는 중…</div></div></div><div class="card"><b>새 고객의 소리</b><div id="hvc"></div></div><div class="card"><b>최근 7일</b><div class="tw"><table id="h7"></table></div></div>';
+  Promise.all([api("/ntapstats?from="+kday(-6)+"&to="+td),api("/nledger?from="+td+"&to="+td),api("/nledger?from="+ms+"&to="+td),api("/nvoice").catch(function(){ return {ok:false}; })]).then(function(a){
+    var w=a[0], tdy=(w.days||[]).filter(function(d){ return d.d===td; })[0]||{}, L0=a[1].total, LM=a[2].total, V=a[3];
+    $("hsum").innerHTML='<div class="tiles">'
+      +tile((tdy.vis||0).toLocaleString(),"오늘 방문 (열림)")+tile((tdy.visU||0).toLocaleString(),"오늘 방문 기기 수")
+      +tile((tdy.t||0).toLocaleString(),"오늘 그림 누름")+tile((tdy.u||0).toLocaleString(),"오늘 사람 수")
+      +tile(L0.KRW.n+L0.USD.n+"건","오늘 결제")+tile(won(L0.KRW.amt)+(L0.USD.amt?" · "+usd(L0.USD.amt):""),"오늘 결제금액")
+      +tile(won(LM.KRW.amt)+(LM.USD.amt?" · "+usd(LM.USD.amt):""),"이번 달 매출 ("+ms.slice(5,7)+"월)")
+      +tile(V.ok?V.unread+"건":"-","새 고객의 소리")+'</div>'
+      +(a[1].pg===false?'<div class="msg">결제 연결 전 — 0원 (결제를 붙이면 자동으로 쌓입니다)</div>':'');
+    var it=V.ok?V.items.filter(function(x){ return !x.read; }).slice(0,3):[];
+    $("hvc").innerHTML=it.length?it.map(function(x){ return '<div class="inv"><div class="sub">'+esc(x.at)+(x.lang?' · '+esc(x.lang):'')+'</div>'+esc(x.text)+'</div>'; }).join("")+'<div class="row" style="margin-top:8px"><button class="g" onclick="show(\'voice\')">모두 보기</button></div>':'<div class="msg">새 글 없음</div>';
+    var h='<tr><th class="l">날짜</th><th>방문</th><th>기기</th><th>누름</th><th>사람 수</th><th>길찾기</th></tr>';
+    (w.days||[]).slice().reverse().forEach(function(d){ h+='<tr><td class="l">'+d.d+'</td><td>'+(d.vis||0)+'</td><td>'+(d.visU||0)+'</td><td>'+d.t+'</td><td>'+d.u+'</td><td>'+d.r+'</td></tr>'; });
+    $("h7").innerHTML=h;
+  }).catch(function(e){ $("hsum").innerHTML='<div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div>'; }); }
+// ── 방문 — 내비 숫자는 토큰 경로(/ntapstats)에서, 허브 공개 화면은 단추로 ──
+function visitLoad(){ var P=$("pane");
+  P.innerHTML='<div class="card"><b>내비 방문 (최근 30일)</b><div class="msg">앱이 열릴 때 1번 셉니다. 기기 수 = 그날 처음 연 기기 (사장님 기기 제외)</div><div class="tw"><table id="vt"></table></div></div>'
+    +'<div class="card"><b>허브 방문 통계 화면</b><div class="row" style="margin-top:8px"><a href="'+HUB+'/stats" target="_blank" rel="noopener"><button class="g">앱 방문 통계 (/stats)</button></a><a href="'+HUB+'/hstats" target="_blank" rel="noopener"><button class="g">홈페이지 방문 (/hstats)</button></a></div></div>';
+  api("/ntapstats?from="+kday(-29)+"&to="+kday(0)).then(function(j){ var h='<tr><th class="l">날짜</th><th>방문</th><th>기기 수</th><th>누른 기기</th></tr>';
+    j.days.slice().reverse().forEach(function(d){ h+='<tr><td class="l">'+d.d+'</td><td>'+(d.vis||0)+'</td><td>'+(d.visU||0)+'</td><td>'+(d.dev||0)+'</td></tr>'; });
+    h+='<tr><td class="l"><b>합계</b></td><td><b>'+j.total.vis+'</b></td><td><b>'+j.total.visU+'</b></td><td><b>'+j.total.dev+'</b></td></tr>'; $("vt").innerHTML=h; })
+  .catch(function(e){ $("vt").innerHTML='<tr><td class="l err">불러오지 못했습니다</td></tr>'; }); }
+// ── 고객의 소리 — 허브에 저장된 내비 글. 연락처는 가려 두고 단추로 하나씩 ──
+function voiceLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>고객의 소리 (내비)</b><div class="msg">메일로도 갑니다. 연락처는 「연락처 보기」를 눌러야 보입니다.</div><div id="vl"><div class="msg">불러오는 중…</div></div></div>';
+  api("/nvoice").then(function(j){ if(!j.items.length){ $("vl").innerHTML='<div class="msg">아직 글이 없습니다.</div>'; return; }
+    $("vl").innerHTML=j.items.map(function(x){ return '<div class="inv" style="'+(x.read?'opacity:.65':'border-left:4px solid var(--acc)')+'"><div class="sub">'+esc(x.at)+(x.lang?' · '+(x.lang==="en"?"영어":"한국어"):'')+(x.read?' · 읽음':' · 새 글')+'</div>'
+      +'<div style="white-space:pre-wrap;margin:4px 0">'+esc(x.text)+'</div><div class="row">'
+      +(x.read?'':'<button class="g" data-id="'+esc(x.id)+'" onclick="vRead(this.dataset.id)">읽음</button>')
+      +(x.hasContact?'<button class="g" data-id="'+esc(x.id)+'" onclick="vContact(this)">연락처 보기</button>':'')
+      +'<button class="g" data-id="'+esc(x.id)+'" onclick="vDel(this.dataset.id)">지우기</button></div></div>'; }).join("");
+  }).catch(function(e){ $("vl").innerHTML='<div class="msg err">불러오지 못했습니다</div>'; }); }
+function vRead(id){ api("/nvoice?read="+encodeURIComponent(id),{method:"POST"}).then(voiceLoad); }
+function vDel(id){ if(!confirm("이 글을 지울까요?")) return; api("/nvoice?del="+encodeURIComponent(id),{method:"POST"}).then(voiceLoad); }
+function vContact(b){ api("/nvoice?contact="+encodeURIComponent(b.dataset.id)).then(function(j){ var s=document.createElement("span"); s.textContent=j.contact||"(없음)"; s.style.padding="8px"; b.replaceWith(s); }); }
+// ── 이용권·결제 장부 ──
+var LG=null, PRN={"7d":"7일권","15d":"15일권","30d":"30일권"};
+function payLoad(){ var P=$("pane"), td=kday(0);
+  P.innerHTML='<div class="card"><b>이용권·결제 장부</b><div class="row" style="margin-top:8px"><input type="date" id="lf" value="'+td.slice(0,8)+'01"> ~ <input type="date" id="lt" value="'+td+'"><button onclick="ledLoad()">보기</button><button class="g" onclick="xlsLed()">엑셀 받기</button></div><div id="lsum"></div><div class="tw"><table id="ltab"></table></div><div class="tw" style="margin-top:12px"><table id="lrec"></table></div></div>';
+  ledLoad(); }
+function ledLoad(){ api("/nledger?from="+$("lf").value+"&to="+$("lt").value).then(function(j){ LG=j; var T=j.total;
+  $("lsum").innerHTML='<div class="tiles">'+tile(T.KRW.n+T.USD.n+"건","결제 건수")+tile(won(T.KRW.amt),"원화 합계")+tile(usd(T.USD.amt),"달러 합계")+tile((j.products["7d"]||0)+" / "+(j.products["15d"]||0)+" / "+(j.products["30d"]||0),"7일 / 15일 / 30일권")+'</div>'
+    +(j.pg===false?'<div class="msg">결제 연결 전 — 0원</div>':'');
+  var h='<tr><th class="l">날짜</th><th>건수</th><th>원화</th><th>달러</th><th>7일권</th><th>15일권</th><th>30일권</th></tr>';
+  j.days.forEach(function(d){ h+='<tr><td class="l">'+d.d+'</td><td>'+(d.KRW.n+d.USD.n)+'</td><td>'+won(d.KRW.amt)+'</td><td>'+usd(d.USD.amt)+'</td><td>'+(d.p["7d"]||0)+'</td><td>'+(d.p["15d"]||0)+'</td><td>'+(d.p["30d"]||0)+'</td></tr>'; });
+  if(!j.days.length) h+='<tr><td class="l" colspan="7">아직 결제 기록이 없습니다.</td></tr>';
+  $("ltab").innerHTML=h;
+  var r='<tr><th class="l">시각</th><th class="l">상품</th><th>통화</th><th>금액</th><th class="l">상태</th><th class="l">주문번호</th></tr>';
+  j.items.forEach(function(x){ r+='<tr><td class="l">'+esc(x.at)+'</td><td class="l">'+esc(PRN[x.product]||x.product)+'</td><td>'+esc(x.cur)+'</td><td>'+(x.cur==="USD"?usd(x.amount):won(x.amount))+'</td><td class="l">'+(x.status==="refund"?"환불":"결제")+'</td><td class="l">'+esc(x.oid||"")+'</td></tr>'; });
+  $("lrec").innerHTML=j.items.length?r:"";
+}).catch(function(e){ $("lsum").innerHTML='<div class="msg err">불러오지 못했습니다</div>'; }); }
+function xlsLed(){ if(!LG||!window.XLSX){ alert("자료나 엑셀 도구를 아직 못 불렀습니다."); return; } var T=LG.total;
+  var s1=[[CO],["이용권·결제 장부"],["기간",LG.from+" ~ "+LG.to+" (한국 시간)"],["만든 날",kday(0)],[],["결제 건수",T.KRW.n+T.USD.n],["원화 합계",T.KRW.amt],["달러 합계",T.USD.amt],["7일권",LG.products["7d"]||0],["15일권",LG.products["15d"]||0],["30일권",LG.products["30d"]||0]].concat(LG.pg===false?[[],["결제 연결 전 — 0원"]]:[]);
+  var s2=[["날짜","건수","원화","달러","7일권","15일권","30일권"]].concat(LG.days.map(function(d){ return [d.d,d.KRW.n+d.USD.n,d.KRW.amt,d.USD.amt,d.p["7d"]||0,d.p["15d"]||0,d.p["30d"]||0]; }));
+  var s3=[["시각","상품","통화","금액","상태","주문번호"]].concat(LG.items.map(function(x){ return [x.at,PRN[x.product]||x.product,x.cur,x.amount,x.status==="refund"?"환불":"결제",x.oid||""]; }));
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(s1,[20,24]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[12,8,12,10,8,8,8]),"날짜별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[18,10,6,12,6,24]),"기록");
+  save(wb,"머니퍼즐내비_장부_"+LG.from+"_"+LG.to+".xlsx"); }
 function menu(){ $("menu").innerHTML=MENU.map(function(m){ return '<button id="m_'+m[0]+'" onclick="show(\''+m[0]+'\')">'+esc(m[1])+'<small>'+esc(m[2])+'</small></button>'; }).join(""); }
 function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",m[0]===id); });
   var P=$("pane");
   if(id==="tap"){ P.innerHTML=TAP_HTML; tapInit(); return; }
-  if(id==="visit"){ P.innerHTML='<div class="card"><b>방문 통계</b><div class="msg">허브에 이미 있는 화면을 엽니다.</div><div class="row" style="margin-top:10px">'
-    +'<a href="'+HUB+'/stats" target="_blank" rel="noopener"><button>앱 방문 통계 (/stats)</button></a>'
-    +'<a href="'+HUB+'/hstats" target="_blank" rel="noopener"><button class="g">홈페이지 방문 (/hstats)</button></a></div>'
-    +'<div class="msg">앱 「고객의 소리」(/voice) 최근 글도 앱 방문 통계 화면 아래에 있습니다.</div></div>'; return; }
-  if(id==="voice"){ P.innerHTML='<div class="card"><b>고객의 소리</b><div class="prep">준비 중 — 내비에서 보낸 글(/hvoice, src=navi)은 지금은 메일(emhwang3@moneypuzzle.co.kr)로만 옵니다. 허브에 읽기용 관리 경로가 아직 없습니다.</div></div>'; return; }
+  if(id==="home"){ homeLoad(); return; }
+  if(id==="visit"){ visitLoad(); return; }
+  if(id==="voice"){ voiceLoad(); return; }
   if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
-  if(id==="pay"){ P.innerHTML='<div class="card"><b>이용권·결제 내역</b><div class="prep">준비 중 — 결제를 붙이면 여기에 나옵니다.</div></div>'; return; }
+  if(id==="pay"){ payLoad(); return; }
 }
 function invMint(){ var o=$("invOut"); o.innerHTML='<div class="msg">만드는 중…</div>';
   fetch(HUB+"/invmint?app=navi&me=EM2410",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
