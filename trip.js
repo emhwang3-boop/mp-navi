@@ -333,8 +333,12 @@ function dayMap(el,H,arr){ var pts=arr.slice(); if(H) pts.push(H); var id=coverM
       g.lineJoin="round"; g.lineCap="round"; g.strokeStyle="rgba(255,255,255,.9)"; g.lineWidth=R*0.75; g.beginPath(); line.forEach(function(p,i){ if(i) g.lineTo(p[0],p[1]); else g.moveTo(p[0],p[1]); }); g.stroke();
       g.strokeStyle="#e8590c"; g.lineWidth=R*0.35; g.setLineDash([R*0.9,R*0.6]); g.stroke(); g.setLineDash([]);
       if(hp){ g.fillStyle="#1f4fa3"; g.strokeStyle="#fff"; g.lineWidth=3; g.beginPath(); g.rect(hp[0]-R,hp[1]-R,2*R,2*R); g.fill(); g.stroke(); g.fillStyle="#fff"; g.font="900 "+Math.round(R*1.1)+"px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="middle"; g.fillText("H",hp[0],hp[1]+1); }
-      var no=0; seq.forEach(function(p,i){ var ea=arr[i].eat; g.fillStyle=ea?"#2f9e44":"#fff"; g.strokeStyle=ea?"#fff":"#e8590c"; g.lineWidth=R*0.28; g.beginPath(); g.arc(p[0],p[1],ea?R*0.85:R,0,7); g.fill(); g.stroke();
-        g.fillStyle=ea?"#fff":"#c2410c"; g.font="900 "+Math.round(R*(ea?0.95:1.15))+"px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="middle"; g.fillText(ea?"🍴":String(++no),p[0],p[1]+1); });
+      // 식당(🍴)을 먼저, 번호를 위에 — 식당이 장소 바로 옆이면 비스듬히 비켜 그린다
+      var stp=seq.filter(function(p,i){ return !arr[i].eat; });
+      seq.forEach(function(p,i){ if(!arr[i].eat) return; var q=[p[0],p[1]]; if(stp.some(function(s){ return Math.hypot(s[0]-q[0],s[1]-q[1])<R*1.8; })){ q[0]+=R*1.35; q[1]-=R*1.35; }
+        g.fillStyle="#2f9e44"; g.strokeStyle="#fff"; g.lineWidth=R*0.22; g.beginPath(); g.arc(q[0],q[1],R*0.8,0,7); g.fill(); g.stroke(); g.fillStyle="#fff"; g.font="900 "+Math.round(R*0.9)+"px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="middle"; g.fillText("🍴",q[0],q[1]+1); });
+      var no=0; seq.forEach(function(p,i){ if(arr[i].eat) return; g.fillStyle="#fff"; g.strokeStyle="#e8590c"; g.lineWidth=R*0.28; g.beginPath(); g.arc(p[0],p[1],R,0,7); g.fill(); g.stroke();
+        g.fillStyle="#c2410c"; g.font="900 "+Math.round(R*1.15)+"px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="middle"; g.fillText(String(++no),p[0],p[1]+1); });
       var url=""; try{ url=cv.toDataURL("image/jpeg",0.85); }catch(e){} el.innerHTML=url?'<img alt="" src="'+url+'">':""; if(!url) el.appendChild(cv); }).catch(function(){ el.innerHTML=""; }); };
   if(id==="kr"||c.spots) go(); else mapLoad(id).then(go,go); }
 // 다음 갈 곳 — 오늘이 여행 날이면 지금 시각 다음 장소, 아니면 첫날 첫 장소 → 길찾기·K.Ride (기존 linksTo)
@@ -393,7 +397,7 @@ var EATQ={};
 function recsFetch(){ var pl=TR.plan; if(!pl) return; pl.recs=pl.recs||{}; var H=REPH;
   eatsLoad().then(function(){ if(TR.plan!==pl) return; pl.days.forEach(function(d,di){ var s=sched(H,d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean),new Date(d.date+"T00:00:00Z"),pl.from,mealsOf(di));
     s.rows.forEach(function(r){ if(!r.meal||r.r) return; var mk=di+":"+r.meal, an=r.anchor||r.next, rc=pl.recs[mk], el=document.getElementById("te_"+mk.replace(":","_")); if(!an) return;
-      if(rc&&rc.ak===an.k){ if(el&&!el.querySelector(".tec")) el.innerHTML=eatList(mk,an); return; }
+      if(rc&&rc.ak===an.k&&(rc.l==="en"||!L())){ if(el&&!el.querySelector(".tec")) el.innerHTML=eatList(mk,an); return; }   // 영어 화면인데 한글로 받아 둔 것만 다시
       var qk=mk+"|"+an.k; if(EATQ[qk]) return; EATQ[qk]=1; var at=pl.at;
       fetch(HUB+"/neat?x="+(+an.lng).toFixed(4)+"&y="+(+an.lat).toFixed(4)+(L()?"&lang=en":"")).then(function(r){ return r.json(); }).then(function(j){ delete EATQ[qk]; if(!TR.plan||TR.plan.at!==at) return;
         TR.plan.recs[mk]={ak:an.k,a:[+an.lat,+an.lng],p:(j&&j.partners)||[],i:(j&&j.ok&&j.items)||[],l:L()?"en":"ko"}; save();
