@@ -316,11 +316,11 @@ function myPos(){ return new Promise(function(ok){ if(!navigator.geolocation) re
 function kmTxt(m){ return m<1000?m+" m":(m/1000).toFixed(1)+" km"; }
 // 검색창 ✕ — 검색어가 있을 때만 보인다 (사장님 10-15)
 function qxSync(){ document.getElementById("qx").hidden=!document.getElementById("q").value; }
-function qClear(){ var q=document.getElementById("q"); q.value=""; qxSync(); q.focus(); }
+function qClear(){ try{ spinClear(); }catch(e){} var q=document.getElementById("q"); q.value=""; qxSync(); q.focus(); }
 document.getElementById("q").addEventListener("input",qxSync);
 function go(kq){
   var q=(typeof kq==="string"&&kq)||document.getElementById("q").value.trim(), out=document.getElementById("res"); if(!q){ out.innerHTML=""; return; }
-  out.innerHTML='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
+  out.innerHTML='<div class="msg">'+T("찾는 중…","Searching…")+'</div>'; try{ spinClear(); }catch(e){}
   var ps0=null;   // 모든 검색에 내 위치(있으면) — 가까운 순
   (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(ps){ ps0=ps; return fetch(HUB+"/kplace?q="+encodeURIComponent(q)+(LANG==="en"?"&lang=en":"")+(ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"")); }).then(function(r){ return r.json(); }).then(function(j){
     var it=(j&&j.ok&&j.items)||[];
@@ -328,15 +328,46 @@ function go(kq){
       if(/\s/.test(q)||poseForQuery(q,it)) it.sort(function(a,b){ return a.dist-b.dist; }); }   // 먹을 곳·카페처럼 고르는 검색·문장 검색은 가까운 순 (이름으로 찾는 곳은 이름 맞는 차례)
     if(!it.length){ out.innerHTML='<div class="msg">'+T("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words.")+'</div>'; return; }
     var gs=j.guess?'<div class="d" style="margin:0 4px 6px">'+T('「'+esc(q)+'」을(를) 「'+esc(j.guess)+'」(으)로 찾았습니다','Showing results for “'+esc(j.guess)+'” (from “'+esc(q)+'”)')+'</div>':'';
-    out.innerHTML=gs+it.slice(0,10).map(function(x){
+    window._sres=it.slice(0,10);
+    out.innerHTML=gs+it.slice(0,10).map(function(x,i){
       var nm=encodeURIComponent(x.name), ll=x.y+","+x.x;
       var en=LANG==="en"&&x.name_en, ttl=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
-      return '<div class="item"><div class="t">'+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
+      return '<div class="item sres" data-i="'+i+'" style="cursor:pointer"><div class="t">📍 '+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
         +linksTo(x.name,x.y,x.x,x.name,x.addr)+'</div>';
     }).join("");
     try{ var ps2=poseForQuery(q,it); if(ps2) mePose(ps2,10000); }catch(e){}
   }).catch(function(){ out.innerHTML='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>'; });
 }
+// ── 검색 핀 (사장님 10-15) — 검색 결과를 누르면 그 자리를 덮는 가장 자세한 약도에 빨간 핀 + 작은 이름표.
+//   그림이 있는 장소(이름 같고 50m 안)면 핀 대신 그 그림 카드. 핀은 하나만, 다음 검색·✕·다른 약도로 가면 지운다.
+//   누름 집계는 가게 이름 없이 종류만(sp_food 등)
+var SPIN=null, _spm=null;
+function spinClear(){ var e=document.getElementById("spin"); if(e) e.remove(); SPIN=null; delete PLACES.__pin; if(_spm){ try{ _spm.setMap(null); }catch(x){} } }
+function spinCat(c){ c=String(c||""); return /음식점|식당/.test(c)?"food":/카페|커피|디저트/.test(c)?"cafe":/숙박|호텔/.test(c)?"stay":/쇼핑|백화점|마트|시장|상점|가정,생활/.test(c)?"shop":/관광|명소|문화|박물관|공원/.test(c)?"sight":/교통|역|공항|터미널/.test(c)?"transit":"other"; }
+function spinNorm(s){ return String(s||"").replace(/[\s·()\-_.,'’]/g,"").toLowerCase(); }
+function spinGo(id,lat,lng,s){ viewSet(id); if(s==null) s=VIEW==="kr"?2.5:(ASP()>1?1.5:2); var f=meGeoFrac(VIEW,lat,lng); if(!f) return; var w=document.getElementById("map").clientWidth, as=ASP();
+  ZM={s:s,tx:w/2-f[0]*w*as*s,ty:w/2-f[1]*w*s}; zApply(); LOD.s0=ZM.s; }
+function spinShow(x){ var lat=+x.y, lng=+x.x, nb=spinNorm(x.name);
+  for(var k in PLACES){ if(k.charAt(0)==="_") continue; var p=PLACES[k], a=spinNorm(p.ko); if(a&&(a===nb||a.indexOf(nb)>=0||nb.indexOf(a)>=0)&&kmLL([lat,lng],[+p.lat,+p.lng])<0.05){   // 그림 있는 곳
+      var id0=meBest(+p.lat,+p.lng)||NAVI_ROOT; if(DET){ try{ _nm.setCenter(new naver.maps.LatLng(+p.lat,+p.lng)); }catch(e){} } else spinGo(id0===NAVI_ROOT?"kr":id0,+p.lat,+p.lng,null); placeShow(k); return; } }
+  try{ ntap("sp_"+spinCat(x.cat),"search_pin"); }catch(e){}
+  PLACES.__pin={ko:x.name,en:x.name_en||x.name,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",lat:lat,lng:lng,tel:x.tel||"",cat:x.cat||"",cat_en:x.cat_en||""};
+  if(DET&&window.naver&&naver.maps&&_nm){ var ll=new naver.maps.LatLng(lat,lng); _nm.setCenter(ll); if(_nm.getZoom()<16) _nm.setZoom(16);   // 자세한 지도는 네이버 마커 그대로
+    if(_spm) _spm.setMap(null); _spm=new naver.maps.Marker({position:ll,map:_nm,title:x.name}); naver.maps.Event.addListener(_spm,"click",spinCard); spinCard(); return; }
+  var cur=meGeoFrac(VIEW,lat,lng), b=CITY[VIEW]&&CITY[VIEW].bb, id;
+  if(VIEW!=="kr"&&b&&lat>=b[0]&&lat<=b[2]&&lng>=b[1]&&lng<=b[3]&&cur) id=VIEW; else id=meBest(lat,lng)||NAVI_ROOT;   // 지금 약도가 덮으면 그대로
+  if(id===NAVI_ROOT) id="kr";
+  var keep=PLACES.__pin; spinGo(id,lat,lng,null); PLACES.__pin=keep;
+  var f=meGeoFrac(VIEW,lat,lng); if(!f) return; var w=document.getElementById("map").clientWidth, sz=Math.max(10,w*0.045), fs=Math.max(4,w*0.016);
+  var e=document.createElement("div"); e.id="spin"; e.style.cssText="position:absolute;z-index:4;pointer-events:none;left:"+(f[0]*100)+"%;top:"+(f[1]*100)+"%;transform:translate(-50%,-100%)";
+  e.innerHTML='<svg viewBox="0 0 24 34" style="display:block;width:'+sz+'px;height:'+(sz*34/24)+'px;margin:0 auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))"><path d="M12 1C6 1 1.5 5.5 1.5 11.3 1.5 19 12 33 12 33s10.5-14 10.5-21.7C22.5 5.5 18 1 12 1z" fill="#e03131" stroke="#fff" stroke-width="1.6"/><circle cx="12" cy="11.5" r="4" fill="#fff"/></svg>'
+    +'<div style="position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:1px;white-space:nowrap;background:#fff;color:#c92a2a;border:'+Math.max(0.6,fs*0.12)+'px solid #e03131;border-radius:999px;padding:'+(fs*0.12)+'px '+(fs*0.5)+'px;font-size:'+fs+'px;font-weight:900;line-height:1.3">'+esc(LANG==="en"?(x.name_en||x.name):x.name)+'</div>';
+  document.getElementById("mz").appendChild(e); SPIN=x; spinCard();
+  clearTimeout(window._scT); window._scT=setTimeout(function(){ var m=document.getElementById("map"); window.scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:"smooth"}); },200); }
+function spinCard(){ var p=PLACES.__pin; if(!p) return; var en=LANG==="en", nm=en?p.en:p.ko, ad=en?p.addr_en:p.addr, ct=en?p.cat_en:String(p.cat||"").split(">").pop().trim();
+  var d=ME.pos?' · <b>'+kmTxt(Math.round(kmLL(ME.pos,[p.lat,p.lng])*1000))+'</b>':"";
+  document.getElementById("res").innerHTML='<div class="item"><div class="t">📍 '+esc(nm)+'</div>'+(en&&p.en!==p.ko?'<div class="d" style="margin:1px 0 0">'+esc(p.ko)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+d+'</div>'+telLine(p.tel)+linksTo(p.ko,p.lat,p.lng,p.ko,p.addr)+'</div>'; }
+document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest("a")) return; var it=e.target.closest&&e.target.closest("#res .sres"); if(!it) return; var x=(window._sres||[])[+it.dataset.i]; if(x) spinShow(x); });
 // 공유 — 화면은 보여 주되 실제로는 보내지 않는다 (체험판, 사장님 기기 포함 · 2026-10-12)
 // HTS 앱 공유 창을 그대로 옮겨 왔다 — 단추는 모두 막힘 (2026-10-12)
 function shBuild(){
@@ -484,7 +515,7 @@ function nmMe(){ if(!_nm||!window.naver||!naver.maps) return; if(!ME.pos){ if(_n
     if(_nmMe) _nmMe.setIcon(ic); else _nmMe=new naver.maps.Marker({position:ll,map:_nm,icon:ic,zIndex:200,clickable:false}); _nmMeP=src; }
   _nmMe.setPosition(ll); if(_nmMe.getMap()!==_nm) _nmMe.setMap(_nm); }
 var ROOT_IMG=document.getElementById("mapimg").getAttribute("src");
-function viewSet(v){ clearTimeout(window._scT); VIEW=v; if(CITY[v]) mapLoad(v).catch(function(){}); detSet(false); document.getElementById("vdet").hidden=!CITY[v]; document.getElementById("vbar").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:ROOT_IMG;
+function viewSet(v){ clearTimeout(window._scT); try{ spinClear(); }catch(e){} VIEW=v; if(CITY[v]) mapLoad(v).catch(function(){}); detSet(false); document.getElementById("vdet").hidden=!CITY[v]; document.getElementById("vbar").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:ROOT_IMG;
   document.getElementById("vback").hidden=!c; var tt=document.getElementById("vttl"); tt.hidden=!c; if(c) tt.textContent=LANG==="en"?c.en:c.ko;
   var vb=document.getElementById("vback"); vb.textContent="←"; vb.title=vb.ariaLabel=c&&c.parent!=="kr"?T(CITY[c.parent].ko+"로",CITY[c.parent].en):T("전국 지도로","Korea map");
   try{ dlDraw(null); }catch(e){} try{ lblDraw(); }catch(e){} var w0=document.getElementById("map").clientWidth; ZM={s:1,tx:(c&&c.aspect>1)?-((c.fx||0.5)*w0*c.aspect-w0/2):0,ty:0}; zApply(); LOD.s0=ZM.s; }
@@ -493,7 +524,8 @@ function areaTap(cx,cy){ var c=CITY[VIEW]; if(!c||!c.areas) return; var r=docume
   var a=null, bd=9; for(var k in c.areas){ var b=c.areas[k]; if(fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]){ var dd=Math.max(Math.abs(fx-(b[0]+b[2])/2)/(b[2]-b[0]),Math.abs(fy-(b[1]+b[3])/2)/(b[3]-b[1])); if(dd<bd){ bd=dd; a=k; } } }   // 겹친 네모는 가운데에 가까운 쪽
   if(!a) return; if(_lastArea.a===a&&now-_lastArea.t<450){ _lastArea={a:null,t:0}; clearTimeout(_tapT); viewSet(a); return 2; } _lastArea={a:a,t:now}; return 1; }
 function cityFor(k){ for(var c in CITY) if(CITY[c].keys.indexOf(k)>=0) return c; return null; }
-function hitAt(cx,cy){ /* 통계청(관리자 입구)은 「내 위치」 그림보다 먼저 — PC 에선 내 위치 그림(지도 폭 7%)이 29px 짜리 통계청을 덮어 길게 눌러도 안 열렸다 (사장님 10-15) */ if(VIEW!=="kr"&&CITY[VIEW]&&CITY[VIEW].spots&&CITY[VIEW].spots.mpstat){ var mb=CITY[VIEW].spots.mpstat, mr0=document.getElementById("mapimg").getBoundingClientRect(), mx=(cx-mr0.left)/mr0.width, my=(cy-mr0.top)/mr0.height; if(mx>=mb[0]&&mx<=mb[2]&&my>=mb[1]&&my<=mb[3]) return "mpstat"; } var me=document.getElementById("me"); if(me&&!me.hidden){ var mr=me.getBoundingClientRect(); if(cx>=mr.left&&cx<=mr.right&&cy>=mr.top&&cy<=mr.bottom+8) return "__me"; }
+function hitAt(cx,cy){ var spe=document.getElementById("spin"); if(spe){ var sr=spe.getBoundingClientRect(); if(sr.width&&cx>=sr.left-6&&cx<=sr.right+6&&cy>=sr.top-6&&cy<=sr.bottom+4) return "__pin"; }
+  /* 통계청(관리자 입구)은 「내 위치」 그림보다 먼저 — PC 에선 내 위치 그림(지도 폭 7%)이 29px 짜리 통계청을 덮어 길게 눌러도 안 열렸다 (사장님 10-15) */ if(VIEW!=="kr"&&CITY[VIEW]&&CITY[VIEW].spots&&CITY[VIEW].spots.mpstat){ var mb=CITY[VIEW].spots.mpstat, mr0=document.getElementById("mapimg").getBoundingClientRect(), mx=(cx-mr0.left)/mr0.width, my=(cy-mr0.top)/mr0.height; if(mx>=mb[0]&&mx<=mb[2]&&my>=mb[1]&&my<=mb[3]) return "mpstat"; } var me=document.getElementById("me"); if(me&&!me.hidden){ var mr=me.getBoundingClientRect(); if(cx>=mr.left&&cx<=mr.right&&cy>=mr.top&&cy<=mr.bottom+8) return "__me"; }
   if(VIEW!=="kr"){ var cc=CITY[VIEW]; if(!cc||!cc.spots) return null; var rr=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-rr.left)/rr.width, fy=(cy-rr.top)/rr.height, best=null, ba=9;
     for(var sk in cc.spots){ var b=cc.spots[sk], pad=sk==="mpstat"?0:0.004; if(fx>=b[0]-pad&&fx<=b[2]+pad&&fy>=b[1]-pad&&fy<=b[3]+pad){ var ar=(b[2]-b[0])*(b[3]-b[1]); if(ar<ba){ ba=ar; best=sk; } } } return best?best.split("@")[0]:null; }   /* 「키@무엇」 = 같은 장소의 두 번째 그림(예: 버스·매표소 표지판) */ var r=document.getElementById("mapimg").getBoundingClientRect(); var fx=(cx-r.left)/r.width*256, fy=(cy-r.top)/r.height*256, gx=Math.floor(fx), gy=Math.floor(fy);
   if(gx<0||gy<0||gx>255||gy>255) return null; var v=HG[gy*256+gx]; if(v) return HIT.keys[v-1];
@@ -506,6 +538,7 @@ function ktxErr(){ document.getElementById("res").innerHTML='<div class="err">�
 var _tapT=null;
 function mePt(k){ var p=PLACES[k]; if(!p) return null; var f=meGeoFrac(VIEW,p.lat,p.lng); if(k!=="__me"&&VIEW!=="kr"&&CITY[VIEW]&&CITY[VIEW].spots){ var b=CITY[VIEW].spots[k]; if(b) f=[(b[0]+b[2])/2,(b[1]+b[3])/2]; } return f?[f[0]*1000,f[1]*1000]:null; }
 function hitClick(k){ var now=Date.now(), c=cityFor(k);
+  if(k==="__pin"){ spinCard(); return; }
   if(k==="__me"){ ME.sel=!ME.sel; meDraw(); document.getElementById("res").innerHTML=ME.sel?'<div class="item"><div class="t">📍 '+T("내 위치","My location")+'</div><div class="d">'+T("다른 그림을 누르면 내 위치에서 그곳까지 거리·교통편이 나옵니다","Tap another picture to see the distance and routes from you")+'</div></div>':""; return; }
   if(ME.sel&&k&&k!=="ktx"&&PLACES[k]){ ME.sel=false; meDraw(); distShow("__me",k,mePt("__me"),mePt(k)); try{ meDest(k); }catch(e){} return; }
   if(c&&_lastTap.k===k&&now-_lastTap.t<450){ clearTimeout(_tapT); _lastTap={k:null,t:0}; viewSet(c); return; }
