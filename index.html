@@ -84,7 +84,9 @@ html,body{overflow-x:hidden}
 #mz .mlb{position:absolute;pointer-events:none;white-space:nowrap;background:#fff;color:#c2410c;border:solid #e8590c;border-radius:999px;font-weight:900;line-height:1.3;box-shadow:0 0 2px rgba(0,0,0,.25);z-index:2}
 #mz{position:relative;transform-origin:0 0;will-change:transform}
 .map.zoomed{touch-action:none}
-.zb{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
+.zb{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.zb button.zme{width:auto;height:30px;padding:0 11px;border-radius:999px;font-size:13px;font-weight:800;white-space:nowrap;color:#1a73e8;margin-bottom:2px}
+#me{position:absolute;z-index:3;pointer-events:none;transform-origin:50% 100%}#me img{display:block;width:100%;height:auto}#me i{position:absolute;left:50%;bottom:-6px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#1a73e8;border:2px solid #fff;box-shadow:0 0 0 4px rgba(26,115,232,.25)}#me.sel img{filter:drop-shadow(0 0 3px #1a73e8) drop-shadow(0 0 3px #1a73e8)}
 #vback{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 13px;font-weight:900;font-size:18px;line-height:1.2;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 #vdet{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 #vbar{display:flex;align-items:center;gap:10px;margin:16px 0 -6px}#vbar[hidden]{display:none!important}
@@ -146,7 +148,7 @@ html,body{overflow-x:hidden}
   </form>
   <div class="res" id="res"></div>
   <div id="vbar" hidden><button type="button" id="vback" hidden>←</button><div id="vttl" hidden></div><button type="button" id="vdet" hidden>자세히</button></div>
-  <div class="map" id="map"><div id="mz"><img src="img/maps/kr.jpg?h=fe5465de" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg><div id="lod"></div></div><a id="osm" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" hidden>© OpenStreetMap</a><div id="nmapw" hidden><div id="nmap"></div></div><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
+  <div class="map" id="map"><div id="mz"><img src="img/maps/kr.jpg?h=fe5465de" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg><div id="lod"></div></div><a id="osm" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" hidden>© OpenStreetMap</a><div id="nmapw" hidden><div id="nmap"></div></div><div class="zb"><button type="button" id="zme" class="zme" aria-label="my location">◎ 현재 위치</button><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
   <div id="infob">
   <div id="infot">안내</div>
   <div id="infoboard"><div class="pl" id="pl0"></div><div class="pl" id="pl1"></div><div class="pl" id="pl2"></div><button type="button" id="infomore" hidden aria-label="more">⋮</button></div>
@@ -172,7 +174,7 @@ var HUB="https://brief-live-hub.emhwang3.workers.dev";
 var LANG="ko"; try{ var _ql=(location.search.match(/[?&]lang=(ko|en)/i)||[])[1]; if(_ql) localStorage.setItem("mpv_lang",_ql.toLowerCase()); LANG=localStorage.getItem("mpv_lang")||(/^ko/i.test(navigator.language)?"ko":"en"); }catch(e){}
 function T(k,e){ return LANG==="en"?e:k; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} }
+function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ meDraw(); }catch(e){} }
 function paint(){
   document.getElementById("lang").textContent=LANG==="ko"?"EN":"한";
   document.getElementById("ttl").textContent=T("- 내비","- Navi");
@@ -183,6 +185,7 @@ function paint(){
   document.getElementById("mref").textContent=T("↻ 새로고침","↻ Refresh");
   document.getElementById("q").placeholder=T("예: 경복궁, 해운대 맛집, 전주 한옥마을","e.g. Gyeongbokgung, Haeundae food, Jeonju Hanok Village");
   document.getElementById("gob").textContent=T("검색","Search");
+  document.getElementById("zme").textContent=T("◎ 현재 위치","◎ My location");
   document.getElementById("hint").textContent=T("가고 싶은 곳, 먹고 싶은 것, 하고 싶은 것 등 아무거나 써 보세요. 뭐라도 추천해 드립니다.","Type anything — places to go, food to eat, things to do. We'll recommend something.");
   document.getElementById("mapimg").alt=T("대한민국 관광 지도","Korea travel map");
   document.title=T("머니퍼즐 내비","Money Puzzle Navi");
@@ -204,7 +207,7 @@ document.getElementById("q").addEventListener("input",qxSync);
 function go(kq){
   var q=(typeof kq==="string"&&kq)||document.getElementById("q").value.trim(), out=document.getElementById("res"); if(!q){ out.innerHTML=""; return; }
   out.innerHTML='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
-  (/\s/.test(q)?myPos():Promise.resolve(null)).then(function(ps){ return fetch(HUB+"/kplace?q="+encodeURIComponent(q)+(LANG==="en"?"&lang=en":"")+(ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"")); }).then(function(r){ return r.json(); }).then(function(j){
+  (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(ps){   // 모든 검색에 내 위치(있으면) — 가까운 순 return fetch(HUB+"/kplace?q="+encodeURIComponent(q)+(LANG==="en"?"&lang=en":"")+(ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"")); }).then(function(r){ return r.json(); }).then(function(j){
     var it=(j&&j.ok&&j.items)||[];
     if(!it.length){ out.innerHTML='<div class="msg">'+T("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words.")+'</div>'; return; }
     var gs=j.guess?'<div class="d" style="margin:0 4px 6px">'+T('「'+esc(q)+'」을(를) 「'+esc(j.guess)+'」(으)로 찾았습니다','Showing results for “'+esc(j.guess)+'” (from “'+esc(q)+'”)')+'</div>':'';
@@ -212,13 +215,9 @@ function go(kq){
       var nm=encodeURIComponent(x.name), ll=x.y+","+x.x;
       var en=LANG==="en"&&x.name_en, ttl=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
       return '<div class="item"><div class="t">'+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
-        +(LANG==="en"   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 (사장님 10-15)
-          ?'<a href="https://www.google.com/maps/dir/?api=1'+(LANG==="en"?"&hl=en":"")+'&destination='+ll+'" target="_blank" rel="noopener">Google Maps (English)</a>'
-           +'<a href="https://map.naver.com/p/search/'+nm+'" target="_blank" rel="noopener">Naver Map</a>'
-          :'<a href="https://map.kakao.com/link/to/'+nm+','+x.y+','+x.x+'" target="_blank" rel="noopener">카카오맵 길찾기</a>'
-           +'<a href="https://map.naver.com/p/search/'+nm+'" target="_blank" rel="noopener">네이버 지도</a>'
-           +'<a href="https://www.google.com/maps/dir/?api=1'+(LANG==="en"?"&hl=en":"")+'&destination='+ll+'" target="_blank" rel="noopener">구글 지도</a>')+'</div>';
+        +linksTo(x.name,x.y,x.x,x.name)+'</div>';
     }).join("");
+    try{ var ps2=poseForQuery(q,it); if(ps2) mePose(ps2,10000); }catch(e){}
   }).catch(function(){ out.innerHTML='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>'; });
 }
 // 공유 — 화면은 보여 주되 실제로는 보내지 않는다 (체험판, 사장님 기기 포함 · 2026-10-12)
@@ -296,7 +295,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="92cc21e572", NAVI_ROOT="kr";
+var NAVI_V="097b9013a6", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -310,12 +309,8 @@ function mapLoad(id){ if(id!==NAVI_ROOT&&!(CITY[id]&&CITY[id].data)) return Prom
 function placeShow(k){ var p=PLACES[k]; if(!p) return; var nm=LANG==="en"?p.en:p.ko, ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
   document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(nm)+'</div>'+((LANG==="en"?p.den:p.dko)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LANG==="en"?p.den:p.dko)+'</div>':'')+'<div class="d">'+esc(LANG==="en"?(p.addr_en||p.addr):p.addr)+'</div>'
-    +(LANG==="en"   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 (사장님 10-15)
-      ?'<a href="https://www.google.com/maps/dir/?api=1'+(LANG==="en"?"&hl=en":"")+'&destination='+ll+'" target="_blank" rel="noopener">Google Maps (English)</a>'
-       +'<a href="https://map.naver.com/p?c='+p.lng+','+p.lat+',15,0,0,0,dh" target="_blank" rel="noopener">Naver Map</a>'
-      :'<a href="https://map.kakao.com/link/to/'+encodeURIComponent(p.ko)+','+ll+'" target="_blank" rel="noopener">카카오맵 길찾기</a>'
-       +'<a href="https://map.naver.com/p?c='+p.lng+','+p.lat+',15,0,0,0,dh" target="_blank" rel="noopener">네이버 지도</a>'
-       +'<a href="https://www.google.com/maps/dir/?api=1'+(LANG==="en"?"&hl=en":"")+'&destination='+ll+'" target="_blank" rel="noopener">구글 지도</a>')+'</div>';
+    +linksTo(p.ko,p.lat,p.lng)+'</div>';   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 · 출발지는 내 위치(있으면)
+  try{ mePose("photo"); }catch(e){}
   if(p.route&&p.route.map===VIEW) routeShow(p); else rtClear();
   clearTimeout(window._scT); window._scT=setTimeout(function(){ window.scrollTo({top:0,behavior:"smooth"}); },460); }
 // 노선 — 장소 자료의 route{map, stops:[[x,y,한글,영어],...], info:[한,영]} 를 그 약도 위에 점선과 번호로 (시티투어, 사장님 10-15)
@@ -367,7 +362,8 @@ function areaTap(cx,cy){ var c=CITY[VIEW]; if(!c||!c.areas) return; var r=docume
   var a=null, bd=9; for(var k in c.areas){ var b=c.areas[k]; if(fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]){ var dd=Math.max(Math.abs(fx-(b[0]+b[2])/2)/(b[2]-b[0]),Math.abs(fy-(b[1]+b[3])/2)/(b[3]-b[1])); if(dd<bd){ bd=dd; a=k; } } }   // 겹친 네모는 가운데에 가까운 쪽
   if(!a) return; if(_lastArea.a===a&&now-_lastArea.t<450){ _lastArea={a:null,t:0}; viewSet(a); } else _lastArea={a:a,t:now}; }
 function cityFor(k){ for(var c in CITY) if(CITY[c].keys.indexOf(k)>=0) return c; return null; }
-function hitAt(cx,cy){ if(VIEW!=="kr"){ var cc=CITY[VIEW]; if(!cc||!cc.spots) return null; var rr=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-rr.left)/rr.width, fy=(cy-rr.top)/rr.height, best=null, ba=9;
+function hitAt(cx,cy){ var me=document.getElementById("me"); if(me&&!me.hidden){ var mr=me.getBoundingClientRect(); if(cx>=mr.left&&cx<=mr.right&&cy>=mr.top&&cy<=mr.bottom+8) return "__me"; }
+  if(VIEW!=="kr"){ var cc=CITY[VIEW]; if(!cc||!cc.spots) return null; var rr=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-rr.left)/rr.width, fy=(cy-rr.top)/rr.height, best=null, ba=9;
     for(var sk in cc.spots){ var b=cc.spots[sk], pad=0.012; if(fx>=b[0]-pad&&fx<=b[2]+pad&&fy>=b[1]-pad&&fy<=b[3]+pad){ var ar=(b[2]-b[0])*(b[3]-b[1]); if(ar<ba){ ba=ar; best=sk; } } } return best?best.split("@")[0]:null; }   // 「키@무엇」 = 같은 장소의 두 번째 그림(예: 버스·매표소 표지판) var r=document.getElementById("mapimg").getBoundingClientRect(); var fx=(cx-r.left)/r.width*256, fy=(cy-r.top)/r.height*256, gx=Math.floor(fx), gy=Math.floor(fy);
   if(gx<0||gy<0||gx>255||gy>255) return null; var v=HG[gy*256+gx]; if(v) return HIT.keys[v-1];
   var R=Math.max(2,Math.ceil(24/(r.width/256))), best=0, bd=1e9;
@@ -377,7 +373,10 @@ function pName(k){ var p=PLACES[k]; return p?(LANG==="en"?p.en:p.ko):""; }
 function ktxErr(){ document.getElementById("res").innerHTML='<div class="err">⚠ '+T("오류 — KTX 그림은 장소가 아닙니다.","Error — the KTX picture is not a place.")+'</div>'; }
 // 도시 그림은 한 번 누르면 잠깐(0.45초) 기다렸다 장소 정보 — 그 사이 또 누르면 도시 약도 (정보 카드가 지도를 밀어 두 번째 누름이 빗나가지 않게)
 var _tapT=null;
+function mePt(k){ var p=PLACES[k]; if(!p) return null; var f=meGeoFrac(VIEW,p.lat,p.lng); if(k!=="__me"&&VIEW!=="kr"&&CITY[VIEW]&&CITY[VIEW].spots){ var b=CITY[VIEW].spots[k]; if(b) f=[(b[0]+b[2])/2,(b[1]+b[3])/2]; } return f?[f[0]*1000,f[1]*1000]:null; }
 function hitClick(k){ var now=Date.now(), c=cityFor(k);
+  if(k==="__me"){ ME.sel=!ME.sel; meDraw(); document.getElementById("res").innerHTML=ME.sel?'<div class="item"><div class="t">📍 '+T("내 위치","My location")+'</div><div class="d">'+T("다른 그림을 누르면 내 위치에서 그곳까지 거리·교통편이 나옵니다","Tap another picture to see the distance and routes from you")+'</div></div>':""; return; }
+  if(ME.sel&&k&&k!=="ktx"&&PLACES[k]){ ME.sel=false; meDraw(); distShow("__me",k,mePt("__me"),mePt(k)); return; }
   if(c&&_lastTap.k===k&&now-_lastTap.t<450){ clearTimeout(_tapT); _lastTap={k:null,t:0}; viewSet(c); return; }
   _lastTap={k:k,t:now}; clearTimeout(_tapT);
   if(c){ _tapT=setTimeout(function(){ placeShow(k); },450); return; }
@@ -469,7 +468,7 @@ function subBadge(nm){ var s=String(nm), m=s.match(/(\d)\s*(호선|$)|Line\s*(\d
   return '<span style="display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 4px;border-radius:999px;background:'+c+';color:#fff;font-size:11px;font-weight:900;vertical-align:-2px;margin-right:3px">'+esc(t||"M")+'</span>'; }
 function odsBox(a,b){ var box=document.getElementById("ods"); if(!box) return; var p=PLACES[a], q=PLACES[b], ck="ods:"+LANG+":"+a+":"+b, cached=null;
   try{ cached=JSON.parse(sessionStorage.getItem(ck)||"null"); }catch(e){}
-  var draw=function(j){ var ps=(j&&j.result&&j.result.path)||[]; if(!ps.length){ box.innerHTML=""; return; }
+  var draw=function(j){ var ps=(j&&j.result&&j.result.path)||[]; if(!ps.length){ box.innerHTML=""; return; } try{ mePose("subway",10000); }catch(e){}
     box.innerHTML='<div class="trh">🚇 '+T("대중교통 추천 경로","Best transit routes")+'</div>'+ps.slice(0,2).map(function(pt){ var f=pt.info||{};
       var steps=(pt.subPath||[]).map(function(s){ if(s.trafficType===3) return s.sectionTime?'🚶 '+s.sectionTime+T("분","m"):"";
         var ln=(s.lane&&s.lane[0])||{}, nm=s.trafficType===1?(ln.name||""):(T("버스 ","Bus ")+(ln.busNo||""));
@@ -494,7 +493,7 @@ function zApply(){ var m=document.getElementById("map"), w=m.clientWidth, z=docu
   var mn=1/as; ZM.s=Math.max(mn,Math.min(ZMAX(),ZM.s));   // 가로로 긴 약도는 전체가 한 화면에 들어올 때까지 축소 (사장님 10-15)
   var iw=w*as*ZM.s, ih=w*ZM.s; ZM.tx=iw>=w?Math.min(0,Math.max(w-iw,ZM.tx)):(w-iw)/2; ZM.ty=ih>=w?Math.min(0,Math.max(w-ih,ZM.ty)):(w-ih)/2;
   z.style.transform="translate("+ZM.tx+"px,"+ZM.ty+"px) scale("+ZM.s+")"; m.classList.toggle("zoomed",ZM.s>1.001||ASP()>1);
-  var lb=document.getElementById("dlb"); if(lb) lb.style.transform="translate(-50%,-50%) scale("+(1/ZM.s)+")"; try{ lodDraw(); }catch(e){} }
+  var lb=document.getElementById("dlb"); if(lb) lb.style.transform="translate(-50%,-50%) scale("+(1/ZM.s)+")"; try{ lodDraw(); }catch(e){} try{ meDraw(); }catch(e){} }
 // 약도 글자 표시 — 자료 labels [[x,y,한글,영어,ax,ay],...] 를 지도 위 그 자리에 (지도와 같이 커진다 — 이름표와 같은 원칙, 매표소 등 · fix3 10-15)
 function lblDraw(){ [].forEach.call(document.querySelectorAll("#mz .mlb"),function(e){ e.remove(); }); var c=CITY[VIEW]; if(!c||!c.labels) return; var z=document.getElementById("mz");
   c.labels.forEach(function(t){ var e=document.createElement("div"); e.className="mlb"; e.textContent=LANG==="en"?t[3]:t[2]; e._ax=t[4]||0; e._ay=t[5]||0; e.style.left=(t[0]*100)+"%"; e.style.top=(t[1]*100)+"%"; var w=document.getElementById("map").clientWidth, fs=Math.max(4,w*0.016);
@@ -544,6 +543,7 @@ function zAt(cx,cy,ns){ var r=document.getElementById("map").getBoundingClientRe
   ns=Math.max(1/ASP(),Math.min(ZMAX(),ns)); ZM.tx=px-(px-ZM.tx)*ns/ZM.s; ZM.ty=py-(py-ZM.ty)*ns/ZM.s; ZM.s=ns; zApply(); }
 function zCenter(f){ var r=document.getElementById("map").getBoundingClientRect(); zAt(r.left+r.width/2,r.top+r.height/2,ZM.s*f); }
 function hitInit(){ var m=document.getElementById("map"), drag=null, pan=null, moved=false, tch=null, tmr=null, pin=null, one=null;
+  document.getElementById("zme").onclick=function(e){ e.stopPropagation(); meBtn(); };
   document.getElementById("zin").onclick=function(e){ e.stopPropagation(); zCenter(1.6); lodAuto(); };
   document.getElementById("zout").onclick=function(e){ e.stopPropagation(); zCenter(1/1.6); };
   document.getElementById("zrs").onclick=function(e){ e.stopPropagation(); ZM={s:1,tx:0,ty:0}; zApply(); LOD.s0=ZM.s; };
@@ -602,6 +602,64 @@ function resClear(){ document.getElementById("res").innerHTML=""; try{ dlDraw(nu
 (function(){ var r=document.getElementById("res");
   new MutationObserver(function(){ if(r.firstElementChild&&!r.querySelector(":scope > .xbtn")){ var b=document.createElement("button"); b.className="xbtn"; b.type="button"; b.textContent="✕"; b.setAttribute("aria-label",T("닫기","Close")); b.onclick=resClear; r.insertBefore(b,r.firstChild); } }).observe(r,{childList:true});
 })();
+// ── 「나」 — 손님 위치에 주인공 부부(뒷모습) (사장님 10-15) ──
+//   위치는 화면에만 쓴다: 저장 안 함·서버로 안 보냄. 검색할 때만 결과 정렬용으로 좌표를 한 번 붙인다(허브는 기록 안 함)
+var ME={pos:null,acc:null,sel:false,pose:"me",pT:null,wid:null,last:0,tried:false}, ROOTGEO=null;
+var ICN=[37.4491679,126.4509204];
+function meGeoFrac(id,lat,lng){ var g=id===NAVI_ROOT?ROOTGEO:CITY[id]; if(!g||!g.geo) return null; var G=g.geo;
+  if(Array.isArray(G)){ return [.5+(lng-G[1])*G[3]/(2*G[2]*G[4]), .5+(G[0]-lat)/(2*G[2])]; }
+  var m=G.m, sh=G.sh||{}, s=null;   // 전국: 제주·울릉도·독도는 당겨 그린 자리로
+  if(lat<34&&lng<127.5) s=sh["1"]; else if(lng>131.5) s=sh["3"]; else if(lng>130.5) s=sh["2"];
+  if(s){ lat+=s[0]; lng+=s[1]; }
+  var Z=Math.pow(2,m[0]), tx=(lng+180)/360*Z, r=lat*Math.PI/180, ty=(1-Math.log(Math.tan(r)+1/Math.cos(r))/Math.PI)/2*Z;
+  return [((tx-m[1])*256-m[3])/(m[5]-m[3]), ((ty-m[2])*256-m[4])/(m[6]-m[4])]; }
+function meInKR(lat,lng){ return lat>=32.9&&lat<=38.9&&lng>=124.2&&lng<=132; }
+function meBest(lat,lng){ var best=null, bd=-1, ba=1e9;   // 손님이 들어 있는 가장 자세한 약도
+  for(var id in CITY){ var b=CITY[id].bb; if(!b||lat<b[0]||lat>b[2]||lng<b[1]||lng>b[3]) continue;
+    var d=0, p=id; while(CITY[p]&&d<20){ p=CITY[p].parent; d++; } var ar=(b[2]-b[0])*(b[3]-b[1]);
+    if(d>bd||(d===bd&&ar<ba)){ bd=d; ba=ar; best=id; } }
+  return best||(meInKR(lat,lng)?NAVI_ROOT:null); }
+function meEl(){ var e=document.getElementById("me"); if(!e){ e=document.createElement("div"); e.id="me"; e.innerHTML='<img alt=""><i></i>'; document.getElementById("mz").appendChild(e); } return e; }
+function meDraw(){ var e=meEl(); if(!ME.pos){ e.hidden=true; return; } var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]);
+  if(!f||f[0]<0||f[0]>1||f[1]<0||f[1]>1){ e.hidden=true; return; } e.hidden=false;
+  var w=document.getElementById("map").clientWidth, iw=Math.round(w*0.07);
+  e.style.left=(f[0]*100)+"%"; e.style.top=(f[1]*100)+"%"; e.style.width=iw+"px"; e.style.transform="translate(-50%,-100%) scale("+(1/ZM.s)+")";
+  var im=e.querySelector("img"), src="img/me/"+ME.pose+".png"; if(im.getAttribute("src")!==src) im.src=src; e.classList.toggle("sel",ME.sel);
+  e.title=T("나","Me"); }
+function mePose(p,ms){ var near=ME.pos&&kmLL(ME.pos,ICN)<3; clearTimeout(ME.pT); ME.pose=p||"me";
+  if(near&&(!p||p==="me")) ME.pose="airport";
+  meDraw(); if(p&&p!=="me") ME.pT=setTimeout(function(){ mePose(null); },ms||8000); }
+function kmLL(a,b){ var R=6371, rd=Math.PI/180, dLa=(b[0]-a[0])*rd, dLo=(b[1]-a[1])*rd, h=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(a[0]*rd)*Math.cos(b[0]*rd)*Math.sin(dLo/2)*Math.sin(dLo/2); return 2*R*Math.asin(Math.sqrt(h)); }
+function meSet(p){ ME.pos=p; if(p){ PLACES.__me={ko:"내 위치",en:"My location",lat:p[0],lng:p[1],addr:""}; ISLE.__me=(p[0]<34&&p[1]<127.5)?"jeju":(p[1]>130.5?"ulleung":"land"); } else delete PLACES.__me; mePose(ME.pose==="me"||ME.pose==="airport"?null:ME.pose); }
+function meWatch(){ if(ME.wid!=null||!navigator.geolocation) return;   // 배터리: 정확도 낮게·10초에 한 번만 반영
+  try{ ME.wid=navigator.geolocation.watchPosition(function(p){ var n=Date.now(); if(n-ME.last<10000) return; ME.last=n; meSet([p.coords.latitude,p.coords.longitude]); },function(){},{enableHighAccuracy:false,maximumAge:10000,timeout:20000}); }catch(e){} }
+// 내 위치 약도로 가서 가운데에
+function meGo(){ if(!ME.pos) return false; var id=meBest(ME.pos[0],ME.pos[1]); if(!id) return false;
+  viewSet(id===NAVI_ROOT?"kr":id); var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]); if(!f) return true;
+  var w=document.getElementById("map").clientWidth, as=ASP(), s=as>1?1:1.6;
+  ZM={s:s,tx:w/2-f[0]*w*as*s,ty:w/2-f[1]*w*s}; zApply(); LOD.s0=ZM.s; meDraw(); return true; }
+function meBtn(){ var b=document.getElementById("zme"); b.disabled=true;
+  (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(p){ b.disabled=false; if(p&&!ME.pos) meSet(p); if(p) meWatch();
+    if(!p||!meGo()) document.getElementById("res").innerHTML='<div class="msg">'+T("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요.","Could not get your location — please allow location access.")+'</div>'; }); }
+// 길찾기 출발지 = 내 위치 (있을 때만)
+function meFrom(){ return ME.pos?{lat:ME.pos[0],lng:ME.pos[1]}:null; }
+function linksTo(nmKo,lat,lng,naverName){ var f=meFrom(), ll=lat+","+lng, nm=encodeURIComponent(nmKo);
+  var go="https://www.google.com/maps/dir/?api=1"+(LANG==="en"?"&hl=en":"")+(f?"&origin="+f.lat+","+f.lng:"")+"&destination="+ll;
+  var kk=f?"https://map.kakao.com/link/from/"+encodeURIComponent("내 위치")+","+f.lat+","+f.lng+"/to/"+nm+","+ll:"https://map.kakao.com/link/to/"+nm+","+ll;
+  var nv; if(f){ var A=m3857(f.lat,f.lng), B=m3857(lat,lng); nv="https://map.naver.com/p/directions/"+A[0]+","+A[1]+","+encodeURIComponent("내 위치")+",,/"+B[0]+","+B[1]+","+nm+",,/-/transit"; }
+  else nv=naverName?"https://map.naver.com/p/search/"+encodeURIComponent(naverName):"https://map.naver.com/p?c="+lng+","+lat+",15,0,0,0,dh";
+  var L=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };
+  return LANG==="en"?L(go,"Google Maps (English)")+L(nv,"Naver Map"):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도"); }
+function poseForQuery(q,it){ var s=(q+" "+(it||[]).slice(0,3).map(function(x){ return (x.cat||"")+" "+(x.cat_en||""); }).join(" ")).toLowerCase();
+  if(/맥주|호프|beer|pub|brew|이자카야|술집|포차/.test(s)) return "beer";
+  if(/카페|커피|cafe|coffee|디저트|dessert|베이커리|bakery/.test(s)) return "cafe";
+  if(/서점|책방|book/.test(s)) return "book";
+  if(/hungry|배고|식당|맛집|밥|음식|food|restaurant|eat|먹|국밥|고기|치킨|한식|분식/.test(s)) return "food";
+  if(/쇼핑|shopping|shop|시장|market|백화점|mall|아울렛/.test(s)) return "shop";
+  if(/공원|park|잔디|숲/.test(s)) return "grass";
+  if(/지하철|subway|metro|역$/.test(s)) return "subway";
+  return null; }
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#res a"); if(a&&/택시|Taxi/i.test(a.textContent)) mePose("taxi"); },true);
 // 안내판 — 생각날 때마다 아래 목록에 한 줄씩 [한글, 영어] (사장님 10-15)
 var INFO=[];
 var INFO_AT=0;
@@ -618,7 +676,10 @@ infoPaint();
 hitInit();
 Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(function(a){ var R=a[0];
   for(var id in R.maps) if(id!==R.root) CITY[id]=R.maps[id];
-  INFO=a[1]; infoPaint(); }).catch(function(e){ try{ console.error(e); }catch(x){} });
+  ROOTGEO=R.maps[R.root];
+  INFO=a[1]; infoPaint();
+  myPos().then(function(p){ if(!p) return; meSet(p); meWatch(); if(VIEW==="kr"&&!DET) meGo(); });   // 앱을 열면 위치 한 번 — 못 받으면 지금처럼 전국 지도
+  }).catch(function(e){ try{ console.error(e); }catch(x){} });
 </script>
 </body>
 </html>
