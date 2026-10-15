@@ -520,7 +520,7 @@ function lodDraw(){ var L=document.getElementById("lod"); if(!L) return; if(LOD.
   ks.forEach(function(o){ var a=o.a, R=o.R, S=c.subs&&c.subs[a]; if(!S||!S.length) return; var bw=R[2]-R[0], bh=R[3]-R[1], n=0;
     var wide=bw>=w*0.32, q=wide?Math.min(S.length,Math.max(2,Math.round(Math.min(bw,w)*Math.min(bh,h)/(64*64)))):Math.min(S.length,bw<w*0.12?1:2);
     for(var i=0;i<S.length&&n<q;i++){ var s=S[i], id="p:"+a+":"+s[0], sw=(s[3]-s[1])*iw, sh=(s[4]-s[2])*ih, k=Math.max(sw,sh), z=Math.max(mn,Math.min(mx,k)), pw=Math.round(z*sw/k), ph=Math.round(z*sh/k);
-      if(pw<mn){ ph=Math.round(ph*mn/pw); pw=mn; } if(ph<mn){ pw=Math.round(pw*mn/ph); ph=mn; }
+      if(pw<mn){ ph=Math.round(ph*mn/pw); pw=mn; } if(ph<mn){ pw=Math.round(pw*mn/ph); ph=mn; } ph=Math.min(ph,Math.round(pw*1.6)); pw=Math.min(pw,Math.round(ph*1.6));
       var cand=[]; if(wide){ var px=X((s[1]+s[3])/2)-pw/2, py=Y((s[2]+s[4])/2)-ph/2, dx=pw*0.6, dy=ph*0.6; cand.push([px,py],[px+dx,py],[px-dx,py],[px,py+dy],[px,py-dy]); }
       else { var T=o.T; cand.push([T[2]+3,(T[1]+T[3])/2-ph/2],[T[0]-pw-3,(T[1]+T[3])/2-ph/2],[(T[0]+T[2])/2-pw/2,T[3]+3],[(T[0]+T[2])/2-pw/2,T[1]-ph-3],[T[2]+pw+6,(T[1]+T[3])/2-ph/2]); }
       var pick=null; for(var j=0;j<cand.length&&!pick;j++){ var r=[cand[j][0],cand[j][1],cand[j][0]+pw,cand[j][1]+ph]; if(inV(r)&&!hit(r)) pick=r; }
