@@ -87,21 +87,21 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inv","초대 링크 발급","7일짜리 초대 링크"],["pay","이용권·결제 내역","장부 · 엑셀 받기"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["inv","초대 링크 발급","7일짜리 초대 링크"],["pay","이용권·결제 내역","장부 · 엑셀 받기"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
 function usd(n){ return "$"+(Math.round((n||0)*100)/100).toLocaleString(); }
 function tile(v,l){ return '<div class="tile"><b>'+v+'</b><span>'+l+'</span></div>'; }
 // ── 계기판 — 건물에 들어오면 바로 보이는 장부 ──
 function homeLoad(){ var P=$("pane"), td=kday(0), ms=td.slice(0,8)+"01";
   P.innerHTML='<div class="card"><b>오늘 '+td+'</b><div id="hsum"><div class="msg">불러오는 중…</div></div></div><div class="card"><b>새 고객의 소리</b><div id="hvc"></div></div><div class="card"><b>최근 7일</b><div class="tw"><table id="h7"></table></div></div>';
-  Promise.all([api("/ntapstats?from="+kday(-6)+"&to="+td),api("/nledger?from="+td+"&to="+td),api("/nledger?from="+ms+"&to="+td),api("/nvoice").catch(function(){ return {ok:false}; })]).then(function(a){
-    var w=a[0], tdy=(w.days||[]).filter(function(d){ return d.d===td; })[0]||{}, L0=a[1].total, LM=a[2].total, V=a[3];
+  Promise.all([api("/ntapstats?from="+kday(-6)+"&to="+td),api("/nledger?from="+td+"&to="+td),api("/nledger?from="+ms+"&to="+td),api("/nvoice").catch(function(){ return {ok:false}; }),api("/ninq/admin").catch(function(){ return {ok:false}; })]).then(function(a){
+    var w=a[0], tdy=(w.days||[]).filter(function(d){ return d.d===td; })[0]||{}, L0=a[1].total, LM=a[2].total, V=a[3], IQ=a[4];
     $("hsum").innerHTML='<div class="tiles">'
       +tile((tdy.vis||0).toLocaleString(),"오늘 방문 (열림)")+tile((tdy.visU||0).toLocaleString(),"오늘 방문 기기 수")
       +tile((tdy.t||0).toLocaleString(),"오늘 그림 누름")+tile((tdy.u||0).toLocaleString(),"오늘 사람 수")
       +tile(L0.KRW.n+L0.USD.n+"건","오늘 결제")+tile(won(L0.KRW.amt)+(L0.USD.amt?" · "+usd(L0.USD.amt):""),"오늘 결제금액")
       +tile(won(LM.KRW.amt)+(LM.USD.amt?" · "+usd(LM.USD.amt):""),"이번 달 매출 ("+ms.slice(5,7)+"월)")
-      +tile(V.ok?V.unread+"건":"-","새 고객의 소리")+'</div>'
+      +tile(V.ok?V.unread+"건":"-","새 고객의 소리")+tile(IQ.ok?IQ.unread+"건":"-","새 입점 문의")+'</div>'
       +(a[1].pg===false?'<div class="msg">결제 연결 전 — 0원 (결제를 붙이면 자동으로 쌓입니다)</div>':'');
     var it=V.ok?V.items.filter(function(x){ return !x.read; }).slice(0,3):[];
     $("hvc").innerHTML=it.length?it.map(function(x){ return '<div class="inv"><div class="sub">'+esc(x.at)+(x.lang?' · '+esc(x.lang):'')+'</div>'+esc(x.text)+'</div>'; }).join("")+'<div class="row" style="margin-top:8px"><button class="g" onclick="show(\'voice\')">모두 보기</button></div>':'<div class="msg">새 글 없음</div>';
@@ -141,6 +141,25 @@ function pwChange(){ var a=$("pw0").value, b=$("pw1").value, c=$("pw2").value, m
       m.innerHTML='<b>바꿨습니다.</b> 이 기기에는 새 비밀번호로 저장했습니다. 다른 기기(폰 등)에서는 새 비밀번호를 다시 넣어 주세요.'; return; }
     m.innerHTML='<span class="err">'+(j.err==="locked"?"5번 틀려 15분 동안 잠겼습니다.":j.err==="admin"?"지금 비밀번호가 맞지 않습니다.":j.err==="weak"?"새 비밀번호가 너무 짧습니다 (10자 이상).":"바꾸지 못했습니다.")+'</span>';
   }).catch(function(){ $("pwb").disabled=false; m.innerHTML='<span class="err">허브에 닿지 못했습니다.</span>'; }); }
+// ── 입점 문의 — 사업자번호·이메일 확인을 거친 업체 문의. 연락처는 가려 두고 단추로 ──
+var IQS={active:"계속사업자 ✓",pending:"키 대기 (형식·체크섬만)"}, IQD=null;
+function inqLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><div class="row"><b style="flex:1">입점·광고 문의</b><button class="g" onclick="xlsInq()">엑셀 받기</button></div><div class="msg">메일로도 갑니다. 이메일·전화는 「연락처 보기」를 눌러야 보입니다. 1년 지나면 지워집니다.</div><div id="iql"><div class="msg">불러오는 중…</div></div></div>';
+  api("/ninq/admin").then(function(j){ IQD=j; if(!j.items.length){ $("iql").innerHTML='<div class="msg">아직 문의가 없습니다.</div>'; return; }
+    $("iql").innerHTML=j.items.map(function(x){ return '<div class="inv" style="'+(x.read?'opacity:.65':'border-left:4px solid var(--acc)')+'"><div class="sub">'+esc(x.at)+' · '+(x.lang==="en"?"영어":"한국어")+(x.read?' · 읽음':' · 새 문의')+(x.mailFail?' · <span class="err">메일 실패</span>':'')+'</div>'
+      +'<div style="margin:4px 0"><b>'+esc(x.biz)+'</b>'+(x.cat?' · '+esc(x.cat):'')+' · 담당 '+esc(x.name)+'</div>'
+      +'<div class="sub">사업자 '+esc(String(x.bno||"").replace(/^(\d{3})(\d{2})(\d{5})$/,"$1-$2-$3"))+' · '+esc(IQS[x.bizSt]||x.bizSt||"")+(x.loc?' · 위치 '+esc(x.loc):'')+'</div>'
+      +'<div style="white-space:pre-wrap;margin:6px 0">'+esc(x.msg)+'</div><div class="row">'
+      +(x.read?'':'<button class="g" data-id="'+esc(x.id)+'" onclick="iqAct(\'read\',this.dataset.id)">읽음</button>')
+      +(x.hasContact?'<button class="g" data-id="'+esc(x.id)+'" onclick="iqContact(this)">연락처 보기</button>':'')
+      +'<button class="g" data-id="'+esc(x.id)+'" onclick="iqAct(\'del\',this.dataset.id)">지우기</button></div></div>'; }).join("");
+  }).catch(function(e){ $("iql").innerHTML='<div class="msg err">불러오지 못했습니다</div>'; }); }
+function iqAct(a,id){ if(a==="del"&&!confirm("이 문의를 지울까요?")) return; api("/ninq/admin?"+a+"="+encodeURIComponent(id),{method:"POST"}).then(inqLoad); }
+function iqContact(b){ api("/ninq/admin?contact="+encodeURIComponent(b.dataset.id)).then(function(j){ var s=document.createElement("span"); s.textContent=(j.email||"")+(j.contact?" · "+j.contact:""); s.style.padding="8px"; b.replaceWith(s); }); }
+function xlsInq(){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀습니다."); return; }
+  api("/ninq/admin?full=1").then(function(j){ var rows=[[CO],["입점·광고 문의"],["만든 날",kday(0)],[],["시각","상호/회사","업종","담당자","사업자등록번호","사업자 확인","이메일(인증)","전화","위치","언어","문의 내용","읽음"]];
+    j.items.forEach(function(x){ rows.push([x.at,x.biz,x.cat||"",x.name,String(x.bno||"").replace(/^(\d{3})(\d{2})(\d{5})$/,"$1-$2-$3"),IQS[x.bizSt]||x.bizSt||"",x.email||"",x.contact||"",x.loc||"",x.lang==="en"?"영어":"한국어",x.msg,x.read?"읽음":""]); });
+    var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[16,20,12,10,14,16,24,14,20,6,50,6]),"입점 문의"); save(wb,"머니퍼즐내비_입점문의_"+kday(0)+".xlsx"); })
+  .catch(function(){ alert("불러오지 못했습니다"); }); }
 // ── 이용권·결제 장부 ──
 var LG=null, PRN={"7d":"7일권","15d":"15일권","30d":"30일권"};
 function payLoad(){ var P=$("pane"), td=kday(0);
@@ -170,6 +189,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="home"){ homeLoad(); return; }
   if(id==="visit"){ visitLoad(); return; }
   if(id==="voice"){ voiceLoad(); return; }
+  if(id==="inq"){ inqLoad(); return; }
   if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
   if(id==="pay"){ payLoad(); return; }
   if(id==="pw"){ P.innerHTML='<div class="card"><b>비밀번호 변경</b><div class="msg">새 비밀번호는 10자 이상 (한글·숫자·영문 섞어도 됩니다). 바꾸면 옛 비밀번호는 바로 안 통합니다.</div>'
