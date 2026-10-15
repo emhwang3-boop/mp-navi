@@ -171,6 +171,28 @@ html,body{overflow-x:hidden}
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
+// 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
+//   하루 같은 그림은 기기마다 1번만 u=1 (이미 센 키는 이 기기 localStorage 에만). 사장님 기기(mp_owner)는 안 센다 · ?ntt=1 이면 시험 칸(x=1)으로
+if(/[?&]ntt=1/.test(location.search)){ try{ localStorage.setItem("mpv_ntt","1"); }catch(z){} } else if(/[?&]ntt=0/.test(location.search)){ try{ localStorage.removeItem("mpv_ntt"); }catch(z){} }
+function ntap(k,e){ try{ if(!k||!/^[A-Za-z0-9_-]{1,64}$/.test(k)) return; var x=0, own=false; try{ x=localStorage.getItem("mpv_ntt")?1:0; own=!!localStorage.getItem("mp_owner"); }catch(z){}
+  if(own&&!x) return;
+  var d=new Date(Date.now()+9*3600e3).toISOString().slice(0,10), s={d:d,s:[]}; try{ var o=JSON.parse(localStorage.getItem("mpv_ntd")||"null"); if(o&&o.d===d&&o.s&&o.s.push) s=o; }catch(z){}
+  var id=e+":"+k, u=(e==="tap"||e==="open_area")&&s.s.indexOf(id)<0?1:0, f=s.s.length?0:1;
+  if(u||f){ s.s.push(u?id:"~"); if(s.s.length>500) s.s=s.s.slice(-500); try{ localStorage.setItem("mpv_ntd",JSON.stringify(s)); }catch(z){} }
+  var v=String(typeof VIEW==="string"?VIEW:""); if(!/^[A-Za-z0-9_-]{1,64}$/.test(v)) v="";
+  var b=JSON.stringify({k:k,v:v,l:LANG==="en"?"en":"ko",e:e,u:u,f:f,x:x});
+  if(navigator.sendBeacon&&navigator.sendBeacon(HUB+"/ntap",new Blob([b],{type:"text/plain"}))) return;
+  fetch(HUB+"/ntap",{method:"POST",body:b,keepalive:true}).catch(function(){});
+}catch(z){} }
+function ntMark(k){ try{ window._ntK=k; window._ntEl=document.getElementById("res").firstElementChild; }catch(z){} }
+document.addEventListener("click",function(e){ try{ var a=e.target.closest&&e.target.closest("#res a"); if(a&&window._ntEl&&window._ntEl.contains(a)) ntap(window._ntK,"route"); }catch(z){} },true);
+// 관리자 입구 — 「머니퍼즐 통계청」(mpstat) 그림을 0.8초 이상 누르면 admin/ (손님 화면엔 표시 없음 · 장소가 없으면 아무 일 없음 · 사장님 10-15)
+document.addEventListener("pointerdown",function(e){ try{ if(!e.isPrimary||!e.target.closest||!e.target.closest("#map")||!PLACES.mpstat||hitAt(e.clientX,e.clientY)!=="mpstat") return;
+  var x=e.clientX, y=e.clientY, done=function(){ clearTimeout(t); document.removeEventListener("pointerup",done,true); document.removeEventListener("pointercancel",done,true); document.removeEventListener("pointermove",mv,true); },
+    mv=function(ev){ if(Math.abs(ev.clientX-x)+Math.abs(ev.clientY-y)>10) done(); },
+    t=setTimeout(function(){ done(); window._mpLD=Date.now(); location.href="admin/"; },800);
+  document.addEventListener("pointerup",done,true); document.addEventListener("pointercancel",done,true); document.addEventListener("pointermove",mv,true); }catch(z){} },true);
+document.addEventListener("click",function(e){ if(window._mpLD&&Date.now()-window._mpLD<2000){ e.stopPropagation(); e.preventDefault(); } },true);
 var LANG="ko"; try{ var _ql=(location.search.match(/[?&]lang=(ko|en)/i)||[])[1]; if(_ql) localStorage.setItem("mpv_lang",_ql.toLowerCase()); LANG=localStorage.getItem("mpv_lang")||(/^ko/i.test(navigator.language)?"ko":"en"); }catch(e){}
 function T(k,e){ return LANG==="en"?e:k; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
@@ -280,7 +302,7 @@ function shOwnerFix0(p, appName, tok){
     };
   });
 }
-function shOpen(){ shBuild(); try{ if(localStorage.getItem("mp_owner")) shOwnerFix(document.getElementById("shIn"),"Money Puzzle Navi"); }catch(e){} document.getElementById("shBox").hidden=false; }
+function shOpen(){ ntap("_app","share"); shBuild(); try{ if(localStorage.getItem("mp_owner")) shOwnerFix(document.getElementById("shIn"),"Money Puzzle Navi"); }catch(e){} document.getElementById("shBox").hidden=false; }
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest(".sht"); if(!t) return; e.preventDefault(); document.getElementById("shMsg").textContent=T("체험판에서는 공유가 되지 않습니다.","Sharing is turned off in this demo."); });
 function resetAll(){ try{ dlDraw(null); viewSet("kr"); }catch(e){} document.getElementById("q").value=""; qxSync(); document.getElementById("res").innerHTML=""; document.getElementById("mm").hidden=true; window.scrollTo(0,0); }
 function isApp(){ return matchMedia("(display-mode: standalone)").matches||matchMedia("(display-mode: minimal-ui)").matches||navigator.standalone===true; }
@@ -298,7 +320,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="ae4ff30a36", NAVI_ROOT="kr";
+var NAVI_V="8940284421", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -309,10 +331,12 @@ function mapMerge(id,d){ var k, pl=d.places||{}; for(k in pl) if(!PLACES[k]) PLA
 // 약도 자료는 그 약도에 들어갈 때 받는다 (한 번 받으면 기억)
 function mapLoad(id){ if(id!==NAVI_ROOT&&!(CITY[id]&&CITY[id].data)) return Promise.resolve(null); if(MAPD[id]) return MAPD[id];
   return MAPD[id]=jget("maps/"+id+".json").then(function(d){ mapMerge(id,d); return d; },function(e){ delete MAPD[id]; throw e; }); }
-function placeShow(k){ var p=PLACES[k]; if(!p) return; var nm=LANG==="en"?p.en:p.ko, ll=p.lat+","+p.lng;
+function placeShow(k){ var p=PLACES[k]; if(!p) return; ntap(k,"tap"); var nm=LANG==="en"?p.en:p.ko, ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
   document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(nm)+'</div>'+((LANG==="en"?p.den:p.dko)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LANG==="en"?p.den:p.dko)+'</div>':'')+'<div class="d">'+esc(LANG==="en"?(p.addr_en||p.addr):p.addr)+'</div>'
     +linksTo(p.ko,p.lat,p.lng)+'</div>';   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 · 출발지는 내 위치(있으면)
+  if(k==="mpstat") document.getElementById("res").firstElementChild.insertAdjacentHTML("beforeend",'<div class="d" style="margin-top:6px">'+T("머니퍼즐 통계청 — 주식회사 부만","Money Puzzle Data Center — Booman Inc.")+'<br>'+T("사업자등록번호 297-81-03712 · 연락처 ","Business Reg. No. 297-81-03712 · Contact ")+'<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a></div>');   // 회사 카드 (10-15)
+  ntMark(k);
   try{ mePose("photo"); }catch(e){}
   if(p.route&&p.route.map===VIEW) routeShow(p); else rtClear();
   clearTimeout(window._scT); window._scT=setTimeout(function(){ window.scrollTo({top:0,behavior:"smooth"}); },460); }
@@ -487,7 +511,7 @@ function distShow(a,b,p0,p1){
   if(!a||!b||a===b){ dlDraw(null); return; }
   var km=kmBetween(a,b), rp=routePlan(a,b,km), t=(km<10?km.toFixed(1):Math.round(km).toLocaleString())+" km";
   dlDraw(p0,p1,t);
-  document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(pName(a))+' ↔ '+esc(pName(b))+'</div><div class="dist">'+t+'</div><div class="d">'+T("직선거리","Straight-line distance")+'</div><div id="trn"></div>'+rp.html+'</div>'; if(rp.train) trainBox(a,b); if(rp.ods) odsBox(a,b); }
+  document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(pName(a))+' ↔ '+esc(pName(b))+'</div><div class="dist">'+t+'</div><div class="d">'+T("직선거리","Straight-line distance")+'</div><div id="trn"></div>'+rp.html+'</div>'; ntMark(b); if(rp.train) trainBox(a,b); if(rp.ods) odsBox(a,b); }
 // 줌 — s=배율(1~5), tx·ty=옮긴 만큼(px). 지도 칸 밖이 보이지 않게 묶는다
 var ZM={s:1,tx:0,ty:0};
 function ASP(){ var c=CITY[VIEW]; return (c&&c.aspect)||1; }
@@ -539,7 +563,7 @@ function lodAuto(){ var c=CITY[VIEW]; if(!c||!c.areas||DET||ZM.s<LOD.s0*1.25) re
   var fx=(w/2-ZM.tx)/iw, fy=(h/2-ZM.ty)/ih, best=null, ba=9;
   for(var a in c.areas){ var b=c.areas[a]; if(fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]&&(b[2]-b[0])*iw>=0.7*w){ var ar=(b[2]-b[0])*(b[3]-b[1]); if(ar<ba){ ba=ar; best=a; } } }
   if(best) lodEnter(best,fx,fy); }
-function lodTap(e){ var t=e.target.closest&&e.target.closest("#lod [data-a]"); if(!t) return false; var a=t.dataset.a, k=t.dataset.k, S=k&&CITY[VIEW].subs&&CITY[VIEW].subs[a];
+function lodTap(e){ var t=e.target.closest&&e.target.closest("#lod [data-a]"); if(!t) return false; var a=t.dataset.a, k=t.dataset.k, S=k&&CITY[VIEW].subs&&CITY[VIEW].subs[a]; ntap(a,"open_area");
   if(S){ for(var i=0;i<S.length;i++) if(S[i][0]===k){ var s=S[i]; lodEnter(a,(s[1]+s[3])/2,(s[2]+s[4])/2,1); return true; } }
   viewSet(a); return true; }
 function zAt(cx,cy,ns){ var r=document.getElementById("map").getBoundingClientRect(), px=cx-r.left, py=cy-r.top;
