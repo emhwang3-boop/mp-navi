@@ -178,7 +178,7 @@ if(/[?&]ntt=1/.test(location.search)){ try{ localStorage.setItem("mpv_ntt","1");
 function ntap(k,e){ try{ if(!k||!/^[A-Za-z0-9_-]{1,64}$/.test(k)) return; var x=0, own=false; try{ x=localStorage.getItem("mpv_ntt")?1:0; own=!!localStorage.getItem("mp_owner"); }catch(z){}
   if(own&&!x) return;
   var d=new Date(Date.now()+9*3600e3).toISOString().slice(0,10), s={d:d,s:[]}; try{ var o=JSON.parse(localStorage.getItem("mpv_ntd")||"null"); if(o&&o.d===d&&o.s&&o.s.push) s=o; }catch(z){}
-  var id=e+":"+k, u=(e==="tap"||e==="open_area")&&s.s.indexOf(id)<0?1:0, f=s.s.length?0:1;
+  var id=e+":"+k, u=(e==="tap"||e==="open_area"||e==="visit")&&s.s.indexOf(id)<0?1:0, f=s.s.length?0:1;
   if(u||f){ s.s.push(u?id:"~"); if(s.s.length>500) s.s=s.s.slice(-500); try{ localStorage.setItem("mpv_ntd",JSON.stringify(s)); }catch(z){} }
   var v=String(typeof VIEW==="string"?VIEW:""); if(!/^[A-Za-z0-9_-]{1,64}$/.test(v)) v="";
   var b=JSON.stringify({k:k,v:v,l:LANG==="en"?"en":"ko",e:e,u:u,f:f,x:x});
