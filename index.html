@@ -209,6 +209,8 @@ function go(kq){
   out.innerHTML='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
   (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(ps){   // 모든 검색에 내 위치(있으면) — 가까운 순 return fetch(HUB+"/kplace?q="+encodeURIComponent(q)+(LANG==="en"?"&lang=en":"")+(ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"")); }).then(function(r){ return r.json(); }).then(function(j){
     var it=(j&&j.ok&&j.items)||[];
+    if(ps){ it.forEach(function(x){ if(x.dist==null) x.dist=Math.round(kmLL(ps,[+x.y,+x.x])*1000); });   // 거리는 화면에서 계산(위치는 안 남김)
+      if(/\s/.test(q)||poseForQuery(q,it)) it.sort(function(a,b){ return a.dist-b.dist; }); }   // 먹을 곳·카페처럼 고르는 검색·문장 검색은 가까운 순 (이름으로 찾는 곳은 이름 맞는 차례)
     if(!it.length){ out.innerHTML='<div class="msg">'+T("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words.")+'</div>'; return; }
     var gs=j.guess?'<div class="d" style="margin:0 4px 6px">'+T('「'+esc(q)+'」을(를) 「'+esc(j.guess)+'」(으)로 찾았습니다','Showing results for “'+esc(j.guess)+'” (from “'+esc(q)+'”)')+'</div>':'';
     out.innerHTML=gs+it.slice(0,10).map(function(x){
@@ -643,7 +645,7 @@ function meBtn(){ var b=document.getElementById("zme"); b.disabled=true;
     if(!p||!meGo()) document.getElementById("res").innerHTML='<div class="msg">'+T("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요.","Could not get your location — please allow location access.")+'</div>'; }); }
 // 길찾기 출발지 = 내 위치 (있을 때만)
 function meFrom(){ return ME.pos?{lat:ME.pos[0],lng:ME.pos[1]}:null; }
-function linksTo(nmKo,lat,lng,naverName){ var f=meFrom(), ll=lat+","+lng, nm=encodeURIComponent(nmKo);
+function linksTo(nmKo,lat,lng,naverName){ lat=+lat; lng=+lng; var f=meFrom(), ll=lat+","+lng, nm=encodeURIComponent(nmKo);
   var go="https://www.google.com/maps/dir/?api=1"+(LANG==="en"?"&hl=en":"")+(f?"&origin="+f.lat+","+f.lng:"")+"&destination="+ll;
   var kk=f?"https://map.kakao.com/link/from/"+encodeURIComponent("내 위치")+","+f.lat+","+f.lng+"/to/"+nm+","+ll:"https://map.kakao.com/link/to/"+nm+","+ll;
   var nv; if(f){ var A=m3857(f.lat,f.lng), B=m3857(lat,lng); nv="https://map.naver.com/p/directions/"+A[0]+","+A[1]+","+encodeURIComponent("내 위치")+",,/"+B[0]+","+B[1]+","+nm+",,/-/transit"; }
