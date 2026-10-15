@@ -250,8 +250,8 @@ function aiFetch(){ var pl=TR.plan; if(!pl) return; var hn=pl.hotel&&pl.hotel.ty
     return {w:DOW_EN[dt.getUTCDay()],s:s.rows.filter(function(r){ return !r.lunch; }).map(function(r){ return {k:r.x.k,ko:r.x.ko,en:r.x.en,t:m2hm(r.t),m:r.x.stay}; })}; }).filter(function(d){ return d.s.length; })};
   var at=pl.at; var ap=document.getElementById("trAiS"); if(ap) ap.hidden=false;
   fetch(HUB+"/ntrip",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){ return r.json(); }).then(function(j){
-    if(!TR.plan||TR.plan.at!==at) return; if(j&&j.ok){ var k=0, days=pl.days.map(function(d){ return d.stops.length?(j.days||[])[k++]||null:null; }); TR.plan.ai={days:days,tips:j.tips||{}}; save(); } else TR.plan.ai={fail:1};
-    if(document.getElementById("trRep")) repPaint(); }).catch(function(){ if(TR.plan&&TR.plan.at===at) TR.plan.ai={fail:1}; var a=document.getElementById("trAiS"); if(a) a.hidden=true; }); }
+    window.__trAiRes=j&&(j.ok?"ok":String(j.err)); if(!TR.plan||TR.plan.at!==at) return; if(j&&j.ok){ var k=0, days=pl.days.map(function(d){ return d.stops.length?(j.days||[])[k++]||null:null; }); TR.plan.ai={days:days,tips:j.tips||{}}; save(); } else TR.plan.ai={fail:1};
+    if(document.getElementById("trRep")) repPaint(); }).catch(function(e){ window.__trAiRes="E "+e; if(TR.plan&&TR.plan.at===at) TR.plan.ai={fail:1}; var a=document.getElementById("trAiS"); if(a) a.hidden=true; }); }
 
 // ── 보고서 ──
 var REPH=null;
