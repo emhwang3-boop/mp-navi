@@ -98,7 +98,17 @@ html,body{overflow-x:hidden}
 .msg{color:var(--sub);text-align:center;padding:14px 0}
 .desc{color:var(--sub);font-size:14px;margin:-2px 4px 0;text-align:center;line-height:1.5}
 .foot{color:var(--sub);font-size:12px;text-align:center;margin:22px 0 10px}
+#infob{max-width:560px;margin:22px auto 0;position:relative}
+#infot{text-align:center;color:#2f9e44;font-family:'Dancing Script','Nanum Pen Script',cursive;font-size:34px;font-weight:700;line-height:1;margin-bottom:-6px;position:relative;z-index:2;text-shadow:0 0 3px #fff,0 0 6px #fff}
+#infoboard{position:relative;width:100%;aspect-ratio:700/596;background:url(board.png) center/100% 100% no-repeat}
+#infoboard .pl{position:absolute;left:13%;right:13%;height:13%;display:flex;align-items:center;color:#fbf1dc;font-size:clamp(12px,3.3vw,15.5px);font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;text-shadow:0 1px 1px rgba(0,0,0,.5)}
+#pl0{top:12%}#pl1{top:34.5%}#pl2{top:57%}
+#infoboard .pl span{overflow:hidden;text-overflow:ellipsis}
+#infomore{position:absolute;right:5.2%;top:38%;width:30px;height:46px;border:0;border-radius:8px;background:rgba(255,255,255,.18);color:#fbf1dc;font-size:26px;font-weight:900;line-height:1;cursor:pointer}
+#infopop{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+#infopop>div{background:var(--card);color:var(--ink);max-width:440px;border-radius:16px;padding:16px 18px;line-height:1.6;font-size:15px}
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&display=swap">
 </head>
 <body>
 <div class="wrap">
@@ -125,7 +135,11 @@ html,body{overflow-x:hidden}
   <div class="res" id="res"></div>
   <div id="vbar" hidden><button type="button" id="vback" hidden>←</button><div id="vttl" hidden></div><button type="button" id="vdet" hidden>자세히</button></div>
   <div class="map" id="map"><div id="mz"><img src="map.jpg" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg></div><div id="nmapw" hidden><div id="nmap"></div></div><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
-  <div class="foot" id="foot">머니퍼즐 내비 — 주식회사 부만</div>
+  <div id="infob">
+  <div id="infot">안내</div>
+  <div id="infoboard"><div class="pl" id="pl0"></div><div class="pl" id="pl1"></div><div class="pl" id="pl2"></div><button type="button" id="infomore" hidden aria-label="more">⋮</button></div>
+</div>
+<div class="foot" id="foot">머니퍼즐 내비 — 주식회사 부만</div>
 </div>
 <div id="shBox" hidden style="position:fixed;inset:0;z-index:1030;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.hidden=true">
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
@@ -136,7 +150,7 @@ var HUB="https://brief-live-hub.emhwang3.workers.dev";
 var LANG="ko"; try{ var _ql=(location.search.match(/[?&]lang=(ko|en)/i)||[])[1]; if(_ql) localStorage.setItem("mpv_lang",_ql.toLowerCase()); LANG=localStorage.getItem("mpv_lang")||(/^ko/i.test(navigator.language)?"ko":"en"); }catch(e){}
 function T(k,e){ return LANG==="en"?e:k; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); }
+function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} }
 function paint(){
   document.getElementById("lang").textContent=LANG==="ko"?"EN":"한";
   document.getElementById("ttl").textContent=T("- 내비","- Navi");
@@ -164,11 +178,11 @@ function go(kq){
       var en=LANG==="en"&&x.name_en, ttl=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
       return '<div class="item"><div class="t">'+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div>'
         +(LANG==="en"   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 (사장님 10-15)
-          ?'<a href="https://www.google.com/maps/dir/?api=1&destination='+ll+'" target="_blank" rel="noopener">Google Maps (English)</a>'
+          ?'<a href="https://www.google.com/maps/dir/?api=1'+(LANG==="en"?"&hl=en":"")+'&destination='+ll+'" target="_blank" rel="noopener">Google Maps (English)</a>'
            +'<a href="https://map.naver.com/p/search/'+nm+'" target="_blank" rel="noopener">Naver Map</a>'
           :'<a href="https://map.kakao.com/link/to/'+nm+','+x.y+','+x.x+'" target="_blank" rel="noopener">카카오맵 길찾기</a>'
            +'<a href="https://map.naver.com/p/search/'+nm+'" target="_blank" rel="noopener">네이버 지도</a>'
-           +'<a href="https://www.google.com/maps/dir/?api=1&destination='+ll+'" target="_blank" rel="noopener">구글 지도</a>')+'</div>';
+           +'<a href="https://www.google.com/maps/dir/?api=1'+(LANG==="en"?"&hl=en":"")+'&destination='+ll+'" target="_blank" rel="noopener">구글 지도</a>')+'</div>';
     }).join("");
   }).catch(function(){ out.innerHTML='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>'; });
 }
@@ -251,11 +265,11 @@ function placeShow(k){ var p=PLACES[k]; if(!p) return; var nm=LANG==="en"?p.en:p
   document.getElementById("q").value=nm;
   document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(nm)+'</div>'+((LANG==="en"?p.den:p.dko)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LANG==="en"?p.den:p.dko)+'</div>':'')+'<div class="d">'+esc(LANG==="en"?(p.addr_en||p.addr):p.addr)+' · '+p.lat.toFixed(5)+', '+p.lng.toFixed(5)+'</div>'
     +(LANG==="en"   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 (사장님 10-15)
-      ?'<a href="https://www.google.com/maps/dir/?api=1&destination='+ll+'" target="_blank" rel="noopener">Google Maps (English)</a>'
+      ?'<a href="https://www.google.com/maps/dir/?api=1'+(LANG==="en"?"&hl=en":"")+'&destination='+ll+'" target="_blank" rel="noopener">Google Maps (English)</a>'
        +'<a href="https://map.naver.com/p?c='+p.lng+','+p.lat+',15,0,0,0,dh" target="_blank" rel="noopener">Naver Map</a>'
       :'<a href="https://map.kakao.com/link/to/'+encodeURIComponent(p.ko)+','+ll+'" target="_blank" rel="noopener">카카오맵 길찾기</a>'
        +'<a href="https://map.naver.com/p?c='+p.lng+','+p.lat+',15,0,0,0,dh" target="_blank" rel="noopener">네이버 지도</a>'
-       +'<a href="https://www.google.com/maps/dir/?api=1&destination='+ll+'" target="_blank" rel="noopener">구글 지도</a>')+'</div>';
+       +'<a href="https://www.google.com/maps/dir/?api=1'+(LANG==="en"?"&hl=en":"")+'&destination='+ll+'" target="_blank" rel="noopener">구글 지도</a>')+'</div>';
   clearTimeout(window._scT); window._scT=setTimeout(function(){ window.scrollTo({top:0,behavior:"smooth"}); },460); }
 var HIT={keys:["bamboo", "beach", "beopju", "buyeo", "casino", "choji", "dokdo", "dolha", "ever", "hahoe", "halla", "icn", "jdj", "jeond", "jeonju", "jiri", "ktx", "myeong", "naksan", "pmj", "sacheon", "seok", "seorak", "ski", "tea", "tower", "trail", "tunnel", "turtle", "ulleung", "unif"],rle:"0154,O3,0243,O3,06,O4,0233,O4,06,O6,03,O4,0232,O8,03,O7,01,O6,0231,O11,02,O12,0231,O25,0231,O25,0231,O25,0231,O25,0231,O27,0230,O28,0228,O28,0229,O26,0230,O26,0231,O24,0233,O22,0235,O20,0237,O18,0240,O14,0203,L5,037,O8,0204,L7,0246,L11,0244,L14,028,G2,0211,L17,026,G3,0208,L19,024,G5,023,C1,02,C1,0180,L20,024,G6,019,C1,01,C6,01,C1,0178,L18,025,G6,015,C2,02,C10,0177,L19,024,G7,015,C3,02,C7,0180,L18,024,G8,013,C4,02,C8,0180,L14,025,G11,012,C5,01,C10,049,=1,0128,L6,01,L2,01,L4,025,G12,010,C6,01,C14,045,=2,06,=1,0159,G12,010,C6,01,C14,043,=1,02,=1,06,=1,08,=1,0150,G12,010,C6,02,C13,043,=2,01,=1,06,=1,04,=1,02,=2,01,=1,0147,G15,08,C20,045,=1,01,=2,01,=1,03,=1,04,=1,02,=1,01,=2,083,D21,041,G17,03,C24,046,=2,01,=1,01,=1,03,=1,01,=2,01,=1,01,=2,01,=1,084,D21,040,G19,01,C26,046,=1,01,=3,01,=1,01,=1,01,=1,01,=2,01,=1,01,=2,084,D20,02,J1,038,G19,01,C21,051,=9,01,=1,01,=1,01,=2,01,=1,085,D22,J1,037,G21,01,C19,051,=1,01,=1,01,=1,01,=1,01,=2,01,=1,01,=1,01,=1,01,=3,083,D23,J1,037,G21,01,C16,049,=2,02,=8,01,=2,01,=1,01,=7,081,D24,01,J1,036,G22,06,C8,053,=2,01,=5,01,=2,01,=2,01,=4,01,=1,01,=1,01,=4,077,D24,J2,039,G13,01,G1,07,C8,054,=5,01,=1,01,=8,01,=2,01,=9,01,=2,083,D4,012,J2,052,G3,08,C9,045,=1,07,=26,01,=2,084,D3,013,J2,0117,=3,02,=3,01,=27,037,61,062,J3,072,H7,040,=4,01,=27,01,=3,02,=1,032,61,061,J5,067,H2,01,H12,034,=2,03,=3,01,=2,01,=24,01,=4,032,64,057,J2,01,J2,067,H14,037,=4,02,=27,01,=3,032,67,056,J2,02,J2,065,H16,034,=4,02,=32,01,=4,027,69,054,J3,03,J3,064,H13,040,=5,01,=31,030,69,053,J2,05,J3,064,H13,044,=36,027,611,034,>2,014,J3,04,J5,011,B3,049,H10,046,=4,01,=28,030,611,032,>6,011,J5,04,J5,010,B4,03,B5,01,B5,036,H12,045,=34,027,612,025,>12,010,J2,01,J3,03,J6,08,B7,02,B12,035,H17,036,=34,031,612,023,>15,08,J2,02,J3,03,J6,07,B14,01,B7,034,H18,044,=30,027,613,017,>23,03,J3,09,J6,07,B7,01,B6,01,B7,033,H4,01,H7,03,H3,025,=1,02,=45,029,613,012,62,03,>24,01,J2,04,J3,05,J5,07,B8,01,B13,032,H4,01,H8,01,H1,01,H4,028,=42,030,614,01,62,08,62,04,>24,J2,02,J9,03,J3,010,B13,02,B7,029,H21,028,=42,031,616,08,62,07,>18,01,J2,03,J11,02,J3,09,B7,01,B16,027,H22,028,=42,030,617,07,63,08,>16,06,J13,01,J3,07,B8,03,B15,027,H3,01,H18,029,=41,030,616,07,63,09,>16,06,J13,01,J3,05,B9,04,B16,026,H2,02,H4,02,H1,01,H10,030,=39,031,617,06,61,010,>18,04,J14,01,J7,B10,03,B17,029,H5,01,H13,031,=37,031,619,02,65,02,61,04,>22,02,J14,01,J7,01,B5,01,B4,02,B17,029,H18,033,=35,031,619,02,64,01,64,04,>22,02,J14,01,J7,01,B5,01,B20,031,H15,040,=29,035,617,02,62,04,64,010,>3,01,>9,05,J22,03,B2,02,B11,01,B7,031,H13,0107,617,01,62,02,67,026,J24,05,B21,030,H12,0110,628,026,J24,05,B18,01,B2,027,H12,0113,628,026,J26,02,B3,02,B10,05,B2,024,H11,0117,625,029,J27,B3,04,B9,05,B2,022,H11,0121,617,033,J29,B2,05,B9,05,B2,022,H9,0123,615,035,J29,B1,J1,02,B5,03,B2,07,B2,024,H5,0124,613,038,J32,01,B5,03,B3,06,B3,0153,612,013,61,024,J34,B5,03,B2,06,B4,0138,639,024,J11,023,J1,B3,04,B5,04,B4,0140,627,070,B1,05,B5,0114,72,0136,B4,0114,73,0252,74,02,72,0248,75,01,72,0166,57,075,710,084,<1,02,<2,07,94,06,96,050,511,072,711,083,<6,07,95,05,96,049,513,071,711,064,<1,017,<7,08,94,04,98,047,514,070,712,080,<7,01,<1,08,95,03,98,047,515,064,722,066,<3,03,<9,011,95,03,98,047,515,065,720,067,<15,011,95,03,97,021,32,024,516,066,716,069,<3,02,<6,016,96,02,97,021,32,01,31,019,519,068,711,071,<10,018,96,02,98,019,36,017,520,072,74,073,<9,020,96,02,98,019,310,013,520,0148,<8,022,96,01,99,018,314,09,521,0146,<9,023,97,01,98,016,316,08,522,0138,<1,06,<10,023,97,01,98,016,314,010,522,0118,<2,019,<1,03,<7,02,<2,024,97,01,98,017,315,01,31,07,521,0117,<3,010,<2,010,<7,029,98,01,96,016,317,01,32,07,522,058,N3,054,<3,09,<3,07,<8,031,98,01,96,016,316,01,33,05,525,053,N1,01,N10,047,<7,04,<5,06,<8,033,98,02,95,018,319,04,525,053,N14,044,<16,02,<11,01,<3,031,99,02,95,015,321,02,33,03,518,055,N16,036,<1,06,<33,029,918,014,322,01,35,075,N22,029,<3,07,<27,033,918,015,315,02,311,049,K2,022,N26,026,<4,09,<22,035,918,011,31,02,331,046,K4,010,N1,03,N2,03,N37,017,<4,011,<19,035,919,03,42,04,336,043,K8,03,K3,03,N3,02,N1,02,N42,013,<3,07,<22,037,919,03,42,02,332,01,37,040,K10,01,K5,04,N1,01,N23,08,N4,03,N7,014,<30,039,920,02,42,02,340,040,K9,02,K6,01,N1,01,N18,05,N13,02,N9,012,<30,041,919,01,44,02,329,01,31,02,31,01,32,044,K8,02,K6,01,N16,02,N29,010,<33,041,922,43,02,33,01,334,043,K8,01,K7,01,N26,01,N10,01,N8,09,<36,062,43,02,34,01,319,01,313,042,K18,02,N15,07,N11,02,N8,011,<39,058,43,02,36,03,314,02,313,042,K17,01,N14,06,N14,02,N8,014,<41,052,46,03,32,05,331,040,K18,N34,01,N9,016,<42,048,47,06,335,040,K18,N34,01,N9,019,<43,044,49,02,338,039,K18,N51,014,<42,043,49,07,332,041,K17,06,N1,01,N2,01,N39,017,<39,043,410,07,329,044,K8,01,K7,028,N19,024,<35,044,410,010,320,050,K8,01,K8,072,<31,046,410,012,33,02,32,04,32,01,31,053,K8,01,K8,074,<27,048,410,080,K1,01,K15,076,<23,050,410,080,K1,01,K15,079,<19,051,410,080,K1,01,K15,081,<15,054,48,080,K2,01,K8,01,K3,02,K1,084,<7,02,<1,057,46,081,K2,01,K7,02,K3,02,K1,0151,41,01,42,083,K1,02,K7,02,K3,02,K1,0149,47,082,K1,02,K7,02,K3,02,K1,0148,49,081,K1,02,K4,01,K2,02,K3,02,K1,0148,48,081,K2,02,K4,01,K2,02,K3,02,K1,0148,48,081,K2,02,K7,02,K3,02,K2,0148,48,073,K35,0140,410,024,:2,050,K24,0145,411,023,:7,052,F8,0155,412,020,:14,045,F13,0153,410,018,:25,01,:7,028,F15,0156,43,019,:27,01,:8,026,F17,0174,:40,024,F19,0171,:42,024,F19,0168,:45,023,F20,0168,:45,023,F20,0170,:43,023,F20,0170,:43,023,F20,0171,:30,02,:10,023,F20,0174,:26,03,:10,020,F23,0176,:23,04,:10,020,F23,0179,:20,03,:10,021,F23,0183,:15,03,:11,021,F23,0185,:12,04,:9,023,F23,0188,:8,011,:3,023,F23,0191,:5,037,F23,0233,F23,0233,F23,0233,F23,0145,?7,081,F23,0141,?14,055,A3,020,F23,0140,?16,045,A1,05,A4,022,F23,0139,?18,041,A4,02,A4,09,A4,0173,?20,036,A3,01,A9,06,A5,0175,?22,032,A27,0175,?22,030,A22,01,A2,0179,?22,026,A2,01,A25,02,A5,0173,?22,024,A34,0176,?22,021,A37,03,A2,0171,?22,019,A41,01,A3,0170,?22,017,A45,0173,?21,016,A47,0172,?20,017,A47,0173,?19,017,A47,0173,?18,018,A47,0174,?17,018,A46,0175,?16,021,A42,02,A2,0174,?14,028,A3,01,A36,0175,?12,040,A2,04,A23,0177,?8,042,A4,01,A24,0178,?6,051,A4,01,A16,0240,A2,01,A13,0166,111,069,A10,0163,11,01,112,074,A5,0161,116,0241,118,0238,119,089,21,0147,11,02,114,089,29,0144,116,085,214,0141,112,01,11,030,@2,053,218,0139,111,032,@4,051,26,01,214,0137,111,028,@10,048,211,01,211,0136,111,023,@3,01,@12,01,@2,043,27,01,24,02,25,01,25,0135,111,016,@26,02,@2,038,28,01,25,01,25,02,25,0134,111,012,@35,01,@1,034,24,01,24,01,25,02,211,0134,111,09,@42,031,24,01,24,02,25,02,211,0134,111,07,@47,027,25,01,24,02,215,0137,111,05,@51,025,24,01,215,0144,111,012,@39,030,213,01,22,0148,18,01,12,013,@22,01,@2,043,26,01,22,06,22,0147,18,01,12,011,@15,066,23,01,22,0147,111,013,@16,062,27,0147,111,017,@15,059,27,0147,110,016,@20,056,27,0147,110,016,@21,054,28,0147,110,020,@12,058,210,0146,110,025,@9,056,210,0146,110,026,@11,053,210,0146,110,031,@7,052,211,0146,18,091,214,0242,216,0200,E4,037,27,01,28,0196,E7,037,26,01,29,0198,E4,038,25,01,210,0196,E3,01,E2,039,216,0195,E1,03,E2,038,223,0165,E5,022,E3,029,233,0165,E4,022,E3,025,242,0160,E4,022,E3,024,243,0161,E3,014,E3,04,E5,020,246,0160,E2,01,E2,01,E1,012,E4,01,E7,019,244,0162,E2,02,E3,01,E2,08,E14,019,243,0162,E2,03,E2,01,E2,03,E3,02,E14,021,225,01,213,0146,I4,02,I2,010,E2,04,E5,03,E3,01,E14,018,22,01,213,01,22,01,214,02,21,0150,I10,08,E3,04,E5,01,E5,01,E6,028,21,01,21,04,212,01,26,02,24,0153,I10,08,E3,02,E1,01,E5,01,E5,02,E4,032,26,02,212,02,24,0151,I4,01,I10,08,E6,01,E5,01,E5,042,21,01,22,01,22,01,21,03,21,01,21,02,22,0152,I17,01,I2,05,E6,01,E5,01,E5,0211,I24,03,E5,08,E5,0209,I26,03,E6,01,E2,0216,I28,03,E9,0215,I29,03,E8,0214,I31,03,E9,0212,I32,03,E9,0210,I34,03,E9,0210,I34,0222,I34,0223,I32,0225,I29,0229,I25,0234,I21,0241,I9,0702,86,0250,86,085,M2,0163,86,085,M2,0162,87,085,M2,0163,86,079,M9,0162,86,080,M9,0161,86,081,M15,0153,88,080,M15,0153,88,081,M10,01,M7,0149,88,081,M11,01,M8,0138,;6,03,88,081,M11,03,M6,0136,;9,02,87,082,M11,03,M6,0135,;12,87,082,M11,03,M6,0134,;13,88,074,M17,04,M6,0132,;13,01,;3,86,070,M2,01,M19,03,M5,0131,;21,074,M23,03,M3,0130,;26,072,M28,0128,;30,070,M28,0125,;36,067,M27,0126,;36,068,M25,0130,;30,070,M25,0140,;12,078,M24,0237,M2,01,M1,01,M1,01,M1,02,M1,03,M4,0999,0153"};
 var HG=(function(){ var g=new Uint8Array(65536), i=0; HIT.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; })();
@@ -348,7 +362,7 @@ function m3857(lat,lng){ return [lng*20037508.34/180, Math.log(Math.tan((90+lat)
 var ISLE={halla:"jeju",dolha:"jeju",ulleung:"ulleung",dokdo:"ulleung"};
 function routePlan(a,b,km){ var p=PLACES[a], q=PLACES[b], na=encodeURIComponent(p.ko), nb=encodeURIComponent(q.ko), A=m3857(p.lat,p.lng), B=m3857(q.lat,q.lng);
   var nv="https://map.naver.com/p/directions/"+A[0]+","+A[1]+","+na+",,/"+B[0]+","+B[1]+","+nb+",,/-/";
-  var go="https://www.google.com/maps/dir/?api=1&origin="+p.lat+","+p.lng+"&destination="+q.lat+","+q.lng+"&travelmode=";
+  var go="https://www.google.com/maps/dir/?api=1"+(LANG==="en"?"&hl=en":"")+"&origin="+p.lat+","+p.lng+"&destination="+q.lat+","+q.lng+"&travelmode=";
   var kk="https://map.kakao.com/link/from/"+na+","+p.lat+","+p.lng+"/to/"+nb+","+q.lat+","+q.lng;
   var L=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };
   var ia=ISLE[a]||"land", ib=ISLE[b]||"land";
@@ -463,8 +477,23 @@ function resClear(){ document.getElementById("res").innerHTML=""; try{ dlDraw(nu
 (function(){ var r=document.getElementById("res");
   new MutationObserver(function(){ if(r.firstElementChild&&!r.querySelector(":scope > .xbtn")){ var b=document.createElement("button"); b.className="xbtn"; b.type="button"; b.textContent="✕"; b.setAttribute("aria-label",T("닫기","Close")); b.onclick=resClear; r.insertBefore(b,r.firstChild); } }).observe(r,{childList:true});
 })();
+// 안내판 — 생각날 때마다 아래 목록에 한 줄씩 [한글, 영어] (사장님 10-15)
+var INFO=[
+  ["네이버 지도를 영어로: 네이버 지도 앱 → ☰ 메뉴 → ⚙ 설정 → 언어 → English","Naver Map in English: Naver Map app → ☰ Menu → ⚙ Settings → Language → English"],
+  ["구글 지도는 이 앱에서 열면 영어로 열립니다","Google Maps opened from this app shows in English"],
+  ["카카오맵은 한국어만 됩니다","Kakao Map is Korean only"]
+];
+var INFO_AT=0;
+function infoPaint(){ document.getElementById("infot").textContent=LANG==="en"?"Information":"안내";
+  for(var i=0;i<3;i++){ var e=document.getElementById("pl"+i), k=INFO_AT+i, it=INFO[k]; e.innerHTML=it?'<span>'+esc(LANG==="en"?it[1]:it[0])+'</span>':''; e.dataset.k=it?k:""; }
+  document.getElementById("infomore").hidden=INFO.length<=3; }
+document.getElementById("infomore").onclick=function(){ INFO_AT+=3; if(INFO_AT>=INFO.length) INFO_AT=0; infoPaint(); };   // ⋮ — 다음 줄들이 판자로 들어온다
+[0,1,2].forEach(function(i){ document.getElementById("pl"+i).onclick=function(){ var k=this.dataset.k; if(k==="") return; var it=INFO[+k];
+  var b=document.createElement("div"); b.id="infopop"; b.onclick=function(e){ if(e.target===b) b.remove(); };
+  b.innerHTML='<div><b>'+(LANG==="en"?"Information":"안내")+'</b><div style="margin-top:6px">'+esc(LANG==="en"?it[1]:it[0])+'</div></div>'; document.body.appendChild(b); }; });
 thPaint();
 paint();
+infoPaint();
 hitInit();
 </script>
 </body>
