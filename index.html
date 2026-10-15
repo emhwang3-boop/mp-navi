@@ -448,7 +448,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="f79465ce40", NAVI_ROOT="kr";
+var NAVI_V="514935cede", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -697,7 +697,7 @@ function lodDraw(){ var L=document.getElementById("lod"); if(!L) return; var c=C
       if(pw<mn){ ph=ph*mn/pw; pw=mn; } if(ph<mn){ pw=pw*mn/ph; ph=mn; } ph=Math.min(ph,pw*1.6); pw=Math.min(pw,ph*1.6);
       var x=(s[1]+s[3])/2*W-pw/2, y=(s[2]+s[4])/2*H-ph/2, r=[x,y,x+pw,y+ph];
       if(hit(r)) continue; put.push(r);
-      var e=lodEl("p:"+a+":"+s[0],"lp",a); e.dataset.k=s[0]; e.style.backgroundImage="url('"+s[5]+"')"; e.title=pName(s[0].split("@")[0])||"";
+      var e=lodEl("p:"+a+":"+s[0],"lp",a); e.dataset.k=s[0]; e.style.backgroundImage="url('"+((LANG==="en"&&s[6])?s[6]:s[5])+"')";   /* [6]=영어판(전광판 글자 박힌 미니) */ e.title=pName(s[0].split("@")[0])||"";
       e.style.left=(x/W*100)+"%"; e.style.top=(y/H*100)+"%"; e.style.width=pw+"px"; e.style.height=ph+"px"; e.style.borderWidth=Math.max(0.6,w*0.003)+"px"; e.style.borderRadius=(w*0.01)+"px"; } }); }
 // 네모 안 비율(pfx,pfy)을 가운데에 두고 아래 약도로 — sC 를 주면 그 배율, 없으면 지금 보이는 넓이를 이어 받는다
 function lodEnter(a,pfx,pfy,sC){ var c=CITY[VIEW], b=c&&c.areas&&c.areas[a]; if(!b) return; var asP=ASP(), sP=ZM.s; viewSet(a);
