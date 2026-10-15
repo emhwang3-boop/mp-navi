@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="google" content="notranslate">
+<title>머니퍼즐 내비</title>
+<link rel="mp-manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#2f9e44">
+<script>
+/* 머니퍼즐 내비 첫 화면 (사장님 2026-10-14) — 다른 앱과 같은 출입: 사장님 기기·초대 링크·홈페이지에서 온 사람만 */
+(function(){ try{
+  if(/[?&]me=EM2410/i.test(location.search)) localStorage.setItem("mp_owner","1");
+  if(/[?&]inv=MPNV26/i.test(location.search)){ localStorage.setItem("mpv_inv","1"); localStorage.setItem("mpv_ok","1"); }
+  var ok=!!localStorage.getItem("mp_owner")||!!localStorage.getItem("mpv_ok")||/^https:\/\/([a-z0-9-]+\.)?moneypuzzle\.co\.kr|^https:\/\/emhwang3-boop\.github\.io\/(home|mp-navi)/.test(document.referrer||"");
+  if(localStorage.getItem("mp_owner")||localStorage.getItem("mpv_inv")) document.addEventListener("DOMContentLoaded",function(){ var l=document.querySelector('link[rel="mp-manifest"]'); if(l) l.rel="manifest"; });
+  if(ok){ localStorage.setItem("mpv_ok","1"); return; }
+  location.replace("https://moneypuzzle.co.kr/");
+}catch(e){} })();
+</script>
+<script>try{ if(localStorage.getItem("mpv_theme")==="dark") document.documentElement.setAttribute("data-theme","dark"); }catch(e){}</script>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#111827;--sub:#5b6474;--line:#e6e9ef;--green:#2f9e44;--blue:#3d5af1}
+:root[data-theme="dark"]{--bg:#0f1420;--card:#171d2b;--ink:#e8ecf2;--sub:#9aa4b2;--line:#263044}
+:root[data-theme="dark"] .sbox input{background:#13261a;border-color:#37b24d}
+.tb{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;font-size:13px;font-weight:700;line-height:1;padding:7px 10px;cursor:pointer;white-space:nowrap;flex:0 0 auto;font-family:inherit}
+.mi{display:block;padding:13px 16px;color:var(--ink);text-decoration:none;font-size:14.5px;border-bottom:1px solid var(--line)}
+.shgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.shi{width:17px;height:17px;flex:0 0 auto}
+.shgrid a,.shgrid button{display:flex;align-items:center;gap:6px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;text-align:left;font-family:inherit}
+.shhd{font-size:12px;color:var(--sub);margin:0 2px 8px}.shmsg{font-size:12.5px;color:var(--blue);margin-top:9px;min-height:16px;text-align:center;font-weight:700}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:720px;margin:0 auto;padding:16px}
+.top{display:flex;align-items:center;gap:10px;margin:6px 0 18px;position:relative;flex-wrap:wrap;row-gap:8px}
+.top .logo{flex:0 0 auto}
+.tbs{display:flex;align-items:center;gap:10px;margin-left:auto}
+.logo{display:flex;align-items:center;gap:6px;white-space:nowrap;min-width:0;font-weight:900;font-size:21px;letter-spacing:-.4px;cursor:pointer}
+@media (max-width:420px){.logo{font-size:18px}}
+.logo img{height:32px;width:auto}
+.logo b{font-weight:600;color:var(--sub)}
+.sbox{display:flex;flex-direction:column;align-items:center;gap:10px}
+.sbox input{width:100%;font-size:19px;padding:18px 22px;border-radius:999px;border:2px solid var(--green);background:#eefaf0;color:var(--ink);outline:none;box-shadow:0 2px 10px rgba(47,158,68,.12)}
+.sbox input::placeholder{color:#8a929c}
+@media (max-width:520px){.sbox input::placeholder{font-size:16px}}
+.sbox input:focus{border-color:#2b8a3e;box-shadow:0 0 0 4px rgba(47,158,68,.18)}
+.sbox button{border:0;background:var(--green);color:#fff;font-weight:800;font-size:17px;border-radius:999px;padding:12px 34px;cursor:pointer}
+.map{margin:18px 0 0;border-radius:18px;overflow:hidden;background:#96b2c4;box-shadow:0 2px 14px rgba(0,0,0,.08)}
+/* 지도는 화면을 거의 꽉 채우는 정사각형 — 가로·세로 중 짧은 쪽에 맞춤, 글 칸(720) 밖으로 나와 가운데 (사장님 10-15) */
+.map{--W:min(calc(100vw - 24px),calc(100vh - 24px));width:var(--W);margin-left:calc((100% - var(--W)) / 2)}
+@supports (height:100svh){.map{--W:min(calc(100vw - 24px),calc(100svh - 24px))}}
+html,body{overflow-x:hidden}
+.map{position:relative}.map img{display:block;width:100%;height:auto}
+.map{touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.map img{-webkit-user-drag:none;pointer-events:none}
+#dl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#mz{position:relative;transform-origin:0 0;will-change:transform}
+.map.zoomed{touch-action:none}
+.zb{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
+#vback{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 13px;font-weight:900;font-size:18px;line-height:1.2;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+#vdet{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+#vbar{display:flex;align-items:center;gap:10px;margin:16px 0 -6px}#vbar[hidden]{display:none!important}
+#nmapw{position:absolute;inset:0;z-index:2}#nmap{width:100%;height:100%}
+#vttl{flex:1;text-align:center;background:transparent;color:#3a2e22;border-radius:999px;padding:5px 14px;font-weight:900;font-size:15px;pointer-events:none}
+.zb button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:21px;font-weight:800;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);padding:0}
+.err{color:#e03131;font-weight:800;text-align:center;padding:14px 0}
+.dist{font-size:22px;font-weight:900;color:var(--green);margin:2px 0 4px}
+.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}.trn td{padding:6px 4px;border-top:1px solid var(--line)}.trn td.f{text-align:right;font-weight:700}
+.trh{font-weight:800;margin:12px 0 2px}
+.res{margin-top:14px;position:relative}
+.xbtn{position:absolute;top:6px;right:6px;z-index:2;width:34px;height:34px;border:0;border-radius:50%;background:var(--bg);color:var(--sub);font-size:20px;line-height:34px;cursor:pointer;padding:0}
+.xbtn:hover{background:var(--line);color:var(--ink)}
+#res > div:first-of-type{padding-right:44px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0}
+.item .t{font-weight:800;font-size:16px}
+.item .d{color:var(--sub);font-size:13.5px;margin:3px 0 8px}
+.item a{display:inline-block;margin-right:6px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700;color:var(--ink);background:#f8fafc}
+.msg{color:var(--sub);text-align:center;padding:14px 0}
+.desc{color:var(--sub);font-size:14px;margin:-2px 4px 0;text-align:center;line-height:1.5}
+.foot{color:var(--sub);font-size:12px;text-align:center;margin:22px 0 10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo" onclick="resetAll()"><img src="logo.png" alt=""><span style="white-space:nowrap">Money Puzzle<b style="margin-left:4px" id="ttl">- 내비</b></span></div>
+    <div class="tbs">
+    <button id="inst" onclick="instGo()" hidden style="white-space:nowrap;margin-left:auto;border:0;border-radius:999px;padding:8px 14px;background:var(--blue);color:#fff;font-weight:700;font-size:13px;cursor:pointer">⬇ 앱 설치</button>
+    <button id="rs" onclick="resetAll()" class="tb">처음으로</button>
+    <button id="lang" onclick="setLang(LANG==='ko'?'en':'ko')" class="tb">EN</button>
+    <button id="sh" onclick="shOpen()" aria-label="share" class="tb">공유</button>
+    <button id="th" onclick="thTog()" aria-label="theme" style="border:0;background:none;font-size:20px;line-height:1;padding:4px 4px;cursor:pointer">🌙</button>
+    <button id="mb" onclick="mbTog(event)" aria-label="menu" style="border:0;background:none;font-size:24px;line-height:1;padding:4px 6px;cursor:pointer;color:var(--ink)">⋮</button>
+    </div>
+    <div id="mm" hidden style="position:absolute;right:0;top:50px;z-index:20;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);min-width:200px;overflow:hidden">
+      <a href="#" id="mcopy" hidden onclick="mbCopy();return false" class="mi">🔗 링크 복사</a>
+      <a href="#" id="mref" onclick="location.reload();return false" class="mi" style="border-bottom:0">↻ 새로고침</a>
+    </div>
+  </div>
+  <form class="sbox" onsubmit="go();return false">
+    <input id="q" autocomplete="off" placeholder="예: 경복궁, 해운대 맛집, 전주 한옥마을">
+    <p class="desc" id="hint">가고 싶은 곳, 먹고 싶은 것, 하고 싶은 것 등 아무거나 써 보세요. 뭐라도 추천해 드립니다.</p>
+    <button type="submit" id="gob">검색</button>
+  </form>
+  <div class="res" id="res"></div>
+  <div id="vbar" hidden><button type="button" id="vback" hidden>←</button><div id="vttl" hidden></div><button type="button" id="vdet" hidden>자세히</button></div>
+  <div class="map" id="map"><div id="mz"><img src="map.jpg" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg></div><div id="nmapw" hidden><div id="nmap"></div></div><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
+  <div class="foot" id="foot">머니퍼즐 내비 — 주식회사 부만</div>
+</div>
+<div id="shBox" hidden style="position:fixed;inset:0;z-index:1030;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.hidden=true">
+  <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
+</div>
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
+<script>
+var HUB="https://brief-live-hub.emhwang3.workers.dev";
+var LANG="ko"; try{ var _ql=(location.search.match(/[?&]lang=(ko|en)/i)||[])[1]; if(_ql) localStorage.setItem("mpv_lang",_ql.toLowerCase()); LANG=localStorage.getItem("mpv_lang")||(/^ko/i.test(navigator.language)?"ko":"en"); }catch(e){}
+function T(k,e){ return LANG==="en"?e:k; }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); }
+function paint(){
+  document.getElementById("lang").textContent=LANG==="ko"?"EN":"한";
+  document.getElementById("ttl").textContent=T("- 내비","- Navi");
+  document.getElementById("inst").textContent=T("⬇ 앱 설치","⬇ Install");
+  document.getElementById("rs").textContent=T("처음으로","Reset");
+  document.getElementById("sh").textContent=T("공유","Share");
+  document.getElementById("mcopy").textContent=T("🔗 링크 복사","🔗 Copy link");
+  document.getElementById("mref").textContent=T("↻ 새로고침","↻ Refresh");
+  document.getElementById("q").placeholder=T("예: 경복궁, 해운대 맛집, 전주 한옥마을","e.g. Gyeongbokgung, Haeundae food, Jeonju Hanok Village");
+  document.getElementById("gob").textContent=T("검색","Search");
+  document.getElementById("hint").textContent=T("가고 싶은 곳, 먹고 싶은 것, 하고 싶은 것 등 아무거나 써 보세요. 뭐라도 추천해 드립니다.","Type anything — places to go, food to eat, things to do. We'll recommend something.");
+  document.getElementById("mapimg").alt=T("대한민국 관광 지도","Korea travel map");
+  document.title=T("머니퍼즐 내비","Money Puzzle Navi");
+  document.getElementById("foot").textContent=T("머니퍼즐 내비 — 주식회사 부만","Money Puzzle Navi — Booman Inc.");
+}
+function go(kq){
+  var q=(typeof kq==="string"&&kq)||document.getElementById("q").value.trim(), out=document.getElementById("res"); if(!q){ out.innerHTML=""; return; }
+  out.innerHTML='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
+  fetch(HUB+"/kplace?q="+encodeURIComponent(q)+(LANG==="en"?"&lang=en":"")).then(function(r){ return r.json(); }).then(function(j){
+    var it=(j&&j.ok&&j.items)||[];
+    if(!it.length){ out.innerHTML='<div class="msg">'+T("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words.")+'</div>'; return; }
+    var gs=j.guess?'<div class="d" style="margin:0 4px 6px">'+T('「'+esc(q)+'」을(를) 「'+esc(j.guess)+'」(으)로 찾았습니다','Showing results for “'+esc(j.guess)+'” (from “'+esc(q)+'”)')+'</div>':'';
+    out.innerHTML=gs+it.slice(0,10).map(function(x){
+      var nm=encodeURIComponent(x.name), ll=x.y+","+x.x;
+      var en=LANG==="en"&&x.name_en, ttl=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
+      return '<div class="item"><div class="t">'+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div>'
+        +(LANG==="en"   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 (사장님 10-15)
+          ?'<a href="https://www.google.com/maps/dir/?api=1&destination='+ll+'" target="_blank" rel="noopener">Google Maps (English)</a>'
+           +'<a href="https://map.naver.com/p/search/'+nm+'" target="_blank" rel="noopener">Naver Map</a>'
+          :'<a href="https://map.kakao.com/link/to/'+nm+','+x.y+','+x.x+'" target="_blank" rel="noopener">카카오맵 길찾기</a>'
+           +'<a href="https://map.naver.com/p/search/'+nm+'" target="_blank" rel="noopener">네이버 지도</a>'
+           +'<a href="https://www.google.com/maps/dir/?api=1&destination='+ll+'" target="_blank" rel="noopener">구글 지도</a>')+'</div>';
+    }).join("");
+  }).catch(function(){ out.innerHTML='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>'; });
+}
+// 공유 — 화면은 보여 주되 실제로는 보내지 않는다 (체험판, 사장님 기기 포함 · 2026-10-12)
+// HTS 앱 공유 창을 그대로 옮겨 왔다 — 단추는 모두 막힘 (2026-10-12)
+function shBuild(){
+  var p=document.getElementById("shIn");
+  const en=LANG==="en", u="", t="";
+  const A=function(href,label){ return '<button class="sht">'+label+'</button>'; };
+  let h='<div class="shhd">'+(en?"Share this app":"이 앱 공유하기")+'</div><div class="shgrid">';
+  h+=A("https://twitter.com/intent/tweet?text="+t+"&url="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z\"/></svg> X");
+  h+=A("sms:?&body="+t+"%20"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#34C759\" d=\"M12 3C6.98 3 3 6.36 3 10.5c0 2.35 1.28 4.43 3.3 5.8-.13 1.02-.5 2.2-1.3 3.2 1.7-.2 3.2-.94 4.3-1.7.85.2 1.75.3 2.7.3 5.02 0 9-3.36 9-7.6S17.02 3 12 3z\"/></svg> "+(en?"Message":"문자"));
+  h+=A("https://t.me/share/url?url="+u+"&text="+t,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#26A5E4\" d=\"M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z\"/></svg> "+(en?"Telegram":"텔레그램"));
+  h+=A("https://social-plugins.line.me/lineit/share?url="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#00C300\" d=\"M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314\"/></svg> LINE");
+  h+=A("https://www.facebook.com/sharer/sharer.php?u="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#1877F2\" d=\"M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z\"/></svg> "+(en?"Facebook":"페이스북"));
+  h+=A("https://band.us/plugin/share?body="+t+"%0A"+u+"&route="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" rx=\"6\" fill=\"#00C73C\"/><text x=\"12\" y=\"17.5\" text-anchor=\"middle\" font-size=\"14\" font-weight=\"700\" fill=\"#fff\" font-family=\"Arial\">B</text></svg> "+(en?"BAND":"밴드"));
+  h+=A("https://api.whatsapp.com/send?text="+t+"%20"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#25D366\" d=\"M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z\"/></svg> WhatsApp");
+  h+=A("mailto:?subject="+""+"&body="+t+"%0A"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg> "+(en?"Email":"메일"));
+  h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" rx=\"6\" fill=\"#FEE500\"/><g transform=\"translate(3.2,3.2) scale(0.73)\"><path fill=\"#3C1E1E\" d=\"M22.125 0H1.875C.8394 0 0 .8394 0 1.875v20.25C0 23.1606.8394 24 1.875 24h20.25C23.1606 24 24 23.1606 24 22.125V1.875C24 .8394 23.1606 0 22.125 0zM12 18.75c-.591 0-1.1697-.0413-1.7317-.1209-.5626.3965-3.813 2.6797-4.1198 2.7225 0 0-.1258.0489-.2328-.0141s-.0876-.2282-.0876-.2282c.0322-.2198.8426-3.0183.992-3.5333-2.7452-1.36-4.5701-3.7686-4.5701-6.5135C2.25 6.8168 6.6152 3.375 12 3.375s9.75 3.4418 9.75 7.6875c0 4.2457-4.3652 7.6875-9.75 7.6875zM8.0496 9.8672h-.8777v3.3417c0 .2963-.2523.5372-.5625.5372s-.5625-.2409-.5625-.5372V9.8672h-.8777c-.3044 0-.552-.2471-.552-.5508s.2477-.5508.552-.5508h2.8804c.3044 0 .552.2471.552.5508s-.2477.5508-.552.5508zm10.9879 2.9566a.558.558 0 0 1 .108.4167.5588.5588 0 0 1-.2183.371.5572.5572 0 0 1-.3383.1135.558.558 0 0 1-.4493-.2236l-1.3192-1.7479-.1952.1952v1.2273a.5635.5635 0 0 1-.5627.5628.563.563 0 0 1-.5625-.5625V9.3281c0-.3102.2523-.5625.5625-.5625s.5625.2523.5625.5625v1.209l1.5694-1.5694c.0807-.0807.1916-.1252.312-.1252.1404 0 .2814.0606.3871.1661.0985.0984.1573.2251.1654.3566.0082.1327-.036.2542-.1241.3425l-1.2818 1.2817 1.3845 1.8344zm-8.3502-3.5023c-.095-.2699-.3829-.5475-.7503-.5557-.3663.0083-.6542.2858-.749.5551l-1.3455 3.5415c-.1708.5305-.0217.7272.1333.7988a.8568.8568 0 0 0 .3576.0776c.2346 0 .4139-.0952.4678-.2481l.2787-.7297 1.7152.0001.2785.7292c.0541.1532.2335.2484.4681.2484a.8601.8601 0 0 0 .3576-.0775c.1551-.0713.3041-.2681.1329-.7999l-1.3449-3.5398zm-1.3116 2.4433l.5618-1.5961.5618 1.5961H9.3757zm5.9056 1.3836c0 .2843-.2418.5156-.5391.5156h-1.8047c-.2973 0-.5391-.2314-.5391-.5156V9.3281c0-.3102.2576-.5625.5742-.5625s.5742.2523.5742.5625v3.3047h1.1953c.2974 0 .5392.2314.5392.5156z\"/></g></svg> '+(en?"KakaoTalk":"카카오톡")+'</button>';
+  h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"#8a93a3\" stroke-width=\"2\" stroke-linecap=\"round\" d=\"M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.54 3.54 0 0 0-5-5l-1.2 1.2M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.54 3.54 0 0 0 5 5l1.2-1.2\"/></svg> '+(en?"Copy link":"링크 복사")+'</button>';
+  if(navigator.share)h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#5b93ff\" d=\"M18 16.08a2.9 2.9 0 0 0-1.96.77L8.9 12.7a3.3 3.3 0 0 0 0-1.4l7.05-4.11A2.92 2.92 0 1 0 15 5a3 3 0 0 0 .06.6L8.04 9.72a3 3 0 1 0 0 4.56l7.1 4.15c-.04.2-.06.4-.06.6a2.92 2.92 0 1 0 2.92-2.95z\"/></svg> '+(en?"Other apps":"다른 앱으로")+'</button>';
+  h+='</div><div class="shmsg" id="shMsg"></div>';
+  p.innerHTML=h;
+}
+// 사장님 기기면 진짜 공유 — 받은 사람은 홈페이지에서 앱을 눌러 들어온다 (앱 주소는 홈페이지를 거쳐야 열린다)
+function shOwnerFix(p, appName){
+  var url=location.origin+location.pathname.replace(/index\.html$/,"")+"?inv=MPNV26", txt=appName+" — Money Puzzle";   /* 지금 연 주소 그대로 (2026-10-14) */
+  [].forEach.call(p.querySelectorAll(".sht"),function(b){
+    var lab=b.textContent.trim(), href="";
+    if(/^X$/.test(lab)) href="https://twitter.com/intent/tweet?text="+encodeURIComponent(txt)+"&url="+encodeURIComponent(url);
+    else if(/문자|Message/.test(lab)) href="sms:?&body="+encodeURIComponent(txt+" "+url);
+    else if(/텔레그램|Telegram/.test(lab)) href="https://t.me/share/url?url="+encodeURIComponent(url)+"&text="+encodeURIComponent(txt);
+    else if(/LINE/.test(lab)) href="https://social-plugins.line.me/lineit/share?url="+encodeURIComponent(url);
+    else if(/페이스북|Facebook/.test(lab)) href="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(url);
+    else if(/밴드|BAND/.test(lab)) href="https://band.us/plugin/share?body="+encodeURIComponent(txt+"\n"+url)+"&route="+encodeURIComponent(url);
+    else if(/WhatsApp/.test(lab)) href="https://api.whatsapp.com/send?text="+encodeURIComponent(txt+" "+url);
+    else if(/메일|Email/.test(lab)) href="mailto:?subject="+encodeURIComponent(txt)+"&body="+encodeURIComponent(url);
+    if(/카카오톡|KakaoTalk/.test(lab)&&window.Kakao){   // 카카오 SDK — PC 에서도 카카오톡 「친구에게 보내기」 (2026-10-13)
+      b.classList.remove("sht");
+      b.onclick=function(){ var m=p.querySelector(".shmsg"), ku=url;
+        try{ if(!window.Kakao.isInitialized()) window.Kakao.init("90a47ca48c2a967dd4d14b3b48de2e3b"); if(m) m.textContent="Connecting to KakaoTalk… please wait";
+          window.Kakao.Share.sendDefault({objectType:"text",text:txt+"\n"+url,link:{webUrl:ku,mobileWebUrl:ku},buttonTitle:"Open"}); }
+        catch(e){ try{ navigator.clipboard.writeText(url); }catch(x){} if(m) m.textContent="KakaoTalk is not available — link copied: "+url; } };
+      return;
+    }
+    b.classList.remove("sht");
+    if(href){ var a=document.createElement("a"); a.href=href; a.target="_blank"; a.rel="noopener"; a.innerHTML=b.innerHTML; b.replaceWith(a); return; }
+    b.onclick=function(){   // 카카오톡·링크 복사·다른 앱으로 — 폰 공유창, 안 되면 링크 복사
+      var m=p.querySelector(".shmsg");
+      if(!/링크 복사|Copy link/.test(lab)&&navigator.share){ navigator.share({title:txt,text:txt,url:url}).catch(function(){}); return; }
+      try{ navigator.clipboard.writeText(url).then(function(){ if(m) m.textContent="Link copied: "+url; }); }catch(e){ if(m) m.textContent=url; }
+    };
+  });
+}
+function shOpen(){ shBuild(); try{ if(localStorage.getItem("mp_owner")) shOwnerFix(document.getElementById("shIn"),"Money Puzzle Navi"); }catch(e){} document.getElementById("shBox").hidden=false; }
+document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest(".sht"); if(!t) return; e.preventDefault(); document.getElementById("shMsg").textContent=T("체험판에서는 공유가 되지 않습니다.","Sharing is turned off in this demo."); });
+function resetAll(){ try{ dlDraw(null); viewSet("kr"); }catch(e){} document.getElementById("q").value=""; document.getElementById("res").innerHTML=""; document.getElementById("mm").hidden=true; window.scrollTo(0,0); }
+function isApp(){ return matchMedia("(display-mode: standalone)").matches||matchMedia("(display-mode: minimal-ui)").matches||navigator.standalone===true; }
+function isOwner(){ try{ return !!localStorage.getItem("mp_owner"); }catch(e){ return false; } }
+function isInv(){ try{ return !!localStorage.getItem("mpv_inv")&&!localStorage.getItem("mp_owner"); }catch(e){ return false; } }
+var instEv=null;
+window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); instEv=e; if(!isApp()&&((isOwner()&&!/Android|iPhone|iPad/i.test(navigator.userAgent))||isInv())){ document.getElementById("inst").hidden=false; } });
+function instGo(){ if(instEv){ instEv.prompt(); instEv.userChoice.then(function(){ instEv=null; document.getElementById("inst").hidden=true; }); } }
+function mbTog(e){ e.stopPropagation(); var m=document.getElementById("mm"); m.hidden=!m.hidden; }
+document.addEventListener("click",function(e){ var m=document.getElementById("mm"); if(m&&!m.hidden&&!e.target.closest("#mm")) m.hidden=true; });
+function mbCopy(){ document.getElementById("mm").hidden=true; var u=location.origin+location.pathname.replace(/index\.html$/,"");
+  try{ navigator.clipboard.writeText(u).then(function(){ alert(T("링크를 복사했습니다","Link copied")); }); }catch(e){ prompt("Link:",u); } }
+function thDark(){ return document.documentElement.getAttribute("data-theme")==="dark"; }
+function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":"🌙"; }
+function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
+if(isOwner()) document.getElementById("mcopy").hidden=false;
+var PLACES={"beach": {"ko": "해운대해수욕장", "en": "Haeundae Beach", "addr": "부산 해운대구 우동", "lat": 35.1585232, "lng": 129.1598547, "addr_en": "U-dong, Haeundae-gu, Busan", "dko": "부산 대표 해수욕장, 모래사장과 바다 산책", "den": "Busan's most famous sandy beach"}, "tower": {"ko": "N서울타워", "en": "N Seoul Tower", "addr": "서울 용산구 용산동2가", "lat": 37.551305, "lng": 126.9882306, "addr_en": "Yongsan-dong 2-ga, Yongsan-gu, Seoul", "dko": "남산 꼭대기 전망 타워, 케이블카로 오름", "den": "Observation tower on Namsan hill, reached by cable car"}, "unif": {"ko": "고성통일전망타워", "en": "Goseong Unification Observatory", "addr": "강원 고성군 현내면 명호리", "lat": 38.586687, "lng": 128.3748882, "addr_en": "Myeongho-ri, Hyeonnae-myeon, Goseong-gun, Gangwon", "dko": "북한 땅이 보이는 최북단 전망대", "den": "Northernmost observatory with views into North Korea"}, "pmj": {"ko": "판문점", "en": "Panmunjom (JSA)", "addr": "경기 파주시 군내면 조산리", "lat": 37.9558219, "lng": 126.6770652, "addr_en": "Josan-ri, Gunnae-myeon, Paju, Gyeonggi", "dko": "남북 군인이 마주 선 공동경비구역 (투어 예약 필수)", "den": "Joint Security Area on the DMZ (guided tour only)"}, "tunnel": {"ko": "제3땅굴", "en": "The Third Tunnel", "addr": "경기 파주시 군내면 점원리", "lat": 37.9164736, "lng": 126.6991951, "addr_en": "Jeomwon-ri, Gunnae-myeon, Paju, Gyeonggi", "dko": "북한이 판 침투 땅굴, 직접 걸어 들어가 봄", "den": "North Korean infiltration tunnel you can walk into"}, "jeonju": {"ko": "전주한옥마을 (비빔밥)", "en": "Jeonju Hanok Village (Bibimbap)", "addr": "전북 전주시 완산구 풍남동3가", "lat": 35.8147774, "lng": 127.152557, "addr_en": "Pungnam-dong 3-ga, Wansan-gu, Jeonju, Jeonbuk", "dko": "한옥 700여 채 마을, 비빔밥의 고장", "den": "Village of 700 hanok houses, home of bibimbap"}, "beopju": {"ko": "속리산 법주사", "en": "Beopjusa Temple", "addr": "충북 보은군 속리산면 사내리", "lat": 36.5417208, "lng": 127.8329575, "addr_en": "Sanae-ri, Songnisan-myeon, Boeun-gun, Chungbuk", "dko": "속리산 속 신라 때 큰 절, 거대한 금동 미륵불", "den": "Ancient mountain Buddhist temple with a giant golden Buddha"}, "halla": {"ko": "한라산", "en": "Hallasan", "addr": "제주 서귀포시 서홍동", "lat": 33.3614246, "lng": 126.5294193, "addr_en": "Seohong-dong, Seogwipo, Jeju", "dko": "남한에서 가장 높은 산(1,947m), 등산", "den": "South Korea's highest mountain (1,947 m), hiking"}, "dolha": {"ko": "제주돌문화공원 (돌하르방)", "en": "Jeju Stone Park (Dol Hareubang)", "addr": "제주 제주시 조천읍 교래리", "lat": 33.4485624, "lng": 126.6602733, "addr_en": "Gyorae-ri, Jocheon-eup, Jeju City, Jeju", "dko": "제주 돌 문화와 돌하르방을 보는 공원", "den": "Park of Jeju stone culture and Dol Hareubang statues"}, "seok": {"ko": "석굴암", "en": "Seokguram Grotto", "addr": "경북 경주시 진현동", "lat": 35.7952417, "lng": 129.3505207, "addr_en": "Jinhyeon-dong, Gyeongju, Gyeongbuk", "dko": "화강암 굴 속의 신라 석불 (세계유산)", "den": "8th-century stone Buddha in a granite grotto (UNESCO)"}, "buyeo": {"ko": "국립부여박물관 (금동대향로)", "en": "Buyeo National Museum (Gilt-bronze Incense Burner)", "addr": "충남 부여군 부여읍 동남리", "lat": 36.2763832, "lng": 126.9191034, "addr_en": "Dongnam-ri, Buyeo-eup, Buyeo-gun, Chungnam", "dko": "백제 유물 박물관, 금동대향로", "den": "Baekje history museum, home of the Gilt-bronze Incense Burner"}, "ski": {"ko": "모나용평 스키장", "en": "Yongpyong Ski Resort", "addr": "강원 평창군 대관령면 용산리", "lat": 37.6457553, "lng": 128.6805217, "addr_en": "Yongsan-ri, Daegwallyeong-myeon, Pyeongchang-gun, Gangwon", "dko": "대관령의 큰 스키장·리조트", "den": "Major ski resort in the Daegwallyeong highlands"}, "casino": {"ko": "강원랜드", "en": "Kangwon Land", "addr": "강원 정선군 사북읍 사북리", "lat": 37.2117262, "lng": 128.8216748, "addr_en": "Sabuk-ri, Sabuk-eup, Jeongseon-gun, Gangwon", "dko": "외국인·내국인 모두 갈 수 있는 카지노 리조트", "den": "Casino resort open to Koreans and foreigners"}, "icn": {"ko": "인천국제공항", "en": "Incheon International Airport", "addr": "인천 영종구 운서동", "lat": 37.4491679, "lng": 126.4509204, "addr_en": "Unseo-dong, Incheon", "dko": "한국의 관문 국제공항", "den": "Korea's main international airport"}, "tea": {"ko": "보성녹차밭 대한다원", "en": "Boseong Green Tea Field", "addr": "전남 보성군 보성읍 봉산리", "lat": 34.7159598, "lng": 127.0779018, "addr_en": "Bongsan-ri, Boseong-eup, Boseong-gun, Jeonnam", "dko": "산비탈 계단식 녹차밭 (사진 명소)", "den": "Terraced green tea fields on the hillside"}, "bamboo": {"ko": "담양 죽녹원", "en": "Damyang Juknokwon Bamboo Forest", "addr": "전남 담양군 담양읍 향교리", "lat": 35.3278371, "lng": 126.9859309, "addr_en": "Hyanggyo-ri, Damyang-eup, Damyang-gun, Jeonnam", "dko": "하늘로 뻗은 대나무 숲 산책길", "den": "Tall bamboo forest walking trails"}, "seorak": {"ko": "설악산 대청봉", "en": "Seoraksan (Daecheongbong)", "addr": "강원 양양군 서면 오색리", "lat": 38.1191252, "lng": 128.4653615, "addr_en": "Osaek-ri, Seo-myeon, Yangyang-gun, Gangwon", "dko": "기암절벽 국립공원, 단풍 명소", "den": "National park of granite peaks, famous autumn colors"}, "ever": {"ko": "에버랜드", "en": "Everland", "addr": "경기 용인시 처인구 포곡읍 전대리", "lat": 37.2931011, "lng": 127.2021983, "addr_en": "Jeondae-ri, Pogok-eup, Cheoin-gu, Yongin, Gyeonggi", "dko": "한국 최대 놀이공원·동물원", "den": "Korea's biggest theme park and zoo"}, "jiri": {"ko": "지리산 피아골", "en": "Jirisan Piagol Valley", "addr": "전남 구례군 토지면 외곡리", "lat": 35.2026527, "lng": 127.6025536, "addr_en": "Oegok-ri, Toji-myeon, Gurye-gun, Jeonnam", "dko": "지리산 계곡, 가을 단풍과 맑은 물", "den": "Valley in Jirisan with clear streams and autumn leaves"}, "dokdo": {"ko": "독도", "en": "Dokdo", "addr": "경북 울릉군 울릉읍 독도리", "lat": 37.2410536, "lng": 131.8671311, "addr_en": "Dokdo-ri, Ulleung-eup, Ulleung-gun, Gyeongbuk", "dko": "동해 끝 한국의 섬 (배로만 감)", "den": "Korea's easternmost islets (by boat only)"}, "trail": {"ko": "해파랑길 1코스 (시작점)", "en": "Haeparang Trail, Course 1 (start)", "addr": "부산 수영구 광안동", "lat": 35.1509768, "lng": 129.1164806, "addr_en": "Gwangan-dong, Suyeong-gu, Busan", "dko": "부산~고성 동해안 걷기 길 750km", "den": "750 km coastal walking trail from Busan to Goseong"}, "turtle": {"ko": "여수 이순신광장 (거북선)", "en": "Yeosu Yi Sun-sin Square (Turtle Ship)", "addr": "전남 여수시 중앙동", "lat": 34.7394476, "lng": 127.7360499, "addr_en": "Jungang-dong, Yeosu, Jeonnam", "dko": "이순신 장군 동상과 거북선 모형이 있는 광장", "den": "Square with Admiral Yi's statue and a turtle ship replica"}, "jeond": {"ko": "강화 전등사", "en": "Jeondeungsa Temple, Ganghwa", "addr": "인천 강화군 길상면 온수리", "lat": 37.6321457, "lng": 126.4847789, "addr_en": "Onsu-ri, Gilsang-myeon, Ganghwa-gun, Incheon", "dko": "강화도의 오래된 절, 숲속 산책", "den": "Old Buddhist temple on Ganghwa Island in the forest"}, "choji": {"ko": "강화 초지진", "en": "Chojijin Fort, Ganghwa", "addr": "인천 강화군 길상면 초지리", "lat": 37.6325203, "lng": 126.5323079, "addr_en": "Choji-ri, Gilsang-myeon, Ganghwa-gun, Incheon", "dko": "조선 말 서양 함대와 싸운 바닷가 요새", "den": "Coastal fort that fought Western fleets in the 1800s"}, "naksan": {"ko": "양양 낙산사", "en": "Naksansa Temple", "addr": "강원 양양군 강현면 전진리", "lat": 38.1254325, "lng": 128.6279947, "addr_en": "Jeonjin-ri, Ganghyeon-myeon, Yangyang-gun, Gangwon", "dko": "동해 바닷가 절벽 위의 절, 일출 명소", "den": "Seaside cliff temple, famous for sunrise"}, "myeong": {"ko": "명동거리", "en": "Myeongdong Shopping Street", "addr": "서울 중구 명동2가", "lat": 37.5620769, "lng": 126.9849013, "addr_en": "Myeong-dong 2-ga, Jung-gu, Seoul", "dko": "화장품·옷 쇼핑과 길거리 음식 거리", "den": "Shopping street for cosmetics, fashion and street food"}, "ulleung": {"ko": "울릉도", "en": "Ulleungdo Island", "addr": "경북 울릉군", "lat": 37.5061926, "lng": 130.8604368, "addr_en": "Ulleung-gun, Gyeongbuk", "dko": "동해의 화산섬, 해안 절경 (배로 감)", "den": "Volcanic island in the East Sea (by ferry)"}, "sacheon": {"ko": "사천바다케이블카", "en": "Sacheon Sea Cable Car", "addr": "경남 사천시 대방동", "lat": 34.9336733, "lng": 128.0531442, "addr_en": "Daebang-dong, Sacheon, Gyeongnam", "dko": "바다 위를 건너는 케이블카", "den": "Cable car crossing the sea"}, "hahoe": {"ko": "안동하회마을", "en": "Andong Hahoe Village", "addr": "경북 안동시 풍천면 하회리", "lat": 36.5389828, "lng": 128.5181412, "addr_en": "Hahoe-ri, Pungcheon-myeon, Andong, Gyeongbuk", "dko": "조선 양반 마을과 하회탈 (세계유산)", "den": "Traditional Joseon village and mask dance (UNESCO)"}, "jdj": {"ko": "정동진 해변 (일출)", "en": "Jeongdongjin Beach (Sunrise)", "addr": "강원 강릉시 강동면 정동진리", "lat": 37.689166, "lng": 129.0362597, "addr_en": "Jeongdongjin-ri, Gangdong-myeon, Gangneung, Gangwon", "dko": "해돋이로 유명한 바닷가 기차역 마을", "den": "Seaside train-station village famous for sunrise"}, "donhwamun": {"ko": "창덕궁 돈화문", "en": "Changdeokgung Palace (Donhwamun Gate)", "addr": "서울 종로구 율곡로 99", "lat": 37.5793, "lng": 126.991, "addr_en": "99 Yulgok-ro, Jongno-gu, Seoul", "dko": "창덕궁 정문 — 조선 왕궁, 비밀정원(후원) 투어", "den": "Main gate of Changdeokgung, a royal palace with the Secret Garden"}, "unhyeongung": {"ko": "운현궁", "en": "Unhyeongung Palace", "addr": "서울 종로구 삼일대로 464", "lat": 37.5762, "lng": 126.9874, "addr_en": "464 Samil-daero, Jongno-gu, Seoul", "dko": "고종이 자란 왕족 한옥 집 (궁처럼 큰 한옥)", "den": "Royal family hanok residence where King Gojong grew up"}, "jongmyo": {"ko": "종묘", "en": "Jongmyo Shrine", "addr": "서울 종로구 종로 157", "lat": 37.5745, "lng": 126.9937, "addr_en": "157 Jong-ro, Jongno-gu, Seoul", "dko": "조선 왕들의 신주를 모신 조용한 사당 (세계유산)", "den": "Quiet royal ancestral shrine of the Joseon kings (UNESCO)"}, "jogyesa": {"ko": "조계사", "en": "Jogyesa Temple", "addr": "서울 종로구 우정국로 55", "lat": 37.574, "lng": 126.9818, "addr_en": "55 Ujeongguk-ro, Jongno-gu, Seoul", "dko": "서울 한복판의 불교 절, 연등이 가득", "den": "Buddhist temple in downtown Seoul, full of lotus lanterns"}, "ssamzie": {"ko": "쌈지길", "en": "Ssamziegil", "addr": "서울 종로구 인사동길 44", "lat": 37.5743, "lng": 126.9853, "addr_en": "44 Insadong-gil, Jongno-gu, Seoul", "dko": "공예품 가게가 모인 비탈길 쇼핑 건물", "den": "Ramp-shaped shopping building of craft shops"}, "insastreet": {"ko": "인사동 거리", "en": "Insadong Street", "addr": "서울 종로구 인사동길", "lat": 37.5722, "lng": 126.9866, "addr_en": "Insadong-gil, Jongno-gu, Seoul", "dko": "전통 찻집·화랑·공예품 거리", "den": "Street of traditional tea houses, galleries and crafts"}, "tapgol": {"ko": "탑골공원", "en": "Tapgol Park", "addr": "서울 종로구 종로 99", "lat": 37.5711, "lng": 126.9883, "addr_en": "99 Jong-ro, Jongno-gu, Seoul", "dko": "3·1운동이 시작된 공원, 대리석 10층 석탑", "den": "Park where the 1919 independence movement began"}};
+function placeShow(k){ var p=PLACES[k]; if(!p) return; var nm=LANG==="en"?p.en:p.ko, ll=p.lat+","+p.lng;
+  document.getElementById("q").value=nm;
+  document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(nm)+'</div>'+((LANG==="en"?p.den:p.dko)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LANG==="en"?p.den:p.dko)+'</div>':'')+'<div class="d">'+esc(LANG==="en"?(p.addr_en||p.addr):p.addr)+' · '+p.lat.toFixed(5)+', '+p.lng.toFixed(5)+'</div>'
+    +(LANG==="en"   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 (사장님 10-15)
+      ?'<a href="https://www.google.com/maps/dir/?api=1&destination='+ll+'" target="_blank" rel="noopener">Google Maps (English)</a>'
+       +'<a href="https://map.naver.com/p?c='+p.lng+','+p.lat+',15,0,0,0,dh" target="_blank" rel="noopener">Naver Map</a>'
+      :'<a href="https://map.kakao.com/link/to/'+encodeURIComponent(p.ko)+','+ll+'" target="_blank" rel="noopener">카카오맵 길찾기</a>'
+       +'<a href="https://map.naver.com/p?c='+p.lng+','+p.lat+',15,0,0,0,dh" target="_blank" rel="noopener">네이버 지도</a>'
+       +'<a href="https://www.google.com/maps/dir/?api=1&destination='+ll+'" target="_blank" rel="noopener">구글 지도</a>')+'</div>';
+  clearTimeout(window._scT); window._scT=setTimeout(function(){ window.scrollTo({top:0,behavior:"smooth"}); },460); }
+var HIT={keys:["bamboo", "beach", "beopju", "buyeo", "casino", "choji", "dokdo", "dolha", "ever", "hahoe", "halla", "icn", "jdj", "jeond", "jeonju", "jiri", "ktx", "myeong", "naksan", "pmj", "sacheon", "seok", "seorak", "ski", "tea", "tower", "trail", "tunnel", "turtle", "ulleung", "unif"],rle:"0154,O3,0243,O3,06,O4,0233,O4,06,O6,03,O4,0232,O8,03,O7,01,O6,0231,O11,02,O12,0231,O25,0231,O25,0231,O25,0231,O25,0231,O27,0230,O28,0228,O28,0229,O26,0230,O26,0231,O24,0233,O22,0235,O20,0237,O18,0240,O14,0203,L5,037,O8,0204,L7,0246,L11,0244,L14,028,G2,0211,L17,026,G3,0208,L19,024,G5,023,C1,02,C1,0180,L20,024,G6,019,C1,01,C6,01,C1,0178,L18,025,G6,015,C2,02,C10,0177,L19,024,G7,015,C3,02,C7,0180,L18,024,G8,013,C4,02,C8,0180,L14,025,G11,012,C5,01,C10,049,=1,0128,L6,01,L2,01,L4,025,G12,010,C6,01,C14,045,=2,06,=1,0159,G12,010,C6,01,C14,043,=1,02,=1,06,=1,08,=1,0150,G12,010,C6,02,C13,043,=2,01,=1,06,=1,04,=1,02,=2,01,=1,0147,G15,08,C20,045,=1,01,=2,01,=1,03,=1,04,=1,02,=1,01,=2,083,D21,041,G17,03,C24,046,=2,01,=1,01,=1,03,=1,01,=2,01,=1,01,=2,01,=1,084,D21,040,G19,01,C26,046,=1,01,=3,01,=1,01,=1,01,=1,01,=2,01,=1,01,=2,084,D20,02,J1,038,G19,01,C21,051,=9,01,=1,01,=1,01,=2,01,=1,085,D22,J1,037,G21,01,C19,051,=1,01,=1,01,=1,01,=1,01,=2,01,=1,01,=1,01,=1,01,=3,083,D23,J1,037,G21,01,C16,049,=2,02,=8,01,=2,01,=1,01,=7,081,D24,01,J1,036,G22,06,C8,053,=2,01,=5,01,=2,01,=2,01,=4,01,=1,01,=1,01,=4,077,D24,J2,039,G13,01,G1,07,C8,054,=5,01,=1,01,=8,01,=2,01,=9,01,=2,083,D4,012,J2,052,G3,08,C9,045,=1,07,=26,01,=2,084,D3,013,J2,0117,=3,02,=3,01,=27,037,61,062,J3,072,H7,040,=4,01,=27,01,=3,02,=1,032,61,061,J5,067,H2,01,H12,034,=2,03,=3,01,=2,01,=24,01,=4,032,64,057,J2,01,J2,067,H14,037,=4,02,=27,01,=3,032,67,056,J2,02,J2,065,H16,034,=4,02,=32,01,=4,027,69,054,J3,03,J3,064,H13,040,=5,01,=31,030,69,053,J2,05,J3,064,H13,044,=36,027,611,034,>2,014,J3,04,J5,011,B3,049,H10,046,=4,01,=28,030,611,032,>6,011,J5,04,J5,010,B4,03,B5,01,B5,036,H12,045,=34,027,612,025,>12,010,J2,01,J3,03,J6,08,B7,02,B12,035,H17,036,=34,031,612,023,>15,08,J2,02,J3,03,J6,07,B14,01,B7,034,H18,044,=30,027,613,017,>23,03,J3,09,J6,07,B7,01,B6,01,B7,033,H4,01,H7,03,H3,025,=1,02,=45,029,613,012,62,03,>24,01,J2,04,J3,05,J5,07,B8,01,B13,032,H4,01,H8,01,H1,01,H4,028,=42,030,614,01,62,08,62,04,>24,J2,02,J9,03,J3,010,B13,02,B7,029,H21,028,=42,031,616,08,62,07,>18,01,J2,03,J11,02,J3,09,B7,01,B16,027,H22,028,=42,030,617,07,63,08,>16,06,J13,01,J3,07,B8,03,B15,027,H3,01,H18,029,=41,030,616,07,63,09,>16,06,J13,01,J3,05,B9,04,B16,026,H2,02,H4,02,H1,01,H10,030,=39,031,617,06,61,010,>18,04,J14,01,J7,B10,03,B17,029,H5,01,H13,031,=37,031,619,02,65,02,61,04,>22,02,J14,01,J7,01,B5,01,B4,02,B17,029,H18,033,=35,031,619,02,64,01,64,04,>22,02,J14,01,J7,01,B5,01,B20,031,H15,040,=29,035,617,02,62,04,64,010,>3,01,>9,05,J22,03,B2,02,B11,01,B7,031,H13,0107,617,01,62,02,67,026,J24,05,B21,030,H12,0110,628,026,J24,05,B18,01,B2,027,H12,0113,628,026,J26,02,B3,02,B10,05,B2,024,H11,0117,625,029,J27,B3,04,B9,05,B2,022,H11,0121,617,033,J29,B2,05,B9,05,B2,022,H9,0123,615,035,J29,B1,J1,02,B5,03,B2,07,B2,024,H5,0124,613,038,J32,01,B5,03,B3,06,B3,0153,612,013,61,024,J34,B5,03,B2,06,B4,0138,639,024,J11,023,J1,B3,04,B5,04,B4,0140,627,070,B1,05,B5,0114,72,0136,B4,0114,73,0252,74,02,72,0248,75,01,72,0166,57,075,710,084,<1,02,<2,07,94,06,96,050,511,072,711,083,<6,07,95,05,96,049,513,071,711,064,<1,017,<7,08,94,04,98,047,514,070,712,080,<7,01,<1,08,95,03,98,047,515,064,722,066,<3,03,<9,011,95,03,98,047,515,065,720,067,<15,011,95,03,97,021,32,024,516,066,716,069,<3,02,<6,016,96,02,97,021,32,01,31,019,519,068,711,071,<10,018,96,02,98,019,36,017,520,072,74,073,<9,020,96,02,98,019,310,013,520,0148,<8,022,96,01,99,018,314,09,521,0146,<9,023,97,01,98,016,316,08,522,0138,<1,06,<10,023,97,01,98,016,314,010,522,0118,<2,019,<1,03,<7,02,<2,024,97,01,98,017,315,01,31,07,521,0117,<3,010,<2,010,<7,029,98,01,96,016,317,01,32,07,522,058,N3,054,<3,09,<3,07,<8,031,98,01,96,016,316,01,33,05,525,053,N1,01,N10,047,<7,04,<5,06,<8,033,98,02,95,018,319,04,525,053,N14,044,<16,02,<11,01,<3,031,99,02,95,015,321,02,33,03,518,055,N16,036,<1,06,<33,029,918,014,322,01,35,075,N22,029,<3,07,<27,033,918,015,315,02,311,049,K2,022,N26,026,<4,09,<22,035,918,011,31,02,331,046,K4,010,N1,03,N2,03,N37,017,<4,011,<19,035,919,03,42,04,336,043,K8,03,K3,03,N3,02,N1,02,N42,013,<3,07,<22,037,919,03,42,02,332,01,37,040,K10,01,K5,04,N1,01,N23,08,N4,03,N7,014,<30,039,920,02,42,02,340,040,K9,02,K6,01,N1,01,N18,05,N13,02,N9,012,<30,041,919,01,44,02,329,01,31,02,31,01,32,044,K8,02,K6,01,N16,02,N29,010,<33,041,922,43,02,33,01,334,043,K8,01,K7,01,N26,01,N10,01,N8,09,<36,062,43,02,34,01,319,01,313,042,K18,02,N15,07,N11,02,N8,011,<39,058,43,02,36,03,314,02,313,042,K17,01,N14,06,N14,02,N8,014,<41,052,46,03,32,05,331,040,K18,N34,01,N9,016,<42,048,47,06,335,040,K18,N34,01,N9,019,<43,044,49,02,338,039,K18,N51,014,<42,043,49,07,332,041,K17,06,N1,01,N2,01,N39,017,<39,043,410,07,329,044,K8,01,K7,028,N19,024,<35,044,410,010,320,050,K8,01,K8,072,<31,046,410,012,33,02,32,04,32,01,31,053,K8,01,K8,074,<27,048,410,080,K1,01,K15,076,<23,050,410,080,K1,01,K15,079,<19,051,410,080,K1,01,K15,081,<15,054,48,080,K2,01,K8,01,K3,02,K1,084,<7,02,<1,057,46,081,K2,01,K7,02,K3,02,K1,0151,41,01,42,083,K1,02,K7,02,K3,02,K1,0149,47,082,K1,02,K7,02,K3,02,K1,0148,49,081,K1,02,K4,01,K2,02,K3,02,K1,0148,48,081,K2,02,K4,01,K2,02,K3,02,K1,0148,48,081,K2,02,K7,02,K3,02,K2,0148,48,073,K35,0140,410,024,:2,050,K24,0145,411,023,:7,052,F8,0155,412,020,:14,045,F13,0153,410,018,:25,01,:7,028,F15,0156,43,019,:27,01,:8,026,F17,0174,:40,024,F19,0171,:42,024,F19,0168,:45,023,F20,0168,:45,023,F20,0170,:43,023,F20,0170,:43,023,F20,0171,:30,02,:10,023,F20,0174,:26,03,:10,020,F23,0176,:23,04,:10,020,F23,0179,:20,03,:10,021,F23,0183,:15,03,:11,021,F23,0185,:12,04,:9,023,F23,0188,:8,011,:3,023,F23,0191,:5,037,F23,0233,F23,0233,F23,0233,F23,0145,?7,081,F23,0141,?14,055,A3,020,F23,0140,?16,045,A1,05,A4,022,F23,0139,?18,041,A4,02,A4,09,A4,0173,?20,036,A3,01,A9,06,A5,0175,?22,032,A27,0175,?22,030,A22,01,A2,0179,?22,026,A2,01,A25,02,A5,0173,?22,024,A34,0176,?22,021,A37,03,A2,0171,?22,019,A41,01,A3,0170,?22,017,A45,0173,?21,016,A47,0172,?20,017,A47,0173,?19,017,A47,0173,?18,018,A47,0174,?17,018,A46,0175,?16,021,A42,02,A2,0174,?14,028,A3,01,A36,0175,?12,040,A2,04,A23,0177,?8,042,A4,01,A24,0178,?6,051,A4,01,A16,0240,A2,01,A13,0166,111,069,A10,0163,11,01,112,074,A5,0161,116,0241,118,0238,119,089,21,0147,11,02,114,089,29,0144,116,085,214,0141,112,01,11,030,@2,053,218,0139,111,032,@4,051,26,01,214,0137,111,028,@10,048,211,01,211,0136,111,023,@3,01,@12,01,@2,043,27,01,24,02,25,01,25,0135,111,016,@26,02,@2,038,28,01,25,01,25,02,25,0134,111,012,@35,01,@1,034,24,01,24,01,25,02,211,0134,111,09,@42,031,24,01,24,02,25,02,211,0134,111,07,@47,027,25,01,24,02,215,0137,111,05,@51,025,24,01,215,0144,111,012,@39,030,213,01,22,0148,18,01,12,013,@22,01,@2,043,26,01,22,06,22,0147,18,01,12,011,@15,066,23,01,22,0147,111,013,@16,062,27,0147,111,017,@15,059,27,0147,110,016,@20,056,27,0147,110,016,@21,054,28,0147,110,020,@12,058,210,0146,110,025,@9,056,210,0146,110,026,@11,053,210,0146,110,031,@7,052,211,0146,18,091,214,0242,216,0200,E4,037,27,01,28,0196,E7,037,26,01,29,0198,E4,038,25,01,210,0196,E3,01,E2,039,216,0195,E1,03,E2,038,223,0165,E5,022,E3,029,233,0165,E4,022,E3,025,242,0160,E4,022,E3,024,243,0161,E3,014,E3,04,E5,020,246,0160,E2,01,E2,01,E1,012,E4,01,E7,019,244,0162,E2,02,E3,01,E2,08,E14,019,243,0162,E2,03,E2,01,E2,03,E3,02,E14,021,225,01,213,0146,I4,02,I2,010,E2,04,E5,03,E3,01,E14,018,22,01,213,01,22,01,214,02,21,0150,I10,08,E3,04,E5,01,E5,01,E6,028,21,01,21,04,212,01,26,02,24,0153,I10,08,E3,02,E1,01,E5,01,E5,02,E4,032,26,02,212,02,24,0151,I4,01,I10,08,E6,01,E5,01,E5,042,21,01,22,01,22,01,21,03,21,01,21,02,22,0152,I17,01,I2,05,E6,01,E5,01,E5,0211,I24,03,E5,08,E5,0209,I26,03,E6,01,E2,0216,I28,03,E9,0215,I29,03,E8,0214,I31,03,E9,0212,I32,03,E9,0210,I34,03,E9,0210,I34,0222,I34,0223,I32,0225,I29,0229,I25,0234,I21,0241,I9,0702,86,0250,86,085,M2,0163,86,085,M2,0162,87,085,M2,0163,86,079,M9,0162,86,080,M9,0161,86,081,M15,0153,88,080,M15,0153,88,081,M10,01,M7,0149,88,081,M11,01,M8,0138,;6,03,88,081,M11,03,M6,0136,;9,02,87,082,M11,03,M6,0135,;12,87,082,M11,03,M6,0134,;13,88,074,M17,04,M6,0132,;13,01,;3,86,070,M2,01,M19,03,M5,0131,;21,074,M23,03,M3,0130,;26,072,M28,0128,;30,070,M28,0125,;36,067,M27,0126,;36,068,M25,0130,;30,070,M25,0140,;12,078,M24,0237,M2,01,M1,01,M1,01,M1,02,M1,03,M4,0999,0153"};
+var HG=(function(){ var g=new Uint8Array(65536), i=0; HIT.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; })();
+// 그림 근처만 눌러도 된다 — 바로 그 자리가 비면 손가락 한 마디(화면 24px) 안의 가장 가까운 그림 (사장님 10-15)
+// 도시 약도 — 서울 그림을 두 번 누르면 광화문 일대 약도가 같은 크기로 펼쳐진다 (사장님 10-15)
+var VIEW="kr", CITY={seoulall:{img:"seoul_all.jpg",ko:"서울",en:"Seoul",keys:["tower","myeong"],lat:37.565,lng:126.975,zoom:11,parent:"kr",areas:{seoul:[0.4422, 0.4172, 0.5992, 0.5741]}},
+  seoul:{img:"seoul.jpg",ko:"서울 · 광화문 일대",en:"Seoul · Gwanghwamun area",keys:[],lat:37.5665,lng:126.984,zoom:14,parent:"seoulall",areas:{insadong:[0.3996, 0.2019, 0.6885, 0.4907]}},
+  insadong:{img:"insadong.jpg",ko:"인사동 · 창덕궁 일대",en:"Insadong · Changdeokgung",keys:[],lat:37.5748,lng:126.987,zoom:16,parent:"seoul",spots:{"donhwamun": [0.6226, 0.105, 0.7837, 0.2163], "unhyeongung": [0.4468, 0.3237, 0.5933, 0.415], "jongmyo": [0.7524, 0.4502, 0.9282, 0.5239], "ssamzie": [0.355, 0.4048, 0.4717, 0.5366], "jogyesa": [0.1572, 0.4282, 0.3135, 0.5562], "insastreet": [0.3989, 0.5244, 0.5601, 0.6714], "tapgol": [0.5034, 0.6001, 0.6284, 0.7417]}}};
+// 자세한 지도 — 네이버 지도(부동산 앱과 같은 키, navi 주소 등록함 10-15). 약도 ↔ 자세한 지도
+var NAVER_KEY="jbwyndpnp3", DET=false, _nm=null;
+function nmLoad(cb){ if(window.naver&&naver.maps) return cb(); var s=document.createElement("script");
+  s.src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId="+NAVER_KEY+"&language="+(LANG==="en"?"en":"ko"); s.onload=cb; document.head.appendChild(s); }
+function detSet(on){ DET=on; var c=CITY[VIEW], box=document.getElementById("nmapw");
+  document.getElementById("vdet").textContent=on?T("약도","Sketch"):T("자세히","Detailed");
+  box.hidden=!on; document.querySelector(".zb").style.display=on?"none":""; document.getElementById("vttl").style.display=on?"none":"";
+  if(!on||!c) return;
+  nmLoad(function(){ var ctr=new naver.maps.LatLng(c.lat,c.lng);
+    if(!_nm){ _nm=new naver.maps.Map("nmap",{center:ctr,zoom:c.zoom,zoomControl:true,zoomControlOptions:{position:naver.maps.Position.RIGHT_BOTTOM}});
+      Object.keys(PLACES).forEach(function(k){ var p=PLACES[k]; new naver.maps.Marker({position:new naver.maps.LatLng(p.lat,p.lng),map:_nm,title:LANG==="en"?p.en:p.ko}); }); }
+    else { _nm.setCenter(ctr); _nm.setZoom(c.zoom); } }); }
+function viewSet(v){ clearTimeout(window._scT); VIEW=v; detSet(false); document.getElementById("vdet").hidden=!CITY[v]; document.getElementById("vbar").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:"map.jpg";
+  document.getElementById("vback").hidden=!c; var tt=document.getElementById("vttl"); tt.hidden=!c; if(c) tt.textContent=LANG==="en"?c.en:c.ko;
+  var vb=document.getElementById("vback"); vb.textContent="←"; vb.title=vb.ariaLabel=c&&c.parent!=="kr"?T(CITY[c.parent].ko+"로",CITY[c.parent].en):T("전국 지도로","Korea map");
+  try{ dlDraw(null); }catch(e){} ZM={s:1,tx:0,ty:0}; zApply(); }
+var _lastTap={k:null,t:0}, _lastArea={a:null,t:0};
+function areaTap(cx,cy){ var c=CITY[VIEW]; if(!c||!c.areas) return; var r=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-r.left)/r.width, fy=(cy-r.top)/r.height, now=Date.now();
+  for(var a in c.areas){ var b=c.areas[a]; if(fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]){ if(_lastArea.a===a&&now-_lastArea.t<450){ _lastArea={a:null,t:0}; viewSet(a); } else _lastArea={a:a,t:now}; return; } } }
+function cityFor(k){ for(var c in CITY) if(CITY[c].keys.indexOf(k)>=0) return c; return null; }
+function hitAt(cx,cy){ if(VIEW!=="kr"){ var cc=CITY[VIEW]; if(!cc||!cc.spots) return null; var rr=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-rr.left)/rr.width, fy=(cy-rr.top)/rr.height, best=null, ba=9;
+    for(var sk in cc.spots){ var b=cc.spots[sk], pad=0.012; if(fx>=b[0]-pad&&fx<=b[2]+pad&&fy>=b[1]-pad&&fy<=b[3]+pad){ var ar=(b[2]-b[0])*(b[3]-b[1]); if(ar<ba){ ba=ar; best=sk; } } } return best; } var r=document.getElementById("mapimg").getBoundingClientRect(); var fx=(cx-r.left)/r.width*256, fy=(cy-r.top)/r.height*256, gx=Math.floor(fx), gy=Math.floor(fy);
+  if(gx<0||gy<0||gx>255||gy>255) return null; var v=HG[gy*256+gx]; if(v) return HIT.keys[v-1];
+  var R=Math.max(2,Math.ceil(24/(r.width/256))), best=0, bd=1e9;
+  for(var y=Math.max(0,gy-R);y<=Math.min(255,gy+R);y++) for(var x=Math.max(0,gx-R);x<=Math.min(255,gx+R);x++){ var w=HG[y*256+x]; if(!w) continue; var d=(x+.5-fx)*(x+.5-fx)+(y+.5-fy)*(y+.5-fy); if(d<bd&&d<=R*R){ bd=d; best=w; } }
+  return best?HIT.keys[best-1]:null; }
+function pName(k){ var p=PLACES[k]; return p?(LANG==="en"?p.en:p.ko):""; }
+function ktxErr(){ document.getElementById("res").innerHTML='<div class="err">⚠ '+T("오류 — KTX 그림은 장소가 아닙니다.","Error — the KTX picture is not a place.")+'</div>'; }
+// 도시 그림은 한 번 누르면 잠깐(0.45초) 기다렸다 장소 정보 — 그 사이 또 누르면 도시 약도 (정보 카드가 지도를 밀어 두 번째 누름이 빗나가지 않게)
+var _tapT=null;
+function hitClick(k){ var now=Date.now(), c=cityFor(k);
+  if(c&&_lastTap.k===k&&now-_lastTap.t<450){ clearTimeout(_tapT); _lastTap={k:null,t:0}; viewSet(c); return; }
+  _lastTap={k:k,t:now}; clearTimeout(_tapT);
+  if(c){ _tapT=setTimeout(function(){ placeShow(k); },450); return; }
+  if(k==="ktx") ktxErr(); else if(k) placeShow(k); }
+function kmBetween(a,b){ var p=PLACES[a], q=PLACES[b], R=6371, rd=Math.PI/180, dLa=(q.lat-p.lat)*rd, dLo=(q.lng-p.lng)*rd;
+  var h=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(p.lat*rd)*Math.cos(q.lat*rd)*Math.sin(dLo/2)*Math.sin(dLo/2); return 2*R*Math.asin(Math.sqrt(h)); }
+function dlPt(cx,cy){ var r=document.getElementById("mapimg").getBoundingClientRect(); return [(cx-r.left)/r.width*1000,(cy-r.top)/r.height*1000]; }
+function dlDraw(p0,p1,txt){ var s=document.getElementById("dl"), ob=document.getElementById("dlb"); if(!p0){ s.innerHTML=""; if(ob) ob.remove(); return; }
+  var h='<line x1="'+p0[0]+'" y1="'+p0[1]+'" x2="'+p1[0]+'" y2="'+p1[1]+'" stroke="#e03131" stroke-width="5" stroke-dasharray="14 9" vector-effect="non-scaling-stroke" style="stroke-width:3px"/>'
+    +'<circle cx="'+p0[0]+'" cy="'+p0[1]+'" r="9" fill="#e03131"/><circle cx="'+p1[0]+'" cy="'+p1[1]+'" r="9" fill="#e03131"/>';
+  s.innerHTML=h; var lb=document.getElementById("dlb"); if(lb) lb.remove();
+  if(txt){ var d=document.createElement("div"); d.id="dlb"; d.textContent=txt;
+    d.style.cssText="position:absolute;transform:translate(-50%,-50%);background:#e03131;color:#fff;font-weight:900;font-size:15px;padding:5px 10px;border-radius:999px;white-space:nowrap;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.25)";
+    d.style.left=((p0[0]+p1[0])/20)+"%"; d.style.top=((p0[1]+p1[1])/20)+"%"; document.getElementById("mz").appendChild(d); try{ zApply(); }catch(e){} } }
+var STN={"tower": ["서울", "NAT010000"], "myeong": ["서울", "NAT010000"], "beach": ["부산", "NAT014445"], "trail": ["부산", "NAT014445"], "jeonju": ["전주", "NAT040257"], "seok": ["경주", "NATH13421"], "ski": ["진부", "NATN10787"], "casino": ["사북", "NAT650782"], "icn": ["인천공항T1", "NATC10580"], "tea": ["보성", "NAT882328"], "jiri": ["구례구", "NAT041285"], "turtle": ["여수EXPO", "NAT041993"], "jdj": ["정동진", "NAT601774"], "hahoe": ["안동", "NAT022558"], "unif": null, "pmj": null, "tunnel": null, "beopju": null, "halla": null, "dolha": null, "buyeo": null, "bamboo": null, "seorak": null, "ever": null, "dokdo": null, "ulleung": null, "jeond": null, "choji": null, "naksan": null, "sacheon": null};
+var STN_EN={"서울": "Seoul", "부산": "Busan", "전주": "Jeonju", "경주": "Gyeongju", "진부": "Jinbu", "사북": "Sabuk", "인천공항T1": "Incheon Airport T1", "보성": "Boseong", "구례구": "Guryegu", "여수EXPO": "Yeosu EXPO", "정동진": "Jeongdongjin", "안동": "Andong"};
+function kstDay(add){ var d=new Date(Date.now()+9*3600e3+(add||0)*864e5); return d.toISOString().slice(0,10).replace(/-/g,""); }
+function stName(s){ return LANG==="en"?(STN_EN[s[0]]||s[0]):s[0]+"역"; }
+function hm(t){ return t.slice(0,2)+":"+t.slice(2); }
+// 열차 종류 — TAGO 는 SRT 를 「KTX」로 준다. 열차번호 300번대(경부)·600번대(호남)가 SRT (실측 2026-10-15)
+function trGrade(x){ var n=parseInt(x.no,10), g=String(x.g||"").replace(/\(.*?\)/g,"");
+  if(/^KTX/.test(g)&&((n>=300&&n<400)||(n>=600&&n<700))) return "SRT";
+  if(LANG==="en"){ var E={"이음":"Eum","산천":"Sancheon","새마을":"Saemaeul","마음":"Maeum","청춘":"Cheongchun"}; g=g.replace(/(이음|산천|새마을|마음|청춘)/g,function(m){ return E[m]; })
+    .replace(/^무궁화호$/,"Mugunghwa").replace(/^새마을호$/,"Saemaeul").replace(/^누리로$/,"Nuriro").replace(/^통근열차$/,"Commuter").replace(/직통/," Express"); }
+  return g; }
+function trBadge(g){ var c=/^SRT/.test(g)?"#7b2d8e":/^KTX/.test(g)?"#1f4fa3":/ITX/.test(g)?"#0b7a5a":/무궁화|누리로|통근/.test(g)?"#c0392b":"#5b6474";
+  return '<span style="display:inline-block;padding:2px 8px;border-radius:6px;background:'+c+';color:#fff;font-weight:800;font-size:12.5px;white-space:nowrap">'+esc(g)+'</span>'; }
+function trainBox(a,b){ var box=document.getElementById("trn"); if(!box) return; var A=STN[a], B=STN[b];
+  if(!A||!B||A[1]===B[1]){ box.innerHTML=""; return; }
+  box.innerHTML='<div class="trh">🚆 '+esc(stName(A))+' → '+esc(stName(B))+'</div><div class="d">'+T("열차 찾는 중…","Finding trains…")+'</div>';
+  function load(add){ var d=kstDay(add);
+    return fetch(HUB+"/train?dep="+A[1]+"&arr="+B[1]+"&date="+d).then(function(r){ return r.json(); }).then(function(j){
+      var it=(j&&j.ok&&j.items)||[], now=kstDay(0)===d?new Date(Date.now()+9*3600e3).toISOString().slice(11,16).replace(":",""):"0000";
+      return { add:add, all:it, left:it.filter(function(x){ return x.dp>=now; }) }; }); }
+  load(0).then(function(r){ return (r.left.length||!r.all.length)?r:load(1); }).then(function(r){
+    var rows=r.add?r.all:r.left, hd='<div class="trh">🚆 '+esc(stName(A))+' → '+esc(stName(B))+(r.add?' · '+T("내일","Tomorrow"):' · '+T("오늘","Today"))+'</div>';
+    if(!rows.length){ box.innerHTML=""; return; }
+    box.innerHTML=hd+'<table class="trn">'+rows.slice(0,8).map(function(x){ var m=(+x.ar.slice(0,2)*60+ +x.ar.slice(2))-(+x.dp.slice(0,2)*60+ +x.dp.slice(2)); if(m<0) m+=1440;
+      return '<tr><td>'+trBadge(trGrade(x))+'</td><td>'+hm(x.dp)+' → '+hm(x.ar)+'</td><td>'+Math.floor(m/60)+T("시간 ","h ")+(m%60)+T("분","m")+'</td><td class="f">'+(x.fare?x.fare.toLocaleString()+T("원"," KRW"):"-")+'</td></tr>'; }).join("")+'</table>'
+      +(rows.length>8?'<div class="d">'+T("외 ","+ ")+(rows.length-8)+T("편 더"," more")+'</div>':'')
+      +'<a href="https://www.letskorail.com/" target="_blank" rel="noopener">'+T("코레일 예매","Book on Korail")+'</a>';
+  }).catch(function(){ box.innerHTML=""; }); }
+function m3857(lat,lng){ return [lng*20037508.34/180, Math.log(Math.tan((90+lat)*Math.PI/360))/(Math.PI/180)*20037508.34/180]; }
+// 길찾기는 상황에 맞게 고른다 (사장님 10-15 「무조건 그렇게 하면 안 되고 네가 생각해야 해」)
+//   바다 건너(제주=비행기 · 울릉도/독도=배) · 가까움(60km 이하=지하철·버스·택시) · 멂(기차·고속버스·자동차, 택시 뺌)
+var ISLE={halla:"jeju",dolha:"jeju",ulleung:"ulleung",dokdo:"ulleung"};
+function routePlan(a,b,km){ var p=PLACES[a], q=PLACES[b], na=encodeURIComponent(p.ko), nb=encodeURIComponent(q.ko), A=m3857(p.lat,p.lng), B=m3857(q.lat,q.lng);
+  var nv="https://map.naver.com/p/directions/"+A[0]+","+A[1]+","+na+",,/"+B[0]+","+B[1]+","+nb+",,/-/";
+  var go="https://www.google.com/maps/dir/?api=1&origin="+p.lat+","+p.lng+"&destination="+q.lat+","+q.lng+"&travelmode=";
+  var kk="https://map.kakao.com/link/from/"+na+","+p.lat+","+p.lng+"/to/"+nb+","+q.lat+","+q.lng;
+  var L=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };
+  var ia=ISLE[a]||"land", ib=ISLE[b]||"land";
+  if(ia!==ib){
+    if(ia==="ulleung"||ib==="ulleung"){
+      var dk=(a==="dokdo"||b==="dokdo")&&(ia===ib||ia==="ulleung"&&ib==="ulleung");
+      return {train:false,html:'<div class="trh">⛴ '+T("배로 가야 합니다","By ferry")+'</div><div class="d">'
+        +T("포항·강릉·묵호·후포항에서 울릉도 가는 여객선을 탑니다. 독도는 울릉도에서 다시 배를 탑니다.","Ferries to Ulleungdo leave from Pohang, Gangneung, Mukho and Hupo. Dokdo boats leave from Ulleungdo.")+'</div>'
+        +L("https://island.haewoon.co.kr/",T("여객선 예매 (가보고 싶은 섬)","Ferry booking"))};
+    }
+    return {train:false,html:'<div class="trh">✈ '+T("비행기로 가야 합니다","By plane")+'</div><div class="d">'
+      +T("제주는 비행기(또는 목포·완도·여수 여객선)로 갑니다.","Jeju is reached by plane (or ferry from Mokpo, Wando or Yeosu).")+'</div>'
+      +L("https://www.google.com/travel/flights?q="+encodeURIComponent("flights to Jeju"),T("항공권 찾기","Find flights"))
+      +L("https://island.haewoon.co.kr/",T("여객선 예매","Ferry booking"))};
+  }
+  if(ia==="ulleung"&&ib==="ulleung") return {train:false,html:'<div class="trh">⛴ '+T("울릉도에서 독도 가는 배","Boat from Ulleungdo to Dokdo")+'</div>'+L("https://island.haewoon.co.kr/",T("여객선 예매","Ferry booking"))};
+  if(km<=60) return {train:false,ods:true,html:'<div id="ods"></div><div class="trh">'+(ia==="jeju"?'🚌 '+T("버스·택시","Bus, taxi"):'🚇 '+T("지하철·버스·택시","Subway, bus, taxi"))+'</div>'
+    +(LANG==="en"?L(go+"transit","Google Maps (English)")+L(nv+"transit","Naver transit")+L(nv+"car","Taxi (fare, Naver)")
+      +'<div class="d" style="margin-top:6px">Tip: in the Naver Map app, Settings → Language → English shows routes in English.</div>'
+     :L(nv+"transit","네이버 대중교통")+L(kk,"카카오맵 길찾기")+L(nv+"car","택시 (요금 보기)")+L(go+"transit","구글 지도"))};
+  return {train:ia==="land",html:'<div class="trh">🧭 '+T("고속버스·자동차","Express bus, car")+'</div>'
+    +(LANG==="en"?L(go+"driving","Google driving (English)")+L(nv+"transit","Naver transit (incl. intercity bus)")+L(nv+"car","Naver car")
+     :L(nv+"transit","네이버 대중교통 (고속·시외버스 포함)")+L(nv+"car","네이버 자동차")+L(go+"driving","구글 자동차"))};
+}
+var ODS_KEY="U9bSUqeZOqzFUTyakFc/HQ";
+// 버스 아이콘 — 서울 시내버스처럼 파랑 (사장님 10-15)
+var BUS_SVG='<svg viewBox="0 0 24 24" width="18" height="18" style="vertical-align:-3px" aria-hidden="true"><rect x="3" y="3" width="18" height="15" rx="3" fill="#2f5bd3"/><rect x="5" y="5.5" width="14" height="5.5" rx="1" fill="#dfeaff"/><rect x="5" y="12.5" width="3" height="2" rx=".6" fill="#ffe28a"/><rect x="16" y="12.5" width="3" height="2" rx=".6" fill="#ffe28a"/><rect x="9.5" y="12.8" width="5" height="1.4" rx=".5" fill="#1d3f9e"/><rect x="5" y="18" width="3.2" height="3" rx="1" fill="#222"/><rect x="15.8" y="18" width="3.2" height="3" rx="1" fill="#222"/><rect x="8" y="3.8" width="8" height="1" rx=".5" fill="#1d3f9e"/></svg>';
+// 버스는 종류별 색(간선 파랑·지선/마을 초록·광역/급행 빨강·순환 노랑), 지하철은 노선 색 동그라미 (사장님 10-15)
+function busIcon(t){ t=+t||0; var c=(t===12||t===3)?"#3aa641":(t===14||t===4||t===15||t===6||t===26)?"#e0261f":(t===13)?"#f2b70a":(t===5)?"#6b4fa0":"#2f5bd3";
+  return BUS_SVG.replace(/#2f5bd3/g,c).replace(/#1d3f9e/g,"rgba(0,0,0,.35)"); }
+var SUBC={1:"#0052A4",2:"#00A84D",3:"#EF7C1C",4:"#00A5DE",5:"#996CAC",6:"#CD7C2F",7:"#747F00",8:"#E6186C",9:"#BDB092"};
+function subBadge(nm){ var s=String(nm), m=s.match(/(\d)\s*(호선|$)|Line\s*(\d)/i), c="#555", t="";
+  if(m&&!/인천|Incheon|경의|부산|Busan|대구|Daegu|광주|Gwangju|대전|Daejeon/i.test(s)){ var d=m[1]||m[3]; c=SUBC[d]||c; t=d; }
+  else if(/공항|Airport|AREX/i.test(s)){ c="#0090D2"; t="A"; } else if(/신분당|Shinbundang|Sinbundang/i.test(s)){ c="#D4003B"; t="S"; }
+  else if(/수인|분당|Suin|Bundang/i.test(s)){ c="#F5A200"; t="SB"; } else if(/경의|중앙|Gyeongui|Jungang/i.test(s)){ c="#77C4A3"; t="K"; }
+  else if(/경춘|Gyeongchun/i.test(s)){ c="#0C8E72"; t="G"; } else if(/우이|Ui/i.test(s)){ c="#B0CE18"; t="U"; } else if(/서해|Seohae/i.test(s)){ c="#8FC31F"; t="W"; }
+  else if(/인천\s*1|Incheon.*1/i.test(s)){ c="#7CA8D5"; t="I1"; } else if(/인천\s*2|Incheon.*2/i.test(s)){ c="#ED8B00"; t="I2"; }
+  else if(/신림|Sillim/i.test(s)){ c="#6789CA"; t="SL"; } else if(/경강|Gyeonggang/i.test(s)){ c="#003DA5"; t="KK"; } else if(/김포|Gimpo/i.test(s)){ c="#A17800"; t="GP"; }
+  else if(m){ t=m[1]||m[3]; }
+  return '<span style="display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 4px;border-radius:999px;background:'+c+';color:#fff;font-size:11px;font-weight:900;vertical-align:-2px;margin-right:3px">'+esc(t||"M")+'</span>'; }
+function odsBox(a,b){ var box=document.getElementById("ods"); if(!box) return; var p=PLACES[a], q=PLACES[b], ck="ods:"+LANG+":"+a+":"+b, cached=null;
+  try{ cached=JSON.parse(sessionStorage.getItem(ck)||"null"); }catch(e){}
+  var draw=function(j){ var ps=(j&&j.result&&j.result.path)||[]; if(!ps.length){ box.innerHTML=""; return; }
+    box.innerHTML='<div class="trh">🚇 '+T("대중교통 추천 경로","Best transit routes")+'</div>'+ps.slice(0,2).map(function(pt){ var f=pt.info||{};
+      var steps=(pt.subPath||[]).map(function(s){ if(s.trafficType===3) return s.sectionTime?'🚶 '+s.sectionTime+T("분","m"):"";
+        var ln=(s.lane&&s.lane[0])||{}, nm=s.trafficType===1?(ln.name||""):(T("버스 ","Bus ")+(ln.busNo||""));
+        return (s.trafficType===1?subBadge(ln.name||""):busIcon(ln.type)+' ')+'<b>'+esc(nm)+'</b> '+esc(s.startName||"")+' → '+esc(s.endName||"")+(s.stationCount?' ('+s.stationCount+T("정거장"," stops")+')':''); }).filter(Boolean).join('<br>');
+      return '<div style="border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:6px 0"><div style="font-weight:800">'+(f.totalTime>=60?Math.floor(f.totalTime/60)+T("시간 ","h "):"")+(f.totalTime%60)+T("분","m")+' · '+(f.payment||0).toLocaleString()+T("원"," KRW")+'</div><div class="d" style="line-height:1.6;margin:4px 0 0">'+steps+'</div></div>'; }).join("")
+      +'<div class="d" style="font-size:11px;text-align:right">powered by www.ODsay.com</div>'; };
+  if(cached) return draw(cached);
+  box.innerHTML='<div class="d">'+T("경로 찾는 중…","Finding routes…")+'</div>';
+  fetch("https://api.odsay.com/v1/api/searchPubTransPathT?lang="+(LANG==="en"?1:0)+"&SX="+p.lng+"&SY="+p.lat+"&EX="+q.lng+"&EY="+q.lat+"&apiKey="+encodeURIComponent(ODS_KEY))
+    .then(function(r){ return r.json(); }).then(function(j){ if(j&&j.result){ try{ sessionStorage.setItem(ck,JSON.stringify(j)); }catch(e){} } draw(j); }).catch(function(){ box.innerHTML=""; }); }
+function distShow(a,b,p0,p1){
+  if(a==="ktx"||b==="ktx"){ ktxErr(); dlDraw(null); return; }
+  if(!a||!b||a===b){ dlDraw(null); return; }
+  var km=kmBetween(a,b), rp=routePlan(a,b,km), t=(km<10?km.toFixed(1):Math.round(km).toLocaleString())+" km";
+  dlDraw(p0,p1,t);
+  document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(pName(a))+' ↔ '+esc(pName(b))+'</div><div class="dist">'+t+'</div><div class="d">'+T("직선거리","Straight-line distance")+'</div><div id="trn"></div>'+rp.html+'</div>'; if(rp.train) trainBox(a,b); if(rp.ods) odsBox(a,b); }
+// 줌 — s=배율(1~5), tx·ty=옮긴 만큼(px). 지도 칸 밖이 보이지 않게 묶는다
+var ZM={s:1,tx:0,ty:0};
+function zApply(){ var m=document.getElementById("map"), w=m.clientWidth, z=document.getElementById("mz");
+  ZM.s=Math.max(1,Math.min(5,ZM.s)); ZM.tx=Math.min(0,Math.max(w-w*ZM.s,ZM.tx)); ZM.ty=Math.min(0,Math.max(w-w*ZM.s,ZM.ty));
+  z.style.transform="translate("+ZM.tx+"px,"+ZM.ty+"px) scale("+ZM.s+")"; m.classList.toggle("zoomed",ZM.s>1.001);
+  var lb=document.getElementById("dlb"); if(lb) lb.style.transform="translate(-50%,-50%) scale("+(1/ZM.s)+")"; }
+function zAt(cx,cy,ns){ var r=document.getElementById("map").getBoundingClientRect(), px=cx-r.left, py=cy-r.top;
+  ns=Math.max(1,Math.min(5,ns)); ZM.tx=px-(px-ZM.tx)*ns/ZM.s; ZM.ty=py-(py-ZM.ty)*ns/ZM.s; ZM.s=ns; zApply(); }
+function zCenter(f){ var r=document.getElementById("map").getBoundingClientRect(); zAt(r.left+r.width/2,r.top+r.height/2,ZM.s*f); }
+function hitInit(){ var m=document.getElementById("map"), drag=null, pan=null, moved=false, tch=null, tmr=null, pin=null, one=null;
+  document.getElementById("zin").onclick=function(e){ e.stopPropagation(); zCenter(1.6); };
+  document.getElementById("zout").onclick=function(e){ e.stopPropagation(); zCenter(1/1.6); };
+  document.getElementById("zrs").onclick=function(e){ e.stopPropagation(); ZM={s:1,tx:0,ty:0}; zApply(); };
+  document.getElementById("vback").onclick=function(e){ e.stopPropagation(); viewSet((CITY[VIEW]&&CITY[VIEW].parent)||"kr"); };
+  document.getElementById("vdet").onclick=function(e){ e.stopPropagation(); detSet(!DET); };
+  window.addEventListener("resize",zApply);
+  m.addEventListener("click",function(e){ if(DET) return; if(e.button!==0||e.target.closest(".zb")||e.target.closest("#vback")||e.target.closest("#vdet")) return;
+    if(VIEW!=="kr"){ if(!moved){ var hk=hitAt(e.clientX,e.clientY); if(hk){ dlDraw(null); hitClick(hk); } else areaTap(e.clientX,e.clientY); } moved=false; return; } if(moved){ moved=false; return; } dlDraw(null); hitClick(hitAt(e.clientX,e.clientY)); });
+  m.addEventListener("wheel",function(e){ if(DET) return; e.preventDefault(); zAt(e.clientX,e.clientY,ZM.s*(e.deltaY<0?1.15:1/1.15)); },{passive:false});
+  m.addEventListener("mousemove",function(e){
+if(DET) return;     if(pan){ var dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math.abs(dx)+Math.abs(dy)>4) moved=true; ZM.tx=pan.tx+dx; ZM.ty=pan.ty+dy; zApply(); m.style.cursor="grabbing"; return; }
+    var k=hitAt(e.clientX,e.clientY); m.style.cursor=k?"pointer":(ZM.s>1?"grab":"");
+    if(drag){ dlDraw(drag.p,dlPt(e.clientX,e.clientY),""); } });
+  m.addEventListener("contextmenu",function(e){ e.preventDefault(); });
+  m.addEventListener("mousedown",function(e){ if(DET) return; if(e.target.closest(".zb")) return;
+    if(e.button===0){ moved=false; if(ZM.s>1){ e.preventDefault(); pan={x:e.clientX,y:e.clientY,tx:ZM.tx,ty:ZM.ty}; } return; }
+    if(e.button!==2) return; var k=hitAt(e.clientX,e.clientY); if(!k) return; e.preventDefault(); drag={k:k,p:dlPt(e.clientX,e.clientY)}; });
+  window.addEventListener("mouseup",function(e){ if(e.button===0){ pan=null; return; } if(e.button!==2||!drag) return; var k=hitAt(e.clientX,e.clientY), d=drag; drag=null; distShow(d.k,k,d.p,dlPt(e.clientX,e.clientY)); });
+  function dist2(a,b){ return Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); }
+  m.addEventListener("touchstart",function(e){ if(DET) return; if(e.target.closest(".zb")) return; clearTimeout(tmr); tch=null; pin=null; one=null;
+    if(e.touches.length===1){ dlDraw(null); if(ZM.s>1){ var t=e.touches[0]; one={x:t.clientX,y:t.clientY,tx:ZM.tx,ty:ZM.ty}; } return; }
+    if(e.touches.length!==2) return; e.preventDefault();
+    var t0=e.touches[0], t1=e.touches[1], a=hitAt(t0.clientX,t0.clientY), b=hitAt(t1.clientX,t1.clientY);
+    pin={d:dist2(t0,t1),s:ZM.s,cx:(t0.clientX+t1.clientX)/2,cy:(t0.clientY+t1.clientY)/2,tx:ZM.tx,ty:ZM.ty,go:false};
+    tch={a:a,b:b,p0:dlPt(t0.clientX,t0.clientY),p1:dlPt(t1.clientX,t1.clientY)};
+    tmr=setTimeout(function(){ if(tch&&pin&&!pin.go){ distShow(tch.a,tch.b,tch.p0,tch.p1); tch=null; pin=null; } },300); },{passive:false});
+  m.addEventListener("touchmove",function(e){
+if(DET) return;     if(e.touches.length===2&&pin){ e.preventDefault(); var t0=e.touches[0], t1=e.touches[1], d=dist2(t0,t1), cx=(t0.clientX+t1.clientX)/2, cy=(t0.clientY+t1.clientY)/2;
+      if(!pin.go&&(Math.abs(d-pin.d)>12||Math.hypot(cx-pin.cx,cy-pin.cy)>12)){ pin.go=true; clearTimeout(tmr); tch=null; }   // 움직이면 줌, 가만히 0.3초면 거리
+      if(pin.go){ var r=m.getBoundingClientRect(), ns=Math.max(1,Math.min(5,pin.s*d/pin.d)), px=pin.cx-r.left, py=pin.cy-r.top;
+        ZM.s=ns; ZM.tx=px-(px-pin.tx)*ns/pin.s+(cx-pin.cx); ZM.ty=py-(py-pin.ty)*ns/pin.s+(cy-pin.cy); zApply(); } return; }
+    if(e.touches.length===1&&one){ e.preventDefault(); var t=e.touches[0]; ZM.tx=one.tx+t.clientX-one.x; ZM.ty=one.ty+t.clientY-one.y; zApply(); } },{passive:false});
+  m.addEventListener("touchend",function(e){ if(e.touches.length<2){ clearTimeout(tmr); tch=null; pin=null; } if(e.touches.length===0) one=null; });
+  m.addEventListener("touchcancel",function(){ clearTimeout(tmr); tch=null; pin=null; one=null; });
+  zApply();
+}
+// 결과(장소·거리·열차·검색) 오른쪽 위 X — 누르면 지운다 (사장님 10-15)
+function resClear(){ document.getElementById("res").innerHTML=""; try{ dlDraw(null); }catch(e){} }
+(function(){ var r=document.getElementById("res");
+  new MutationObserver(function(){ if(r.firstElementChild&&!r.querySelector(":scope > .xbtn")){ var b=document.createElement("button"); b.className="xbtn"; b.type="button"; b.textContent="✕"; b.setAttribute("aria-label",T("닫기","Close")); b.onclick=resClear; r.insertBefore(b,r.firstChild); } }).observe(r,{childList:true});
+})();
+thPaint();
+paint();
+hitInit();
+</script>
+</body>
+</html>
