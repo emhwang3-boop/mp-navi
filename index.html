@@ -14,9 +14,27 @@
 /* 머니퍼즐 내비 첫 화면 (사장님 2026-10-14) — 다른 앱과 같은 출입: 사장님 기기·초대 링크·홈페이지에서 온 사람만 */
 (function(){ try{
   if(/[?&]me=EM2410/i.test(location.search)) localStorage.setItem("mp_owner","1");
-  if(/[?&]inv=MPNV26/i.test(location.search)){ localStorage.setItem("mpv_inv","1"); localStorage.setItem("mpv_ok","1"); }
   var ok=!!localStorage.getItem("mp_owner")||!!localStorage.getItem("mpv_ok")||/^https:\/\/([a-z0-9-]+\.)?moneypuzzle\.co\.kr|^https:\/\/emhwang3-boop\.github\.io\/(home|mp-navi)/.test(document.referrer||"");
   if(localStorage.getItem("mp_owner")||localStorage.getItem("mpv_inv")) document.addEventListener("DOMContentLoaded",function(){ var l=document.querySelector('link[rel="mp-manifest"]'); if(l) l.rel="manifest"; });
+  /* 7일짜리 초대 링크 (사장님 2026-10-15) — 고정 코드는 더 안 받는다. 허브가 서명·만료를 확인한다 */
+  var IH="https://brief-live-hub.emhwang3.workers.dev", IA="navi";
+  window.mpInvMint=function(cb){ var c=window.__mpInvC; if(c&&Date.now()-c.t<216e5){ cb(c.v); return; }
+    fetch(IH+"/invmint?app="+IA+"&me=EM2410",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
+      if(j&&j.ok&&/^\d{8}\.[0-9a-f]{10}$/.test(j.inv||"")){ window.__mpInvC={t:Date.now(),v:j.inv}; cb(j.inv); } else cb(null); }).catch(function(){ cb(null); }); };
+  var mt=/[?&]inv=(\d{8}\.[0-9a-f]{10})(?![0-9a-z])/i.exec(location.search);
+  if(/[?&]inv=/i.test(location.search)){ try{ var qs=location.search.slice(1).split("&").filter(function(x){ return !/^inv=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qs?"?"+qs:"")+location.hash); }catch(x){} }
+  if(!ok&&mt){ var de=document.documentElement; de.style.setProperty("visibility","hidden","important");
+    var bye=function(exp){ var go=function(){ location.replace("https://moneypuzzle.co.kr/"); }; if(!exp){ go(); return; }
+      var sh=function(){ document.body.innerHTML='<div style="font:600 16px/1.7 sans-serif;padding:48px 20px;text-align:center;color:#333;background:#fff">초대 링크가 만료되었습니다<br>This invite link has expired</div>'; de.style.removeProperty("visibility"); setTimeout(go,2500); };
+      if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",sh); else sh(); };
+    fetch(IH+"/invchk?app="+IA+"&inv="+mt[1],{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
+      if(!j||!j.ok){ bye(j&&j.err==="expired"); return; }
+      localStorage.setItem("mpv_inv","1"); localStorage.setItem("mpv_ok","1"); localStorage.setItem("mpv_inv_t",mt[1]);
+      var mf=function(){ var l=document.querySelector('link[rel="mp-manifest"]'); if(l) l.rel="manifest"; var h=document.getElementById("mpInstHide"); if(h) h.parentNode.removeChild(h); };
+      if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",mf); else mf();
+      de.style.removeProperty("visibility");
+    }).catch(function(){ bye(false); });
+    return; }
   if(ok){ localStorage.setItem("mpv_ok","1"); return; }
   location.replace("https://moneypuzzle.co.kr/");
 }catch(e){} })();
@@ -176,8 +194,14 @@ function shBuild(){
   p.innerHTML=h;
 }
 // 사장님 기기면 진짜 공유 — 받은 사람은 홈페이지에서 앱을 눌러 들어온다 (앱 주소는 홈페이지를 거쳐야 열린다)
-function shOwnerFix(p, appName){
-  var url=location.origin+location.pathname.replace(/index\.html$/,"")+"?inv=MPNV26", txt=appName+" — Money Puzzle";   /* 지금 연 주소 그대로 (2026-10-14) */
+function shOwnerFix(p, appName){   /* 7일짜리 초대 표를 허브에서 받아 붙인다 — 못 받으면 고정 코드 대신 안내만 (2026-10-15) */
+  var m=p.querySelector(".shmsg"); if(m) m.textContent="…";
+  if(!window.mpInvMint){ if(m) m.textContent="초대 링크를 만들지 못했습니다 / Could not create the invite link"; return; }
+  window.mpInvMint(function(t){ if(!t){ if(m) m.textContent="초대 링크를 만들지 못했습니다. 잠시 뒤 다시 열어 주세요 / Could not create the invite link — try again shortly"; return; }
+    if(m) m.textContent=""; shOwnerFix0(p, appName, t); });
+}
+function shOwnerFix0(p, appName, tok){
+  var url=location.origin+location.pathname.replace(/index\.html$/,"")+"?inv="+tok, txt=appName+" — Money Puzzle";   /* 지금 연 주소 그대로 (2026-10-14) */
   [].forEach.call(p.querySelectorAll(".sht"),function(b){
     var lab=b.textContent.trim(), href="";
     if(/^X$/.test(lab)) href="https://twitter.com/intent/tweet?text="+encodeURIComponent(txt)+"&url="+encodeURIComponent(url);
