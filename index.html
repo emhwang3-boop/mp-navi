@@ -273,7 +273,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="e27044a15a", NAVI_ROOT="kr";
+var NAVI_V="97ec9d8d38", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -293,7 +293,18 @@ function placeShow(k){ var p=PLACES[k]; if(!p) return; var nm=LANG==="en"?p.en:p
       :'<a href="https://map.kakao.com/link/to/'+encodeURIComponent(p.ko)+','+ll+'" target="_blank" rel="noopener">카카오맵 길찾기</a>'
        +'<a href="https://map.naver.com/p?c='+p.lng+','+p.lat+',15,0,0,0,dh" target="_blank" rel="noopener">네이버 지도</a>'
        +'<a href="https://www.google.com/maps/dir/?api=1'+(LANG==="en"?"&hl=en":"")+'&destination='+ll+'" target="_blank" rel="noopener">구글 지도</a>')+'</div>';
+  if(p.route&&p.route.map===VIEW) routeShow(p); else rtClear();
   clearTimeout(window._scT); window._scT=setTimeout(function(){ window.scrollTo({top:0,behavior:"smooth"}); },460); }
+// 노선 — 장소 자료의 route{map, stops:[[x,y,한글,영어],...], info:[한,영]} 를 그 약도 위에 점선과 번호로 (시티투어, 사장님 10-15)
+function rtClear(){ var g=document.getElementById("rt"); if(g) g.remove(); }
+function routeShow(p){ rtClear(); var r=p.route, s=document.getElementById("dl"), ns="http://www.w3.org/2000/svg", g=document.createElementNS(ns,"g"); g.id="rt";
+  var pts=r.stops.map(function(t){ return (t[0]*1000)+","+(t[1]*1000); }).join(" ")+" "+(r.stops[0][0]*1000)+","+(r.stops[0][1]*1000);
+  var pl=document.createElementNS(ns,"polyline"); pl.setAttribute("points",pts); pl.setAttribute("fill","none"); pl.setAttribute("stroke","#e8590c"); pl.setAttribute("stroke-width","6"); pl.setAttribute("stroke-dasharray","16 10"); pl.setAttribute("stroke-linejoin","round"); g.appendChild(pl);
+  r.stops.forEach(function(t,i){ var c=document.createElementNS(ns,"circle"); c.setAttribute("cx",t[0]*1000); c.setAttribute("cy",t[1]*1000); c.setAttribute("r","13"); c.setAttribute("fill","#fff"); c.setAttribute("stroke","#e8590c"); c.setAttribute("stroke-width","4"); g.appendChild(c);
+    var tx=document.createElementNS(ns,"text"); tx.setAttribute("x",t[0]*1000); tx.setAttribute("y",t[1]*1000+6); tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size","17"); tx.setAttribute("font-weight","900"); tx.setAttribute("fill","#c2410c"); tx.textContent=i+1; g.appendChild(tx); });
+  s.appendChild(g);
+  var li=r.stops.map(function(t,i){ return (i+1)+". "+esc(LANG==="en"?t[3]:t[2]); }).join("<br>");
+  document.getElementById("res").insertAdjacentHTML("beforeend",'<div class="item"><div class="t">🚌 '+T("시티투어 노선 (도심·고궁·남산)","City Tour route (Downtown · Palaces · Namsan)")+'</div><div class="d" style="margin:4px 0">'+esc(LANG==="en"?r.info[1]:r.info[0])+'</div><div class="d" style="line-height:1.7;color:var(--ink)">'+li+'</div></div>'); }
 var HIT={keys:[],rle:""};
 var HG=new Uint8Array(65536);
 // 그림 근처만 눌러도 된다 — 바로 그 자리가 비면 손가락 한 마디(화면 24px) 안의 가장 가까운 그림 (사장님 10-15)
