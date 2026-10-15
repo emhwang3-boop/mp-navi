@@ -276,14 +276,14 @@ function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan;
     if(H) h+='<div class="trw h"><span class="tt">'+m2hm(pl.from)+'</span><span class="tp">🏨 '+esc(hn||nm(H))+T(" 출발"," — start")+'</span></div>';
     var n=0, prevK=H?"__hotel":null;
     s.rows.forEach(function(r,ri){ if(r.lunch){ h+='<div class="trw l"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">🍽 '+T("점심 (1시간)","Lunch (1 h)")+'</span></div>'; return; }
-      if(r.leg) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.x.k)+'" data-d="'+di+'">'+legTxt(r.leg)+(r.leg.mode!=="walk"?' · <a href="#" class="tlgo">'+T("실제 경로 보기","See real routes")+'</a>':'')+'<div class="tods"></div></div>';
+      if(r.leg) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.x.k)+'" data-d="'+di+'">'+legTxt(r.leg)+(r.leg.mode!=="walk"?' <a href="#" class="tlgo">· '+T("실제 경로 보기","See real routes")+'</a>':'')+'<div class="tods"></div></div>';
       n++; var tip=tips[r.x.k], memo=r.note.map(function(q){ return L()?q[1]:q[0]; });
       if(needCheck(r.x)) memo.push(T("운영 시간·휴무일 확인 필요","Check opening hours/closures"));
       if(isNight(r.x)) memo.push(T("밤 추천","Best at night"));
       h+='<div class="trw"><span class="tt">'+m2hm(r.t)+'</span><span class="tp"><b class="tno">'+n+'</b> <b>'+esc(nm(r.x))+'</b> <i>'+durTxt(r.x.stay)+'</i>'
         +(memo.length?'<span class="tmemo">'+esc(memo.join(" · "))+'</span>':"")+(tip&&(L()?tip.en:tip.ko)?'<span class="ttip">💡 '+esc(L()?tip.en:tip.ko)+'</span>':"")+'</span></div>';
       prevK=r.x.k; });
-    if(s.back) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="__hotel" data-d="'+di+'">'+legTxt(s.back)+(s.back.mode!=="walk"?' · <a href="#" class="tlgo">'+T("실제 경로 보기","See real routes")+'</a>':'')+'<div class="tods"></div></div><div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">🏨 '+T("숙소 도착","Back to lodging")+'</span></div>';
+    if(s.back) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="__hotel" data-d="'+di+'">'+legTxt(s.back)+(s.back.mode!=="walk"?' <a href="#" class="tlgo">· '+T("실제 경로 보기","See real routes")+'</a>':'')+'<div class="tods"></div></div><div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">🏨 '+T("숙소 도착","Back to lodging")+'</span></div>';
     else h+='<div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+T("일정 끝","End of day")+'</span></div>';
     if(s.end>pl.to) h+='<div class="tmemo" style="margin-top:4px">⚠ '+T("하루 끝 시각("+m2hm(pl.to)+")을 넘어요 — 장소를 빼거나 날짜를 늘려 보세요","Runs past your end time ("+m2hm(pl.to)+") — remove a place or add a day")+'</div>';
     h+='</div></div>'; });
