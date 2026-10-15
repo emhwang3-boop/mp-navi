@@ -141,24 +141,36 @@ function pwChange(){ var a=$("pw0").value, b=$("pw1").value, c=$("pw2").value, m
       m.innerHTML='<b>바꿨습니다.</b> 이 기기에는 새 비밀번호로 저장했습니다. 다른 기기(폰 등)에서는 새 비밀번호를 다시 넣어 주세요.'; return; }
     m.innerHTML='<span class="err">'+(j.err==="locked"?"5번 틀려 15분 동안 잠겼습니다.":j.err==="admin"?"지금 비밀번호가 맞지 않습니다.":j.err==="weak"?"새 비밀번호가 너무 짧습니다 (10자 이상).":"바꾸지 못했습니다.")+'</span>';
   }).catch(function(){ $("pwb").disabled=false; m.innerHTML='<span class="err">허브에 닿지 못했습니다.</span>'; }); }
-// ── 입점 문의 — 사업자번호·이메일 확인을 거친 업체 문의. 연락처는 가려 두고 단추로 ──
-var IQS={active:"계속사업자 ✓",pending:"키 대기 (형식·체크섬만)"}, IQD=null;
-function inqLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><div class="row"><b style="flex:1">입점·광고 문의</b><button class="g" onclick="xlsInq()">엑셀 받기</button></div><div class="msg">메일로도 갑니다. 이메일·전화는 「연락처 보기」를 눌러야 보입니다. 1년 지나면 지워집니다.</div><div id="iql"><div class="msg">불러오는 중…</div></div></div>';
-  api("/ninq/admin").then(function(j){ IQD=j; if(!j.items.length){ $("iql").innerHTML='<div class="msg">아직 문의가 없습니다.</div>'; return; }
-    $("iql").innerHTML=j.items.map(function(x){ return '<div class="inv" style="'+(x.read?'opacity:.65':'border-left:4px solid var(--acc)')+'"><div class="sub">'+esc(x.at)+' · '+(x.lang==="en"?"영어":"한국어")+(x.read?' · 읽음':' · 새 문의')+(x.mailFail?' · <span class="err">메일 실패</span>':'')+'</div>'
-      +'<div style="margin:4px 0"><b>'+esc(x.biz)+'</b>'+(x.cat?' · '+esc(x.cat):'')+' · 담당 '+esc(x.name)+'</div>'
+// ── 입점 문의 — 사업자번호·이메일 확인을 거친 업체 문의. 연락처는 가려 두고 단추로 · 업종 코드표는 허브 /ninq/cats 한 곳 ──
+var IQS={active:"계속사업자 ✓ (국세청)",pending:"국세청 확인 대기 (형식·체크섬만)"}, IQD=null, IQC=null, IQF={a:"",b:""};
+function iqCats(){ if(IQC) return Promise.resolve(IQC); return fetch(HUB+"/ninq/cats").then(function(r){ return r.json(); }).then(function(j){ IQC=j.cats||[]; return IQC; }).catch(function(){ IQC=[]; return IQC; }); }
+function iqCatNm(code){ var p=String(code||"").split("."), t=(IQC||[]).filter(function(x){ return x.c===p[0]; })[0]; if(!t) return [code||"",""];
+  var s=p[1]&&t.sub?t.sub.filter(function(x){ return x.c===p[1]; })[0]:null; return [t.ko, s?s.ko:""]; }
+function inqLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><div class="row"><b style="flex:1">입점·광고 문의</b><button class="g" onclick="xlsInq()">엑셀 받기</button></div><div class="msg">메일로도 갑니다. 이메일·전화는 「연락처 보기」를 눌러야 보입니다. 1년 지나면 지워집니다.</div>'
+  +'<div class="row" style="margin-top:8px"><select id="iqA" onchange="IQF.a=this.value;IQF.b=\'\';iqDraw()"></select><select id="iqB" onchange="IQF.b=this.value;iqDraw()"></select></div><div id="iqCnt" class="msg"></div><div id="iql"><div class="msg">불러오는 중…</div></div></div>';
+  Promise.all([iqCats(),api("/ninq/admin")]).then(function(a){ IQD=a[1]; iqDraw(); }).catch(function(e){ $("iql").innerHTML='<div class="msg err">불러오지 못했습니다</div>'; }); }
+function iqDraw(){ if(!IQD) return; var all=IQD.items, cnt={}, cntB={};
+  all.forEach(function(x){ var p=String(x.cat||"").split("."); cnt[p[0]]=(cnt[p[0]]||0)+1; if(p[1]) cntB[x.cat]=(cntB[x.cat]||0)+1; });
+  $("iqA").innerHTML='<option value="">대분류 전체 ('+all.length+')</option>'+IQC.map(function(c){ return '<option value="'+c.c+'"'+(IQF.a===c.c?" selected":"")+'>'+esc(c.ko)+' ('+(cnt[c.c]||0)+')</option>'; }).join("");
+  var top=IQC.filter(function(c){ return c.c===IQF.a; })[0];
+  $("iqB").hidden=!(top&&top.sub); $("iqB").innerHTML=top&&top.sub?'<option value="">소분류 전체</option>'+top.sub.map(function(s){ var k=top.c+"."+s.c; return '<option value="'+k+'"'+(IQF.b===k?" selected":"")+'>'+esc(s.ko)+' ('+(cntB[k]||0)+')</option>'; }).join(""):"";
+  $("iqCnt").textContent="업종별: "+IQC.filter(function(c){ return cnt[c.c]; }).map(function(c){ return c.ko+" "+cnt[c.c]; }).join(" · ");
+  var R=all.filter(function(x){ var c=String(x.cat||""); return (!IQF.a||c.split(".")[0]===IQF.a)&&(!IQF.b||c===IQF.b); });
+  if(!R.length){ $("iql").innerHTML='<div class="msg">해당 문의가 없습니다.</div>'; return; }
+  $("iql").innerHTML=R.map(function(x){ var cn=iqCatNm(x.cat); return '<div class="inv" style="'+(x.read?'opacity:.65':'border-left:4px solid var(--acc)')+'"><div class="sub">'+esc(x.at)+' · '+(x.lang==="en"?"영어":"한국어")+(x.read?' · 읽음':' · 새 문의')+(x.mailFail?' · <span class="err">메일 실패</span>':'')+'</div>'
+      +'<div style="margin:4px 0"><b>'+esc(x.biz)+'</b> · '+esc(cn[0])+(cn[1]?' &gt; '+esc(cn[1]):'')+(x.catx?' ('+esc(x.catx)+')':'')+' · 담당 '+esc(x.name)+'</div>'
       +'<div class="sub">사업자 '+esc(String(x.bno||"").replace(/^(\d{3})(\d{2})(\d{5})$/,"$1-$2-$3"))+' · '+esc(IQS[x.bizSt]||x.bizSt||"")+(x.loc?' · 위치 '+esc(x.loc):'')+'</div>'
       +'<div style="white-space:pre-wrap;margin:6px 0">'+esc(x.msg)+'</div><div class="row">'
       +(x.read?'':'<button class="g" data-id="'+esc(x.id)+'" onclick="iqAct(\'read\',this.dataset.id)">읽음</button>')
       +(x.hasContact?'<button class="g" data-id="'+esc(x.id)+'" onclick="iqContact(this)">연락처 보기</button>':'')
-      +'<button class="g" data-id="'+esc(x.id)+'" onclick="iqAct(\'del\',this.dataset.id)">지우기</button></div></div>'; }).join("");
-  }).catch(function(e){ $("iql").innerHTML='<div class="msg err">불러오지 못했습니다</div>'; }); }
+      +'<button class="g" data-id="'+esc(x.id)+'" onclick="iqAct(\'del\',this.dataset.id)">지우기</button></div></div>'; }).join(""); }
 function iqAct(a,id){ if(a==="del"&&!confirm("이 문의를 지울까요?")) return; api("/ninq/admin?"+a+"="+encodeURIComponent(id),{method:"POST"}).then(inqLoad); }
 function iqContact(b){ api("/ninq/admin?contact="+encodeURIComponent(b.dataset.id)).then(function(j){ var s=document.createElement("span"); s.textContent=(j.email||"")+(j.contact?" · "+j.contact:""); s.style.padding="8px"; b.replaceWith(s); }); }
 function xlsInq(){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀습니다."); return; }
-  api("/ninq/admin?full=1").then(function(j){ var rows=[[CO],["입점·광고 문의"],["만든 날",kday(0)],[],["시각","상호/회사","업종","담당자","사업자등록번호","사업자 확인","이메일(인증)","전화","위치","언어","문의 내용","읽음"]];
-    j.items.forEach(function(x){ rows.push([x.at,x.biz,x.cat||"",x.name,String(x.bno||"").replace(/^(\d{3})(\d{2})(\d{5})$/,"$1-$2-$3"),IQS[x.bizSt]||x.bizSt||"",x.email||"",x.contact||"",x.loc||"",x.lang==="en"?"영어":"한국어",x.msg,x.read?"읽음":""]); });
-    var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[16,20,12,10,14,16,24,14,20,6,50,6]),"입점 문의"); save(wb,"머니퍼즐내비_입점문의_"+kday(0)+".xlsx"); })
+  Promise.all([iqCats(),api("/ninq/admin?full=1")]).then(function(a){ var j=a[1], rows=[[CO],["입점·광고 문의"+(IQF.a?" — "+iqCatNm(IQF.b||IQF.a).filter(Boolean).join(" > "):"")],["만든 날",kday(0)],[],["시각","상호/회사","대분류","소분류","업종(직접 입력)","담당자","사업자등록번호","사업자 확인","이메일(인증)","전화","위치","언어","문의 내용","읽음"]];
+    j.items.filter(function(x){ var c=String(x.cat||""); return (!IQF.a||c.split(".")[0]===IQF.a)&&(!IQF.b||c===IQF.b); }).forEach(function(x){ var cn=iqCatNm(x.cat);
+      rows.push([x.at,x.biz,cn[0],cn[1],x.catx||"",x.name,String(x.bno||"").replace(/^(\d{3})(\d{2})(\d{5})$/,"$1-$2-$3"),IQS[x.bizSt]||x.bizSt||"",x.email||"",x.contact||"",x.loc||"",x.lang==="en"?"영어":"한국어",x.msg,x.read?"읽음":""]); });
+    var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[16,20,14,16,14,10,14,22,24,14,20,6,50,6]),"입점 문의"); save(wb,"머니퍼즐내비_입점문의_"+kday(0)+".xlsx"); })
   .catch(function(){ alert("불러오지 못했습니다"); }); }
 // ── 이용권·결제 장부 ──
 var LG=null, PRN={"7d":"7일권","15d":"15일권","30d":"30일권"};
