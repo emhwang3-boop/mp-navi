@@ -697,7 +697,7 @@ function lodDraw(){ var L=document.getElementById("lod"); if(!L) return; var c=C
       if(pw<mn){ ph=ph*mn/pw; pw=mn; } if(ph<mn){ pw=pw*mn/ph; ph=mn; } ph=Math.min(ph,pw*1.6); pw=Math.min(pw,ph*1.6);
       var x=(s[1]+s[3])/2*W-pw/2, y=(s[2]+s[4])/2*H-ph/2, r=[x,y,x+pw,y+ph];
       if(hit(r)) continue; put.push(r);
-      var e=lodEl("p:"+a+":"+s[0],"lp",a); e.dataset.k=s[0]; e.style.backgroundImage="url('"+((LANG==="en"&&s[6])?s[6]:s[5])+"')";   /* [6]=영어판(전광판 글자 박힌 미니) */ e.title=pName(s[0].split("@")[0])||"";
+      var e=lodEl("p:"+a+":"+s[0],"lp",a); e.dataset.k=s[0]; lodBg(e,[(LANG==="en"&&s[6])?s[6]:s[5],s[5],String(s[5]).replace(/_(ko|en)\.jpg(\?.*)?$/,".jpg")]);   /* [6]=영어판(전광판 글자 박힌 미니) · 못 불러오면 다음 것으로 */ e.title=pName(s[0].split("@")[0])||"";
       e.style.left=(x/W*100)+"%"; e.style.top=(y/H*100)+"%"; e.style.width=pw+"px"; e.style.height=ph+"px"; e.style.borderWidth=Math.max(0.6,w*0.003)+"px"; e.style.borderRadius=(w*0.01)+"px"; } }); }
 // 네모 안 비율(pfx,pfy)을 가운데에 두고 아래 약도로 — sC 를 주면 그 배율, 없으면 지금 보이는 넓이를 이어 받는다
 function lodEnter(a,pfx,pfy,sC){ var c=CITY[VIEW], b=c&&c.areas&&c.areas[a]; if(!b) return; var asP=ASP(), sP=ZM.s; viewSet(a);
@@ -709,6 +709,9 @@ function lodAuto(){ return; var c=CITY[VIEW]; if(!c||!c.areas||DET||ZM.s<LOD.s0*
   var fx=(w/2-ZM.tx)/iw, fy=(h/2-ZM.ty)/ih, best=null, ba=9;
   for(var a in c.areas){ var b=c.areas[a]; if(fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]&&(b[2]-b[0])*iw>=0.7*w){ var ar=(b[2]-b[0])*(b[3]-b[1]); if(ar<ba){ ba=ar; best=a; } } }
   if(best) lodEnter(best,fx,fy); }
+// 미니 그림 — 첫 주소를 못 불러오면(404·캐시) 다음 주소로 (입점 문의 한/영 미니, 2026-10-16)
+function lodBg(e,L){ L=L.filter(function(u,i){ return u&&L.indexOf(u)===i; }); var i=0; var go=function(){ var u=L[i]; if(!u) return; var im=new Image(); im.onload=function(){ e.style.backgroundImage="url('"+u+"')"; }; im.onerror=function(){ i++; go(); }; im.src=u; };
+  e.style.backgroundImage="url('"+L[0]+"')"; go(); }
 function lodTap(e){ var t=e.target.closest&&e.target.closest("#lod [data-a]"); if(!t) return false; var a=t.dataset.a, k=t.dataset.k, S=k&&CITY[VIEW].subs&&CITY[VIEW].subs[a]; ntap(a,"open_area");
   if(S){ for(var i=0;i<S.length;i++) if(S[i][0]===k){ var s=S[i]; lodEnter(a,(s[1]+s[3])/2,(s[2]+s[4])/2,1); return true; } }
   viewSet(a); return true; }
