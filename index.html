@@ -397,7 +397,7 @@ function viewSet(v){ clearTimeout(window._scT); VIEW=v; if(CITY[v]) mapLoad(v).c
 var _lastTap={k:null,t:0}, _lastArea={a:null,t:0};
 function areaTap(cx,cy){ var c=CITY[VIEW]; if(!c||!c.areas) return; var r=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-r.left)/r.width, fy=(cy-r.top)/r.height, now=Date.now();
   var a=null, bd=9; for(var k in c.areas){ var b=c.areas[k]; if(fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]){ var dd=Math.max(Math.abs(fx-(b[0]+b[2])/2)/(b[2]-b[0]),Math.abs(fy-(b[1]+b[3])/2)/(b[3]-b[1])); if(dd<bd){ bd=dd; a=k; } } }   // 겹친 네모는 가운데에 가까운 쪽
-  if(!a) return; if(_lastArea.a===a&&now-_lastArea.t<450){ _lastArea={a:null,t:0}; clearTimeout(_tapT); viewSet(a); return true; } else _lastArea={a:a,t:now}; }
+  if(!a) return; if(_lastArea.a===a&&now-_lastArea.t<450){ _lastArea={a:null,t:0}; clearTimeout(_tapT); viewSet(a); return 2; } _lastArea={a:a,t:now}; return 1; }
 function cityFor(k){ for(var c in CITY) if(CITY[c].keys.indexOf(k)>=0) return c; return null; }
 function hitAt(cx,cy){ /* 통계청(관리자 입구)은 「내 위치」 그림보다 먼저 — PC 에선 내 위치 그림(지도 폭 7%)이 29px 짜리 통계청을 덮어 길게 눌러도 안 열렸다 (사장님 10-15) */ if(VIEW!=="kr"&&CITY[VIEW]&&CITY[VIEW].spots&&CITY[VIEW].spots.mpstat){ var mb=CITY[VIEW].spots.mpstat, mr0=document.getElementById("mapimg").getBoundingClientRect(), mx=(cx-mr0.left)/mr0.width, my=(cy-mr0.top)/mr0.height; if(mx>=mb[0]&&mx<=mb[2]&&my>=mb[1]&&my<=mb[3]) return "mpstat"; } var me=document.getElementById("me"); if(me&&!me.hidden){ var mr=me.getBoundingClientRect(); if(cx>=mr.left&&cx<=mr.right&&cy>=mr.top&&cy<=mr.bottom+8) return "__me"; }
   if(VIEW!=="kr"){ var cc=CITY[VIEW]; if(!cc||!cc.spots) return null; var rr=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-rr.left)/rr.width, fy=(cy-rr.top)/rr.height, best=null, ba=9;
@@ -590,7 +590,7 @@ function hitInit(){ var m=document.getElementById("map"), drag=null, pan=null, m
   window.addEventListener("resize",zApply);
   m.addEventListener("click",function(e){ if(DET) return; if(e.button!==0||e.target.closest(".zb")||e.target.closest("#zme")||e.target.closest("#vback")||e.target.closest("#vdet")||e.target.closest("#osm")) return;
     if(e.target.closest("#lod [data-a]")){ if(moved){ moved=false; return; } dlDraw(null); lodTap(e); return; }
-    if(VIEW!=="kr"){ if(!moved){ var hk=hitAt(e.clientX,e.clientY); if(hk){ dlDraw(null); if(!(!cityFor(hk)&&areaTap(e.clientX,e.clientY))) hitClick(hk); } else areaTap(e.clientX,e.clientY); }   /* 박스 안 그림 두 번 누름 = 그 박스 약도 */ moved=false; return; } if(moved){ moved=false; return; } dlDraw(null); hitClick(hitAt(e.clientX,e.clientY)); });
+    if(VIEW!=="kr"){ if(!moved){ var hk=hitAt(e.clientX,e.clientY); if(hk){ dlDraw(null); var at=cityFor(hk)?0:areaTap(e.clientX,e.clientY); if(at===1){ clearTimeout(_tapT); _tapT=setTimeout(function(){ hitClick(hk); },450); } else if(!at) hitClick(hk); } else areaTap(e.clientX,e.clientY); }   /* 박스 안 그림: 한 번 = 0.45초 뒤 카드(카드가 지도를 밀어 두 번째 누름이 빗나가지 않게) · 두 번 = 그 박스 약도 */ moved=false; return; } if(moved){ moved=false; return; } dlDraw(null); hitClick(hitAt(e.clientX,e.clientY)); });
   m.addEventListener("wheel",function(e){ if(DET) return; e.preventDefault(); zAt(e.clientX,e.clientY,ZM.s*(e.deltaY<0?1.15:1/1.15)); clearTimeout(LOD.wt); LOD.wt=setTimeout(lodAuto,250); },{passive:false});
   m.addEventListener("mousemove",function(e){
 if(DET) return;     if(pan){ var dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math.abs(dx)+Math.abs(dy)>4) moved=true; ZM.tx=pan.tx+dx; ZM.ty=pan.ty+dy; zApply(); m.style.cursor="grabbing"; return; }
