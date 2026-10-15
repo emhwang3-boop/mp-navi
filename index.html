@@ -339,7 +339,7 @@ function go(kq){
       var nm=encodeURIComponent(x.name), ll=x.y+","+x.x;
       var en=LANG==="en"&&x.name_en, ttl=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
       return '<div class="item sres" data-i="'+i+'" style="cursor:pointer"><div class="t">📍 '+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
-        +linksTo(x.name,x.y,x.x,x.name,x.addr)+'</div>';
+        +telLine(x.tel)+linksTo(x.name,x.y,x.x,x.name,x.addr)+'</div>';   // 목록에도 전화 (사장님 10-16)
     }).join("");
     try{ var ps2=poseForQuery(q,it); if(ps2) mePose(ps2,10000); }catch(e){}
   }).catch(function(){ out.innerHTML='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>'; });
@@ -450,7 +450,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="b158405c8f", NAVI_ROOT="kr";
+var NAVI_V="e44144e664", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -556,7 +556,11 @@ function hitClick(k){ var now=Date.now(), c=cityFor(k);
 function kmBetween(a,b){ var p=PLACES[a], q=PLACES[b], R=6371, rd=Math.PI/180, dLa=(q.lat-p.lat)*rd, dLo=(q.lng-p.lng)*rd;
   var h=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(p.lat*rd)*Math.cos(q.lat*rd)*Math.sin(dLo/2)*Math.sin(dLo/2); return 2*R*Math.asin(Math.sqrt(h)); }
 function dlPt(cx,cy){ var r=document.getElementById("mapimg").getBoundingClientRect(); return [(cx-r.left)/r.width*1000,(cy-r.top)/r.height*1000]; }
-function dlDraw(p0,p1,txt){ var s=document.getElementById("dl"), ob=document.getElementById("dlb"); if(!p0){ s.innerHTML=""; if(ob) ob.remove(); return; }
+var DL=null;   // 지금 그려진 거리 줄 [p0,p1] (0~1000) — 두 번 눌러야 지운다 (사장님 10-16)
+function dlNear(cx,cy){ if(!DL) return false; var r=document.getElementById("mapimg").getBoundingClientRect(); if(!r.width) return false;
+  var ax=r.left+DL[0][0]/1000*r.width, ay=r.top+DL[0][1]/1000*r.height, bx=r.left+DL[1][0]/1000*r.width, by=r.top+DL[1][1]/1000*r.height, dx=bx-ax, dy=by-ay, L=dx*dx+dy*dy, t=L?Math.max(0,Math.min(1,((cx-ax)*dx+(cy-ay)*dy)/L)):0;
+  if(Math.hypot(cx-(ax+t*dx),cy-(ay+t*dy))<=24) return true; var b=document.getElementById("dlb"); if(b){ var q=b.getBoundingClientRect(); if(cx>=q.left-24&&cx<=q.right+24&&cy>=q.top-24&&cy<=q.bottom+24) return true; } return false; }
+function dlDraw(p0,p1,txt){ var s=document.getElementById("dl"), ob=document.getElementById("dlb"); DL=p0?[p0,p1]:null; if(!p0){ s.innerHTML=""; if(ob) ob.remove(); return; }
   var h='<line x1="'+p0[0]+'" y1="'+p0[1]+'" x2="'+p1[0]+'" y2="'+p1[1]+'" stroke="#e03131" stroke-width="5" stroke-dasharray="14 9" vector-effect="non-scaling-stroke" style="stroke-width:3px"/>'
     +'<circle cx="'+p0[0]+'" cy="'+p0[1]+'" r="9" fill="#e03131"/><circle cx="'+p1[0]+'" cy="'+p1[1]+'" r="9" fill="#e03131"/>';
   s.innerHTML=h; var lb=document.getElementById("dlb"); if(lb) lb.remove();
@@ -728,9 +732,16 @@ function hitInit(){ var m=document.getElementById("map"), drag=null, pan=null, m
   document.getElementById("vback").onclick=function(e){ e.stopPropagation(); viewSet((CITY[VIEW]&&CITY[VIEW].parent)||"kr"); };
   document.getElementById("vdet").onclick=function(e){ e.stopPropagation(); detSet(!DET); };
   window.addEventListener("resize",zApply);
-  m.addEventListener("click",function(e){ if(DET) return; if(e.button!==0||e.target.closest(".zb")||e.target.closest("#zme")||e.target.closest("#vback")||e.target.closest("#vdet")||e.target.closest("#osm")) return;
-    if(e.target.closest("#lod [data-a]")){ if(moved){ moved=false; return; } dlDraw(null); lodTap(e); return; }
-    if(VIEW!=="kr"){ if(!moved){ var hk=hitAt(e.clientX,e.clientY); if(hk){ dlDraw(null); var at=cityFor(hk)?0:areaTap(e.clientX,e.clientY); if(at===1){ clearTimeout(_tapT); _tapT=setTimeout(function(){ hitClick(hk); },450); } else if(!at) hitClick(hk); } else areaTap(e.clientX,e.clientY); }   /* 박스 안 그림: 한 번 = 0.45초 뒤 카드(카드가 지도를 밀어 두 번째 누름이 빗나가지 않게) · 두 번 = 그 박스 약도 */ moved=false; return; } if(moved){ moved=false; return; } dlDraw(null); hitClick(hitAt(e.clientX,e.clientY)); });
+  var dlT=null, dlLast=null;   // 줄 근처 누름: 0.35초 기다려 두 번째가 오면 줄만 지우고, 안 오면 원래 동작
+  m.addEventListener("click",function(e){ if(DET||e.button!==0||moved||!DL||e.target.closest(".zb")||e.target.closest("#zme")||e.target.closest("#vback")||e.target.closest("#vdet")||e.target.closest("#osm")) return;
+    var now=Date.now();
+    if(dlLast&&now-dlLast.t<350&&Math.hypot(e.clientX-dlLast.x,e.clientY-dlLast.y)<30){ clearTimeout(dlT); dlT=null; dlLast=null; clearTimeout(_tapT); e.stopImmediatePropagation(); dlDraw(null); return; }
+    if(!dlNear(e.clientX,e.clientY)) return; e.stopImmediatePropagation(); clearTimeout(dlT);
+    var f={button:0,target:e.target,clientX:e.clientX,clientY:e.clientY}; dlLast={t:now,x:e.clientX,y:e.clientY}; dlT=setTimeout(function(){ dlT=null; dlLast=null; mClick(f); },350); },true);
+  function mClick(e){ if(DET) return; if(e.button!==0||e.target.closest(".zb")||e.target.closest("#zme")||e.target.closest("#vback")||e.target.closest("#vdet")||e.target.closest("#osm")) return;
+    if(e.target.closest("#lod [data-a]")){ if(moved){ moved=false; return; } lodTap(e); return; }
+    if(VIEW!=="kr"){ if(!moved){ var hk=hitAt(e.clientX,e.clientY); if(hk){ var at=cityFor(hk)?0:areaTap(e.clientX,e.clientY); if(at===1){ clearTimeout(_tapT); _tapT=setTimeout(function(){ hitClick(hk); },450); } else if(!at) hitClick(hk); } else areaTap(e.clientX,e.clientY); }   /* 박스 안 그림: 한 번 = 0.45초 뒤 카드(카드가 지도를 밀어 두 번째 누름이 빗나가지 않게) · 두 번 = 그 박스 약도 */ moved=false; return; } if(moved){ moved=false; return; } hitClick(hitAt(e.clientX,e.clientY)); }
+  m.addEventListener("click",mClick);
   m.addEventListener("wheel",function(e){ if(DET) return; e.preventDefault(); zAt(e.clientX,e.clientY,ZM.s*(e.deltaY<0?1.15:1/1.15)); clearTimeout(LOD.wt); LOD.wt=setTimeout(lodAuto,250); },{passive:false});
   m.addEventListener("mousemove",function(e){
 if(DET) return;     if(pan){ var dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math.abs(dx)+Math.abs(dy)>4) moved=true; ZM.tx=pan.tx+dx; ZM.ty=pan.ty+dy; zApply(); m.style.cursor="grabbing"; return; }
@@ -743,7 +754,7 @@ if(DET) return;     if(pan){ var dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math
   window.addEventListener("mouseup",function(e){ if(e.button===0){ pan=null; return; } if(e.button!==2||!drag) return; var k=hitAt(e.clientX,e.clientY), d=drag; drag=null; distShow(d.k,k,d.p,dlPt(e.clientX,e.clientY)); });
   function dist2(a,b){ return Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); }
   m.addEventListener("touchstart",function(e){ if(DET) return; if(e.target.closest(".zb")||e.target.closest("#zme")) return; clearTimeout(tmr); tch=null; pin=null; one=null;
-    if(e.touches.length===1){ dlDraw(null); if(ZM.s>1||ASP()>1){ var t=e.touches[0]; one={x:t.clientX,y:t.clientY,tx:ZM.tx,ty:ZM.ty,h:ZM.s<=1.001}; } return; }
+    if(e.touches.length===1){ if(ZM.s>1||ASP()>1){ var t=e.touches[0]; one={x:t.clientX,y:t.clientY,tx:ZM.tx,ty:ZM.ty,h:ZM.s<=1.001}; } return; }
     if(e.touches.length!==2) return; e.preventDefault();
     var t0=e.touches[0], t1=e.touches[1], a=hitAt(t0.clientX,t0.clientY), b=hitAt(t1.clientX,t1.clientY);
     pin={d:dist2(t0,t1),s:ZM.s,cx:(t0.clientX+t1.clientX)/2,cy:(t0.clientY+t1.clientY)/2,tx:ZM.tx,ty:ZM.ty,go:false};
@@ -776,7 +787,7 @@ function rvSend(){
   }).catch(function(){ window.__rvLast="fail"; m.textContent=T("보내지 못했습니다. 다시 시도해 주세요.","Could not send. Please try again."); })
   .then(function(){ b.disabled=false; }); }
 // 결과(장소·거리·열차·검색) 오른쪽 위 X — 누르면 지운다 (사장님 10-15)
-function resClear(){ var wasPin=window._cardK==="__pin"; window._cardK=null; document.getElementById("res").innerHTML=""; try{ dlDraw(null); }catch(e){} if(wasPin){ try{ spinClear(); }catch(e){} } }   // 핀 카드를 ✕로 닫으면 빨간 핀도 지운다 (사장님 10-16)
+function resClear(){ var wasPin=window._cardK==="__pin"; window._cardK=null; document.getElementById("res").innerHTML=""; if(wasPin){ try{ spinClear(); }catch(e){} } }   // 핀 카드를 ✕로 닫으면 빨간 핀도 지운다 (사장님 10-16)
 (function(){ var r=document.getElementById("res");
   new MutationObserver(function(){ if(r.firstElementChild&&!r.querySelector(":scope > .xbtn")){ var b=document.createElement("button"); b.className="xbtn"; b.type="button"; b.textContent="✕"; b.setAttribute("aria-label",T("닫기","Close")); b.onclick=resClear; r.insertBefore(b,r.firstChild); } }).observe(r,{childList:true});
 })();
