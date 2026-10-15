@@ -190,6 +190,83 @@ function ntap(k,e){ try{ if(!k||!/^[A-Za-z0-9_-]{1,64}$/.test(k)) return; var x=
   fetch(HUB+"/ntap",{method:"POST",body:b,keepalive:true}).catch(function(){});
 }catch(z){} }
 setTimeout(function(){ ntap("_app","visit"); },0);   // 앱 열림 — 오늘 방문 수 (관리자 계기판)
+// ── 입점·광고 문의 (사장님 2026-10-15) — 신문로 쪽 빌딩(adinq)을 누르면 이 창. 확인 두 단계(사업자번호·이메일 코드) 뒤에 입력 칸이 열린다 ──
+//   허브: /ninq/biz · /ninq/code · /ninq/verify · /ninq.  확인 방식은 inqVerify() 한 곳 — 다른 방식으로 바꿀 땐 이 함수와 허브 ninqIdCheck 만
+var INQ={bno:null,vt:null,busy:false};
+function inqCss(){ if(document.getElementById("inqCss")) return; var s=document.createElement("style"); s.id="inqCss";
+  s.textContent="#inqBox{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}"
+   +"#inqIn{background:var(--card);color:var(--ink);width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px 22px;box-sizing:border-box}"
+   +"#inqIn h3{margin:0 0 4px;font-size:18px}#inqIn .st{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0}#inqIn .st.ok{border-color:var(--green)}"
+   +"#inqIn label{display:block;font-size:13px;color:var(--sub);margin:8px 0 3px}#inqIn input,#inqIn textarea{width:100%;box-sizing:border-box;font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px}"
+   +"#inqIn textarea{min-height:96px;resize:vertical}#inqIn .rw{display:flex;gap:6px}#inqIn .rw input{flex:1}#inqIn button{font:inherit;border:0;border-radius:10px;padding:9px 12px;background:var(--blue);color:#fff;cursor:pointer;white-space:nowrap}"
+   +"#inqIn button.g{background:transparent;color:var(--sub);border:1px solid var(--line)}#inqIn button:disabled,#inqIn fieldset:disabled{opacity:.5}#inqIn fieldset{border:0;padding:0;margin:0}"
+   +"#inqIn .m{font-size:13px;margin-top:5px;color:var(--sub)}#inqIn .m.e{color:#e03131}#inqIn .m.o{color:var(--green)}#inqIn .agr{font-size:12.5px;color:var(--sub);background:var(--bg);border-radius:10px;padding:8px 10px;margin-top:10px;line-height:1.55}"
+   +"#inqIn .agr label{display:flex;gap:6px;align-items:flex-start;color:var(--ink);font-size:13.5px;margin:6px 0 0}#inqIn .agr input{width:auto;margin-top:3px}";
+  document.head.appendChild(s); }
+function inqOpen(){ inqCss(); var b=document.getElementById("inqBox"); if(b) b.remove(); INQ={bno:null,vt:null,busy:false};
+  b=document.createElement("div"); b.id="inqBox"; b.onclick=function(e){ if(e.target===b) b.remove(); };
+  b.innerHTML='<div id="inqIn"><div style="display:flex;align-items:center"><h3 style="flex:1">'+T("입점·광고 문의","Advertise with us")+'</h3><button class="g" onclick="document.getElementById(\'inqBox\').remove()">✕</button></div>'
+   +'<div class="m">'+T("이 지도에 가게·기업을 알리고 싶다면 남겨 주세요. 먼저 두 가지를 확인합니다.","Want your shop or company on this map? Please verify two things first.")+'</div>'
+   +'<div class="st" id="inqS1"><b>1. '+T("사업자등록번호","Business registration number")+'</b><div class="rw" style="margin-top:6px"><input id="inqBno" inputmode="numeric" maxlength="12" placeholder="000-00-00000"><button id="inqBnoB" onclick="inqBiz()">'+T("확인","Check")+'</button></div><div class="m" id="inqBnoM"></div></div>'
+   +'<div class="st" id="inqS2"><b>2. '+T("이메일 인증","Email verification")+'</b><div class="rw" style="margin-top:6px"><input id="inqEm" type="email" maxlength="120" placeholder="name@company.com" autocomplete="email"><button id="inqEmB" onclick="inqCode()">'+T("코드 받기","Send code")+'</button></div>'
+   +'<div class="rw" style="margin-top:6px"><input id="inqCd" inputmode="numeric" maxlength="6" placeholder="'+T("6자리 코드","6-digit code")+'"><button id="inqCdB" onclick="inqVerify()">'+T("확인","Verify")+'</button></div><div class="m" id="inqEmM"></div></div>'
+   +'<fieldset id="inqF" disabled><label>'+T("상호 / 회사명 *","Business / company name *")+'</label><input id="inqBiz" maxlength="60">'
+   +'<label>'+T("업종","Type of business")+'</label><input id="inqCat" maxlength="40" placeholder="'+T("예: 카페, 호텔, 여행사","e.g. cafe, hotel, travel agency")+'">'
+   +'<label>'+T("담당자 *","Contact person *")+'</label><input id="inqNm" maxlength="40">'
+   +'<label>'+T("전화번호 (선택)","Phone (optional)")+'</label><input id="inqTel" inputmode="tel" maxlength="20">'
+   +'<label>'+T("위치 (선택)","Location (optional)")+'</label><input id="inqLoc" maxlength="100" placeholder="'+T("가게·회사 주소","Shop or office address")+'">'
+   +'<label>'+T("문의 내용 *","Message *")+'</label><textarea id="inqMsg" maxlength="1000"></textarea>'
+   +'<input id="inqHp" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px" aria-hidden="true">'
+   +'<div class="agr">'+T("개인정보 수집·이용 안내 — 목적: 문의 답변 · 항목: 위에 적은 사업자번호·상호·업종·담당자·이메일·전화번호·위치·문의 내용 · 보관: 답변 후 1년 뒤 삭제. 동의하지 않으면 문의를 보낼 수 없습니다.",
+       "Privacy notice — Purpose: replying to your inquiry · Items: business number, name, type, contact person, email, phone, location and message above · Retention: deleted 1 year after our reply. You can't send an inquiry without agreeing.")
+   +'<label><input type="checkbox" id="inqAg"> '+T("개인정보 수집·이용에 동의합니다 *","I agree to the collection and use of this information *")+'</label></div>'
+   +'<button id="inqGo" style="width:100%;margin-top:12px" onclick="inqSend()">'+T("문의 보내기","Send inquiry")+'</button><div class="m" id="inqM"></div></fieldset></div>';
+  document.body.appendChild(b); }
+function inqM(id,t,c){ var m=document.getElementById(id); if(m){ m.textContent=t; m.className="m"+(c?" "+c:""); } }
+function inqPost(p,o,h){ return fetch(HUB+p,{method:"POST",headers:Object.assign({"Content-Type":"application/json"},h||{}),body:JSON.stringify(o),cache:"no-store"}).then(function(r){ return r.json().catch(function(){ return {ok:false}; }); }); }
+function inqUnlock(){ var on=!!(INQ.bno&&INQ.vt); document.getElementById("inqF").disabled=!on; if(on) inqM("inqM",T("확인이 끝났습니다. 내용을 적어 보내 주세요.","Verified. Please fill in and send."),"o"); }
+function inqBiz(){ var v=document.getElementById("inqBno").value; inqM("inqBnoM",T("확인 중…","Checking…"));
+  inqPost("/ninq/biz",{bno:v}).then(function(j){
+    if(j.pass){ INQ.bno=j.bno; document.getElementById("inqS1").classList.add("ok"); document.getElementById("inqBno").disabled=true; document.getElementById("inqBnoB").disabled=true; inqM("inqBnoM","✓ "+T("확인되었습니다","Confirmed"),"o"); inqUnlock(); return; }
+    var E={bad:T("번호가 올바르지 않습니다 (10자리 숫자)","Invalid number (10 digits)"),suspended:T("휴업 중인 사업자는 문의할 수 없습니다","Suspended businesses cannot apply"),closed:T("폐업한 사업자는 문의할 수 없습니다","Closed businesses cannot apply"),none:T("국세청에 등록되지 않은 번호입니다","Not registered with the National Tax Service")};
+    inqM("inqBnoM",E[j.st]||T("확인하지 못했습니다","Could not check"),"e"); }).catch(function(){ inqM("inqBnoM",T("연결에 실패했습니다","Connection failed"),"e"); }); }
+function inqCode(){ var e=document.getElementById("inqEm").value.trim(); if(!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(e)){ inqM("inqEmM",T("이메일 주소를 확인해 주세요","Please check the email address"),"e"); return; }
+  var bt=document.getElementById("inqEmB"); bt.disabled=true; inqM("inqEmM",T("보내는 중…","Sending…"));
+  var h=window.__inqTestKey?{"x-admin":encodeURIComponent(window.__inqTestKey)}:null;   /* 시험용(관리 비밀번호를 아는 사람만) — 메일 대신 코드가 돌아온다 */
+  inqPost("/ninq/code",{email:e,lang:LANG},h).then(function(j){ setTimeout(function(){ bt.disabled=false; },30000);
+    if(j.ok){ if(j.test) window.__inqTestCode=j.code; inqM("inqEmM",T("코드를 보냈습니다. 메일함(스팸함 포함)을 확인해 10분 안에 넣어 주세요.","Code sent. Check your inbox (and spam) and enter it within 10 minutes."),"o"); return; }
+    bt.disabled=false; inqM("inqEmM",j.err==="rate"?T("오늘 보낼 수 있는 횟수를 넘었습니다","Daily limit reached — try again tomorrow"):T("보내지 못했습니다","Could not send the code"),"e"); })
+  .catch(function(){ bt.disabled=false; inqM("inqEmM",T("연결에 실패했습니다","Connection failed"),"e"); }); }
+function inqVerify(){ var e=document.getElementById("inqEm").value.trim(), c=document.getElementById("inqCd").value.replace(/\D/g,"");
+  if(c.length!==6){ inqM("inqEmM",T("6자리 코드를 넣어 주세요","Enter the 6-digit code"),"e"); return; }
+  inqPost("/ninq/verify",{email:e,code:c}).then(function(j){
+    if(j.ok){ INQ.vt=j.vt; INQ.em=e; document.getElementById("inqS2").classList.add("ok"); ["inqEm","inqEmB","inqCd","inqCdB"].forEach(function(i){ document.getElementById(i).disabled=true; }); inqM("inqEmM","✓ "+T("이메일이 확인되었습니다","Email verified"),"o"); inqUnlock(); return; }
+    inqM("inqEmM",j.err==="locked"?T("5번 틀려 이 코드는 잠겼습니다. 코드를 다시 받아 주세요","Too many tries — please request a new code"):j.err==="expired"?T("코드가 만료되었습니다. 다시 받아 주세요","Code expired — please request a new one"):T("코드가 맞지 않습니다","Wrong code")+(j.left!=null?" ("+j.left+")":""),"e"); })
+  .catch(function(){ inqM("inqEmM",T("연결에 실패했습니다","Connection failed"),"e"); }); }
+function inqSend(){ if(INQ.busy) return; var g=function(i){ return document.getElementById(i).value.trim(); };
+  if(!g("inqBiz")||!g("inqNm")||!g("inqMsg")){ inqM("inqM",T("* 칸을 채워 주세요","Please fill in the * fields"),"e"); return; }
+  if(!document.getElementById("inqAg").checked){ inqM("inqM",T("개인정보 수집·이용에 동의해 주세요","Please agree to the privacy notice"),"e"); return; }
+  var d=new Date(Date.now()+9*3600e3).toISOString().slice(0,10), c={d:d,n:0}; try{ var o=JSON.parse(localStorage.getItem("mpv_inq")||"null"); if(o&&o.d===d) c=o; }catch(e){}
+  if(c.n>=3){ inqM("inqM",T("오늘은 더 보낼 수 없습니다 (하루 3건)","Daily limit reached (3 per day)"),"e"); return; }
+  INQ.busy=true; document.getElementById("inqGo").disabled=true; inqM("inqM",T("보내는 중…","Sending…"));
+  inqPost("/ninq",{vt:INQ.vt,bno:INQ.bno,biz:g("inqBiz"),cat:g("inqCat"),name:g("inqNm"),contact:g("inqTel"),loc:g("inqLoc"),msg:g("inqMsg"),agree:true,lang:LANG,hp:document.getElementById("inqHp").value})
+  .then(function(j){ INQ.busy=false; document.getElementById("inqGo").disabled=false; window.__inqLast=j&&j.ok?"ok":"fail";
+    if(j.ok){ c.n++; try{ localStorage.setItem("mpv_inq",JSON.stringify(c)); }catch(e){} document.getElementById("inqIn").innerHTML='<h3>'+T("문의를 보냈습니다","Inquiry sent")+'</h3><div class="m" style="font-size:15px;color:var(--ink);margin:10px 0 16px">'+T("고맙습니다. 확인한 이메일로 답변 드리겠습니다.","Thank you. We will reply to your verified email.")+'</div><button onclick="document.getElementById(\'inqBox\').remove()" style="width:100%">'+T("닫기","Close")+'</button>'; return; }
+    var E={rate:T("오늘은 더 보낼 수 없습니다","Daily limit reached"),verify:T("확인 시간이 지났습니다. 창을 닫고 다시 해 주세요","Verification expired — please start again"),bno:T("사업자등록번호를 다시 확인해 주세요","Please check the business number"),contact:T("전화번호를 확인해 주세요","Please check the phone number"),long:T("글이 너무 깁니다","Too long")};
+    inqM("inqM",E[j.err]||T("보내지 못했습니다","Could not send"),"e"); })
+  .catch(function(){ INQ.busy=false; document.getElementById("inqGo").disabled=false; inqM("inqM",T("연결에 실패했습니다","Connection failed"),"e"); }); }
+// 광고판 글자 — 장소 자료의 board [왼위x,왼위y,오위x,오위y,높이](약도 비율) 자리에 「입점 문의」/"Advertise here" 를 얹는다. 지도(#mz) 안이라 같이 커지고 작아진다
+function bbDraw(){ try{ var z=document.getElementById("mz"); if(!z) return; var c=CITY[VIEW], w=document.getElementById("map").clientWidth, key=VIEW+"|"+LANG+"|"+w+"|"+Object.keys(PLACES).length+"|"+(DET?1:0);
+  if(bbDraw.k===key) return; bbDraw.k=key; [].slice.call(z.querySelectorAll(".bbt")).forEach(function(e){ e.remove(); });
+  if(!c||!c.spots||DET) return; var as=ASP(), W=w*as, H=w;
+  for(var k in c.spots){ var p=PLACES[k], b=p&&p.board; if(!b||b.length<5) continue;
+    var e=document.createElement("div"); e.className="bbt"; e.textContent=k==="adinq"?T("입점 문의","Advertise here"):"";
+    var bw=(b[2]-b[0])*W, bh=b[4]*H, ang=Math.atan2((b[3]-b[1])*H,bw)*180/Math.PI;
+    e.style.cssText="position:absolute;left:"+(b[0]*100)+"%;top:"+(b[1]*100)+"%;width:"+(bw/W*100)+"%;height:"+(bh/H*100)+"%;transform-origin:0 0;transform:skewY("+ang+"deg);display:flex;align-items:center;justify-content:center;"
+      +"pointer-events:none;white-space:nowrap;overflow:hidden;font-weight:900;color:#ffd640;text-shadow:0 0 "+(bh*0.12)+"px rgba(255,214,64,.9);font-size:"+(bh*(LANG==="en"?0.3:0.42))+"px;letter-spacing:.02em;animation:bbBlink 2.4s ease-in-out infinite";
+    z.appendChild(e); }
+  if(!document.getElementById("bbCss")){ var s=document.createElement("style"); s.id="bbCss"; s.textContent="@keyframes bbBlink{0%,100%{opacity:1}50%{opacity:.55}}@media (prefers-reduced-motion:reduce){.bbt{animation:none!important}}"; document.head.appendChild(s); }
+}catch(e){} }
 function ntMark(k){ try{ window._ntK=k; window._ntEl=document.getElementById("res").firstElementChild; }catch(z){} }
 document.addEventListener("click",function(e){ try{ var a=e.target.closest&&e.target.closest("#res a"); if(a&&window._ntEl&&window._ntEl.contains(a)) ntap(window._ntK,"route"); }catch(z){} },true);
 // 관리자 입구 — 「머니퍼즐 통계청」(mpstat) 그림을 0.8초 이상 누르면 admin/ (손님 화면엔 표시 없음 · 장소가 없으면 아무 일 없음 · 사장님 10-15)
@@ -202,7 +279,7 @@ document.addEventListener("click",function(e){ if(window._mpLD&&Date.now()-windo
 var LANG="ko"; try{ var _ql=(location.search.match(/[?&]lang=(ko|en)/i)||[])[1]; if(_ql) localStorage.setItem("mpv_lang",_ql.toLowerCase()); LANG=localStorage.getItem("mpv_lang")||(/^ko/i.test(navigator.language)?"ko":"en"); }catch(e){}
 function T(k,e){ return LANG==="en"?e:k; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ meDraw(); }catch(e){} }
+function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} }
 function paint(){
   document.getElementById("lang").textContent=LANG==="ko"?"EN":"한";
   document.getElementById("ttl").textContent=T("- 내비","- Navi");
@@ -336,8 +413,8 @@ function mapMerge(id,d){ var k, pl=d.places||{}; for(k in pl) if(!PLACES[k]) PLA
   try{ nmMark(); }catch(e){} }
 // 약도 자료는 그 약도에 들어갈 때 받는다 (한 번 받으면 기억)
 function mapLoad(id){ if(id!==NAVI_ROOT&&!(CITY[id]&&CITY[id].data)) return Promise.resolve(null); if(MAPD[id]) return MAPD[id];
-  return MAPD[id]=jget("maps/"+id+".json").then(function(d){ mapMerge(id,d); return d; },function(e){ delete MAPD[id]; throw e; }); }
-function placeShow(k){ var p=PLACES[k]; if(!p) return; ntap(k,"tap"); var nm=LANG==="en"?p.en:p.ko, ll=p.lat+","+p.lng;
+  return MAPD[id]=jget("maps/"+id+".json").then(function(d){ mapMerge(id,d); try{ bbDraw(); }catch(e){} return d; },function(e){ delete MAPD[id]; throw e; }); }
+function placeShow(k){ var p=PLACES[k]; if(!p) return; ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } var nm=LANG==="en"?p.en:p.ko, ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
   document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(nm)+'</div>'+((LANG==="en"?p.den:p.dko)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LANG==="en"?p.den:p.dko)+'</div>':'')+'<div class="d">'+esc(LANG==="en"?(p.addr_en||p.addr):p.addr)+'</div>'
     +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng,null,p.addr))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
@@ -534,7 +611,7 @@ function zApply(){ var m=document.getElementById("map"), w=m.clientWidth, z=docu
   var mn=1/as; ZM.s=Math.max(mn,Math.min(ZMAX(),ZM.s));   // 가로로 긴 약도는 전체가 한 화면에 들어올 때까지 축소 (사장님 10-15)
   var iw=w*as*ZM.s, ih=w*ZM.s; ZM.tx=iw>=w?Math.min(0,Math.max(w-iw,ZM.tx)):(w-iw)/2; ZM.ty=ih>=w?Math.min(0,Math.max(w-ih,ZM.ty)):(w-ih)/2;
   z.style.transform="translate("+ZM.tx+"px,"+ZM.ty+"px) scale("+ZM.s+")"; m.classList.toggle("zoomed",ZM.s>1.001||ASP()>1);
-  var lb=document.getElementById("dlb"); if(lb) lb.style.transform="translate(-50%,-50%) scale("+(1/ZM.s)+")"; try{ lodDraw(); }catch(e){} try{ meDraw(); }catch(e){} }
+  var lb=document.getElementById("dlb"); if(lb) lb.style.transform="translate(-50%,-50%) scale("+(1/ZM.s)+")"; try{ lodDraw(); }catch(e){} try{ meDraw(); }catch(e){} try{ bbDraw(); }catch(e){} }
 // 약도 글자 표시 — 자료 labels [[x,y,한글,영어,ax,ay],...] 를 지도 위 그 자리에 (지도와 같이 커진다 — 이름표와 같은 원칙, 매표소 등 · fix3 10-15)
 function lblDraw(){ [].forEach.call(document.querySelectorAll("#mz .mlb"),function(e){ e.remove(); }); var c=CITY[VIEW]; if(!c||!c.labels) return; var z=document.getElementById("mz");
   c.labels.forEach(function(t){ var e=document.createElement("div"); e.className="mlb"; e.textContent=LANG==="en"?t[3]:t[2]; e._ax=t[4]||0; e._ay=t[5]||0; e.style.left=(t[0]*100)+"%"; e.style.top=(t[1]*100)+"%"; var w=document.getElementById("map").clientWidth, fs=Math.max(4,w*0.016);
