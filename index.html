@@ -277,7 +277,7 @@ function bbDraw(){ try{ var z=document.getElementById("mz"); if(!z) return; var 
   if(!document.getElementById("bbCss")){ var s=document.createElement("style"); s.id="bbCss"; s.textContent="@keyframes bbBlink{0%,100%{opacity:1}50%{opacity:.55}}@media (prefers-reduced-motion:reduce){.bbt{animation:none!important}}"; document.head.appendChild(s); }
 }catch(e){} }
 function ntMark(k){ try{ window._ntK=k; window._ntEl=document.getElementById("res").firstElementChild; }catch(z){} }
-document.addEventListener("click",function(e){ try{ var a=e.target.closest&&e.target.closest("#res a"); if(a&&window._ntEl&&window._ntEl.contains(a)) ntap(window._ntK,"route"); }catch(z){} },true);
+document.addEventListener("click",function(e){ try{ var a=e.target.closest&&e.target.closest("#res a"); if(a&&window._ntEl&&window._ntEl.contains(a)) ntap(window._ntK,a.classList.contains("tel")?"call":"route");   /* 📞 은 「전화」로 따로 (10-15) */ }catch(z){} },true);
 // 관리자 입구 — 「머니퍼즐 통계청」(mpstat) 그림을 0.8초 이상 누르면 admin/ (손님 화면엔 표시 없음 · 장소가 없으면 아무 일 없음 · 사장님 10-15)
 document.addEventListener("pointerdown",function(e){ try{ if(!e.isPrimary||!e.target.closest||!e.target.closest("#map")||!PLACES.mpstat||hitAt(e.clientX,e.clientY)!=="mpstat") return;
   var x=e.clientX, y=e.clientY, done=function(){ clearTimeout(t); document.removeEventListener("pointerup",done,true); document.removeEventListener("pointercancel",done,true); document.removeEventListener("pointermove",mv,true); },
@@ -412,7 +412,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="2b18d520ba", NAVI_ROOT="kr";
+var NAVI_V="2909d6e56d", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -423,9 +423,13 @@ function mapMerge(id,d){ var k, pl=d.places||{}; for(k in pl) if(!PLACES[k]) PLA
 // 약도 자료는 그 약도에 들어갈 때 받는다 (한 번 받으면 기억)
 function mapLoad(id){ if(id!==NAVI_ROOT&&!(CITY[id]&&CITY[id].data)) return Promise.resolve(null); if(MAPD[id]) return MAPD[id];
   return MAPD[id]=jget("maps/"+id+".json").then(function(d){ mapMerge(id,d); try{ bbDraw(); }catch(e){} return d; },function(e){ delete MAPD[id]; throw e; }); }
+// 전화번호 줄 — 자료 tel(국내 꼴 02-123-4567) → tel:+82-2-123-4567 · 영어 화면은 +82 2-123-4567 로 보인다 (10-15)
+function telIntl(t){ return /^0/.test(t)?"+82-"+t.slice(1):"+82-"+t; }
+function telLine(t){ if(!t) return ""; var shown=LANG==="en"?(/^0/.test(t)?"+82 "+t.slice(1):"+82 "+t):t;
+  return '<div class="d" style="margin:2px 0 8px"><a class="tel" href="tel:'+esc(telIntl(t))+'" style="border:0;background:none;padding:0;margin:0;font-size:14px;font-weight:800;color:var(--ink)">📞 '+esc(shown)+'</a></div>'; }
 function placeShow(k){ var p=PLACES[k]; if(!p) return; ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } var nm=LANG==="en"?p.en:p.ko, ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
-  document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(nm)+'</div>'+((LANG==="en"?p.den:p.dko)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LANG==="en"?p.den:p.dko)+'</div>':'')+'<div class="d">'+esc(LANG==="en"?(p.addr_en||p.addr):p.addr)+'</div>'
+  document.getElementById("res").innerHTML='<div class="item"><div class="t">'+esc(nm)+'</div>'+((LANG==="en"?p.den:p.dko)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LANG==="en"?p.den:p.dko)+'</div>':'')+'<div class="d">'+esc(LANG==="en"?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
     +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng,null,p.addr))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
   /*nolink*/   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 · 출발지는 내 위치(있으면)
   if(k==="mpstat") document.getElementById("res").firstElementChild.insertAdjacentHTML("beforeend",'<div class="d" style="margin-top:6px">'+T("머니퍼즐 통계청 — 주식회사 부만","Money Puzzle Data Center — Booman Inc.")+'<br>'+T("사업자등록번호 297-81-03712 · 연락처 ","Business Reg. No. 297-81-03712 · Contact ")+'<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a></div>');   // 회사 카드 (10-15)
@@ -816,7 +820,7 @@ function poseFor1(s){
   if(/지하철|subway|metro|역$/.test(s)) return "subway";
   return null; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#res a"); if(a&&/택시|Taxi/i.test(a.textContent)) mePose("taxi");
-  try{ if(a&&window._ntEl&&window._ntEl.contains(a)&&window._ntK) meDest(window._ntK); }catch(x){} },true);   /* 장소 카드에서 길찾기를 누르면 그곳이 「지금 가는 곳」 */
+  try{ if(a&&!a.classList.contains("tel")&&window._ntEl&&window._ntEl.contains(a)&&window._ntK) meDest(window._ntK); }catch(x){} },true);   /* 장소 카드에서 길찾기를 누르면 그곳이 「지금 가는 곳」 */
 // 안내판 — 생각날 때마다 아래 목록에 한 줄씩 [한글, 영어] (사장님 10-15)
 var INFO=[];
 var INFO_AT=0;
