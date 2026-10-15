@@ -130,7 +130,7 @@ function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) 
     +(o.hotel&&o.hotel.type==="addr"?'<option value="__addr" selected>'+esc(hotelTxt(o.hotel))+'</option>':"")+'</select>';
   var days=""; for(var d=1;d<=7;d++) days+='<option'+(o.n===d?" selected":"")+' value="'+d+'">'+d+T("일"," day"+(d>1?"s":""))+'</option>';
   box.innerHTML='<div class="trtop"><b>'+T("📅 내 여행","📅 My trip")+' ('+n+')</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trBox\')">✕</button></div>'
-    +(n?'<ol class="trl" id="trList">'+li+'</ol><div class="d">'+T("☰ 를 끌어 순서를 바꿀 수 있어요 (일정 짜기는 동선에 맞게 다시 나눕니다)","Drag ☰ to reorder (planning re-arranges by route)")+'</div>'
+    +(n?'<ol class="trl" id="trList">'+li+'</ol><button type="button" class="trbtn" id="trClearAll" style="margin:6px 0">'+T("🗑 모두 비우기","🗑 Clear all")+'</button><div class="d">'+T("☰ 를 끌어 순서를 바꿀 수 있어요 (일정 짜기는 동선에 맞게 다시 나눕니다)","Drag ☰ to reorder (planning re-arranges by route)")+'</div>'
       :'<div class="msg">'+T("아직 담은 곳이 없어요. 지도에서 그림을 누르고 「＋ 내 여행에 담기」를 누르세요.","Nothing added yet. Tap a picture on the map, then “＋ Add to my trip”.")+'</div>')
     +'<div class="trf2"><label>'+T("여행 일수","Days")+'<select id="trN">'+days+'</select></label>'
     +'<label>'+T("첫날","First day")+'<input type="date" id="trStart" value="'+esc(o.start||kstToday(1))+'"></label>'
@@ -155,6 +155,7 @@ function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) 
   g("trAddrGo").onclick=addrSearch; g("trAddrQ").onkeydown=function(e){ if(e.key==="Enter"){ e.preventDefault(); addrSearch(); } };
   g("trPlan").onclick=planGo; if(g("trOpenRep")) g("trOpenRep").onclick=function(){ openReport(); };
   [].forEach.call(box.querySelectorAll(".trx"),function(b){ b.onclick=function(){ delItem(b.dataset.k); panelPaint(); }; });
+  if(g("trClearAll")) g("trClearAll").onclick=function(){ if(!confirm(T("담은 곳과 짠 일정을 모두 지울까요?","Remove all places and your plan?"))) return; TR.items=[]; TR.plan=null; save(); refresh(); panelPaint(); };   // 모두 비우기 (사장님 10-16)
   dragInit(g("trList")); }
 function addrSearch(){ var q=document.getElementById("trAddrQ").value.trim(), out=document.getElementById("trAddrR"); if(!q) return; out.innerHTML='<div class="d">'+T("찾는 중…","Searching…")+'</div>';
   fetch(HUB+"/kplace?q="+encodeURIComponent(q)+(L()?"&lang=en":"")).then(function(r){ return r.json(); }).then(function(j){ ADDR=((j&&j.ok&&j.items)||[]).slice(0,6);
