@@ -29,8 +29,8 @@ window.giftAds=adsFor;   // 자리 함수 (10-16): 제휴 가게 칸이 비어 �
 
 // ── 화면 ──
 function css(){ if(document.getElementById("gfCss")) return; var s=document.createElement("style"); s.id="gfCss";
-  s.textContent="#gfchips{display:flex;justify-content:center;gap:6px;margin:6px 0 0;flex-wrap:wrap}"
-  +".gfchip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:800;cursor:pointer}"
+  s.textContent="#gfchips{display:flex;justify-content:center;gap:6px;margin:10px 0 0;flex-wrap:wrap}"
+  +"#gfchips .gfchip{display:inline-block;width:auto;margin:0;border:1.5px solid #f08c00;background:#fff9db;color:#c2410c;border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:800;cursor:pointer;box-shadow:none}"
   +".gflock,.gflock body{overflow:hidden}#gfBox{position:fixed;inset:0;z-index:1036;background:rgba(0,0,0,.45);overflow:auto;-webkit-overflow-scrolling:touch}"
   +"#gfBox .gfin{background:var(--bg);color:var(--ink);max-width:720px;margin:0 auto;min-height:100%;padding:14px 16px 40px;box-sizing:border-box}"
   +".gftop{display:flex;align-items:center;justify-content:space-between;font-size:18px;margin-bottom:6px}.gfq{font-weight:900;margin:14px 2px 8px;font-size:15px}"
@@ -88,7 +88,7 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
     close(); spinShow({name:a.ko,name_en:a.en||a.ko,addr:a.addr||"",addr_en:a.addr||"",y:a.lat,x:a.lng,tel:a.tel||"",cat:"쇼핑",cat_en:"Shop (Ad)"}); } });
 
 // ── 들어가는 곳: 검색창 아래 칩 · ⋮ 메뉴 ──
-function entries(){ var h=document.getElementById("hint");
+function entries(){ var h=document.getElementById("gob")||document.getElementById("hint");
   if(h&&!document.getElementById("gfchips")){ css(); h.insertAdjacentHTML("afterend",'<div id="gfchips"><button type="button" class="gfchip" data-gf="open"></button></div>'); }
   var c=document.querySelector("#gfchips .gfchip"); if(c) c.textContent=T("🎁 선물 고르기","🎁 Gift finder");
   var mm=document.getElementById("mm"); if(mm){ var a=document.getElementById("mgift"); if(!a){ a=document.createElement("a"); a.id="mgift"; a.href="#"; a.className="mi"; a.dataset.gf="open"; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); } a.textContent=T("🎁 선물 고르기","🎁 Gift finder"); } }
