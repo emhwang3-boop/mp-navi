@@ -247,6 +247,7 @@ function tapLoad(){ var t=$("tst").checked;
       +'<div class="tile"><b>'+T.u.toLocaleString()+'</b><span>사람 수 (그림별 하루 1번)</span></div>'
       +'<div class="tile"><b>'+T.dev.toLocaleString()+'</b><span>누른 기기 수 (하루 1번 합)</span></div>'
       +'<div class="tile"><b>'+T.r.toLocaleString()+'</b><span>길찾기·교통편</span></div>'
+      +'<div class="tile"><b>'+(T.c||0).toLocaleString()+'</b><span>전화</span></div>'
       +'<div class="tile"><b>'+pct(T.ko,T.ko+T.en)+' / '+pct(T.en,T.ko+T.en)+'</b><span>한국어 / 영어</span></div>'
       +'<div class="tile"><b>'+T.a.toLocaleString()+'</b><span>약도 들어가기</span></div></div>'
       +'<div class="msg">'+esc(ST.from)+' ~ '+esc(ST.to)+(ST.test?' · <b>시험 자료</b>':'')+' · 날짜는 한국 시간</div>';
@@ -257,42 +258,42 @@ function tstDel(){ if(!confirm("시험 자료를 지울까요?")) return; api("/
 function rows(){ var f=($("flt")&&$("flt").value||"").trim().toLowerCase();
   return (ST&&ST.items||[]).filter(function(it){ if(!f) return true; var n=nmOf(it); return (n.ko+" "+n.en+" "+it.k).toLowerCase().indexOf(f)>=0; }); }
 function tapTable(){ if(!ST) return; var R=rows(), mx=1; R.forEach(function(it){ mx=Math.max(mx,it.t||0,it.a||0); });
-  var h='<tr><th class="l">고름</th><th class="l">그림</th><th class="l">지도</th><th>누름</th><th>사람 수</th><th>한 / 영</th><th>길찾기</th><th>공유</th><th>약도</th><th class="l barc"></th></tr>';
+  var h='<tr><th class="l">고름</th><th class="l">그림</th><th class="l">지도</th><th>누름</th><th>사람 수</th><th>한 / 영</th><th>길찾기</th><th>전화</th><th>공유</th><th>약도</th><th class="l barc"></th></tr>';
   R.forEach(function(it){ var n=nmOf(it), t=it.t||0, ko=it.ko||0, en=it.en||0, v=t||it.a||0, uu=t?(it.u||0):(it.au||0);
     h+='<tr><td class="l"><input type="checkbox" data-k="'+esc(it.k)+'" '+(SEL[it.k]?"checked":"")+' onchange="SEL[this.dataset.k]=this.checked"></td>'
       +'<td class="l">'+esc(n.ko)+'<div class="sub">'+esc(n.en)+'</div></td><td class="l">'+esc(mapOf(it.m))+'</td>'
-      +'<td>'+t+'</td><td>'+(it.u||0)+'</td><td>'+(ko+en?pct(ko,ko+en)+' / '+pct(en,ko+en):'-')+'</td><td>'+(it.r||0)+'</td><td>'+(it.s||0)+'</td><td>'+(it.a||0)+'</td>'
+      +'<td>'+t+'</td><td>'+(it.u||0)+'</td><td>'+(ko+en?pct(ko,ko+en)+' / '+pct(en,ko+en):'-')+'</td><td>'+(it.r||0)+'</td><td>'+(it.c||0)+'</td><td>'+(it.s||0)+'</td><td>'+(it.a||0)+'</td>'
       +'<td class="l barc"><div class="bar" style="width:'+(v*100/mx)+'%"></div><div class="bar u" style="width:'+(uu*100/mx)+'%"></div></td></tr>'; });
-  if(!R.length) h+='<tr><td class="l" colspan="10">아직 자료가 없습니다.</td></tr>';
+  if(!R.length) h+='<tr><td class="l" colspan="11">아직 자료가 없습니다.</td></tr>';
   $("ttab").innerHTML=h; }
 
 // ── 엑셀 — 시트1 요약 · 시트2 그림별 · 시트3 날짜별 (개인정보 없음: 수만 들어간다) ──
 function head(title,extra){ return [[CO],[title],["기간",ST.from+" ~ "+ST.to+" (한국 시간)"],["만든 날",kday(0)]].concat(extra||[]).concat([[]]); }
-function itemRow(it){ var n=nmOf(it); return [n.ko,n.en,mapOf(it.m),it.t||0,it.u||0,it.ko||0,it.en||0,it.r||0,it.s||0,it.a||0]; }
-var ICOL=["이름(한글)","이름(영어)","지도","누름","사람 수","한국어","영어","길찾기·교통편","공유","약도 들어가기"];
+function itemRow(it){ var n=nmOf(it); return [n.ko,n.en,mapOf(it.m),it.t||0,it.u||0,it.ko||0,it.en||0,it.r||0,it.c||0,it.s||0,it.a||0]; }
+var ICOL=["이름(한글)","이름(영어)","지도","누름","사람 수","한국어","영어","길찾기·교통편","전화","공유","약도 들어가기"];
 function sheet(aoa,w){ var s=XLSX.utils.aoa_to_sheet(aoa); s["!cols"]=(w||[]).map(function(x){ return {wch:x}; }); return s; }
 function save(wb,name){ XLSX.writeFile(wb,name); }
 function xlsAll(){ if(!ST||!window.XLSX){ alert("자료나 엑셀 도구를 아직 못 불렀습니다."); return; }
   var T=ST.total, top=ST.items.filter(function(i){ return i.t; }).slice(0,10);
-  var s1=head("그림별 누름 보고서",[]).concat([["전체 누름",T.t],["사람 수 (그림별 하루 기기당 1번 합)",T.u],["누른 기기 수 (하루 1번 합)",T.dev],["길찾기·교통편",T.r],["공유",T.s],["한국어 / 영어 누름",T.ko+" / "+T.en],[],["상위 그림","누름","사람 수"]])
+  var s1=head("그림별 누름 보고서",[]).concat([["전체 누름",T.t],["사람 수 (그림별 하루 기기당 1번 합)",T.u],["누른 기기 수 (하루 1번 합)",T.dev],["길찾기·교통편",T.r],["전화",T.c||0],["공유",T.s],["한국어 / 영어 누름",T.ko+" / "+T.en],[],["상위 그림","누름","사람 수"]])
     .concat(top.map(function(i){ return [nmOf(i).ko+" · "+nmOf(i).en,i.t||0,i.u||0]; }))
     .concat([[],["※ 개인정보(IP·기기 식별자·위치)는 모으지 않습니다. 사람 수는 같은 기기가 같은 그림을 하루 여러 번 눌러도 1로 셉니다."]]);
   var s2=[ICOL].concat(ST.items.map(itemRow));
-  var s3=[["날짜","누름","사람 수","누른 기기 수","길찾기·교통편","공유","약도 들어가기"]].concat(ST.days.map(function(d){ return [d.d,d.t,d.u,d.dev,d.r,d.s,d.a]; }));
+  var s3=[["날짜","누름","사람 수","누른 기기 수","길찾기·교통편","전화","공유","약도 들어가기"]].concat(ST.days.map(function(d){ return [d.d,d.t,d.u,d.dev,d.r,d.c||0,d.s,d.a]; }));
   var wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,sheet(s1,[38,16,12]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[22,26,14,8,9,8,8,12,6,12]),"그림별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[12,8,9,12,12,6,12]),"날짜별");
+  XLSX.utils.book_append_sheet(wb,sheet(s1,[38,16,12]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[22,26,14,8,9,8,8,12,6,6,12]),"그림별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[12,8,9,12,12,6,12]),"날짜별");
   save(wb,"머니퍼즐내비_그림별누름_"+ST.from+"_"+ST.to+(ST.test?"_시험":"")+".xlsx"); }
 function xlsSel(){ if(!ST||!window.XLSX){ alert("자료나 엑셀 도구를 아직 못 불렀습니다."); return; }
   var ks=Object.keys(SEL).filter(function(k){ return SEL[k]; }); if(!ks.length){ alert("표 왼쪽에서 그림을 골라 주세요."); return; }
   var its=ST.items.filter(function(i){ return ks.indexOf(i.k)>=0; }), nm=its.map(function(i){ return nmOf(i).ko; }).join(", ");
-  var sum={t:0,u:0,r:0,s:0,ko:0,en:0}; its.forEach(function(i){ for(var f in sum) sum[f]+=i[f]||0; });
-  var s1=head("그림 누름 보고서 — "+nm,[]).concat([["그림",nm],["누름",sum.t],["사람 수 (하루 기기당 1번)",sum.u],["길찾기·교통편",sum.r],["공유",sum.s],["한국어 / 영어 누름",sum.ko+" / "+sum.en],[],
+  var sum={t:0,u:0,r:0,c:0,s:0,ko:0,en:0}; its.forEach(function(i){ for(var f in sum) sum[f]+=i[f]||0; });
+  var s1=head("그림 누름 보고서 — "+nm,[]).concat([["그림",nm],["누름",sum.t],["사람 수 (하루 기기당 1번)",sum.u],["길찾기·교통편",sum.r],["전화",sum.c],["공유",sum.s],["한국어 / 영어 누름",sum.ko+" / "+sum.en],[],
     ["※ 개인정보(IP·기기 식별자·위치)는 모으지 않습니다. 사람 수는 같은 기기가 같은 그림을 하루 여러 번 눌러도 1로 셉니다."]]);
   var s2=[ICOL].concat(its.map(itemRow));
-  var s3=[["날짜","그림","누름","사람 수","길찾기·교통편"]];
-  ST.days.forEach(function(d){ var dk=ST.daily[d.d]||{}; its.forEach(function(i){ var r=dk[i.k]||[0,0,0,0,0,0]; s3.push([d.d,nmOf(i).ko,r[0],r[1],r[2]]); }); });
+  var s3=[["날짜","그림","누름","사람 수","길찾기·교통편","전화"]];
+  ST.days.forEach(function(d){ var dk=ST.daily[d.d]||{}; its.forEach(function(i){ var r=dk[i.k]||[0,0,0,0,0,0,0]; s3.push([d.d,nmOf(i).ko,r[0],r[1],r[2],r[6]||0]); }); });
   var wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,sheet(s1,[30,30]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[22,26,14,8,9,8,8,12,6,12]),"그림별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[12,22,8,9,12]),"날짜별");
+  XLSX.utils.book_append_sheet(wb,sheet(s1,[30,30]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[22,26,14,8,9,8,8,12,6,6,12]),"그림별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[12,22,8,9,12]),"날짜별");
   save(wb,"머니퍼즐내비_"+(its.length===1?nmOf(its[0]).ko:its.length+"개그림")+"_"+ST.from+"_"+ST.to+(ST.test?"_시험":"")+".xlsx"); }
 
 if(TOK) login();
