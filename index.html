@@ -35,6 +35,16 @@
       de.style.removeProperty("visibility");
     }).catch(function(){ bye(false); });
     return; }
+  /* 이용권 링크 (2026-10-16, pass.js 와 짝) — 메일의 ?pass= 를 허브에 등록(기기 3대)하고 이 브라우저에 저장. 손님 정보 없음 */
+  var pt=/[?&]pass=(p1\.\d{8}\.[0-9a-f]{16}\.[0-9a-f]{16})(?![0-9a-z])/i.exec(location.search);
+  if(/[?&]pass=/i.test(location.search)){ try{ var qs2=location.search.slice(1).split("&").filter(function(x){ return !/^pass=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qs2?"?"+qs2:"")+location.hash); }catch(x){} }
+  if(pt){ var de2=document.documentElement; if(!ok) de2.style.setProperty("visibility","hidden","important");
+    var dv=localStorage.getItem("mpv_dev"); if(!/^[0-9a-f]{16,32}$/.test(dv||"")){ dv=Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(12)),function(v){ return ("0"+v.toString(16)).slice(-2); }).join(""); localStorage.setItem("mpv_dev",dv); }
+    fetch(IH+"/npass/claim",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({t:pt[1],pd:dv}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
+      if(j&&j.ok){ localStorage.setItem("mpv_pass",pt[1]); localStorage.setItem("mpv_ok","1"); try{ sessionStorage.setItem("mpv_pass_msg",j.exp||"1"); }catch(x){} de2.style.removeProperty("visibility"); return; }
+      try{ sessionStorage.setItem("mpv_pass_msg",j&&j.err==="expired"?"x":"bad"); }catch(x){}
+      if(ok) return; location.replace("https://moneypuzzle.co.kr/"); }).catch(function(){ if(!ok) location.replace("https://moneypuzzle.co.kr/"); });
+    if(ok) localStorage.setItem("mpv_ok","1"); return; }
   if(ok){ localStorage.setItem("mpv_ok","1"); return; }
   location.replace("https://moneypuzzle.co.kr/");
 }catch(e){} })();
@@ -1056,6 +1066,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script src="trip.js?v=1016cart"></script>
 <script src="gift.js?v=1016e"></script>
 <script src="near.js?v=1016p"></script>
-<script src="reco.js?v=1016r1"></script>
+<script src="reco.js?v=1016r2"></script>
+<script src="pass.js?v=1016p1"></script>
 </body>
 </html>
