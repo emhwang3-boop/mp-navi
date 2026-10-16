@@ -684,17 +684,26 @@ function lodEl(id,cls,a){ var e=LOD.el[id]; if(!e){ e=document.createElement("di
 //   이름표 = 빨간 네모 왼쪽 위 모서리에 붙은 작은 탭(처음 배율에서 아주 작게, 확대하면 읽힘) · 작은 그림 = 그 그림 자리 한가운데
 //   배치는 약도마다 한 번만 정한다 — 배율이 바뀌어도 서로의 자리는 그대로라 겹침도 그대로. 겹치는 것은 숨긴다(큰 네모 먼저)
 // 전국 지도 도시 네모 — 서울·부산·경주 시내에 연한 초록 테두리 (사장님 10-16 「여기를 누르면 뭐가 있구나」). 그림은 그대로, 앱이 지도(#mz) 위에 얹는다
-//   [키, 위도 남, 경도 서, 위도 북, 경도 동, 누르면(약도 id 또는 장소 키)] · 네모 안 그림을 누르면 그림이 먼저, 빈 곳만 네모
-var CGB=[["seoul",37.43,126.80,37.70,127.18,"seoulall"],["busan",35.05,128.95,35.26,129.20,"city_busan"],["gyeongju",35.78,129.14,35.90,129.31,"city_gyeongju"]];
+//   [키, 위도 남, 경도 서, 위도 북, 경도 동, 들어갈 약도 id, 약도가 아직 없을 때 띄울 도시 카드, 이름표 한글, 영어] · 네모 안 그림을 누르면 그림이 먼저, 빈 곳·이름표만 네모
+//   부산·경주 약도(regions 의 busan·gyeongju)가 생기면 카드 대신 그 약도로 바로 들어간다
+var CGB=[["seoul",37.43,126.80,37.70,127.18,"seoulall",null,"서울","Seoul"],["busan",35.04,128.92,35.28,129.22,"busan","city_busan","부산","Busan"],["gyeongju",35.74,129.06,35.94,129.40,"gyeongju","city_gyeongju","경주","Gyeongju"]];
 function cgbBox(t){ var a=meGeoFrac(NAVI_ROOT,t[3],t[2]), b=meGeoFrac(NAVI_ROOT,t[1],t[4]); return a&&b?[a[0],a[1],b[0],b[1]]:null; }
 function cgbDraw(){ var z=document.getElementById("mz"), on=VIEW===NAVI_ROOT&&!DET&&ROOTGEO, w=document.getElementById("map").clientWidth, key=on?LANG+"|"+w:"";
   if(cgbDraw.k===key) return; cgbDraw.k=key; [].slice.call(z.querySelectorAll(".cgb")).forEach(function(e){ e.remove(); }); if(!on) return;
   CGB.forEach(function(t){ var r=cgbBox(t); if(!r) return; var e=document.createElement("div"); e.className="cgb"; e.style.left=(r[0]*100)+"%"; e.style.top=(r[1]*100)+"%"; e.style.width=((r[2]-r[0])*100)+"%"; e.style.height=((r[3]-r[1])*100)+"%";
     e.style.borderWidth=Math.max(1,w*0.0028)+"px"; e.style.borderRadius=(w*0.006)+"px"; z.appendChild(e); }); }
 function cgbAt(cx,cy){ if(VIEW!==NAVI_ROOT||DET||!ROOTGEO) return null; var r=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-r.left)/r.width, fy=(cy-r.top)/r.height;
-  for(var i=0;i<CGB.length;i++){ var b=cgbBox(CGB[i]); if(b&&fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]) return CGB[i][5]; } return null; }
-function cgbGo(g){ if(CITY[g]){ ntap(g,"open_area"); viewSet(g); } else placeShow(g); }
+  for(var i=0;i<CGB.length;i++){ var b=cgbBox(CGB[i]); if(b&&fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]) return CGB[i][0]; } return null; }
+function cgbGo(id){ var t=CGB.filter(function(q){ return q[0]===id; })[0]; if(!t) return; if(CITY[t[5]]){ ntap(t[5],"open_area"); viewSet(t[5]); } else if(t[6]) placeShow(t[6]); }
+// 도시 이름표 — 빨간 네모 이름표(.lt)와 같은 모양·크기, 초록 네모 왼쪽 위 모서리 윗변에 얹힌 탭
+function ctDraw(L){ var w=document.getElementById("map").clientWidth, key="ct|"+LANG+"|"+w+"|"+(ROOTGEO?1:0); L.style.display="";
+  if(LOD.v===key) return; LOD.v=key; L.innerHTML=""; LOD.el={}; if(!ROOTGEO) return;
+  var fs=Math.max(3,w*0.0118), bd=Math.max(0.5,fs*0.12);
+  CGB.forEach(function(t){ var r=cgbBox(t); if(!r) return; var e=document.createElement("div"); e.className="lt"; e.dataset.a=t[5]; e.dataset.c=t[0]; e.textContent=(LANG==="en"?t[8]:t[7])+" ▸";
+    e.style.fontSize=fs+"px"; e.style.height=(fs*2)+"px"; e.style.padding="0 "+(fs*0.7)+"px"; e.style.borderWidth=bd+"px"; e.style.borderRadius=(fs*0.6)+"px "+(fs*0.6)+"px 0 0";
+    e.style.left=(r[0]*100)+"%"; e.style.top=(r[1]*100)+"%"; e.style.transform="translateY(-100%)"; L.appendChild(e); }); }
 function lodDraw(){ try{ cgbDraw(); }catch(e){} var L=document.getElementById("lod"); if(!L) return; var c=CITY[VIEW];
+  if(VIEW===NAVI_ROOT&&!DET){ ctDraw(L); return; }
   if(!c||!c.areas||DET){ L.style.display="none"; return; } L.style.display="";
   var w=document.getElementById("map").clientWidth, as=ASP(), W=w*as, H=w, key=VIEW+"|"+LANG+"|"+w+"|"+(c.subs?1:0);
   if(LOD.v===key) return; LOD.v=key; L.innerHTML=""; LOD.el={};
@@ -730,7 +739,7 @@ function lodAuto(){ return; var c=CITY[VIEW]; if(!c||!c.areas||DET||ZM.s<LOD.s0*
 // 미니 그림 — 첫 주소를 못 불러오면(404·캐시) 다음 주소로 (입점 문의 한/영 미니, 2026-10-16)
 function lodBg(e,L){ L=L.filter(function(u,i){ return u&&L.indexOf(u)===i; }); var i=0; var go=function(){ var u=L[i]; if(!u) return; var im=new Image(); im.onload=function(){ e.style.backgroundImage="url('"+u+"')"; }; im.onerror=function(){ i++; go(); }; im.src=u; };
   e.style.backgroundImage="url('"+L[0]+"')"; go(); }
-function lodTap(e){ var t=e.target.closest&&e.target.closest("#lod [data-a]"); if(!t) return false; var a=t.dataset.a, k=t.dataset.k, S=k&&CITY[VIEW].subs&&CITY[VIEW].subs[a]; ntap(a,"open_area");
+function lodTap(e){ var t=e.target.closest&&e.target.closest("#lod [data-a]"); if(!t) return false; if(t.dataset.c){ cgbGo(t.dataset.c); return true; }   /* 전국 지도 도시 이름표 */ var a=t.dataset.a, k=t.dataset.k, S=k&&CITY[VIEW].subs&&CITY[VIEW].subs[a]; ntap(a,"open_area");
   if(S){ for(var i=0;i<S.length;i++) if(S[i][0]===k){ var s=S[i]; lodEnter(a,(s[1]+s[3])/2,(s[2]+s[4])/2,1); return true; } }
   viewSet(a); return true; }
 function zAt(cx,cy,ns){ var r=document.getElementById("map").getBoundingClientRect(), px=cx-r.left, py=cy-r.top;
