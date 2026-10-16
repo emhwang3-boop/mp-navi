@@ -55,6 +55,8 @@ function recoGo(more){
   var body=JSON.stringify({q:q,lang:LANG,ex:R.ex,exk:R.exk.concat(R.exn)});
   Promise.all([fetch(HUB+"/nreco",{method:"POST",headers:{"Content-Type":"application/json"},body:body}).then(function(r){ return r.json(); }),allMaps()]).then(function(a){
     var j=a[0]||{};
+    if(!j.ok&&/^(pass|expired|dev)$/.test(j.err||"")){ R.busy=false;   // 이용권 스위치가 켜졌을 때만 오는 답 (pass.js)
+      out.innerHTML='<div class="msg">'+esc(j.err==="dev"?T("이 기기는 이용권 기기 목록에서 풀렸어요. 이용권 메일의 링크를 다시 열어 주세요.","This device was signed out of your pass. Open the link in your pass email again."):j.err==="expired"?T("이용권 기간이 끝났어요.","Your pass has expired."):T("「추천받기」는 이용권 기능이에요.","“Get ideas” is a pass feature."))+'</div><div class="rcbar"><button type="button" class="pri" data-rc="buy">'+esc(T("이용권 보기","See passes"))+'</button><button type="button" data-rc="resend">'+esc(T("이용권 다시 받기","Get my pass again"))+'</button></div>'; return; }
     if(!j.ok){ R.busy=false; out.innerHTML='<div class="msg">'+esc(j.err==="rate"?T("잠시 뒤 다시 해 주세요 (요청이 많아요).","Too many requests — please try again shortly."):T("잠시 뒤 다시 해 주세요.","Please try again shortly."))+'</div>'+bar(false); return; }
     var picks=(j.picks||[]).filter(function(p){ return PLACES[p.k]&&R.ex.indexOf(p.k)<0; });
     picks.forEach(function(p){ R.ex.push(p.k); });
@@ -133,7 +135,7 @@ function rcOff(){ R.on=false; R.back=false; ringClear(); }
 
 // ── 누르기 ──
 document.addEventListener("click",function(e){ var t=e.target;
-  var b=t.closest&&t.closest("[data-rc]"); if(b){ e.preventDefault(); if(b.dataset.rc==="again") recoGo(true); else if(b.dataset.rc==="search"){ var q=R.q; rcOff(); $("q").value=q; try{ qxSync(); }catch(x){} go(q); } else if(b.dataset.rc==="back"){ paint(); } return; }
+  var b=t.closest&&t.closest("[data-rc]"); if(b){ e.preventDefault(); if(b.dataset.rc==="again") recoGo(true); else if(b.dataset.rc==="search"){ var q=R.q; rcOff(); $("q").value=q; try{ qxSync(); }catch(x){} go(q); } else if(b.dataset.rc==="back"){ paint(); } else if(b.dataset.rc==="buy"){ try{ openPricing(); }catch(x){} } else if(b.dataset.rc==="resend"){ try{ NPASS.resend(); }catch(x){} } return; }
   if(t.closest&&(t.closest("a")||t.closest(".tradd"))) return;
   var c=t.closest&&t.closest("#res .rcit"); if(c){ var k=c.dataset.rk, P=PLACES[k]; if(!P) return; R.back=true;
     var id0=meBest(+P.lat,+P.lng)||NAVI_ROOT; if(DET){ try{ _nm.setCenter(new naver.maps.LatLng(+P.lat,+P.lng)); }catch(x){} } else spinGo(id0===NAVI_ROOT?"kr":id0,+P.lat,+P.lng,null);
