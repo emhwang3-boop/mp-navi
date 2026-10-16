@@ -11,14 +11,14 @@
 (function(){
 "use strict";
 var KINDS={
-  am:{e:"amenity", t:["🏪 편의시설","🏪 Convenience"], tabs:[{c:"CS2",ko:"편의점",en:"Convenience store",i:"🏪",r:1000},{c:"MT1",ko:"마트",en:"Supermarket",i:"🛒",r:5000}]},
+  am:{e:"amenity", t:["🏪 편의시설","🏪 Convenience"], tabs:[{c:"CS2",ko:"편의점",en:"Convenience store",i:"🏪",r:1000},{c:"MT1",ko:"마트",en:"Mart",i:"🛒",r:5000},{c:"FX",ko:"환전소",en:"Currency Exchange",i:"",r:2000}]},   // 편의시설은 풀다운 하나 (10-16) · 환전소 = 허브 키워드 검색, 은행 뺌
   em:{e:"emergency", t:["🚑 긴급","🚑 Emergency"], tabs:[{c:"HP8",ko:"병원",en:"Hospital",i:"🏥",r:2000},{c:"PM9",ko:"약국",en:"Pharmacy",i:"💊",r:2000}]},
   // 숙소 (사장님 10-16) — 카카오 숙박(AD5)을 허브가 종류로 나눔 + 관광공사 관광정보에 실린 숙소는 kto=1 (「관광공사」 표시)
   st:{e:"stay", t:["🏨 숙소","🏨 Stay"], tabs:[{c:"AD5",kind:"hotel",ko:"호텔",en:"Hotel",i:"🏨",r:3000},{c:"AD5",kind:"motel",ko:"모텔",en:"Motel",i:"🛏",r:3000},{c:"AD5",kind:"gh",ko:"게스트하우스",en:"Guesthouse",i:"🎒",r:3000},{c:"AD5",kind:"hanok",ko:"한옥스테이",en:"Hanok stay",i:"🏯",r:3000}]}
 };
 // 칩 글자 (아이콘 없이, 사장님 10-16) · ⋮ 메뉴 글자
 var CHIP={am:["편의시설","Convenience"],em:["긴급","Emergency"],st:["숙소","Stay"]};
-var MENU={am:["🏪 편의시설 (편의점·마트)","🏪 Convenience (stores · marts)"],em:["🚑 긴급 (병원·약국)","🚑 Emergency (hospital · pharmacy)"],st:["🏨 숙소 (호텔·모텔·게스트하우스·한옥)","🏨 Stay (hotel · motel · guesthouse · hanok)"]};
+var MENU={am:["🏪 편의시설 (편의점·마트·환전소)","🏪 Convenience (stores · marts · exchange)"],em:["🚑 긴급 (병원·약국)","🚑 Emergency (hospital · pharmacy)"],st:["🏨 숙소 (호텔·모텔·게스트하우스·한옥)","🏨 Stay (hotel · motel · guesthouse · hanok)"]};
 var S={k:"",tab:0,base:null,src:"",items:null,err:""}, CACHE={}, PICK=null;
 function L(){ return window.LANG==="en"; }
 // 빨간·파란 단추 안 전화기 — 흰 선 그림(글자색 그대로, 사장님 10-16: 이모지는 분홍빛이라)
@@ -51,6 +51,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +"#nrBk .h{font-weight:900;font-size:16px;margin:0 0 4px}#nrBk .s{color:var(--sub);font-size:12.5px;margin:0 0 10px}#nrBk a{display:block;text-align:center;text-decoration:none;border:1.5px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;font-weight:900;font-size:15.5px;color:var(--ink);background:var(--bg)}"
   +"#nrBk button{width:100%;border:0;background:none;color:var(--sub);font-size:14px;padding:10px;cursor:pointer}"
   +".nrrank{display:inline-block;min-width:20px;height:20px;line-height:20px;border-radius:50%;background:#1971c2;color:#fff;font-size:12px;text-align:center;vertical-align:1px}.nrem .nrrank{background:#e03131}"
+  +".nrsel{display:block;width:100%;margin:0 0 8px;border:1.5px solid #1971c2;background:#e7f5ff;color:#1864ab;border-radius:12px;padding:10px 12px;font-size:16px;font-weight:800;cursor:pointer;min-height:44px}"
   +".nrph{display:inline-block;width:1em;height:1em;vertical-align:-0.14em;margin-right:5px;color:inherit}"
   +".nrbig,.item a.nrbig{display:block!important;text-align:center;background:#e03131!important;color:#fff!important;border:0!important;border-radius:12px!important;padding:12px 8px!important;font-size:18px!important;font-weight:900!important;text-decoration:none;margin:4px 0 10px!important}";
   document.head.appendChild(s); }
@@ -98,7 +99,8 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
   b.className="nrin"+(em?" nrem":"")+(S.k==="st"?" nrst":"");
   var h='<div class="nrtop"><b>'+T(k.t[0],k.t[1])+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
   if(em) h+=sos();
-  h+='<div class="nrtabs">'+k.tabs.map(function(t,i){ return '<button type="button" class="nrtab'+(i===S.tab?' on':'')+'" data-nr="tab" data-i="'+i+'">'+t.i+' '+esc(L()?t.en:t.ko)+'</button>'; }).join("")+'</div>';
+  if(S.k==="am") h+='<select class="nrsel" id="nrSel" aria-label="'+T("종류","Type")+'">'+k.tabs.map(function(t,i){ return '<option value="'+i+'"'+(i===S.tab?' selected':'')+'>'+esc(L()?t.en:t.ko)+'</option>'; }).join("")+'</select>';   // 편의시설 = 풀다운 (사장님 10-16, 이모지 없이)
+  else h+='<div class="nrtabs">'+k.tabs.map(function(t,i){ return '<button type="button" class="nrtab'+(i===S.tab?' on':'')+'" data-nr="tab" data-i="'+i+'">'+t.i+' '+esc(L()?t.en:t.ko)+'</button>'; }).join("")+'</div>';
   if(S.err==="loc") h+='<div class="msg">'+T("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요. 또는 지도를 보고 싶은 동네로 옮긴 뒤 다시 눌러 주세요.","Could not get your location — please allow location access, or move the map to the area you want and try again.")+'</div><div class="nrbase"><button type="button" class="nrme" data-nr="me">📍 '+T("내 위치 다시 받기","Try my location again")+'</button></div>';
   else if(S.err) h+='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>';
   else { if(S.base) h+='<div class="nrbase">'+(S.src==="me"?T("📍 내 위치에서 가까운 순","📍 Nearest to you"):T("🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map"))
@@ -152,6 +154,7 @@ var sc2=window.spinCard; if(typeof sc2==="function"&&!sc2._nrb){ var sc3=functio
 var ps0=window.placeShow; if(typeof ps0==="function"&&!ps0._nrb){ var ps1=function(k){ var r=ps0.apply(this,arguments);
     try{ if(isHotelKey(k)){ var p=PLACES[k]; bookBtn({nm:p.en||p.ko,lat:+p.lat,lng:+p.lng,key:k}); } }catch(e){} return r; };
   for(var _j in ps0) ps1[_j]=ps0[_j]; ps1._nrb=1; window.placeShow=ps1; }
+document.addEventListener("change",function(e){ if(e.target&&e.target.id==="nrSel"){ S.tab=+e.target.value; load(); } });
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("[data-nr]"); if(!t||!t.closest("#nrBox,#gfchips,#mm")) return;
   if(e.target.closest("a[href^='tel:']")) return;   // 전화는 그대로 건다
   e.preventDefault(); var g=t.dataset.nr;
