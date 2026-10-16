@@ -116,8 +116,8 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 /* ◎ 현재 위치 — 지도 왼쪽 아래 (사장님 10-15). © OpenStreetMap·네이버 로고/저작권 줄 바로 위에 얹어 그것들을 가리지 않는다 */
 #zme{position:absolute;left:8px;bottom:26px;z-index:4;height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:800;white-space:nowrap;color:#1a73e8;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);line-height:1}
 #zme{left:auto;right:8px;bottom:8px;height:21px;padding:0 8px;font-size:9px;box-shadow:0 1px 5px rgba(0,0,0,.18)}   /* 모든 약도·자세한 지도에서 오른쪽 아래·원래의 70% 크기로 통일 (사장님 10-16) */
-#zme{position:absolute;right:8px;bottom:calc(8px + var(--zmeOff,0px));opacity:.8}#zme.off{display:none}   /* 지도 칸 안 오른쪽 아래 구석 — 지도 아래쪽이 화면 밖이면 보이는 부분의 구석으로 올라온다(지도 밖으론 안 나감), 지도가 화면에서 벗어나면 숨김 (사장님 10-17) */
-#nmapw:not([hidden]) ~ #zme{bottom:calc(246px + var(--zmeOff,0px))}   /* 자세한 지도: 네이버 줌 단추(아래에서 238px 높이) 바로 위 */
+#zme{position:absolute;left:8px;right:auto;bottom:calc(26px + var(--zmeOff,0px));opacity:.8}#zme.off{display:none}   /* 지도 칸 안 오른쪽 아래 구석 — 지도 아래쪽이 화면 밖이면 보이는 부분의 구석으로 올라온다(지도 밖으론 안 나감), 지도가 화면에서 벗어나면 숨김 (사장님 10-17) */
+#nmapw:not([hidden]) ~ #zme{bottom:calc(30px + var(--zmeOff,0px))}   /* 왼쪽 아래로 옮김 — 오른쪽 아래는 「나」 동그라미 자리 (사장님 10-17) */
 @keyframes meShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px) rotate(-4deg)}40%,80%{transform:translateX(5px) rotate(4deg)}}
 #me.nono img{animation:meShake .5s ease-in-out 3}
 .nmnono img{animation:meShake2 .5s ease-in-out 3}@keyframes meShake2{0%,100%{transform:translateX(-50%)}20%,60%{transform:translateX(calc(-50% - 5px)) rotate(-4deg)}40%,80%{transform:translateX(calc(-50% + 5px)) rotate(4deg)}}
@@ -804,7 +804,7 @@ function zCenter(f){ var r=document.getElementById("map").getBoundingClientRect(
 function hitInit(){ var m=document.getElementById("map"), drag=null, pan=null, moved=false, tch=null, tmr=null, pin=null, one=null;
   document.getElementById("zme").onclick=function(e){ e.stopPropagation(); meBtn(); };
   try{ new IntersectionObserver(function(es){ document.getElementById("zme").classList.toggle("off",!es[0].isIntersecting); },{threshold:0.15}).observe(m); }catch(e){}   /* 지도가 화면에 있을 때만 「현재 위치」 단추 (사장님 10-17) */
-  function zmeOff(){ var r=m.getBoundingClientRect(), vh=window.innerHeight||document.documentElement.clientHeight, nb=document.getElementById("nmapw"), base=(nb&&!nb.hidden)?246:8, off=Math.max(0,Math.min(r.bottom-vh,r.height-base-30)); m.style.setProperty("--zmeOff",Math.round(off)+"px"); }   /* 지도 아래쪽이 화면 밖으로 나간 만큼 단추를 올린다 (사장님 10-17) */
+  function zmeOff(){ var r=m.getBoundingClientRect(), vh=window.innerHeight||document.documentElement.clientHeight, nb=document.getElementById("nmapw"), base=(nb&&!nb.hidden)?30:26, off=Math.max(0,Math.min(r.bottom-vh,r.height-base-30)); m.style.setProperty("--zmeOff",Math.round(off)+"px"); }   /* 지도 아래쪽이 화면 밖으로 나간 만큼 단추를 올린다 (사장님 10-17) */
   window.addEventListener("scroll",zmeOff,{passive:true}); window.addEventListener("resize",zmeOff); try{ new ResizeObserver(zmeOff).observe(m); }catch(e){} setTimeout(zmeOff,0);
   document.getElementById("zin").onclick=function(e){ e.stopPropagation(); zCenter(1.6); lodAuto(); };
   document.getElementById("zout").onclick=function(e){ e.stopPropagation(); zCenter(1/1.6); };
@@ -967,11 +967,7 @@ function meEdge(){ var m=document.getElementById("map"); if(!m) return; var e=do
   if(!f){ e.hidden=true; return; } var px=ZM.tx+f[0]*iw, py=ZM.ty+f[1]*ih;
   if(f[0]>=0&&f[0]<=1&&f[1]>=0&&f[1]<=1&&px>=0&&px<=w&&py>=0&&py<=h){ e.hidden=true; return; }   // 보이면 화살표 없음
   var cx=w/2, cy=h/2, dx=px-cx, dy=py-cy, mg=28, t=Math.min(dx?(w/2-mg)/Math.abs(dx):1e9, dy?(h/2-mg)/Math.abs(dy):1e9), x=cx+dx*t, y=cy+dy*t;
-  var up=dy>0; e.classList.toggle("up",up); y=up?Math.max(54,Math.min(h-30,y)):Math.max(22,Math.min(h-54,y)); x=Math.max(22,Math.min(w-22,x));   // 화살표가 아래를 보면 글자는 위로 — 글자까지 화면 안
-  if(x<130&&y>h-80) y=h-80;   // © 글자 자리 비킴
-  if(x>w-120&&y>h-64) y=h-64;   // ◎ 현재 위치(오른쪽 아래) 자리 비킴 (10-16)
-  if(x>w-70&&y>h-170) x=w-75;   // 줌 단추 자리 비킴
-  e.hidden=false; e.style.left=x+"px"; e.style.top=y+"px";
+  e.classList.add("up"); e.hidden=false; e.style.left=(w-34)+"px"; e.style.top="auto"; e.style.bottom="calc(34px + var(--zmeOff,0px))";   // 그림을 가리지 않게 지도 오른쪽 아래 구석에 고정, 화살표만 방향을 가리킨다 (사장님 10-17)
   var ang=Math.atan2(dy,dx)*180/Math.PI; e.querySelector("i").style.transform="rotate("+ang+"deg) translateX(19px)";
   var ctr=null;
   try{ var fx=(w/2-ZM.tx)/iw, fy=(h/2-ZM.ty)/ih; ctr=meGeoInv(VIEW,fx,fy); }catch(x){}
