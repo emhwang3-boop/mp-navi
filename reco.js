@@ -16,11 +16,11 @@ var R={q:"",ex:[],exk:[],kseen:{},picks:[],kits:[],note:"",on:false,busy:false,b
 function $(id){ return document.getElementById(id); }
 function css(){ if($("rcCss")) return; var s=document.createElement("style"); s.id="rcCss";
   s.textContent=".sbox #recob{order:0;background:var(--blue)}"
-  +"@media not all and (orientation:landscape) and (max-height:560px),(min-width:900px) and (min-height:561px){"
-  +".sbox{flex-direction:row;flex-wrap:wrap;justify-content:center}.sbox .qw,.sbox .desc{flex:0 0 100%}"
-  +".sbox #gob,.sbox #recob{width:calc(min(260px,70%) / 2 - 5px)!important;padding-left:6px!important;padding-right:6px!important}"
-  +".sbox #gfchips>button{flex:0 0 auto}}"
-  +"@media (orientation:landscape) and (max-height:560px),(min-width:900px) and (min-height:561px){.sbox #recob{width:auto!important;font-size:14px!important;padding:7px 14px!important;line-height:1.2;margin:0!important;white-space:nowrap}}"
+  +".sbox{flex-direction:row;flex-wrap:wrap;justify-content:center}.sbox .qw,.sbox .desc{flex:0 0 100%}"   /* 폰 세로: 검색·추천받기 한 줄에 반씩 */
+  +".sbox #gob,.sbox #recob{width:calc(min(260px,70%) / 2 - 5px)!important;box-sizing:border-box;text-align:center;margin:0!important;white-space:nowrap;padding-left:6px!important;padding-right:6px!important}"
+  +".sbox #gfchips>button{flex:0 0 auto}"
+  +"@media (orientation:landscape) and (max-height:560px),(min-width:900px) and (min-height:561px){.sbox{flex-wrap:nowrap}.sbox .qw{flex:1 1 200px}.sbox .desc{flex:none}"
+  +".sbox #gob,.sbox #recob{width:auto!important;font-size:14px!important;padding:7px 14px!important;line-height:1.2}}"
   +".rchd{display:flex;align-items:baseline;gap:8px;margin:2px 44px 4px 4px;font-weight:800;font-size:15px}.rchd .d{font-weight:400;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}"
   +".rcnote{background:#fff9db;border:1px solid #ffe066;color:#5c4400;border-radius:12px;padding:8px 12px;font-size:13.5px;margin:6px 0}"
   +":root[data-theme=dark] .rcnote{background:#3b3212;border-color:#8a6d00;color:#ffe8a3}"
