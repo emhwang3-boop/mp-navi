@@ -114,7 +114,7 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 #meedge{position:absolute;z-index:5;width:34px;height:34px;margin:-17px 0 0 -17px;cursor:pointer}#meedge b{display:block;width:34px;height:34px;border-radius:50%;border:2px solid #1a73e8;background:#fff center 8%/170% auto no-repeat;box-shadow:0 1px 6px rgba(0,0,0,.35);box-sizing:border-box}#meedge i{position:absolute;left:50%;top:50%;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid #1a73e8;margin-top:-7px;transform-origin:0 50%}#meedge.up span{top:auto;bottom:36px}#meedge i{z-index:1}
 #meedge span{position:absolute;left:50%;top:36px;transform:translateX(-50%);white-space:nowrap;background:#1a73e8;color:#fff;font-size:11px;font-weight:900;border-radius:999px;padding:1px 7px;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 #me{position:absolute;z-index:3;pointer-events:none;transform-origin:50% 100%}#me img{display:block;width:100%;height:auto}#me i{position:absolute;left:50%;bottom:-6px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#1a73e8;border:2px solid #fff;box-shadow:0 0 0 4px rgba(26,115,232,.25)}#me.sel img{filter:drop-shadow(0 0 3px #1a73e8) drop-shadow(0 0 3px #1a73e8)}
-#me.kr i{display:none}#medot{position:absolute;z-index:3;pointer-events:none;width:12px;height:12px;box-sizing:border-box;border-radius:50%;background:#1a73e8;border:2px solid #fff;box-shadow:0 0 0 3px rgba(26,115,232,.25)}#melk{position:absolute;z-index:3;pointer-events:none;background:#1a73e8;transform-origin:0 50%;border-radius:2px}   /* 전국 지도: 실제 자리 점 + 부부 그림까지 잇는 선 */
+#me.kr i{display:none}#medot{position:absolute;z-index:3;pointer-events:none;width:12px;height:12px;box-sizing:border-box;border-radius:50%;background:#1a73e8;border:2px solid #fff;box-shadow:0 0 0 3px rgba(26,115,232,.25)}#melk{position:absolute;z-index:3;pointer-events:none;background:transparent;transform-origin:0 50%;border-radius:2px}   /* 전국 지도: 실제 자리 점 + 부부 그림까지 잇는 선 (선은 투명 — 사장님 10-16) */
 #vback{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 13px;font-weight:900;font-size:18px;line-height:1.2;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 #vdet{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 #vbar{display:flex;align-items:center;gap:10px;margin:16px 0 -6px}#vbar[hidden]{display:none!important}
@@ -1051,6 +1051,6 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1016cart"></script>
 <script src="gift.js?v=1016e"></script>
-<script src="near.js?v=1016n"></script>
+<script src="near.js?v=1016o"></script>
 </body>
 </html>
