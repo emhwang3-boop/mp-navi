@@ -12,7 +12,7 @@
 (function(){
 "use strict";
 var SEOUL=[37.5665,126.978];
-var R={q:"",ex:[],exk:[],kseen:{},picks:[],kits:[],note:"",on:false,busy:false,back:false};
+var R={q:"",ex:[],exk:[],exn:[],kseen:{},kpos:[],picks:[],kits:[],note:"",on:false,busy:false,back:false};
 function $(id){ return document.getElementById(id); }
 function css(){ if($("rcCss")) return; var s=document.createElement("style"); s.id="rcCss";
   s.textContent=".sbox #recob{order:0;background:var(--blue)}"
@@ -47,12 +47,12 @@ function recoGo(more){
   if(!q){ $("q").focus(); out.innerHTML='<div class="msg">'+esc(T("가고 싶은 여행을 문장으로 적고 「추천받기」를 눌러 주세요. 예: 한옥 구경하고 싶어","Type what you’d like to do, then tap “Get ideas”. e.g. I want to see traditional houses"))+'</div>'; return; }
   if(!pass()){ try{ openPricing(); }catch(e){} return; }   // 이용권 자리 — 지금은 hasPass()=true
   if(R.busy) return;
-  if(!more){ R={q:q,ex:[],exk:[],kseen:{},picks:[],kits:[],note:"",on:false,busy:false,back:false}; ringClear(); }
+  if(!more){ R={q:q,ex:[],exk:[],exn:[],kseen:{},kpos:[],picks:[],kits:[],note:"",on:false,busy:false,back:false}; ringClear(); }
   R.busy=true; R.back=false;
   try{ spinClear(); }catch(e){}
   out.innerHTML='<div class="msg">'+esc(T("AI가 고르는 중…","AI is picking places…"))+'</div>';
   try{ ntap("_reco","reco"); }catch(e){}
-  var body=JSON.stringify({q:q,lang:LANG,ex:R.ex,exk:R.exk});
+  var body=JSON.stringify({q:q,lang:LANG,ex:R.ex,exk:R.exk.concat(R.exn)});
   Promise.all([fetch(HUB+"/nreco",{method:"POST",headers:{"Content-Type":"application/json"},body:body}).then(function(r){ return r.json(); }),allMaps()]).then(function(a){
     var j=a[0]||{};
     if(!j.ok){ R.busy=false; out.innerHTML='<div class="msg">'+esc(j.err==="rate"?T("잠시 뒤 다시 해 주세요 (요청이 많아요).","Too many requests — please try again shortly."):T("잠시 뒤 다시 해 주세요.","Please try again shortly."))+'</div>'+bar(false); return; }
@@ -61,19 +61,40 @@ function recoGo(more){
     var kws=(j.kw||[]).filter(function(k){ return k&&R.exk.indexOf(k)<0; }).slice(0,2);
     if(!kws.length&&(j.kw||[]).length) kws=(j.kw||[]).slice(0,1);   // 같은 검색어여도 다음 장소를 보여 준다
     kws.forEach(function(k){ if(R.exk.indexOf(k)<0) R.exk.push(k); });
-    return kGet(kws,picks.length).then(function(kits){ R.busy=false; R.picks=picks; R.kits=kits; R.note=j.note||""; R.on=true; paint(); });
+    var nms=(j.nm||[]).filter(function(k){ return k&&R.exn.indexOf(k)<0; }).slice(0,4); nms.forEach(function(k){ R.exn.push(k); });
+    return kGet(kws,nms,picks.length).then(function(kits){ R.busy=false; R.picks=picks; R.kits=kits; R.note=j.note||""; R.on=true; paint(); });
   }).catch(function(){ R.busy=false; out.innerHTML='<div class="msg">'+esc(T("잠시 뒤 다시 해 주세요.","Please try again shortly."))+'</div>'; });
 }
 // 카카오 실제 장소 — 기존 /kplace(near=1). 위치는 기존 검색처럼 ux/uy(있을 때만), 거리는 화면에서
 var KBAD=/편의점|주차장|부동산|주유소|은행|ATM|세탁|미용|학원|병원|약국/, KFOOD=/카페|커피|맛집|음식|식당|호텔|숙소|펜션|숙박/;
-function kGet(kws,np){ if(!kws.length) return Promise.resolve([]); var o=origin(), ps=ME&&ME.pos;
-  return Promise.all(kws.map(function(kw){ return fetch(HUB+"/kplace?q="+encodeURIComponent(kw)+"&near=1"+(L()?"&lang=en":"")+(ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"")).then(function(r){ return r.json(); }).then(function(j){
-      var it=(j&&j.ok&&j.items)||[], keep=/약국|병원|은행|ATM|편의점/.test(kw);   // 손님이 그걸 찾으면 남긴다
-      return it.filter(function(x){ var c=String(x.cat||""); return keep||!(KBAD.test(c)||(!KFOOD.test(kw)&&/음식점|카페|숙박/.test(c))); }); }).catch(function(){ return []; }); }))
-  .then(function(ls){ var all=[], seen={};
-    ls.forEach(function(l){ l.forEach(function(x){ var k=x.name+"|"+(+x.x).toFixed(4)+"|"+(+x.y).toFixed(4); if(seen[k]||R.kseen[k]) return; seen[k]=1; x._k=k; x.dist=Math.round(kmLL(o,[+x.y,+x.x])*1000); all.push(x); }); });
+var KCAT=[[/스키|스노보드/,/^(스키장|슬로프)$/],[/해수욕장|해변|바다/,/해수욕장|해변/],[/온천/,/^온천/],[/아쿠아리움|수족관/,/아쿠아리움/],[/놀이공원|테마파크|놀이동산/,/^(테마파크|놀이공원)$/,null,3],[/사찰|산사|절$|템플/,/사찰/],
+  [/캠핑|야영/,/캠핑|야영/],[/휴양림/,/휴양림/],[/계곡/,/계곡/],[/등산|산행/,/^(등산로|산)$/],[/동물원/,/동물원/],[/수목원|식물원/,/수목원|식물원/]];   // 검색어 종류 → 카카오 분류 끝칸
+function kOne(u){ return fetch(u).then(function(r){ return r.json(); }).then(function(j){ return (j&&j.ok&&j.items)||[]; }).catch(function(){ return []; }); }
+function kNorm(s){ return String(s||"").replace(/[\s·()\-_.,'’]/g,"").toLowerCase(); }
+// kws = 종류 검색어(가까운 순 전국) · nms = AI 가 아는 실제 이름(카카오에서 확인된 것만 — 첫 결과가 그 이름일 때)
+function kGet(kws,nms,np){ if(!kws.length&&!nms.length) return Promise.resolve([]); var o=origin(), ps=ME&&ME.pos, lg=L()?"&lang=en":"", pq=ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"";
+  var A=kws.map(function(kw){ return kOne(HUB+"/kplace?q="+encodeURIComponent(kw)+"&near=1"+lg+pq).then(function(it){
+      var keep=/약국|병원|은행|ATM|편의점/.test(kw), tk=kw.split(/\s+/).filter(function(t){ return t.length>=2; });   // 손님이 그걸 찾으면 남긴다
+      it=it.filter(function(x){ var c=String(x.cat||""); return keep||!(KBAD.test(c)||(!KFOOD.test(kw)&&np>0&&/음식점|카페|숙박/.test(c))); });   // 명소를 하나도 못 고른 가게 이름 검색(스타벅스 등)은 카페도 남긴다
+      var cm=KCAT.find(function(z){ return z[0].test(kw); });   // 종류가 검색어와 맞는 곳만 (스키장 ↔ 수상스키·렌탈샵 가르기)
+      it=it.filter(function(x){ var c=String(x.cat||""), ls=c.split(">").pop().trim();
+        if(cm) return cm[1].test(ls)||(cm[2]&&cm[2].test(c));
+        return tk.some(function(t){ return ls.indexOf(t)>=0; })||(/관광|명소|여행/.test(c)&&tk.some(function(t){ return String(x.name).indexOf(t)>=0; })); });
+      it.forEach(function(x){ x._src="k"; x._g=!!cm||np>0; }); return it; }); });
+  var B=nms.map(function(nm){ return kOne(HUB+"/kplace?q="+encodeURIComponent(nm)+lg+pq).then(function(it){ var a=kNorm(nm);
+      var x=it.slice(0,5).find(function(y){ var b=kNorm(y.name); return (b===a||b.indexOf(a)===0)&&!KBAD.test(String(y.cat||""))&&!/음식점|카페/.test(String(y.cat||"")); });
+      if(x){ x._src="n"; x._g=true; } return x?[x]:[]; }); });
+  return Promise.all(B.concat(A)).then(function(ls){ var all=[], pk=R.picks.map(function(p){ var P=PLACES[p.k]; return [+P.lat,+P.lng,kNorm(String(P.ko).split(" (")[0])]; });
+    ls.forEach(function(l){ l.forEach(function(x){ var ll=[+x.y,+x.x]; x._k=x.name+"|"+(+x.x).toFixed(3)+"|"+(+x.y).toFixed(3); x.dist=Math.round(kmLL(o,ll)*1000); x._n=1;
+      if(R.kseen[x._k]||R.kpos.some(function(q){ return kmLL(q,ll)<0.8; })) return;   // 이미 보여 준 곳·그 곁은 빼기 (다시 짜줘)
+      var xn=kNorm(x.name); if(pk.some(function(q){ var d=kmLL(q,ll); return d<0.4||(d<50&&q[2].length>=2&&(xn.indexOf(q[2])>=0||q[2].indexOf(xn)>=0)); })) return;   // 우리 명소로 이미 고른 곳(같은 자리·같은 이름)
+      if(!x._g){ all.push(x); return; }
+      var m=all.find(function(y){ return y._g&&kmLL([+y.y,+y.x],ll)<2; });   // 한 곳 여러 칸(곤지암리조트 슬로프·렌탈샵…)은 하나로 — 이름이 가장 짧은 칸
+      if(!m){ all.push(x); return; } m._n++; if(x._src==="n"&&m._src!=="n"||(x._src===m._src&&String(x.name).length<String(m.name).length)){ var n=m._n; all[all.indexOf(m)]=x; x._n=n; } }); });
+    all=all.filter(function(x){ var cm=x._src==="k"&&KCAT.find(function(z){ return z[3]&&kws.some(function(k){ return z[0].test(k); }); }); return !cm||x._n>=cm[3]; });   // 놀이공원은 시설이 여럿 모인 곳만(방탈출 가게 빼기)
+    if(all.filter(function(x){ return x._src==="n"; }).length>=2) all=all.filter(function(x){ return x._src==="n"; });   // AI 가 아는 이름(카카오 확인)이 둘 이상이면 그것만 — 근처 아무 절·방탈출 가게보다 낫다
     all.sort(function(a,b){ return a.dist-b.dist; });
-    var n=Math.max(3,5-Math.min(np,2)), r=all.slice(0,n); r.forEach(function(x){ R.kseen[x._k]=1; }); return r; }); }
+    var n=Math.max(3,5-Math.min(np,2)), r=all.slice(0,n); r.forEach(function(x){ R.kseen[x._k]=1; R.kpos.push([+x.y,+x.x]); }); return r; }); }
 
 // ── 그리기 ──
 function bar(retry){ return '<div class="rcbar">'+(retry?'<button type="button" class="pri" data-rc="again">'+esc(T("다시 짜줘","Try again"))+'</button>':'')+'<button type="button" data-rc="search">'+esc(T("일반 검색으로 찾기","Regular search"))+'</button></div>'; }
