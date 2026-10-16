@@ -71,6 +71,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
 @media (max-width:520px){.sbox input::placeholder{font-size:16px}}
 .sbox input:focus{border-color:#2b8a3e;box-shadow:0 0 0 4px rgba(47,158,68,.18)}
 .sbox button{border:0;background:var(--green);color:#fff;font-weight:800;font-size:17px;border-radius:999px;padding:12px 34px;cursor:pointer}
+/* 검색 단추 + 칩 3개(gift.js·near.js 가 붙임)를 한 줄에 하나씩, 같은 너비·같은 간격 (사장님 10-16) */
+.sbox #gfchips{display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;align-items:center!important;gap:10px!important;margin:0!important;width:100%}
+.sbox #gob,.sbox #gfchips>button{width:min(260px,70%)!important;box-sizing:border-box;text-align:center;margin:0!important}
+.sbox #gfchips>.gfchip{order:1}.sbox #gfchips>.nrchip{order:2}.sbox #gfchips>.nrchip.em{order:3}
 .map{margin:18px 0 0;border-radius:18px;overflow:hidden;background:#96b2c4;box-shadow:0 2px 14px rgba(0,0,0,.08)}
 /* 지도는 화면을 거의 꽉 채우는 정사각형 — 가로·세로 중 짧은 쪽에 맞춤, 글 칸(720) 밖으로 나와 가운데 (사장님 10-15) */
 .map{--W:min(calc(100vw - 24px),calc(100vh - 24px));width:var(--W);margin-left:calc((100% - var(--W)) / 2)}
@@ -89,6 +93,7 @@ html,body{overflow-x:hidden}
 .zb{position:absolute;right:10px;bottom:10px;z-index:3;display:none!important;flex-direction:column;align-items:flex-end;gap:6px}   /* ＋ − ⟲ 단추 숨김 — 손가락 벌리기·휠로 대신 (사장님 10-16) */
 /* ◎ 현재 위치 — 지도 왼쪽 아래 (사장님 10-15). © OpenStreetMap·네이버 로고/저작권 줄 바로 위에 얹어 그것들을 가리지 않는다 */
 #zme{position:absolute;left:8px;bottom:26px;z-index:4;height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:800;white-space:nowrap;color:#1a73e8;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);line-height:1}
+#map.onkr #zme{left:auto;right:8px;bottom:8px;height:15px;padding:0 6px;font-size:6.5px;box-shadow:0 1px 4px rgba(0,0,0,.18)}   /* 전국 지도에서만 오른쪽 아래·절반 크기 (사장님 10-16) */
 @keyframes meShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px) rotate(-4deg)}40%,80%{transform:translateX(5px) rotate(4deg)}}
 #me.nono img{animation:meShake .5s ease-in-out 3}
 .nmnono img{animation:meShake2 .5s ease-in-out 3}@keyframes meShake2{0%,100%{transform:translateX(-50%)}20%,60%{transform:translateX(calc(-50% - 5px)) rotate(-4deg)}40%,80%{transform:translateX(calc(-50% + 5px)) rotate(4deg)}}
@@ -158,7 +163,7 @@ html,body{overflow-x:hidden}
   </form>
   <div class="res" id="res"></div>
   <div id="vbar" hidden><button type="button" id="vback" hidden>←</button><div id="vttl" hidden></div><button type="button" id="vdet" hidden>자세히</button></div>
-  <div class="map" id="map"><div id="mz"><img src="img/maps/kr.jpg?h=0003501d" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg><div id="lod"></div></div><a id="osm" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" hidden>© OpenStreetMap</a><div id="nmapw" hidden><div id="nmap"></div></div><button type="button" id="zme" aria-label="my location">◎ 현재 위치</button><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
+  <div class="map onkr" id="map"><div id="mz"><img src="img/maps/kr.jpg?h=0003501d" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg><div id="lod"></div></div><a id="osm" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" hidden>© OpenStreetMap</a><div id="nmapw" hidden><div id="nmap"></div></div><button type="button" id="zme" aria-label="my location">◎ 현재 위치</button><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
   <div id="infob">
   <div id="infot">안내</div>
   <div id="infoboard"><div class="pl" id="pl0"></div><div class="pl" id="pl1"></div><div class="pl" id="pl2"></div><button type="button" id="infomore" hidden aria-label="more">⋮</button></div>
@@ -523,7 +528,7 @@ function nmMe(){ if(!_nm||!window.naver||!naver.maps) return; if(!ME.pos){ if(_n
     if(_nmMe) _nmMe.setIcon(ic); else _nmMe=new naver.maps.Marker({position:ll,map:_nm,icon:ic,zIndex:200,clickable:false}); _nmMeP=src; }
   _nmMe.setPosition(ll); if(_nmMe.getMap()!==_nm) _nmMe.setMap(_nm); }
 var ROOT_IMG=document.getElementById("mapimg").getAttribute("src");
-function viewSet(v){ clearTimeout(window._scT); try{ spinClear(); }catch(e){} VIEW=v; if(CITY[v]) mapLoad(v).catch(function(){}); detSet(false); document.getElementById("vdet").hidden=!CITY[v]; document.getElementById("vbar").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:ROOT_IMG;
+function viewSet(v){ clearTimeout(window._scT); try{ spinClear(); }catch(e){} VIEW=v; document.getElementById("map").classList.toggle("onkr",!CITY[v]); if(CITY[v]) mapLoad(v).catch(function(){}); detSet(false); document.getElementById("vdet").hidden=!CITY[v]; document.getElementById("vbar").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:ROOT_IMG;
   document.getElementById("vback").hidden=!c; var tt=document.getElementById("vttl"); tt.hidden=!c; if(c) tt.textContent=LANG==="en"?c.en:c.ko;
   var vb=document.getElementById("vback"); vb.textContent="←"; vb.title=vb.ariaLabel=c&&c.parent!=="kr"?T(CITY[c.parent].ko+"로",CITY[c.parent].en):T("전국 지도로","Korea map");
   try{ dlDraw(null); }catch(e){} try{ lblDraw(); }catch(e){} var w0=document.getElementById("map").clientWidth; ZM={s:1,tx:(c&&c.aspect>1)?-((c.fx||0.5)*w0*c.aspect-w0/2):0,ty:0}; zApply(); LOD.s0=ZM.s; }
@@ -686,21 +691,24 @@ function lodEl(id,cls,a){ var e=LOD.el[id]; if(!e){ e=document.createElement("di
 // 전국 지도 도시 이름표 — 서울·부산·경주 (사장님 10-16). 그림은 그대로, 앱이 지도(#lod) 위에 얹는다 — 빨간 네모 이름표(.lt)와 같은 모양·크기
 //   [키, 시청 위도, 경도, 들어갈 약도 id, 약도가 아직 없을 때 띄울 도시 카드, 한글, 영어] · 부산·경주 약도(regions 의 busan·gyeongju)가 생기면 카드 대신 그 약도로 바로 들어간다
 //   자리: 도시의 아래·옆 중 그림(누르기 지도 HG)과 겹치지 않는 가장 가까운 곳. 지도와 같이 커지고 작아지니 확대해도 안 겹친다
-var CT=[["seoul",37.5663,126.9779,"seoulall",null,"서울","Seoul"],["busan",35.1798,129.0750,"busan","city_busan","부산","Busan"],["gyeongju",35.8562,129.2247,"gyeongju","city_gyeongju","경주","Gyeongju"]];
+//   [7] = 이 그림(누르기 지도 키) 바로 밑 가장자리에 붙인다 — 경주는 석굴암 그림 밑 (사장님 10-16)
+var CT=[["seoul",37.5663,126.9779,"seoulall",null,"서울","Seoul"],["busan",35.1798,129.0750,"busan","city_busan","부산","Busan"],["gyeongju",35.8562,129.2247,"gyeongju","city_gyeongju","경주","Gyeongju","seok"]];
 function ctGo(id){ var t=CT.filter(function(q){ return q[0]===id; })[0]; if(!t) return; if(CITY[t[3]]){ ntap(t[3],"open_area"); viewSet(t[3]); } else if(t[4]) placeShow(t[4]); }
-function ctFree(x0,y0,x1,y1,put){ if(x0<0||y0<0||x1>1||y1>1) return false; var m=1/256;   // 그림 칸에서 한 칸(0.4%) 더 띄운다
+function ctFree(x0,y0,x1,y1,put,m){ if(x0<0||y0<0||x1>1||y1>1) return false; if(m==null) m=1/256;   // 그림 칸에서 한 칸(0.4%) 더 띄운다
   for(var i=0;i<put.length;i++){ var q=put[i]; if(x0<q[2]&&x1>q[0]&&y0<q[3]&&y1>q[1]) return false; }
   var gx0=Math.max(0,Math.floor((x0-m)*256)), gx1=Math.min(255,Math.floor((x1+m)*256)), gy0=Math.max(0,Math.floor((y0-m)*256)), gy1=Math.min(255,Math.floor((y1+m)*256));
   for(var y=gy0;y<=gy1;y++) for(var x=gx0;x<=gx1;x++) if(HG[y*256+x]) return false; return true; }
 function ctDraw(L){ var w=document.getElementById("map").clientWidth, key="ct|"+LANG+"|"+w+"|"+(ROOTGEO?1:0)+"|"+HIT.keys.length; L.style.display="";
   if(LOD.v===key) return; LOD.v=key; L.innerHTML=""; LOD.el={}; if(!ROOTGEO) return;
   var fs=Math.max(3,w*0.0118), bd=Math.max(0.5,fs*0.12), put=[];
-  CT.forEach(function(t){ var f=meGeoFrac(NAVI_ROOT,t[1],t[2]); if(!f) return; var e=document.createElement("div"); e.className="lt ct"; e.dataset.a=t[3]; e.dataset.c=t[0]; e.textContent=t[6];   /* 이름표는 한국어 화면에서도 영어 (사장님 10-16) — 카드는 화면 언어 */
+  CT.forEach(function(t){ var f=meGeoFrac(NAVI_ROOT,t[1],t[2]), an=t[7]?HIT.keys.indexOf(t[7])+1:0, ab=null;
+    if(an){ for(var i=0;i<65536;i++) if(HG[i]===an){ var gx=i%256, gy=(i-gx)/256; if(!ab) ab=[gx,gy,gx,gy]; else { ab[0]=Math.min(ab[0],gx); ab[2]=Math.max(ab[2],gx); ab[3]=Math.max(ab[3],gy); } } if(ab) f=[(ab[0]+ab[2]+1)/512,(ab[3]+1)/256]; }   // 그림 아래 가장자리 가운데
+    if(!f) return; var e=document.createElement("div"); e.className="lt ct"; e.dataset.a=t[3]; e.dataset.c=t[0]; e.textContent=t[6];   /* 이름표는 한국어 화면에서도 영어 (사장님 10-16) — 카드는 화면 언어 */
     e.style.fontSize=fs+"px"; e.style.height=(fs*2)+"px"; e.style.padding="0 "+(fs*0.7)+"px"; e.style.borderRadius=(fs*0.6)+"px"; e.style.visibility="hidden";   /* 도시 이름표는 흰 테두리 없음 (사장님 10-16) */ L.appendChild(e);
-    var tw=e.offsetWidth/w, th=e.offsetHeight/w, gp=0.004, best=null, bd2=9, st=0.002;
-    for(var dy=-th/2;dy<=0.15;dy+=st) for(var dx=-0.15;dx<=0.15;dx+=st){ var x0=f[0]+dx-tw/2, y0=f[1]+gp+dy;   // 윗변이 도시 높이(옆) 또는 그 아래
-      var nx=Math.max(x0,Math.min(f[0],x0+tw))-f[0], ny=Math.max(y0,Math.min(f[1],y0+th))-f[1], d=nx*nx+ny*ny; if(d>=bd2) continue;
-      if(ctFree(x0,y0,x0+tw,y0+th,put)){ bd2=d; best=[x0,y0]; } }
+    var tw=e.offsetWidth/w, th=e.offsetHeight/w, gp=ab?0:0.004, best=null, bd2=9, st=ab?0.001:0.002;
+    for(var dy=ab?0:-th/2;dy<=0.15;dy+=st) for(var dx=-0.15;dx<=0.15;dx+=st){ var x0=f[0]+dx-tw/2, y0=f[1]+gp+dy;   // 윗변이 도시 높이(옆) 또는 그 아래
+      var nx=Math.max(x0,Math.min(f[0],x0+tw))-f[0], ny=Math.max(y0,Math.min(f[1],y0+th))-f[1], cx=x0+tw/2-f[0], d=nx*nx+ny*ny+0.05*cx*cx;   /* 같은 거리면 가운데 맞춤 */ if(d>=bd2) continue;
+      if(ctFree(x0,y0,x0+tw,y0+th,put,ab?0.3/256:null)){ bd2=d; best=[x0,y0]; } }
     if(!best){ e.remove(); return; } put.push([best[0],best[1],best[0]+tw,best[1]+th]);
     e.style.left=(best[0]*100)+"%"; e.style.top=(best[1]*100)+"%"; e.style.visibility=""; }); }
 function lodDraw(){ var L=document.getElementById("lod"); if(!L) return; var c=CITY[VIEW];
