@@ -114,7 +114,7 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 #meedge{position:absolute;z-index:5;width:34px;height:34px;margin:-17px 0 0 -17px;cursor:pointer}#meedge b{display:block;width:34px;height:34px;border-radius:50%;border:2px solid #1a73e8;background:#fff center 8%/170% auto no-repeat;box-shadow:0 1px 6px rgba(0,0,0,.35);box-sizing:border-box}#meedge i{position:absolute;left:50%;top:50%;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid #1a73e8;margin-top:-7px;transform-origin:0 50%}#meedge.up span{top:auto;bottom:36px}#meedge i{z-index:1}
 #meedge span{position:absolute;left:50%;top:36px;transform:translateX(-50%);white-space:nowrap;background:#1a73e8;color:#fff;font-size:11px;font-weight:900;border-radius:999px;padding:1px 7px;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 #me{position:absolute;z-index:3;pointer-events:none;transform-origin:50% 100%}#me img{display:block;width:100%;height:auto}#me i{position:absolute;left:50%;bottom:-6px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#1a73e8;border:2px solid #fff;box-shadow:0 0 0 4px rgba(26,115,232,.25)}#me.sel img{filter:drop-shadow(0 0 3px #1a73e8) drop-shadow(0 0 3px #1a73e8)}
-#me.kr i{display:none}#medot{position:absolute;z-index:3;pointer-events:none;width:12px;height:12px;box-sizing:border-box;border-radius:50%;background:#1a73e8;border:2px solid #fff;box-shadow:0 0 0 3px rgba(26,115,232,.25)}   /* 전국 지도: 실제 자리 점 (부부 그림은 그 바로 아래) */
+#me.kr i{display:none}#medot{position:absolute;z-index:3;pointer-events:none;width:12px;height:12px;box-sizing:border-box;border-radius:50%;background:#1a73e8;border:2px solid #fff;box-shadow:0 0 0 3px rgba(26,115,232,.25)}#melk{position:absolute;z-index:3;pointer-events:none;background:#1a73e8;transform-origin:0 50%;border-radius:2px}   /* 전국 지도: 실제 자리 점 + 부부 그림까지 잇는 선 */
 #vback{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 13px;font-weight:900;font-size:18px;line-height:1.2;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 #vdet{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 #vbar{display:flex;align-items:center;gap:10px;margin:16px 0 -6px}#vbar[hidden]{display:none!important}
@@ -723,7 +723,7 @@ function lodEl(id,cls,a){ var e=LOD.el[id]; if(!e){ e=document.createElement("di
 //   [키, 시청 위도, 경도, 들어갈 약도 id, 약도가 아직 없을 때 띄울 도시 카드, 한글, 영어] · 부산·경주 약도(regions 의 busan·gyeongju)가 생기면 카드 대신 그 약도로 바로 들어간다
 //   자리: 도시의 아래·옆 중 그림(누르기 지도 HG)과 겹치지 않는 가장 가까운 곳. 지도와 같이 커지고 작아지니 확대해도 안 겹친다
 //   [7] = 이 그림(누르기 지도 키) 바로 밑 가장자리에 붙인다 — 경주는 석굴암 그림 밑 (사장님 10-16)
-var CT=[["seoul",37.5663,126.9779,"seoulall",null,"서울","Seoul"],["busan",35.1798,129.0750,"busan","city_busan","부산","Busan"],["gyeongju",35.8562,129.2247,"gyeongju","city_gyeongju","경주","Gyeongju","seok"]];
+var CT=[["seoul",37.5663,126.9779,"seoulall",null,"서울","Seoul",null,[0.03,0]],["busan",35.1798,129.0750,"busan","city_busan","부산","Busan"],["gyeongju",35.8562,129.2247,"gyeongju","city_gyeongju","경주","Gyeongju","seok"]];
 function ctGo(id){ var t=CT.filter(function(q){ return q[0]===id; })[0]; if(!t) return; if(CITY[t[3]]){ ntap(t[3],"open_area"); viewSet(t[3]); } else if(t[4]) placeShow(t[4]); }
 function ctFree(x0,y0,x1,y1,put,m){ if(x0<0||y0<0||x1>1||y1>1) return false; if(m==null) m=1/256;   // 그림 칸에서 한 칸(0.4%) 더 띄운다
   for(var i=0;i<put.length;i++){ var q=put[i]; if(x0<q[2]&&x1>q[0]&&y0<q[3]&&y1>q[1]) return false; }
@@ -741,6 +741,7 @@ function ctDraw(L){ var w=document.getElementById("map").clientWidth, key="ct|"+
       var nx=Math.max(x0,Math.min(f[0],x0+tw))-f[0], ny=Math.max(y0,Math.min(f[1],y0+th))-f[1], cx=x0+tw/2-f[0], d=nx*nx+ny*ny+0.05*cx*cx;   /* 같은 거리면 가운데 맞춤 */ if(d>=bd2) continue;
       if(ctFree(x0,y0,x0+tw,y0+th,put,ab?0.3/256:null)){ bd2=d; best=[x0,y0]; } }
     if(!best){ e.remove(); return; } put.push([best[0],best[1],best[0]+tw,best[1]+th]);
+    if(t[8]){ best[0]+=t[8][0]; best[1]+=t[8][1]; put[put.length-1]=[best[0],best[1],best[0]+tw,best[1]+th]; }   // [8] = 정한 자리에서 조금 더 민다 — 서울은 오른쪽으로 (부부 그림에 가려서, 사장님 10-16)
     e.style.left=(best[0]*100)+"%"; e.style.top=(best[1]*100)+"%"; e.style.visibility=""; }); }
 function lodDraw(){ var L=document.getElementById("lod"); if(!L) return; var c=CITY[VIEW];
   if(VIEW===NAVI_ROOT&&!DET){ ctDraw(L); return; }
@@ -871,17 +872,27 @@ function meBest(lat,lng){ var best=null, bd=-1, ba=1e9;   // 손님이 들어 �
     if(d>bd||(d===bd&&ar<ba)){ bd=d; ba=ar; best=id; } }
   return best||(meInKR(lat,lng)?NAVI_ROOT:null); }
 function meEl(){ var e=document.getElementById("me"); if(!e){ e=document.createElement("div"); e.id="me"; e.innerHTML='<b class="bub"></b><img alt=""><i></i>'; document.getElementById("mz").appendChild(e); e.querySelector("img").addEventListener("load",function(){ if(!CITY[VIEW]) meDraw(); }); } return e; }
-// 전국 지도에서만: 실제 자리엔 작은 파란 점, 부부 그림은 다른 인물 그림 크기로 줄여 점 바로 아래에 붙인다 (사장님 10-16)
-//   크기는 지도 비율(지도 높이의 7.5%) — 지도와 같이 커지고 작아진다
-function meKrDot(){ var d=document.getElementById("medot"); if(!d){ d=document.createElement("div"); d.id="medot"; document.getElementById("mz").appendChild(d); } return d; }
-function meKrHide(){ var d=document.getElementById("medot"); if(d) d.hidden=true; }
+// 전국 지도에서만: 실제 자리엔 작은 점, 부부 그림은 다른 인물 그림 크기로 줄여 그림이 없는 가장 가까운 빈 곳에 두고 짧은 선으로 잇는다 (사장님 10-16)
+//   크기·자리는 지도 비율로 정한다 — 지도와 같이 커지고 작아지니 확대·이동·회전해도 그림과 안 겹친다. 자리 계산은 위치·크기가 바뀔 때만
+var MEKR={k:null,a:null};
+function meKrEls(){ var z=document.getElementById("mz"), d=document.getElementById("medot"), l=document.getElementById("melk");
+  if(!d){ d=document.createElement("div"); d.id="medot"; z.appendChild(d); } if(!l){ l=document.createElement("div"); l.id="melk"; z.appendChild(l); } return [d,l]; }
+function meKrHide(){ var d=document.getElementById("medot"), l=document.getElementById("melk"); if(d) d.hidden=true; if(l) l.hidden=true; }
+function meKrSpot(f,Wf,Hf){ var as=ASP(), lb=[], k=f[0].toFixed(4)+","+f[1].toFixed(4)+"|"+Wf.toFixed(4)+"|"+Hf.toFixed(4)+"|"+HIT.keys.length+"|"+LOD.v; if(MEKR.k===k) return MEKR.a;
+  [].forEach.call(document.querySelectorAll("#lod .ct"),function(t){ if(t.style.visibility==="hidden") return; var p=t.parentNode, pw=p.offsetWidth||1, ph=p.offsetHeight||1, x=parseFloat(t.style.left)/100, y=parseFloat(t.style.top)/100; if(isNaN(x)||isNaN(y)) return; lb.push([x,y,x+t.offsetWidth/pw,y+t.offsetHeight/ph]); });   // 도시 이름표도 비킨다
+  var c=[], st=0.003, R=0.25; for(var dy=-R;dy<=R;dy+=st) for(var dx=-R/as;dx<=R/as;dx+=st/as){ var d=dx*dx*as*as+dy*dy; if(d<=R*R) c.push([d,f[0]+dx,f[1]+dy]); }
+  c.unshift([0,f[0],f[1]]); c.sort(function(p,q){ return p[0]-q[0]; });
+  var a=null; for(var i=0;i<c.length;i++){ var bx=c[i][1], by=c[i][2]; if(ctFree(bx-Wf/2,by-Hf,bx+Wf/2,by,lb)){ a=[bx,by]; break; } }
+  MEKR={k:k,a:a||f}; return MEKR.a; }
 function meDraw(){ try{ nmMe(); }catch(x){} try{ meEdge(); }catch(x){} var e=meEl(); if(!ME.pos){ e.hidden=true; meKrHide(); return; } var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]);
   if(!f||f[0]<0||f[0]>1||f[1]<0||f[1]>1){ e.hidden=true; meKrHide(); return; } e.hidden=false;
   var w=document.getElementById("map").clientWidth, iw=Math.round(w*0.07), kr=!CITY[VIEW]; e.classList.toggle("kr",kr);
-  if(kr){ var as=ASP(), im0=e.querySelector("img"), nw=(im0.complete&&im0.naturalWidth)||93, nh=(im0.complete&&im0.naturalHeight)||160, Hf=0.075, Wf=Hf*nw/nh/as, d=meKrDot(), s=ZM.s;   // 키 = 지도 높이의 7.5% (전국 지도 인물 그림 정도)
-    e.style.left=(f[0]*100)+"%"; e.style.top=(f[1]*100)+"%"; e.style.width=(Wf*w*as)+"px"; e.style.marginTop=(7/s)+"px"; e.style.transform="translate(-50%,0)";   // 그림 윗머리 = 점 바로 아래
-    d.hidden=false; d.style.left=(f[0]*100)+"%"; d.style.top=(f[1]*100)+"%"; d.style.transform="translate(-50%,-50%) scale("+(1/s)+")"; }
-  else { meKrHide(); e.style.marginTop=""; e.style.left=(f[0]*100)+"%"; e.style.top=(f[1]*100)+"%"; e.style.width=iw+"px"; e.style.transform="translate(-50%,-100%) scale("+(1/ZM.s)+")"; }
+  if(kr){ var as=ASP(), im0=e.querySelector("img"), nw=(im0.complete&&im0.naturalWidth)||93, nh=(im0.complete&&im0.naturalHeight)||160, Hf=0.075, Wf=Hf*nw/nh/as, a=meKrSpot(f,Wf,Hf), q=meKrEls(), s=ZM.s;   // 키 = 지도 높이의 7.5% (전국 지도 인물 그림 정도)
+    e.style.left=(a[0]*100)+"%"; e.style.top=(a[1]*100)+"%"; e.style.width=(Wf*w*as)+"px"; e.style.transform="translate(-50%,-100%)";
+    var d=q[0], l=q[1], x1=f[0]*w*as, y1=f[1]*w, x2=a[0]*w*as, y2=a[1]*w, len=Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+    d.hidden=false; d.style.left=(f[0]*100)+"%"; d.style.top=(f[1]*100)+"%"; d.style.transform="translate(-50%,-50%) scale("+(1/s)+")";
+    l.hidden=len<1; l.style.left=x1+"px"; l.style.top=y1+"px"; l.style.width=len+"px"; l.style.height=(2.5/s)+"px"; l.style.marginTop=(-1.25/s)+"px"; l.style.transform="rotate("+Math.atan2(y2-y1,x2-x1)+"rad)"; }
+  else { meKrHide(); e.style.left=(f[0]*100)+"%"; e.style.top=(f[1]*100)+"%"; e.style.width=iw+"px"; e.style.transform="translate(-50%,-100%) scale("+(1/ZM.s)+")"; }
   var im=e.querySelector("img"), src="img/me/"+ME.pose+".png"; if(im.getAttribute("src")!==src) im.src=src; e.classList.toggle("sel",ME.sel); e.classList.toggle("nono",ME.pose==="nono"); e.querySelector(".bub").textContent=T("반대 방향이에요 ✕","Wrong way ✕");
   e.title=T("나","Me"); }
 function mePose(p,ms){ var near=ME.pos&&kmLL(ME.pos,ICN)<3; clearTimeout(ME.pT); ME.pose=p||"me";
@@ -1040,6 +1051,6 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1016cart"></script>
 <script src="gift.js?v=1016e"></script>
-<script src="near.js?v=1016m"></script>
+<script src="near.js?v=1016n"></script>
 </body>
 </html>
