@@ -93,7 +93,7 @@ html,body{overflow-x:hidden}
 .zb{position:absolute;right:10px;bottom:10px;z-index:3;display:none!important;flex-direction:column;align-items:flex-end;gap:6px}   /* ＋ − ⟲ 단추 숨김 — 손가락 벌리기·휠로 대신 (사장님 10-16) */
 /* ◎ 현재 위치 — 지도 왼쪽 아래 (사장님 10-15). © OpenStreetMap·네이버 로고/저작권 줄 바로 위에 얹어 그것들을 가리지 않는다 */
 #zme{position:absolute;left:8px;bottom:26px;z-index:4;height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:800;white-space:nowrap;color:#1a73e8;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);line-height:1}
-#map.onkr #zme{left:auto;right:8px;bottom:8px;height:15px;padding:0 6px;font-size:6.5px;box-shadow:0 1px 4px rgba(0,0,0,.18)}   /* 전국 지도에서만 오른쪽 아래·절반 크기 (사장님 10-16) */
+#map.onkr #zme{left:auto;right:8px;bottom:8px;height:21px;padding:0 8px;font-size:9px;box-shadow:0 1px 5px rgba(0,0,0,.18)}   /* 전국 지도에서만 오른쪽 아래·원래의 70% 크기 (사장님 10-16) */
 @keyframes meShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px) rotate(-4deg)}40%,80%{transform:translateX(5px) rotate(4deg)}}
 #me.nono img{animation:meShake .5s ease-in-out 3}
 .nmnono img{animation:meShake2 .5s ease-in-out 3}@keyframes meShake2{0%,100%{transform:translateX(-50%)}20%,60%{transform:translateX(calc(-50% - 5px)) rotate(-4deg)}40%,80%{transform:translateX(calc(-50% + 5px)) rotate(4deg)}}
