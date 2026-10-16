@@ -72,12 +72,11 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
 .sbox input:focus{border-color:#2b8a3e;box-shadow:0 0 0 4px rgba(47,158,68,.18)}
 .sbox button{border:0;background:var(--green);color:#fff;font-weight:800;font-size:17px;border-radius:999px;padding:12px 34px;cursor:pointer}
 /* 검색 단추 + 칩 3개(gift.js·near.js 가 붙임)를 한 줄에 하나씩, 같은 너비·같은 간격 (사장님 10-16) */
-/* 검색 단추 + 칩을 한 줄로 — 숙소·편의시설·선물 고르기·긴급 (사장님 10-16 지도 키우기) */
-.sbox{flex-direction:row;flex-wrap:wrap;justify-content:center;column-gap:5px;row-gap:8px}
-.sbox .qw{order:-2}.sbox .desc{order:-1;width:100%;margin:0 4px}
+/* 폰 세로 = 검색 단추·칩 4개를 한 줄에 하나씩 같은 너비로 · 가로·PC = 아래 @media 에서 한 줄로 (사장님 10-16) */
+.sbox .qw{order:-2}.sbox .desc{order:-1}
 .sbox #gfchips{display:contents!important}
-.sbox #gob,.sbox #gfchips>button{width:auto!important;box-sizing:border-box;text-align:center;margin:0!important;white-space:nowrap;font-size:13px!important;padding:7px 10px!important;line-height:1.2}
-.sbox #gob{order:0;padding:7px 16px!important;font-size:14px!important}
+.sbox #gob,.sbox #gfchips>button{width:min(260px,70%)!important;box-sizing:border-box;text-align:center;margin:0!important;white-space:nowrap}
+.sbox #gob{order:0}
 .sbox #gfchips>.nrchip.st{order:1}.sbox #gfchips>.nrchip:not(.st):not(.em){order:2}.sbox #gfchips>.gfchip{order:3}.sbox #gfchips>.nrchip.em{order:4}
 .map{margin:18px 0 0;border-radius:18px;overflow:hidden;background:#96b2c4;box-shadow:0 2px 14px rgba(0,0,0,.08)}
 /* 지도는 화면 폭 거의 전부 × 화면 높이 거의 전부(제목줄·칩 줄만 남김) — 정사각형 아님. 높이 --MH 는 mapFit() 이 잰다 (사장님 10-16) */
@@ -86,12 +85,13 @@ html,body{overflow-x:hidden;overscroll-behavior:none}   /* 지도 위 끌기 = �
 /* 가로 화면(폰 눕힘)·넓은 PC — 제목줄·검색칸·칩을 얇게 한 줄로, 지도에 높이를 몰아준다 */
 @media (orientation:landscape) and (max-height:560px),(min-width:900px) and (min-height:561px){
   .wrap{padding-top:8px}.top{margin:2px 0 8px}
-  .sbox{flex-wrap:nowrap;align-items:center}.sbox .desc{display:none}
+  .sbox{flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:center;column-gap:5px}.sbox .desc{display:none}
+  .sbox #gob,.sbox #gfchips>button{width:auto!important;font-size:13px!important;padding:7px 10px!important;line-height:1.2}.sbox #gob{padding:7px 16px!important;font-size:14px!important}
   .sbox .qw{flex:1 1 200px;min-width:140px}.sbox input{font-size:15px;padding:9px 16px}.sbox .qw input{padding-right:44px}
   .sbox #qx{width:24px;height:24px;line-height:24px;font-size:12px;right:9px}
   .map{margin-top:10px}
 }
-@media (orientation:landscape) and (max-height:560px){ .wrap{padding:6px 12px}.top{margin:0 0 6px}.logo{font-size:17px}.logo img{height:26px}.tbs .tb{font-size:12px;padding:5px 8px} }
+@media (orientation:landscape) and (max-height:560px){ .map{--W:calc(100vw - 112px)}   /* 가로 화면: 지도 양옆 손잡이(지도 밖 = 화면 넘김) */ .wrap{padding:6px 12px}.top{margin:0 0 6px}.logo{font-size:17px}.logo img{height:26px}.tbs .tb{font-size:12px;padding:5px 8px} }
 .map{position:relative}.map img{display:block;width:100%;height:auto}
 .map{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.map img{-webkit-user-drag:none;pointer-events:none}
 #dl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -693,7 +693,7 @@ function zCan(){ var m=document.getElementById("map"), w=m.clientWidth, h=MH(); 
 var _mf={w:0,h:0};
 function mapFit(force){ var m=document.getElementById("map"), sb=document.querySelector(".sbox"); if(!m||!sb) return;
   var vw=document.documentElement.clientWidth, vh=window.innerHeight; if(!force&&_mf.w===vw&&Math.abs(_mf.h-vh)<120) return; _mf={w:vw,h:vh};
-  var top=sb.getBoundingClientRect().bottom+window.scrollY+(parseFloat(getComputedStyle(m).marginTop)||0)+4, h=Math.round(Math.max(vh*0.6,vh-top-10));
+  var top=sb.getBoundingClientRect().bottom+window.scrollY+(parseFloat(getComputedStyle(m).marginTop)||0)+4, h=Math.round(Math.max(vh*0.6,vh-top-10)); if(window.matchMedia&&matchMedia("(orientation:landscape) and (max-height:560px)").matches) h=Math.round(vh*1.4);   // 폰 가로 = 지도를 아래로 길게 (화면 높이의 1.4배, 사장님 10-16)
   m.style.setProperty("--MH",h+"px"); }
 var _zr={w:0,h:0};
 function zResize(e){ mapFit(e===true); var m=document.getElementById("map"), w=m.clientWidth, h=MH();
@@ -1001,8 +1001,37 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
   myPos().then(function(p){ if(!p) return; meSet(p); meWatch(); if(VIEW==="kr"&&!DET) meGo(); });   // 앱을 열면 위치 한 번 — 못 받으면 지금처럼 전국 지도
   }).catch(function(e){ try{ console.error(e); }catch(x){} });
 </script>
+<script>
+/* 뒤로가기(안드로이드 가장자리 제스처) = 열린 창·카드·약도만 한 단계 닫기 · 전국 지도에선 「한 번 더 누르면 종료」 2초 (사장님 10-16)
+   history 에는 지킴 칸 하나만 둔다 — 창마다 쌓지 않으니 ✕·닫기 단추와 엉키지 않는다 */
+(function(){ var exitT=null, tst=null;
+  function guard(){ try{ if(!(history.state&&history.state.nvg)) history.pushState({nvg:1},""); }catch(e){} }
+  function vis(e){ return e&&!e.hidden&&e.offsetParent!==null||(e&&!e.hidden&&getComputedStyle(e).position==="fixed"&&getComputedStyle(e).display!=="none"); }
+  function backClose(){
+    var c=[].slice.call(document.querySelectorAll("#infopop,.trpop,#nrBk,#inqBox,#shBox,.trsheet,#gfBox,#nrBox")).filter(vis);
+    if(c.length){ c.sort(function(a,b){ return (parseInt(getComputedStyle(a).zIndex)||0)-(parseInt(getComputedStyle(b).zIndex)||0); }); var o=c[c.length-1];
+      if(o.id==="shBox"){ o.hidden=true; return true; }
+      if(o.classList.contains("trsheet")){ if(window.TRIP&&TRIP.close) TRIP.close(o.id); else o.remove(); return true; }
+      o.remove(); if(o.id==="gfBox") document.documentElement.classList.remove("gflock"); if(o.id==="nrBox") document.documentElement.classList.remove("nrlock"); return true; }
+    var mm=document.getElementById("mm"); if(mm&&!mm.hidden){ mm.hidden=true; return true; }
+    var r=document.getElementById("res"); if(r&&r.firstElementChild){ resClear(); return true; }
+    if(window.DET){ detSet(false); return true; }
+    if(typeof VIEW==="string"&&VIEW!=="kr"){ viewSet((CITY[VIEW]&&CITY[VIEW].parent)||"kr"); return true; }
+    return false; }
+  function toast(on){ if(!tst){ tst=document.createElement("div"); tst.id="nvExit"; tst.style.cssText="position:fixed;left:50%;bottom:32px;transform:translateX(-50%);z-index:2000;background:rgba(20,24,32,.88);color:#fff;font-size:14px;font-weight:700;padding:10px 18px;border-radius:999px;white-space:nowrap;pointer-events:none"; document.body.appendChild(tst); }
+    tst.textContent=T("한 번 더 누르면 종료됩니다","Press back again to exit"); tst.hidden=!on; }
+  try{ var st=history.state; if(st&&st.nvg) history.replaceState(null,""); }catch(e){}   // 새로고침 뒤 지킴 칸 위에서 시작하면 바닥으로
+  guard();
+  ["pointerdown","keydown","touchstart"].forEach(function(t){ document.addEventListener(t,function(){ if(!exitT) guard(); },{capture:true,passive:true}); });   // 손을 댄 뒤 다시 깐다(크롬은 손 안 댄 칸을 건너뛴다)
+  window.addEventListener("popstate",function(e){ if(e.state&&e.state.nvg) return;
+    if(exitT){ clearTimeout(exitT); exitT=null; toast(false); return; }
+    var done=false; try{ done=backClose(); }catch(x){}
+    if(done){ guard(); return; }
+    toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
+})();
+</script>
 <script src="trip.js?v=1016cart"></script>
 <script src="gift.js?v=1016e"></script>
-<script src="near.js?v=1016h"></script>
+<script src="near.js?v=1016i"></script>
 </body>
 </html>
