@@ -11,7 +11,7 @@
 (function(){
 "use strict";
 var KINDS={
-  am:{e:"amenity", t:["🏪 편의시설","🏪 Convenience"], tabs:[{c:"CS2",ko:"편의점",en:"Convenience store",i:"🏪",r:1000},{c:"MT1",ko:"마트",en:"Mart",i:"🛒",r:5000},{c:"FX",ko:"환전소",en:"Currency Exchange",i:"",r:2000}]},   // 편의시설은 풀다운 하나 (10-16) · 환전소 = 허브 키워드 검색, 은행 뺌
+  am:{e:"amenity", t:["🏪 편의시설","🏪 Convenience"], tabs:[{c:"CS2",ko:"편의점",en:"Convenience store",i:"🏪",r:1000},{c:"MT1",ko:"마트",en:"Mart",i:"🛒",r:5000},{c:"FX",ko:"환전소",en:"Currency Exchange",i:"",r:2000},{c:"EMB",ko:"대사관",en:"Embassies",i:"",fixed:1}]},   // 편의시설은 풀다운 하나 (10-16) · 환전소 = 허브 키워드 검색, 은행 뺌
   em:{e:"emergency", t:["🚑 긴급","🚑 Emergency"], tabs:[{c:"HP8",ko:"병원",en:"Hospital",i:"🏥",r:2000},{c:"PM9",ko:"약국",en:"Pharmacy",i:"💊",r:2000}]},
   // 숙소 (사장님 10-16) — 카카오 숙박(AD5)을 허브가 종류로 나눔 + 관광공사 관광정보에 실린 숙소는 kto=1 (「관광공사」 표시)
   st:{e:"stay", t:["🏨 숙소","🏨 Stay"], tabs:[{c:"AD5",kind:"hotel",ko:"호텔",en:"Hotel",i:"🏨",r:3000},{c:"AD5",kind:"motel",ko:"모텔",en:"Motel",i:"🛏",r:3000},{c:"AD5",kind:"gh",ko:"게스트하우스",en:"Guesthouse",i:"🎒",r:3000},{c:"AD5",kind:"hanok",ko:"한옥스테이",en:"Hanok stay",i:"🏯",r:3000}]}
@@ -19,6 +19,48 @@ var KINDS={
 // 칩 글자 (아이콘 없이, 사장님 10-16) · ⋮ 메뉴 글자
 var CHIP={am:["편의시설","Convenience"],em:["긴급","Emergency"],st:["숙소","Stay"]};
 var MENU={am:["🏪 편의시설 (편의점·마트)","🏪 Convenience (stores · marts)"],em:["🚑 긴급 (병원·약국)","🚑 Emergency (hospital · pharmacy)"],st:["🏨 숙소 (호텔·모텔·게스트하우스·한옥)","🏨 Stay (hotel · motel · guesthouse · hanok)"]};
+// 대사관 (사장님 10-16) — 고정 목록 37곳(G20·동남아·고용허가제 송출국). 나라 영문 이름 알파벳 순(거리로 줄 세우지 않음)
+//  이름·주소·전화: 외교부 「주한공관주소록」 국문·영문판(mofa.go.kr inKoEmblgbdAdres, 2026-10-16 읽음) · 전화는 첫 번호만
+//  좌표: 허브 /kplace 카카오 「<나라> 대사관」 자리(전화 또는 외교부 주소 검색 자리와 맞춘 것). 몽골은 카카오 자리와 외교부 주소가 580m 어긋나 좌표 비움(주소로 지도 검색)
+var EMB=[
+{"e":"Argentina","f":"AR","k":"아르헨티나","n":"주한 아르헨티나 대사관","ne":"Embassy of Argentina","a":"서울특별시 용산구 녹사평대로 206 천우빌딩 5층","ae":"5F, Chunwoo Bldg., 206, Noksapyeong-daero, Yongsan-gu, Seoul","t":"02-796-8144","y":37.536157,"x":126.987504},
+{"e":"Australia","f":"AU","k":"호주","n":"주한 호주 대사관","ne":"Embassy of Australia","a":"서울특별시 종로구 종로1, 교보빌딩 19층","ae":"19F, Kyobo Bldg., Jong-ro 1, Jongno-gu, Seoul","t":"02-2003-0100","y":37.571331,"x":126.977895},
+{"e":"Bangladesh","f":"BD","k":"방글라데시","n":"주한 방글라데시 대사관","ne":"Embassy of Bangladesh","a":"서울특별시 용산구 장문로6길 17","ae":"17, Jangmun-ro 6-gil, Yongsan-gu, Seoul","t":"02-796-4056","y":37.527723,"x":126.993042},
+{"e":"Brazil","f":"BR","k":"브라질","n":"주한 브라질 대사관","ne":"Embassy of Brazil","a":"서울특별시 종로구 청와대로 73","ae":"73, Cheongwa-daero, Jongno-gu, Seoul","t":"02-738-4970","y":37.58157,"x":126.980428},
+{"e":"Brunei","f":"BN","k":"브루나이","n":"주한 브루나이 대사관","ne":"Embassy of Brunei Darussalam","a":"서울특별시 종로구 자하문로 133","ae":"133, Jahamun-ro, Jongno-gu, Seoul","t":"02-790-1078","y":37.587846,"x":126.969117},
+{"e":"Cambodia","f":"KH","k":"캄보디아","n":"주한 캄보디아 대사관","ne":"Embassy of Cambodia","a":"서울특별시 중구 세종대로 55, 부영태평빌딩 14층","ae":"14F. Booyoung Taepyeong Bldg, Sejongdaero 55, Jung-gu, Seoul","t":"02-3785-1041","y":37.561618,"x":126.974978},
+{"e":"Canada","f":"CA","k":"캐나다","n":"주한 캐나다 대사관","ne":"Embassy of Canada","a":"서울특별시 중구 정동길 21","ae":"21, Jeongdong-gil, Jung-gu, Seoul","t":"02-3783-6000","y":37.566922,"x":126.970842},
+{"e":"China","f":"CN","k":"중국","n":"주한 중국 대사관","ne":"Embassy of the People's Republic of China","a":"서울특별시 중구 명동2길 27","ae":"27, Myeongdong 2-gil, Jung-gu, Seoul","t":"02-771-9020","y":37.563068,"x":126.983011},
+{"e":"European Union","f":"EU","k":"유럽연합","n":"주한 유럽연합 대표부","ne":"Delegation of the European Union to the Republic of Korea","a":"서울특별시 중구 한강대로 416 서울스퀘어 11층","ae":"11F, Seoul Square, 416 Hangang-daero, Jung-gu, Seoul","t":"02-3704-1701","y":37.555505,"x":126.973753},
+{"e":"France","f":"FR","k":"프랑스","n":"주한 프랑스 대사관","ne":"Embassy of France","a":"서울특별시 서대문구 서소문로 43-12","ae":"43-12, Seosomun-ro, Seodaemun-gu, Seoul","t":"02-3149-4300","y":37.56128,"x":126.965004},
+{"e":"Germany","f":"DE","k":"독일","n":"주한 독일 대사관","ne":"Embassy of Germany","a":"서울특별시 중구 한강대로 416 서울스퀘어 8층","ae":"8F, Seoul Square, 416, Hangang-daero, Jung-gu, Seoul","t":"02-748-4114","y":37.555209,"x":126.973982},
+{"e":"India","f":"IN","k":"인도","n":"주한 인도 대사관","ne":"Embassy of India","a":"서울특별시 용산구 독서당로 101","ae":"101, Dokseodang-ro, Yongsan-gu, Seoul","t":"02-798-4257","y":37.535534,"x":127.011077},
+{"e":"Indonesia","f":"ID","k":"인도네시아","n":"주한 인도네시아 대사관","ne":"Embassy of Indonesia","a":"서울특별시 영등포구 여의대방로 380","ae":"380, Yeouidaebang-ro, Yeongdeungpo-gu, Seoul","t":"02-2224-9000","y":37.518626,"x":126.931695},
+{"e":"Italy","f":"IT","k":"이탈리아","n":"주한 이탈리아 대사관","ne":"Embassy of Italy","a":"서울특별시 용산구 한남대로 98 일신빌딩 3층","ae":"3F, Ilshin Building, 98 Hannamdae-ro, Yongsan-gu, Seoul","t":"02-750-0200","y":37.537434,"x":127.005236},
+{"e":"Japan","f":"JP","k":"일본","n":"주한 일본 대사관","ne":"Embassy of Japan","a":"서울특별시 종로구 율곡로 6 트윈트리타워 A동 8층","ae":"8F, Twin Tree Tower A, 6, Yulgok-ro, Jongno-gu, Seoul","t":"02-2170-5200","y":37.575447,"x":126.979771},
+{"e":"Kyrgyzstan","f":"KG","k":"키르기스스탄","n":"주한 키르기스스탄 대사관","ne":"Embassy of the Kyrgyz Republic","a":"서울특별시 종로구 자하문로 125-12","ae":"125-12, Jahamun-ro, Jongno-gu, Seoul","t":"02-379-0951","y":37.58726,"x":126.968706},
+{"e":"Laos","f":"LA","k":"라오스","n":"주한 라오스 대사관","ne":"Embassy of the Lao PDR","a":"서울특별시 용산구 대사관로11길 30-4","ae":"30-4, Daesagwan-ro 11-gil, Yongsan-gu, Seoul","t":"02-796-1713","y":37.534915,"x":127.002046},
+{"e":"Malaysia","f":"MY","k":"말레이시아","n":"주한 말레이시아 대사관","ne":"Embassy of Malaysia","a":"서울특별시 용산구 독서당로 129","ae":"129, Dokseodang-ro, Yongsan-gu, Seoul","t":"02-2077-8600","y":37.537858,"x":127.01217},
+{"e":"Mexico","f":"MX","k":"멕시코","n":"주한 멕시코 대사관","ne":"Embassy of Mexico","a":"서울특별시 종로구 율곡로 6, 트윈트리타워 B동 17층","ae":"17F, Twin Tree Tower B, 6, Yulgok-ro, Jongno-gu, Seoul","t":"02-6111-1600","y":37.575483,"x":126.980502},
+{"e":"Mongolia","f":"MN","k":"몽골","n":"주한 몽골 대사관","ne":"Embassy of Mongolia","a":"서울특별시 용산구 대사관로34길 41","ae":"41, Daesagwan-ro 34-gil, Yongsan-gu, Seoul","t":"02-798-3464"},
+{"e":"Myanmar","f":"MM","k":"미얀마","n":"주한 미얀마 대사관","ne":"Embassy of Myanmar","a":"서울특별시 용산구 한남대로28길 12","ae":"12, Hannam-daero 28-gil, Yongsan-gu, Seoul","t":"02-790-3814","y":37.538234,"x":127.005286},
+{"e":"Nepal","f":"NP","k":"네팔","n":"주한 네팔 대사관","ne":"Embassy of Nepal","a":"서울특별시 성북구 선잠로2길 19","ae":"19, Seonjam-ro 2-gil, Seongbuk-gu, Seoul","t":"02-3789-9770","y":37.595433,"x":126.99906},
+{"e":"Pakistan","f":"PK","k":"파키스탄","n":"주한 파키스탄 대사관","ne":"Embassy of Pakistan","a":"서울특별시 강남구 도산대로 169","ae":"169, Dosan-daero, Gangnam-gu, Seoul","t":"02-796-8252","y":37.519593,"x":127.026877},
+{"e":"Philippines","f":"PH","k":"필리핀","n":"주한 필리핀 대사관","ne":"Embassy of the Philippines","a":"서울특별시 용산구 회나무로 80","ae":"80, Hoenamu-ro, Yongsan-gu, Seoul","t":"02-788-2100","y":37.540609,"x":126.995397},
+{"e":"Russia","f":"RU","k":"러시아","n":"주한 러시아 대사관","ne":"Embassy of the Russian Federation","a":"서울특별시 중구 서소문로11길 43","ae":"43, Seosomun-ro 11gil, Jung-gu, Seoul","t":"02-318-2116","y":37.56503,"x":126.971895},
+{"e":"Saudi Arabia","f":"SA","k":"사우디아라비아","n":"주한 사우디아라비아 대사관","ne":"Embassy of Saudi Arabia","a":"서울특별시 용산구 녹사평대로26길 37","ae":"37, Noksapyeong-daero 26-gil, Yongsan-gu, Seoul","t":"02-2022-7400","y":37.531681,"x":126.99166},
+{"e":"Singapore","f":"SG","k":"싱가포르","n":"주한 싱가포르 대사관","ne":"Embassy of Singapore","a":"서울특별시 중구 세종대로 136 서울파이낸스센터 28층","ae":"28F, Seoul Finance Center, 136, Sejong-daero, Jung-gu, Seoul","t":"02-774-2464","y":37.568509,"x":126.978312},
+{"e":"South Africa","f":"ZA","k":"남아공","n":"주한 남아프리카공화국 대사관","ne":"Embassy of the Republic of South Africa","a":"서울특별시 용산구 독서당로 104","ae":"104, Dokseodang-ro, Yongsan-gu, Seoul","t":"02-2077-5900","y":37.53566,"x":127.011622},
+{"e":"Sri Lanka","f":"LK","k":"스리랑카","n":"주한 스리랑카 대사관","ne":"Embassy of Sri Lanka","a":"서울특별시 중구 동호로10길 39","ae":"39, Dongho-ro 10-gil, Jung-gu, Seoul","t":"02-735-2966","y":37.555637,"x":127.012309},
+{"e":"Tajikistan","f":"TJ","k":"타지키스탄","n":"주한 타지키스탄 대사관","ne":"Embassy of Tajikistan","a":"서울특별시 용산구 유엔빌리지길 37","ae":"37, UN village-gil, Yongsan-gu, Seoul","t":"02-792-2535","y":37.53348,"x":127.010861},
+{"e":"Thailand","f":"TH","k":"태국","n":"주한 태국 대사관","ne":"Embassy of Thailand","a":"서울특별시 용산구 대사관로 42","ae":"42, Daesagwan-ro, Yongsan-gu, Seoul","t":"02-795-0095","y":37.533397,"x":127.002851},
+{"e":"Timor-Leste","f":"TL","k":"동티모르","n":"주한 동티모르 대사관","ne":"Embassy of Timor-Leste","a":"서울특별시 마포구 성미산로10길 26","ae":"26, Seongmisan-ro 10-gil, Mapo-gu, Seoul","t":"02-797-6151","y":37.558308,"x":126.915219},
+{"e":"Türkiye","f":"TR","k":"튀르키예","n":"주한 튀르키예 대사관","ne":"Embassy of Türkiye","a":"서울특별시 중구 동호로20나길 40, 해동빌딩","ae":"Haedong bldg., 40, Dongho-ro 20na-gil, Jung-gu, Seoul","t":"02-3780-1600","y":37.560222,"x":127.006893},
+{"e":"United Kingdom","f":"GB","k":"영국","n":"주한 영국 대사관","ne":"Embassy of the United Kingdom","a":"서울특별시 중구 세종대로 19길 24","ae":"24, Sejong-daero 19-gil, Jung-gu, Seoul","t":"02-3210-5500","y":37.566905,"x":126.975075},
+{"e":"USA","f":"US","k":"미국","n":"주한 미국 대사관","ne":"Embassy of the United States of America","a":"서울특별시 종로구 세종대로 188","ae":"188 Sejong-daero, Jongno-gu, Seoul","t":"02-397-4114","y":37.573198,"x":126.977831},
+{"e":"Uzbekistan","f":"UZ","k":"우즈베키스탄","n":"주한 우즈베키스탄 대사관","ne":"Embassy of Uzbekistan","a":"서울특별시 종로구 돈화문로11가길 99","ae":"99 Donhwamun-ro 11ga-gil, Jongno-gu, Seoul","t":"02-574-6554","y":37.576902,"x":126.989785},
+{"e":"Vietnam","f":"VN","k":"베트남","n":"주한 베트남 대사관","ne":"Embassy of Viet Nam","a":"서울특별시 종로구 북촌로 123","ae":"123, Bukchon-ro, Jongno-gu, Seoul","t":"02-720-5124","y":37.586494,"x":126.983936}
+];
 var S={k:"",tab:0,base:null,src:"",items:null,err:""}, CACHE={}, PICK=null;
 function L(){ return window.LANG==="en"; }
 // 빨간·파란 단추 안 전화기 — 흰 선 그림(글자색 그대로, 사장님 10-16: 이모지는 분홍빛이라)
@@ -52,6 +94,8 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +"#nrBk button{width:100%;border:0;background:none;color:var(--sub);font-size:14px;padding:10px;cursor:pointer}"
   +".nrrank{display:inline-block;min-width:20px;height:20px;line-height:20px;border-radius:50%;background:#1971c2;color:#fff;font-size:12px;text-align:center;vertical-align:1px}.nrem .nrrank{background:#e03131}"
   +".nrsel{display:block;width:100%;margin:0 0 8px;border:1.5px solid #1971c2;background:#e7f5ff;color:#1864ab;border-radius:12px;padding:10px 12px;font-size:16px;font-weight:800;cursor:pointer;min-height:44px}"
+  +".nremb{cursor:default}.nremb .c{color:#1864ab;font-size:12.5px;font-weight:900;margin-bottom:2px}.nremb .lks{margin-top:8px}"
+  +".nremb .lks a{display:inline-block;margin:0 6px 6px 0;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700;color:var(--ink);background:#f8fafc}"
   +".nrph{display:inline-block;width:1em;height:1em;vertical-align:-0.14em;margin-right:5px;color:inherit}"
   +".nrbig,.item a.nrbig{display:block!important;text-align:center;background:#e03131!important;color:#fff!important;border:0!important;border-radius:12px!important;padding:12px 8px!important;font-size:18px!important;font-weight:900!important;text-decoration:none;margin:4px 0 10px!important}";
   document.head.appendChild(s); }
@@ -73,7 +117,10 @@ function fetchKind(t,p){ var en=L()?"&lang=en":"", key=t.c+(t.kind||"")+"|"+p[0]
   var one=function(r){ return fetch(HUB+"/kplace?cat="+t.c+"&x="+p[1].toFixed(5)+"&y="+p[0].toFixed(5)+"&radius="+r+en).then(function(x){ return x.json(); }); };
   return CACHE[key]=one(t.r).then(function(j){ if(j&&j.ok&&cnt(j)>=need) return j; return one(10000); }).then(function(j){
     if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); return (j.items||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }); },function(e){ delete CACHE[key]; throw e; }).catch(function(e){ delete CACHE[key]; throw e; }); }
-function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; paint();
+function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err="";
+  if(t.fixed){ var mp=ME.pos||null; S.base=null; S.src="";   // 대사관: 고정 목록 · 위치를 묻지 않는다 · 「나」 위치가 있으면 거리만 (폰 안에서 계산)
+    S.items=EMB.map(function(x){ var o=Object.assign({},x); o.dist=(mp&&x.y)?Math.round(kmLL(mp,[x.y,x.x])*1000):null; return o; }); paint(); return; }
+  paint();
   var my=S.k+S.tab+(L()?"en":"ko");
   pickBase(false).then(function(b){ if(!b){ S.base=null; S.err="loc"; paint(); return; }
     S.base=b.p; S.src=b.src; paint();
@@ -95,6 +142,17 @@ function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=en?x.name_en:x.name, ad=en?
   return '<div class="nrit" data-nr="pick" data-i="'+i+'"><div class="h"><span class="nrrank">'+(i+1)+'</span><b>'+esc(nm)+(x.kto?'<span class="nrkto" title="'+T("한국관광공사 관광정보에 실린 숙소","Listed by the Korea Tourism Organization")+'">'+T("관광공사","KTO")+'</span>':'')+'</b><i>'+km(x.dist)+'</i></div>'
     +(en?'<div class="ko">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div>'
     +'<div class="row">'+tel+'<span class="go">'+T("지도에 핀","Pin on map")+' ›</span></div></div>'; }
+// 국기 = 나라 두 글자 → 지역 표시 글자 둘 (사장님 10-16: 이모지 금지의 예외, 국기만). 윈도우 PC 크롬은 글자(US)로 보일 수 있다
+function flag(c){ if(!c||c.length!==2) return ""; try{ return String.fromCodePoint(0x1F1E6+c.charCodeAt(0)-65,0x1F1E6+c.charCodeAt(1)-65)+" "; }catch(e){ return ""; } }
+// 대사관 한 줄: 「영문 나라 · 한글 나라」 / 대사관 이름 / 주소 / 전화(흰 전화기 단추) / 길찾기(linksTo)
+function embHtml(x){ var en=L(), tel="", lk;
+  if(x.t){ var shown=en?(/^0/.test(x.t)?"+82 "+x.t.slice(1):"+82 "+x.t):x.t; tel='<a class="nrcall am" href="tel:'+esc(telIntl(x.t))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>'; }
+  if(x.y) lk=linksTo(x.n,x.y,x.x,x.n,x.a);
+  else { var q=encodeURIComponent(x.a), A=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };   // 좌표 없는 곳은 주소로 지도 검색
+    lk=en?A("https://www.google.com/maps/search/?api=1&hl=en&query="+q,"Google Maps (English)")+A("https://map.naver.com/p/search/"+q,"Naver Map"):A("https://map.kakao.com/?q="+q,"카카오맵")+A("https://map.naver.com/p/search/"+q,"네이버 지도")+A("https://www.google.com/maps/search/?api=1&query="+q,"구글 지도"); }
+  return '<div class="nrit nremb"><div class="c">'+flag(x.f)+esc(x.e)+' · '+esc(x.k)+'</div><div class="h"><b>'+esc(en?x.ne:x.n)+'</b>'+(x.dist!=null?'<i>'+km(x.dist)+'</i>':'')+'</div>'
+    +(en?'<div class="ko">'+esc(x.n)+'</div>':'')+'<div class="d">'+esc(en?(x.ae||x.a):x.a)+'</div>'
+    +(tel?'<div class="row">'+tel+'</div>':'')+'<div class="lks">'+lk+'</div></div>'; }
 function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) return; var k=KINDS[S.k], em=S.k==="em";
   b.className="nrin"+(em?" nrem":"")+(S.k==="st"?" nrst":"");
   var h='<div class="nrtop"><b>'+T(k.t[0],k.t[1])+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
@@ -103,6 +161,7 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
   else h+='<div class="nrtabs">'+k.tabs.map(function(t,i){ return '<button type="button" class="nrtab'+(i===S.tab?' on':'')+'" data-nr="tab" data-i="'+i+'">'+t.i+' '+esc(L()?t.en:t.ko)+'</button>'; }).join("")+'</div>';
   if(S.err==="loc") h+='<div class="msg">'+T("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요. 또는 지도를 보고 싶은 동네로 옮긴 뒤 다시 눌러 주세요.","Could not get your location — please allow location access, or move the map to the area you want and try again.")+'</div><div class="nrbase"><button type="button" class="nrme" data-nr="me">📍 '+T("내 위치 다시 받기","Try my location again")+'</button></div>';
   else if(S.err) h+='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>';
+  else if(k.tabs[S.tab].fixed&&S.items) h+='<div class="nrbase">'+T("나라 영문 이름 순","Sorted by country name (A–Z)")+'</div>'+S.items.map(embHtml).join("");
   else { if(S.base) h+='<div class="nrbase">'+(S.src==="me"?T("📍 내 위치에서 가까운 순","📍 Nearest to you"):T("🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map"))
       +(S.src!=="me"?' <button type="button" class="nrme" data-nr="me">📍 '+T("내 위치로","Use my location")+'</button>':'')+'</div>';
     if(!S.items) h+='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
