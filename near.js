@@ -18,7 +18,7 @@ var KINDS={
 };
 // 칩 글자 (아이콘 없이, 사장님 10-16) · ⋮ 메뉴 글자
 var CHIP={am:["편의시설","Convenience"],em:["긴급","Emergency"],st:["숙소","Stay"]};
-var MENU={am:["🏪 편의시설 (편의점·마트·환전소)","🏪 Convenience (stores · marts · exchange)"],em:["🚑 긴급 (병원·약국)","🚑 Emergency (hospital · pharmacy)"],st:["🏨 숙소 (호텔·모텔·게스트하우스·한옥)","🏨 Stay (hotel · motel · guesthouse · hanok)"]};
+var MENU={am:["🏪 편의시설 (편의점·마트)","🏪 Convenience (stores · marts)"],em:["🚑 긴급 (병원·약국)","🚑 Emergency (hospital · pharmacy)"],st:["🏨 숙소 (호텔·모텔·게스트하우스·한옥)","🏨 Stay (hotel · motel · guesthouse · hanok)"]};
 var S={k:"",tab:0,base:null,src:"",items:null,err:""}, CACHE={}, PICK=null;
 function L(){ return window.LANG==="en"; }
 // 빨간·파란 단추 안 전화기 — 흰 선 그림(글자색 그대로, 사장님 10-16: 이모지는 분홍빛이라)
@@ -44,7 +44,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".nrcall{display:inline-block;background:#e03131;color:#fff!important;border-radius:10px;padding:8px 16px;font-size:16px;font-weight:900;text-decoration:none}"
   +".nrcall.am{background:#1971c2}"
   +".nrkto{display:inline-block;border:1px solid #2f9e44;color:#2b8a3e;border-radius:6px;font-size:11px;font-weight:900;padding:0 5px;margin-left:5px;vertical-align:2px;white-space:nowrap}"
-  +".nrst .nrtab.on{border-color:#7048e8;background:#f3f0ff;color:#5f3dc4}.nrst .nrrank{background:#7048e8}#gfchips .nrchip.st{border-color:#7048e8;background:#f3f0ff;color:#5f3dc4}.sbox #gfchips>.nrchip.st{order:4}"
+  +".nrst .nrtab.on{border-color:#7048e8;background:#f3f0ff;color:#5f3dc4}.nrst .nrrank{background:#7048e8}#gfchips .nrchip.st{border-color:#7048e8;background:#f3f0ff;color:#5f3dc4}"
   +".nrtabs{flex-wrap:wrap}.nrst .nrtab{flex:1 1 40%}"
   +".nrbook,.item a.nrbook{display:inline-block!important;background:#7048e8!important;color:#fff!important;border:0!important;border-radius:999px!important;padding:7px 16px!important;font-size:14px!important;font-weight:900!important;margin:2px 0 8px!important;cursor:pointer}"
   +"#nrBk{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}#nrBk .in{background:var(--card);color:var(--ink);width:100%;max-width:480px;border-radius:16px 16px 0 0;padding:14px 16px 22px;box-sizing:border-box}"
@@ -59,7 +59,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
 // ── 기준 위치 ──
 function mapCenter(){ try{
     if(window.DET&&window._nm){ var c=_nm.getCenter(); return [c.lat(),c.lng()]; }
-    if(VIEW&&VIEW!=="kr"&&CITY[VIEW]){ var m=document.getElementById("map"), w=m.clientWidth, h=w, as=ASP(), iw=w*as*ZM.s, ih=w*ZM.s; return meGeoInv(VIEW,(w/2-ZM.tx)/iw,(h/2-ZM.ty)/ih); }
+    if(VIEW&&VIEW!=="kr"&&CITY[VIEW]){ var m=document.getElementById("map"), w=m.clientWidth, h=m.clientHeight||w, as=ASP(), iw=w*as*ZM.s, ih=w*ZM.s; return meGeoInv(VIEW,(w/2-ZM.tx)/iw,(h/2-ZM.ty)/ih); }
   }catch(e){} return null; }
 function pickBase(force){
   if(ME.pos&&!force) return Promise.resolve({p:ME.pos,src:"me"});
