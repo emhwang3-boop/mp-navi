@@ -81,7 +81,7 @@ html,body{overflow-x:hidden}
 #dl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 #lod{position:absolute;inset:0;pointer-events:none;z-index:1}#lod>div{position:absolute;pointer-events:auto;cursor:pointer;box-sizing:border-box}
 #lod .lt{background:#808080;color:#fff;font-weight:900;line-height:1;display:flex;align-items:center;white-space:nowrap;border:solid #fff;border-bottom:0;box-shadow:0 0 2px rgba(0,0,0,.35)}
-#mz .cgb{position:absolute;pointer-events:none;box-sizing:border-box;border:solid rgba(64,192,87,.9);background:rgba(64,192,87,.07);z-index:1}
+#lod .lt.ct{border:0}
 #lod .lp{border:solid #fff;background:#fff center/cover no-repeat;box-shadow:0 1px 6px rgba(0,0,0,.4)}
 #mz .mlb{position:absolute;pointer-events:none;white-space:nowrap;background:#fff;color:#c2410c;border:solid #e8590c;border-radius:999px;font-weight:900;line-height:1.3;box-shadow:0 0 2px rgba(0,0,0,.25);z-index:2}
 #mz{position:relative;transform-origin:0 0;will-change:transform}
@@ -683,26 +683,27 @@ function lodEl(id,cls,a){ var e=LOD.el[id]; if(!e){ e=document.createElement("di
 // 이름표·작은 그림은 지도(#mz) 안에 — 지도와 같이 움직이고 같이 커진다 (사장님 10-15 「박스에 붙여라」)
 //   이름표 = 빨간 네모 왼쪽 위 모서리에 붙은 작은 탭(처음 배율에서 아주 작게, 확대하면 읽힘) · 작은 그림 = 그 그림 자리 한가운데
 //   배치는 약도마다 한 번만 정한다 — 배율이 바뀌어도 서로의 자리는 그대로라 겹침도 그대로. 겹치는 것은 숨긴다(큰 네모 먼저)
-// 전국 지도 도시 네모 — 서울·부산·경주 시내에 연한 초록 테두리 (사장님 10-16 「여기를 누르면 뭐가 있구나」). 그림은 그대로, 앱이 지도(#mz) 위에 얹는다
-//   [키, 위도 남, 경도 서, 위도 북, 경도 동, 들어갈 약도 id, 약도가 아직 없을 때 띄울 도시 카드, 이름표 한글, 영어] · 네모 안 그림을 누르면 그림이 먼저, 빈 곳·이름표만 네모
-//   부산·경주 약도(regions 의 busan·gyeongju)가 생기면 카드 대신 그 약도로 바로 들어간다
-var CGB=[["seoul",37.43,126.80,37.70,127.18,"seoulall",null,"서울","Seoul"],["busan",35.04,128.92,35.28,129.22,"busan","city_busan","부산","Busan"],["gyeongju",35.74,129.06,35.94,129.40,"gyeongju","city_gyeongju","경주","Gyeongju"]];
-function cgbBox(t){ var a=meGeoFrac(NAVI_ROOT,t[3],t[2]), b=meGeoFrac(NAVI_ROOT,t[1],t[4]); return a&&b?[a[0],a[1],b[0],b[1]]:null; }
-function cgbDraw(){ var z=document.getElementById("mz"), on=VIEW===NAVI_ROOT&&!DET&&ROOTGEO, w=document.getElementById("map").clientWidth, key=on?LANG+"|"+w:"";
-  if(cgbDraw.k===key) return; cgbDraw.k=key; [].slice.call(z.querySelectorAll(".cgb")).forEach(function(e){ e.remove(); }); if(!on) return;
-  CGB.forEach(function(t){ var r=cgbBox(t); if(!r) return; var e=document.createElement("div"); e.className="cgb"; e.style.left=(r[0]*100)+"%"; e.style.top=(r[1]*100)+"%"; e.style.width=((r[2]-r[0])*100)+"%"; e.style.height=((r[3]-r[1])*100)+"%";
-    e.style.borderWidth=Math.max(1,w*0.0028)+"px"; e.style.borderRadius=(w*0.006)+"px"; z.appendChild(e); }); }
-function cgbAt(cx,cy){ if(VIEW!==NAVI_ROOT||DET||!ROOTGEO) return null; var r=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-r.left)/r.width, fy=(cy-r.top)/r.height;
-  for(var i=0;i<CGB.length;i++){ var b=cgbBox(CGB[i]); if(b&&fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]) return CGB[i][0]; } return null; }
-function cgbGo(id){ var t=CGB.filter(function(q){ return q[0]===id; })[0]; if(!t) return; if(CITY[t[5]]){ ntap(t[5],"open_area"); viewSet(t[5]); } else if(t[6]) placeShow(t[6]); }
-// 도시 이름표 — 빨간 네모 이름표(.lt)와 같은 모양·크기, 초록 네모 왼쪽 위 모서리 윗변에 얹힌 탭
-function ctDraw(L){ var w=document.getElementById("map").clientWidth, key="ct|"+LANG+"|"+w+"|"+(ROOTGEO?1:0); L.style.display="";
+// 전국 지도 도시 이름표 — 서울·부산·경주 (사장님 10-16). 그림은 그대로, 앱이 지도(#lod) 위에 얹는다 — 빨간 네모 이름표(.lt)와 같은 모양·크기
+//   [키, 시청 위도, 경도, 들어갈 약도 id, 약도가 아직 없을 때 띄울 도시 카드, 한글, 영어] · 부산·경주 약도(regions 의 busan·gyeongju)가 생기면 카드 대신 그 약도로 바로 들어간다
+//   자리: 도시의 아래·옆 중 그림(누르기 지도 HG)과 겹치지 않는 가장 가까운 곳. 지도와 같이 커지고 작아지니 확대해도 안 겹친다
+var CT=[["seoul",37.5663,126.9779,"seoulall",null,"서울","Seoul"],["busan",35.1798,129.0750,"busan","city_busan","부산","Busan"],["gyeongju",35.8562,129.2247,"gyeongju","city_gyeongju","경주","Gyeongju"]];
+function ctGo(id){ var t=CT.filter(function(q){ return q[0]===id; })[0]; if(!t) return; if(CITY[t[3]]){ ntap(t[3],"open_area"); viewSet(t[3]); } else if(t[4]) placeShow(t[4]); }
+function ctFree(x0,y0,x1,y1,put){ if(x0<0||y0<0||x1>1||y1>1) return false; var m=1/256;   // 그림 칸에서 한 칸(0.4%) 더 띄운다
+  for(var i=0;i<put.length;i++){ var q=put[i]; if(x0<q[2]&&x1>q[0]&&y0<q[3]&&y1>q[1]) return false; }
+  var gx0=Math.max(0,Math.floor((x0-m)*256)), gx1=Math.min(255,Math.floor((x1+m)*256)), gy0=Math.max(0,Math.floor((y0-m)*256)), gy1=Math.min(255,Math.floor((y1+m)*256));
+  for(var y=gy0;y<=gy1;y++) for(var x=gx0;x<=gx1;x++) if(HG[y*256+x]) return false; return true; }
+function ctDraw(L){ var w=document.getElementById("map").clientWidth, key="ct|"+LANG+"|"+w+"|"+(ROOTGEO?1:0)+"|"+HIT.keys.length; L.style.display="";
   if(LOD.v===key) return; LOD.v=key; L.innerHTML=""; LOD.el={}; if(!ROOTGEO) return;
-  var fs=Math.max(3,w*0.0118), bd=Math.max(0.5,fs*0.12);
-  CGB.forEach(function(t){ var r=cgbBox(t); if(!r) return; var e=document.createElement("div"); e.className="lt"; e.dataset.a=t[5]; e.dataset.c=t[0]; e.textContent=(LANG==="en"?t[8]:t[7])+" ▸";
-    e.style.fontSize=fs+"px"; e.style.height=(fs*2)+"px"; e.style.padding="0 "+(fs*0.7)+"px"; e.style.borderWidth=bd+"px"; e.style.borderRadius=(fs*0.6)+"px "+(fs*0.6)+"px 0 0";
-    e.style.left=(r[0]*100)+"%"; e.style.top=(r[1]*100)+"%"; e.style.transform="translateY(-100%)"; L.appendChild(e); }); }
-function lodDraw(){ try{ cgbDraw(); }catch(e){} var L=document.getElementById("lod"); if(!L) return; var c=CITY[VIEW];
+  var fs=Math.max(3,w*0.0118), bd=Math.max(0.5,fs*0.12), put=[];
+  CT.forEach(function(t){ var f=meGeoFrac(NAVI_ROOT,t[1],t[2]); if(!f) return; var e=document.createElement("div"); e.className="lt ct"; e.dataset.a=t[3]; e.dataset.c=t[0]; e.textContent=t[6];   /* 이름표는 한국어 화면에서도 영어 (사장님 10-16) — 카드는 화면 언어 */
+    e.style.fontSize=fs+"px"; e.style.height=(fs*2)+"px"; e.style.padding="0 "+(fs*0.7)+"px"; e.style.borderRadius=(fs*0.6)+"px"; e.style.visibility="hidden";   /* 도시 이름표는 흰 테두리 없음 (사장님 10-16) */ L.appendChild(e);
+    var tw=e.offsetWidth/w, th=e.offsetHeight/w, gp=0.004, best=null, bd2=9, st=0.002;
+    for(var dy=-th/2;dy<=0.15;dy+=st) for(var dx=-0.15;dx<=0.15;dx+=st){ var x0=f[0]+dx-tw/2, y0=f[1]+gp+dy;   // 윗변이 도시 높이(옆) 또는 그 아래
+      var nx=Math.max(x0,Math.min(f[0],x0+tw))-f[0], ny=Math.max(y0,Math.min(f[1],y0+th))-f[1], d=nx*nx+ny*ny; if(d>=bd2) continue;
+      if(ctFree(x0,y0,x0+tw,y0+th,put)){ bd2=d; best=[x0,y0]; } }
+    if(!best){ e.remove(); return; } put.push([best[0],best[1],best[0]+tw,best[1]+th]);
+    e.style.left=(best[0]*100)+"%"; e.style.top=(best[1]*100)+"%"; e.style.visibility=""; }); }
+function lodDraw(){ var L=document.getElementById("lod"); if(!L) return; var c=CITY[VIEW];
   if(VIEW===NAVI_ROOT&&!DET){ ctDraw(L); return; }
   if(!c||!c.areas||DET){ L.style.display="none"; return; } L.style.display="";
   var w=document.getElementById("map").clientWidth, as=ASP(), W=w*as, H=w, key=VIEW+"|"+LANG+"|"+w+"|"+(c.subs?1:0);
@@ -739,7 +740,7 @@ function lodAuto(){ return; var c=CITY[VIEW]; if(!c||!c.areas||DET||ZM.s<LOD.s0*
 // 미니 그림 — 첫 주소를 못 불러오면(404·캐시) 다음 주소로 (입점 문의 한/영 미니, 2026-10-16)
 function lodBg(e,L){ L=L.filter(function(u,i){ return u&&L.indexOf(u)===i; }); var i=0; var go=function(){ var u=L[i]; if(!u) return; var im=new Image(); im.onload=function(){ e.style.backgroundImage="url('"+u+"')"; }; im.onerror=function(){ i++; go(); }; im.src=u; };
   e.style.backgroundImage="url('"+L[0]+"')"; go(); }
-function lodTap(e){ var t=e.target.closest&&e.target.closest("#lod [data-a]"); if(!t) return false; if(t.dataset.c){ cgbGo(t.dataset.c); return true; }   /* 전국 지도 도시 이름표 */ var a=t.dataset.a, k=t.dataset.k, S=k&&CITY[VIEW].subs&&CITY[VIEW].subs[a]; ntap(a,"open_area");
+function lodTap(e){ var t=e.target.closest&&e.target.closest("#lod [data-a]"); if(!t) return false; if(t.dataset.c){ ctGo(t.dataset.c); return true; }   /* 전국 지도 도시 이름표 */ var a=t.dataset.a, k=t.dataset.k, S=k&&CITY[VIEW].subs&&CITY[VIEW].subs[a]; ntap(a,"open_area");
   if(S){ for(var i=0;i<S.length;i++) if(S[i][0]===k){ var s=S[i]; lodEnter(a,(s[1]+s[3])/2,(s[2]+s[4])/2,1); return true; } }
   viewSet(a); return true; }
 function zAt(cx,cy,ns){ var r=document.getElementById("map").getBoundingClientRect(), px=cx-r.left, py=cy-r.top;
@@ -761,12 +762,12 @@ function hitInit(){ var m=document.getElementById("map"), drag=null, pan=null, m
     var f={button:0,target:e.target,clientX:e.clientX,clientY:e.clientY}; dlLast={t:now,x:e.clientX,y:e.clientY}; dlT=setTimeout(function(){ dlT=null; dlLast=null; mClick(f); },350); },true);
   function mClick(e){ if(DET) return; if(e.button!==0||e.target.closest(".zb")||e.target.closest("#zme")||e.target.closest("#vback")||e.target.closest("#vdet")||e.target.closest("#osm")) return;
     if(e.target.closest("#lod [data-a]")){ if(moved){ moved=false; return; } lodTap(e); return; }
-    if(VIEW!=="kr"){ if(!moved){ var hk=hitAt(e.clientX,e.clientY); if(hk){ var at=cityFor(hk)?0:areaTap(e.clientX,e.clientY); if(at===1){ clearTimeout(_tapT); _tapT=setTimeout(function(){ hitClick(hk); },450); } else if(!at) hitClick(hk); } else areaTap(e.clientX,e.clientY); }   /* 박스 안 그림: 한 번 = 0.45초 뒤 카드(카드가 지도를 밀어 두 번째 누름이 빗나가지 않게) · 두 번 = 그 박스 약도 */ moved=false; return; } if(moved){ moved=false; return; } var hk0=hitAt(e.clientX,e.clientY), cg=hk0?null:cgbAt(e.clientX,e.clientY); if(cg){ cgbGo(cg); return; } hitClick(hk0); }
+    if(VIEW!=="kr"){ if(!moved){ var hk=hitAt(e.clientX,e.clientY); if(hk){ var at=cityFor(hk)?0:areaTap(e.clientX,e.clientY); if(at===1){ clearTimeout(_tapT); _tapT=setTimeout(function(){ hitClick(hk); },450); } else if(!at) hitClick(hk); } else areaTap(e.clientX,e.clientY); }   /* 박스 안 그림: 한 번 = 0.45초 뒤 카드(카드가 지도를 밀어 두 번째 누름이 빗나가지 않게) · 두 번 = 그 박스 약도 */ moved=false; return; } if(moved){ moved=false; return; } hitClick(hitAt(e.clientX,e.clientY)); }
   m.addEventListener("click",mClick);
   m.addEventListener("wheel",function(e){ if(DET) return; e.preventDefault(); zAt(e.clientX,e.clientY,ZM.s*(e.deltaY<0?1.15:1/1.15)); clearTimeout(LOD.wt); LOD.wt=setTimeout(lodAuto,250); },{passive:false});
   m.addEventListener("mousemove",function(e){
 if(DET) return;     if(pan){ var dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math.abs(dx)+Math.abs(dy)>4) moved=true; ZM.tx=pan.tx+dx; ZM.ty=pan.ty+dy; zApply(); m.style.cursor="grabbing"; return; }
-    var k=hitAt(e.clientX,e.clientY)||cgbAt(e.clientX,e.clientY); m.style.cursor=k?"pointer":(ZM.s>1?"grab":"");
+    var k=hitAt(e.clientX,e.clientY); m.style.cursor=k?"pointer":(ZM.s>1?"grab":"");
     if(drag){ dlDraw(drag.p,dlPt(e.clientX,e.clientY),""); } });
   m.addEventListener("contextmenu",function(e){ e.preventDefault(); });
   m.addEventListener("mousedown",function(e){ if(DET) return; if(e.target.closest(".zb")||e.target.closest("#zme")) return;
