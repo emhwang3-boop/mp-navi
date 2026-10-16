@@ -175,8 +175,17 @@ function xlsInq(){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀�
 // ── 이용권·결제 장부 ──
 var LG=null, PRN={"7d":"7일권","15d":"15일권","30d":"30일권"};
 function payLoad(){ var P=$("pane"), td=kday(0);
-  P.innerHTML='<div class="card"><b>이용권·결제 장부</b><div class="row" style="margin-top:8px"><input type="date" id="lf" value="'+td.slice(0,8)+'01"> ~ <input type="date" id="lt" value="'+td+'"><button onclick="ledLoad()">보기</button><button class="g" onclick="xlsLed()">엑셀 받기</button></div><div id="lsum"></div><div class="tw"><table id="ltab"></table></div><div class="tw" style="margin-top:12px"><table id="lrec"></table></div></div>';
+  P.innerHTML='<div class="card"><b>이용권·결제 장부</b><div class="row" style="margin-top:8px"><input type="date" id="lf" value="'+td.slice(0,8)+'01"> ~ <input type="date" id="lt" value="'+td+'"><button onclick="ledLoad()">보기</button><button class="g" onclick="xlsLed()">엑셀 받기</button></div><div id="lsum"></div><div class="tw"><table id="ltab"></table></div><div class="tw" style="margin-top:12px"><table id="lrec"></table></div></div>'
+    +'<div class="card"><b>이용권 손 발급</b><div class="msg">결제 연결 전·환불 대신 등에 씁니다. 이메일을 넣으면 손님에게 이용권 링크 메일이 갑니다(이메일은 저장 안 하고 해시만). 메일이 안 나가면 링크가 여기 나옵니다.</div>'
+    +'<div class="row" style="margin-top:8px"><select id="psD"><option value="7">7일</option><option value="15">15일</option><option value="30">30일</option></select><input id="psE" type="email" placeholder="손님 이메일 (선택)" style="min-width:220px"><select id="psL"><option value="en">영어 메일</option><option value="ko">한글 메일</option></select><label><input type="checkbox" id="psT"> 시험</label><button onclick="passIssue()">발급</button></div><div id="psOut"></div></div>';
   ledLoad(); }
+// 이용권 손 발급 (2026-10-16) — 허브 /npass/admin
+function passIssue(){ var o=$("psOut"); o.innerHTML='<div class="msg">발급 중…</div>';
+  api("/npass/admin",{method:"POST",body:JSON.stringify({days:+$("psD").value,email:$("psE").value.trim(),lang:$("psL").value,test:$("psT").checked})}).then(function(j){
+    if(!j.ok){ o.innerHTML='<div class="msg">실패: '+esc(j.err||"")+'</div>'; return; } var e=j.exp||"";
+    o.innerHTML='<div class="msg">발급됨 · 만료 '+esc(e.slice(0,4)+"-"+e.slice(4,6)+"-"+e.slice(6))+(j.mailed?' · 메일 보냄':'')+'</div>'+(j.link?'<div class="inv">'+esc(j.link)+'</div><div class="row" style="margin-top:6px"><button class="g" id="psCp">복사</button></div>':'');
+    if(j.link) $("psCp").onclick=function(){ try{ navigator.clipboard.writeText(j.link).then(function(){ $("psCp").textContent="복사됨"; }); }catch(x){} };
+  }).catch(function(e){ o.innerHTML='<div class="msg">실패: '+esc(e.message)+'</div>'; }); }
 function ledLoad(){ api("/nledger?from="+$("lf").value+"&to="+$("lt").value).then(function(j){ LG=j; var T=j.total;
   $("lsum").innerHTML='<div class="tiles">'+tile(T.KRW.n+T.USD.n+"건","결제 건수")+tile(won(T.KRW.amt),"원화 합계")+tile(usd(T.USD.amt),"달러 합계")+tile((j.products["7d"]||0)+" / "+(j.products["15d"]||0)+" / "+(j.products["30d"]||0),"7일 / 15일 / 30일권")+'</div>'
     +(j.pg===false?'<div class="msg">결제 연결 전 — 0원</div>':'');
