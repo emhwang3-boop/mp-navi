@@ -40,7 +40,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".nrcall.am{background:#1971c2}"
   +".nrrank{display:inline-block;min-width:20px;height:20px;line-height:20px;border-radius:50%;background:#1971c2;color:#fff;font-size:12px;text-align:center;vertical-align:1px}.nrem .nrrank{background:#e03131}"
   +".nrph{display:inline-block;width:1em;height:1em;vertical-align:-0.14em;margin-right:5px;color:inherit}"
-  +".nrbig{display:block;text-align:center;background:#e03131;color:#fff!important;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:900;text-decoration:none;margin:4px 0 10px}";
+  +".nrbig,.item a.nrbig{display:block!important;text-align:center;background:#e03131!important;color:#fff!important;border:0!important;border-radius:12px!important;padding:12px 8px!important;font-size:18px!important;font-weight:900!important;text-decoration:none;margin:4px 0 10px!important}";
   document.head.appendChild(s); }
 
 // ── 기준 위치 ──
@@ -102,7 +102,7 @@ function pick(x){ var t=KINDS[S.k].tabs[S.tab]; try{ ntap(t.c.toLowerCase(),KIND
 // 긴급으로 고른 곳은 카드 맨 위에 큰 「전화」 단추
 var sc0=window.spinCard; if(typeof sc0==="function"&&!sc0._nr){ var sc1=function(){ var r=sc0.apply(this,arguments);
     try{ var p=PLACES.__pin; if(PICK&&PICK.em&&p&&p.tel&&Math.abs(+p.lat-PICK.lat)<1e-6&&Math.abs(+p.lng-PICK.lng)<1e-6){ var it=document.querySelector("#res .item");
-      if(it&&!it.querySelector(".nrbig")){ css(); var t=it.querySelector(".t"); var a='<a class="nrbig" href="tel:'+esc(telIntl(p.tel))+'">'+PH+T("전화 걸기","Call now")+'</a>'; if(t) t.insertAdjacentHTML("afterend",a); else it.insertAdjacentHTML("afterbegin",a); } } }catch(e){}
+      if(it&&!it.querySelector(".nrbig")){ css(); var t=it.querySelector(".t"); var a='<a class="nrbig tel" href="tel:'+esc(telIntl(p.tel))+'">'+PH+T("전화 걸기","Call now")+'</a>'; if(t) t.insertAdjacentHTML("afterend",a); else it.insertAdjacentHTML("afterbegin",a); } } }catch(e){}
     return r; }; sc1._nr=1; sc1._gf=sc0._gf; sc1._tr=sc0._tr; window.spinCard=sc1; }
 
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("[data-nr]"); if(!t||!t.closest("#nrBox,#gfchips,#mm")) return;
