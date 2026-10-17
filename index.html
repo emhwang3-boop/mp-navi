@@ -662,7 +662,7 @@ function routePlan(a,b,km){ var p=PLACES[a], q=PLACES[b], na=encodeURIComponent(
     +(LANG==="en"?L(go+"driving","Google driving (English)")+L(nv+"transit","Naver transit (incl. intercity bus)")+L(nv+"car","Naver car")
      :L(nv+"transit","네이버 대중교통 (고속·시외버스 포함)")+L(nv+"car","네이버 자동차")+L(go+"driving","구글 자동차"))};
 }
-var ODS_KEY="U9bSUqeZOqzFUTyakFc/HQ";
+
 // 버스 아이콘 — 서울 시내버스처럼 파랑 (사장님 10-15)
 var BUS_SVG='<svg viewBox="0 0 24 24" width="18" height="18" style="vertical-align:-3px" aria-hidden="true"><rect x="3" y="3" width="18" height="15" rx="3" fill="#2f5bd3"/><rect x="5" y="5.5" width="14" height="5.5" rx="1" fill="#dfeaff"/><rect x="5" y="12.5" width="3" height="2" rx=".6" fill="#ffe28a"/><rect x="16" y="12.5" width="3" height="2" rx=".6" fill="#ffe28a"/><rect x="9.5" y="12.8" width="5" height="1.4" rx=".5" fill="#1d3f9e"/><rect x="5" y="18" width="3.2" height="3" rx="1" fill="#222"/><rect x="15.8" y="18" width="3.2" height="3" rx="1" fill="#222"/><rect x="8" y="3.8" width="8" height="1" rx=".5" fill="#1d3f9e"/></svg>';
 // 버스는 종류별 색(간선 파랑·지선/마을 초록·광역/급행 빨강·순환 노랑), 지하철은 노선 색 동그라미 (사장님 10-15)
@@ -689,7 +689,7 @@ function odsBox(a,b){ var box=document.getElementById("ods"); if(!box) return; v
       +'<div class="d" style="font-size:11px;text-align:right">powered by www.ODsay.com</div>'; };
   if(cached) return draw(cached);
   box.innerHTML='<div class="d">'+T("경로 찾는 중…","Finding routes…")+'</div>';
-  fetch("https://api.odsay.com/v1/api/searchPubTransPathT?lang="+(LANG==="en"?1:0)+"&SX="+p.lng+"&SY="+p.lat+"&EX="+q.lng+"&EY="+q.lat+"&apiKey="+encodeURIComponent(ODS_KEY))
+  fetch(HUB+"/odsay?lang="+(LANG==="en"?1:0)+"&SX="+(+p.lng).toFixed(6)+"&SY="+(+p.lat).toFixed(6)+"&EX="+(+q.lng).toFixed(6)+"&EY="+(+q.lat).toFixed(6))   /* 허브 → 우리 서버 → ODsay (키는 서버에만, 사장님 10-17) */
     .then(function(r){ return r.json(); }).then(function(j){ if(j&&j.result){ try{ sessionStorage.setItem(ck,JSON.stringify(j)); }catch(e){} } draw(j); }).catch(function(){ box.innerHTML=""; }); }
 function distShow(a,b,p0,p1){
   if(a==="ktx"||b==="ktx"){ ktxErr(); dlDraw(null); return; }
