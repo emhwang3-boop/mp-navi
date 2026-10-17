@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="google" content="notranslate">
-<title>머니퍼즐 내비</title>
+<title>머니퍼즐 - 투어</title>
 <link rel="mp-manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -169,7 +169,7 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 <body>
 <div class="wrap">
   <div class="top">
-    <div class="logo" onclick="resetAll()"><img src="logo.png" alt=""><span style="white-space:nowrap">Money Puzzle<b style="margin-left:4px" id="ttl">- 내비</b></span></div>
+    <div class="logo" onclick="resetAll()"><img src="logo.png" alt=""><span style="white-space:nowrap">Money Puzzle<b style="margin-left:4px" id="ttl">- 투어</b></span></div>
     <div class="tbs">
     <button id="inst" onclick="instGo()" hidden style="white-space:nowrap;margin-left:auto;border:0;border-radius:999px;padding:8px 14px;background:var(--blue);color:#fff;font-weight:700;font-size:13px;cursor:pointer">⬇ 앱 설치</button>
     <button id="rs" onclick="resetAll()" class="tb">처음으로</button>
@@ -330,7 +330,7 @@ function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ ret
 function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} }
 function paint(){
   document.getElementById("lang").textContent=LANG==="ko"?"EN":"한";
-  document.getElementById("ttl").textContent=T("- 내비","- Navi");
+  document.getElementById("ttl").textContent=T("- 투어","- Tour");   /* 앱 이름 머니퍼즐 - 투어 (사장님 10-17) */
   document.getElementById("inst").textContent=T("⬇ 앱 설치","⬇ Install");
   document.getElementById("rs").textContent=T("처음으로","Reset");
   document.getElementById("sh").textContent=T("공유","Share");
@@ -341,7 +341,7 @@ function paint(){
   document.getElementById("zme").textContent=T("◎ 현재 위치","◎ My location");
   document.getElementById("hint").textContent=T("가고 싶은 곳, 먹고 싶은 것, 하고 싶은 것 등 아무거나 써 보세요. 뭐라도 추천해 드립니다.","Type anything — places to go, food to eat, things to do. We'll recommend something.");
   document.getElementById("mapimg").alt=T("대한민국 관광 지도","Korea travel map");
-  document.title=T("머니퍼즐 내비","Money Puzzle Navi");
+  document.title=T("머니퍼즐 - 투어","Money Puzzle - Tour");
   document.getElementById("foot").innerHTML=T("주식회사 부만 · 사업자등록번호 297-81-03712 · 연락처 ","Booman Inc. · Business Reg. No. 297-81-03712 · Contact ")+'<a href="mailto:emhwang3@moneypuzzle.co.kr" style="color:inherit">emhwang3@moneypuzzle.co.kr</a>';
   document.getElementById("rvTtl").textContent=T("고객의 소리","Customer Voice"); document.getElementById("rvText").setAttribute("aria-label",T("고객의 소리","Customer Voice"));
   document.getElementById("rvContact").placeholder=T("이메일 또는 전화 *","Email or phone *"); document.getElementById("rvContact").setAttribute("aria-label",T("이메일 또는 전화 (필수)","Email or phone (required)"));
@@ -465,7 +465,7 @@ function shOwnerFix0(p, appName, tok){
     };
   });
 }
-function shOpen(){ ntap("_app","share"); shBuild(); try{ if(localStorage.getItem("mp_owner")) shOwnerFix(document.getElementById("shIn"),"Money Puzzle Navi"); }catch(e){} document.getElementById("shBox").hidden=false; }
+function shOpen(){ ntap("_app","share"); shBuild(); try{ if(localStorage.getItem("mp_owner")) shOwnerFix(document.getElementById("shIn"),"Money Puzzle - Tour"); }catch(e){} document.getElementById("shBox").hidden=false; }
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest(".sht"); if(!t) return; e.preventDefault(); document.getElementById("shMsg").textContent=T("체험판에서는 공유가 되지 않습니다.","Sharing is turned off in this demo."); });
 function resetAll(){ try{ dlDraw(null); viewSet("kr"); }catch(e){} document.getElementById("q").value=""; qxSync(); document.getElementById("res").innerHTML=""; document.getElementById("mm").hidden=true; window.scrollTo(0,0); }
 function isApp(){ return matchMedia("(display-mode: standalone)").matches||matchMedia("(display-mode: minimal-ui)").matches||navigator.standalone===true; }
@@ -596,7 +596,7 @@ function dlNear(cx,cy){ if(!DL) return false; var r=document.getElementById("map
   var ax=r.left+DL[0][0]/1000*r.width, ay=r.top+DL[0][1]/1000*r.height, bx=r.left+DL[1][0]/1000*r.width, by=r.top+DL[1][1]/1000*r.height, dx=bx-ax, dy=by-ay, L=dx*dx+dy*dy, t=L?Math.max(0,Math.min(1,((cx-ax)*dx+(cy-ay)*dy)/L)):0;
   if(Math.hypot(cx-(ax+t*dx),cy-(ay+t*dy))<=24) return true; var b=document.getElementById("dlb"); if(b){ var q=b.getBoundingClientRect(); if(cx>=q.left-24&&cx<=q.right+24&&cy>=q.top-24&&cy<=q.bottom+24) return true; } return false; }
 function dlDraw(p0,p1,txt){ var s=document.getElementById("dl"), ob=document.getElementById("dlb"); DL=p0?[p0,p1]:null; if(!p0){ s.innerHTML=""; if(ob) ob.remove(); return; }
-  var h='<line x1="'+p0[0]+'" y1="'+p0[1]+'" x2="'+p1[0]+'" y2="'+p1[1]+'" stroke="#e03131" stroke-width="5" stroke-dasharray="14 9" vector-effect="non-scaling-stroke" style="stroke-width:3px"/>'
+  var h='<line x1="'+p0[0]+'" y1="'+p0[1]+'" x2="'+p1[0]+'" y2="'+p1[1]+'" stroke="#e03131" stroke-width="4" stroke-dasharray="6 5" vector-effect="non-scaling-stroke" style="stroke-width:2px"/>'
     +'<circle cx="'+p0[0]+'" cy="'+p0[1]+'" r="9" fill="#e03131"/><circle cx="'+p1[0]+'" cy="'+p1[1]+'" r="9" fill="#e03131"/>';
   s.innerHTML=h; var lb=document.getElementById("dlb"); if(lb) lb.remove();
   if(txt){ var d=document.createElement("div"); d.id="dlb"; d.textContent=txt;
