@@ -400,7 +400,7 @@ function spinShow0(x){ var lat=+x.y, lng=+x.x, nb=spinNorm(x.name);
   var keep=PLACES.__pin; spinGo(id,lat,lng,null); PLACES.__pin=keep;
   var f=meGeoFrac(VIEW,lat,lng); if(!f) return; var w=document.getElementById("map").clientWidth, sz=Math.max(10,w*0.045), fs=Math.max(4,w*0.016);
   var e=document.createElement("div"); e.id="spin"; e.onclick=function(ev){ ev.stopPropagation(); spinCard(); }; e.style.cssText="position:absolute;z-index:4;cursor:pointer;left:"+(f[0]*100)+"%;top:"+(f[1]*100)+"%;transform:translate(-50%,-100%)";
-  e.innerHTML='<svg viewBox="0 0 24 34" style="display:block;width:'+sz+'px;height:'+(sz*34/24)+'px;margin:0 auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))"><path d="M12 1C6 1 1.5 5.5 1.5 11.3 1.5 19 12 33 12 33s10.5-14 10.5-21.7C22.5 5.5 18 1 12 1z" fill="#e03131" stroke="#fff" stroke-width="1.6"/><circle cx="12" cy="11.5" r="4" fill="#fff"/></svg>'
+  e.innerHTML='<svg class="spbob" viewBox="0 0 24 34" style="display:block;width:'+sz+'px;height:'+(sz*34/24)+'px;margin:0 auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))"><path d="M12 1C6 1 1.5 5.5 1.5 11.3 1.5 19 12 33 12 33s10.5-14 10.5-21.7C22.5 5.5 18 1 12 1z" fill="#e03131" stroke="#fff" stroke-width="1.6"/><circle cx="12" cy="11.5" r="4" fill="#fff"/></svg>'
     +'<div style="position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:1px;white-space:nowrap;background:#fff;color:#c92a2a;border:'+Math.max(0.6,fs*0.12)+'px solid #e03131;border-radius:999px;padding:'+(fs*0.12)+'px '+(fs*0.5)+'px;font-size:'+fs+'px;font-weight:900;line-height:1.3">'+esc(LANG==="en"?(x.name_en||x.name):x.name)+'</div>';
   document.getElementById("mz").appendChild(e); SPIN=x; spinCard();
   clearTimeout(window._scT); window._scT=setTimeout(function(){ var m=document.getElementById("map"); window.scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:"smooth"}); },200); }
@@ -1146,19 +1146,31 @@ function hereShow(k){ hereClear(); if(DET||VIEW==="kr") return; var c=CITY[VIEW]
   if(b) f=[(b[0]+b[2])/2,b[1]]; else { var p=PLACES[k]; if(!p) return; f=meGeoFrac(VIEW,+p.lat,+p.lng); } if(!f) return;
   var e=document.createElement("div"); e.id="herek";
   e.style.cssText="position:absolute;z-index:6;pointer-events:none;left:"+(f[0]*100)+"%;top:"+(f[1]*100)+"%;transform:translate(-50%,-100%);text-align:center";
-  e.innerHTML='<div class="hk-b">'+esc(T("여기!","Here!"))+'</div><div class="hk-a"></div>';
+  e.innerHTML='<div class="hk-b">'+esc(T("여기!","Here"))+'</div><div class="hk-a"></div>';
   document.getElementById("mz").appendChild(e); }
 (function(){
   var st=document.createElement("style");
   st.textContent="#herek .hk-b{display:inline-block;background:#e03131;color:#fff;font-weight:900;font-size:13px;line-height:1.2;border-radius:999px;padding:4px 11px;box-shadow:0 2px 6px rgba(0,0,0,.35);white-space:nowrap}"
    +"#herek .hk-a{width:0;height:0;margin:-1px auto 0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:11px solid #e03131}"
-   +"#herek{animation:hkBob 1s ease-in-out infinite}@keyframes hkBob{0%,100%{margin-top:-4px}50%{margin-top:-12px}}";
+   +"#herek{animation:hkBob 1s ease-in-out infinite}@keyframes hkBob{0%,100%{margin-top:-4px}50%{margin-top:-12px}}"
+   +"#spin .spbob{animation:spBob .9s cubic-bezier(.3,0,.5,1) infinite;transform-origin:50% 100%}@keyframes spBob{0%,100%{transform:translateY(0) scaleY(1)}40%{transform:translateY(-9px) scaleY(1.04)}55%{transform:translateY(-9px)}85%{transform:translateY(0) scaleY(.9)}}";   /* 그림 없는 곳 핀은 통통 튄다 (사장님 10-17) */
   document.head.appendChild(st);
   var _s0=spinShow0; spinShow0=function(x){ window._hereNext=true; try{ _s0(x); } finally{ window._hereNext=false; } };   // 검색에서 온 것만
   var _ps=placeShow; placeShow=function(k){ var go=window._hereNext; _ps(k); if(go) try{ hereShow(k); }catch(e){} else hereClear(); };
   var _vs=viewSet; viewSet=function(v){ hereClear(); _vs(v); };
   var _rc=resClear; resClear=function(){ hereClear(); _rc(); };
 })();
+</script>
+<script>/*nmhit*/
+// ── 자세한 지도 핀 누르기를 직접 잡는다 (사장님 10-17 「웹·폰 둘 다 먹통」) — 네이버 마커 click 이벤트가 오지 않아, 누른 자리에서 가장 가까운 핀(손가락 한 마디 28px)을 찾아 설명을 연다
+document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.closest||!e.target.closest("#nmap")) return;
+    if(e.target.closest(".nmiw")) return;   // 설명 말풍선 안
+    var x=e.clientX, y=e.clientY, best=null, bd=28;
+    for(var k in _nmk){ var el=_nmk[k].getElement&&_nmk[k].getElement(); if(!el) continue; var r=el.getBoundingClientRect(); if(!r.width) continue;
+      var cx=r.left+r.width/2, cy=r.top+r.height*0.4, d=Math.hypot(x-cx,y-cy); if(d<bd){ bd=d; best=k; } }
+    if(best){ window._nmMk=Date.now(); nmOpen(best); return; }
+    if(_spm&&_spm.getElement){ var r2=_spm.getElement().getBoundingClientRect(); if(r2.width&&Math.hypot(x-(r2.left+r2.width/2),y-(r2.top+r2.height*0.4))<28){ spinCard(); return; } }
+  }catch(z){} },true);
 </script>
 </body>
 </html>
