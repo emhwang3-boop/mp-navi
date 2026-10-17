@@ -1071,5 +1071,73 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script src="near.js?v=1016p"></script>
 <script src="reco.js?v=1016r2"></script>
 <script src="pass.js?v=1016p1"></script>
+<script>
+// ── ★ 관심 장소 (사장님 10-17) — 손님 폰 안에만 저장·분석. 서버로 보내지 않는다(통로 FAV_SEND 는 꺼 둠)
+//   저장: 장소 카드 ☆ · 약도를 0.7초 길게 눌러 「여기 저장」 / 모음: 지도 바로 아래 테두리를 따라 작은 노란 별 한 줄(저장한 만큼) — 누르면 목록
+//   지도 위에는 별을 찍지 않는다(많아지면 지저분 — 사장님) / 분석: 동의한 사람만, 이 기기 안에서
+var FAV_SEND=false;   // 켜면 개인 구분 없는 분류 합계만 허브로 (받는 곳 아직 없음 — 켤 때 동의 문구도 바꿀 것)
+var HUB_FAV="https://brief-live-hub.emhwang3.workers.dev/navi_favstat";
+function favGet(){ try{ return JSON.parse(localStorage.getItem("mpt_fav_v1")||"[]")||[]; }catch(e){ return []; } }
+function favPut(a){ try{ localStorage.setItem("mpt_fav_v1",JSON.stringify(a)); }catch(e){} favBar(); }
+function favOk(){ try{ return localStorage.getItem("mpt_fav_ok"); }catch(e){ return null; } }
+function favAsk(force){ if(favOk()&&!force) return; var y=confirm(T("관심 장소를 이 기기 안에서만 분석해 「요즘 관심」을 보여 드릴까요?\n(서버로 보내지 않습니다. 거절해도 저장은 됩니다)","Analyse your saved places on this device only to show your interests?\n(Nothing is sent to our server. You can still save places if you decline.)"));
+  try{ localStorage.setItem("mpt_fav_ok",y?"y":"n"); }catch(e){} }
+var FAVCAT=[["palace","궁궐·유적","Palaces & heritage",/궁|문$|문 |묘|사당|성곽|탑|향교|서원|palace|gate|shrine|tomb|fortress/i],["market","시장","Markets",/시장|market/i],
+  ["cafe","카페·한옥","Cafés & hanok",/카페|커피|찻집|한옥|cafe|coffee|tea|hanok/i],["nature","자연·공원","Nature & parks",/공원|산|숲|호수|강|천$|폭포|섬|해변|계곡|park|mountain|forest|lake|river|stream|beach|island/i],
+  ["museum","박물관·전시","Museums",/박물관|미술관|기념관|전시|museum|gallery|memorial/i],["shop","쇼핑·거리","Shopping & streets",/거리|길$|백화점|몰|쇼핑|상가|문고|street|mall|shopping|store/i],
+  ["food","맛집","Food",/맛집|식당|음식|골목|food|restaurant/i]];
+function favCat(nm,d){ var s=(nm||"")+" "+(d||""); for(var i=0;i<FAVCAT.length;i++) if(FAVCAT[i][3].test(s)) return FAVCAT[i][0]; return "etc"; }
+function favCatName(c){ for(var i=0;i<FAVCAT.length;i++) if(FAVCAT[i][0]===c) return T(FAVCAT[i][1],FAVCAT[i][2]); return T("기타","Other"); }
+function favTap(k){ if(favOk()!=="y"||!k||k.charAt(0)==="_") return; var p=PLACES[k]; if(!p) return; var c=favCat(p.ko,p.dko);
+  try{ var t=JSON.parse(localStorage.getItem("mpt_favtap_v1")||"{}"); t[c]=(t[c]||0)+1; localStorage.setItem("mpt_favtap_v1",JSON.stringify(t)); }catch(e){} }
+function favScore(){ var s={}; favGet().forEach(function(f){ s[f.c]=(s[f.c]||0)+3; });   // 저장 1곳 = 누름 3번
+  try{ var t=JSON.parse(localStorage.getItem("mpt_favtap_v1")||"{}"); for(var c in t) s[c]=(s[c]||0)+t[c]; }catch(e){}
+  return Object.keys(s).filter(function(c){ return c!=="etc"; }).sort(function(a,b){ return s[b]-s[a]; }).slice(0,3).map(function(c){ return [c,s[c]]; }); }
+function favSend(){ if(!FAV_SEND||favOk()!=="y") return; var tot={}; favScore().forEach(function(x){ tot[x[0]]=x[1]; });   // 통로만 — 지금은 꺼짐
+  try{ fetch(HUB_FAV,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cat:tot})}).catch(function(){}); }catch(e){} }
+function favSame(f,lat,lng){ return Math.abs(f.lat-lat)<1e-5&&Math.abs(f.lng-lng)<1e-5; }
+function favHas(lat,lng){ return favGet().some(function(f){ return favSame(f,lat,lng); }); }
+function favAdd(o){ favAsk(); var a=favGet(); if(favHas(o.lat,o.lng)) return; o.c=favCat(o.ko,o.d); o.t=Date.now(); a.unshift(o); favPut(a.slice(0,200)); favSend(); }
+function favDel(i){ var a=favGet(); a.splice(i,1); favPut(a); favList(); }
+function favToggle(k){ var p=PLACES[k]; if(!p) return; var lat=+p.lat, lng=+p.lng;
+  if(favHas(lat,lng)) favPut(favGet().filter(function(f){ return !favSame(f,lat,lng); }));
+  else favAdd({k:k.charAt(0)==="_"?null:k,ko:p.ko,en:p.en||p.ko,lat:lat,lng:lng,d:p.dko||p.cat||""});
+  favBtn(k); }
+function favBtn(k){ var r=document.getElementById("res"), it=r&&r.firstElementChild, p=PLACES[k]; if(!it||!p) return; var b=it.querySelector(".favb");
+  if(!b){ b=document.createElement("button"); b.type="button"; b.className="favb"; b.style.cssText="float:right;margin:-2px 0 0 8px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:3px 10px;font-size:13px;font-weight:800;cursor:pointer;color:#b8860b"; it.insertBefore(b,it.firstChild); b.onclick=function(e){ e.stopPropagation(); favToggle(window._cardK||k); }; }
+  b.textContent=favHas(+p.lat,+p.lng)?T("★ 저장됨","★ Saved"):T("☆ 관심 장소","☆ Save"); }
+function favGo(i){ var f=favGet()[i]; if(!f) return; if(f.k&&PLACES[f.k]){ var id=meBest(f.lat,f.lng)||NAVI_ROOT; spinGo(id===NAVI_ROOT?"kr":id,f.lat,f.lng,null); placeShow(f.k); return; }
+  spinShow({name:f.ko,name_en:f.en,x:f.lng,y:f.lat,addr:f.d||""}); }
+function favList(){ var a=favGet(), sc=favOk()==="y"?favScore():[], h='<div class="item"><div class="t">★ '+T("관심 장소","Saved places")+' <span class="d">('+a.length+')</span></div>';
+  if(sc.length) h+='<div class="d" style="margin:4px 0 2px;color:var(--ink)">'+T("요즘 관심: ","Your interests: ")+sc.map(function(x,i){ return esc(favCatName(x[0]))+' '+"★★★".slice(0,3-i); }).join(" · ")+'</div>';
+  else if(favOk()!=="y") h+='<div class="d" style="margin:4px 0 2px">'+T("관심 분석은 꺼져 있습니다. ","Interest analysis is off. ")+'<a href="#" onclick="favAsk(true);favList();return false">'+T("켜기","Turn on")+'</a></div>';
+  if(!a.length) h+='<div class="d" style="margin-top:6px">'+T("장소 카드의 ☆를 누르거나, 약도를 길게 눌러 저장해 보세요.","Tap ☆ on a place card, or long-press the map to save a spot.")+'</div>';
+  a.forEach(function(f,i){ h+='<div style="display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding:8px 0;margin-top:6px"><a href="#" style="flex:1;color:var(--ink);text-decoration:none;font-weight:700" onclick="favGo('+i+');return false"><span style="color:#f5b301">★</span> '+esc(LANG==="en"?(f.en||f.ko):f.ko)+'<span class="d" style="font-weight:400"> · '+esc(favCatName(f.c))+'</span></a><a href="#" class="d" onclick="favDel('+i+');return false">'+T("삭제","Delete")+'</a></div>'; });
+  h+='<div class="d" style="margin-top:8px">'+T("이 목록은 이 기기 안에만 있습니다. 폰을 바꾸거나 앱 데이터를 지우면 사라집니다.","This list is kept on this device only; it is lost if you change phones or clear app data.")+'</div></div>';
+  window._cardK=null; document.getElementById("res").innerHTML=h; try{ document.getElementById("res").scrollIntoView({behavior:"smooth",block:"start"}); }catch(e){} }
+function favBar(){ var b=document.getElementById("favbar"); if(!b) return; var n=favGet().length; b.hidden=!n; if(!n) return;
+  var w=b.clientWidth||300, fit=Math.max(1,Math.floor((w-48)/13)), k=Math.min(n,fit);
+  b.innerHTML='<span style="letter-spacing:1px">'+new Array(k+1).join("★")+'</span>'+(n>k?'<span style="margin-left:2px">…</span>':'')+'<b style="margin-left:6px;color:var(--ink);font-size:12px">'+n+'</b>';
+  b.title=T("관심 장소 "+n+"곳","Saved places: "+n); }
+(function(){   // 카드·지도 아래 별 줄·길게 누르기 붙이기
+  var _ps=placeShow; placeShow=function(k){ _ps(k); try{ favTap(k); favBtn(k); }catch(e){} };
+  var _sc=spinCard; spinCard=function(){ _sc(); try{ favBtn("__pin"); }catch(e){} };
+  var m=document.getElementById("map"), b=document.createElement("div"); b.id="favbar"; b.hidden=true;
+  b.style.cssText="display:flex;align-items:center;justify-content:flex-end;gap:0;margin:4px 6px 0;color:#f5b301;font-size:12px;line-height:1;cursor:pointer;white-space:nowrap;overflow:hidden;user-select:none";
+  b.onclick=function(){ favList(); }; m.parentNode.insertBefore(b,m.nextSibling);
+  var st=document.createElement("style"); st.textContent="#favbar[hidden]{display:none!important}"; document.head.appendChild(st);
+  window.addEventListener("resize",favBar);
+  var lp=null;   // 약도 길게 누르기 → 여기 저장 (한 손가락, 안 움직이고 0.7초)
+  function lpEnd(){ if(lp){ clearTimeout(lp.t); lp=null; } }
+  m.addEventListener("touchstart",function(e){ lpEnd(); if(DET||e.touches.length!==1||e.target.closest(".zb")||e.target.closest("#zme")) return; var t=e.touches[0], x=t.clientX, y=t.clientY;
+    if(hitAt(x,y)==="mpstat") return;   // 통계청 길게 누르기는 관리자 입구
+    lp={x:x,y:y,t:setTimeout(function(){ lp=null; var r=document.getElementById("mapimg").getBoundingClientRect(), ll=meGeoInv(VIEW==="kr"?NAVI_ROOT:VIEW,(x-r.left)/r.width,(y-r.top)/r.height); if(!ll) return;
+      var nm=prompt(T("여기를 관심 장소로 저장합니다. 이름을 적어 주세요.","Save this spot. Give it a name:"),T("내 장소","My spot")); if(nm===null) return; nm=String(nm).trim().slice(0,40)||T("내 장소","My spot");
+      favAdd({k:null,ko:nm,en:nm,lat:+ll[0].toFixed(6),lng:+ll[1].toFixed(6),d:""}); try{ favList(); }catch(er){} },700)}; },{passive:true});
+  m.addEventListener("touchmove",function(e){ if(lp&&e.touches.length===1){ var t=e.touches[0]; if(Math.abs(t.clientX-lp.x)+Math.abs(t.clientY-lp.y)>10) lpEnd(); } else lpEnd(); },{passive:true});
+  m.addEventListener("touchend",lpEnd,{passive:true}); m.addEventListener("touchcancel",lpEnd,{passive:true});
+  setTimeout(favBar,0);
+})();
+</script>
 </body>
 </html>
