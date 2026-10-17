@@ -14,7 +14,7 @@
 /* 머니퍼즐 내비 첫 화면 (사장님 2026-10-14) — 다른 앱과 같은 출입: 사장님 기기·초대 링크·홈페이지에서 온 사람만 */
 (function(){ try{
   if(/[?&]me=EM2410/i.test(location.search)) localStorage.setItem("mp_owner","1");
-  var ok=!!localStorage.getItem("mp_owner")||!!localStorage.getItem("mpv_ok")||/^https:\/\/([a-z0-9-]+\.)?moneypuzzle\.co\.kr|^https:\/\/emhwang3-boop\.github\.io\/(home|mp-navi)/.test(document.referrer||"");
+  var ok=!!localStorage.getItem("mp_owner")||!!localStorage.getItem("mpv_inv")||!!localStorage.getItem("mpv_pass");   /* 홈페이지에서 온 사람은 안 들임 — 홈페이지는 사진만 (사장님 10-17, ODsay 보호) */
   if(localStorage.getItem("mp_owner")||localStorage.getItem("mpv_inv")) document.addEventListener("DOMContentLoaded",function(){ var l=document.querySelector('link[rel="mp-manifest"]'); if(l) l.rel="manifest"; });
   /* 7일짜리 초대 링크 (사장님 2026-10-15) — 고정 코드는 더 안 받는다. 허브가 서명·만료를 확인한다 */
   var IH="https://brief-live-hub.emhwang3.workers.dev", IA="navi";
