@@ -51,6 +51,7 @@
 }catch(e){} })();
 </script>
 <script>try{ if(localStorage.getItem("mpv_theme")==="dark") document.documentElement.setAttribute("data-theme","dark"); }catch(e){}</script>
+<script>/* 공유 단추는 사장님 기기만 (사장님 10-17) — 손님 화면엔 숨김 */try{ if(!localStorage.getItem("mp_owner")){ var _ss=document.createElement("style"); _ss.textContent="#sh{display:none!important}"; document.head.appendChild(_ss); } }catch(e){}</script>
 <style>
 :root{--bg:#f4f6fa;--card:#fff;--ink:#111827;--sub:#5b6474;--line:#e6e9ef;--green:#2f9e44;--blue:#3d5af1}
 :root[data-theme="dark"]{--bg:#0f1420;--card:#171d2b;--ink:#e8ecf2;--sub:#9aa4b2;--line:#263044}
