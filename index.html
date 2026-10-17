@@ -681,7 +681,7 @@ function subBadge(nm){ var s=String(nm), m=s.match(/(\d)\s*(호선|$)|Line\s*(\d
   return '<span style="display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 4px;border-radius:999px;background:'+c+';color:#fff;font-size:11px;font-weight:900;vertical-align:-2px;margin-right:3px">'+esc(t||"M")+'</span>'; }
 function odsBox(a,b){ var box=document.getElementById("ods"); if(!box) return; var p=PLACES[a], q=PLACES[b], ck="ods:"+LANG+":"+a+":"+b, cached=null;
   try{ cached=JSON.parse(sessionStorage.getItem(ck)||"null"); }catch(e){}
-  var draw=function(j){ var ps=(j&&j.result&&j.result.path)||[]; if(!ps.length){ box.innerHTML=""; return; } try{ mePose("subway",10000); }catch(e){}
+  var draw=function(j){ var ps=(j&&j.result&&j.result.path)||[]; if(!ps.length){ box.innerHTML=(j&&j.err==="cap")?'<div class="d" style="margin:6px 0">'+T("오늘 대중교통 안내가 모두 끝났습니다. 아래 구글·네이버 지도 단추로 보세요.","Transit directions are used up for today. Please use the Google / Naver Maps buttons below.")+'</div>':""; return; }   /* 하루 한도(28건) 찼을 때 안내 (사장님 10-17) */ try{ mePose("subway",10000); }catch(e){}
     box.innerHTML='<div class="trh">🚇 '+T("대중교통 추천 경로","Best transit routes")+'</div>'+ps.slice(0,2).map(function(pt){ var f=pt.info||{};
       var steps=(pt.subPath||[]).map(function(s){ if(s.trafficType===3) return s.sectionTime?'🚶 '+s.sectionTime+T("분","m"):"";
         var ln=(s.lane&&s.lane[0])||{}, nm=s.trafficType===1?(ln.name||""):(T("버스 ","Bus ")+(ln.busNo||""));
