@@ -1,6 +1,6 @@
 {
- "name": "머니퍼즐 내비",
- "short_name": "머니퍼즐 내비",
+ "name": "머니퍼즐 - 투어",
+ "short_name": "머니퍼즐 투어",
  "id": "./",
  "start_url": "./?src=pwa",
  "scope": "./",
