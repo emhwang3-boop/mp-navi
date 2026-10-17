@@ -1139,5 +1139,26 @@ function favBar(){ var b=document.getElementById("favbar"); if(!b) return; var n
   setTimeout(favBar,0);
 })();
 </script>
+<script>
+// ── 「여기!」 표시 (사장님 10-17) — 검색한 곳에 그림이 있으면 그 그림 위에 「나」 부부처럼 붉은 말풍선 화살표를 띄운다
+function hereClear(){ var e=document.getElementById("herek"); if(e) e.remove(); }
+function hereShow(k){ hereClear(); if(DET||VIEW==="kr") return; var c=CITY[VIEW], b=c&&c.spots&&c.spots[k], f;
+  if(b) f=[(b[0]+b[2])/2,b[1]]; else { var p=PLACES[k]; if(!p) return; f=meGeoFrac(VIEW,+p.lat,+p.lng); } if(!f) return;
+  var e=document.createElement("div"); e.id="herek";
+  e.style.cssText="position:absolute;z-index:6;pointer-events:none;left:"+(f[0]*100)+"%;top:"+(f[1]*100)+"%;transform:translate(-50%,-100%);text-align:center";
+  e.innerHTML='<div class="hk-b">'+esc(T("여기!","Here!"))+'</div><div class="hk-a"></div>';
+  document.getElementById("mz").appendChild(e); }
+(function(){
+  var st=document.createElement("style");
+  st.textContent="#herek .hk-b{display:inline-block;background:#e03131;color:#fff;font-weight:900;font-size:13px;line-height:1.2;border-radius:999px;padding:4px 11px;box-shadow:0 2px 6px rgba(0,0,0,.35);white-space:nowrap}"
+   +"#herek .hk-a{width:0;height:0;margin:-1px auto 0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:11px solid #e03131}"
+   +"#herek{animation:hkBob 1s ease-in-out infinite}@keyframes hkBob{0%,100%{margin-top:-4px}50%{margin-top:-12px}}";
+  document.head.appendChild(st);
+  var _s0=spinShow0; spinShow0=function(x){ window._hereNext=true; try{ _s0(x); } finally{ window._hereNext=false; } };   // 검색에서 온 것만
+  var _ps=placeShow; placeShow=function(k){ var go=window._hereNext; _ps(k); if(go) try{ hereShow(k); }catch(e){} else hereClear(); };
+  var _vs=viewSet; viewSet=function(v){ hereClear(); _vs(v); };
+  var _rc=resClear; resClear=function(){ hereClear(); _rc(); };
+})();
+</script>
 </body>
 </html>
