@@ -1115,15 +1115,15 @@ function favList(){ var a=favGet(), sc=favOk()==="y"?favScore():[], h='<div clas
   a.forEach(function(f,i){ h+='<div style="display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding:8px 0;margin-top:6px"><a href="#" style="flex:1;color:var(--ink);text-decoration:none;font-weight:700" onclick="favGo('+i+');return false"><span style="color:#f5b301">★</span> '+esc(LANG==="en"?(f.en||f.ko):f.ko)+'<span class="d" style="font-weight:400"> · '+esc(favCatName(f.c))+'</span></a><a href="#" class="d" onclick="favDel('+i+');return false">'+T("삭제","Delete")+'</a></div>'; });
   h+='<div class="d" style="margin-top:8px">'+T("이 목록은 이 기기 안에만 있습니다. 폰을 바꾸거나 앱 데이터를 지우면 사라집니다.","This list is kept on this device only; it is lost if you change phones or clear app data.")+'</div></div>';
   window._cardK=null; document.getElementById("res").innerHTML=h; try{ document.getElementById("res").scrollIntoView({behavior:"smooth",block:"start"}); }catch(e){} }
-function favBar(){ var b=document.getElementById("favbar"); if(!b) return; var n=favGet().length; b.hidden=!n; if(!n) return;
-  var w=b.clientWidth||300, fit=Math.max(1,Math.floor((w-48)/13)), k=Math.min(n,fit);
-  b.innerHTML='<span style="letter-spacing:1px">'+new Array(k+1).join("★")+'</span>'+(n>k?'<span style="margin-left:2px">…</span>':'')+'<b style="margin-left:6px;color:var(--ink);font-size:12px">'+n+'</b>';
+function favBar(){ var b=document.getElementById("favbar"); if(!b) return; var n=favGet().length; b.innerHTML=""; if(!n) return;   // 자리는 늘 두 줄 확보 — 한 줄 넘치면 두 줄 (사장님 10-17)
+  var w=b.clientWidth||300, per=Math.max(1,Math.floor((w-40)/14)), fit=per*2, k=Math.min(n,fit);
+  b.innerHTML='<span style="flex:1;text-align:right;letter-spacing:2px;word-break:break-all;white-space:normal;line-height:15px">'+new Array(k+1).join("★")+(n>k?"…":"")+'</span><b style="margin-left:6px;color:var(--ink);font-size:12px;align-self:flex-end">'+n+'</b>';
   b.title=T("관심 장소 "+n+"곳","Saved places: "+n); }
 (function(){   // 카드·지도 아래 별 줄·길게 누르기 붙이기
   var _ps=placeShow; placeShow=function(k){ _ps(k); try{ favTap(k); favBtn(k); }catch(e){} };
   var _sc=spinCard; spinCard=function(){ _sc(); try{ favBtn("__pin"); }catch(e){} };
-  var m=document.getElementById("map"), b=document.createElement("div"); b.id="favbar"; b.hidden=true;
-  b.style.cssText="display:flex;align-items:center;justify-content:flex-end;gap:0;margin:4px 6px 0;color:#f5b301;font-size:12px;line-height:1;cursor:pointer;white-space:nowrap;overflow:hidden;user-select:none";
+  var m=document.getElementById("map"), b=document.createElement("div"); b.id="favbar";
+  b.style.cssText="display:flex;align-items:flex-start;justify-content:flex-end;height:32px;margin:4px 6px 0;color:#f5b301;font-size:12px;line-height:15px;cursor:pointer;overflow:hidden;user-select:none";
   b.onclick=function(){ favList(); }; m.parentNode.insertBefore(b,m.nextSibling);
   var st=document.createElement("style"); st.textContent="#favbar[hidden]{display:none!important}"; document.head.appendChild(st);
   window.addEventListener("resize",favBar);
