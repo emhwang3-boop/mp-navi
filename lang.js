@@ -56,9 +56,8 @@ function css(){ if(document.getElementById("lgCss")) return; var s=document.crea
   document.head.appendChild(s); }
 var P=null;
 function label(){ if(!P) return; var t=document.getElementById("lgT"), l=window.LANG, f=fg();
-  if(l!=="ko"){ t.textContent="🌐 한국어"; t.title=TE("Show this screen in Korean"); }
-  else if(f){ t.textContent="🌐 "+NM[f]; t.title="← "+NM[f]; }
-  else { t.textContent="🌐 한국어"; t.title="Language"; }
+  t.textContent="🌐 "+(NM[l]||NM.ko);   // 지구본엔 지금 고른 언어를 쓴다 — 위쪽 고르기 칸과 같게 (사장님 10-18). 누르면 외국어↔한국어
+  if(l!=="ko") t.title=TE("Show this screen in Korean"); else if(f) t.title="← "+NM[f]; else t.title="Language";
   t.setAttribute("aria-label",t.title); document.getElementById("lgM").setAttribute("aria-label",T("언어 고르기","Choose language")); }
 function busy(d){ KL.busy=Math.max(0,KL.busy+d); if(P) P.classList.toggle("busy",KL.busy>0); }
 function listOpen(){ listClose(); var r=P.getBoundingClientRect(), b=document.createElement("div"); b.id="lgL";
