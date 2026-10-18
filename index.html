@@ -1023,9 +1023,15 @@ function meLineTo(k){ var p=PLACES[k]; if(!p||!ME.pos) return; var keep=k==="__p
   if(f1&&f2){ var cx=(f1[0]+f2[0])/2, cy=(f1[1]+f2[1])/2, sp=Math.max(Math.abs(f1[0]-f2[0])*as,Math.abs(f1[1]-f2[1]),0.01), sc=Math.max(ZMN(),Math.min(ZMAX(),0.7/Math.max(Math.abs(f1[0]-f2[0])*as,0.01),0.7*ZB()/Math.max(Math.abs(f1[1]-f2[1]),0.01)));   // 둘 다 화면에 들어오게 (가로·세로 따로)
     ZM={s:sc,tx:w/2-cx*w*as*sc,ty:MH()/2-cy*w*sc}; zApply(); LOD.s0=ZM.s; }
   distShow("__me",k,mePt("__me"),mePt(k)); window._cardK=null; }
+// 보던 화면 그대로 — 목적지가 지금 지도 안에 있으면 화면을 옮기지 않고 구석의 동그란 「나」에서 목적지까지 선을 긋는다 (사장님 10-18)
+function meLineHere(k){ var m=document.getElementById("map"), e=document.getElementById("meedge"), q=mePt(k); if(!m||!e||e.hidden||!q||!ME.pos) return false;
+  if(q[0]<0||q[0]>1000||q[1]<0||q[1]>1000) return false;
+  var w=m.clientWidth, as=ASP(), mr=m.getBoundingClientRect(), r=(e.querySelector("b")||e).getBoundingClientRect(), px=r.left+r.width/2-mr.left, py=r.top+r.height/2-mr.top;
+  var p0=[(px-ZM.tx)/(w*as*ZM.s)*1000,(py-ZM.ty)/(w*ZM.s)*1000];
+  distShow("__me",k,p0,q); window._cardK=null; return true; }
 function meEdge(){ var m=document.getElementById("map"); if(!m) return; var e=document.getElementById("meedge");
   if(!e){ e=document.createElement("div"); e.id="meedge"; e.innerHTML='<i></i><b></b><span></span>'; m.appendChild(e);
-    e.onclick=function(ev){ ev.stopPropagation(); ev.preventDefault(); var k=window._cardK, r=document.getElementById("res").firstElementChild; if(k&&PLACES[k]&&r) meLineTo(k); else meGo(); };
+    e.onclick=function(ev){ ev.stopPropagation(); ev.preventDefault(); var k=window._cardK, r=document.getElementById("res").firstElementChild; if(k&&PLACES[k]&&r){ if(!meLineHere(k)) meLineTo(k); } else meGo(); };
     ["touchstart","mousedown"].forEach(function(t){ e.addEventListener(t,function(ev){ ev.stopPropagation(); },{passive:true}); }); }
   if(!ME.pos||DET){ e.hidden=true; return; }
   var w=m.clientWidth, h=MH(), as=ASP(), iw=w*as*ZM.s, ih=w*ZM.s, f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]);
