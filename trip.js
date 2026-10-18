@@ -260,12 +260,14 @@ function aiFetch(){ var pl=TR.plan; if(!pl) return; var hn=pl.hotel&&pl.hotel.ty
     return {w:DOW_EN[dt.getUTCDay()],s:s.rows.filter(function(r){ return !r.lunch; }).map(function(r){ return {k:r.x.k,ko:r.x.ko,en:r.x.en,t:m2hm(r.t),m:r.x.stay}; })}; }).filter(function(d){ return d.s.length; }),lang:LANG};   // lang: 허브가 그 언어 설명을 줄 수 있게 (10-18 — 지금 허브는 ko/en)
   var at=pl.at; var ap=document.getElementById("trAiS"); if(ap) ap.hidden=false;
   fetch(HUB+"/ntrip",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){ return r.json(); }).then(function(j){
-    window.__trAiRes=j&&(j.ok?"ok":String(j.err)); if(!TR.plan||TR.plan.at!==at) return; if(j&&j.ok){ var k=0, days=pl.days.map(function(d){ return d.stops.length?(j.days||[])[k++]||null:null; }); TR.plan.ai={days:days,tips:j.tips||{}}; save(); } else TR.plan.ai={fail:1};
-    if(document.getElementById("trRep")) repPaint(); }).catch(function(e){ window.__trAiRes="E "+e; if(TR.plan&&TR.plan.at===at) TR.plan.ai={fail:1}; var a=document.getElementById("trAiS"); if(a) a.hidden=true; }); }
+    window.__trAiRes=j&&(j.ok?"ok":String(j.err)); if(!TR.plan||TR.plan.at!==at) return; if(j&&j.ok){ var k=0, days=pl.days.map(function(d){ return d.stops.length?(j.days||[])[k++]||null:null; }); TR.plan.ai={days:days,tips:j.tips||{}}; save(); } else if(!(TR.plan.ai&&TR.plan.ai.days)) TR.plan.ai={fail:1};
+    if(document.getElementById("trRep")) repPaint(); }).catch(function(e){ window.__trAiRes="E "+e; if(TR.plan&&TR.plan.at===at&&!(TR.plan.ai&&TR.plan.ai.days)) TR.plan.ai={fail:1}; var a=document.getElementById("trAiS"); if(a) a.hidden=true; }); }
 
 // ── 보고서 ──
 var REPH=null;
-function openReport(H){ if(!TR.plan) return; sheetClose("trBox"); sheet("trRep"); var aiGo=function(){ if(TR.plan&&!TR.plan.ai&&hasPass()) aiFetch(); };
+// 일·중 화면인데 AI 설명에 그 언어 칸이 없으면(다른 언어로 짠 일정) 그 언어로 한 번 더 받는다 — 허브는 같은 본문을 캐시 (10-18)
+function aiLangMiss(ai){ if(!ai||!ai.days||!/^(ja|zhs|zht)$/.test(LANG)) return false; var d=ai.days.filter(Boolean)[0]; return !!d&&!d[LANG]; }
+function openReport(H){ if(!TR.plan) return; sheetClose("trBox"); sheet("trRep"); var aiGo=function(){ if(TR.plan&&(!TR.plan.ai||aiLangMiss(TR.plan.ai))&&hasPass()) aiFetch(); };
   if(H!==undefined){ REPH=H; repPaint(); aiGo(); } else planHotel(function(h){ REPH=h; repPaint(); aiGo(); }); }
 function legTxt(lg){ if(!lg) return ""; var d=lg.km<1?Math.round(lg.km*1000)+" m":lg.km.toFixed(1)+" km";
   if(lg.mode==="walk") return T("🚶 걸어서 약 "+lg.min+"분","🚶 ~"+lg.min+" min walk")+" · "+d;
@@ -382,14 +384,16 @@ function eatPick(mk){ var pl=TR.plan, rc=pl&&pl.recs&&pl.recs[mk]; if(!rc) retur
   (rc.p||[]).forEach(function(x){ if(out.length<3) add({src:"ad",id:x.id,ko:x.ko,en:x.en||x.ko,lat:+x.lat,lng:+x.lng,tel:x.tel||"",addr:x.addr||"",catc:x.cat,kind:"",tags:x.tags||[],dko:x.dko,den:x.den,dist:x.dist}); });
   var ne=0, ez=(EATS||[]).map(function(x){ return {x:x,d:Math.round(km({lat:rc.a[0],lng:rc.a[1]},{lat:+x.lat,lng:+x.lng})*1000)}; }).filter(function(q){ return q.d<=700&&q.x.kind!=="디저트"; }).sort(function(a,b){ return a.d-b.d; });
   ez.forEach(function(q){ if(out.length>=3||ne>=2) return; var x=q.x, d=q.d; ne++;   // 이름난 식당은 많아야 2곳 — 근처 검색 한 곳은 남긴다
-    add({src:"eat",id:x.id,ko:x.ko,en:x.en||x.ko,lat:+x.lat,lng:+x.lng,tel:x.tel||"",addr:x.addr||"",kind:x.kind||"",kind_en:x.kind_en||"",kind_x:x["kind_"+LANG]||"",menu:(x.menu||[]).join(", "),tags:x.tags||[],srcs:x.src||[],url:x.url||"",lux:x.lux||0,dist:d})||ne--; });
+    add({src:"eat",id:x.id,ko:x.ko,en:x.en||x.ko,ja:x.ja,zhs:x.zhs,zht:x.zht,lat:+x.lat,lng:+x.lng,tel:x.tel||"",addr:x.addr||"",kind:x.kind||"",kind_en:x.kind_en||"",kind_x:x["kind_"+LANG]||"",menu:(x.menu||[]).join(", "),menu_x:(x["menu_"+LANG]||[]).join(", "),tags:x.tags||[],srcs:x.src||[],url:x.url||"",lux:x.lux||0,dist:d})||ne--; });
   var near=(rc.i||[]).map(function(x){ return {src:"near",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x,tel:x.tel||"",addr:x.addr||"",addr_en:x.addr_en||"",cat:x.cat||"",cat_en:x.cat_en||"",kind:kindOf(x.cat),dist:x.dist}; });
   var used={}; [true,false].forEach(function(dis){ near.forEach(function(c){ if(out.length>=3||out.indexOf(c)>=0) return; if(dis&&used[c.kind]) return; if(add(c)) used[c.kind]=1; }); });   // 종류가 겹치지 않게 먼저, 모자라면 겹쳐도
   return out; }
 function eatName(c){ return L()?(c[LANG]||c.en||c.ko):c.ko; }
-function eatLine(c){ var kd=c.src==="near"?(L()?(c.cat_en||c.kind):String(c.cat||"").split(">").slice(1).map(function(x){ return x.trim(); }).join("·")):(L()?(c.kind_x||c.kind_en||c.kind):c.kind);
+var KIND_X={"한식":"Korean food","중식":"Chinese food","일식":"Japanese food","양식":"Western food","분식":"Korean snack food","아시아음식":"Asian food","패스트푸드":"Fast food","뷔페":"Buffet","치킨":"Fried chicken","카페":"Cafe","간식":"Snacks","술집":"Bar"};   // 허브 번역이 빠졌을 때 일·중 화면 종류 (10-18)
+function kindX(k){ return (LANG!=="en"&&KIND_X[k])?TE(KIND_X[k]):k; }
+function eatLine(c){ var kd=c.src==="near"?(L()?(c.cat_en||kindX(c.kind)):String(c.cat||"").split(">").slice(1).map(function(x){ return x.trim(); }).join("·")):(L()?(c.kind_x||c.kind_en||c.kind):c.kind);
   return (c.src==="ad"?'<b class="tead">'+T("광고","Ad")+'</b> ':'')+'<b>'+esc(eatName(c))+'</b>'+(kd?' <i>'+esc(kd)+'</i>':'')+(c.dist!=null?' <i>· '+(c.dist<1000?c.dist+" m":(c.dist/1000).toFixed(1)+" km")+'</i>':'')
-    +(c.src==="eat"&&c.menu&&c.menu!==c.kind&&c.menu!=="음식점"?' <i>· '+esc(c.menu)+'</i>':'')+(c.lux?' <b class="tead" style="background:#7048e8">'+T("고급","Fine dining")+'</b>':'')
+    +(c.src==="eat"&&c.menu&&c.menu!==c.kind&&c.menu!=="음식점"?' <i>· '+esc((L()&&c.menu_x)||c.menu)+'</i>':'')+(c.lux?' <b class="tead" style="background:#7048e8">'+T("고급","Fine dining")+'</b>':'')
     +(c.srcs&&c.srcs.length?'<span class="tesrc">📖 '+(c.url&&/^https:\/\//.test(c.url)?'<a href="'+esc(c.url)+'" target="_blank" rel="noopener">':'')+esc(c.srcs.map(function(q){ return LP(q); }).join(" · "))+(c.url?'</a>':'')+'</span>':'')
     +(c.note?'<span class="tmemo">'+esc(c.note)+'</span>':'')+(c.src==="ad"&&LD(c)?'<span class="ttip">'+esc(LD(c))+'</span>':''); }
 function eatLinks(c){ var t=String(c.tel||"").replace(/\s/g,""), tl=t?'<a class="tel" href="tel:'+esc(telIntl(t))+'">📞 '+esc(L()?telIntl(t).replace("-"," "):t)+'</a>':"";
@@ -405,9 +409,9 @@ function recsFetch(){ var pl=TR.plan; if(!pl) return; pl.recs=pl.recs||{}; var H
   eatsLoad().then(function(){ if(TR.plan!==pl) return; pl.days.forEach(function(d,di){ var s=sched(H,d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean),new Date(d.date+"T00:00:00Z"),pl.from,mealsOf(di));
     s.rows.forEach(function(r){ if(!r.meal||r.r) return; var mk=di+":"+r.meal, an=r.anchor||r.next, rc=pl.recs[mk], el=document.getElementById("te_"+mk.replace(":","_")); if(!an) return;
       if(rc&&rc.ak===an.k&&(rc.l===LANG||!L())){ if(el&&!el.querySelector(".tec")) el.innerHTML=eatList(mk,an); return; }   // 영어 화면인데 한글로 받아 둔 것만 다시
-      var qk=mk+"|"+an.k; if(EATQ[qk]) return; EATQ[qk]=1; var at=pl.at;
+      var lg=LANG, qk=mk+"|"+an.k+"|"+lg; if(EATQ[qk]) return; EATQ[qk]=1; var at=pl.at;   // 언어는 부를 때 값으로 적는다 — 받는 사이에 언어를 바꾸면 다른 언어 이름이 그 언어로 저장됐다 (10-18)
       fetch(HUB+"/neat?x="+(+an.lng).toFixed(4)+"&y="+(+an.lat).toFixed(4)+kpL()).then(function(r){ return r.json(); }).then(function(j){ delete EATQ[qk]; if(!TR.plan||TR.plan.at!==at) return;
-        TR.plan.recs[mk]={ak:an.k,a:[+an.lat,+an.lng],p:(j&&j.partners)||[],i:(j&&j.ok&&j.items)||[],l:LANG}; save();
+        TR.plan.recs[mk]={ak:an.k,a:[+an.lat,+an.lng],p:(j&&j.partners)||[],i:(j&&j.ok&&j.items)||[],l:lg}; save(); if(lg!==LANG) return;
         var e2=document.getElementById("te_"+mk.replace(":","_")); if(e2) e2.innerHTML=eatList(mk,an); })
         .catch(function(){ delete EATQ[qk]; var e2=document.getElementById("te_"+mk.replace(":","_")); if(e2) e2.innerHTML='<span class="d">'+T("식당 추천을 못 불러왔어요","Could not load suggestions")+'</span>'; }); }); }); }); }
 document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("#trRep .tebtn"); if(!b) return; e.preventDefault(); var pl=TR.plan; if(!pl) return; pl.meals=pl.meals||{};
