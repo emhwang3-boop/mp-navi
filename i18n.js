@@ -4,6 +4,10 @@
  *  EMB_L = 대사관 나라 이름 [일, 简, 繁] (near.js) */
 window.I18N={
 "ja":{
+"Always check the exact location on the detailed map — sketch maps are approximate": "略図で見た場所は、必ず詳細地図で正確な位置をご確認ください",
+"Tap the picture you want to go to — tap “Me” again to cancel": "行きたい絵をタップしてください — もう一度「自分」をタップすると取り消します",
+"Cancelled": "取り消しました",
+"To measure from “Me”, your location is needed — tap ◎ My location and allow location access.": "「自分」から距離を測るには位置情報が必要です — ◎ 現在地ボタンをタップして、位置情報の利用を許可してください。",
 "Show this screen in Korean": "この画面を韓国語で表示",
 "Choose language": "言語を選ぶ",
 " (train/bus)": "（鉄道・バス）",
@@ -403,6 +407,10 @@ window.I18N={
 "🛒 My trip plan": "🛒 私の旅程"
 },
 "zhs":{
+"Always check the exact location on the detailed map — sketch maps are approximate": "在简图上看到的地点，请务必用详细地图确认准确位置",
+"Tap the picture you want to go to — tap “Me” again to cancel": "请点想去的图标——再点一次“我”即可取消",
+"Cancelled": "已取消",
+"To measure from “Me”, your location is needed — tap ◎ My location and allow location access.": "要从“我”测量距离，需要您的位置——请点 ◎ 当前位置按钮并允许位置权限。",
 "Show this screen in Korean": "用韩语显示此画面",
 "Choose language": "选择语言",
 " (train/bus)": "（火车/巴士）",
@@ -802,6 +810,10 @@ window.I18N={
 "🛒 My trip plan": "🛒 我的行程安排"
 },
 "zht":{
+"Always check the exact location on the detailed map — sketch maps are approximate": "在簡圖上看到的地點，請務必用詳細地圖確認正確位置",
+"Tap the picture you want to go to — tap “Me” again to cancel": "請點想去的圖 — 再點一次「我」即可取消",
+"Cancelled": "已取消",
+"To measure from “Me”, your location is needed — tap ◎ My location and allow location access.": "要從「我」測量距離，需要您的位置 — 請點 ◎ 目前位置按鈕並允許位置權限。",
 "Show this screen in Korean": "用韓語顯示此畫面",
 "Choose language": "選擇語言",
 " (train/bus)": "（火車/客運）",
