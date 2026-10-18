@@ -117,7 +117,7 @@ function fetchKind(t,p){ var en=kpL(), key=t.c+(t.kind||"")+"|"+p[0].toFixed(3)+
   var one=function(r){ return fetch(HUB+"/kplace?cat="+t.c+"&x="+p[1].toFixed(5)+"&y="+p[0].toFixed(5)+"&radius="+r+en).then(function(x){ return x.json(); }); };
   return CACHE[key]=one(t.r).then(function(j){ if(j&&j.ok&&cnt(j)>=need) return j; return one(10000); }).then(function(j){
     if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); return (j.items||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }); },function(e){ delete CACHE[key]; throw e; }).catch(function(e){ delete CACHE[key]; throw e; }); }
-function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err="";
+function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.byL={}; S.fl="";
   if(t.fixed){ var mp=ME.pos||null; S.base=null; S.src="";   // 대사관: 고정 목록 · 위치를 묻지 않는다 · 「나」 위치가 있으면 거리만 (폰 안에서 계산)
     S.items=EMB.map(function(x){ var o=Object.assign({},x); o.dist=(mp&&x.y)?Math.round(kmLL(mp,[x.y,x.x])*1000):null; return o; }); if(embL()) S.items.sort(function(a,b){ return embKey(a).localeCompare(embKey(b),{ja:"ja",zhs:"zh-CN",zht:"zh-TW"}[LANG]); }); paint(); return; }
   paint();
@@ -126,7 +126,15 @@ function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err="";
     S.base=b.p; S.src=b.src; paint();
     return fetchKind(t,b.p).then(function(it){ if(S.k+S.tab+LANG!==my) return;
       it=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b.p,[+x.y,+x.x])*1000); return o; }).sort(function(a,c){ return a.dist-c.dist; }).slice(0,10);
-      S.items=it; paint(); }); }).catch(function(){ S.err="net"; paint(); }); }
+      S.items=it; S.fl=LANG; S.byL[LANG]=it; paint(); }); }).catch(function(){ S.err="net"; paint(); }); }
+// 언어를 바꿀 때 — 목록을 비우지 않고 그 자리에서 (한국어 = 받은 이름 그대로, 그 언어로 받아 둔 게 있으면 그것, 처음 가는 외국어만 같은 자리로 다시 받음, 10-18)
+function relang(){ var k=KINDS[S.k]; if(!k) return; var t=k.tabs[S.tab];
+  if(t.fixed||!S.items||!S.base||S.err) return load();
+  S.byL=S.byL||{}; if(!L()||S.fl===LANG){ paint(); return; }
+  if(S.byL[LANG]){ S.items=S.byL[LANG]; S.fl=LANG; paint(); return; }
+  paint(); var my=S.k+S.tab+LANG, b=S.base; try{ if(window.KL&&KL.bz) KL.bz(1); }catch(e){}
+  fetchKind(t,b).then(function(it){ if(S.k+S.tab+LANG!==my) return; it=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b,[+x.y,+x.x])*1000); return o; }).sort(function(a,c){ return a.dist-c.dist; }).slice(0,10);
+    S.items=it; S.fl=LANG; S.byL[LANG]=it; paint(); }).catch(function(){}).then(function(){ try{ if(window.KL&&KL.bz) KL.bz(-1); }catch(e){} }); }
 
 // ── 화면 ──
 function open(k){ css(); var mm=document.getElementById("mm"); if(mm) mm.hidden=true;
@@ -158,7 +166,7 @@ function embHtml(x){ var en=L(), tel="", lk;
   if(x.y) lk=linksTo(x.n,x.y,x.x,x.n,x.a);
   else { var q=encodeURIComponent(x.a), A=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };   // 좌표 없는 곳은 주소로 지도 검색
     lk=en?A("https://www.google.com/maps/search/?api=1"+(hlG()||"&hl=en")+"&query="+q,TE("Google Maps (English)"))+A("https://map.naver.com/p/search/"+q,TE("Naver Map")):A("https://map.kakao.com/?q="+q,"카카오맵")+A("https://map.naver.com/p/search/"+q,"네이버 지도")+A("https://www.google.com/maps/search/?api=1&query="+q,"구글 지도"); }
-  return '<div class="nrit nremb"><div class="c">'+flag(x.f)+(embL()?esc(embC(x)):esc(x.e)+' · '+esc(embC(x)))+'</div><div class="h"><b>'+esc(embN(x))+'</b>'+(x.dist!=null?'<i>'+km(x.dist)+'</i>':'')+'</div>'
+  return '<div class="nrit nremb" data-ak="'+esc(x.f)+'"><div class="c">'+flag(x.f)+(embL()?esc(embC(x)):esc(x.e)+' · '+esc(embC(x)))+'</div><div class="h"><b>'+esc(embN(x))+'</b>'+(x.dist!=null?'<i>'+km(x.dist)+'</i>':'')+'</div>'
     +(en?'<div class="ko">'+esc(x.n)+'</div>':'')+'<div class="d">'+esc(en?(x.ae||x.a):x.a)+'</div>'
     +(tel?'<div class="row">'+tel+'</div>':'')+'<div class="lks">'+lk+'</div></div>'; }
 function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) return; var k=KINDS[S.k], em=S.k==="em";
@@ -180,7 +188,7 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
 // ── 한 곳 고르기 → 기존 검색 핀 ──
 function pick(x){ var t=KINDS[S.k].tabs[S.tab]; try{ ntap(t.kind||t.c.toLowerCase(),KINDS[S.k].e); }catch(e){}
   PICK={lat:+x.y,lng:+x.x,em:S.k==="em"}; close();
-  spinShow({name:x.name,name_en:x.name_en||x.name,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",y:x.y,x:x.x,tel:x.tel||"",cat:x.cat||"",cat_en:x.cat_en||""}); }
+  spinShow({name:x.name,name_en:x.name_en||x.name,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",y:x.y,x:x.x,tel:x.tel||"",cat:x.cat||"",cat_en:x.cat_en||"",_l:S.fl||(x.name_en?LANG:"ko")}); }
 // 긴급으로 고른 곳은 카드 맨 위에 큰 「전화」 단추
 var sc0=window.spinCard; if(typeof sc0==="function"&&!sc0._nr){ var sc1=function(){ var r=sc0.apply(this,arguments);
     try{ var p=PLACES.__pin; if(PICK&&PICK.em&&p&&p.tel&&Math.abs(+p.lat-PICK.lat)<1e-6&&Math.abs(+p.lng-PICK.lng)<1e-6){ var it=document.querySelector("#res .item");
@@ -239,7 +247,7 @@ function entries(){ css(); var box=document.getElementById("gfchips");
   var mm=document.getElementById("mm"); if(mm) ["am","em","st"].forEach(function(k){ var id="mnear_"+k, a=document.getElementById(id);
     if(!a){ a=document.createElement("a"); a.id=id; a.href="#"; a.className="mi"; a.dataset.nr=k; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); }
     a.textContent=T(MENU[k][0],MENU[k][1]); }); }
-var f=window.setLang; if(typeof f==="function"&&!f._nr){ var g=function(){ var r=f.apply(this,arguments); try{ entries(); if(document.getElementById("nrBox")) load(); }catch(e){} return r; }; g._nr=1; g._gf=f._gf; g._tr=f._tr; window.setLang=g; }
+var f=window.setLang; if(typeof f==="function"&&!f._nr){ var g=function(){ var r=f.apply(this,arguments); try{ entries(); if(document.getElementById("nrBox")) relang(); var bk=document.getElementById("nrBk"); if(bk&&BK) bookOpen(); }catch(e){} return r; }; g._nr=1; g._gf=f._gf; g._tr=f._tr; window.setLang=g; }   // 열린 목록·예약 창은 그 자리에서 (10-18)
 entries();
 window.NEAR={open:open,close:close,state:function(){ return S; }};
 var qm=location.search.match(/[?&]near=(am|em)/); if(qm) setTimeout(function(){ open(qm[1]); },300);
