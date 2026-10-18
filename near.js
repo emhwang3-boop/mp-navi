@@ -119,7 +119,7 @@ function fetchKind(t,p){ var en=kpL(), key=t.c+(t.kind||"")+"|"+p[0].toFixed(3)+
     if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); return (j.items||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }); },function(e){ delete CACHE[key]; throw e; }).catch(function(e){ delete CACHE[key]; throw e; }); }
 function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err="";
   if(t.fixed){ var mp=ME.pos||null; S.base=null; S.src="";   // 대사관: 고정 목록 · 위치를 묻지 않는다 · 「나」 위치가 있으면 거리만 (폰 안에서 계산)
-    S.items=EMB.map(function(x){ var o=Object.assign({},x); o.dist=(mp&&x.y)?Math.round(kmLL(mp,[x.y,x.x])*1000):null; return o; }); paint(); return; }
+    S.items=EMB.map(function(x){ var o=Object.assign({},x); o.dist=(mp&&x.y)?Math.round(kmLL(mp,[x.y,x.x])*1000):null; return o; }); if(embL()) S.items.sort(function(a,b){ return embKey(a).localeCompare(embKey(b),{ja:"ja",zhs:"zh-CN",zht:"zh-TW"}[LANG]); }); paint(); return; }
   paint();
   var my=S.k+S.tab+LANG;
   pickBase(false).then(function(b){ if(!b){ S.base=null; S.err="loc"; paint(); return; }
@@ -143,6 +143,10 @@ function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=en?x.name_en:x.name, ad=en?
     +(en?'<div class="ko">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div>'
     +'<div class="row">'+tel+'<span class="go">'+T("지도에 핀","Pin on map")+' ›</span></div></div>'; }
 // 대사관 — 일본어·중국어 화면은 나라 이름(EMB_L)으로 「아르헨티나 대사관」 꼴 (10-18). 표에 없으면 영어 이름
+// 일·중 화면은 나라 이름을 그 언어로만, 그 언어 순서(일: 50음, 简: 병음, 繁: 획수)로 (10-18)
+function embL(){ return {ja:1,zhs:1,zht:1}[LANG]===1; }
+var EMB_KANA={CN:"ちゅうごく",JP:"にほん",EU:"おうしゅうれんごう"};
+function embKey(x){ return (LANG==="ja"&&EMB_KANA[x.f])||embC(x); }
 function embC(x){ var l=window.EMB_L&&EMB_L[x.f], i={ja:0,zhs:1,zht:2}[LANG]; return (l&&i!=null&&l[i])||x.k; }
 function embN(x){ if(LANG==="ko") return x.n; if(LANG==="en") return x.ne; var l=window.EMB_L&&EMB_L[x.f], i={ja:0,zhs:1,zht:2}[LANG]; if(!l||i==null) return x.ne;
   var nm=l[i]; if(x.f==="EU") return [nm+"代表部","欧盟驻韩国代表团","歐盟駐韓國代表處"][i]; return [nm+"大使館（在韓国）",nm+"驻韩国大使馆",nm+"駐韓國大使館"][i]; }
@@ -154,7 +158,7 @@ function embHtml(x){ var en=L(), tel="", lk;
   if(x.y) lk=linksTo(x.n,x.y,x.x,x.n,x.a);
   else { var q=encodeURIComponent(x.a), A=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };   // 좌표 없는 곳은 주소로 지도 검색
     lk=en?A("https://www.google.com/maps/search/?api=1"+(hlG()||"&hl=en")+"&query="+q,TE("Google Maps (English)"))+A("https://map.naver.com/p/search/"+q,TE("Naver Map")):A("https://map.kakao.com/?q="+q,"카카오맵")+A("https://map.naver.com/p/search/"+q,"네이버 지도")+A("https://www.google.com/maps/search/?api=1&query="+q,"구글 지도"); }
-  return '<div class="nrit nremb"><div class="c">'+flag(x.f)+esc(x.e)+' · '+esc(embC(x))+'</div><div class="h"><b>'+esc(embN(x))+'</b>'+(x.dist!=null?'<i>'+km(x.dist)+'</i>':'')+'</div>'
+  return '<div class="nrit nremb"><div class="c">'+flag(x.f)+(embL()?esc(embC(x)):esc(x.e)+' · '+esc(embC(x)))+'</div><div class="h"><b>'+esc(embN(x))+'</b>'+(x.dist!=null?'<i>'+km(x.dist)+'</i>':'')+'</div>'
     +(en?'<div class="ko">'+esc(x.n)+'</div>':'')+'<div class="d">'+esc(en?(x.ae||x.a):x.a)+'</div>'
     +(tel?'<div class="row">'+tel+'</div>':'')+'<div class="lks">'+lk+'</div></div>'; }
 function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) return; var k=KINDS[S.k], em=S.k==="em";
@@ -165,7 +169,7 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
   else h+='<div class="nrtabs">'+k.tabs.map(function(t,i){ return '<button type="button" class="nrtab'+(i===S.tab?' on':'')+'" data-nr="tab" data-i="'+i+'">'+t.i+' '+esc(T(t.ko,t.en))+'</button>'; }).join("")+'</div>';
   if(S.err==="loc") h+='<div class="msg">'+T("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요. 또는 지도를 보고 싶은 동네로 옮긴 뒤 다시 눌러 주세요.","Could not get your location — please allow location access, or move the map to the area you want and try again.")+'</div><div class="nrbase"><button type="button" class="nrme" data-nr="me">📍 '+T("내 위치 다시 받기","Try my location again")+'</button></div>';
   else if(S.err) h+='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>';
-  else if(k.tabs[S.tab].fixed&&S.items) h+='<div class="nrbase">'+T("나라 영문 이름 순","Sorted by country name (A–Z)")+'</div>'+S.items.map(embHtml).join("");
+  else if(k.tabs[S.tab].fixed&&S.items) h+='<div class="nrbase">'+(embL()?TE("Sorted by country name (local order)"):T("나라 영문 이름 순","Sorted by country name (A–Z)"))+'</div>'+S.items.map(embHtml).join("");
   else { if(S.base) h+='<div class="nrbase">'+(S.src==="me"?T("📍 내 위치에서 가까운 순","📍 Nearest to you"):T("🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map"))
       +(S.src!=="me"?' <button type="button" class="nrme" data-nr="me">📍 '+T("내 위치로","Use my location")+'</button>':'')+'</div>';
     if(!S.items) h+='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
