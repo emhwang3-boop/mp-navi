@@ -715,7 +715,7 @@ function odsBox(a,b){ var box=document.getElementById("ods"); if(!box) return; v
       +'<div class="d" style="font-size:11px;text-align:right">powered by www.ODsay.com</div>'; };
   if(cached) return draw(cached);
   box.innerHTML='<div class="d">'+T("경로 찾는 중…","Finding routes…")+'</div>';
-  fetch(HUB+"/odsay?lang="+(FG()?1:0)+"&SX="+(+p.lng).toFixed(6)+"&SY="+(+p.lat).toFixed(6)+"&EX="+(+q.lng).toFixed(6)+"&EY="+(+q.lat).toFixed(6))   /* 허브 → 우리 서버 → ODsay (키는 서버에만, 사장님 10-17) */
+  fetch(HUB+"/odsay?lang="+({en:1,ja:2,zhs:3,zht:4}[LANG]||0)+"&SX="+(+p.lng).toFixed(6)+"&SY="+(+p.lat).toFixed(6)+"&EX="+(+q.lng).toFixed(6)+"&EY="+(+q.lat).toFixed(6))   /* 허브 → 우리 서버 → ODsay (키는 서버에만, 사장님 10-17) */
     .then(function(r){ return r.json(); }).then(function(j){ if(j&&j.result){ try{ sessionStorage.setItem(ck,JSON.stringify(j)); }catch(e){} } draw(j); }).catch(function(){ box.innerHTML=""; }); }
 function distShow(a,b,p0,p1){
   if(a==="ktx"||b==="ktx"){ ktxErr(); dlDraw(null); return; }
