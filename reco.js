@@ -32,6 +32,7 @@ function css(){ if($("rcCss")) return; var s=document.createElement("style"); s.
   +".rcring b{position:absolute;right:-6px;top:-6px;min-width:18px;height:18px;border-radius:9px;background:#f08c00;color:#fff;font-size:11px;line-height:18px;text-align:center;font-weight:900;padding:0 3px;box-shadow:0 0 0 2px #fff}"
   +"@keyframes rcPulse{0%,100%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{opacity:.55;transform:translate(-50%,-50%) scale(1.18)}}"
   +"@media (prefers-reduced-motion:reduce){.rcring{animation:none}}"
+  +".rchd .rcclr{float:right;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;font-size:12px;font-weight:800;padding:3px 10px;cursor:pointer;margin-left:8px}.rcbar .rcclr{background:var(--card);color:var(--sub)}"
   +".rcback{border:0;background:none;color:var(--blue);font-weight:800;font-size:14px;cursor:pointer;padding:4px 2px;margin:0 0 2px}";
   document.head.appendChild(s); }
 function L(){ return LANG!=="ko"; }   // 외국어 화면 (10-18)
@@ -103,7 +104,7 @@ function kGet(kws,nms,np){ if(!kws.length&&!nms.length) return Promise.resolve([
     var n=Math.max(3,5-Math.min(np,2)), r=all.slice(0,n); r.forEach(function(x){ R.kseen[x._k]=1; R.kpos.push([+x.y,+x.x]); }); return r; }); }
 
 // ── 그리기 ──
-function bar(retry){ return '<div class="rcbar">'+(retry?'<button type="button" class="pri" data-rc="again">'+esc(T("다시 짜줘","Try again"))+'</button>':'')+'<button type="button" data-rc="search">'+esc(T("일반 검색으로 찾기","Regular search"))+'</button></div>'; }
+function bar(retry){ return '<div class="rcbar">'+(retry?'<button type="button" class="pri" data-rc="again">'+esc(T("다시 짜줘","Try again"))+'</button>':'')+'<button type="button" data-rc="search">'+esc(T("일반 검색으로 찾기","Regular search"))+'</button><button type="button" class="rcclr" data-rc="clear">'+esc(T("✕ 추천 지우기","✕ Clear picks"))+'</button></div>'; }
 function has(k){ try{ return TRIP.state().items.some(function(x){ return x.k===k; }); }catch(e){ return false; } }
 function addBtn(k){ var on=has(k); return '<div class="trbw"><button type="button" class="tradd'+(on?' on':'')+'" data-k="'+esc(k)+'" data-src="'+esc(k)+'">'+(on?T("✓ 담김 · 빼기","✓ Added · Remove"):T("＋ 일정에 담기","＋ Add to my trip"))+'</button></div>'; }
 // 이유·안내 글 — 받은 언어면 그것, 한국어 화면은 why_ko(허브가 주면) 아니면 장소 설명(dko), 다른 외국어는 그 언어 장소 설명 (AI 를 다시 부르지 않는다, 10-18)
@@ -143,7 +144,7 @@ function rcOff(){ R.on=false; R.back=false; ringClear(); }
 
 // ── 누르기 ──
 document.addEventListener("click",function(e){ var t=e.target;
-  var b=t.closest&&t.closest("[data-rc]"); if(b){ e.preventDefault(); if(b.dataset.rc==="again") recoGo(true); else if(b.dataset.rc==="search"){ var q=R.q; rcOff(); $("q").value=q; try{ qxSync(); }catch(x){} go(q); } else if(b.dataset.rc==="back"){ paint(); } else if(b.dataset.rc==="buy"){ try{ openPricing(); }catch(x){} } else if(b.dataset.rc==="resend"){ try{ NPASS.resend(); }catch(x){} } return; }
+  var b=t.closest&&t.closest("[data-rc]"); if(b){ e.preventDefault(); if(b.dataset.rc==="again") recoGo(true); else if(b.dataset.rc==="search"){ var q=R.q; rcOff(); $("q").value=q; try{ qxSync(); }catch(x){} go(q); } else if(b.dataset.rc==="back"){ paint(); } else if(b.dataset.rc==="clear"){ rcOff(); R.picks=[]; R.kits=[]; window._RR=null; $("res").innerHTML=""; }   /* ✕ 추천 지우기 — 주황 고리·목록 모두 (사장님 10-18) */ else if(b.dataset.rc==="buy"){ try{ openPricing(); }catch(x){} } else if(b.dataset.rc==="resend"){ try{ NPASS.resend(); }catch(x){} } return; }
   if(t.closest&&(t.closest("a")||t.closest(".tradd"))) return;
   var c=t.closest&&t.closest("#res .rcit"); if(c){ var k=c.dataset.rk, P=PLACES[k]; if(!P) return; R.back=true;
     var id0=meBest(+P.lat,+P.lng)||NAVI_ROOT; if(DET){ try{ _nm.setCenter(new naver.maps.LatLng(+P.lat,+P.lng)); }catch(x){} } else spinGo(id0===NAVI_ROOT?"kr":id0,+P.lat,+P.lng,null);
