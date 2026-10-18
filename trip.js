@@ -11,7 +11,7 @@
 // ── 이용권 ── 결제 연결 전이라 모두 true. 막으려면 아래 한 줄을 `return false;` 로 (또는 이용권 확인 함수로)
 function hasPass(){ return true; }
 window.hasPass=window.hasPass||hasPass;
-if(typeof window.openPricing!=="function") window.openPricing=function(){ tPop('<div style="font-size:30px;margin-bottom:6px">🎫</div><b>'+T("이용권 준비 중","Pass coming soon")+'</b><div class="d" style="margin-top:6px">'+T("「일정 짜기」는 이용권 기능입니다. 곧 열립니다.","“Plan my trip” is a pass feature. Coming soon.")+'</div>'); };
+if(typeof window.openPricing!=="function") window.openPricing=function(){ tPop(function(){ return '<div style="font-size:30px;margin-bottom:6px">🎫</div><b>'+T("이용권 준비 중","Pass coming soon")+'</b><div class="d" style="margin-top:6px">'+T("「일정 짜기」는 이용권 기능입니다. 곧 열립니다.","“Plan my trip” is a pass feature. Coming soon.")+'</div>'; }); };
 
 var KEY="mpv_trip", MAXN=40;
 var TR=load();
@@ -87,7 +87,13 @@ function wrap(name,after){ var f=window[name]; if(typeof f!=="function"||f._tr) 
 wrap("placeShow",function(){ cardBtn(); });
 wrap("spinCard",function(){ cardBtn(); });
 wrap("zApply",function(){ flags(); });
-wrap("setLang",function(){ refresh(); if(document.getElementById("trBox")) panelPaint(); if(document.getElementById("trRep")) repPaint(); });
+wrap("setLang",function(){ refresh(); if(document.getElementById("trBox")){ var aq=document.getElementById("trAddrQ"), av=aq?aq.value:""; panelPaint(); var aq2=document.getElementById("trAddrQ"); if(aq2) aq2.value=av; addrPaint(); }
+  if(document.getElementById("trRep")) repAgain(); });   // 열린 창은 그 자리에서 (lang.js, 10-18)
+// 보고서를 그 자리에서 다시 — 「다음 갈 곳」·「공유」 칸과 펼쳐 둔 「실제 경로」 구간을 그대로 다시 연다 (같은 구간은 sessionStorage 캐시)
+function repAgain(){ var nb=document.getElementById("trNextBox"), nx=nb&&nb.firstElementChild?(nb.querySelector("#trShL")?"share":"next"):"", open=[];
+  [].forEach.call(document.querySelectorAll("#trRep .tlg"),function(r){ var t=r.querySelector(".tods"); if(t&&t.firstElementChild) open.push([r.dataset.a,r.dataset.b,r.dataset.d]); });
+  repPaint(); if(nx==="next") nextStop(); else if(nx==="share") shareGo();
+  var nt=window.ntap; window.ntap=function(){}; try{ open.forEach(function(o){ var r=[].filter.call(document.querySelectorAll("#trRep .tlg"),function(x){ return x.dataset.a===o[0]&&x.dataset.b===o[1]&&x.dataset.d===o[2]; })[0]; if(r) legRoute(r); }); }catch(e){} window.ntap=nt; }
 wrap("mapLoad",function(r){ if(r&&r.then) r.then(function(){ flags(); },function(){}); });
 window.addEventListener("resize",function(){ flags(); });
 
@@ -112,7 +118,9 @@ function refresh(){ var n=TR.items.length, mm=document.getElementById("mm");
 
 // ── 창 공통 ──
 function tPop(html){ var b=document.createElement("div"); b.className="trpop"; b.onclick=function(e){ if(e.target===b) b.remove(); };
-  b.innerHTML='<div>'+html+'<button type="button" class="trbtn" style="margin-top:12px" onclick="this.closest(\'.trpop\').remove()">'+T("닫기","Close")+'</button></div>'; document.body.appendChild(b); return b; }
+  var draw=function(){ b.innerHTML='<div>'+(typeof html==="function"?html():html)+'<button type="button" class="trbtn" style="margin-top:12px" onclick="this.closest(\'.trpop\').remove()">'+T("닫기","Close")+'</button></div>'; };
+  draw(); if(typeof html==="function") b._rb=draw;   // 글을 함수로 주면 언어를 바꿀 때 그 자리에서 다시 (lang.js, 10-18)
+  document.body.appendChild(b); return b; }
 function sheet(id){ var o=document.getElementById(id); if(o) o.remove(); o=document.createElement("div"); o.id=id; o.className="trsheet";
   o.innerHTML='<div class="trin"></div>'; document.body.appendChild(o); document.documentElement.classList.add("trlock"); return o.firstChild; }
 function sheetClose(id){ var o=document.getElementById(id); if(o) o.remove(); if(!document.querySelector(".trsheet")) document.documentElement.classList.remove("trlock"); }
@@ -159,10 +167,13 @@ function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) 
   [].forEach.call(box.querySelectorAll(".trx"),function(b){ b.onclick=function(){ delItem(b.dataset.k); panelPaint(); }; });
   if(g("trClearAll")) g("trClearAll").onclick=function(){ if(!confirm(T("담은 곳과 짠 일정을 모두 지울까요?","Remove all places and your plan?"))) return; TR.items=[]; TR.plan=null; save(); refresh(); panelPaint(); };   // 모두 비우기 (사장님 10-16)
   dragInit(g("trList")); }
-function addrSearch(){ var q=document.getElementById("trAddrQ").value.trim(), out=document.getElementById("trAddrR"); if(!q) return; out.innerHTML='<div class="d">'+T("찾는 중…","Searching…")+'</div>';
-  fetch(HUB+"/kplace?q="+encodeURIComponent(q)+kpL()).then(function(r){ return r.json(); }).then(function(j){ ADDR=((j&&j.ok&&j.items)||[]).slice(0,6);
+var ADDRQ="";   // 숙소 찾기 — 마지막 검색어 (언어를 바꿔 창을 다시 그릴 때 결과도 다시, 10-18)
+function addrPaint(){ var out=document.getElementById("trAddrR"); if(!out||!ADDRQ) return; var q0=document.getElementById("trAddrQ"); if(q0&&!q0.value) q0.value=ADDRQ;
+  if(window.KL&&ADDR.length) KL.ensure(ADDR,"item",ADDRQ,function(){ if(document.getElementById("trBox")) addrPaint(); });
     out.innerHTML=ADDR.length?ADDR.map(function(x,i){ return '<div class="tra" data-i="'+i+'"><b>'+esc(KS(L()&&x.name_en?x.name_en:x.name))+'</b><br><span class="d">'+esc(L()&&x.addr_en?x.addr_en:x.addr)+'</span></div>'; }).join(""):'<div class="d">'+T("찾은 곳이 없어요","No results")+'</div>';
-    [].forEach.call(out.querySelectorAll(".tra"),function(e){ e.onclick=function(){ var x=ADDR[+e.dataset.i]; TR.opt.hotel={type:"addr",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x}; save(); panelPaint(); }; }); })
+    [].forEach.call(out.querySelectorAll(".tra"),function(e){ e.onclick=function(){ var x=ADDR[+e.dataset.i]; TR.opt.hotel={type:"addr",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x}; save(); ADDRQ=""; ADDR=[]; panelPaint(); }; }); }
+function addrSearch(){ var q=document.getElementById("trAddrQ").value.trim(), out=document.getElementById("trAddrR"); if(!q) return; out.innerHTML='<div class="d">'+T("찾는 중…","Searching…")+'</div>'; var lg=LANG;
+  fetch(HUB+"/kplace?q="+encodeURIComponent(q)+kpL()).then(function(r){ return r.json(); }).then(function(j){ ADDR=((j&&j.ok&&j.items)||[]).slice(0,6); ADDR.forEach(function(x){ x._l=lg; }); ADDRQ=q; addrPaint(); })
     .catch(function(){ out.innerHTML='<div class="d">'+T("잠시 뒤 다시 해 주세요","Please try again")+'</div>'; }); }
 function dragInit(ol){ if(!ol) return; var cur=null;
   ol.addEventListener("pointerdown",function(e){ var h=e.target.closest(".trh"); if(!h) return; e.preventDefault(); cur=h.closest(".tri"); cur.classList.add("drag"); try{ h.setPointerCapture(e.pointerId); }catch(x){} });
@@ -306,7 +317,7 @@ function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan;
   h+='<div class="d" style="margin:10px 2px">'+T("이동 시간은 직선거리 어림입니다. 「실제 경로 보기」를 누르면 그 구간만 대중교통을 찾아요.","Travel times are straight-line estimates. Tap “See real routes” to look up transit for that leg.")+'</div>';
   box.innerHTML=h; var g=function(id){ return document.getElementById(id); };
   g("trNext").onclick=nextStop; g("trPdf").onclick=pdfGo; g("trShare").onclick=shareGo; g("trEdit").onclick=function(){ sheetClose("trRep"); openPanel(); };
-  g("trInfo").onclick=function(){ tPop('<b>ⓘ</b><div style="margin-top:6px;line-height:1.6">'+T("· PDF는 휴대폰 「다운로드」에 저장돼요 — 안드로이드는 파일 앱에서 PDF를 길게 눌러 「홈 화면에 추가」하면 바로 열 수 있어요.<br>· 궁궐 휴무(월: 창덕궁·창경궁·덕수궁·숭례문 / 화: 경복궁·종묘)는 궁능유적본부 안내 기준 — 휴무일이 공휴일이면 열고 다음 평일에 쉽니다.<br>· 다른 곳의 운영 시간은 현장·공식 안내를 확인하세요.","· The PDF is saved to Downloads — on Android, long-press it in the Files app and choose “Add to Home screen”.<br>· Palace closures (Mon: Changdeokgung, Changgyeonggung, Deoksugung, Sungnyemun / Tue: Gyeongbokgung, Jongmyo) follow the official Royal Palaces notice — if the closing day is a public holiday they open and close the next weekday.<br>· Check other opening hours on site or official pages.")+'</div>'); };
+  g("trInfo").onclick=function(){ tPop(function(){ return '<b>ⓘ</b><div style="margin-top:6px;line-height:1.6">'+T("· PDF는 휴대폰 「다운로드」에 저장돼요 — 안드로이드는 파일 앱에서 PDF를 길게 눌러 「홈 화면에 추가」하면 바로 열 수 있어요.<br>· 궁궐 휴무(월: 창덕궁·창경궁·덕수궁·숭례문 / 화: 경복궁·종묘)는 궁능유적본부 안내 기준 — 휴무일이 공휴일이면 열고 다음 평일에 쉽니다.<br>· 다른 곳의 운영 시간은 현장·공식 안내를 확인하세요.","· The PDF is saved to Downloads — on Android, long-press it in the Files app and choose “Add to Home screen”.<br>· Palace closures (Mon: Changdeokgung, Changgyeonggung, Deoksugung, Sungnyemun / Tue: Gyeongbokgung, Jongmyo) follow the official Royal Palaces notice — if the closing day is a public holiday they open and close the next weekday.<br>· Check other opening hours on site or official pages.")+'</div>'; }); };
   pl.days.forEach(function(d,di){ var el=g("tmap"+di); if(!el) return; var s=sched(H,d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean),new Date(d.date+"T00:00:00Z"),pl.from,mealsOf(di));
     dayMap(el,H,s.rows.filter(function(r){ return r.x||r.r; }).map(function(r){ return r.x?r.x:Object.assign({eat:1},r.r); })); });
   recsFetch(); }
