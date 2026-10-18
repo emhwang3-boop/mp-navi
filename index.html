@@ -345,6 +345,10 @@ function TE(e){ if(LANG==="ko"||LANG==="en"||e==null) return e; var s=String(e),
   var n=[], k=s.replace(/\d+(?:\.\d+)?/g,function(m){ n.push(m); return "#"; }); if(n.length&&(t[k]!=null||d[k]!=null)){ var i=0; return String(t[k]!=null?t[k]:d[k]).replace(/#/g,function(){ return n[i++]; }); }
   return s; }
 function T(k,e){ return LANG==="ko"?k:TE(e); }
+// 일·중 화면엔 어떤 경우든 한글 이름을 보이지 않는다 — 한글이 남으면 로마자로 (사장님 10-18 「차라리 영어 이름」)
+function KS(s){ s=String(s==null?"":s); if(!/^(ja|zhs|zht)$/.test(LANG)||!/[가-힣]/.test(s)) return s;
+  var I=["g","kk","n","d","tt","r","m","b","pp","s","ss","","j","jj","ch","k","t","p","h"], M=["a","ae","ya","yae","eo","e","yeo","ye","o","wa","wae","oe","yo","u","wo","we","wi","yu","eu","ui","i"], F=["","k","k","k","n","n","n","t","l","k","m","l","l","l","p","l","m","p","p","t","t","ng","t","t","k","t","p","t"];
+  return s.replace(/[가-힣]+/g,function(w,at,all){ var r=""; for(var i=0;i<w.length;i++){ var c=w.charCodeAt(i)-0xAC00; r+=I[Math.floor(c/588)]+M[Math.floor((c%588)/28)]+F[c%28]; } return at===0||/[\s(（·]/.test(all.charAt(at-1))?r.charAt(0).toUpperCase()+r.slice(1):r; }).replace(/\s{2,}/g," ").trim(); }
 function TF(e){ var a=arguments; return TE(e).replace(/\{(\d)\}/g,function(m,i){ return a[+i+1]; }); }   // 영어 틀 "…{0}…" 에 값 넣기
 function LN(o){ return !o?"":LANG==="ko"?o.ko:(o[LANG]||o.en||o.ko); }        // 자료 이름 (ja·zhs·zht 칸 → 없으면 en)
 function LD(o){ return !o?"":LANG==="ko"?o.dko:(o["d"+LANG]||o.den); }        // 자료 설명 (dja·dzhs·dzht → den)
@@ -396,7 +400,7 @@ function go(kq){
     window._sres=it.slice(0,10);
     out.innerHTML=gs+it.slice(0,10).map(function(x,i){
       var nm=encodeURIComponent(x.name), ll=x.y+","+x.x;
-      var en=FG()&&x.name_en, ttl=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
+      var en=FG()&&x.name_en, ttl=KS(en?x.name_en:x.name), ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
       return '<div class="item sres" data-i="'+i+'" style="cursor:pointer"><div class="t">📍 '+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
         +telLine(x.tel)+linksTo(x.name,x.y,x.x,x.name,x.addr)+'</div>';   // 목록에도 전화 (사장님 10-16)
     }).join("");
@@ -427,7 +431,7 @@ function spinShow0(x){ var lat=+x.y, lng=+x.x, nb=spinNorm(x.name);
   var f=meGeoFrac(VIEW,lat,lng); if(!f) return; var w=document.getElementById("map").clientWidth, sz=Math.max(10,w*0.045), fs=Math.max(4,w*0.016);
   var e=document.createElement("div"); e.id="spin"; e.onclick=function(ev){ ev.stopPropagation(); spinCard(); }; e.style.cssText="position:absolute;z-index:4;cursor:pointer;left:"+(f[0]*100)+"%;top:"+(f[1]*100)+"%;transform:translate(-50%,-100%)";
   e.innerHTML='<svg class="spbob" viewBox="0 0 24 34" style="display:block;width:'+sz+'px;height:'+(sz*34/24)+'px;margin:0 auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))"><path d="M12 1C6 1 1.5 5.5 1.5 11.3 1.5 19 12 33 12 33s10.5-14 10.5-21.7C22.5 5.5 18 1 12 1z" fill="#e03131" stroke="#fff" stroke-width="1.6"/><circle cx="12" cy="11.5" r="4" fill="#fff"/></svg>'
-    +'<div style="position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:1px;white-space:nowrap;background:#fff;color:#c92a2a;border:'+Math.max(0.6,fs*0.12)+'px solid #e03131;border-radius:999px;padding:'+(fs*0.12)+'px '+(fs*0.5)+'px;font-size:'+fs+'px;font-weight:900;line-height:1.3">'+esc(FG()?(x.name_en||x.name):x.name)+'</div>';
+    +'<div style="position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:1px;white-space:nowrap;background:#fff;color:#c92a2a;border:'+Math.max(0.6,fs*0.12)+'px solid #e03131;border-radius:999px;padding:'+(fs*0.12)+'px '+(fs*0.5)+'px;font-size:'+fs+'px;font-weight:900;line-height:1.3">'+esc(FG()?KS(x.name_en||x.name):x.name)+'</div>';
   document.getElementById("mz").appendChild(e); SPIN=x; spinCard();
   clearTimeout(window._scT); window._scT=setTimeout(function(){ var m=document.getElementById("map"); window.scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:"smooth"}); },200); }
 function spinCard(){ var p=PLACES.__pin; if(!p) return; var en=FG(), nm=LN(p), ad=en?p.addr_en:p.addr, ct=en?p.cat_en:String(p.cat||"").split(">").pop().trim();
@@ -1098,10 +1102,10 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
-<script src="trip.js?v=1018jz"></script>
+<script src="trip.js?v=1018ks"></script>
 <script src="gift.js?v=1018jz"></script>
-<script src="near.js?v=1018jy"></script>
-<script src="reco.js?v=1018j"></script>
+<script src="near.js?v=1018ks"></script>
+<script src="reco.js?v=1018ks"></script>
 <script src="pass.js?v=1018i"></script>
 <script>
 // ── ★ 관심 장소 (사장님 10-17) — 손님 폰 안에만 저장·분석. 서버로 보내지 않는다(통로 FAV_SEND 는 꺼 둠)
