@@ -34,7 +34,7 @@ function css(){ if($("rcCss")) return; var s=document.createElement("style"); s.
   +"@media (prefers-reduced-motion:reduce){.rcring{animation:none}}"
   +".rcback{border:0;background:none;color:var(--blue);font-weight:800;font-size:14px;cursor:pointer;padding:4px 2px;margin:0 0 2px}";
   document.head.appendChild(s); }
-function L(){ return LANG==="en"; }
+function L(){ return LANG!=="ko"; }   // 외국어 화면 (10-18)
 function pass(){ try{ return (window.TRIP&&TRIP.hasPass)?TRIP.hasPass():(typeof window.hasPass==="function"?window.hasPass():true); }catch(e){ return true; } }
 function btn(){ css(); var b=$("recob"); if(!b){ var g=$("gob"); if(!g) return; g.insertAdjacentHTML("afterend",'<button type="button" id="recob"></button>'); b=$("recob"); b.onclick=function(){ recoGo(); }; }
   b.textContent=T("추천받기","Get ideas"); }
@@ -74,7 +74,7 @@ var KCAT=[[/스키|스노보드/,/^(스키장|슬로프)$/],[/해수욕장|해�
 function kOne(u){ return fetch(u).then(function(r){ return r.json(); }).then(function(j){ return (j&&j.ok&&j.items)||[]; }).catch(function(){ return []; }); }
 function kNorm(s){ return String(s||"").replace(/[\s·()\-_.,'’]/g,"").toLowerCase(); }
 // kws = 종류 검색어(가까운 순 전국) · nms = AI 가 아는 실제 이름(카카오에서 확인된 것만 — 첫 결과가 그 이름일 때)
-function kGet(kws,nms,np){ if(!kws.length&&!nms.length) return Promise.resolve([]); var o=origin(), ps=ME&&ME.pos, lg=L()?"&lang=en":"", pq=ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"";
+function kGet(kws,nms,np){ if(!kws.length&&!nms.length) return Promise.resolve([]); var o=origin(), ps=ME&&ME.pos, lg=kpL(), pq=ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"";
   var A=kws.map(function(kw){ return kOne(HUB+"/kplace?q="+encodeURIComponent(kw)+"&near=1"+lg+pq).then(function(it){
       var keep=/약국|병원|은행|ATM|편의점/.test(kw), tk=kw.split(/\s+/).filter(function(t){ return t.length>=2; });   // 손님이 그걸 찾으면 남긴다
       it=it.filter(function(x){ var c=String(x.cat||""); return keep||!(KBAD.test(c)||(!KFOOD.test(kw)&&np>0&&/음식점|카페|숙박/.test(c))); });   // 명소를 하나도 못 고른 가게 이름 검색(스타벅스 등)은 카페도 남긴다
@@ -105,9 +105,9 @@ function addBtn(k){ var on=has(k); return '<div class="trbw"><button type="butto
 function paint(){ var out=$("res"), en=L(), h='', n=0;
   h+='<div class="rcwrap"><div class="rchd">'+esc(T("AI 추천","AI picks"))+'<span class="d">“'+esc(R.q)+'”</span></div>';
   if(R.note) h+='<div class="rcnote">'+esc(R.note)+'</div>';
-  R.picks.forEach(function(p,i){ var P=PLACES[p.k], nm=en?P.en:P.ko, sub=en?P.ko:"";
+  R.picks.forEach(function(p,i){ var P=PLACES[p.k], nm=LN(P), sub=en?P.ko:"";
     h+='<div class="item rcit" data-rk="'+esc(p.k)+'"><span class="rcno">'+(i+1)+'</span><div class="t">'+esc(nm)+'</div>'+(sub?'<div class="d" style="margin:1px 0 0">'+esc(sub)+'</div>':'')
-      +'<div class="rcwhy">'+esc(p.why||(en?P.den:P.dko)||"")+'</div>'+addBtn(p.k)+'</div>'; n++; });
+      +'<div class="rcwhy">'+esc(p.why||LD(P)||"")+'</div>'+addBtn(p.k)+'</div>'; n++; });
   if(R.kits.length){ var fs=!(ME&&ME.pos);
     h+='<div class="rcsec">'+esc(fs?T("가까운 곳 (서울에서 가까운 순)","More places nearby (closest to Seoul)"):T("가까운 곳 (나에게서 가까운 순)","More places nearby (closest to you)"))+'</div>';
     window._sres=R.kits;
