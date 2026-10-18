@@ -350,7 +350,7 @@ function LN(o){ return !o?"":LANG==="ko"?o.ko:(o[LANG]||o.en||o.ko); }        //
 function LD(o){ return !o?"":LANG==="ko"?o.dko:(o["d"+LANG]||o.den); }        // 자료 설명 (dja·dzhs·dzht → den)
 function LP(a){ if(!a) return ""; var i={ko:0,en:1,ja:2,zhs:3,zht:4}[LANG]||0; return a[i]||(i?TE(a[1]):a[0])||a[0]; }   // [한, 영, 일, 简, 繁] 줄
 function L2(){ return LANG==="ko"?"ko":"en"; }   // 허브가 ko/en 만 받는 곳
-function kpL(){ return LANG==="ko"?"":"&lang=en"+(LANG==="en"?"":"&ul="+LANG); }   // /kplace·/neat — 허브는 지금 en 만 안다(ul 은 허브가 쓸 수 있게 붙여 둔다)
+function kpL(){ return LANG==="ko"?"":"&lang=en"+(LANG==="en"?"":"&ul="+LANG); }   // /kplace·/neat — ul 이 있으면 허브가 name_en·cat_en 칸에 그 언어(일·简·繁)로 넣어 준다 (10-18)
 function hlG(){ return {ko:"",en:"&hl=en",ja:"&hl=ja",zhs:"&hl=zh-CN",zht:"&hl=zh-TW"}[LANG]||""; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function setLang(l){ if(LANGS.indexOf(l)<0) l="ko"; LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} }
@@ -1093,7 +1093,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
-<script src="trip.js?v=1018i"></script>
+<script src="trip.js?v=1018u"></script>
 <script src="gift.js?v=1018i"></script>
 <script src="near.js?v=1018i"></script>
 <script src="reco.js?v=1018j"></script>
