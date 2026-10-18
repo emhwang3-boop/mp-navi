@@ -37,7 +37,9 @@ function css(){ if($("rcCss")) return; var s=document.createElement("style"); s.
 function L(){ return LANG!=="ko"; }   // 외국어 화면 (10-18)
 function pass(){ try{ return (window.TRIP&&TRIP.hasPass)?TRIP.hasPass():(typeof window.hasPass==="function"?window.hasPass():true); }catch(e){ return true; } }
 function btn(){ css(); var b=$("recob"); if(!b){ var g=$("gob"); if(!g) return; g.insertAdjacentHTML("afterend",'<button type="button" id="recob"></button>'); b=$("recob"); b.onclick=function(){ recoGo(); }; }
-  b.textContent=T("추천받기","Get ideas"); }
+  b.textContent=T("추천받기","Get ideas"); fit(b); }
+// 글자가 단추보다 길면 글씨를 줄인다 (일본어 「おすすめを見る」 잘림, 사장님 10-18)
+function fit(b){ b.style.removeProperty("font-size"); requestAnimationFrame(function(){ var fs=parseFloat(getComputedStyle(b).fontSize)||14, n=0; while(b.scrollWidth>b.clientWidth+1&&fs>9&&n++<14){ fs-=1; b.style.setProperty("font-size",fs+"px","important"); } }); }
 function allMaps(){ return Promise.all(Object.keys(CITY).map(function(id){ return mapLoad(id).catch(function(){}); })); }
 function origin(){ return (ME&&ME.pos)?ME.pos:SEOUL; }
 
