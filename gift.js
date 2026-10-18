@@ -9,9 +9,9 @@
 (function(){
 "use strict";
 var G=null, GP=null, S={who:"",bud:""}, ADS={};
-function L(){ return window.LANG==="en"; }
-function t2(a){ return L()?a[1]:a[0]; }
-function nm(o){ return L()?(o.en||o.ko):o.ko; }
+function L(){ return window.LANG!=="ko"; }   // 외국어 화면 (10-18)
+function t2(a){ return LP(a); }   // [한, 영, 일, 简, 繁]
+function nm(o){ return LN(o); }
 function load(){ return GP||(GP=fetch("data/gifts.json?v="+(window.NAVI_V||"")).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }).then(function(j){ G=j; return j; },function(e){ GP=null; throw e; })); }
 
 // ── 순서: 누구 점수 + 예산 점수 (어느 쪽이든 0 이면 뺀다) ──
@@ -62,7 +62,7 @@ function paint(){ var b=document.querySelector("#gfBox .gfin"); if(!b) return;
   if(S.who&&S.bud){ var R=ranked();
     h+='<div class="gfq">3. '+T("이런 선물을 추천해요","Our picks for you")+'</div>'+dfsHtml();
     h+=R.map(function(k,i){ var n=[k.note&&k.note[S.who],k.note&&k.note[S.bud]].filter(Boolean).map(function(a){ return '<div class="n">👉 '+esc(t2(a))+'</div>'; }).join("");
-      return '<div class="gfk" data-kc="'+esc(k.c)+'"><div class="h"><span class="gfrank">'+(i+1)+'</span>'+k.i+' '+esc(nm(k))+'</div><div class="d">'+esc(L()?k.den:k.dko)+'</div>'+n
+      return '<div class="gfk" data-kc="'+esc(k.c)+'"><div class="h"><span class="gfrank">'+(i+1)+'</span>'+k.i+' '+esc(nm(k))+'</div><div class="d">'+esc(LD(k))+'</div>'+n
         +'<div class="gfads"></div>'+k.stores.map(function(s,j){ return '<button type="button" class="gfs" data-gf="s" data-kc="'+esc(k.c)+'" data-j="'+j+'"><b>📍 '+esc(nm(s))+'</b><i>'+esc(s.area?t2(s.area):"")+'</i><span class="go">'+T("지도","Map")+' ›</span></button>'; }).join("")+'</div>'; }).join("");
     h+=tips(); }
   b.innerHTML=h;
@@ -70,11 +70,11 @@ function paint(){ var b=document.querySelector("#gfBox .gfin"); if(!b) return;
     box.innerHTML=ads.map(function(a,j){ return '<button type="button" class="gfs" data-gf="a" data-kc="'+esc(k.c)+'" data-j="'+j+'"><b><span class="gfad">'+T("광고","Ad")+'</span>'+esc(L()?(a.en||a.ko):a.ko)+'</b><i>'+(a.dist!=null?(a.dist<1000?a.dist+" m":(a.dist/1000).toFixed(1)+" km"):"")+'</i><span class="go">'+T("지도","Map")+' ›</span></button>'; }).join(""); box._ads=ads; }); }); }
 // 면세점은 목록 대신 검색으로 (사장님 10-16) — 기존 검색 흐름(go) 그대로, 결과를 누르면 검색 핀
 function dfsHtml(){ return '<div class="gfdfs"><button type="button" class="gfdb" data-gf="dfs">'+T("🔎 면세점","🔎 Duty-free shops")+'</button></div>'; }
-function dfsGo(){ close(); var q=document.getElementById("q"); if(q){ q.value=L()?"duty free":"면세점"; try{ qxSync(); }catch(e){} } try{ ntap("_dfs","gift"); }catch(e){}
+function dfsGo(){ close(); var q=document.getElementById("q"); if(q){ q.value=T("면세점","duty free"); try{ qxSync(); }catch(e){} } try{ ntap("_dfs","gift"); }catch(e){}
   go("면세점"); var r=document.getElementById("res"); if(r) setTimeout(function(){ window.scrollTo({top:r.getBoundingClientRect().top+scrollY-80,behavior:"smooth"}); },100); }
 function tips(){ if(!G.tips||!G.tips.length) return "";
   return '<div class="gftips"><div class="h">'+T("💡 사기 전에","💡 Before you buy")+'</div>'+G.tips.map(function(x){ var u=String(x.src||"").split(" · ")[0];
-    return '<div class="gftip">'+esc(L()?x.en:x.ko)+(/^https:\/\//.test(u)?'<a href="'+esc(u)+'" target="_blank" rel="noopener">'+T("출처","source")+'</a>':'')+'</div>'; }).join("")+'</div>'; }
+    return '<div class="gftip">'+esc(nm(x))+(/^https:\/\//.test(u)?'<a href="'+esc(u)+'" target="_blank" rel="noopener">'+T("출처","source")+'</a>':'')+'</div>'; }).join("")+'</div>'; }
 
 // ── 매장 누르기 → 약도 핀 + 카드 ──
 function showStore(s){ close();
