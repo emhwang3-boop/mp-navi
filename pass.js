@@ -38,7 +38,7 @@ function resendOpen(){ css(); var b=document.getElementById("psBox"); if(b) b.re
   document.getElementById("psX").onclick=function(){ b.remove(); };
   document.getElementById("psGo").onclick=function(){ var em=document.getElementById("psEm").value.trim(), M=document.getElementById("psM");
     if(!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(em)){ M.textContent=T("이메일을 확인해 주세요","Please check the email"); return; }
-    M.textContent="…"; f0(HUB+"/npass/resend",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em,lang:LANG})}).then(function(r){ return r.json(); }).then(function(j){
+    M.textContent="…"; f0(HUB+"/npass/resend",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em,lang:L2(),ul:LANG})}).then(function(r){ return r.json(); }).then(function(j){
       M.textContent=j&&j.ok?T("이용권이 있으면 몇 분 안에 메일이 가요. 메일의 링크를 이 폰에서 여세요.","If you have a pass, an email is on its way. Open its link on this phone."):j&&j.err==="rate"?T("잠시 뒤 다시 해 주세요","Please try again later"):T("잠시 뒤 다시 해 주세요","Please try again shortly"); })
     .catch(function(){ M.textContent=T("잠시 뒤 다시 해 주세요","Please try again shortly"); }); }; }
 var ON=false;
