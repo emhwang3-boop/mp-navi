@@ -4,6 +4,8 @@
  *  EMB_L = 대사관 나라 이름 [일, 简, 繁] (near.js) */
 window.I18N={
 "ja":{
+"Show this screen in Korean": "この画面を韓国語で表示",
+"Choose language": "言語を選ぶ",
 " (train/bus)": "（鉄道・バス）",
 " (valid until)": "まで",
 " KRW": "ウォン",
@@ -401,6 +403,8 @@ window.I18N={
 "🛒 My trip plan": "🛒 私の旅程"
 },
 "zhs":{
+"Show this screen in Korean": "用韩语显示此画面",
+"Choose language": "选择语言",
 " (train/bus)": "（火车/巴士）",
 " (valid until)": " 前有效",
 " KRW": "韩元",
@@ -798,6 +802,8 @@ window.I18N={
 "🛒 My trip plan": "🛒 我的行程安排"
 },
 "zht":{
+"Show this screen in Korean": "用韓語顯示此畫面",
+"Choose language": "選擇語言",
 " (train/bus)": "（火車/客運）",
 " (valid until)": " 前有效",
 " KRW": "韓元",
