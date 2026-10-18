@@ -76,13 +76,16 @@ function tips(){ if(!G.tips||!G.tips.length) return "";
   return '<div class="gftips"><div class="h">'+T("💡 사기 전에","💡 Before you buy")+'</div>'+G.tips.map(function(x){ var u=String(x.src||"").split(" · ")[0];
     return '<div class="gftip">'+esc(nm(x))+(/^https:\/\//.test(u)?'<a href="'+esc(u)+'" target="_blank" rel="noopener">'+T("출처","source")+'</a>':'')+'</div>'; }).join("")+'</div>'; }
 
+// 매장 이름을 다섯 언어 모두 핀에 넘긴다 — 핀 카드에서 언어를 바꿔도 그 자리에서 그 언어 이름 (lang.js, 10-18)
+function gLL(s,ad){ var o={}; ["en","ja","zhs","zht"].forEach(function(l){ var n=l==="en"?s.en:(s[l]||s.en); if(!n) return; o[l]={n:n,a:s.addr_en||s.addr||"",c:ad?TEL(l,"Shop (Ad)"):((l!=="en"&&s["cat_"+l])||s.cat_en||"")}; }); return o; }
+function TEL(l,e){ if(l==="en") return e; var t=(window.I18N&&I18N[l])||{}; return t[e]||e; }
 // ── 매장 누르기 → 약도 핀 + 카드 ──
 function showStore(s){ close();
   if(s.place){ Promise.all(Object.keys(CITY).map(function(id){ return mapLoad(id).catch(function(){}); })).then(function(){ var p=PLACES[s.place];
-      if(!p) return spinShow({name:s.ko,name_en:(LANG!=="en"&&s[LANG])||s.en,addr:s.addr,addr_en:s.addr_en,y:s.lat,x:s.lng,tel:s.tel||"",cat:s.cat||"",cat_en:(LANG!=="en"&&s["cat_"+LANG])||s.cat_en||""});
+      if(!p) return spinShow({name:s.ko,name_en:(LANG!=="en"&&s[LANG])||s.en,addr:s.addr,addr_en:s.addr_en,y:s.lat,x:s.lng,tel:s.tel||"",cat:s.cat||"",cat_en:(LANG!=="en"&&s["cat_"+LANG])||s.cat_en||"",_l:LANG,LL:gLL(s)});
       var id0=meBest(+p.lat,+p.lng)||NAVI_ROOT; if(DET){ try{ _nm.setCenter(new naver.maps.LatLng(+p.lat,+p.lng)); }catch(e){} } else spinGo(id0===NAVI_ROOT?"kr":id0,+p.lat,+p.lng,null);
       placeShow(s.place); var m=document.getElementById("map"); if(m) window.scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:"smooth"}); }); return; }
-  spinShow({name:s.ko,name_en:(LANG!=="en"&&s[LANG])||s.en,addr:s.addr,addr_en:s.addr_en||s.addr,y:s.lat,x:s.lng,tel:s.tel||"",cat:s.cat||"",cat_en:(LANG!=="en"&&s["cat_"+LANG])||s.cat_en||""}); }
+  spinShow({name:s.ko,name_en:(LANG!=="en"&&s[LANG])||s.en,addr:s.addr,addr_en:s.addr_en||s.addr,y:s.lat,x:s.lng,tel:s.tel||"",cat:s.cat||"",cat_en:(LANG!=="en"&&s["cat_"+LANG])||s.cat_en||"",_l:LANG,LL:gLL(s)}); }
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("[data-gf]"); if(!t||!t.closest("#gfBox,#gfchips,#mm")) return; e.preventDefault();
   var g=t.dataset.gf, k;
   if(g==="open") return open();
@@ -94,7 +97,7 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   if(g==="s"||g==="a"){ k=G.kinds.filter(function(x){ return x.c===t.dataset.kc; })[0]; if(!k) return; try{ ntap(k.c,"gift"); }catch(z){}
     if(g==="s"){ var s=k.stores[+t.dataset.j]; if(!s) return; try{ ntap(s.k,"gift"); }catch(z){} showStore(s); return; }
     var box=t.closest(".gfads"), a=box&&box._ads&&box._ads[+t.dataset.j]; if(!a) return; try{ ntap(a.id,"gift"); }catch(z){}
-    close(); spinShow({name:a.ko,name_en:(LANG!=="en"&&a[LANG])||a.en||a.ko,addr:a.addr||"",addr_en:a.addr||"",y:a.lat,x:a.lng,tel:a.tel||"",cat:"쇼핑",cat_en:T("쇼핑 (광고)","Shop (Ad)")}); } });
+    close(); spinShow({name:a.ko,name_en:(LANG!=="en"&&a[LANG])||a.en||a.ko,addr:a.addr||"",addr_en:a.addr||"",y:a.lat,x:a.lng,tel:a.tel||"",cat:"쇼핑",cat_en:T("쇼핑 (광고)","Shop (Ad)"),_l:LANG,LL:gLL(a,1)}); } });
 
 // ── 들어가는 곳: 검색창 아래 칩 · ⋮ 메뉴 ──
 function entries(){ var h=document.getElementById("gob")||document.getElementById("hint");
