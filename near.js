@@ -62,7 +62,7 @@ var EMB=[
 {"e":"Vietnam","f":"VN","k":"베트남","n":"주한 베트남 대사관","ne":"Embassy of Viet Nam","a":"서울특별시 종로구 북촌로 123","ae":"123, Bukchon-ro, Jongno-gu, Seoul","t":"02-720-5124","y":37.586494,"x":126.983936}
 ];
 var S={k:"",tab:0,base:null,src:"",items:null,err:""}, CACHE={}, PICK=null;
-function L(){ return window.LANG==="en"; }
+function L(){ return window.LANG!=="ko"; }   // 외국어 화면(영·일·중) — 10-18
 // 빨간·파란 단추 안 전화기 — 흰 선 그림(글자색 그대로, 사장님 10-16: 이모지는 분홍빛이라)
 var PH='<svg class="nrph" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function km(m){ return m<1000?Math.round(m)+" m":(m/1000).toFixed(1)+" km"; }
@@ -111,7 +111,7 @@ function pickBase(force){
   return myPos().then(function(p){ if(p){ try{ if(!ME.pos) meSet(p); }catch(e){} return {p:p,src:"me"}; } return null; }); }
 
 // ── 자료 ──
-function fetchKind(t,p){ var en=L()?"&lang=en":"", key=t.c+(t.kind||"")+"|"+p[0].toFixed(3)+","+p[1].toFixed(3)+en, need=t.c==="HP8"||t.c==="PM9"?10:3;
+function fetchKind(t,p){ var en=kpL(), key=t.c+(t.kind||"")+"|"+p[0].toFixed(3)+","+p[1].toFixed(3)+en, need=t.c==="HP8"||t.c==="PM9"?10:3;
   var cnt=function(j){ return ((j&&j.items)||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }).length; };
   if(CACHE[key]) return CACHE[key];
   var one=function(r){ return fetch(HUB+"/kplace?cat="+t.c+"&x="+p[1].toFixed(5)+"&y="+p[0].toFixed(5)+"&radius="+r+en).then(function(x){ return x.json(); }); };
@@ -121,10 +121,10 @@ function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err="";
   if(t.fixed){ var mp=ME.pos||null; S.base=null; S.src="";   // 대사관: 고정 목록 · 위치를 묻지 않는다 · 「나」 위치가 있으면 거리만 (폰 안에서 계산)
     S.items=EMB.map(function(x){ var o=Object.assign({},x); o.dist=(mp&&x.y)?Math.round(kmLL(mp,[x.y,x.x])*1000):null; return o; }); paint(); return; }
   paint();
-  var my=S.k+S.tab+(L()?"en":"ko");
+  var my=S.k+S.tab+LANG;
   pickBase(false).then(function(b){ if(!b){ S.base=null; S.err="loc"; paint(); return; }
     S.base=b.p; S.src=b.src; paint();
-    return fetchKind(t,b.p).then(function(it){ if(S.k+S.tab+(L()?"en":"ko")!==my) return;
+    return fetchKind(t,b.p).then(function(it){ if(S.k+S.tab+LANG!==my) return;
       it=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b.p,[+x.y,+x.x])*1000); return o; }).sort(function(a,c){ return a.dist-c.dist; }).slice(0,10);
       S.items=it; paint(); }); }).catch(function(){ S.err="net"; paint(); }); }
 
@@ -142,6 +142,10 @@ function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=en?x.name_en:x.name, ad=en?
   return '<div class="nrit" data-nr="pick" data-i="'+i+'"><div class="h"><span class="nrrank">'+(i+1)+'</span><b>'+esc(nm)+(x.kto?'<span class="nrkto" title="'+T("한국관광공사 관광정보에 실린 숙소","Listed by the Korea Tourism Organization")+'">'+T("관광공사","KTO")+'</span>':'')+'</b><i>'+km(x.dist)+'</i></div>'
     +(en?'<div class="ko">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div>'
     +'<div class="row">'+tel+'<span class="go">'+T("지도에 핀","Pin on map")+' ›</span></div></div>'; }
+// 대사관 — 일본어·중국어 화면은 나라 이름(EMB_L)으로 「아르헨티나 대사관」 꼴 (10-18). 표에 없으면 영어 이름
+function embC(x){ var l=window.EMB_L&&EMB_L[x.f], i={ja:0,zhs:1,zht:2}[LANG]; return (l&&i!=null&&l[i])||x.k; }
+function embN(x){ if(LANG==="ko") return x.n; if(LANG==="en") return x.ne; var l=window.EMB_L&&EMB_L[x.f], i={ja:0,zhs:1,zht:2}[LANG]; if(!l||i==null) return x.ne;
+  var nm=l[i]; if(x.f==="EU") return [nm+"代表部","欧盟驻韩国代表团","歐盟駐韓國代表處"][i]; return [nm+"大使館（在韓国）",nm+"驻韩国大使馆",nm+"駐韓國大使館"][i]; }
 // 국기 = 나라 두 글자 → 지역 표시 글자 둘 (사장님 10-16: 이모지 금지의 예외, 국기만). 윈도우 PC 크롬은 글자(US)로 보일 수 있다
 function flag(c){ if(!c||c.length!==2) return ""; try{ return String.fromCodePoint(0x1F1E6+c.charCodeAt(0)-65,0x1F1E6+c.charCodeAt(1)-65)+" "; }catch(e){ return ""; } }
 // 대사관 한 줄: 「영문 나라 · 한글 나라」 / 대사관 이름 / 주소 / 전화(흰 전화기 단추) / 길찾기(linksTo)
@@ -149,16 +153,16 @@ function embHtml(x){ var en=L(), tel="", lk;
   if(x.t){ var shown=en?(/^0/.test(x.t)?"+82 "+x.t.slice(1):"+82 "+x.t):x.t; tel='<a class="nrcall am" href="tel:'+esc(telIntl(x.t))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>'; }
   if(x.y) lk=linksTo(x.n,x.y,x.x,x.n,x.a);
   else { var q=encodeURIComponent(x.a), A=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };   // 좌표 없는 곳은 주소로 지도 검색
-    lk=en?A("https://www.google.com/maps/search/?api=1&hl=en&query="+q,"Google Maps (English)")+A("https://map.naver.com/p/search/"+q,"Naver Map"):A("https://map.kakao.com/?q="+q,"카카오맵")+A("https://map.naver.com/p/search/"+q,"네이버 지도")+A("https://www.google.com/maps/search/?api=1&query="+q,"구글 지도"); }
-  return '<div class="nrit nremb"><div class="c">'+flag(x.f)+esc(x.e)+' · '+esc(x.k)+'</div><div class="h"><b>'+esc(en?x.ne:x.n)+'</b>'+(x.dist!=null?'<i>'+km(x.dist)+'</i>':'')+'</div>'
+    lk=en?A("https://www.google.com/maps/search/?api=1"+(hlG()||"&hl=en")+"&query="+q,TE("Google Maps (English)"))+A("https://map.naver.com/p/search/"+q,TE("Naver Map")):A("https://map.kakao.com/?q="+q,"카카오맵")+A("https://map.naver.com/p/search/"+q,"네이버 지도")+A("https://www.google.com/maps/search/?api=1&query="+q,"구글 지도"); }
+  return '<div class="nrit nremb"><div class="c">'+flag(x.f)+esc(x.e)+' · '+esc(embC(x))+'</div><div class="h"><b>'+esc(embN(x))+'</b>'+(x.dist!=null?'<i>'+km(x.dist)+'</i>':'')+'</div>'
     +(en?'<div class="ko">'+esc(x.n)+'</div>':'')+'<div class="d">'+esc(en?(x.ae||x.a):x.a)+'</div>'
     +(tel?'<div class="row">'+tel+'</div>':'')+'<div class="lks">'+lk+'</div></div>'; }
 function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) return; var k=KINDS[S.k], em=S.k==="em";
   b.className="nrin"+(em?" nrem":"")+(S.k==="st"?" nrst":"");
   var h='<div class="nrtop"><b>'+T(k.t[0],k.t[1])+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
   if(em) h+=sos();
-  if(S.k==="am") h+='<select class="nrsel" id="nrSel" aria-label="'+T("종류","Type")+'">'+k.tabs.map(function(t,i){ return '<option value="'+i+'"'+(i===S.tab?' selected':'')+'>'+esc(L()?t.en:t.ko)+'</option>'; }).join("")+'</select>';   // 편의시설 = 풀다운 (사장님 10-16, 이모지 없이)
-  else h+='<div class="nrtabs">'+k.tabs.map(function(t,i){ return '<button type="button" class="nrtab'+(i===S.tab?' on':'')+'" data-nr="tab" data-i="'+i+'">'+t.i+' '+esc(L()?t.en:t.ko)+'</button>'; }).join("")+'</div>';
+  if(S.k==="am") h+='<select class="nrsel" id="nrSel" aria-label="'+T("종류","Type")+'">'+k.tabs.map(function(t,i){ return '<option value="'+i+'"'+(i===S.tab?' selected':'')+'>'+esc(T(t.ko,t.en))+'</option>'; }).join("")+'</select>';   // 편의시설 = 풀다운 (사장님 10-16, 이모지 없이)
+  else h+='<div class="nrtabs">'+k.tabs.map(function(t,i){ return '<button type="button" class="nrtab'+(i===S.tab?' on':'')+'" data-nr="tab" data-i="'+i+'">'+t.i+' '+esc(T(t.ko,t.en))+'</button>'; }).join("")+'</div>';
   if(S.err==="loc") h+='<div class="msg">'+T("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요. 또는 지도를 보고 싶은 동네로 옮긴 뒤 다시 눌러 주세요.","Could not get your location — please allow location access, or move the map to the area you want and try again.")+'</div><div class="nrbase"><button type="button" class="nrme" data-nr="me">📍 '+T("내 위치 다시 받기","Try my location again")+'</button></div>';
   else if(S.err) h+='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>';
   else if(k.tabs[S.tab].fixed&&S.items) h+='<div class="nrbase">'+T("나라 영문 이름 순","Sorted by country name (A–Z)")+'</div>'+S.items.map(embHtml).join("");
