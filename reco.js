@@ -35,6 +35,7 @@ function css(){ if($("rcCss")) return; var s=document.createElement("style"); s.
   +".rcback{border:0;background:none;color:var(--blue);font-weight:800;font-size:14px;cursor:pointer;padding:4px 2px;margin:0 0 2px}";
   document.head.appendChild(s); }
 function L(){ return LANG!=="ko"; }   // 외국어 화면 (10-18)
+function RM(f){ f(); window._RR={f:f}; }   // #res 안내 — 언어를 바꾸면 lang.js 가 그 자리에서 다시 (10-18)
 function pass(){ try{ return (window.TRIP&&TRIP.hasPass)?TRIP.hasPass():(typeof window.hasPass==="function"?window.hasPass():true); }catch(e){ return true; } }
 function btn(){ css(); var b=$("recob"); if(!b){ var g=$("gob"); if(!g) return; g.insertAdjacentHTML("afterend",'<button type="button" id="recob"></button>'); b=$("recob"); b.onclick=function(){ recoGo(); }; }
   b.textContent=T("추천받기","Get ideas"); fit(b); }
@@ -46,28 +47,29 @@ function origin(){ return (ME&&ME.pos)?ME.pos:SEOUL; }
 // ── 부르기 ──
 function recoGo(more){
   var q=more?R.q:$("q").value.trim(), out=$("res");
-  if(!q){ $("q").focus(); out.innerHTML='<div class="msg">'+esc(T("가고 싶은 여행을 문장으로 적고 「추천받기」를 눌러 주세요. 예: 한옥 구경하고 싶어","Type what you’d like to do, then tap “Get ideas”. e.g. I want to see traditional houses"))+'</div>'; return; }
+  if(!q){ $("q").focus(); RM(function(){ out.innerHTML='<div class="msg">'+esc(T("가고 싶은 여행을 문장으로 적고 「추천받기」를 눌러 주세요. 예: 한옥 구경하고 싶어","Type what you’d like to do, then tap “Get ideas”. e.g. I want to see traditional houses"))+'</div>'; }); return; }
   if(!pass()){ try{ openPricing(); }catch(e){} return; }   // 이용권 자리 — 지금은 hasPass()=true
   if(R.busy) return;
   if(!more){ R={q:q,ex:[],exk:[],exn:[],kseen:{},kpos:[],picks:[],kits:[],note:"",on:false,busy:false,back:false}; ringClear(); }
+  var lg=LANG;   // 이 추천을 받은 언어 — 이유(why)·안내(note)는 이 언어 + 한국어(why_ko)
   R.busy=true; R.back=false;
   try{ spinClear(); }catch(e){}
-  out.innerHTML='<div class="msg">'+esc(T("AI가 고르는 중…","AI is picking places…"))+'</div>';
+  RM(function(){ out.innerHTML='<div class="msg">'+esc(T("AI가 고르는 중…","AI is picking places…"))+'</div>'; });
   try{ ntap("_reco","reco"); }catch(e){}
   var body=JSON.stringify({q:q,lang:LANG,ex:R.ex,exk:R.exk.concat(R.exn)});
   Promise.all([fetch(HUB+"/nreco",{method:"POST",headers:{"Content-Type":"application/json"},body:body}).then(function(r){ return r.json(); }),allMaps()]).then(function(a){
     var j=a[0]||{};
     if(!j.ok&&/^(pass|expired|dev)$/.test(j.err||"")){ R.busy=false;   // 이용권 스위치가 켜졌을 때만 오는 답 (pass.js)
-      out.innerHTML='<div class="msg">'+esc(j.err==="dev"?T("이 기기는 이용권 기기 목록에서 풀렸어요. 이용권 메일의 링크를 다시 열어 주세요.","This device was signed out of your pass. Open the link in your pass email again."):j.err==="expired"?T("이용권 기간이 끝났어요.","Your pass has expired."):T("「추천받기」는 이용권 기능이에요.","“Get ideas” is a pass feature."))+'</div><div class="rcbar"><button type="button" class="pri" data-rc="buy">'+esc(T("이용권 보기","See passes"))+'</button><button type="button" data-rc="resend">'+esc(T("이용권 다시 받기","Get my pass again"))+'</button></div>'; return; }
-    if(!j.ok){ R.busy=false; out.innerHTML='<div class="msg">'+esc(j.err==="rate"?T("잠시 뒤 다시 해 주세요 (요청이 많아요).","Too many requests — please try again shortly."):T("잠시 뒤 다시 해 주세요.","Please try again shortly."))+'</div>'+bar(false); return; }
+      RM(function(){ out.innerHTML='<div class="msg">'+esc(j.err==="dev"?T("이 기기는 이용권 기기 목록에서 풀렸어요. 이용권 메일의 링크를 다시 열어 주세요.","This device was signed out of your pass. Open the link in your pass email again."):j.err==="expired"?T("이용권 기간이 끝났어요.","Your pass has expired."):T("「추천받기」는 이용권 기능이에요.","“Get ideas” is a pass feature."))+'</div><div class="rcbar"><button type="button" class="pri" data-rc="buy">'+esc(T("이용권 보기","See passes"))+'</button><button type="button" data-rc="resend">'+esc(T("이용권 다시 받기","Get my pass again"))+'</button></div>'; }); return; }
+    if(!j.ok){ R.busy=false; RM(function(){ out.innerHTML='<div class="msg">'+esc(j.err==="rate"?T("잠시 뒤 다시 해 주세요 (요청이 많아요).","Too many requests — please try again shortly."):T("잠시 뒤 다시 해 주세요.","Please try again shortly."))+'</div>'+bar(false); }); return; }
     var picks=(j.picks||[]).filter(function(p){ return PLACES[p.k]&&R.ex.indexOf(p.k)<0; });
     picks.forEach(function(p){ R.ex.push(p.k); });
     var kws=(j.kw||[]).filter(function(k){ return k&&R.exk.indexOf(k)<0; }).slice(0,2);
     if(!kws.length&&(j.kw||[]).length) kws=(j.kw||[]).slice(0,1);   // 같은 검색어여도 다음 장소를 보여 준다
     kws.forEach(function(k){ if(R.exk.indexOf(k)<0) R.exk.push(k); });
     var nms=(j.nm||[]).filter(function(k){ return k&&R.exn.indexOf(k)<0; }).slice(0,4); nms.forEach(function(k){ R.exn.push(k); });
-    return kGet(kws,nms,picks.length).then(function(kits){ R.busy=false; R.picks=picks; R.kits=kits; R.note=j.note||""; R.on=true; paint(); });
-  }).catch(function(){ R.busy=false; out.innerHTML='<div class="msg">'+esc(T("잠시 뒤 다시 해 주세요.","Please try again shortly."))+'</div>'; });
+    return kGet(kws,nms,picks.length).then(function(kits){ R.busy=false; R.picks=picks; R.kits=kits; R.note=j.note||""; R.note_ko=j.note_ko||""; R.lg=lg; kits.forEach(function(x){ x._l=lg; }); R.on=true; paint(); });
+  }).catch(function(){ R.busy=false; RM(function(){ out.innerHTML='<div class="msg">'+esc(T("잠시 뒤 다시 해 주세요.","Please try again shortly."))+'</div>'; }); });
 }
 // 카카오 실제 장소 — 기존 /kplace(near=1). 위치는 기존 검색처럼 ux/uy(있을 때만), 거리는 화면에서
 var KBAD=/편의점|주차장|부동산|주유소|은행|ATM|세탁|미용|학원|병원|약국/, KFOOD=/카페|커피|맛집|음식|식당|호텔|숙소|펜션|숙박/;
@@ -104,12 +106,16 @@ function kGet(kws,nms,np){ if(!kws.length&&!nms.length) return Promise.resolve([
 function bar(retry){ return '<div class="rcbar">'+(retry?'<button type="button" class="pri" data-rc="again">'+esc(T("다시 짜줘","Try again"))+'</button>':'')+'<button type="button" data-rc="search">'+esc(T("일반 검색으로 찾기","Regular search"))+'</button></div>'; }
 function has(k){ try{ return TRIP.state().items.some(function(x){ return x.k===k; }); }catch(e){ return false; } }
 function addBtn(k){ var on=has(k); return '<div class="trbw"><button type="button" class="tradd'+(on?' on':'')+'" data-k="'+esc(k)+'" data-src="'+esc(k)+'">'+(on?T("✓ 담김 · 빼기","✓ Added · Remove"):T("＋ 일정에 담기","＋ Add to my trip"))+'</button></div>'; }
-function paint(){ var out=$("res"), en=L(), h='', n=0;
-  h+='<div class="rcwrap"><div class="rchd">'+esc(T("AI 추천","AI picks"))+'<span class="d">“'+esc(R.q)+'”</span></div>';
-  if(R.note) h+='<div class="rcnote">'+esc(R.note)+'</div>';
+// 이유·안내 글 — 받은 언어면 그것, 한국어 화면은 why_ko(허브가 주면) 아니면 장소 설명(dko), 다른 외국어는 그 언어 장소 설명 (AI 를 다시 부르지 않는다, 10-18)
+function whyTx(p,P){ if(LANG===R.lg) return p.why||LD(P)||""; if(LANG==="ko") return p.why_ko||LD(P)||""; return p["why_"+LANG]||LD(P)||""; }
+function noteTx(){ if(LANG===R.lg) return R.note||""; if(LANG==="ko") return R.note_ko||""; return ""; }
+function paint(keep){ var out=$("res"), en=L(), h='', n=0;
+  if(R.kits&&R.kits.length&&window.KL) KL.ensure(R.kits,"item",null,function(){ if(window._RR&&window._RR.reco) paint(true); });
+  h+='<div class="rcwrap"><div class="rchd">'+esc(T("AI 추천","AI picks"))+'<span class="d" data-user="1">“'+esc(R.q)+'”</span></div>';
+  if(noteTx()) h+='<div class="rcnote">'+esc(noteTx())+'</div>';
   R.picks.forEach(function(p,i){ var P=PLACES[p.k], nm=LN(P), sub=en?P.ko:"";
     h+='<div class="item rcit" data-rk="'+esc(p.k)+'"><span class="rcno">'+(i+1)+'</span><div class="t">'+esc(nm)+'</div>'+(sub?'<div class="d" style="margin:1px 0 0">'+esc(sub)+'</div>':'')
-      +'<div class="rcwhy">'+esc(p.why||LD(P)||"")+'</div>'+addBtn(p.k)+'</div>'; n++; });
+      +'<div class="rcwhy">'+esc(whyTx(p,P))+'</div>'+addBtn(p.k)+'</div>'; n++; });
   if(R.kits.length){ var fs=!(ME&&ME.pos);
     h+='<div class="rcsec">'+esc(fs?T("가까운 곳 (서울에서 가까운 순)","More places nearby (closest to Seoul)"):T("가까운 곳 (나에게서 가까운 순)","More places nearby (closest to you)"))+'</div>';
     window._sres=R.kits;
@@ -119,7 +125,7 @@ function paint(){ var out=$("res"), en=L(), h='', n=0;
   if(!n) h+='<div class="rcmsg">'+esc(R.ex.length||R.exk.length?T("더 알맞은 곳이 적어요. 일반 검색으로도 찾아 보세요.","Few more places match. Try a regular search too."):T("알맞은 곳이 적어요. 일반 검색으로 찾아 보세요.","Few places match this. Try a regular search."))+'</div>';
   else if(R.picks.length+R.kits.length<3) h+='<div class="rcmsg">'+esc(T("알맞은 곳이 적어요 — 일반 검색도 해 보세요.","Only a few places match — try a regular search too."))+'</div>';
   h+=bar(n>0)+'</div>';
-  out.innerHTML=h; showMap();
+  out.innerHTML=h; window._RR={f:function(){ paint(true); },reco:1}; if(keep) return; showMap();
   clearTimeout(window._scT); window._scT=setTimeout(function(){ window.scrollTo({top:out.getBoundingClientRect().top+scrollY-70,behavior:"smooth"}); },120); }
 
 // ── 지도 강조 ── 고른 곳을 모두 담는 가장 자세한 약도로 옮기고 동그라미
