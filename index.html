@@ -218,7 +218,7 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
-<script src="i18n.js?v=1018a"></script>
+<script src="i18n.js?v=1018jz"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
 // 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
@@ -287,7 +287,7 @@ function inqBiz(){ var v=document.getElementById("inqBno").value; inqM("inqBnoM"
 function inqCode(){ var e=document.getElementById("inqEm").value.trim(); if(!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(e)){ inqM("inqEmM",T("이메일 주소를 확인해 주세요","Please check the email address"),"e"); return; }
   var bt=document.getElementById("inqEmB"); bt.disabled=true; inqM("inqEmM",T("보내는 중…","Sending…"));
   var h=window.__inqTestKey?{"x-admin":encodeURIComponent(window.__inqTestKey)}:null;   /* 시험용(관리 비밀번호를 아는 사람만) — 메일 대신 코드가 돌아온다 */
-  inqPost("/ninq/code",{email:e,lang:L2()},h).then(function(j){ setTimeout(function(){ bt.disabled=false; },30000);
+  inqPost("/ninq/code",{email:e,lang:L2(),ul:LANG},h).then(function(j){ setTimeout(function(){ bt.disabled=false; },30000);
     if(j.ok){ if(j.test) window.__inqTestCode=j.code; inqM("inqEmM",T("코드를 보냈습니다. 메일함(스팸함 포함)을 확인해 10분 안에 넣어 주세요.","Code sent. Check your inbox (and spam) and enter it within 10 minutes."),"o"); return; }
     bt.disabled=false; inqM("inqEmM",j.err==="rate"?T("오늘 보낼 수 있는 횟수를 넘었습니다","Daily limit reached — try again tomorrow"):T("보내지 못했습니다","Could not send the code"),"e"); })
   .catch(function(){ bt.disabled=false; inqM("inqEmM",T("연결에 실패했습니다","Connection failed"),"e"); }); }
@@ -442,52 +442,53 @@ function shBuild(){
   const A=function(href,label){ return '<button class="sht">'+label+'</button>'; };
   let h='<div class="shhd">'+T("이 앱 공유하기","Share this app")+'</div><div class="shgrid">';
   h+=A("https://twitter.com/intent/tweet?text="+t+"&url="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z\"/></svg> X");
-  h+=A("sms:?&body="+t+"%20"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#34C759\" d=\"M12 3C6.98 3 3 6.36 3 10.5c0 2.35 1.28 4.43 3.3 5.8-.13 1.02-.5 2.2-1.3 3.2 1.7-.2 3.2-.94 4.3-1.7.85.2 1.75.3 2.7.3 5.02 0 9-3.36 9-7.6S17.02 3 12 3z\"/></svg> "+(en?"Message":"문자"));
-  h+=A("https://t.me/share/url?url="+u+"&text="+t,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#26A5E4\" d=\"M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z\"/></svg> "+(en?"Telegram":"텔레그램"));
+  h+=A("sms:?&body="+t+"%20"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#34C759\" d=\"M12 3C6.98 3 3 6.36 3 10.5c0 2.35 1.28 4.43 3.3 5.8-.13 1.02-.5 2.2-1.3 3.2 1.7-.2 3.2-.94 4.3-1.7.85.2 1.75.3 2.7.3 5.02 0 9-3.36 9-7.6S17.02 3 12 3z\"/></svg> "+T("문자","Message"));
+  h+=A("https://t.me/share/url?url="+u+"&text="+t,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#26A5E4\" d=\"M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z\"/></svg> "+T("텔레그램","Telegram"));
   h+=A("https://social-plugins.line.me/lineit/share?url="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#00C300\" d=\"M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314\"/></svg> LINE");
-  h+=A("https://www.facebook.com/sharer/sharer.php?u="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#1877F2\" d=\"M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z\"/></svg> "+(en?"Facebook":"페이스북"));
-  h+=A("https://band.us/plugin/share?body="+t+"%0A"+u+"&route="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" rx=\"6\" fill=\"#00C73C\"/><text x=\"12\" y=\"17.5\" text-anchor=\"middle\" font-size=\"14\" font-weight=\"700\" fill=\"#fff\" font-family=\"Arial\">B</text></svg> "+(en?"BAND":"밴드"));
+  h+=A("https://www.facebook.com/sharer/sharer.php?u="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#1877F2\" d=\"M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z\"/></svg> "+T("페이스북","Facebook"));
+  h+=A("https://band.us/plugin/share?body="+t+"%0A"+u+"&route="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" rx=\"6\" fill=\"#00C73C\"/><text x=\"12\" y=\"17.5\" text-anchor=\"middle\" font-size=\"14\" font-weight=\"700\" fill=\"#fff\" font-family=\"Arial\">B</text></svg> "+T("밴드","BAND"));
   h+=A("https://api.whatsapp.com/send?text="+t+"%20"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#25D366\" d=\"M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z\"/></svg> WhatsApp");
-  h+=A("mailto:?subject="+""+"&body="+t+"%0A"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg> "+(en?"Email":"메일"));
-  h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" rx=\"6\" fill=\"#FEE500\"/><g transform=\"translate(3.2,3.2) scale(0.73)\"><path fill=\"#3C1E1E\" d=\"M22.125 0H1.875C.8394 0 0 .8394 0 1.875v20.25C0 23.1606.8394 24 1.875 24h20.25C23.1606 24 24 23.1606 24 22.125V1.875C24 .8394 23.1606 0 22.125 0zM12 18.75c-.591 0-1.1697-.0413-1.7317-.1209-.5626.3965-3.813 2.6797-4.1198 2.7225 0 0-.1258.0489-.2328-.0141s-.0876-.2282-.0876-.2282c.0322-.2198.8426-3.0183.992-3.5333-2.7452-1.36-4.5701-3.7686-4.5701-6.5135C2.25 6.8168 6.6152 3.375 12 3.375s9.75 3.4418 9.75 7.6875c0 4.2457-4.3652 7.6875-9.75 7.6875zM8.0496 9.8672h-.8777v3.3417c0 .2963-.2523.5372-.5625.5372s-.5625-.2409-.5625-.5372V9.8672h-.8777c-.3044 0-.552-.2471-.552-.5508s.2477-.5508.552-.5508h2.8804c.3044 0 .552.2471.552.5508s-.2477.5508-.552.5508zm10.9879 2.9566a.558.558 0 0 1 .108.4167.5588.5588 0 0 1-.2183.371.5572.5572 0 0 1-.3383.1135.558.558 0 0 1-.4493-.2236l-1.3192-1.7479-.1952.1952v1.2273a.5635.5635 0 0 1-.5627.5628.563.563 0 0 1-.5625-.5625V9.3281c0-.3102.2523-.5625.5625-.5625s.5625.2523.5625.5625v1.209l1.5694-1.5694c.0807-.0807.1916-.1252.312-.1252.1404 0 .2814.0606.3871.1661.0985.0984.1573.2251.1654.3566.0082.1327-.036.2542-.1241.3425l-1.2818 1.2817 1.3845 1.8344zm-8.3502-3.5023c-.095-.2699-.3829-.5475-.7503-.5557-.3663.0083-.6542.2858-.749.5551l-1.3455 3.5415c-.1708.5305-.0217.7272.1333.7988a.8568.8568 0 0 0 .3576.0776c.2346 0 .4139-.0952.4678-.2481l.2787-.7297 1.7152.0001.2785.7292c.0541.1532.2335.2484.4681.2484a.8601.8601 0 0 0 .3576-.0775c.1551-.0713.3041-.2681.1329-.7999l-1.3449-3.5398zm-1.3116 2.4433l.5618-1.5961.5618 1.5961H9.3757zm5.9056 1.3836c0 .2843-.2418.5156-.5391.5156h-1.8047c-.2973 0-.5391-.2314-.5391-.5156V9.3281c0-.3102.2576-.5625.5742-.5625s.5742.2523.5742.5625v3.3047h1.1953c.2974 0 .5392.2314.5392.5156z\"/></g></svg> '+(en?"KakaoTalk":"카카오톡")+'</button>';
-  h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"#8a93a3\" stroke-width=\"2\" stroke-linecap=\"round\" d=\"M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.54 3.54 0 0 0-5-5l-1.2 1.2M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.54 3.54 0 0 0 5 5l1.2-1.2\"/></svg> '+(en?"Copy link":"링크 복사")+'</button>';
-  if(navigator.share)h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#5b93ff\" d=\"M18 16.08a2.9 2.9 0 0 0-1.96.77L8.9 12.7a3.3 3.3 0 0 0 0-1.4l7.05-4.11A2.92 2.92 0 1 0 15 5a3 3 0 0 0 .06.6L8.04 9.72a3 3 0 1 0 0 4.56l7.1 4.15c-.04.2-.06.4-.06.6a2.92 2.92 0 1 0 2.92-2.95z\"/></svg> '+(en?"Other apps":"다른 앱으로")+'</button>';
+  h+=A("mailto:?subject="+""+"&body="+t+"%0A"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg> "+T("메일","Email"));
+  h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" rx=\"6\" fill=\"#FEE500\"/><g transform=\"translate(3.2,3.2) scale(0.73)\"><path fill=\"#3C1E1E\" d=\"M22.125 0H1.875C.8394 0 0 .8394 0 1.875v20.25C0 23.1606.8394 24 1.875 24h20.25C23.1606 24 24 23.1606 24 22.125V1.875C24 .8394 23.1606 0 22.125 0zM12 18.75c-.591 0-1.1697-.0413-1.7317-.1209-.5626.3965-3.813 2.6797-4.1198 2.7225 0 0-.1258.0489-.2328-.0141s-.0876-.2282-.0876-.2282c.0322-.2198.8426-3.0183.992-3.5333-2.7452-1.36-4.5701-3.7686-4.5701-6.5135C2.25 6.8168 6.6152 3.375 12 3.375s9.75 3.4418 9.75 7.6875c0 4.2457-4.3652 7.6875-9.75 7.6875zM8.0496 9.8672h-.8777v3.3417c0 .2963-.2523.5372-.5625.5372s-.5625-.2409-.5625-.5372V9.8672h-.8777c-.3044 0-.552-.2471-.552-.5508s.2477-.5508.552-.5508h2.8804c.3044 0 .552.2471.552.5508s-.2477.5508-.552.5508zm10.9879 2.9566a.558.558 0 0 1 .108.4167.5588.5588 0 0 1-.2183.371.5572.5572 0 0 1-.3383.1135.558.558 0 0 1-.4493-.2236l-1.3192-1.7479-.1952.1952v1.2273a.5635.5635 0 0 1-.5627.5628.563.563 0 0 1-.5625-.5625V9.3281c0-.3102.2523-.5625.5625-.5625s.5625.2523.5625.5625v1.209l1.5694-1.5694c.0807-.0807.1916-.1252.312-.1252.1404 0 .2814.0606.3871.1661.0985.0984.1573.2251.1654.3566.0082.1327-.036.2542-.1241.3425l-1.2818 1.2817 1.3845 1.8344zm-8.3502-3.5023c-.095-.2699-.3829-.5475-.7503-.5557-.3663.0083-.6542.2858-.749.5551l-1.3455 3.5415c-.1708.5305-.0217.7272.1333.7988a.8568.8568 0 0 0 .3576.0776c.2346 0 .4139-.0952.4678-.2481l.2787-.7297 1.7152.0001.2785.7292c.0541.1532.2335.2484.4681.2484a.8601.8601 0 0 0 .3576-.0775c.1551-.0713.3041-.2681.1329-.7999l-1.3449-3.5398zm-1.3116 2.4433l.5618-1.5961.5618 1.5961H9.3757zm5.9056 1.3836c0 .2843-.2418.5156-.5391.5156h-1.8047c-.2973 0-.5391-.2314-.5391-.5156V9.3281c0-.3102.2576-.5625.5742-.5625s.5742.2523.5742.5625v3.3047h1.1953c.2974 0 .5392.2314.5392.5156z\"/></g></svg> '+T("카카오톡","KakaoTalk")+'</button>';
+  h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"#8a93a3\" stroke-width=\"2\" stroke-linecap=\"round\" d=\"M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.54 3.54 0 0 0-5-5l-1.2 1.2M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.54 3.54 0 0 0 5 5l1.2-1.2\"/></svg> '+T("링크 복사","Copy link")+'</button>';
+  if(navigator.share)h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#5b93ff\" d=\"M18 16.08a2.9 2.9 0 0 0-1.96.77L8.9 12.7a3.3 3.3 0 0 0 0-1.4l7.05-4.11A2.92 2.92 0 1 0 15 5a3 3 0 0 0 .06.6L8.04 9.72a3 3 0 1 0 0 4.56l7.1 4.15c-.04.2-.06.4-.06.6a2.92 2.92 0 1 0 2.92-2.95z\"/></svg> '+T("다른 앱으로","Other apps")+'</button>';
   h+='</div><div class="shmsg" id="shMsg"></div>';
   p.innerHTML=h;
 }
 // 사장님 기기면 진짜 공유 — 받은 사람은 홈페이지에서 앱을 눌러 들어온다 (앱 주소는 홈페이지를 거쳐야 열린다)
 function shOwnerFix(p, appName){   /* 7일짜리 초대 표를 허브에서 받아 붙인다 — 못 받으면 고정 코드 대신 안내만 (2026-10-15) */
   var m=p.querySelector(".shmsg"); if(m) m.textContent="…";
-  if(!window.mpInvMint){ if(m) m.textContent="초대 링크를 만들지 못했습니다 / Could not create the invite link"; return; }
-  window.mpInvMint(function(t){ if(!t){ if(m) m.textContent="초대 링크를 만들지 못했습니다. 잠시 뒤 다시 열어 주세요 / Could not create the invite link — try again shortly"; return; }
+  if(!window.mpInvMint){ if(m) m.textContent=T("초대 링크를 만들지 못했습니다 / Could not create the invite link","Could not create the invite link"); return; }
+  window.mpInvMint(function(t){ if(!t){ if(m) m.textContent=T("초대 링크를 만들지 못했습니다. 잠시 뒤 다시 열어 주세요 / Could not create the invite link — try again shortly","Could not create the invite link — try again shortly"); return; }
     if(m) m.textContent=""; shOwnerFix0(p, appName, t); });
 }
+function shHas(l,k,e){ return l.indexOf(k)>=0||l.indexOf(e)>=0||l.indexOf(TE(e))>=0; }   // 단추 글자(한·영·일·중)로 어느 단추인지
 function shOwnerFix0(p, appName, tok){
   var url=location.origin+location.pathname.replace(/index\.html$/,"")+"?inv="+tok, txt=appName+" — Money Puzzle";   /* 지금 연 주소 그대로 (2026-10-14) */
   [].forEach.call(p.querySelectorAll(".sht"),function(b){
     var lab=b.textContent.trim(), href="";
     if(/^X$/.test(lab)) href="https://twitter.com/intent/tweet?text="+encodeURIComponent(txt)+"&url="+encodeURIComponent(url);
-    else if(/문자|Message/.test(lab)) href="sms:?&body="+encodeURIComponent(txt+" "+url);
-    else if(/텔레그램|Telegram/.test(lab)) href="https://t.me/share/url?url="+encodeURIComponent(url)+"&text="+encodeURIComponent(txt);
+    else if(shHas(lab,"문자","Message")) href="sms:?&body="+encodeURIComponent(txt+" "+url);
+    else if(shHas(lab,"텔레그램","Telegram")) href="https://t.me/share/url?url="+encodeURIComponent(url)+"&text="+encodeURIComponent(txt);
     else if(/LINE/.test(lab)) href="https://social-plugins.line.me/lineit/share?url="+encodeURIComponent(url);
-    else if(/페이스북|Facebook/.test(lab)) href="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(url);
-    else if(/밴드|BAND/.test(lab)) href="https://band.us/plugin/share?body="+encodeURIComponent(txt+"\n"+url)+"&route="+encodeURIComponent(url);
+    else if(shHas(lab,"페이스북","Facebook")) href="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(url);
+    else if(shHas(lab,"밴드","BAND")) href="https://band.us/plugin/share?body="+encodeURIComponent(txt+"\n"+url)+"&route="+encodeURIComponent(url);
     else if(/WhatsApp/.test(lab)) href="https://api.whatsapp.com/send?text="+encodeURIComponent(txt+" "+url);
-    else if(/메일|Email/.test(lab)) href="mailto:?subject="+encodeURIComponent(txt)+"&body="+encodeURIComponent(url);
-    if(/카카오톡|KakaoTalk/.test(lab)&&window.Kakao){   // 카카오 SDK — PC 에서도 카카오톡 「친구에게 보내기」 (2026-10-13)
+    else if(shHas(lab,"메일","Email")) href="mailto:?subject="+encodeURIComponent(txt)+"&body="+encodeURIComponent(url);
+    if(shHas(lab,"카카오톡","KakaoTalk")&&window.Kakao){   // 카카오 SDK — PC 에서도 카카오톡 「친구에게 보내기」 (2026-10-13)
       b.classList.remove("sht");
       b.onclick=function(){ var m=p.querySelector(".shmsg"), ku=url;
-        try{ if(!window.Kakao.isInitialized()) window.Kakao.init("90a47ca48c2a967dd4d14b3b48de2e3b"); if(m) m.textContent="Connecting to KakaoTalk… please wait";
+        try{ if(!window.Kakao.isInitialized()) window.Kakao.init("90a47ca48c2a967dd4d14b3b48de2e3b"); if(m) m.textContent=T("Connecting to KakaoTalk… please wait","Connecting to KakaoTalk… please wait");
           window.Kakao.Share.sendDefault({objectType:"text",text:txt+"\n"+url,link:{webUrl:ku,mobileWebUrl:ku},buttonTitle:"Open"}); }
-        catch(e){ try{ navigator.clipboard.writeText(url); }catch(x){} if(m) m.textContent="KakaoTalk is not available — link copied: "+url; } };
+        catch(e){ try{ navigator.clipboard.writeText(url); }catch(x){} if(m) m.textContent=T("KakaoTalk is not available — link copied: ","KakaoTalk is not available — link copied: ")+url; } };
       return;
     }
     b.classList.remove("sht");
     if(href){ var a=document.createElement("a"); a.href=href; a.target="_blank"; a.rel="noopener"; a.innerHTML=b.innerHTML; b.replaceWith(a); return; }
     b.onclick=function(){   // 카카오톡·링크 복사·다른 앱으로 — 폰 공유창, 안 되면 링크 복사
       var m=p.querySelector(".shmsg");
-      if(!/링크 복사|Copy link/.test(lab)&&navigator.share){ navigator.share({title:txt,text:txt,url:url}).catch(function(){}); return; }
-      try{ navigator.clipboard.writeText(url).then(function(){ if(m) m.textContent="Link copied: "+url; }); }catch(e){ if(m) m.textContent=url; }
+      if(!shHas(lab,"링크 복사","Copy link")&&navigator.share){ navigator.share({title:txt,text:txt,url:url}).catch(function(){}); return; }
+      try{ navigator.clipboard.writeText(url).then(function(){ if(m) m.textContent=T("Link copied: ","Link copied: ")+url; }); }catch(e){ if(m) m.textContent=url; }
     };
   });
 }
@@ -509,7 +510,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="d204c2e559", NAVI_ROOT="kr";
+var NAVI_V="6920bbe515", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -635,8 +636,12 @@ function kstDay(add){ var d=new Date(Date.now()+9*3600e3+(add||0)*864e5); return
 function stName(s){ return LANG==="ko"?s[0]+"역":TE(STN_EN[s[0]]||s[0]); }
 function hm(t){ return t.slice(0,2)+":"+t.slice(2); }
 // 열차 종류 — TAGO 는 SRT 를 「KTX」로 준다. 열차번호 300번대(경부)·600번대(호남)가 SRT (실측 2026-10-15)
+var TRN_L={ja:{"무궁화호":"ムグンファ号","새마을호":"セマウル号","누리로":"ヌリロ号","통근열차":"通勤列車","이음":"イウム","산천":"山川","새마을":"セマウル","마음":"マウム","청춘":"青春","직통":"直通"},
+  zhs:{"무궁화호":"无穷花号","새마을호":"新村号","누리로":"Nuriro号","통근열차":"通勤列车","이음":"EUM","산천":"山川","새마을":"新村","마음":"MAUM","청춘":"青春","직통":"直达"},
+  zht:{"무궁화호":"無窮花號","새마을호":"新村號","누리로":"Nuriro號","통근열차":"通勤列車","이음":"EUM","산천":"山川","새마을":"新村","마음":"MAUM","청춘":"青春","직통":"直達"}};
 function trGrade(x){ var n=parseInt(x.no,10), g=String(x.g||"").replace(/\(.*?\)/g,"");
   if(/^KTX/.test(g)&&((n>=300&&n<400)||(n>=600&&n<700))) return "SRT";
+  if(TRN_L[LANG]){ var Q=TRN_L[LANG]; g=g.replace(/^(무궁화호|새마을호|누리로|통근열차)$/,function(m){ return Q[m]; }).replace(/(이음|산천|새마을|마음|청춘|직통)/g,function(m){ return Q[m]; }); return g; }   // 일·중 열차 이름 (10-18)
   if(FG()){ var E={"이음":"Eum","산천":"Sancheon","새마을":"Saemaeul","마음":"Maeum","청춘":"Cheongchun"}; g=g.replace(/(이음|산천|새마을|마음|청춘)/g,function(m){ return E[m]; })
     .replace(/^무궁화호$/,"Mugunghwa").replace(/^새마을호$/,"Saemaeul").replace(/^누리로$/,"Nuriro").replace(/^통근열차$/,"Commuter").replace(/직통/," Express"); }
   return g; }
@@ -776,7 +781,7 @@ function ctDraw(L){ var w=document.getElementById("map").clientWidth, key="ct|"+
   var fs=Math.max(3,w*0.0118), bd=Math.max(0.5,fs*0.12), put=[];
   CT.forEach(function(t){ var f=meGeoFrac(NAVI_ROOT,t[1],t[2]), an=t[7]?HIT.keys.indexOf(t[7])+1:0, ab=null;
     if(an){ for(var i=0;i<65536;i++) if(HG[i]===an){ var gx=i%256, gy=(i-gx)/256; if(!ab) ab=[gx,gy,gx,gy]; else { ab[0]=Math.min(ab[0],gx); ab[2]=Math.max(ab[2],gx); ab[3]=Math.max(ab[3],gy); } } if(ab) f=[(ab[0]+ab[2]+1)/512,(ab[3]+1)/256]; }   // 그림 아래 가장자리 가운데
-    if(!f) return; var e=document.createElement("div"); e.className="lt ct"; e.dataset.a=t[3]; e.dataset.c=t[0]; e.textContent=t[6];   /* 이름표는 한국어 화면에서도 영어 (사장님 10-16) — 카드는 화면 언어 */
+    if(!f) return; var e=document.createElement("div"); e.className="lt ct"; e.dataset.a=t[3]; e.dataset.c=t[0]; e.textContent=(LANG==="ko"||LANG==="en")?t[6]:TE(t[6]);   /* 이름표는 한국어 화면에서도 영어 (사장님 10-16) — 카드는 화면 언어 */
     e.style.fontSize=fs+"px"; e.style.height=(fs*2)+"px"; e.style.padding="0 "+(fs*0.7)+"px"; e.style.borderRadius=(fs*0.6)+"px"; e.style.visibility="hidden";   /* 도시 이름표는 흰 테두리 없음 (사장님 10-16) */ L.appendChild(e);
     var tw=e.offsetWidth/w, th=e.offsetHeight/w, gp=ab?0:0.004, best=null, bd2=9, st=ab?0.001:0.002;
     for(var dy=ab?0:-th/2;dy<=0.15;dy+=st) for(var dx=-0.15;dx<=0.15;dx+=st){ var x0=f[0]+dx-tw/2, y0=f[1]+gp+dy;   // 윗변이 도시 높이(옆) 또는 그 아래
@@ -1093,9 +1098,9 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
-<script src="trip.js?v=1018u"></script>
-<script src="gift.js?v=1018i"></script>
-<script src="near.js?v=1018i"></script>
+<script src="trip.js?v=1018jz"></script>
+<script src="gift.js?v=1018jz"></script>
+<script src="near.js?v=1018jz"></script>
 <script src="reco.js?v=1018j"></script>
 <script src="pass.js?v=1018i"></script>
 <script>
