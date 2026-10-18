@@ -64,6 +64,11 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;-webkit-text-size-adjust:100%}
+/* 일본어·중국어 화면 글꼴 (10-18) — 한자가 한국 글꼴 모양으로 나오지 않게 언어마다 따로 */
+html:lang(ja) body,html:lang(ja) :is(button,input,select,textarea){font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic UI','Yu Gothic',Meiryo,'Noto Sans JP',sans-serif}
+html:lang(zh-Hans) body,html:lang(zh-Hans) :is(button,input,select,textarea){font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC',sans-serif}
+html:lang(zh-Hant) body,html:lang(zh-Hant) :is(button,input,select,textarea){font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif}
+#lang{appearance:auto;padding:6px 4px 6px 8px;max-width:104px}
 .wrap{max-width:720px;margin:0 auto;padding:16px}
 .top{display:flex;align-items:center;gap:10px;margin:6px 0 18px;position:relative;flex-wrap:wrap;row-gap:8px}
 .top .logo{flex:0 0 auto}
@@ -175,7 +180,7 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
     <div class="tbs">
     <button id="inst" onclick="instGo()" hidden style="white-space:nowrap;margin-left:auto;border:0;border-radius:999px;padding:8px 14px;background:var(--blue);color:#fff;font-weight:700;font-size:13px;cursor:pointer">⬇ 앱 설치</button>
     <button id="rs" onclick="resetAll()" class="tb">처음으로</button>
-    <button id="lang" onclick="setLang(LANG==='ko'?'en':'ko')" class="tb">EN</button>
+    <select id="lang" class="tb" onchange="setLang(this.value)" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zhs">简体中文</option><option value="zht">繁體中文</option></select>
     <button id="sh" onclick="shOpen()" aria-label="share" class="tb">공유</button>
     <button id="th" onclick="thTog()" aria-label="theme" style="border:0;background:none;font-size:20px;line-height:1;padding:4px 4px;cursor:pointer">🌙</button>
     <button id="mb" onclick="mbTog(event)" aria-label="menu" style="border:0;background:none;font-size:24px;line-height:1;padding:4px 6px;cursor:pointer;color:var(--ink)">⋮</button>
@@ -213,6 +218,7 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
+<script src="i18n.js?v=1018a"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
 // 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
@@ -224,7 +230,7 @@ function ntap(k,e){ try{ if(!k||!/^[A-Za-z0-9_-]{1,64}$/.test(k)) return; var x=
   var id=e+":"+k, u=(e==="tap"||e==="open_area"||e==="visit")&&s.s.indexOf(id)<0?1:0, f=s.s.length?0:1;
   if(u||f){ s.s.push(u?id:"~"); if(s.s.length>500) s.s=s.s.slice(-500); try{ localStorage.setItem("mpv_ntd",JSON.stringify(s)); }catch(z){} }
   var v=String(typeof VIEW==="string"?VIEW:""); if(!/^[A-Za-z0-9_-]{1,64}$/.test(v)) v="";
-  var b=JSON.stringify({k:k,v:v,l:LANG==="en"?"en":"ko",e:e,u:u,f:f,x:x});
+  var b=JSON.stringify({k:k,v:v,l:L2(),l2:LANG,e:e,u:u,f:f,x:x});
   if(navigator.sendBeacon&&navigator.sendBeacon(HUB+"/ntap",new Blob([b],{type:"text/plain"}))) return;
   fetch(HUB+"/ntap",{method:"POST",body:b,keepalive:true}).catch(function(){});
 }catch(z){} }
@@ -263,11 +269,11 @@ function inqOpen(){ inqCss(); var b=document.getElementById("inqBox"); if(b) b.r
   document.body.appendChild(b); inqCatLoad(); }
 // 업종 분류 — 코드표는 허브 한 곳(/ninq/cats). 저장은 "대분류" 또는 "대분류.소분류"
 function inqCatLoad(){ var go=function(cs){ window.__inqCats=cs; var s0=document.getElementById("inqCat0"); if(!s0) return;
-    s0.innerHTML='<option value="">'+T("— 고르세요 —","— Select —")+'</option>'+cs.map(function(c){ return '<option value="'+c.c+'">'+esc(LANG==="en"?c.en:c.ko)+'</option>'; }).join(""); inqCatSub(); };
+    s0.innerHTML='<option value="">'+T("— 고르세요 —","— Select —")+'</option>'+cs.map(function(c){ return '<option value="'+c.c+'">'+esc(LANG==="ko"?c.ko:TE(c.en))+'</option>'; }).join(""); inqCatSub(); };
   if(window.__inqCats){ go(window.__inqCats); return; }
   fetch(HUB+"/ninq/cats").then(function(r){ return r.json(); }).then(function(j){ if(j&&j.cats) go(j.cats); }).catch(function(){}); }
 function inqCatSub(){ var cs=window.__inqCats||[], v=document.getElementById("inqCat0").value, c=cs.filter(function(x){ return x.c===v; })[0], s1=document.getElementById("inqCat1");
-  if(c&&c.sub){ s1.innerHTML='<option value="">'+T("— 세부 업종 —","— Subcategory —")+'</option>'+c.sub.map(function(x){ return '<option value="'+x.c+'">'+esc(LANG==="en"?x.en:x.ko)+'</option>'; }).join(""); s1.hidden=false; } else { s1.innerHTML=""; s1.hidden=true; }
+  if(c&&c.sub){ s1.innerHTML='<option value="">'+T("— 세부 업종 —","— Subcategory —")+'</option>'+c.sub.map(function(x){ return '<option value="'+x.c+'">'+esc(LANG==="ko"?x.ko:TE(x.en))+'</option>'; }).join(""); s1.hidden=false; } else { s1.innerHTML=""; s1.hidden=true; }
   document.getElementById("inqCatX").hidden=v!=="etc"; }
 function inqCatVal(){ var a=document.getElementById("inqCat0").value, s1=document.getElementById("inqCat1"), b=s1.hidden?"":s1.value; if(!a||(!s1.hidden&&!b)) return ""; return a+(b?"."+b:""); }
 function inqM(id,t,c){ var m=document.getElementById(id); if(m){ m.textContent=t; m.className="m"+(c?" "+c:""); } }
@@ -281,7 +287,7 @@ function inqBiz(){ var v=document.getElementById("inqBno").value; inqM("inqBnoM"
 function inqCode(){ var e=document.getElementById("inqEm").value.trim(); if(!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(e)){ inqM("inqEmM",T("이메일 주소를 확인해 주세요","Please check the email address"),"e"); return; }
   var bt=document.getElementById("inqEmB"); bt.disabled=true; inqM("inqEmM",T("보내는 중…","Sending…"));
   var h=window.__inqTestKey?{"x-admin":encodeURIComponent(window.__inqTestKey)}:null;   /* 시험용(관리 비밀번호를 아는 사람만) — 메일 대신 코드가 돌아온다 */
-  inqPost("/ninq/code",{email:e,lang:LANG},h).then(function(j){ setTimeout(function(){ bt.disabled=false; },30000);
+  inqPost("/ninq/code",{email:e,lang:L2()},h).then(function(j){ setTimeout(function(){ bt.disabled=false; },30000);
     if(j.ok){ if(j.test) window.__inqTestCode=j.code; inqM("inqEmM",T("코드를 보냈습니다. 메일함(스팸함 포함)을 확인해 10분 안에 넣어 주세요.","Code sent. Check your inbox (and spam) and enter it within 10 minutes."),"o"); return; }
     bt.disabled=false; inqM("inqEmM",j.err==="rate"?T("오늘 보낼 수 있는 횟수를 넘었습니다","Daily limit reached — try again tomorrow"):T("보내지 못했습니다","Could not send the code"),"e"); })
   .catch(function(){ bt.disabled=false; inqM("inqEmM",T("연결에 실패했습니다","Connection failed"),"e"); }); }
@@ -297,7 +303,7 @@ function inqSend(){ if(INQ.busy) return; var g=function(i){ return document.getE
   var d=new Date(Date.now()+9*3600e3).toISOString().slice(0,10), c={d:d,n:0}; try{ var o=JSON.parse(localStorage.getItem("mpv_inq")||"null"); if(o&&o.d===d) c=o; }catch(e){}
   if(c.n>=3){ inqM("inqM",T("오늘은 더 보낼 수 없습니다 (하루 3건)","Daily limit reached (3 per day)"),"e"); return; }
   INQ.busy=true; document.getElementById("inqGo").disabled=true; inqM("inqM",T("보내는 중…","Sending…"));
-  inqPost("/ninq",{vt:INQ.vt,bno:INQ.bno,biz:g("inqBiz"),cat:inqCatVal(),catx:inqCatVal()==="etc"?g("inqCatX"):"",name:g("inqNm"),contact:g("inqTel"),loc:g("inqLoc"),msg:g("inqMsg"),agree:true,lang:LANG,hp:document.getElementById("inqHp").value})
+  inqPost("/ninq",{vt:INQ.vt,bno:INQ.bno,biz:g("inqBiz"),cat:inqCatVal(),catx:inqCatVal()==="etc"?g("inqCatX"):"",name:g("inqNm"),contact:g("inqTel"),loc:g("inqLoc"),msg:g("inqMsg"),agree:true,lang:L2(),ul:LANG,hp:document.getElementById("inqHp").value})
   .then(function(j){ INQ.busy=false; document.getElementById("inqGo").disabled=false; window.__inqLast=j&&j.ok?"ok":"fail";
     if(j.ok){ c.n++; try{ localStorage.setItem("mpv_inq",JSON.stringify(c)); }catch(e){} document.getElementById("inqIn").innerHTML='<h3>'+T("문의를 보냈습니다","Inquiry sent")+'</h3><div class="m" style="font-size:15px;color:var(--ink);margin:10px 0 16px">'+T("고맙습니다. 확인한 이메일로 답변 드리겠습니다.","Thank you. We will reply to your verified email.")+'</div><button onclick="document.getElementById(\'inqBox\').remove()" style="width:100%">'+T("닫기","Close")+'</button>'; return; }
     var E={rate:T("오늘은 더 보낼 수 없습니다","Daily limit reached"),verify:T("확인 시간이 지났습니다. 창을 닫고 다시 해 주세요","Verification expired — please start again"),bno:T("사업자등록번호를 다시 확인해 주세요","Please check the business number"),contact:T("전화번호를 확인해 주세요","Please check the phone number"),cat:T("업종을 골라 주세요","Please choose the type of business"),long:T("글이 너무 깁니다","Too long")};
@@ -308,7 +314,7 @@ function bbDraw(){ try{ var z=document.getElementById("mz"); if(!z) return; var 
   if(bbDraw.k===key) return; bbDraw.k=key; [].slice.call(z.querySelectorAll(".bbt")).forEach(function(e){ e.remove(); });
   if(!c||!c.spots||DET) return; var as=ASP(), W=w*as, H=w;
   for(var k in c.spots){ var p=PLACES[k], b=p&&p.board; if(!b||b.length<5) continue;
-    var e=document.createElement("div"); e.className="bbt"; var en=LANG==="en"; if(k==="adinq") e.innerHTML=en?"Advertise<br>here":"입점 문의";
+    var e=document.createElement("div"); e.className="bbt"; var en=LANG==="en"; if(k==="adinq") e.innerHTML=en?"Advertise<br>here":LANG==="ko"?"입점 문의":esc(TE("Advertise here (sign)"));
     var bw=(b[2]-b[0])*W, bh=b[4]*H, ang=Math.atan2((b[3]-b[1])*H,bw)*180/Math.PI;
     e.style.cssText="position:absolute;left:"+(b[0]*100)+"%;top:"+(b[1]*100)+"%;width:"+(bw/W*100)+"%;height:"+(bh/H*100)+"%;transform-origin:0 0;transform:skewY("+ang+"deg);display:flex;align-items:center;justify-content:center;"
       +"pointer-events:none;white-space:nowrap;overflow:hidden;text-align:center;line-height:1.02;font-weight:900;color:#ffd84a;letter-spacing:.03em;"
@@ -326,12 +332,30 @@ document.addEventListener("pointerdown",function(e){ try{ if(!e.isPrimary||!e.ta
     t=setTimeout(function(){ done(); window._mpLD=Date.now(); location.href="admin/"; },800);
   document.addEventListener("pointerup",done,true); document.addEventListener("pointercancel",done,true); document.addEventListener("pointermove",mv,true); }catch(z){} },true);
 document.addEventListener("click",function(e){ if(window._mpLD&&Date.now()-window._mpLD<2000){ e.stopPropagation(); e.preventDefault(); } },true);
-var LANG="ko"; try{ var _ql=(location.search.match(/[?&]lang=(ko|en)/i)||[])[1]; if(_ql) localStorage.setItem("mpv_lang",_ql.toLowerCase()); LANG=localStorage.getItem("mpv_lang")||(/^ko/i.test(navigator.language)?"ko":"en"); }catch(e){}
-function T(k,e){ return LANG==="en"?e:k; }
+// 언어 (10-18) — ko·en·ja·zhs(简体)·zht(繁體). ?lang= > 저장한 것 > 폰 언어(한국어 폰은 ko, 일본어 ja, 중국어 zh-TW/HK/Hant 는 zht·나머지 zhs, 그 밖은 en)
+var LANGS=["ko","en","ja","zhs","zht"];
+function langAuto(){ var n=String(navigator.language||""); if(/^ko/i.test(n)) return "ko"; if(/^ja/i.test(n)) return "ja"; if(/^zh/i.test(n)) return /hant|-tw|-hk|-mo/i.test(n)?"zht":"zhs"; return "en"; }
+var LANG="ko", _ql=((location.search.match(/[?&]lang=(ko|en|ja|zhs|zht)(?![A-Za-z])/i)||[])[1]||"").toLowerCase();
+try{ if(_ql) localStorage.setItem("mpv_lang",_ql); var _sv=localStorage.getItem("mpv_lang"); LANG=LANGS.indexOf(_sv)>=0?_sv:langAuto(); }catch(e){ LANG=_ql||langAuto(); }
+// T(한글, 영어) — 일본어·중국어는 영어 문장을 열쇠로 i18n.js 표(I18N)·약도 자료 표(DTR)에서 찾고, 없으면 영어. 숫자가 든 문장은 숫자를 # 로 바꾼 꼴로도 찾는다
+var DTR={};
+function FG(){ return LANG!=="ko"; }   // 외국어 화면(영·일·중) — 영어 화면과 같은 길(구글 먼저·K.Ride·영어 이름)로
+function TE(e){ if(LANG==="ko"||LANG==="en"||e==null) return e; var s=String(e), t=(window.I18N&&I18N[LANG])||{}, d=DTR[LANG]||{};
+  if(t[s]!=null) return t[s]; if(d[s]!=null) return d[s];
+  var n=[], k=s.replace(/\d+(?:\.\d+)?/g,function(m){ n.push(m); return "#"; }); if(n.length&&(t[k]!=null||d[k]!=null)){ var i=0; return String(t[k]!=null?t[k]:d[k]).replace(/#/g,function(){ return n[i++]; }); }
+  return s; }
+function T(k,e){ return LANG==="ko"?k:TE(e); }
+function TF(e){ var a=arguments; return TE(e).replace(/\{(\d)\}/g,function(m,i){ return a[+i+1]; }); }   // 영어 틀 "…{0}…" 에 값 넣기
+function LN(o){ return !o?"":LANG==="ko"?o.ko:(o[LANG]||o.en||o.ko); }        // 자료 이름 (ja·zhs·zht 칸 → 없으면 en)
+function LD(o){ return !o?"":LANG==="ko"?o.dko:(o["d"+LANG]||o.den); }        // 자료 설명 (dja·dzhs·dzht → den)
+function LP(a){ if(!a) return ""; var i={ko:0,en:1,ja:2,zhs:3,zht:4}[LANG]||0; return a[i]||(i?TE(a[1]):a[0])||a[0]; }   // [한, 영, 일, 简, 繁] 줄
+function L2(){ return LANG==="ko"?"ko":"en"; }   // 허브가 ko/en 만 받는 곳
+function kpL(){ return LANG==="ko"?"":"&lang=en"+(LANG==="en"?"":"&ul="+LANG); }   // /kplace·/neat — 허브는 지금 en 만 안다(ul 은 허브가 쓸 수 있게 붙여 둔다)
+function hlG(){ return {ko:"",en:"&hl=en",ja:"&hl=ja",zhs:"&hl=zh-CN",zht:"&hl=zh-TW"}[LANG]||""; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-function setLang(l){ LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} }
+function setLang(l){ if(LANGS.indexOf(l)<0) l="ko"; LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} }
 function paint(){
-  document.getElementById("lang").textContent=LANG==="ko"?"EN":"한";
+  var _ls=document.getElementById("lang"); if(_ls) _ls.value=LANG; document.documentElement.lang={ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant"}[LANG]||"ko";
   document.getElementById("ttl").textContent=T("- 투어","- Tour");   /* 앱 이름 머니퍼즐 - 투어 (사장님 10-17) */
   document.getElementById("inst").textContent=T("⬇ 앱 설치","⬇ Install");
   document.getElementById("rs").textContent=T("처음으로","Reset");
@@ -349,7 +373,7 @@ function paint(){
   document.getElementById("rvContact").placeholder=T("이메일 또는 전화 *","Email or phone *"); document.getElementById("rvContact").setAttribute("aria-label",T("이메일 또는 전화 (필수)","Email or phone (required)"));
   document.getElementById("rvBtn").textContent=T("보내기","Send"); document.getElementById("rvMsg").textContent="";
   // 안내·출처 (사장님 10-15) — 한글 화면은 한글만, 영어는 영어만
-  document.getElementById("credit").innerHTML=(LANG==="en"?["· Maps and information in this app are for travel reference only and may differ from reality. Transit schedules, fares and business information should be checked on site and with official sources.","· Map data: © OpenStreetMap contributors (ODbL) · Terrain: AWS Terrain Tiles · Detailed map: NAVER · Place search: Kakao","· Train info: Ministry of Land, Infrastructure and Transport (Public Data Portal) · Transit routes powered by ODsay","· Some illustrations based on photos: Wikimedia Commons (respective authors, CC BY-SA, etc.)"]:["· 이 앱의 지도·정보는 여행 참고용이며 실제와 다를 수 있습니다. 교통 운행 시간·요금·영업 정보는 현장과 공식 안내를 확인하세요.","· 지도 자료: © OpenStreetMap contributors (ODbL) · 지형 AWS Terrain Tiles · 상세 지도 NAVER · 장소 검색 Kakao","· 열차 정보: 국토교통부(공공데이터포털) · 대중교통 경로 powered by ODsay","· 일부 그림 참고 사진: Wikimedia Commons (각 저작자, CC BY-SA 등)"]).map(function(x){ return "<div>"+esc(x)+"</div>"; }).join("");
+  document.getElementById("credit").innerHTML=(FG()?["· Maps and information in this app are for travel reference only and may differ from reality. Transit schedules, fares and business information should be checked on site and with official sources.","· Map data: © OpenStreetMap contributors (ODbL) · Terrain: AWS Terrain Tiles · Detailed map: NAVER · Place search: Kakao","· Train info: Ministry of Land, Infrastructure and Transport (Public Data Portal) · Transit routes powered by ODsay","· Some illustrations based on photos: Wikimedia Commons (respective authors, CC BY-SA, etc.)"]:["· 이 앱의 지도·정보는 여행 참고용이며 실제와 다를 수 있습니다. 교통 운행 시간·요금·영업 정보는 현장과 공식 안내를 확인하세요.","· 지도 자료: © OpenStreetMap contributors (ODbL) · 지형 AWS Terrain Tiles · 상세 지도 NAVER · 장소 검색 Kakao","· 열차 정보: 국토교통부(공공데이터포털) · 대중교통 경로 powered by ODsay","· 일부 그림 참고 사진: Wikimedia Commons (각 저작자, CC BY-SA 등)"]).map(function(x){ return "<div>"+esc(TE(x))+"</div>"; }).join("");
 }
 // 내 위치 (문장 검색 때만, 4초 안에 못 받으면 위치 없이) — 저장하지 않는다 (위치정보법)
 function myPos(){ return new Promise(function(ok){ if(!navigator.geolocation) return ok(null); var t=setTimeout(function(){ ok(null); },4000);
@@ -363,16 +387,16 @@ function go(kq){
   var q=(typeof kq==="string"&&kq)||document.getElementById("q").value.trim(), out=document.getElementById("res"); if(!q){ out.innerHTML=""; return; }
   out.innerHTML='<div class="msg">'+T("찾는 중…","Searching…")+'</div>'; try{ spinClear(); }catch(e){}
   var ps0=null;   // 모든 검색에 내 위치(있으면) — 가까운 순
-  (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(ps){ ps0=ps; return fetch(HUB+"/kplace?q="+encodeURIComponent(q)+(LANG==="en"?"&lang=en":"")+(ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"")); }).then(function(r){ return r.json(); }).then(function(j){
+  (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(ps){ ps0=ps; return fetch(HUB+"/kplace?q="+encodeURIComponent(q)+kpL()+(ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"")); }).then(function(r){ return r.json(); }).then(function(j){
     var it=(j&&j.ok&&j.items)||[];
     var ps=ps0; if(ps){ it.forEach(function(x){ if(x.dist==null) x.dist=Math.round(kmLL(ps,[+x.y,+x.x])*1000); });   // 거리는 화면에서 계산(위치는 안 남김)
       if(/\s/.test(q)||poseForQuery(q,it)) it.sort(function(a,b){ return a.dist-b.dist; }); }   // 먹을 곳·카페처럼 고르는 검색·문장 검색은 가까운 순 (이름으로 찾는 곳은 이름 맞는 차례)
     if(!it.length){ out.innerHTML='<div class="msg">'+T("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words.")+'</div>'; return; }
-    var gs=j.guess?'<div class="d" style="margin:0 4px 6px">'+T('「'+esc(q)+'」을(를) 「'+esc(j.guess)+'」(으)로 찾았습니다','Showing results for “'+esc(j.guess)+'” (from “'+esc(q)+'”)')+'</div>':'';
+    var gs=j.guess?'<div class="d" style="margin:0 4px 6px">'+(LANG==="ko"?'「'+esc(q)+'」을(를) 「'+esc(j.guess)+'」(으)로 찾았습니다':TF('Showing results for “{1}” (from “{0}”)',esc(q),esc(j.guess)))+'</div>':'';
     window._sres=it.slice(0,10);
     out.innerHTML=gs+it.slice(0,10).map(function(x,i){
       var nm=encodeURIComponent(x.name), ll=x.y+","+x.x;
-      var en=LANG==="en"&&x.name_en, ttl=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
+      var en=FG()&&x.name_en, ttl=en?x.name_en:x.name, ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
       return '<div class="item sres" data-i="'+i+'" style="cursor:pointer"><div class="t">📍 '+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
         +telLine(x.tel)+linksTo(x.name,x.y,x.x,x.name,x.addr)+'</div>';   // 목록에도 전화 (사장님 10-16)
     }).join("");
@@ -403,10 +427,10 @@ function spinShow0(x){ var lat=+x.y, lng=+x.x, nb=spinNorm(x.name);
   var f=meGeoFrac(VIEW,lat,lng); if(!f) return; var w=document.getElementById("map").clientWidth, sz=Math.max(10,w*0.045), fs=Math.max(4,w*0.016);
   var e=document.createElement("div"); e.id="spin"; e.onclick=function(ev){ ev.stopPropagation(); spinCard(); }; e.style.cssText="position:absolute;z-index:4;cursor:pointer;left:"+(f[0]*100)+"%;top:"+(f[1]*100)+"%;transform:translate(-50%,-100%)";
   e.innerHTML='<svg class="spbob" viewBox="0 0 24 34" style="display:block;width:'+sz+'px;height:'+(sz*34/24)+'px;margin:0 auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))"><path d="M12 1C6 1 1.5 5.5 1.5 11.3 1.5 19 12 33 12 33s10.5-14 10.5-21.7C22.5 5.5 18 1 12 1z" fill="#e03131" stroke="#fff" stroke-width="1.6"/><circle cx="12" cy="11.5" r="4" fill="#fff"/></svg>'
-    +'<div style="position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:1px;white-space:nowrap;background:#fff;color:#c92a2a;border:'+Math.max(0.6,fs*0.12)+'px solid #e03131;border-radius:999px;padding:'+(fs*0.12)+'px '+(fs*0.5)+'px;font-size:'+fs+'px;font-weight:900;line-height:1.3">'+esc(LANG==="en"?(x.name_en||x.name):x.name)+'</div>';
+    +'<div style="position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:1px;white-space:nowrap;background:#fff;color:#c92a2a;border:'+Math.max(0.6,fs*0.12)+'px solid #e03131;border-radius:999px;padding:'+(fs*0.12)+'px '+(fs*0.5)+'px;font-size:'+fs+'px;font-weight:900;line-height:1.3">'+esc(FG()?(x.name_en||x.name):x.name)+'</div>';
   document.getElementById("mz").appendChild(e); SPIN=x; spinCard();
   clearTimeout(window._scT); window._scT=setTimeout(function(){ var m=document.getElementById("map"); window.scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:"smooth"}); },200); }
-function spinCard(){ var p=PLACES.__pin; if(!p) return; var en=LANG==="en", nm=en?p.en:p.ko, ad=en?p.addr_en:p.addr, ct=en?p.cat_en:String(p.cat||"").split(">").pop().trim();
+function spinCard(){ var p=PLACES.__pin; if(!p) return; var en=FG(), nm=LN(p), ad=en?p.addr_en:p.addr, ct=en?p.cat_en:String(p.cat||"").split(">").pop().trim();
   var d=""; window._cardK="__pin";
   document.getElementById("res").innerHTML='<div class="item">'+meDistLine("__pin")+'<div class="t">📍 '+esc(nm)+'</div>'+(en&&p.en!==p.ko?'<div class="d" style="margin:1px 0 0">'+esc(p.ko)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+d+'</div>'+telLine(p.tel)+linksTo(p.ko,p.lat,p.lng,p.ko,p.addr)+'</div>'; }
 document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest("a")) return; var it=e.target.closest&&e.target.closest("#res .sres"); if(!it) return; var x=(window._sres||[])[+it.dataset.i]; if(x) spinShow(x); });
@@ -414,9 +438,9 @@ document.addEventListener("click",function(e){ if(e.target.closest&&e.target.clo
 // HTS 앱 공유 창을 그대로 옮겨 왔다 — 단추는 모두 막힘 (2026-10-12)
 function shBuild(){
   var p=document.getElementById("shIn");
-  const en=LANG==="en", u="", t="";
+  const en=FG(), u="", t="";
   const A=function(href,label){ return '<button class="sht">'+label+'</button>'; };
-  let h='<div class="shhd">'+(en?"Share this app":"이 앱 공유하기")+'</div><div class="shgrid">';
+  let h='<div class="shhd">'+T("이 앱 공유하기","Share this app")+'</div><div class="shgrid">';
   h+=A("https://twitter.com/intent/tweet?text="+t+"&url="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z\"/></svg> X");
   h+=A("sms:?&body="+t+"%20"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#34C759\" d=\"M12 3C6.98 3 3 6.36 3 10.5c0 2.35 1.28 4.43 3.3 5.8-.13 1.02-.5 2.2-1.3 3.2 1.7-.2 3.2-.94 4.3-1.7.85.2 1.75.3 2.7.3 5.02 0 9-3.36 9-7.6S17.02 3 12 3z\"/></svg> "+(en?"Message":"문자"));
   h+=A("https://t.me/share/url?url="+u+"&text="+t,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#26A5E4\" d=\"M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z\"/></svg> "+(en?"Telegram":"텔레그램"));
@@ -485,11 +509,12 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="166cfae540", NAVI_ROOT="kr";
+var NAVI_V="d204c2e559", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
 function mapMerge(id,d){ var k, pl=d.places||{}; for(k in pl) if(!PLACES[k]) PLACES[k]=pl[k];
+  if(d.tr) for(var lg in d.tr){ DTR[lg]=DTR[lg]||{}; for(k in d.tr[lg]) DTR[lg][k]=d.tr[lg][k]; }   // 약도 글자·정류장·역 이름 번역 (build_navi.py, 10-18)
   if(d.spots&&CITY[id]) CITY[id].spots=d.spots; if(d.labels&&CITY[id]){ CITY[id].labels=d.labels; if(id===VIEW) try{ lblDraw(); }catch(e){} } if(d.subs&&CITY[id]){ CITY[id].subs=d.subs; if(id===VIEW) try{ lodDraw(); }catch(e){} }
   if(d.hit){ HIT=d.hit; HG=hgMake(HIT); } if(d.stn) STN=d.stn; if(d.stn_en) STN_EN=d.stn_en; if(d.isle) ISLE=d.isle;
   try{ nmMark(); }catch(e){} }
@@ -498,13 +523,13 @@ function mapLoad(id){ if(id!==NAVI_ROOT&&!(CITY[id]&&CITY[id].data)) return Prom
   return MAPD[id]=jget("maps/"+id+".json").then(function(d){ mapMerge(id,d); try{ bbDraw(); }catch(e){} return d; },function(e){ delete MAPD[id]; throw e; }); }
 // 전화번호 줄 — 자료 tel(국내 꼴 02-123-4567) → tel:+82-2-123-4567 · 영어 화면은 +82 2-123-4567 로 보인다 (10-15)
 function telIntl(t){ return /^0/.test(t)?"+82-"+t.slice(1):"+82-"+t; }
-function telLine(t){ if(!t) return ""; var shown=LANG==="en"?(/^0/.test(t)?"+82 "+t.slice(1):"+82 "+t):t;
+function telLine(t){ if(!t) return ""; var shown=FG()?(/^0/.test(t)?"+82 "+t.slice(1):"+82 "+t):t;
   return '<div class="d" style="margin:2px 0 8px"><a class="tel" href="tel:'+esc(telIntl(t))+'" style="border:0;background:none;padding:0;margin:0;font-size:14px;font-weight:800;color:var(--ink)">📞 '+esc(shown)+'</a></div>'; }
 // 지도·카드에서 입력칸 포커스 놓기 — 검색칸에 포커스가 남은 채 카드가 칸 글자를 바꾸면 폰 자판이 다시 뜬다 (사장님 10-16)
 function inBlur(){ try{ var a=document.activeElement; if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) a.blur(); }catch(e){} }
-function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } var nm=LANG==="en"?p.en:p.ko, ll=p.lat+","+p.lng;
+function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } var nm=LN(p), ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
-  window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+((LANG==="en"?p.den:p.dko)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LANG==="en"?p.den:p.dko)+'</div>':'')+'<div class="d">'+esc(LANG==="en"?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
+  window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
     +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng,null,p.addr))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
   /*nolink*/   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 · 출발지는 내 위치(있으면)
   if(k==="mpstat") document.getElementById("res").firstElementChild.insertAdjacentHTML("beforeend",'<div class="d" style="margin-top:6px">'+T("머니퍼즐 통계청 — 주식회사 부만","Money Puzzle Data Center — Booman Inc.")+'<br>'+T("사업자등록번호 297-81-03712 · 연락처 ","Business Reg. No. 297-81-03712 · Contact ")+'<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a></div>');   // 회사 카드 (10-15)
@@ -520,8 +545,8 @@ function routeShow(p){ rtClear(); var r=p.route, s=document.getElementById("dl")
   r.stops.forEach(function(t,i){ var c=document.createElementNS(ns,"circle"); c.setAttribute("cx",t[0]*1000); c.setAttribute("cy",t[1]*1000); c.setAttribute("r","13"); c.setAttribute("fill","#fff"); c.setAttribute("stroke","#e8590c"); c.setAttribute("stroke-width","4"); g.appendChild(c);
     var tx=document.createElementNS(ns,"text"); tx.setAttribute("x",t[0]*1000); tx.setAttribute("y",t[1]*1000+6); tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size","17"); tx.setAttribute("font-weight","900"); tx.setAttribute("fill","#c2410c"); tx.textContent=i+1; g.appendChild(tx); });
   s.appendChild(g);
-  var li=r.stops.map(function(t,i){ return (i+1)+". "+esc(LANG==="en"?t[3]:t[2]); }).join("<br>");
-  document.getElementById("res").insertAdjacentHTML("beforeend",'<div class="item"><div class="t">🚌 '+T("시티투어 노선 (도심·고궁·남산)","City Tour route (Downtown · Palaces · Namsan)")+'</div><div class="d" style="margin:4px 0">'+esc(LANG==="en"?r.info[1]:r.info[0])+'</div><div class="d" style="line-height:1.7;color:var(--ink)">'+li+'</div></div>'); }
+  var li=r.stops.map(function(t,i){ return (i+1)+". "+esc(LANG==="ko"?t[2]:TE(t[3])); }).join("<br>");
+  document.getElementById("res").insertAdjacentHTML("beforeend",'<div class="item"><div class="t">🚌 '+T("시티투어 노선 (도심·고궁·남산)","City Tour route (Downtown · Palaces · Namsan)")+'</div><div class="d" style="margin:4px 0">'+esc(LP(r.info))+'</div><div class="d" style="line-height:1.7;color:var(--ink)">'+li+'</div></div>'); }
 var HIT={keys:[],rle:""};
 var HG=new Uint8Array(65536);
 // 그림 근처만 눌러도 된다 — 바로 그 자리가 비면 손가락 한 마디(화면 24px) 안의 가장 가까운 그림 (사장님 10-15)
@@ -530,16 +555,16 @@ var VIEW="kr", CITY={};
 // 자세한 지도 — 네이버 지도(부동산 앱과 같은 키, navi 주소 등록함 10-15). 약도 ↔ 자세한 지도
 var NAVER_KEY="jbwyndpnp3", DET=false, _nm=null;
 function nmLoad(cb){ if(window.naver&&naver.maps) return cb(); var s=document.createElement("script");
-  s.src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId="+NAVER_KEY+"&language="+(LANG==="en"?"en":"ko"); s.onload=cb; document.head.appendChild(s); }
+  s.src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId="+NAVER_KEY+"&language="+({ko:"ko",en:"en",ja:"ja",zhs:"zh",zht:"zh"}[LANG]||"en"); s.onload=cb; document.head.appendChild(s); }
 var _nmk={}, _niw=null, _niwK=null;
-function nmTxt(k){ var p=PLACES[k], en=LANG==="en", d=en?p.den:p.dko;
-  return '<div style="padding:7px 11px;max-width:230px;line-height:1.35;color:#111827;font-family:system-ui,-apple-system,\'Segoe UI\',Roboto,\'Noto Sans KR\',sans-serif"><div style="font-weight:800;font-size:13.5px">'+esc(en?p.en:p.ko)+'</div>'+(d?'<div style="font-size:11.5px;color:#5b6474;margin-top:2px">'+esc(d)+'</div>':'')+'</div>'; }
+function nmTxt(k){ var p=PLACES[k], d=LD(p);
+  return '<div style="padding:7px 11px;max-width:230px;line-height:1.35;color:#111827;font-family:system-ui,-apple-system,\'Segoe UI\',Roboto,\'Noto Sans KR\',\'Hiragino Sans\',\'Yu Gothic\',\'PingFang SC\',\'PingFang TC\',\'Microsoft YaHei\',\'Microsoft JhengHei\',sans-serif"><div style="font-weight:800;font-size:13.5px">'+esc(LN(p))+'</div>'+(d?'<div style="font-size:11.5px;color:#5b6474;margin-top:2px">'+esc(d)+'</div>':'')+'</div>'; }
 function nmOpen(k){ if(!_niw) _niw=new naver.maps.InfoWindow({content:"",borderWidth:1,borderColor:"#c9ced8",backgroundColor:"#fff",anchorSize:new naver.maps.Size(10,8),pixelOffset:new naver.maps.Point(0,-2)});
   _niw.setContent(nmTxt(k)); _niw.open(_nm,_nmk[k]); _niwK=k; }
 function nmMark(){ if(!_nm) return; Object.keys(PLACES).forEach(function(k){ if(_nmk[k]) return; var p=PLACES[k];
-  var m=new naver.maps.Marker({position:new naver.maps.LatLng(p.lat,p.lng),map:_nm,title:LANG==="en"?p.en:p.ko}); _nmk[k]=m;
+  var m=new naver.maps.Marker({position:new naver.maps.LatLng(p.lat,p.lng),map:_nm,title:LN(p)}); _nmk[k]=m;
   naver.maps.Event.addListener(m,"click",function(){ window._nmMk=Date.now(); nmOpen(k); }); }); }   // 핀 누름이 지도 누름(말풍선 닫기)으로도 가서 바로 닫혔다 (사장님 10-17)
-function nmLang(){ if(!_nm) return; for(var k in _nmk){ var p=PLACES[k]; try{ _nmk[k].setTitle(LANG==="en"?p.en:p.ko); }catch(e){} } if(_niw&&_niwK&&_niw.getMap()) nmOpen(_niwK); }
+function nmLang(){ if(!_nm) return; for(var k in _nmk){ var p=PLACES[k]; try{ _nmk[k].setTitle(LN(p)); }catch(e){} } if(_niw&&_niwK&&_niw.getMap()) nmOpen(_niwK); }
 function nmRegion(v){ var t=v; while(CITY[t]&&CITY[t].parent!==NAVI_ROOT) t=CITY[t].parent;
   Object.keys(CITY).forEach(function(id){ var u=id; while(CITY[u]&&CITY[u].parent!==NAVI_ROOT) u=CITY[u].parent; if(u===t) mapLoad(id).catch(function(){}); }); }
 function detSet(on){ DET=on; try{ meEdge(); }catch(x){} if(on) nmRegion(VIEW); var c=CITY[VIEW], box=document.getElementById("nmapw");
@@ -560,8 +585,8 @@ function nmMe(){ if(!_nm||!window.naver||!naver.maps) return; if(!ME.pos){ if(_n
   _nmMe.setPosition(ll); if(_nmMe.getMap()!==_nm) _nmMe.setMap(_nm); }
 var ROOT_IMG=document.getElementById("mapimg").getAttribute("src");
 function viewSet(v){ clearTimeout(window._scT); try{ spinClear(); }catch(e){} VIEW=v; document.getElementById("map").classList.toggle("onkr",!CITY[v]); if(CITY[v]) mapLoad(v).catch(function(){}); detSet(false); document.getElementById("vdet").hidden=!CITY[v]; document.getElementById("vbar").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:ROOT_IMG;
-  document.getElementById("vback").hidden=!c; var tt=document.getElementById("vttl"); tt.hidden=!c; if(c) tt.textContent=LANG==="en"?c.en:c.ko;
-  var vb=document.getElementById("vback"); vb.textContent="←"; vb.title=vb.ariaLabel=c&&c.parent!=="kr"?T(CITY[c.parent].ko+"로",CITY[c.parent].en):T("전국 지도로","Korea map");
+  document.getElementById("vback").hidden=!c; var tt=document.getElementById("vttl"); tt.hidden=!c; if(c) tt.textContent=LN(c);
+  var vb=document.getElementById("vback"); vb.textContent="←"; vb.title=vb.ariaLabel=c&&c.parent!=="kr"?T(CITY[c.parent].ko+"로",LN(CITY[c.parent])):T("전국 지도로","Korea map");
   try{ dlDraw(null); }catch(e){} try{ lblDraw(); }catch(e){} var w0=document.getElementById("map").clientWidth, s0=ZB(); ZM={s:s0,tx:w0/2-((c&&c.fx)||0.5)*w0*((c&&c.aspect)||1)*s0,ty:0}; zApply(); LOD.s0=ZM.s; }
 var _lastTap={k:null,t:0}, _lastArea={a:null,t:0};
 function areaTap(cx,cy){ var c=CITY[VIEW]; if(!c||!c.areas) return; var r=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-r.left)/r.width, fy=(cy-r.top)/r.height, now=Date.now();
@@ -577,7 +602,7 @@ function hitAt(cx,cy){ var spe=document.getElementById("spin"); if(spe){ var sr=
   var R=Math.max(1,Math.ceil(8/(r.width/256))), best=0, bd=1e9;
   for(var y=Math.max(0,gy-R);y<=Math.min(255,gy+R);y++) for(var x=Math.max(0,gx-R);x<=Math.min(255,gx+R);x++){ var w=HG[y*256+x]; if(!w) continue; var d=(x+.5-fx)*(x+.5-fx)+(y+.5-fy)*(y+.5-fy); if(d<bd&&d<=R*R){ bd=d; best=w; } }
   return best?HIT.keys[best-1]:null; }
-function pName(k){ var p=PLACES[k]; return p?(LANG==="en"?p.en:p.ko):""; }
+function pName(k){ var p=PLACES[k]; return p?(LN(p)):""; }
 function ktxErr(){ document.getElementById("res").innerHTML='<div class="err">⚠ '+T("오류 — KTX 그림은 장소가 아닙니다.","Error — the KTX picture is not a place.")+'</div>'; }
 // 도시 그림은 한 번 누르면 잠깐(0.45초) 기다렸다 장소 정보 — 그 사이 또 누르면 도시 약도 (정보 카드가 지도를 밀어 두 번째 누름이 빗나가지 않게)
 var _tapT=null;
@@ -607,12 +632,12 @@ function dlDraw(p0,p1,txt){ var s=document.getElementById("dl"), ob=document.get
 var STN={};
 var STN_EN={};
 function kstDay(add){ var d=new Date(Date.now()+9*3600e3+(add||0)*864e5); return d.toISOString().slice(0,10).replace(/-/g,""); }
-function stName(s){ return LANG==="en"?(STN_EN[s[0]]||s[0]):s[0]+"역"; }
+function stName(s){ return LANG==="ko"?s[0]+"역":TE(STN_EN[s[0]]||s[0]); }
 function hm(t){ return t.slice(0,2)+":"+t.slice(2); }
 // 열차 종류 — TAGO 는 SRT 를 「KTX」로 준다. 열차번호 300번대(경부)·600번대(호남)가 SRT (실측 2026-10-15)
 function trGrade(x){ var n=parseInt(x.no,10), g=String(x.g||"").replace(/\(.*?\)/g,"");
   if(/^KTX/.test(g)&&((n>=300&&n<400)||(n>=600&&n<700))) return "SRT";
-  if(LANG==="en"){ var E={"이음":"Eum","산천":"Sancheon","새마을":"Saemaeul","마음":"Maeum","청춘":"Cheongchun"}; g=g.replace(/(이음|산천|새마을|마음|청춘)/g,function(m){ return E[m]; })
+  if(FG()){ var E={"이음":"Eum","산천":"Sancheon","새마을":"Saemaeul","마음":"Maeum","청춘":"Cheongchun"}; g=g.replace(/(이음|산천|새마을|마음|청춘)/g,function(m){ return E[m]; })
     .replace(/^무궁화호$/,"Mugunghwa").replace(/^새마을호$/,"Saemaeul").replace(/^누리로$/,"Nuriro").replace(/^통근열차$/,"Commuter").replace(/직통/," Express"); }
   return g; }
 function trBadge(g){ var c=/^SRT/.test(g)?"#7b2d8e":/^KTX/.test(g)?"#1f4fa3":/ITX/.test(g)?"#0b7a5a":/무궁화|누리로|통근/.test(g)?"#c0392b":"#5b6474";
@@ -638,7 +663,7 @@ function m3857(lat,lng){ return [lng*20037508.34/180, Math.log(Math.tan((90+lat)
 var ISLE={};
 function routePlan(a,b,km){ var p=PLACES[a], q=PLACES[b], na=encodeURIComponent(p.ko), nb=encodeURIComponent(q.ko), A=m3857(p.lat,p.lng), B=m3857(q.lat,q.lng);
   var nv="https://map.naver.com/p/directions/"+A[0]+","+A[1]+","+na+",,/"+B[0]+","+B[1]+","+nb+",,/-/";
-  var go="https://www.google.com/maps/dir/?api=1"+(LANG==="en"?"&hl=en":"")+"&origin="+p.lat+","+p.lng+"&destination="+q.lat+","+q.lng+"&travelmode=";
+  var go="https://www.google.com/maps/dir/?api=1"+hlG()+"&origin="+p.lat+","+p.lng+"&destination="+q.lat+","+q.lng+"&travelmode=";
   var kk="https://map.kakao.com/link/from/"+na+","+p.lat+","+p.lng+"/to/"+nb+","+q.lat+","+q.lng;
   var L=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };
   var ia=ISLE[a]||"land", ib=ISLE[b]||"land";
@@ -656,11 +681,11 @@ function routePlan(a,b,km){ var p=PLACES[a], q=PLACES[b], na=encodeURIComponent(
   }
   if(ia==="ulleung"&&ib==="ulleung") return {train:false,html:'<div class="trh">⛴ '+T("울릉도에서 독도 가는 배","Boat from Ulleungdo to Dokdo")+'</div>'+L("https://island.haewoon.co.kr/",T("여객선 예매","Ferry booking"))};
   if(km<=60) return {train:false,ods:true,html:'<div id="ods"></div><div class="trh">'+(ia==="jeju"?'🚌 '+T("버스·택시","Bus, taxi"):'🚇 '+T("지하철·버스·택시","Subway, bus, taxi"))+'</div>'
-    +(LANG==="en"?L(go+"transit","Google Maps (English)")+L(nv+"transit","Naver transit")+L(nv+"car","Taxi (fare, Naver)")+krideL(q.ko,q.addr)
-      +'<div class="d" style="margin-top:6px">Tip: in the Naver Map app, Settings → Language → English shows routes in English.</div>'
+    +(FG()?L(go+"transit",TE("Google Maps (English)"))+L(nv+"transit",TE("Naver transit"))+L(nv+"car",TE("Taxi (fare, Naver)"))+krideL(q.ko,q.addr)
+      +'<div class="d" style="margin-top:6px">'+esc(TE("Tip: in the Naver Map app, Settings → Language → English shows routes in English."))+'</div>'
      :L(nv+"transit","네이버 대중교통")+L(kk,"카카오맵 길찾기")+L(nv+"car","택시 (요금 보기)")+L(go+"transit","구글 지도"))};
   return {train:ia==="land",html:'<div class="trh">🧭 '+T("고속버스·자동차","Express bus, car")+'</div>'
-    +(LANG==="en"?L(go+"driving","Google driving (English)")+L(nv+"transit","Naver transit (incl. intercity bus)")+L(nv+"car","Naver car")
+    +(FG()?L(go+"driving",TE("Google driving (English)"))+L(nv+"transit",TE("Naver transit (incl. intercity bus)"))+L(nv+"car",TE("Naver car"))
      :L(nv+"transit","네이버 대중교통 (고속·시외버스 포함)")+L(nv+"car","네이버 자동차")+L(go+"driving","구글 자동차"))};
 }
 
@@ -690,7 +715,7 @@ function odsBox(a,b){ var box=document.getElementById("ods"); if(!box) return; v
       +'<div class="d" style="font-size:11px;text-align:right">powered by www.ODsay.com</div>'; };
   if(cached) return draw(cached);
   box.innerHTML='<div class="d">'+T("경로 찾는 중…","Finding routes…")+'</div>';
-  fetch(HUB+"/odsay?lang="+(LANG==="en"?1:0)+"&SX="+(+p.lng).toFixed(6)+"&SY="+(+p.lat).toFixed(6)+"&EX="+(+q.lng).toFixed(6)+"&EY="+(+q.lat).toFixed(6))   /* 허브 → 우리 서버 → ODsay (키는 서버에만, 사장님 10-17) */
+  fetch(HUB+"/odsay?lang="+(FG()?1:0)+"&SX="+(+p.lng).toFixed(6)+"&SY="+(+p.lat).toFixed(6)+"&EX="+(+q.lng).toFixed(6)+"&EY="+(+q.lat).toFixed(6))   /* 허브 → 우리 서버 → ODsay (키는 서버에만, 사장님 10-17) */
     .then(function(r){ return r.json(); }).then(function(j){ if(j&&j.result){ try{ sessionStorage.setItem(ck,JSON.stringify(j)); }catch(e){} } draw(j); }).catch(function(){ box.innerHTML=""; }); }
 function distShow(a,b,p0,p1){
   if(a==="ktx"||b==="ktx"){ ktxErr(); dlDraw(null); return; }
@@ -726,12 +751,12 @@ function zApply(){ var m=document.getElementById("map"), w=m.clientWidth, hc=MH(
   var lb=document.getElementById("dlb"); if(lb) lb.style.transform="translate(-50%,-50%) scale("+(1/ZM.s)+")"; try{ lodDraw(); }catch(e){} try{ meDraw(); }catch(e){} try{ bbDraw(); }catch(e){} }
 // 약도 글자 표시 — 자료 labels [[x,y,한글,영어,ax,ay],...] 를 지도 위 그 자리에 (지도와 같이 커진다 — 이름표와 같은 원칙, 매표소 등 · fix3 10-15)
 function lblDraw(){ [].forEach.call(document.querySelectorAll("#mz .mlb"),function(e){ e.remove(); }); var c=CITY[VIEW]; if(!c||!c.labels) return; var z=document.getElementById("mz");
-  c.labels.forEach(function(t){ var e=document.createElement("div"); e.className="mlb"; e.textContent=LANG==="en"?t[3]:t[2]; e._ax=t[4]||0; e._ay=t[5]||0; e.style.left=(t[0]*100)+"%"; e.style.top=(t[1]*100)+"%"; var w=document.getElementById("map").clientWidth, fs=Math.max(4,w*0.016);
+  c.labels.forEach(function(t){ var e=document.createElement("div"); e.className="mlb"; e.textContent=LANG==="ko"?t[2]:TE(t[3]); e._ax=t[4]||0; e._ay=t[5]||0; e.style.left=(t[0]*100)+"%"; e.style.top=(t[1]*100)+"%"; var w=document.getElementById("map").clientWidth, fs=Math.max(4,w*0.016);
     e.style.fontSize=fs+"px"; e.style.padding=(fs*0.15)+"px "+(fs*0.6)+"px"; e.style.borderWidth=Math.max(0.6,fs*0.14)+"px"; e.style.transform="translate("+(-e._ax*100)+"%,"+(-e._ay*100)+"%)"; if(t[6]){ e.dataset.k=t[6]; e.style.pointerEvents="auto"; e.style.cursor="pointer"; } z.appendChild(e); }); }   /* t[6]=장소 키 — 글자를 누르면 그 장소 카드 (매표소 → 시티투어 시간표, 사장님 10-16) */
 // 빨간 네모 줌 단계 (사장님 10-15) — 보통 크기엔 이름표+대표 그림 1~2장, 당기면 그림이 제자리에 늘고, 네모가 화면 70% 넘게 차면 그 약도로 들어간다
 var LOD={el:{},s0:1,v:null,wt:null};
 function ZMAX(){ var c=CITY[VIEW], mx=5; if(c&&c.areas) for(var a in c.areas){ var b=c.areas[a]; mx=Math.max(mx,0.75/((b[2]-b[0])*ASP())); } return Math.min(20,mx)*Math.max(1,ZB()); }
-function lodTag(a){ var c=CITY[a]; return (c.tag?(LANG==="en"?c.tag[1]:c.tag[0]):(LANG==="en"?c.en:c.ko).split(" · ")[0])+" ▸"; }
+function lodTag(a){ var c=CITY[a]; return (c.tag?LP(c.tag):LN(c).split(" · ")[0])+" ▸"; }
 function lodEl(id,cls,a){ var e=LOD.el[id]; if(!e){ e=document.createElement("div"); e.className=cls; e.dataset.a=a; document.getElementById("lod").appendChild(e); LOD.el[id]=e; } return e; }
 // 이름표·작은 그림은 지도(#mz) 안에 — 지도와 같이 움직이고 같이 커진다 (사장님 10-15 「박스에 붙여라」)
 //   이름표 = 빨간 네모 왼쪽 위 모서리에 붙은 작은 탭(처음 배율에서 아주 작게, 확대하면 읽힘) · 작은 그림 = 그 그림 자리 한가운데
@@ -782,7 +807,7 @@ function lodDraw(){ var L=document.getElementById("lod"); if(!L) return; var c=C
       if(pw<mn){ ph=ph*mn/pw; pw=mn; } if(ph<mn){ pw=pw*mn/ph; ph=mn; } ph=Math.min(ph,pw*1.6); pw=Math.min(pw,ph*1.6);
       var x=(s[1]+s[3])/2*W-pw/2, y=(s[2]+s[4])/2*H-ph/2, r=[x,y,x+pw,y+ph];
       if(hit(r)) continue; put.push(r);
-      var e=lodEl("p:"+a+":"+s[0],"lp",a); e.dataset.k=s[0]; lodBg(e,[(LANG==="en"&&s[6])?s[6]:s[5],s[5],String(s[5]).replace(/_(ko|en)\.jpg(\?.*)?$/,".jpg")]);   /* [6]=영어판(전광판 글자 박힌 미니) · 못 불러오면 다음 것으로 */ e.title=pName(s[0].split("@")[0])||"";
+      var e=lodEl("p:"+a+":"+s[0],"lp",a); e.dataset.k=s[0]; lodBg(e,[(FG()&&s[6])?s[6]:s[5],s[5],String(s[5]).replace(/_(ko|en)\.jpg(\?.*)?$/,".jpg")]);   /* [6]=영어판(전광판 글자 박힌 미니) · 못 불러오면 다음 것으로 */ e.title=pName(s[0].split("@")[0])||"";
       e.style.left=(x/W*100)+"%"; e.style.top=(y/H*100)+"%"; e.style.width=pw+"px"; e.style.height=ph+"px"; e.style.borderWidth=Math.max(0.6,w*0.003)+"px"; e.style.borderRadius=(w*0.01)+"px"; } }); }
 // 네모 안 비율(pfx,pfy)을 가운데에 두고 아래 약도로 — sC 를 주면 그 배율, 없으면 지금 보이는 넓이를 이어 받는다
 function lodEnter(a,pfx,pfy,sC){ var c=CITY[VIEW], b=c&&c.areas&&c.areas[a]; if(!b) return; var asP=ASP(), sP=ZM.s; viewSet(a);
@@ -863,7 +888,7 @@ function rvSend(){
   if(!v){ m.textContent=T("내용을 적어 주세요.","Please write your message."); return; }
   if(!rvOk(cv)){ m.textContent=T("이메일이나 전화번호를 넣어 주세요.","Please enter your email or phone number."); return; }
   b.disabled=true; m.textContent=T("보내는 중…","Sending…");
-  fetch(HUB+"/hvoice",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:v,contact:cv,hp:document.getElementById("rvHp").value,page:location.href,src:"navi",lang:LANG})})
+  fetch(HUB+"/hvoice",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:v,contact:cv,hp:document.getElementById("rvHp").value,page:location.href,src:"navi",lang:L2(),ul:LANG})})
   .then(function(r){ return r.json().catch(function(){ return {ok:false}; }); })
   .then(function(j){ window.__rvLast=j&&j.ok?"ok":"fail";
     if(j&&j.ok){ m.textContent=""; t.value=""; t.style.height=""; c.value=""; document.getElementById("rvCnt").textContent="0 / 500"; }
@@ -907,7 +932,7 @@ function meKrSpot(f,Wf,Hf){ var as=ASP(), lb=[], k=f[0].toFixed(4)+","+f[1].toFi
   MEKR={k:k,a:a||f}; return MEKR.a; }
 function meDraw(){ try{ nmMe(); }catch(x){} try{ meEdge(); }catch(x){} var e=meEl(); if(!ME.pos){ e.hidden=true; meKrHide(); return; } var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]);
   if(!f||f[0]<0||f[0]>1||f[1]<0||f[1]>1){ e.hidden=true; meKrHide(); return; } e.hidden=false;
-  var w=document.getElementById("map").clientWidth, iw=Math.round(w*0.07), kr=!CITY[VIEW]; e.classList.toggle("kr",kr);
+  var w=document.getElementById("map").clientWidth, iw=Math.round(w*(VIEW==="capital"?0.045:0.07)), kr=!CITY[VIEW]; e.classList.toggle("kr",kr);
   if(kr){ var as=ASP(), im0=e.querySelector("img"), nw=(im0.complete&&im0.naturalWidth)||93, nh=(im0.complete&&im0.naturalHeight)||160, Hf=0.075, Wf=Hf*nw/nh/as, a=meKrSpot(f,Wf,Hf), q=meKrEls(), s=ZM.s;   // 키 = 지도 높이의 7.5% (전국 지도 인물 그림 정도)
     e.style.left=(a[0]*100)+"%"; e.style.top=(a[1]*100)+"%"; e.style.width=(Wf*w*as)+"px"; e.style.transform="translate(-50%,-100%)";
     var d=q[0], l=q[1], x1=f[0]*w*as, y1=f[1]*w, x2=a[0]*w*as, y2=a[1]*w, len=Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
@@ -920,7 +945,7 @@ function mePose(p,ms){ var near=ME.pos&&kmLL(ME.pos,ICN)<3; clearTimeout(ME.pT);
   if(near&&(!p||p==="me")) ME.pose="airport";
   meDraw(); if(p&&p!=="me") ME.pT=setTimeout(function(){ mePose(null); },ms||8000); }
 function kmLL(a,b){ var R=6371, rd=Math.PI/180, dLa=(b[0]-a[0])*rd, dLo=(b[1]-a[1])*rd, h=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(a[0]*rd)*Math.cos(b[0]*rd)*Math.sin(dLo/2)*Math.sin(dLo/2); return 2*R*Math.asin(Math.sqrt(h)); }
-function meSet(p){ ME.pos=p; if(p){ PLACES.__me={ko:"내 위치",en:"My location",lat:p[0],lng:p[1],addr:""}; ISLE.__me=(p[0]<34&&p[1]<127.5)?"jeju":(p[1]>130.5?"ulleung":"land"); } else delete PLACES.__me; if(ME.pose==="me"||ME.pose==="airport") mePose(null); else meDraw(); }
+function meSet(p){ ME.pos=p; if(p){ PLACES.__me={ko:"내 위치",en:"My location",ja:"現在地",zhs:"我的位置",zht:"我的位置",lat:p[0],lng:p[1],addr:""}; ISLE.__me=(p[0]<34&&p[1]<127.5)?"jeju":(p[1]>130.5?"ulleung":"land"); } else delete PLACES.__me; if(ME.pose==="me"||ME.pose==="airport") mePose(null); else meDraw(); }
 function meWatch(hi){ if(!navigator.geolocation) return; hi=!!hi; if(ME.wid!=null){ if(ME.hi===hi) return; try{ navigator.geolocation.clearWatch(ME.wid); }catch(e){} ME.wid=null; }
   ME.hi=hi;   // 배터리: 평소엔 정확도 낮게 · 걸어서 가는 중(목적지 있음)에만 정확하게 · 10초에 한 번만 반영
   try{ ME.wid=navigator.geolocation.watchPosition(function(p){ var n=Date.now(); if(n-ME.last<10000) return; ME.last=n; var q=[p.coords.latitude,p.coords.longitude]; meSet(q); try{ meWalk(q,p.coords.accuracy); }catch(e){} },function(){},{enableHighAccuracy:hi,maximumAge:hi?5000:10000,timeout:20000}); }catch(e){} }
@@ -983,12 +1008,12 @@ function meGeoInv(id,fx,fy){ var g=id===NAVI_ROOT||id==="kr"?ROOTGEO:CITY[id]; i
 // 길찾기 출발지 = 내 위치 (있을 때만)
 function meFrom(){ return ME.pos?{lat:ME.pos[0],lng:ME.pos[1]}:null; }
 function linksTo(nmKo,lat,lng,naverName,addr){ lat=+lat; lng=+lng; var f=meFrom(), ll=lat+","+lng, nm=encodeURIComponent(nmKo);
-  var go="https://www.google.com/maps/dir/?api=1"+(LANG==="en"?"&hl=en":"")+(f?"&origin="+f.lat+","+f.lng:"")+"&destination="+ll;
+  var go="https://www.google.com/maps/dir/?api=1"+hlG()+(f?"&origin="+f.lat+","+f.lng:"")+"&destination="+ll;
   var kk=f?"https://map.kakao.com/link/from/"+encodeURIComponent("내 위치")+","+f.lat+","+f.lng+"/to/"+nm+","+ll:"https://map.kakao.com/link/to/"+nm+","+ll;
   var nv; if(f){ var A=m3857(f.lat,f.lng), B=m3857(lat,lng); nv="https://map.naver.com/p/directions/"+A[0]+","+A[1]+","+encodeURIComponent("내 위치")+",,/"+B[0]+","+B[1]+","+nm+",,/-/transit"; }
   else nv=naverName?"https://map.naver.com/p/search/"+encodeURIComponent(naverName):"https://map.naver.com/p?c="+lng+","+lat+",15,0,0,0,dh";
   var L=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };
-  return LANG==="en"?L(go,"Google Maps (English)")+L(nv,"Naver Map")+krideL(nmKo,addr):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도"); }
+  return FG()?L(go,TE("Google Maps (English)"))+L(nv,TE("Naver Map"))+krideL(nmKo,addr):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도"); }
 // 영어 화면 — 외국인용 카카오 택시 앱 K.Ride (사장님 10-15). 주소·패키지는 스토어에서 확인함(2026-10-15):
 //   Play com.kakaomobility.kride · App Store id6474654222 · 소개 kride.kakaomobility.com
 //   안드로이드는 깔려 있으면 앱을 열고(MAIN/LAUNCHER 꼴) 없으면 Play 상세로, 아이폰은 App Store, PC 는 소개 페이지. 누르면 목적지 이름·주소를 복사한다
@@ -998,11 +1023,11 @@ function krideHref(){ var ua=navigator.userAgent||"";
   if(/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)) return KRIDE_IOS;
   return KRIDE_WEB; }
 function krideL(ko,addr){ var h=krideHref(), app=/^intent:/.test(h);
-  return '<a href="'+esc(h)+'"'+(app?'':' target="_blank" rel="noopener"')+' class="kride" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'">🚕 Call a taxi (K.Ride)</a>'; }
+  return '<a href="'+esc(h)+'"'+(app?'':' target="_blank" rel="noopener"')+' class="kride" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'">'+esc(TE("🚕 Call a taxi (K.Ride)"))+'</a>'; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("a.kride"); if(!a) return;
   var t=(a.dataset.ko||"")+(a.dataset.ad?" "+a.dataset.ad:""), m=a.parentNode.querySelector(".kmsg");
   if(!m){ m=document.createElement("div"); m.className="d kmsg"; m.style.cssText="margin:6px 0 0;color:#1a73e8;font-weight:700"; a.insertAdjacentElement("afterend",m); }
-  m.textContent="Destination copied — paste it in K.Ride";
+  m.textContent=TE("Destination copied — paste it in K.Ride");
   try{ navigator.clipboard.writeText(t).catch(function(){}); }catch(x){} },true);
 function poseForQuery(q,it){ var p=poseFor1(String(q).toLowerCase()); if(p) return p; return poseFor1((it||[]).slice(0,3).map(function(x){ return (x.cat||"")+" "+(x.cat_en||""); }).join(" ").toLowerCase()); }   /* 검색어가 먼저, 없으면 결과 종류 */
 function poseFor1(s){
@@ -1020,14 +1045,14 @@ document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.
 var INFO=[];
 var INFO_AT=0;
 var INFO_FIX=["약도에서 본 장소는 꼭 세부 주소로 정확한 위치를 확인하세요","Always check the exact address — map drawings are approximate"];
-function infoPaint(){ document.getElementById("infot").textContent=LANG==="en"?"Information":"안내";
-  var p0=document.getElementById("pl0"); p0.innerHTML='<span>'+esc(LANG==="en"?INFO_FIX[1]:INFO_FIX[0])+'</span>'; p0.dataset.k="";   // 맨 위 칸 = 고정 주의 문구, 누름 없음 (사장님 10-16)
-  for(var i=1;i<3;i++){ var e=document.getElementById("pl"+i), k=INFO_AT+i-1, it=INFO[k]; e.innerHTML=it?'<span>'+esc(LANG==="en"?it[1]:it[0])+'</span>':''; e.dataset.k=it?k:""; }
+function infoPaint(){ document.getElementById("infot").textContent=T("안내","Information");
+  var p0=document.getElementById("pl0"); p0.innerHTML='<span>'+esc(T(INFO_FIX[0],INFO_FIX[1]))+'</span>'; p0.dataset.k="";   // 맨 위 칸 = 고정 주의 문구, 누름 없음 (사장님 10-16)
+  for(var i=1;i<3;i++){ var e=document.getElementById("pl"+i), k=INFO_AT+i-1, it=INFO[k]; e.innerHTML=it?'<span>'+esc(LP(it))+'</span>':''; e.dataset.k=it?k:""; }
   document.getElementById("infomore").hidden=INFO.length<=2; }
 document.getElementById("infomore").onclick=function(){ INFO_AT+=2; if(INFO_AT>=INFO.length) INFO_AT=0; infoPaint(); };   // ⋮ — 다음 줄들이 판자로 들어온다
 [0,1,2].forEach(function(i){ document.getElementById("pl"+i).onclick=function(){ var k=this.dataset.k; if(k==="") return; var it=INFO[+k];
   var b=document.createElement("div"); b.id="infopop"; b.onclick=function(e){ if(e.target===b) b.remove(); };
-  b.innerHTML='<div><b>'+(LANG==="en"?"Information":"안내")+'</b><div style="margin-top:6px">'+esc(LANG==="en"?it[1]:it[0])+'</div></div>'; document.body.appendChild(b); }; });
+  b.innerHTML='<div><b>'+T("안내","Information")+'</b><div style="margin-top:6px">'+esc(LP(it))+'</div></div>'; document.body.appendChild(b); }; });
 thPaint();
 paint();
 infoPaint();
@@ -1068,11 +1093,11 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
-<script src="trip.js?v=1016cart"></script>
-<script src="gift.js?v=1016e"></script>
-<script src="near.js?v=1016p"></script>
-<script src="reco.js?v=1016r2"></script>
-<script src="pass.js?v=1016p1"></script>
+<script src="trip.js?v=1018i"></script>
+<script src="gift.js?v=1018i"></script>
+<script src="near.js?v=1018i"></script>
+<script src="reco.js?v=1018i"></script>
+<script src="pass.js?v=1018i"></script>
 <script>
 // ── ★ 관심 장소 (사장님 10-17) — 손님 폰 안에만 저장·분석. 서버로 보내지 않는다(통로 FAV_SEND 는 꺼 둠)
 //   저장: 장소 카드 ☆ · 약도를 0.7초 길게 눌러 「여기 저장」 / 모음: 지도 바로 아래 테두리를 따라 작은 노란 별 한 줄(저장한 만큼) — 누르면 목록
@@ -1114,7 +1139,7 @@ function favList(){ var a=favGet(), sc=favOk()==="y"?favScore():[], h='<div clas
   if(sc.length) h+='<div class="d" style="margin:4px 0 2px;color:var(--ink)">'+T("요즘 관심: ","Your interests: ")+sc.map(function(x,i){ return esc(favCatName(x[0]))+' '+"★★★".slice(0,3-i); }).join(" · ")+'</div>';
   else if(favOk()!=="y") h+='<div class="d" style="margin:4px 0 2px">'+T("관심 분석은 꺼져 있습니다. ","Interest analysis is off. ")+'<a href="#" onclick="favAsk(true);favList();return false">'+T("켜기","Turn on")+'</a></div>';
   if(!a.length) h+='<div class="d" style="margin-top:6px">'+T("장소 카드의 ☆를 누르거나, 약도를 길게 눌러 저장해 보세요.","Tap ☆ on a place card, or long-press the map to save a spot.")+'</div>';
-  a.forEach(function(f,i){ h+='<div style="display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding:8px 0;margin-top:6px"><a href="#" style="flex:1;color:var(--ink);text-decoration:none;font-weight:700" onclick="favGo('+i+');return false"><span style="color:#f5b301">★</span> '+esc(LANG==="en"?(f.en||f.ko):f.ko)+'<span class="d" style="font-weight:400"> · '+esc(favCatName(f.c))+'</span></a><a href="#" class="d" onclick="favDel('+i+');return false">'+T("삭제","Delete")+'</a></div>'; });
+  a.forEach(function(f,i){ h+='<div style="display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding:8px 0;margin-top:6px"><a href="#" style="flex:1;color:var(--ink);text-decoration:none;font-weight:700" onclick="favGo('+i+');return false"><span style="color:#f5b301">★</span> '+esc(LANG==="ko"?f.ko:(f.k&&PLACES[f.k]?LN(PLACES[f.k]):(f.en||f.ko)))+'<span class="d" style="font-weight:400"> · '+esc(favCatName(f.c))+'</span></a><a href="#" class="d" onclick="favDel('+i+');return false">'+T("삭제","Delete")+'</a></div>'; });
   h+='<div class="d" style="margin-top:8px">'+T("이 목록은 이 기기 안에만 있습니다. 폰을 바꾸거나 앱 데이터를 지우면 사라집니다.","This list is kept on this device only; it is lost if you change phones or clear app data.")+'</div></div>';
   window._cardK=null; document.getElementById("res").innerHTML=h; try{ document.getElementById("res").scrollIntoView({behavior:"smooth",block:"start"}); }catch(e){} }
 function favBar(){ var b=document.getElementById("favbar"); if(!b) return; var n=favGet().length; b.innerHTML=""; if(!n) return;   // 자리는 늘 두 줄 확보 — 한 줄 넘치면 두 줄 (사장님 10-17)
