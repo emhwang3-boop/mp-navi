@@ -113,7 +113,7 @@ function paint(){ var out=$("res"), en=L(), h='', n=0;
   if(R.kits.length){ var fs=!(ME&&ME.pos);
     h+='<div class="rcsec">'+esc(fs?T("가까운 곳 (서울에서 가까운 순)","More places nearby (closest to Seoul)"):T("가까운 곳 (나에게서 가까운 순)","More places nearby (closest to you)"))+'</div>';
     window._sres=R.kits;
-    R.kits.forEach(function(x,i){ var e2=en&&x.name_en, ttl=e2?x.name_en:x.name, ad=e2?(x.addr_en||x.addr):x.addr, ct=e2?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
+    R.kits.forEach(function(x,i){ var e2=en&&x.name_en, ttl=KS(e2?x.name_en:x.name), ad=e2?(x.addr_en||x.addr):x.addr, ct=e2?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
       h+='<div class="item sres rck" data-i="'+i+'" style="cursor:pointer"><div class="t">📍 '+esc(ttl)+'</div>'+(e2?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
         +telLine(x.tel)+linksTo(x.name,x.y,x.x,x.name,x.addr)+'</div>'; n++; }); }
   if(!n) h+='<div class="rcmsg">'+esc(R.ex.length||R.exk.length?T("더 알맞은 곳이 적어요. 일반 검색으로도 찾아 보세요.","Few more places match. Try a regular search too."):T("알맞은 곳이 적어요. 일반 검색으로 찾아 보세요.","Few places match this. Try a regular search."))+'</div>';
