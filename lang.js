@@ -141,7 +141,7 @@ function wrapRes(name,mk){ var o=window[name]; if(typeof o!=="function"||o._lg) 
   for(var k in o) g[k]=o[k]; g._lg=1; window[name]=g; }
 wrapRes("placeShow",function(k){ if(!window.PLACES||!PLACES[k]||k==="adinq") return null; return function(){ var hk=!!document.getElementById("herek"); quiet(function(){ window._hereNext=hk; try{ window.placeShow(k); } finally{ window._hereNext=false; } }); }; });   // 「여기!」 표시도 그대로
 wrapRes("spinCard",function(){ return function(){ quiet(function(){ window.spinCard(); }); }; });
-wrapRes("distShow",function(a,b,p0,p1){ return function(){ quiet(function(){ window.distShow(a,b,p0,p1); }); }; });
+wrapRes("distShow",function(a,b,p0,p1){ var v0=window._dlV0||window.VIEW; return function(){ quiet(function(){ window._dlV0=v0; try{ window.distShow(a,b,p0,p1); } finally{ window._dlV0=null; } if(window.VIEW!==v0){ try{ window.dlDraw(null); }catch(e){} } }); }; });   // 다른 지도로 옮긴 뒤엔 선을 다시 긋지 않는다 — 전국 지도에 옛 선이 남았다 (사장님 10-18)
 wrapRes("ktxErr",function(){ return function(){ window.ktxErr(); }; });
 wrapRes("favList",function(){ return function(){ quiet(function(){ window.favList(); }); }; });
 ["resClear","resetAll"].forEach(function(n){ var o=window[n]; if(typeof o!=="function"||o._lg) return; var g=function(){ window._RR=null; return o.apply(this,arguments); }; for(var k in o) g[k]=o[k]; g._lg=1; window[n]=g; });
