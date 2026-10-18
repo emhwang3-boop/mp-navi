@@ -193,7 +193,7 @@ var sc0=window.spinCard; if(typeof sc0==="function"&&!sc0._nr){ var sc1=function
 //    아고다는 도시 번호(city)가 있어야 이름 검색이 됨 — 확인한 도시(서울 14690·부산 17172·제주 16901)만 아고다 검색, 그 밖은 구글 「이름 agoda」
 var BOOK_AID={agoda:"",booking:"",trip:""};
 var AGODA_CITY=[[37.5665,126.978,14690,45],[35.1796,129.0756,17172,40],[33.38,126.55,16901,70]];
-function bookUrls(nm,lat,lng){ var q=encodeURIComponent(nm), ag=null;
+function bookUrls(nm,lat,lng){ nm=String(nm||"").split(" · ").pop(); var q=encodeURIComponent(nm), ag=null;   // 「일·중 이름 · 영어 이름」이면 영어 쪽으로 검색 (10-18)
   AGODA_CITY.forEach(function(c){ if(!ag&&kmLL([lat,lng],[c[0],c[1]])<=c[3]) ag=c[2]; });
   return {agoda:ag?"https://www.agoda.com/search?city="+ag+"&textToSearch="+q+BOOK_AID.agoda:"https://www.google.com/search?q="+encodeURIComponent(nm+" agoda"),
     booking:"https://www.booking.com/searchresults.html?ss="+q+BOOK_AID.booking,
