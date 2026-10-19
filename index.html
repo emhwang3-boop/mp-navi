@@ -721,7 +721,7 @@ var BUS_SVG='<svg viewBox="0 0 24 24" width="18" height="18" style="vertical-ali
 function busIcon(t){ t=+t||0; var c=(t===12||t===3)?"#3aa641":(t===14||t===4||t===15||t===6||t===26)?"#e0261f":(t===13)?"#f2b70a":(t===5)?"#6b4fa0":"#2f5bd3";
   return BUS_SVG.replace(/#2f5bd3/g,c).replace(/#1d3f9e/g,"rgba(0,0,0,.35)"); }
 var SUBC={1:"#0052A4",2:"#00A84D",3:"#EF7C1C",4:"#00A5DE",5:"#996CAC",6:"#CD7C2F",7:"#747F00",8:"#E6186C",9:"#BDB092"};
-function subBadge(nm){ var s=String(nm), m=s.match(/(\d)\s*(호선|$)|Line\s*(\d)/i), c="#555", t="";
+function subBadge(nm){ var s=String(nm), m=s.match(/(\d)\s*(호선|号線|号线|號線|$)|Line\s*(\d)/i), c="#555", t="";
   if(m&&!/인천|Incheon|경의|부산|Busan|대구|Daegu|광주|Gwangju|대전|Daejeon/i.test(s)){ var d=m[1]||m[3]; c=SUBC[d]||c; t=d; }
   else if(/공항|Airport|AREX/i.test(s)){ c="#0090D2"; t="A"; } else if(/신분당|Shinbundang|Sinbundang/i.test(s)){ c="#D4003B"; t="S"; }
   else if(/수인|분당|Suin|Bundang/i.test(s)){ c="#F5A200"; t="SB"; } else if(/경의|중앙|Gyeongui|Jungang/i.test(s)){ c="#77C4A3"; t="K"; }
