@@ -37,10 +37,15 @@
     out.push(["영어 메뉴판 있어요?",{ko:"영어 메뉴판 있어요?",en:"Do you have an English menu?",ja:"英語のメニューはありますか？",zhs:"有英文菜单吗？",zht:"有英文菜單嗎？"}]);
     out.push(["도와주세요.",{ko:"도와주세요.",en:"Please help me.",ja:"助けてください。",zhs:"请帮帮我。",zht:"請幫幫我。"}]);
     return out; }
+  /* 고른 문장(손님 말)을 구글 번역 입력 칸에 넣어 연다 (사장님 10-19 「일본어 칸에 고른 글이 안 보인다」)
+     안드로이드 앱: 「보내기(SEND)」로 글을 넘김 · 글이 없으면 앱 첫 화면(MAIN·LAUNCHER — 이것 없으면 스토어로 감) · 그 밖: 웹 ?text= */
   function gtUrl(text){ var sl=GL[window.LANG]||"en"; if(sl==="ko") sl="auto";
     var web="https://translate.google.com/?sl="+sl+"&tl=ko&op=translate"+(text?"&text="+encodeURIComponent(text):"");
-    if(/Android/i.test(navigator.userAgent)) return "intent://translate.google.com/?sl="+sl+"&tl=ko&op=translate#Intent;scheme=https;package=com.google.android.apps.translate;S.browser_fallback_url="+encodeURIComponent(web)+";end";
+    if(/Android/i.test(navigator.userAgent)){ var fb=";S.browser_fallback_url="+encodeURIComponent(web)+";end";
+      return text?"intent:#Intent;action=android.intent.action.SEND;type=text/plain;S.android.intent.extra.TEXT="+encodeURIComponent(text)+";package=com.google.android.apps.translate"+fb
+        :"intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.google.android.apps.translate"+fb; }
     return web; }
+  var LAST="";
   function open(){
     var o=document.getElementById("itB"); if(o) o.remove();
     o=document.createElement("div"); o.id="itB"; o.onclick=function(e){ if(e.target===o) o.remove(); };
@@ -56,8 +61,10 @@
     o.querySelector(".hd button").onclick=function(){ o.remove(); };
     var P=phrases();
     [].forEach.call(o.querySelectorAll(".ph"),function(el){ el.onclick=function(){ var p=P[+el.getAttribute("data-i")];   /* 누르면 큰 글씨로 — 폰을 그대로 보여 준다 */
+      LAST=window.LANG==="ko"?p[0]:L5(p[1]); var gt0=o.querySelector(".in .gt"); if(gt0) gt0.setAttribute("href",gtUrl(LAST));   /* 판의 구글 단추도 고른 문장으로 */
       var bg=document.createElement("div"); bg.className="big";
-      bg.innerHTML='<div class="k">'+esc(p[0])+'</div>'+(window.LANG==="ko"?'':'<div class="m">'+esc(L5(p[1]))+'</div>')+'<button class="x" type="button">✕ '+esc(L5({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉"}))+'</button>';
+      bg.innerHTML='<div class="k">'+esc(p[0])+'</div>'+(window.LANG==="ko"?'':'<div class="m">'+esc(L5(p[1]))+'</div>')+'<a class="gt" style="margin:22px 0 0;padding:12px 22px" href="'+esc(gtUrl(LAST))+'" target="_blank" rel="noopener">🔊 '+esc(L5({ko:"구글 번역으로 열기",en:"Open in Google Translate",ja:"Google翻訳で開く",zhs:"在Google翻译中打开",zht:"在Google翻譯中開啟"}))+'</a>'
+        +'<button class="x" type="button">✕ '+esc(L5({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉"}))+'</button>';
       bg.querySelector(".x").onclick=function(e){ e.stopPropagation(); bg.remove(); }; o.appendChild(bg); }; });
   }
   b.onclick=open;
