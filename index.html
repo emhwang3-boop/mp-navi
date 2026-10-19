@@ -1116,9 +1116,10 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
   function guard(){ try{ if(!(history.state&&history.state.nvg)) history.pushState({nvg:1},""); }catch(e){} }
   function vis(e){ return e&&!e.hidden&&e.offsetParent!==null||(e&&!e.hidden&&getComputedStyle(e).position==="fixed"&&getComputedStyle(e).display!=="none"); }
   function backClose(){
-    var c=[].slice.call(document.querySelectorAll("#infopop,.trpop,#nrBk,#inqBox,#shBox,.trsheet,#gfBox,#nrBox")).filter(vis);
+    var c=[].slice.call(document.querySelectorAll("#infopop,.trpop,#nrBk,#inqBox,#shBox,.trsheet,#gfBox,#nrBox,#itB")).filter(vis);
     if(c.length){ c.sort(function(a,b){ return (parseInt(getComputedStyle(a).zIndex)||0)-(parseInt(getComputedStyle(b).zIndex)||0); }); var o=c[c.length-1];
       if(o.id==="shBox"){ o.hidden=true; return true; }
+      if(o.id==="itB"){ var bg=o.querySelector(".big"); if(bg) bg.remove(); else o.remove(); return true; }   /* 🗣 통역 — 큰 글씨 → 판 차례로 (10-19) */
       if(o.classList.contains("trsheet")){ if(window.TRIP&&TRIP.close) TRIP.close(o.id); else o.remove(); return true; }
       o.remove(); if(o.id==="gfBox") document.documentElement.classList.remove("gflock"); if(o.id==="nrBox") document.documentElement.classList.remove("nrlock"); return true; }
     var mm=document.getElementById("mm"); if(mm&&!mm.hidden){ mm.hidden=true; return true; }
@@ -1274,6 +1275,6 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
   }catch(z){} },true);
 </script>
 <script src="lang.js?v=1018gl"></script>
-<script src="interp.js?v=1019b"></script>
+<script src="interp.js?v=1019c"></script>
 </body>
 </html>
