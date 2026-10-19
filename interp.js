@@ -34,7 +34,9 @@
     out.push(["화장실이 어디예요?",{ko:"화장실이 어디예요?",en:"Where is the restroom?",ja:"トイレはどこですか？",zhs:"洗手间在哪里？",zht:"洗手間在哪裡？"}]);
     out.push(["이거 얼마예요?",{ko:"이거 얼마예요?",en:"How much is this?",ja:"これはいくらですか？",zhs:"这个多少钱？",zht:"這個多少錢？"}]);
     out.push(["카드로 계산할 수 있어요?",{ko:"카드로 계산할 수 있어요?",en:"Can I pay by card?",ja:"カードで払えますか？",zhs:"可以刷卡吗？",zht:"可以刷卡嗎？"}]);
-    out.push(["영어 메뉴판 있어요?",{ko:"영어 메뉴판 있어요?",en:"Do you have an English menu?",ja:"英語のメニューはありますか？",zhs:"有英文菜单吗？",zht:"有英文菜單嗎？"}]);
+    /* 메뉴판은 손님 말로 — 일본어면 일본어 메뉴판, 중국어면 중국어 메뉴판 (사장님 10-19) */
+    var mk={ja:"일본어",zhs:"중국어",zht:"중국어"}[window.LANG]||"영어";
+    out.push([mk+" 메뉴판 있어요?",{ko:mk+" 메뉴판 있어요?",en:"Do you have an English menu?",ja:"日本語のメニューはありますか？",zhs:"有中文菜单吗？",zht:"有中文菜單嗎？"}]);
     out.push(["도와주세요.",{ko:"도와주세요.",en:"Please help me.",ja:"助けてください。",zhs:"请帮帮我。",zht:"請幫幫我。"}]);
     return out; }
   /* 고른 문장(손님 말)을 구글 번역 입력 칸에 넣어 연다 (사장님 10-19 「일본어 칸에 고른 글이 안 보인다」)
