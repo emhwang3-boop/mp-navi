@@ -30,7 +30,9 @@
   function placeLoc(){ try{ var k=window._ntK, p=k&&window.PLACES&&window.PLACES[k]; if(!p) return ""; return String(p[window.LANG]||p.en||p.ko||""); }catch(e){ return ""; } }
   function phrases(){ var pk=placeKo(), pf=placeLoc()||pk, out=[];
     if(pk){ out.push([pk+"에 어떻게 가요?",{ko:pk+"에 어떻게 가요?",en:"How do I get to "+pf+"?",ja:pf+"へはどう行けばいいですか？",zhs:"请问"+pf+"怎么走？",zht:"請問"+pf+"怎麼走？"}]);
-      out.push([pk+"로 가 주세요.",{ko:"(택시) "+pk+"로 가 주세요.",en:"(Taxi) Please take me to "+pf+".",ja:"（タクシー）"+pf+"までお願いします。",zhs:"（出租车）请带我去"+pf+"。",zht:"（計程車）請載我到"+pf+"。"}]); }
+      /* 택시 — 「기사님, ○○(으)로 가 주세요」 (사장님 10-19) · 받침 있으면(ㄹ 빼고) 「으로」 */
+      var lc=pk.charCodeAt(pk.length-1)-0xAC00, ro=(lc>=0&&lc<11172&&lc%28&&lc%28!==8)?"으로":"로";
+      out.push(["기사님, "+pk+ro+" 가 주세요.",{ko:"기사님, "+pk+ro+" 가 주세요.",en:"Driver, please take me to "+pf+".",ja:"運転手さん、"+pf+"までお願いします。",zhs:"司机您好，请送我到"+pf+"。",zht:"司機您好，請載我到"+pf+"。"}]); }
     out.push(["화장실이 어디예요?",{ko:"화장실이 어디예요?",en:"Where is the restroom?",ja:"トイレはどこですか？",zhs:"洗手间在哪里？",zht:"洗手間在哪裡？"}]);
     out.push(["이거 얼마예요?",{ko:"이거 얼마예요?",en:"How much is this?",ja:"これはいくらですか？",zhs:"这个多少钱？",zht:"這個多少錢？"}]);
     out.push(["카드로 계산할 수 있어요?",{ko:"카드로 계산할 수 있어요?",en:"Can I pay by card?",ja:"カードで払えますか？",zhs:"可以刷卡吗？",zht:"可以刷卡嗎？"}]);
