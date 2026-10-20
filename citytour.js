@@ -96,6 +96,9 @@
     inner=true; try{ if(p.v!==VIEW) viewSet(p.v); if(p.g&&window.guEnter) guEnter(p.g); }finally{ inner=false; }
     ZM={s:p.zm.s,tx:p.zm.tx,ty:p.zm.ty}; zApply(); try{ LOD.s0=ZM.s; }catch(e){} return true; }
   window.ctEnter=enter; window.ctExit=exit;
+  // 구 화면의 「시티투어버스 출발점」(gu.js 가 __ctoff 로 넘김) → 광화문 매표소 카드 그대로 (10-20)
+  window.ctOffice=function(){ load().then(function(){ show("o"); }).catch(function(){}); };
+  var _hc=window.hitClick; window.hitClick=function(k){ if(k==="__ctoff"){ window.ctOffice(); return; } return _hc.apply(this,arguments); };
   var _ps=window.placeShow; window.placeShow=function(k){ if(k==="citytour"&&!(window.ME&&ME.sel)){ enter(); return; } return _ps.apply(this,arguments); };
   var _vs=window.viewSet; window.viewSet=function(){ if(C.on&&!inner){ C.on=false; C.key=null; C.prev=null; document.getElementById("map").classList.remove("ctmode"); var l=document.getElementById("ctl"); if(l) l.remove(); var b=document.getElementById("ctX"); if(b) b.hidden=true; } return _vs.apply(this,arguments); };
   var _gb=window.guBack||function(){ return false; }; window.guBack=function(){ if(C.on) return exit(); return _gb.apply(this,arguments); };   // 뒤로가기: 카드 → 이 화면 → 원래 화면
