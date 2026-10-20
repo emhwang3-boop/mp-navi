@@ -9,7 +9,7 @@
   st.textContent="#gul{position:absolute;inset:0;pointer-events:none;z-index:2}#gul>*{position:absolute;pointer-events:auto;cursor:pointer;box-sizing:border-box}"+
     "#gul img{object-fit:contain;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.35));-webkit-user-drag:none;user-select:none}"+
     "#gul .gb{background:#e8590c;color:#fff;font-weight:900;border:solid #fff;border-radius:999px;line-height:1;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}"+
-    "#map.gumode #lod .lp{display:none}#map.guin #lod{display:none!important}"+
+    "#map.gumode #lod{display:none!important}"+
     "#guX{position:absolute;top:10px;left:50%;transform:translateX(-50%);white-space:nowrap;z-index:30;border:0;border-radius:999px;background:rgba(20,24,32,.88);color:#fff;font-weight:900;font-size:15px;padding:7px 14px;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer}#guX[hidden]{display:none}";
   document.head.appendChild(st);
   function load(){ if(GU.p) return GU.p; return GU.p=fetch("data/gu_seoul.json?v="+V).then(function(r){ if(!r.ok) throw new Error("gu "+r.status); return r.json(); }).then(function(d){ GU.d=d; return d; },function(e){ GU.p=null; throw e; }); }
@@ -57,6 +57,7 @@
   var _vs=window.viewSet; window.viewSet=function(v){ GU.g=null; GU.key=null; var r=_vs.apply(this,arguments); if(CITY[v]&&v==="seoulall") load().then(apply).catch(function(){}); else draw(); return r; };
   var _ds=window.detSet; window.detSet=function(){ var r=_ds.apply(this,arguments); try{ draw(); }catch(e){} return r; };
   var _ld=window.lodDraw; window.lodDraw=function(){ var r=_ld.apply(this,arguments); try{ draw(); }catch(e){} return r; };
+  var _at=window.areaTap; window.areaTap=function(){ if(on()) return 0; return _at.apply(this,arguments); };   // 묶음 화면엔 빨간 네모·명찰이 없다 — 네모 두 번 누르기도 끔 (10-20)
   var _ha=window.hitAt; window.hitAt=function(cx,cy){ var r=_ha.apply(this,arguments); if(r&&on()&&GU.d.P[r]) return null; return r; };   // 바탕에서 뺀 그림 자리는 안 눌린다(그림은 #gul 이 받는다)
   // 누르기 — 끈 것(드래그)은 원래 처리에 맡긴다
   var dn=null; document.addEventListener("pointerdown",function(e){ dn={x:e.clientX,y:e.clientY}; },true);
