@@ -125,6 +125,8 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 #zme{left:auto;right:8px;bottom:8px;height:21px;padding:0 8px;font-size:9px;box-shadow:0 1px 5px rgba(0,0,0,.18)}   /* 모든 약도·자세한 지도에서 오른쪽 아래·원래의 70% 크기로 통일 (사장님 10-16) */
 #zme{position:absolute;left:8px;right:auto;bottom:calc(26px + var(--zmeOff,0px));opacity:.8}#zme.off{display:none}   /* 지도 칸 안 오른쪽 아래 구석 — 지도 아래쪽이 화면 밖이면 보이는 부분의 구석으로 올라온다(지도 밖으론 안 나감), 지도가 화면에서 벗어나면 숨김 (사장님 10-17) */
 #nmapw:not([hidden]) ~ #zme{bottom:calc(30px + var(--zmeOff,0px))}
+#zme{display:none!important}   /* ◎ 현재 위치 단추 없앰 (사장님 10-20) — 「나」(부부 그림·구석 동그라미)를 누르면 내 자리로 + 거리재기 대기 */
+#meedge.nopos b{border-color:#9aa0a6;background-image:none!important;background:#fff}#meedge.nopos b::after{content:"";}#meedge.nopos i{display:none}
 #zme,#nmapw:not([hidden]) ~ #zme{top:calc(8px + var(--zmeTop,0px));bottom:auto;left:8px;right:auto;z-index:7}
 #zme{height:38px;padding:0 15px;font-size:15px;opacity:1;box-shadow:0 2px 8px rgba(0,0,0,.25)}   /* 현재 위치 단추 크게 (사장님 10-18) */   /* ◎ 현재 위치 = 모든 지도(전국·약도·자세한 지도) 왼쪽 위 구석에 늘 (사장님 10-18) — ← 와 지역 이름은 지도 위 줄(#vbar)이라 안 겹친다. 지도 위쪽이 화면 밖이면 보이는 부분의 구석으로 내려온다 */   /* 왼쪽 아래로 옮김 — 오른쪽 아래는 「나」 동그라미 자리 (사장님 10-17) */
 @keyframes meShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px) rotate(-4deg)}40%,80%{transform:translateX(5px) rotate(4deg)}}
@@ -530,7 +532,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="baa2e4693b", NAVI_ROOT="kr";
+var NAVI_V="35daaa3459", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -979,7 +981,14 @@ function meTipEl(){ var t=document.getElementById("meTip"); if(!t){ t=document.c
 function meTipSync(){ var t=document.getElementById("meTip"); if(ME.sel&&!DET){ t=meTipEl(); var s=meSelHint(); if(t.textContent!==s) t.textContent=s; t.hidden=false; } else if(t&&!ME.tipT) t.hidden=true; }
 function meTipFlash(s,ms){ var t=meTipEl(); clearTimeout(ME.tipT); t.textContent=s; t.hidden=false; ME.tipT=setTimeout(function(){ ME.tipT=null; meTipSync(); },ms||1600); }
 function meSelCard(){ var mf=function(){ document.getElementById("res").innerHTML=ME.sel?'<div class="item"><div class="t">📍 '+T("내 위치","My location")+'</div><div class="d">'+T("다른 그림을 누르면 내 위치에서 그곳까지 거리·교통편이 나옵니다","Tap another picture to see the distance and routes from you")+'</div></div>':""; }; mf(); window._RR=ME.sel?{f:mf,me:1}:null; }
-function meSelToggle(){ if(!ME.pos){ ME.sel=false; resMsg("「나」로 거리를 재려면 위치가 필요합니다 — ◎ 현재 위치 단추를 누르고 위치 권한을 켜 주세요.","To measure from “Me”, your location is needed — tap ◎ My location and allow location access."); return; }
+// 「나」 누르기 (사장님 10-20) — ① 고른 장소 없음: 내 자리로(내가 있는 약도·구, 나를 가운데) + 거리재기 대기 → ② 이어서 그림을 누르면 거리선·교통편
+//   ③ 장소를 먼저 골랐으면(카드 열림): 화면 그대로 나 ↔ 그 장소 거리선 · 위치가 없으면 예전 「현재 위치」 단추처럼 위치를 받는다(권한 요청·안내)
+function meTap(){ if(!ME.pos){ meBtn(); return; }
+  var k=nmSelKey(); if(k&&!ME.sel){ if(!meLineHere(k)) meLineTo(k); return; }
+  if(ME.sel){ meSelOff(true); return; }
+  try{ meGo(); }catch(e){} ME.sel=true; clearTimeout(ME.tipT); ME.tipT=null; meDraw(); meSelCard(); }
+function meSelToggle(){ meTap(); }
+function meSelToggle0(){ if(!ME.pos){ ME.sel=false; resMsg("「나」로 거리를 재려면 위치가 필요합니다 — ◎ 현재 위치 단추를 누르고 위치 권한을 켜 주세요.","To measure from “Me”, your location is needed — tap ◎ My location and allow location access."); return; }
   if(ME.sel){ meSelOff(true); return; } ME.sel=true; clearTimeout(ME.tipT); ME.tipT=null; meDraw(); meSelCard(); }
 function meSelOff(say){ if(!ME.sel) return; ME.sel=false; if(window._RR&&window._RR.me){ document.getElementById("res").innerHTML=""; window._RR=null; } if(say) meTipFlash(T("취소했어요","Cancelled")); meDraw(); }
 function meSelGo(k){ ME.sel=false; clearTimeout(ME.tipT); ME.tipT=null; meDraw(); var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]);
@@ -1008,7 +1017,7 @@ function meGo(){ if(!ME.pos) return false; var id=meBest(ME.pos[0],ME.pos[1]); i
   viewSet(id===NAVI_ROOT?"kr":id); var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]); if(!f) return true;
   var w=document.getElementById("map").clientWidth, as=ASP(), s=(as>1?1:1.6)*ZB();
   ZM={s:s,tx:w/2-f[0]*w*as*s,ty:MH()/2-f[1]*w*s}; zApply(); LOD.s0=ZM.s; meDraw(); return true; }
-function meBtn(){ var b=document.getElementById("zme"); b.disabled=true;
+function meBtn(){ var b=document.getElementById("zme")||{}; b.disabled=true;
   (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(p){ b.disabled=false; if(p&&!ME.pos) meSet(p); if(p) meWatch(!!ME.dest);
     if(p&&DET&&_nm){ _nm.setCenter(new naver.maps.LatLng(p[0],p[1])); nmMe(); return; }   /* 자세한 지도면 그 지도 가운데로 */
     if(!p||!meGo()) resMsg("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요.","Could not get your location — please allow location access."); }); }
@@ -1037,9 +1046,11 @@ function meLineHere(k){ var m=document.getElementById("map"), e=document.getElem
   distShow("__me",k,p0,q); window._cardK=null; return true; }
 function meEdge(){ var m=document.getElementById("map"); if(!m) return; var e=document.getElementById("meedge");
   if(!e){ e=document.createElement("div"); e.id="meedge"; e.innerHTML='<i></i><b></b><span></span>'; m.appendChild(e);
-    e.onclick=function(ev){ ev.stopPropagation(); ev.preventDefault(); var k=window._cardK, r=document.getElementById("res").firstElementChild; if(k&&PLACES[k]&&r){ if(!meLineHere(k)) meLineTo(k); } else meGo(); };
+    e.onclick=function(ev){ ev.stopPropagation(); ev.preventDefault(); meTap(); };
     ["touchstart","mousedown"].forEach(function(t){ e.addEventListener(t,function(ev){ ev.stopPropagation(); },{passive:true}); }); }
-  if(!ME.pos||DET){ e.hidden=true; return; }
+  if(DET){ e.hidden=true; return; }
+  if(!ME.pos){ var w0=m.clientWidth; e.classList.add("up","nopos"); e.hidden=false; e.style.left=(w0-34)+"px"; e.style.top="auto"; e.style.bottom="calc(34px + var(--zmeOff,0px))"; e.querySelector("span").textContent=T("나","Me"); return; }   /* 위치 없을 때도 구석 「나」 — 누르면 위치 받기 */
+  e.classList.remove("nopos");
   var w=m.clientWidth, h=MH(), as=ASP(), iw=w*as*ZM.s, ih=w*ZM.s, f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]);
   if(!f){ e.hidden=true; return; } var px=ZM.tx+f[0]*iw, py=ZM.ty+f[1]*ih;
   if(f[0]>=0&&f[0]<=1&&f[1]>=0&&f[1]<=1&&px>=0&&px<=w&&py>=0&&py<=h){ e.hidden=true; return; }   // 보이면 화살표 없음
@@ -1149,7 +1160,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script src="gift.js?v=1018lg"></script>
 <script src="near.js?v=1018lg"></script>
 <script src="reco.js?v=1018cl"></script>
-<script src="gu.js?v=2f7ac654d1"></script>
+<script src="gu.js?v=50350fdd84"></script>
 <script src="citytour.js?v=e1168f0b12"></script>
 <script src="pass.js?v=1018i"></script>
 <script>
