@@ -99,7 +99,10 @@
     L.appendChild(e); }
   // 묶음 화면 — 통계청·입점 문의 빌딩(명소 아님)을 실제 자리 가까이, 대표 그림·「+N」과 안 겹치게 (10-20 되살림)
   function fxPlace(L,W,H){ var occ=[]; [].forEach.call(L.children,function(e){ var x=parseFloat(e.style.left), y=parseFloat(e.style.top); if(isNaN(x)) return; occ.push([x,y,x+e.offsetWidth,y+e.offsetHeight]); });
-    (GU.d.fx||[]).forEach(function(k){ var q=GU.d.P[k]; if(!q) return; var bw=W*0.018, bh=bw/q.ar; if(bh>W*0.03){ bh=W*0.03; bw=bh*q.ar; } var cx=q.f[0]*W, cy=q.f[1]*H, g=W*0.002, best=null, bd=1e18, st=W*0.002;
+    (GU.d.fx||[]).forEach(function(k){ var q=GU.d.P[k]; if(!q) return;
+      if(k==="adinq"){ var ib=null; GU.d.gus.forEach(function(o){ if(!ib&&o.ic&&o.ic[k]) ib=o.ic[k]; });   /* 입점 문의 빌딩 = 배치기(서울 전체)에서 놓은 자리·크기 그대로 (사장님 10-21) */
+        if(ib){ var e0=img(k), x=ib[0]*W, y=ib[1]*H, w0=(ib[2]-ib[0])*W, h0=(ib[3]-ib[1])*H; put(e0,x,y,w0,h0); if(+ib[4]) e0.style.transform="rotate("+(+ib[4])+"deg)"; L.appendChild(e0); occ.push([x,y,x+w0,y+h0]); if(!+ib[4]) bbOn(L,k,x,y,w0,h0); return; } }
+      var bw=W*0.018, bh=bw/q.ar; if(bh>W*0.03){ bh=W*0.03; bw=bh*q.ar; } var cx=q.f[0]*W, cy=q.f[1]*H, g=W*0.002, best=null, bd=1e18, st=W*0.002;
       for(var dy=-W*0.06;dy<=W*0.06;dy+=st) for(var dx=-W*0.06;dx<=W*0.06;dx+=st){ var d=dx*dx+dy*dy; if(d>=bd) continue; var x0=cx+dx-bw/2, y0=cy+dy-bh/2, ok=true;
         for(var i=0;i<occ.length;i++){ var o=occ[i]; if(x0-g<o[2]&&x0+bw+g>o[0]&&y0-g<o[3]&&y0+bh+g>o[1]){ ok=false; break; } } if(ok){ bd=d; best=[x0,y0]; } }
       if(!best) best=[cx-bw/2,cy-bh/2]; var e=img(k); put(e,best[0],best[1],bw,bh); L.appendChild(e); occ.push([best[0],best[1],best[0]+bw,best[1]+bh]); bbOn(L,k,best[0],best[1],bw,bh); }); }
