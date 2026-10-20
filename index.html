@@ -530,7 +530,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="c4e1a6a4ca", NAVI_ROOT="kr";
+var NAVI_V="dd4c4028a4", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -548,7 +548,12 @@ function telLine(t){ if(!t) return ""; var shown=FG()?(/^0/.test(t)?"+82 "+t.sli
   return '<div class="d" style="margin:2px 0 8px"><a class="tel" href="tel:'+esc(telIntl(t))+'" style="border:0;background:none;padding:0;margin:0;font-size:14px;font-weight:800;color:var(--ink)">📞 '+esc(shown)+'</a></div>'; }
 // 지도·카드에서 입력칸 포커스 놓기 — 검색칸에 포커스가 남은 채 카드가 칸 글자를 바꾸면 폰 자판이 다시 뜬다 (사장님 10-16)
 function inBlur(){ try{ var a=document.activeElement; if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) a.blur(); }catch(e){} }
-function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } var nm=LN(p), ll=p.lat+","+p.lng;
+// 넷플릭스·유튜브 상영관 (사장님 10-20) — 남산 기슭 그림을 누르면 앱으로. 안드로이드는 깔려 있으면 앱(MAIN/LAUNCHER 꼴), 없으면 웹. 아이폰·PC 는 웹 주소(아이폰은 앱이 있으면 앱이 받는다)
+var APPGO={netflix:{pkg:"com.netflix.mediaclient",web:"https://www.netflix.com"},youtube:{pkg:"com.google.android.youtube",web:"https://www.youtube.com"}};
+function appGo(a){ var o=APPGO[a]; if(!o) return; var ua=navigator.userAgent||"";
+  if(/Android/i.test(ua)){ location.href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package="+o.pkg+";S.browser_fallback_url="+encodeURIComponent(o.web)+";end"; return; }
+  var w=null; try{ w=window.open(o.web,"_blank"); if(w) w.opener=null; }catch(e){} if(!w) location.href=o.web; }
+function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } if(p.app){ appGo(p.app); return; } var nm=LN(p), ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
   window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
     +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng,null,p.addr))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
@@ -630,7 +635,7 @@ var _tapT=null;
 function mePt(k){ var p=PLACES[k]; if(!p) return null; var f=meGeoFrac(VIEW,p.lat,p.lng); if(k!=="__me"&&VIEW!=="kr"&&CITY[VIEW]&&CITY[VIEW].spots){ var b=CITY[VIEW].spots[k]; if(b) f=[(b[0]+b[2])/2,(b[1]+b[3])/2]; } return f?[f[0]*1000,f[1]*1000]:null; }
 function hitClick(k){ var now=Date.now(), c=cityFor(k); inBlur();
   if(k==="__me"){ meSelToggle(); return; }
-  if(ME.sel&&k&&k!=="ktx"&&k!=="mpstat"&&k!=="adinq"&&PLACES[k]){ meSelGo(k); return; }   /* 「나」를 누른 뒤 그림 한 번 = 거리·교통편 (사장님 10-18) */
+  if(ME.sel&&k&&k!=="ktx"&&k!=="mpstat"&&k!=="adinq"&&PLACES[k]&&!PLACES[k].app){ meSelGo(k); return; }   /* 「나」를 누른 뒤 그림 한 번 = 거리·교통편 (사장님 10-18) */
   if(ME.sel&&!k){ meSelOff(true); return; }   // 빈 곳 = 취소
   if(k==="__pin"){ spinCard(); return; }
   if(c&&_lastTap.k===k&&now-_lastTap.t<450){ clearTimeout(_tapT); _lastTap={k:null,t:0}; viewSet(c); return; }
