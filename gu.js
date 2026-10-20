@@ -12,9 +12,10 @@
     "#gul img.gm{pointer-events:none;filter:none;object-fit:fill}#gul .gcl>img{position:absolute;display:block;max-width:none}#gul svg.gv{left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}"+
     "#gul .gb{background:#e8590c;color:#fff;font-weight:900;border:solid #fff;border-radius:999px;line-height:1;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}"+
     "#gul .gn{background:#808080;color:#fff;font-weight:900;line-height:1;display:flex;align-items:center;white-space:nowrap;border:0;box-shadow:0 0 2px rgba(0,0,0,.35)}"+   /* 전국 지도 「서울」「경기」 이름표와 같은 모양 (10-20) */
+    "@keyframes bbBlink{0%,100%{opacity:1;filter:brightness(1.15)}45%{opacity:.78;filter:brightness(.9)}50%{opacity:.62}55%{opacity:.85}}#gul .gbb{pointer-events:none!important}"+
     "#map.gumode #lod{display:none!important}#map.gumode #dl{z-index:3}#map.gumode #dlb{z-index:5}"+   /* 거리선·거리 글자는 구 화면 조각·흐림 위로 (10-20) */
     "#gul .glb{pointer-events:none;transform-origin:0 0;background:rgba(20,24,32,.88);color:#fff;font:800 12px/1.2 system-ui,sans-serif;padding:3px 8px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.35)}"+
-    "#guX{position:absolute;top:10px;left:50%;transform:translateX(-50%);white-space:nowrap;z-index:30;border:0;border-radius:999px;background:rgba(20,24,32,.88);color:#fff;font-weight:900;font-size:15px;padding:7px 14px;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer}#guX[hidden]{display:none}";
+    "#guX{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:#808080!important;color:#fff!important;white-space:nowrap;z-index:30;border:0;border-radius:999px;background:rgba(20,24,32,.88);color:#fff;font-weight:900;font-size:15px;padding:7px 14px;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer}#guX[hidden]{display:none}";
   document.head.appendChild(st);
   function load(){ if(GU.p) return GU.p; return GU.p=fetch("data/gu_seoul.json?v="+V).then(function(r){ if(!r.ok) throw new Error("gu "+r.status); return r.json(); }).then(function(d){ GU.d=d; return d; },function(e){ GU.p=null; throw e; }); }
   function on(){ return !!(GU.d&&typeof VIEW==="string"&&VIEW===GU.d.map&&!window.DET); }
@@ -22,7 +23,17 @@
   function layer(){ var L=document.getElementById("gul"); if(!L){ L=document.createElement("div"); L.id="gul"; document.getElementById("mz").appendChild(L); } return L; }
   function chip(){ var b=document.getElementById("guX"); if(!b){ b=document.createElement("button"); b.type="button"; b.id="guX"; b.hidden=true; document.getElementById("map").appendChild(b);
       b.addEventListener("click",function(e){ e.stopPropagation(); e.preventDefault(); exit(); }); } return b; }
-  function title(){ var tt=document.getElementById("vttl"), c=CITY[GU.d.map], o=GU.g&&gObj(GU.g); if(tt&&c) tt.textContent=LN(c)+(o?" · "+LP(o.n):""); var b=chip(); b.hidden=!o||!on(); if(o) b.textContent=LP(o.n)+"  ✕"; }
+  function title(){ var tt=document.getElementById("vttl"), c=CITY[GU.d.map], o=GU.g&&gObj(GU.g); if(tt&&c) tt.textContent=LN(c)+(o?" · "+LP(o.n):""); var b=chip(); b.hidden=!o||!on(); if(o){ b.textContent=LP(o.n)+"  ✕"; chipFit(b); } }
+  // 구 칩 자리 (사장님 10-20) — 회색 바탕·흰 글자. 「◎ 현재 위치」 등 지도 위 단추와 띄워서, 남는 칸 가운데. 모자라면 글자를 줄이고, 그래도 안 되면 한 줄 아래
+  function chipFit(b){ var m=document.getElementById("map"); if(!m||b.hidden) return; var W=m.clientWidth, key=b.textContent+"|"+W+"|"+MH(); if(b._fk===key) return; b._fk=key;
+    var mr=m.getBoundingClientRect(), obs=[];
+    [].forEach.call(document.querySelectorAll("#map *, body > *"),function(e){ if(e===b||e.id==="ctX"||e.closest("#mz")||b.contains(e)) return; var cs=getComputedStyle(e); if(cs.position!=="absolute"&&cs.position!=="fixed") return; if(cs.display==="none"||cs.visibility==="hidden"||e.hidden) return;
+      var r=e.getBoundingClientRect(); if(r.width<10||r.height<10||r.width>W*0.8||r.height>160) return; var q=[r.left-mr.left,r.top-mr.top,r.right-mr.left,r.bottom-mr.top]; if(q[3]<0||q[1]>130||q[2]<0||q[0]>W) return; obs.push(q); });
+    b.style.transform="none"; var G=8, put=function(top,fs){ b.style.fontSize=fs+"px"; var bw=b.offsetWidth, bh=b.offsetHeight, L=G, R=W-G;
+      obs.forEach(function(q){ if(q[1]<top+bh+4&&q[3]>top-4){ if((q[0]+q[2])/2<W/2) L=Math.max(L,q[2]+G); else R=Math.min(R,q[0]-G); } });
+      if(R-L<bw) return false; b.style.left=Math.max(L,Math.min(R-bw,W/2-bw/2))+"px"; b.style.top=top+"px"; return true; };
+    for(var fs=15;fs>=12;fs--) if(put(10,fs)) return;
+    var low=10; obs.forEach(function(q){ if(q[1]<60) low=Math.max(low,q[3]+6); }); for(var f2=15;f2>=11;f2--) if(put(low,f2)) return; b.style.left=G+"px"; b.style.top=low+"px"; }
   function put(e,x,y,w,h){ e.style.left=x+"px"; e.style.top=y+"px"; e.style.width=w+"px"; e.style.height=h+"px"; }
   function img(k){ var q=GU.d.P[k], e=document.createElement("img"); e.src=q.i; e.alt=""; e.draggable=false; e.dataset.k=k; try{ e.title=pName(k)||""; }catch(x){} return e; }
   // 하위 약도 자리(서울 약도 비율) — 빨간 네모(areas)를 따라 내려간다. 부모 먼저(그 위에 아이 약도를 얹는다)
@@ -55,7 +66,7 @@
         var n=o.keys.length-1; if(n>0){ var t=document.createElement("div"); t.className="gb"; t.dataset.g=o.g; t.textContent="+"+n; t.title=LP(o.n); t.style.fontSize=fs+"px"; t.style.height=(fs*1.55)+"px"; t.style.padding="0 "+(fs*0.45)+"px"; t.style.borderWidth=Math.max(0.5,fs*0.12)+"px";
           L.appendChild(t); var tw=t.offsetWidth||fs*2.4; t.style.left=(x+bw-tw*0.55)+"px"; t.style.top=(y-fs*0.6)+"px"; } });
       GU.d.out.forEach(function(k){ var b=P[k].b, e=img(k); put(e,b[0]*W,b[1]*H,(b[2]-b[0])*W,(b[3]-b[1])*H); L.appendChild(e); });
-      gnPlace(L,labs,w,W,H);
+      fxPlace(L,W,H); gnPlace(L,labs,w,W,H);
       return; }
     // 구 화면: 서울 전역 약도(조각) → 구 밖 가림 + 경계선 → 아이콘(실제 자리, 가림 위라 경계에 걸쳐도 잘리지 않음)
     var o=gObj(GU.g); if(!o) return; var PG=o.poly||[];
@@ -69,7 +80,7 @@
     (o.ln||[]).forEach(function(i){ var l=(GU.d.ln||[])[i]; if(!l) return; var cs=document.createElementNS(NS,"svg"); cs.setAttribute("viewBox","0 0 1 1"); cs.setAttribute("preserveAspectRatio","none"); cs.setAttribute("class","gv gcab"); cs.dataset.ln=i;   /* 케이블카 줄 두 가닥 (10-20) */
       [0,1].forEach(function(j){ var e=document.createElementNS(NS,"path"); e.setAttribute("fill","none"); e.setAttribute("stroke","#3a3f47"); e.setAttribute("stroke-width","1.6"); e.setAttribute("vector-effect","non-scaling-stroke"); e.setAttribute("stroke-linecap","round"); e.dataset.j=j; cs.appendChild(e); }); L.appendChild(cs); });
     cabLines();
-    var ic=o.ic||{}, ho=o.ho||[]; for(var k in ic){ var b=ic[k], q=P[k]; if(!q||ho.indexOf(k)>=0) continue;   /* ho = 궁 전체 그림 안에 이미 그려진 명소 — 누름 자리만 */ var e=img(k); e.className="gm"; put(e,b[0]*W,b[1]*H,(b[2]-b[0])*W,(b[3]-b[1])*H); if(+b[4]) e.style.transform="rotate("+(+b[4])+"deg)"; /* 5번째 값 = 배치기에서 돌린 각도(°) */ L.appendChild(e); }
+    var ic=o.ic||{}, ho=o.ho||[]; for(var k in ic){ var b=ic[k], q=P[k]; if(!q||ho.indexOf(k)>=0) continue;   /* ho = 궁 전체 그림 안에 이미 그려진 명소 — 누름 자리만 */ var e=img(k); e.className="gm"; put(e,b[0]*W,b[1]*H,(b[2]-b[0])*W,(b[3]-b[1])*H); if(+b[4]) e.style.transform="rotate("+(+b[4])+"deg)"; /* 5번째 값 = 배치기에서 돌린 각도(°) */ L.appendChild(e); if(q.bd&&!+b[4]) bbOn(L,k,b[0]*W,b[1]*H,(b[2]-b[0])*W,(b[3]-b[1])*H); }
     var LB=GU.d.lab||{}; for(var k2 in LB){ var b2=ic[k2]; if(!b2) continue; var t2=document.createElement("div"); t2.className="glb"; t2.dataset.k=k2; t2.textContent=LP(LB[k2]); t2.style.left=((b2[0]+b2[2])/2*W)+"px"; t2.style.top=(b2[3]*H)+"px"; L.appendChild(t2); }   /* 이름표 (시티투어버스 출발점) — 화면 크기 고정 */
     labScale(); }
   // 케이블카 줄 — 화면에서 두 가닥 사이 3px 가 되게 배율마다 다시 (10-20)
@@ -78,6 +89,20 @@
       for(var i=0;i<p.length;i++){ var a=p[Math.max(0,i-1)], b=p[Math.min(p.length-1,i+1)], dx=(b[0]-a[0])*as, dy=b[1]-a[1], n=Math.hypot(dx,dy)||1, nx=-dy/n, ny=dx/n;
         d+=(i?"L":"M")+(p[i][0]+sg*off*nx/as)+" "+(p[i][1]+sg*off*ny); } e.setAttribute("d",d); }); }); }
   function labScale(){ var L=document.getElementById("gul"); if(!L) return; var sc=1/ZM.s; [].forEach.call(L.querySelectorAll(".glb"),function(t){ t.style.transform="scale("+sc+") translate(-50%,3px)"; }); }
+  // 입점 문의 빌딩 광고판 글자 (index.html bbDraw 와 같은 모양) — 아이콘 상자 안 비율 P[k].bd 자리에 (10-20 되살림)
+  function bbOn(L,k,x,y,bw,bh){ var q=GU.d.P[k], b=q&&q.bd; if(!b) return; var e=document.createElement("div"), en=LANG==="en"; e.className="gbb"; e.innerHTML=k==="adinq"?(en?"Advertise<br>here":LANG==="ko"?"입점 문의":esc(TE("Advertise here (sign)"))):"";
+    var S=60, w=(b[2]-b[0])*bw*S, h=b[4]*bh*S, ang=Math.atan2((b[3]-b[1])*bh*S,w)*180/Math.PI;   /* 지도 단위로는 글자가 1px 도 안 돼 안 그려진다 → 60배로 쓰고 1/60 로 줄인다 */
+    e.style.cssText="position:absolute;left:"+(x+b[0]*bw)+"px;top:"+(y+b[1]*bh)+"px;width:"+w+"px;height:"+h+"px;transform-origin:0 0;transform:scale("+(1/S)+") skewY("+ang+"deg);display:flex;align-items:center;justify-content:center;"
+      +"pointer-events:none;white-space:nowrap;overflow:hidden;text-align:center;line-height:1.02;font-weight:900;color:#ffd84a;letter-spacing:.03em;background:none;border:0;box-shadow:none;"
+      +"text-shadow:0 0 "+(h*0.05)+"px #fff3b0,0 0 "+(h*0.14)+"px #ffa200,0 0 "+(h*0.3)+"px rgba(255,120,0,.75);"
+      +"font-size:"+(en?Math.min(h*0.43,w/5.3):Math.min(h*0.66,w/4.4))+"px;animation:bbBlink 2.6s ease-in-out infinite";
+    L.appendChild(e); }
+  // 묶음 화면 — 통계청·입점 문의 빌딩(명소 아님)을 실제 자리 가까이, 대표 그림·「+N」과 안 겹치게 (10-20 되살림)
+  function fxPlace(L,W,H){ var occ=[]; [].forEach.call(L.children,function(e){ var x=parseFloat(e.style.left), y=parseFloat(e.style.top); if(isNaN(x)) return; occ.push([x,y,x+e.offsetWidth,y+e.offsetHeight]); });
+    (GU.d.fx||[]).forEach(function(k){ var q=GU.d.P[k]; if(!q) return; var bw=W*0.018, bh=bw/q.ar; if(bh>W*0.03){ bh=W*0.03; bw=bh*q.ar; } var cx=q.f[0]*W, cy=q.f[1]*H, g=W*0.002, best=null, bd=1e18, st=W*0.002;
+      for(var dy=-W*0.06;dy<=W*0.06;dy+=st) for(var dx=-W*0.06;dx<=W*0.06;dx+=st){ var d=dx*dx+dy*dy; if(d>=bd) continue; var x0=cx+dx-bw/2, y0=cy+dy-bh/2, ok=true;
+        for(var i=0;i<occ.length;i++){ var o=occ[i]; if(x0-g<o[2]&&x0+bw+g>o[0]&&y0-g<o[3]&&y0+bh+g>o[1]){ ok=false; break; } } if(ok){ bd=d; best=[x0,y0]; } }
+      if(!best) best=[cx-bw/2,cy-bh/2]; var e=img(k); put(e,best[0],best[1],bw,bh); L.appendChild(e); occ.push([best[0],best[1],best[0]+bw,best[1]+bh]); bbOn(L,k,best[0],best[1],bw,bh); }); }
   // 묶음 화면 구 이름표 자리 (사장님 10-20) — 전국 지도 이름표 크기. 대표 그림·「+N」·다른 이름표·「나」와 띄워서, 구 한가운데에서 가장 가까운 빈 자리.
   //   빈 자리가 없으면 글자를 조금씩 줄여 다시(긴 영어·일본어·중국어 이름)
   function meBox(){   // 「나」 그림 자리(지도 단위) — 화면 크기 고정 그림이라 묶음 처음 배율(ZB) 기준으로 잡는다(확대해도 이름표가 안 흔들리게)
@@ -99,6 +124,11 @@
         if(best) done=best; }
       if(!done){ var tw2=e.offsetWidth, th2=e.offsetHeight; done=[cx-tw2/2,cy-th2/2,tw2,th2]; }
       e.style.left=done[0]+"px"; e.style.top=done[1]+"px"; e.style.visibility=""; occ.push([done[0],done[1],done[0]+done[2],done[1]+done[3]]); }); }
+  // 「나」 누르기로 내 자리 가기 (10-20) — 서울이면 내가 있는 구 화면으로 들어가 나를 가운데
+  function underSeoul(v){ var x=v, d=0; while(x&&CITY[x]&&d<20){ if(x==="seoulall") return true; x=CITY[x].parent; d++; } return false; }
+  var _mg=window.meGo; if(_mg) window.meGo=function(){ var r=_mg.apply(this,arguments); try{ if(r&&window.ME&&ME.pos&&VIEW!=="seoulall"&&underSeoul(VIEW)){ viewSet("seoulall"); load().then(function(){ apply(); window.meGo2(); }).catch(function(){}); return r; } }catch(e){} window.meGo2(); return r; };   /* 서울 안 옛 하위 약도(명동 등) 대신 구 화면으로 */
+  window.meGo2=function(){ try{ if(GU.d&&on()&&window.ME&&ME.pos){ var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]); if(f){ var g=null; GU.d.gus.forEach(function(o){ if(!g&&inPoly(f[0],f[1],o.poly||[])) g=o.g; });
+      if(g){ if(GU.g!==g) enter(g); var m=document.getElementById("map"), w=m.clientWidth, as=ASP(), s=ZM.s; ZM={s:s,tx:w/2-f[0]*w*as*s,ty:MH()/2-f[1]*w*s}; zApply(); try{ LOD.s0=ZM.s; }catch(e){} meDraw(); if(ME.sel) try{ meSelCard(); }catch(e){} } } } }catch(e){} };
   // 「나」가 움직이면 묶음 이름표 자리를 다시 (나와 겹치지 않게)
   var _md=window.meDraw; if(_md) window.meDraw=function(){ var r=_md.apply(this,arguments); try{ if(on()&&!GU.g&&GU.d&&GU.key){ var me=meBox(), k=me?me.map(Math.round).join(","):""; if(k!==(GU.meK||"")){ GU.key=null; draw(); } } }catch(e){} return r; };
   // 들어갈 때 배율 — 대표 명소가 있는 하위 약도를 그 약도 화면과 같은 크기로(없으면 구 약도를 「광화문 일대」 약도와 같은 크기로), 대표를 가운데
@@ -122,7 +152,7 @@
   var _zm=window.ZMAX; window.ZMAX=function(){ var r=_zm.apply(this,arguments); return (GU.g&&on())?Math.max(r,GU.zmax||0):r; };   // 구 화면은 하위 약도 크기까지 당길 수 있게
   var _at=window.areaTap; window.areaTap=function(){ if(on()) return 0; return _at.apply(this,arguments); };   // 묶음·구 화면엔 빨간 네모·명찰이 없다
   var _ha=window.hitAt; window.hitAt=function(cx,cy){ var r=_ha.apply(this,arguments); if(!on()) return r; if(r==="__me"||r==="__pin") return r;
-    if(!GU.g) return (r&&GU.d.P[r])?null:r;   // 묶음: 바탕에서 뺀 그림 자리는 안 눌린다(그림은 #gul 이 받는다)
+    if(!GU.g){ try{ var ef=document.elementsFromPoint(cx,cy); for(var j=0;j<ef.length;j++){ if(ef[j].matches&&ef[j].matches('#gul img[data-k="mpstat"]')) return "mpstat"; } }catch(e){} return (r&&GU.d.P[r])?null:r; }   /* 통계청 길게 누르기 = 관리자 입구 */   // 묶음: 바탕에서 뺀 그림 자리는 안 눌린다(그림은 #gul 이 받는다)
     var im=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-im.left)/im.width, fy=(cy-im.top)/im.height, H=hits(), best=null, ba=1e9, pad=0.0004;
     for(var k in H){ var b=H[k]; if(fx>=b[0]-pad&&fx<=b[2]+pad&&fy>=b[1]-pad&&fy<=b[3]+pad){ var a=Math.hypot((b[0]+b[2])/2-fx,(b[1]+b[3])/2-fy)/Math.max(1e-6,b[2]-b[0]); if(a<ba){ ba=a; best=k; } } }   /* 겹치면 그림 가운데가 가까운 쪽 */
     if(best&&GU.d.act&&GU.d.act[best]) return GU.d.act[best];   /* 시티투어버스 출발점 → 매표소 카드 */
