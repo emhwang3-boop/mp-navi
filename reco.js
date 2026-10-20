@@ -7,7 +7,7 @@
  *  · 지도: 고른 명소에 반짝이는 동그라미(번호) — 약도를 옮겨 다녀도 다시 그린다. ✕·새 검색이면 지운다
  *  · 「다시 짜줘 / Try again」: 이미 보여준 명소 key·검색어·카카오 장소는 빼고 새로. 횟수 제한 없음(허브 남용 막기만)
  *  · 이용권: hasPass() 로 막는 자리 — 지금은 trip.js 의 hasPass()=true 라 누구나. 결제 붙일 때 그 한 곳만 바꾸면 유료
- *  · 손님 문장은 이 기기에도 서버에도 남기지 않는다 · 위치는 서버로 안 보냄(카카오 결과 거리 계산은 화면에서)
+ *  · 손님 문장은 이 기기에도 서버에도 남기지 않는다 · 위치는 서버로 안 보냄(카카오 결과 거리 계산은 화면에서) — 단 10-20부터 구글 /gplace 엔 위치(소수 2자리)를 보낸다(데모, 사장님)
  *  index.html 은 <script src="reco.js"> 한 줄뿐 — 전역(PLACES·CITY·VIEW·DET·_nm·ME·HUB·T·esc·LANG·viewSet·placeShow·spinGo·meBest·meGeoFrac·
  *  mapLoad·kmLL·kmTxt·telLine·linksTo·go·resClear·TRIP·hasPass·openPricing)을 부른다
  */
@@ -79,7 +79,7 @@ var KBAD=/편의점|주차장|부동산|주유소|은행|ATM|세탁|미용|학�
 var KCAT=[[/스키|스노보드/,/^(스키장|슬로프)$/],[/해수욕장|해변|바다/,/해수욕장|해변/],[/온천/,/^온천/],[/아쿠아리움|수족관/,/아쿠아리움/],[/놀이공원|테마파크|놀이동산/,/^(테마파크|놀이공원)$/,null,3],[/사찰|산사|절$|템플/,/사찰/],
   [/캠핑|야영/,/캠핑|야영/],[/휴양림/,/휴양림/],[/계곡/,/계곡/],[/등산|산행/,/^(등산로|산)$/],[/동물원/,/동물원/],[/수목원|식물원/,/수목원|식물원/]];   // 검색어 종류 → 카카오 분류 끝칸
 function kOne(u){ return fetch(u).then(function(r){ return r.json(); }).then(function(j){ return (j&&j.ok&&j.items)||[]; }).catch(function(){ return []; }); }
-function gOne(kw){ return fetch(HUB+"/gplace?q="+encodeURIComponent(kw)+"&lang="+encodeURIComponent(LANG)).then(function(r){ return r.json(); }).then(function(j){ return (j&&j.ok&&j.items)||[]; }).catch(function(){ return []; }); }   // 구글 — 실패면 빈 목록 → 카카오로 (10-20)
+function gOne(kw){ var o=origin(); return fetch(HUB+"/gplace?q="+encodeURIComponent(kw)+"&lang="+encodeURIComponent(LANG)+"&lat="+(+o[0]).toFixed(2)+"&lng="+(+o[1]).toFixed(2)).then(function(r){ return r.json(); }).then(function(j){ return (j&&j.ok&&j.items)||[]; }).catch(function(){ return []; }); }   // 구글 — 실패면 빈 목록 → 카카오로 (10-20)
 function kNorm(s){ return String(s||"").replace(/[\s·()\-_.,'’]/g,"").toLowerCase(); }
 // kws = 종류 검색어(가까운 순 전국) · nms = AI 가 아는 실제 이름(카카오에서 확인된 것만 — 첫 결과가 그 이름일 때)
 function kGet(kws,nms,np){ if(!kws.length&&!nms.length) return Promise.resolve([]); var o=origin(), ps=ME&&ME.pos, lg=kpL(), pq=ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"", G=[];
