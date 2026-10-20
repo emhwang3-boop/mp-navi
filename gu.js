@@ -12,7 +12,7 @@
     "#gul img.gm{pointer-events:none;filter:none;object-fit:fill}#gul .gcl>img{position:absolute;display:block;max-width:none}#gul svg.gv{left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}"+
     "#gul .gb{background:#e8590c;color:#fff;font-weight:900;border:solid #fff;border-radius:999px;line-height:1;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}"+
     "#gul .gn{background:rgba(255,255,255,.9);color:#7c2d12;font-weight:900;border:solid #e8590c;border-radius:999px;line-height:1;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%)}"+
-    "#map.gumode #lod{display:none!important}"+
+    "#map.gumode #lod{display:none!important}#map.gumode #dl{z-index:3}#map.gumode #dlb{z-index:5}"+   /* 거리선·거리 글자는 구 화면 조각·흐림 위로 (10-20) */
     "#gul .glb{pointer-events:none;transform-origin:0 0;background:rgba(20,24,32,.88);color:#fff;font:800 12px/1.2 system-ui,sans-serif;padding:3px 8px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.35)}"+
     "#guX{position:absolute;top:10px;left:50%;transform:translateX(-50%);white-space:nowrap;z-index:30;border:0;border-radius:999px;background:rgba(20,24,32,.88);color:#fff;font-weight:900;font-size:15px;padding:7px 14px;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer}#guX[hidden]{display:none}";
   document.head.appendChild(st);
@@ -38,7 +38,11 @@
     for(var x=x0;x<=x1;x++) for(var y=y0;y<=y1;y++){ var id=lv+":"+x+"_"+y; if(!set[x+"_"+y]) continue; want[id]=1;
       if(!GU.cel[id]){ var e=document.createElement("img"); e.className="gm gc"; e.alt=""; e.draggable=false; e.src="img/gu/c"+(lv?"1":"")+"/"+x+"_"+y+".jpg?v="+ch.v; put(e,x*sz/G2*W,y*sz/G2*H,sz/G2*W+0.6,sz/G2*H+0.6); cl.appendChild(e); GU.cel[id]=e; } }
     for(var id2 in GU.cel){ if(!want[id2]&&!(GU.cel[id2].dataset.keep)){ var lv2=+id2.charAt(0); if(lv2!==lv||Object.keys(GU.cel).length>60){ GU.cel[id2].remove(); delete GU.cel[id2]; } } } }
-  function draw(){ var m=document.getElementById("map"); if(!m) return; var L=document.getElementById("gul");
+  // 거리선 굵기·끝 동그라미 — 구 화면은 배율이 25~30배라 그대로 두면 동그라미·선이 화면을 덮는다(10-20 「깨진다」). 서울 묶음·다른 약도는 원래 크기
+  function dlFix(){ var s=document.getElementById("dl"); if(!s||!s.firstChild) return; var k=(on()&&ZM.s>4)?4/ZM.s:1;
+    [].forEach.call(s.querySelectorAll("circle"),function(c){ c.setAttribute("r",String(9*k)); });
+    [].forEach.call(s.querySelectorAll("line"),function(l){ l.style.strokeWidth=(2*Math.max(k,0.5/Math.max(1,ZM.s/4)))+"px"; l.setAttribute("stroke-dasharray",(6*k)+" "+(5*k)); }); }
+  function draw(){ try{ dlFix(); }catch(e){} var m=document.getElementById("map"); if(!m) return; var L=document.getElementById("gul");
     if(!on()){ if(L) L.hidden=true; m.classList.remove("gumode"); if(GU.d) chip().hidden=true; GU.key=null; return; }
     m.classList.add("gumode"); L=layer(); L.hidden=false; var w=m.clientWidth, as=ASP(), W=w*as, H=w, key=LANG+"|"+w+"|"+(GU.g||"");
     title(); if(GU.key===key){ if(GU.g){ try{ chunks(); }catch(e){} var sw=String(3/ZM.s); [].forEach.call(L.querySelectorAll("path.gs"),function(p){ p.setAttribute("stroke-width",sw); }); try{ cabLines(); labScale(); }catch(e){} } return; }
@@ -82,6 +86,11 @@
     GU.zmax=s*4; ZM={s:s,tx:w/2-cx*w*as*s,ty:h/2-cy*w*s}; zApply(); try{ LOD.s0=ZM.s; }catch(e){} draw(); }
   function exit(){ if(!GU.g) return false; GU.g=null; GU.key=null; GU.zmax=0; var m=document.getElementById("map"), w=m.clientWidth, c=CITY[VIEW], s0=ZB(); ZM={s:s0,tx:w/2-((c&&c.fx)||0.5)*w*((c&&c.aspect)||1)*s0,ty:0}; zApply(); try{ LOD.s0=ZM.s; }catch(e){} draw(); return true; }
   window.guEnter=enter; window.guBack=function(){ return on()&&exit(); };
+  // 나 ↔ 장소 거리선 (10-20 사장님 「버벅거리며 깨진다」) — 둘 중 하나라도 이 구 화면(경계 상자) 밖이면 구 화면을 나와 서울 한 장 그림에서 긋는다.
+  //   구 화면에서 멀리 줄이면 구 밖은 흐림·조각 수십 장을 새로 받아 느리고 깨져 보였다. 둘 다 구 안이면 구 화면 그대로
+  var _ml=window.meLineTo; if(_ml) window.meLineTo=function(k){ try{ if(on()&&GU.g&&window.ME&&ME.pos&&PLACES[k]){ var p=PLACES[k], b=GU.pb||[0,0,1,1], m=0.002,
+        a1=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]), a2=meGeoFrac(VIEW,+p.lat,+p.lng), inb=function(f){ return f&&f[0]>=b[0]-m&&f[0]<=b[2]+m&&f[1]>=b[1]-m&&f[1]<=b[3]+m; };
+      if(!(inb(a1)&&inb(a2))) exit(); } }catch(e){} return _ml.apply(this,arguments); };
   function kidsLoad(){ (GU.d.kids||[]).forEach(function(id){ try{ mapLoad(id).catch(function(){}); }catch(e){} }); }
   function apply(){ if(!on()){ draw(); return; } var im=document.getElementById("mapimg"); if(im.getAttribute("src")!==GU.d.img) im.src=GU.d.img; kidsLoad(); draw(); }
   var _vs=window.viewSet; window.viewSet=function(v){ GU.g=null; GU.key=null; GU.zmax=0; var r=_vs.apply(this,arguments); if(CITY[v]&&v==="seoulall") load().then(apply).catch(function(){}); else draw(); return r; };
