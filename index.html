@@ -965,10 +965,11 @@ function meKrSpot(f,Wf,Hf){ var as=ASP(), lb=[], k=f[0].toFixed(4)+","+f[1].toFi
   c.unshift([0,f[0],f[1]]); c.sort(function(p,q){ return p[0]-q[0]; });
   var a=null; for(var i=0;i<c.length;i++){ var bx=c[i][1], by=c[i][2]; if(ctFree(bx-Wf/2,by-Hf,bx+Wf/2,by,lb)){ a=[bx,by]; break; } }
   MEKR={k:k,a:a||f}; return MEKR.a; }
+var ME_W=0.06;   // 「나」 그림 폭 = 화면에서 지도 폭의 6% — 전국·약도·구 화면·확대 배율 어디서나 같게 (사장님 10-21)
 function meDraw(){ try{ nmMe(); }catch(x){} try{ meEdge(); }catch(x){} var e=meEl(); if(!ME.pos){ e.hidden=true; meKrHide(); ME.sel=false; try{ meTipSync(); }catch(x){} return; } var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]);
   if(!f||f[0]<0||f[0]>1||f[1]<0||f[1]>1){ e.hidden=true; meKrHide(); return; } e.hidden=false;
-  var w=document.getElementById("map").clientWidth, iw=Math.round(w*((VIEW==="capital"||VIEW==="gangwon")?0.045:0.07)), kr=!CITY[VIEW]; e.classList.toggle("kr",kr);
-  if(kr){ var as=ASP(), im0=e.querySelector("img"), nw=(im0.complete&&im0.naturalWidth)||93, nh=(im0.complete&&im0.naturalHeight)||160, Hf=0.075, Wf=Hf*nw/nh/as, a=meKrSpot(f,Wf,Hf), q=meKrEls(), s=ZM.s;   // 키 = 지도 높이의 7.5% (전국 지도 인물 그림 정도)
+  var w=document.getElementById("map").clientWidth, iw=Math.round(w*ME_W), kr=!CITY[VIEW]; e.classList.toggle("kr",kr);
+  if(kr){ var as=ASP(), im0=e.querySelector("img"), nw=(im0.complete&&im0.naturalWidth)||93, nh=(im0.complete&&im0.naturalHeight)||160, zq=Math.round(Math.log(ZM.s)/Math.log(1.08)), zs=Math.pow(1.08,zq), Wf=ME_W/(as*zs), Hf=Wf*as*nh/nw, a=meKrSpot(f,Wf,Hf), q=meKrEls(), s=ZM.s;   // 화면에서 늘 지도 폭의 ME_W (확대해도 그대로, 사장님 10-21) — 비킬 자리는 배율 8% 단위로만 다시 찾는다
     e.style.left=(a[0]*100)+"%"; e.style.top=(a[1]*100)+"%"; e.style.width=(Wf*w*as)+"px"; e.style.transform="translate(-50%,-100%)";
     var d=q[0], l=q[1], x1=f[0]*w*as, y1=f[1]*w, x2=a[0]*w*as, y2=a[1]*w, len=Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
     d.hidden=false; d.style.left=(f[0]*100)+"%"; d.style.top=(f[1]*100)+"%"; d.style.transform="translate(-50%,-50%) scale("+(1/s)+")";
@@ -1166,7 +1167,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script src="gift.js?v=1018lg"></script>
 <script src="near.js?v=1018lg"></script>
 <script src="reco.js?v=1020gn"></script>
-<script src="gu.js?v=e85c231f66"></script>
+<script src="gu.js?v=f29da37807"></script>
 <script src="citytour.js?v=e1168f0b12"></script>
 <script src="pass.js?v=1018i"></script>
 <script>
