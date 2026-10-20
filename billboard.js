@@ -27,7 +27,7 @@
       vid=document.createElement("video");
       vid.muted=true; vid.defaultMuted=true; vid.loop=true; vid.autoplay=true; vid.playsInline=true; vid.preload="auto";
       ["muted","autoplay","loop","playsinline","webkit-playsinline","disablepictureinpicture"].forEach(function(a){ vid.setAttribute(a,""); });
-      vid.setAttribute("preload","auto"); vid.poster="img/xmas/poster.jpg?v=1020bb"; vid.src="img/xmas/santa.mp4?v=1020bb";
+      vid.setAttribute("preload","auto"); vid.poster="img/xmas/poster.jpg?v=1021bb"; vid.src="img/xmas/santa.mp4?v=1021bb";
       var xs=el.querySelector(".xs"); xs.appendChild(vid); var g=document.createElement("div"); g.className="xg"; xs.appendChild(g);
     }
     z.appendChild(el); return el; }
