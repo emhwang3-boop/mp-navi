@@ -110,7 +110,7 @@
   //   빈 자리가 없으면 글자를 조금씩 줄여 다시(긴 영어·일본어·중국어 이름)
   function meBox(){   // 「나」 그림 자리(지도 단위) — 화면 크기 고정 그림이라 묶음 처음 배율(ZB) 기준으로 잡는다(확대해도 이름표가 안 흔들리게)
     if(!window.ME||!ME.pos) return null; var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]); if(!f||f[0]<0||f[0]>1||f[1]<0||f[1]>1) return null;
-    var m=document.getElementById("map"), w=m.clientWidth, as=ASP(), sr=ZB(), im=document.querySelector("#me img"), r=(im&&im.naturalWidth)?im.naturalHeight/im.naturalWidth:1.72, iw=w*0.07/sr, ih=iw*r, x=f[0]*w*as, y=f[1]*w;
+    var m=document.getElementById("map"), w=m.clientWidth, as=ASP(), sr=ZB(), im=document.querySelector("#me img"), r=(im&&im.naturalWidth)?im.naturalHeight/im.naturalWidth:1.72, iw=w*(window.ME_W||0.06)/sr, ih=iw*r, x=f[0]*w*as, y=f[1]*w;
     return [x-iw/2,y-ih,x+iw/2,y+10/sr]; }
   function inPoly(x,y,P){ for(var k=0;k<P.length;k++){ var r=P[k], c=false; for(var i=0,j=r.length-1;i<r.length;j=i++){ var a=r[i], b=r[j]; if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0]) c=!c; } if(c) return true; } return false; }
   function gnPlace(L,labs,w,W,H){ var occ=[], me=meBox(); GU.meK=me?me.map(Math.round).join(","):"";
