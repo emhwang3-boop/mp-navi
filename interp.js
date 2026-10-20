@@ -25,9 +25,11 @@
   function paintBtn(){ b.textContent="🗣 "+L5({ko:"통역",en:"Interpreter",ja:"通訳",zhs:"翻译",zht:"翻譯"}); b.setAttribute("aria-label",b.textContent);
     var g=document.getElementById("lgP"), y=g?g.getBoundingClientRect().bottom+8:Math.round(innerHeight*0.58)+52; b.style.top=Math.min(y,innerHeight-60)+"px"; }
   paintBtn(); setInterval(paintBtn,600);   /* 🌐 단추를 끌어 옮기면 따라간다 · 언어가 바뀌면 글자도 */
-  function placeKo(){ try{ var k=window._ntK, p=k&&window.PLACES&&window.PLACES[k]; return p&&p.ko?String(p.ko):""; }catch(e){ return ""; } }
+  /* 지금 장소 = _ntK 의 명소 자료, 없으면 일정에서 고른 곳(_itPick — 카카오 등 명소 목록 밖, trip.js 가 넣음 10-20) */
+  function curP(){ try{ var k=window._ntK, p=k&&window.PLACES&&window.PLACES[k]; if(p&&p.ko) return p; var q=window._itPick; return q&&q.k===k&&q.ko?q:null; }catch(e){ return null; } }
+  function placeKo(){ var p=curP(); return p&&p.ko?String(p.ko):""; }
   /* 아래 작은 줄(손님 말)에는 장소 이름도 손님 말로 — 장소 자료의 ja·zhs·zht·en 이름 (사장님 10-19 「한글 아래는 다 외국어」) */
-  function placeLoc(){ try{ var k=window._ntK, p=k&&window.PLACES&&window.PLACES[k]; if(!p) return ""; return String(p[window.LANG]||p.en||p.ko||""); }catch(e){ return ""; } }
+  function placeLoc(){ var p=curP(); if(!p) return ""; return String(p[window.LANG]||p.en||p.ko||""); }
   function phrases(){ var pk=placeKo(), pf=placeLoc()||pk, out=[];
     if(pk){ out.push([pk+"에 어떻게 가요?",{ko:pk+"에 어떻게 가요?",en:"How do I get to "+pf+"?",ja:pf+"へはどう行けばいいですか？",zhs:"请问"+pf+"怎么走？",zht:"請問"+pf+"怎麼走？"}]);
       /* 택시 — 「기사님, ○○(으)로 가 주세요」 (사장님 10-19) · 받침 있으면(ㄹ 빼고) 「으로」 */
@@ -72,4 +74,6 @@
       bg.querySelector(".x").onclick=function(e){ e.stopPropagation(); bg.remove(); }; o.appendChild(bg); }; });
   }
   b.onclick=open;
+  /* 판이 열려 있으면 지금 장소로 다시 그린다 — 일정에서 장소를 고를 때 trip.js 가 부른다 (10-20) */
+  window.ITP={open:open,refresh:function(){ if(document.getElementById("itB")) open(); }};
 })();
