@@ -1077,7 +1077,10 @@ function linksTo(nmKo,lat,lng,naverName,addr){ lat=+lat; lng=+lng; var f=meFrom(
   var nv; if(f){ var A=m3857(f.lat,f.lng), B=m3857(lat,lng); nv="https://map.naver.com/p/directions/"+A[0]+","+A[1]+","+encodeURIComponent("내 위치")+",,/"+B[0]+","+B[1]+","+nm+",,/-/transit"; }
   else nv=naverName?"https://map.naver.com/p/search/"+encodeURIComponent(naverName):"https://map.naver.com/p?c="+lng+","+lat+",15,0,0,0,dh";
   var L=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };
-  return FG()?L(go,TE("Google Maps (English)"))+L(nv,TE("Naver Map"))+krideL(nmKo,addr):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도"); }
+  // 「자세히 보기」(사장님 10-20) — 외국어 화면은 구글 지도 장소 화면(앱 언어 hl 연동), 한국어 화면은 네이버 플레이스(이름 검색)
+  var gq=nmKo+(addr?" "+addr:""), mr=FG()?"https://www.google.com/maps/search/?api=1"+hlG()+"&query="+encodeURIComponent(gq):"https://map.naver.com/p/search/"+encodeURIComponent(naverName||nmKo);
+  var mt={ko:"ℹ️ 자세히 보기 (네이버)",en:"ℹ️ More info (Google)",ja:"ℹ️ 詳しく見る (Google)",zhs:"ℹ️ 查看详情 (Google)",zht:"ℹ️ 查看詳情 (Google)"}[LANG]||"ℹ️ More info (Google)";
+  return L(mr,mt)+(FG()?L(go,TE("Google Maps (English)"))+L(nv,TE("Naver Map"))+krideL(nmKo,addr):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도")); }
 // 영어 화면 — 외국인용 카카오 택시 앱 K.Ride (사장님 10-15). 주소·패키지는 스토어에서 확인함(2026-10-15):
 //   Play com.kakaomobility.kride · App Store id6474654222 · 소개 kride.kakaomobility.com
 //   안드로이드는 깔려 있으면 앱을 열고(MAIN/LAUNCHER 꼴) 없으면 Play 상세로, 아이폰은 App Store, PC 는 소개 페이지. 누르면 목적지 이름·주소를 복사한다
