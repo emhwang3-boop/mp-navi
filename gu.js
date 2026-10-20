@@ -61,7 +61,7 @@
     var vp=document.createElementNS(NS,"path"); vp.setAttribute("d",dd); vp.setAttribute("fill-rule","evenodd"); vp.setAttribute("fill","rgba(248,246,240,.82)"); sv.appendChild(vp);
     PG.forEach(function(r){ var e=document.createElementNS(NS,"path"); e.setAttribute("class","gs"); e.setAttribute("d","M"+r.map(function(p){ return p[0]+" "+p[1]; }).join("L")+"Z"); e.setAttribute("fill","none"); e.setAttribute("stroke","#e8590c"); e.setAttribute("stroke-width",String(3/ZM.s)); e.setAttribute("vector-effect","non-scaling-stroke"); e.setAttribute("stroke-linejoin","round"); sv.appendChild(e); });
     L.appendChild(sv);
-    var ic=o.ic||{}; for(var k in ic){ var b=ic[k], q=P[k]; if(!q) continue; var e=img(k); e.className="gm"; put(e,b[0]*W,b[1]*H,(b[2]-b[0])*W,(b[3]-b[1])*H); L.appendChild(e); } }
+    var ic=o.ic||{}, ho=o.ho||[]; for(var k in ic){ var b=ic[k], q=P[k]; if(!q||ho.indexOf(k)>=0) continue;   /* ho = 궁 전체 그림 안에 이미 그려진 명소 — 누름 자리만 */ var e=img(k); e.className="gm"; put(e,b[0]*W,b[1]*H,(b[2]-b[0])*W,(b[3]-b[1])*H); L.appendChild(e); } }
   // 들어갈 때 배율 — 대표 명소가 있는 하위 약도를 그 약도 화면과 같은 크기로(없으면 구 약도를 「광화문 일대」 약도와 같은 크기로), 대표를 가운데
   // 들어갈 때 — 대표 명소(없으면 구 한가운데)를 가운데, 전역 약도 1 px ≈ 화면 0.3 px (하위 약도 화면과 같은 크기)
   function enter(g){ var o=gObj(g); if(!o||!on()) return; try{ ntap("gu:"+g,"open_area"); }catch(e){} try{ inBlur(); }catch(e){} try{ resClear(); }catch(e){}
