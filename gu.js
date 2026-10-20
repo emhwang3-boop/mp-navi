@@ -13,6 +13,7 @@
     "#gul .gb{background:#e8590c;color:#fff;font-weight:900;border:solid #fff;border-radius:999px;line-height:1;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}"+
     "#gul .gn{background:rgba(255,255,255,.9);color:#7c2d12;font-weight:900;border:solid #e8590c;border-radius:999px;line-height:1;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%)}"+
     "#map.gumode #lod{display:none!important}"+
+    "#gul .glb{pointer-events:none;transform-origin:0 0;background:rgba(20,24,32,.88);color:#fff;font:800 12px/1.2 system-ui,sans-serif;padding:3px 8px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.35)}"+
     "#guX{position:absolute;top:10px;left:50%;transform:translateX(-50%);white-space:nowrap;z-index:30;border:0;border-radius:999px;background:rgba(20,24,32,.88);color:#fff;font-weight:900;font-size:15px;padding:7px 14px;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer}#guX[hidden]{display:none}";
   document.head.appendChild(st);
   function load(){ if(GU.p) return GU.p; return GU.p=fetch("data/gu_seoul.json?v="+V).then(function(r){ if(!r.ok) throw new Error("gu "+r.status); return r.json(); }).then(function(d){ GU.d=d; return d; },function(e){ GU.p=null; throw e; }); }
@@ -40,7 +41,7 @@
   function draw(){ var m=document.getElementById("map"); if(!m) return; var L=document.getElementById("gul");
     if(!on()){ if(L) L.hidden=true; m.classList.remove("gumode"); if(GU.d) chip().hidden=true; GU.key=null; return; }
     m.classList.add("gumode"); L=layer(); L.hidden=false; var w=m.clientWidth, as=ASP(), W=w*as, H=w, key=LANG+"|"+w+"|"+(GU.g||"");
-    title(); if(GU.key===key){ if(GU.g){ try{ chunks(); }catch(e){} var sw=String(3/ZM.s); [].forEach.call(L.querySelectorAll("path.gs"),function(p){ p.setAttribute("stroke-width",sw); }); } return; }
+    title(); if(GU.key===key){ if(GU.g){ try{ chunks(); }catch(e){} var sw=String(3/ZM.s); [].forEach.call(L.querySelectorAll("path.gs"),function(p){ p.setAttribute("stroke-width",sw); }); try{ cabLines(); labScale(); }catch(e){} } return; }
     GU.key=key; L.innerHTML=""; var P=GU.d.P;
     if(!GU.g){   // 묶음: 구마다 대표 1개 + 배지 · 명소 없는 구는 이름표 · 서울 밖(북한산·남한산성)은 그림 그대로
       var fs=Math.max(4,w*0.019);
@@ -61,7 +62,18 @@
     var vp=document.createElementNS(NS,"path"); vp.setAttribute("d",dd); vp.setAttribute("fill-rule","evenodd"); vp.setAttribute("fill","rgba(248,246,240,.82)"); sv.appendChild(vp);
     PG.forEach(function(r){ var e=document.createElementNS(NS,"path"); e.setAttribute("class","gs"); e.setAttribute("d","M"+r.map(function(p){ return p[0]+" "+p[1]; }).join("L")+"Z"); e.setAttribute("fill","none"); e.setAttribute("stroke","#e8590c"); e.setAttribute("stroke-width",String(3/ZM.s)); e.setAttribute("vector-effect","non-scaling-stroke"); e.setAttribute("stroke-linejoin","round"); sv.appendChild(e); });
     L.appendChild(sv);
-    var ic=o.ic||{}, ho=o.ho||[]; for(var k in ic){ var b=ic[k], q=P[k]; if(!q||ho.indexOf(k)>=0) continue;   /* ho = 궁 전체 그림 안에 이미 그려진 명소 — 누름 자리만 */ var e=img(k); e.className="gm"; put(e,b[0]*W,b[1]*H,(b[2]-b[0])*W,(b[3]-b[1])*H); if(+b[4]) e.style.transform="rotate("+(+b[4])+"deg)"; /* 5번째 값 = 배치기에서 돌린 각도(°) */ L.appendChild(e); } }
+    (o.ln||[]).forEach(function(i){ var l=(GU.d.ln||[])[i]; if(!l) return; var cs=document.createElementNS(NS,"svg"); cs.setAttribute("viewBox","0 0 1 1"); cs.setAttribute("preserveAspectRatio","none"); cs.setAttribute("class","gv gcab"); cs.dataset.ln=i;   /* 케이블카 줄 두 가닥 (10-20) */
+      [0,1].forEach(function(j){ var e=document.createElementNS(NS,"path"); e.setAttribute("fill","none"); e.setAttribute("stroke","#3a3f47"); e.setAttribute("stroke-width","1.6"); e.setAttribute("vector-effect","non-scaling-stroke"); e.setAttribute("stroke-linecap","round"); e.dataset.j=j; cs.appendChild(e); }); L.appendChild(cs); });
+    cabLines();
+    var ic=o.ic||{}, ho=o.ho||[]; for(var k in ic){ var b=ic[k], q=P[k]; if(!q||ho.indexOf(k)>=0) continue;   /* ho = 궁 전체 그림 안에 이미 그려진 명소 — 누름 자리만 */ var e=img(k); e.className="gm"; put(e,b[0]*W,b[1]*H,(b[2]-b[0])*W,(b[3]-b[1])*H); if(+b[4]) e.style.transform="rotate("+(+b[4])+"deg)"; /* 5번째 값 = 배치기에서 돌린 각도(°) */ L.appendChild(e); }
+    var LB=GU.d.lab||{}; for(var k2 in LB){ var b2=ic[k2]; if(!b2) continue; var t2=document.createElement("div"); t2.className="glb"; t2.dataset.k=k2; t2.textContent=LP(LB[k2]); t2.style.left=((b2[0]+b2[2])/2*W)+"px"; t2.style.top=(b2[3]*H)+"px"; L.appendChild(t2); }   /* 이름표 (시티투어버스 출발점) — 화면 크기 고정 */
+    labScale(); }
+  // 케이블카 줄 — 화면에서 두 가닥 사이 3px 가 되게 배율마다 다시 (10-20)
+  function cabLines(){ var L=document.getElementById("gul"); if(!L) return; var m=document.getElementById("map"), w=m.clientWidth, as=ASP(), off=1.6/(ZM.s*w);
+    [].forEach.call(L.querySelectorAll("svg.gcab"),function(cs){ var l=GU.d.ln[+cs.dataset.ln], p=l.p; [].forEach.call(cs.querySelectorAll("path"),function(e){ var sg=e.dataset.j==="0"?-1:1, d=""; e.setAttribute("stroke-width",String(1.6/ZM.s));   /* 경계선처럼 화면 1.6px */
+      for(var i=0;i<p.length;i++){ var a=p[Math.max(0,i-1)], b=p[Math.min(p.length-1,i+1)], dx=(b[0]-a[0])*as, dy=b[1]-a[1], n=Math.hypot(dx,dy)||1, nx=-dy/n, ny=dx/n;
+        d+=(i?"L":"M")+(p[i][0]+sg*off*nx/as)+" "+(p[i][1]+sg*off*ny); } e.setAttribute("d",d); }); }); }
+  function labScale(){ var L=document.getElementById("gul"); if(!L) return; var sc=1/ZM.s; [].forEach.call(L.querySelectorAll(".glb"),function(t){ t.style.transform="scale("+sc+") translate(-50%,3px)"; }); }
   // 들어갈 때 배율 — 대표 명소가 있는 하위 약도를 그 약도 화면과 같은 크기로(없으면 구 약도를 「광화문 일대」 약도와 같은 크기로), 대표를 가운데
   // 들어갈 때 — 대표 명소(없으면 구 한가운데)를 가운데, 전역 약도 1 px ≈ 화면 0.3 px (하위 약도 화면과 같은 크기)
   function enter(g){ var o=gObj(g); if(!o||!on()) return; try{ ntap("gu:"+g,"open_area"); }catch(e){} try{ inBlur(); }catch(e){} try{ resClear(); }catch(e){}
@@ -81,6 +93,7 @@
     if(!GU.g) return (r&&GU.d.P[r])?null:r;   // 묶음: 바탕에서 뺀 그림 자리는 안 눌린다(그림은 #gul 이 받는다)
     var im=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-im.left)/im.width, fy=(cy-im.top)/im.height, H=hits(), best=null, ba=1e9, pad=0.0004;
     for(var k in H){ var b=H[k]; if(fx>=b[0]-pad&&fx<=b[2]+pad&&fy>=b[1]-pad&&fy<=b[3]+pad){ var a=Math.hypot((b[0]+b[2])/2-fx,(b[1]+b[3])/2-fy)/Math.max(1e-6,b[2]-b[0]); if(a<ba){ ba=a; best=k; } } }   /* 겹치면 그림 가운데가 가까운 쪽 */
+    if(best&&GU.d.act&&GU.d.act[best]) return GU.d.act[best];   /* 시티투어버스 출발점 → 매표소 카드 */
     return best?best.split("#")[0].split("@")[0]:null; };
   // 누르기 — 묶음 화면의 대표 그림·배지·이름표. 끈 것(드래그)은 원래 처리에 맡긴다
   var dn=null; document.addEventListener("pointerdown",function(e){ dn={x:e.clientX,y:e.clientY}; },true);
