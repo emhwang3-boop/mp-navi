@@ -226,7 +226,7 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
-<script src="i18n.js?v=1020gp"></script>
+<script src="i18n.js?v=1020gw"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
 // 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
@@ -532,7 +532,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="88ed5ef6a9", NAVI_ROOT="kr";
+var NAVI_V="8fbff672a3", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -799,7 +799,7 @@ function lodEl(id,cls,a){ var e=LOD.el[id]; if(!e){ e=document.createElement("di
 //   [키, 시청 위도, 경도, 들어갈 약도 id, 약도가 아직 없을 때 띄울 도시 카드, 한글, 영어] · 부산·경주 약도(regions 의 busan·gyeongju)가 생기면 카드 대신 그 약도로 바로 들어간다
 //   자리: 도시의 아래·옆 중 그림(누르기 지도 HG)과 겹치지 않는 가장 가까운 곳. 지도와 같이 커지고 작아지니 확대해도 안 겹친다
 //   [7] = 이 그림(누르기 지도 키) 바로 밑 가장자리에 붙인다 — 경주는 석굴암 그림 밑 (사장님 10-16)
-var CT=[["seoul",37.5663,126.9779,"seoulall",null,"서울","Seoul",null,[0.03,0]],["busan",35.1798,129.0750,"busan","city_busan","부산","Busan"],["gyeongju",35.8562,129.2247,"gyeongju","city_gyeongju","경주","Gyeongju","seok"],["capital",37.9558,126.6771,"capital",null,"경기","Gyeonggi","pmj"]];   /* 수도권 약도 — 판문점 그림 밑 (사장님 10-17) */
+var CT=[["seoul",37.5663,126.9779,"seoulall",null,"서울","Seoul",null,[0.03,0]],["busan",35.1798,129.0750,"busan","city_busan","부산","Busan"],["gyeongju",35.8562,129.2247,"gyeongju","city_gyeongju","경주","Gyeongju","seok"],["capital",37.9558,126.6771,"capital",null,"경기","Gyeonggi","pmj"],["gangwon",38.1191,128.4654,"gangwon",null,"강원","Gangwon","seorak"]];   /* 수도권 약도 — 판문점 그림 밑 (사장님 10-17) */
 function ctGo(id){ var t=CT.filter(function(q){ return q[0]===id; })[0]; if(!t) return; if(CITY[t[3]]){ ntap(t[3],"open_area"); viewSet(t[3]); } else if(t[4]) placeShow(t[4]); }
 function ctFree(x0,y0,x1,y1,put,m){ if(x0<0||y0<0||x1>1||y1>1) return false; if(m==null) m=1/256;   // 그림 칸에서 한 칸(0.4%) 더 띄운다
   for(var i=0;i<put.length;i++){ var q=put[i]; if(x0<q[2]&&x1>q[0]&&y0<q[3]&&y1>q[1]) return false; }
@@ -967,7 +967,7 @@ function meKrSpot(f,Wf,Hf){ var as=ASP(), lb=[], k=f[0].toFixed(4)+","+f[1].toFi
   MEKR={k:k,a:a||f}; return MEKR.a; }
 function meDraw(){ try{ nmMe(); }catch(x){} try{ meEdge(); }catch(x){} var e=meEl(); if(!ME.pos){ e.hidden=true; meKrHide(); ME.sel=false; try{ meTipSync(); }catch(x){} return; } var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]);
   if(!f||f[0]<0||f[0]>1||f[1]<0||f[1]>1){ e.hidden=true; meKrHide(); return; } e.hidden=false;
-  var w=document.getElementById("map").clientWidth, iw=Math.round(w*(VIEW==="capital"?0.045:0.07)), kr=!CITY[VIEW]; e.classList.toggle("kr",kr);
+  var w=document.getElementById("map").clientWidth, iw=Math.round(w*((VIEW==="capital"||VIEW==="gangwon")?0.045:0.07)), kr=!CITY[VIEW]; e.classList.toggle("kr",kr);
   if(kr){ var as=ASP(), im0=e.querySelector("img"), nw=(im0.complete&&im0.naturalWidth)||93, nh=(im0.complete&&im0.naturalHeight)||160, Hf=0.075, Wf=Hf*nw/nh/as, a=meKrSpot(f,Wf,Hf), q=meKrEls(), s=ZM.s;   // 키 = 지도 높이의 7.5% (전국 지도 인물 그림 정도)
     e.style.left=(a[0]*100)+"%"; e.style.top=(a[1]*100)+"%"; e.style.width=(Wf*w*as)+"px"; e.style.transform="translate(-50%,-100%)";
     var d=q[0], l=q[1], x1=f[0]*w*as, y1=f[1]*w, x2=a[0]*w*as, y2=a[1]*w, len=Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
@@ -1166,7 +1166,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script src="gift.js?v=1018lg"></script>
 <script src="near.js?v=1018lg"></script>
 <script src="reco.js?v=1020gn"></script>
-<script src="gu.js?v=512c221548"></script>
+<script src="gu.js?v=318f16db48"></script>
 <script src="citytour.js?v=e1168f0b12"></script>
 <script src="pass.js?v=1018i"></script>
 <script>
@@ -1301,5 +1301,6 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 </script>
 <script src="lang.js?v=1018gl"></script>
 <script src="interp.js?v=1020tr"></script>
+<script src="billboard.js?v=1020bb"></script>
 </body>
 </html>
