@@ -20,6 +20,7 @@
  "noryangjin": "pics/seoulall/nb_noryangjin.png",
  "olympicpark": "pics/seoulall/nb_olympicpark.png",
  "haneul": "pics/seoulall/nb_haneul.png",
+ "seonjeongneung": "pics/seoulall/nb_seonjeongneung_1020.png",
  "citytour": "pics/seoul/citytour.png",
  "kyobo_gwh": "pics/seoul/nb_kyobo_gwh.png",
  "cheonggyeplaza": "pics/seoul/nb_cheonggyeplaza.png",
@@ -55,7 +56,7 @@
  "seochon": "pics/gyeongbok/seochon_nb.png",
  "geunjeong": "pics/gyeongbok/gbg_nb.png",
  "gwanghwamun": "pics/gyeongbok/gwanghwamun_gm.png",
- "folk": "pics/gyeongbok/folk_gm.png",
+ "folk": "pics/gyeongbok/nb_folk_1020.png",
  "palacemus": "pics/gyeongbok/palacemus_gm.png",
  "hyangwonjeong": "pics/gyeongbok/hyangwonjeong_gm.png",
  "gyeonghoeru": "pics/gyeongbok/gyeonghoeru_gm.png",
@@ -113,6 +114,6 @@
  "smartium": "pics/samsung/smartium_r1018.png",
  "coex": "pics/samsung/coex_r1018.png",
  "tradetower": "pics/samsung/tradetower_r1018.png",
- "bongeunsa": "pics/samsung/nb_bongeunsa.png",
+ "bongeunsa": "pics/samsung/nb_bongeunsa_1020.png",
  "seokchon": "pics/samsung/nb_seokchon.png"
 }
