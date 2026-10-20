@@ -63,11 +63,11 @@
       ["muted","autoplay","loop","playsinline","webkit-playsinline","disablepictureinpicture"].forEach(function(a){ v.setAttribute(a,""); });
       v.setAttribute("preload","auto"); v.poster="img/xmas/poster.jpg?v=1021bb"; v.src="img/xmas/santa.mp4?v=1021bb"; xs.appendChild(v); return v; } });
 
-  // ② 전국 — 인천공항(37.4602,126.4407) 그림 바로 밑 서해 바다, 지도 왼쪽 끝에 붙여서 (공항 그림을 가리지 않게)
+  // ② 전국 — 인천공항(37.4602,126.4407) 아래 서해 바다, 전주 비빔밥 높이 (사장님 10-21)
   var KW=0.18, ICN=[37.4602,126.4407];
   var kr=board({ map:"kr", id:"xbbkr", bw:KW,
     at:function(){ var f=null; try{ f=meGeoFrac("kr",ICN[0],ICN[1]); }catch(e){} if(!f) f=[0.12,0.27];
-      return [0.042, f[1]+0.177]; },
+      return [0.026, f[1]+0.256]; },
     fill:function(xs){ var w=document.createElement("div"); w.className="xw"; w.innerHTML='<div class="xt xt1">Welcome to</div><div class="xt xt2">KOREA</div><i class="xsh"></i>'; xs.appendChild(w); return null; } });
 
   function tick(){ seoul(); kr(); }
