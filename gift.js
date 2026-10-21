@@ -1,7 +1,7 @@
 /* 머니퍼즐 내비 — 「🎁 선물 고르기 / Gift finder」 (사장님 2026-10-16) · 무료 기능(유입용)
  *  누구에게 → 예산 → 종류 카드(누구·예산에 맞춰 순서·한 줄 설명) → 매장 2~4곳 → 누르면 검색 핀 카드(전화·길찾기·「＋ 내 여행에 담기」는 trip.js 가 붙임)
  *  · 근처 가게 (사장님 10-21 「카카오와 구글 둘 다」): 손님 기준 위치(near.js 와 같은 규칙 — 「나」, 없으면 지금 보는 지도 가운데)에서 종류별 찾는 말(gifts.json q)로
- *    허브 GET /gshop (카카오 키워드 + 구글 Text Search 를 허브가 합침, 3km → 모자라면 10km) → 거리순 | 별점순 (구글) · 10곳 · 「★ 4.5 (361)」
+ *    허브 GET /gshop (카카오 키워드 + 구글 Text Search 를 허브가 합침, 3km → 모자라면 10km → 30km, 10km 넘으면 「약 25 km」) → 거리순 | 별점순 (구글) · 10곳 · 「★ 4.5 (361)」
  *    근처에 하나도 없으면 「근처에 없습니다」 + 고정 매장(stores)을 「서울 대표 매장」으로. 구글은 종류 카드의 「근처 가게 보기」를 누를 때만 부른다(비용)
  *  · 이 지역 특산물 (사장님 10-21): gifts.json local — at.reg(regions.json 약도 bb 안) 또는 at.ll(둘레 km) 에 손님 기준 위치가 들면 종류 맨 위에. 사서 가져가는 것만
  *  · 자료는 data/gifts.json (원본 navi_build\src\gifts.json, build_navi.py 가 검사·배포). 매장은 카카오 로컬(허브 /kplace)로 확인한 곳만
@@ -34,6 +34,9 @@ var W5={
   bmap:["🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map","🗺 表示中の地図の中心から近い順","🗺 离当前地图中心最近","🗺 離目前地圖中心最近"],
   r3:["⭐ 3km 안 구글 별점 높은 순","⭐ Highest Google rating within 3 km","⭐ 3km以内でGoogle評価が高い順","⭐ 3公里内 Google 评分最高","⭐ 3公里內 Google 評分最高"],
   r10:["⭐ 10km 안 구글 별점 높은 순","⭐ Highest Google rating within 10 km","⭐ 10km以内でGoogle評価が高い順","⭐ 10公里内 Google 评分最高","⭐ 10公里內 Google 評分最高"],
+  r30:["⭐ 30km 안 구글 별점 높은 순","⭐ Highest Google rating within 30 km","⭐ 30km以内でGoogle評価が高い順","⭐ 30公里内 Google 评分最高","⭐ 30公里內 Google 評分最高"],
+  far:["가까운 곳(10km 안)에 없어 30km 안에서 찾았습니다.","None within 10 km — showing shops within 30 km.","10km以内にないため、30km以内で探しました。","10公里内没有，已在30公里内查找。","10公里內沒有，已在30公里內搜尋。"],
+  abt:["약 "," about ","約","约","約"],
   useme:["📍 내 위치로","📍 Use my location","📍 現在地にする","📍 用我的位置","📍 用我的位置"],
   srch:["찾는 중…","Searching…","検索中…","正在查找…","正在搜尋…"],
   none:["근처에 없습니다.","None found nearby.","近くにありません。","附近没有。","附近沒有。"],
@@ -55,7 +58,7 @@ function pickBase(force){
   return myPos().then(function(p){ if(p){ try{ if(!ME.pos) meSet(p); }catch(e){} return {p:p,src:"me"}; } return null; }); }
 // 선물 고르기를 열 때마다 기준 위치를 한 번 정한다 (보는 동안은 그대로)
 function baseGo(force){ S.bst="ld"; NB={}; return pickBase(force).then(function(b){ if(b){ S.base=b.p; S.src=b.src; S.bst="ok"; } else { S.base=null; S.bst="no"; } paint(); },function(){ S.base=null; S.bst="no"; paint(); }); }
-function kmT(m){ return m<1000?m+" m":(m/1000).toFixed(1)+" km"; }
+function kmT(m){ return m<1000?m+" m":m<10000?(m/1000).toFixed(1)+" km":W("abt").trim()+(LANG==="ko"||LANG==="en"?" ":"")+Math.round(m/1000)+" km"; }   // 10km 넘으면 「약 25 km」 (10-21 2차)
 function KM(a,b){ var R=6371, rd=Math.PI/180, x=(b[0]-a[0])*rd, y=(b[1]-a[1])*rd, h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a[0]*rd)*Math.cos(b[0]*rd)*Math.sin(y/2)*Math.sin(y/2); return 2*R*Math.asin(Math.sqrt(h)); }
 // 이 지역 특산물 — at.reg: regions.json 약도 bb 안 · at.ll: [위도, 경도, km] 둘레 안. 가까운 것 먼저 3개까지
 function localKinds(){ if(!G||!G.local||!S.base) return []; var p=S.base;
@@ -94,7 +97,7 @@ function nbHtml(k){ if(!OPEN[k.c]) return '<button type="button" class="gfnb" da
   var it=nbList(k), rr=S.ord==="r";
   if(!it.length) return h+'<div class="msg">'+W("none")+'</div>'+seoulHtml(k)+'</div>';
   h+='<div class="gford"><button type="button" data-gf="ord" data-o="d" class="'+(rr?'':'on')+'">'+W("dist")+'</button><button type="button" data-gf="ord" data-o="r" class="'+(rr?'on':'')+'">'+W("rate")+'</button></div>';
-  h+='<div class="gfbase">'+(rr?W(d.r>3000?"r10":"r3"):W(S.src==="me"?"bme":"bmap"))+(S.src!=="me"?' <button type="button" class="gfme" data-gf="me">'+W("useme")+'</button>':'')+'</div>';
+  h+='<div class="gfbase">'+(rr?W(d.r>10000?"r30":d.r>3000?"r10":"r3"):W(S.src==="me"?"bme":"bmap"))+(S.src!=="me"?' <button type="button" class="gfme" data-gf="me">'+W("useme")+'</button>':'')+'</div>'+(d.r>10000?'<div class="gfbase">'+W("far")+'</div>':'');
   return h+it.map(function(x,i){ return nbItem(k,x,i); }).join("")+'</div>'; }
 function nbPick(k,j){ var x=nbList(k)[j]; if(!x) return; try{ ntap(k.c,"gift"); }catch(e){} close();
   var fl=x.name_l&&L();
