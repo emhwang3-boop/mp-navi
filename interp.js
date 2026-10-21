@@ -6,7 +6,7 @@
  *  · index.html 맨 끝 <script src="interp.js"> 한 줄. 전역 LANG · PLACES · _ntK 만 읽는다
  */
 (function(){
-  var GL={ko:"ko",en:"en",ja:"ja",zhs:"zh-CN",zht:"zh-TW"};
+  var GL={ko:"ko",en:"en",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"};
   function L5(o){ return o[window.LANG]||o.en; }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
   var st=document.createElement("style");
@@ -22,7 +22,7 @@
     +"#itB .nt{font-size:12.5px;color:#6b7280;text-align:center;line-height:1.5}";
   document.head.appendChild(st);
   var b=document.createElement("button"); b.id="itP"; b.type="button"; document.body.appendChild(b);
-  function paintBtn(){ b.textContent="🗣 "+L5({ko:"통역",en:"Interpreter",ja:"通訳",zhs:"翻译",zht:"翻譯"}); b.setAttribute("aria-label",b.textContent);
+  function paintBtn(){ b.textContent="🗣 "+L5({ko:"통역",en:"Interpreter",ja:"通訳",zhs:"翻译",zht:"翻譯",es:"Intérprete"}); b.setAttribute("aria-label",b.textContent);
     var g=document.getElementById("lgP"), y=g?g.getBoundingClientRect().bottom+8:Math.round(innerHeight*0.58)+52; b.style.top=Math.min(y,innerHeight-60)+"px"; }
   paintBtn(); setInterval(paintBtn,600);   /* 🌐 단추를 끌어 옮기면 따라간다 · 언어가 바뀌면 글자도 */
   /* 지금 장소 = _ntK 의 명소 자료, 없으면 일정에서 고른 곳(_itPick — 카카오 등 명소 목록 밖, trip.js 가 넣음 10-20) */
@@ -31,17 +31,17 @@
   /* 아래 작은 줄(손님 말)에는 장소 이름도 손님 말로 — 장소 자료의 ja·zhs·zht·en 이름 (사장님 10-19 「한글 아래는 다 외국어」) */
   function placeLoc(){ var p=curP(); if(!p) return ""; return String(p[window.LANG]||p.en||p.ko||""); }
   function phrases(){ var pk=placeKo(), pf=placeLoc()||pk, out=[];
-    if(pk){ out.push([pk+"에 어떻게 가요?",{ko:pk+"에 어떻게 가요?",en:"How do I get to "+pf+"?",ja:pf+"へはどう行けばいいですか？",zhs:"请问"+pf+"怎么走？",zht:"請問"+pf+"怎麼走？"}]);
+    if(pk){ out.push([pk+"에 어떻게 가요?",{ko:pk+"에 어떻게 가요?",en:"How do I get to "+pf+"?",ja:pf+"へはどう行けばいいですか？",zhs:"请问"+pf+"怎么走？",zht:"請問"+pf+"怎麼走？",es:"¿Cómo llego a "+pf+"?"}]);
       /* 택시 — 「기사님, ○○(으)로 가 주세요」 (사장님 10-19) · 받침 있으면(ㄹ 빼고) 「으로」 */
       var lc=pk.charCodeAt(pk.length-1)-0xAC00, ro=(lc>=0&&lc<11172&&lc%28&&lc%28!==8)?"으로":"로";
-      out.push(["기사님, "+pk+ro+" 가 주세요.",{ko:"기사님, "+pk+ro+" 가 주세요.",en:"Driver, please take me to "+pf+".",ja:"運転手さん、"+pf+"までお願いします。",zhs:"司机您好，请送我到"+pf+"。",zht:"司機您好，請載我到"+pf+"。"}]); }
-    out.push(["화장실이 어디예요?",{ko:"화장실이 어디예요?",en:"Where is the restroom?",ja:"トイレはどこですか？",zhs:"洗手间在哪里？",zht:"洗手間在哪裡？"}]);
-    out.push(["이거 얼마예요?",{ko:"이거 얼마예요?",en:"How much is this?",ja:"これはいくらですか？",zhs:"这个多少钱？",zht:"這個多少錢？"}]);
-    out.push(["카드로 계산할 수 있어요?",{ko:"카드로 계산할 수 있어요?",en:"Can I pay by card?",ja:"カードで払えますか？",zhs:"可以刷卡吗？",zht:"可以刷卡嗎？"}]);
+      out.push(["기사님, "+pk+ro+" 가 주세요.",{ko:"기사님, "+pk+ro+" 가 주세요.",en:"Driver, please take me to "+pf+".",ja:"運転手さん、"+pf+"までお願いします。",zhs:"司机您好，请送我到"+pf+"。",zht:"司機您好，請載我到"+pf+"。",es:"Conductor, lléveme a "+pf+", por favor."}]); }
+    out.push(["화장실이 어디예요?",{ko:"화장실이 어디예요?",en:"Where is the restroom?",ja:"トイレはどこですか？",zhs:"洗手间在哪里？",zht:"洗手間在哪裡？",es:"¿Dónde está el baño?"}]);
+    out.push(["이거 얼마예요?",{ko:"이거 얼마예요?",en:"How much is this?",ja:"これはいくらですか？",zhs:"这个多少钱？",zht:"這個多少錢？",es:"¿Cuánto cuesta esto?"}]);
+    out.push(["카드로 계산할 수 있어요?",{ko:"카드로 계산할 수 있어요?",en:"Can I pay by card?",ja:"カードで払えますか？",zhs:"可以刷卡吗？",zht:"可以刷卡嗎？",es:"¿Puedo pagar con tarjeta?"}]);
     /* 메뉴판은 손님 말로 — 일본어면 일본어 메뉴판, 중국어면 중국어 메뉴판 (사장님 10-19) */
     var mk={ja:"일본어",zhs:"중국어",zht:"중국어"}[window.LANG]||"영어";
-    out.push([mk+" 메뉴판 있어요?",{ko:mk+" 메뉴판 있어요?",en:"Do you have an English menu?",ja:"日本語のメニューはありますか？",zhs:"有中文菜单吗？",zht:"有中文菜單嗎？"}]);
-    out.push(["도와주세요.",{ko:"도와주세요.",en:"Please help me.",ja:"助けてください。",zhs:"请帮帮我。",zht:"請幫幫我。"}]);
+    out.push([mk+" 메뉴판 있어요?",{ko:mk+" 메뉴판 있어요?",en:"Do you have an English menu?",ja:"日本語のメニューはありますか？",zhs:"有中文菜单吗？",zht:"有中文菜單嗎？",es:"¿Tienen menú en inglés?"}]);
+    out.push(["도와주세요.",{ko:"도와주세요.",en:"Please help me.",ja:"助けてください。",zhs:"请帮帮我。",zht:"請幫幫我。",es:"Ayúdeme, por favor."}]);
     return out; }
   /* 고른 문장(손님 말)을 구글 번역 입력 칸에 넣어 연다 (사장님 10-19 「일본어 칸에 고른 글이 안 보인다」)
      안드로이드 앱: 「보내기(SEND)」로 글을 넘김 · 글이 없으면 앱 첫 화면(MAIN·LAUNCHER — 이것 없으면 스토어로 감) · 그 밖: 웹 ?text= */
@@ -55,22 +55,22 @@
   function open(){
     var o=document.getElementById("itB"); if(o) o.remove();
     o=document.createElement("div"); o.id="itB"; o.onclick=function(e){ if(e.target===o) o.remove(); };
-    var h='<div class="in"><div class="hd">🗣 '+esc(L5({ko:"한국 사람에게 보여 주세요",en:"Show this to a Korean",ja:"韓国の人に見せてください",zhs:"给韩国人看",zht:"給韓國人看"}))+'<button type="button" aria-label="close">✕</button></div>';
+    var h='<div class="in"><div class="hd">🗣 '+esc(L5({ko:"한국 사람에게 보여 주세요",en:"Show this to a Korean",ja:"韓国の人に見せてください",zhs:"给韩国人看",zht:"給韓國人看",es:"Muéstraselo a un coreano"}))+'<button type="button" aria-label="close">✕</button></div>';
     phrases().forEach(function(p,i){ h+='<div class="ph" data-i="'+i+'"><div class="k">'+esc(p[0])+'</div>'+(window.LANG==="ko"?'':'<div class="m">'+esc(L5(p[1]))+'</div>')+'</div>'; });
-    h+='<a class="gt" href="'+esc(gtUrl(""))+'" target="_blank" rel="noopener">'+esc(L5({ko:"구글 번역으로 대화하기",en:"Talk with Google Translate",ja:"Google翻訳で会話する",zhs:"用Google翻译对话",zht:"用Google翻譯對話"}))+'</a>'
+    h+='<a class="gt" href="'+esc(gtUrl(""))+'" target="_blank" rel="noopener">'+esc(L5({ko:"구글 번역으로 대화하기",en:"Talk with Google Translate",ja:"Google翻訳で会話する",zhs:"用Google翻译对话",zht:"用Google翻譯對話",es:"Hablar con Google Traductor"}))+'</a>'
       +'<div class="nt">'+esc(L5({ko:"구글 번역 앱(없으면 웹)이 열립니다. 다 쓰면 뒤로가기(아이폰은 왼쪽 위 ◀)로 돌아오세요 — 보던 화면은 그대로입니다.",
         en:"Opens the Google Translate app (or website). When done, go back (iPhone: ◀ at top left) — this screen stays as it was.",
         ja:"Google翻訳アプリ（なければWeb）が開きます。終わったら戻る（iPhoneは左上の◀）でこの画面に戻れます。",
         zhs:"会打开Google翻译应用（没有则打开网页）。用完按返回键（iPhone点左上角◀）回来，这个画面保持不变。",
-        zht:"會開啟Google翻譯應用程式（沒有則開啟網頁）。用完按返回鍵（iPhone點左上角◀）回來，這個畫面保持不變。"}))+'</div></div>';
+        zht:"會開啟Google翻譯應用程式（沒有則開啟網頁）。用完按返回鍵（iPhone點左上角◀）回來，這個畫面保持不變。",es:"Se abre la app de Google Traductor (o la web). Al terminar, vuelve atrás (iPhone: ◀ arriba a la izquierda) — esta pantalla seguirá igual."}))+'</div></div>';
     o.innerHTML=h; document.body.appendChild(o);
     o.querySelector(".hd button").onclick=function(){ o.remove(); };
     var P=phrases();
     [].forEach.call(o.querySelectorAll(".ph"),function(el){ el.onclick=function(){ var p=P[+el.getAttribute("data-i")];   /* 누르면 큰 글씨로 — 폰을 그대로 보여 준다 */
       LAST=window.LANG==="ko"?p[0]:L5(p[1]); var gt0=o.querySelector(".in .gt"); if(gt0) gt0.setAttribute("href",gtUrl(LAST));   /* 판의 구글 단추도 고른 문장으로 */
       var bg=document.createElement("div"); bg.className="big";
-      bg.innerHTML='<div class="k">'+esc(p[0])+'</div>'+(window.LANG==="ko"?'':'<div class="m">'+esc(L5(p[1]))+'</div>')+'<a class="gt" style="margin:22px 0 0;padding:12px 22px" href="'+esc(gtUrl(LAST))+'" target="_blank" rel="noopener">🔊 '+esc(L5({ko:"구글 번역으로 열기",en:"Open in Google Translate",ja:"Google翻訳で開く",zhs:"在Google翻译中打开",zht:"在Google翻譯中開啟"}))+'</a>'
-        +'<button class="x" type="button">✕ '+esc(L5({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉"}))+'</button>';
+      bg.innerHTML='<div class="k">'+esc(p[0])+'</div>'+(window.LANG==="ko"?'':'<div class="m">'+esc(L5(p[1]))+'</div>')+'<a class="gt" style="margin:22px 0 0;padding:12px 22px" href="'+esc(gtUrl(LAST))+'" target="_blank" rel="noopener">🔊 '+esc(L5({ko:"구글 번역으로 열기",en:"Open in Google Translate",ja:"Google翻訳で開く",zhs:"在Google翻译中打开",zht:"在Google翻譯中開啟",es:"Abrir en Google Traductor"}))+'</a>'
+        +'<button class="x" type="button">✕ '+esc(L5({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}))+'</button>';
       bg.querySelector(".x").onclick=function(e){ e.stopPropagation(); bg.remove(); }; o.appendChild(bg); }; });
   }
   b.onclick=open;
