@@ -11,7 +11,7 @@
  */
 (function(){
 "use strict";
-var NM={ko:"한국어",en:"English",ja:"日本語",zhs:"简体中文",zht:"繁體中文"}, ORD=["ko","en","ja","zhs","zht"];
+var NM={ko:"한국어",en:"English",ja:"日本語",zhs:"简体中文",zht:"繁體中文",es:"Español"}, ORD=["ko","en","es","ja","zhs","zht"];
 function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){ return null; } }
 function fg(){ var f=ls("mpv_lang_fg"); return ORD.indexOf(f)>0?f:null; }   // 손님 외국어 (마지막으로 쓴 외국어)
 if(window.LANG&&LANG!=="ko") ls("mpv_lang_fg",LANG);
@@ -61,7 +61,7 @@ function label(){ if(!P) return; var t=document.getElementById("lgT"), l=window.
   t.setAttribute("aria-label",t.title); document.getElementById("lgM").setAttribute("aria-label",T("언어 고르기","Choose language")); }
 function busy(d){ KL.busy=Math.max(0,KL.busy+d); if(P) P.classList.toggle("busy",KL.busy>0); }
 function listOpen(){ listClose(); var r=P.getBoundingClientRect(), b=document.createElement("div"); b.id="lgL";
-  b.innerHTML=ORD.map(function(l){ return '<button type="button" data-l="'+l+'"'+(l===window.LANG?' class="on"':'')+' lang="'+({ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant"}[l])+'">'+NM[l]+'</button>'; }).join("");
+  b.innerHTML=ORD.map(function(l){ return '<button type="button" data-l="'+l+'"'+(l===window.LANG?' class="on"':'')+' lang="'+({ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant",es:"es"}[l])+'">'+NM[l]+'</button>'; }).join("");
   document.body.appendChild(b); var h=b.offsetHeight, top=r.top-h-6; if(top<6) top=Math.min(window.innerHeight-h-6,r.bottom+6); b.style.top=Math.max(6,top)+"px";
   b.addEventListener("click",function(e){ e.stopPropagation(); var x=e.target.closest("button[data-l]"); if(!x) return; listClose(); to(x.dataset.l,false); });
   setTimeout(function(){ document.addEventListener("pointerdown",outside,true); },0); }
