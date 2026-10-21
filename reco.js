@@ -27,7 +27,7 @@ function css(){ if($("rcCss")) return; var s=document.createElement("style"); s.
   +".rcnote{background:#fff9db;border:1px solid #ffe066;color:#5c4400;border-radius:12px;padding:8px 12px;font-size:13.5px;margin:6px 0}"
   +":root[data-theme=dark] .rcnote{background:#3b3212;border-color:#8a6d00;color:#ffe8a3}"
   +".rcit{cursor:pointer;position:relative;padding-left:46px!important}.rcno{position:absolute;left:12px;top:12px;width:24px;height:24px;border-radius:50%;background:#f08c00;color:#fff;font-weight:900;font-size:13px;line-height:24px;text-align:center}"
-  +".rcwhy{color:var(--ink);font-size:14px;margin:3px 0 6px}.rcsec{font-size:13px;font-weight:800;color:var(--sub);margin:12px 4px 2px}"
+  +".rcwhy{color:var(--ink);font-size:14px;margin:3px 0 6px}.rcsec{font-size:13px;font-weight:800;color:var(--sub);margin:12px 4px 2px}.rcord{display:flex;gap:6px;margin:4px 4px 6px}.rcord button{flex:1;border:1px solid #c5d3e8;background:#fff;color:#1c5fb8;border-radius:999px;padding:6px 0;font-weight:800;font-size:13px}.rcord button.on{background:#1c5fb8;color:#fff;border-color:#1c5fb8}"
   +".rcbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0 2px}.rcbar button{border:1.5px solid var(--blue);background:var(--card);color:var(--blue);font-weight:800;font-size:14px;border-radius:999px;padding:8px 16px;cursor:pointer}"
   +".rcbar button.pri{background:var(--blue);color:#fff}.rcmsg{text-align:center;color:var(--sub);font-size:14px;margin:10px 4px}"
   +".rcring{position:absolute;z-index:4;pointer-events:none;transform:translate(-50%,-50%);border-radius:50%;border:3px solid #f08c00;box-shadow:0 0 0 3px rgba(255,255,255,.85),0 0 14px 4px rgba(240,140,0,.75);animation:rcPulse 1.3s ease-in-out infinite}"
@@ -127,7 +127,9 @@ function paint(keep){ var out=$("res"), en=L(), h='', n=0;
   R.picks.forEach(function(p,i){ var P=PLACES[p.k], nm=LN(P), sub=en?P.ko:"";
     h+='<div class="item rcit" data-rk="'+esc(p.k)+'"><span class="rcno">'+(i+1)+'</span><div class="t">'+esc(nm)+'</div>'+(sub?'<div class="d" style="margin:1px 0 0">'+esc(sub)+'</div>':'')
       +'<div class="rcwhy">'+esc(whyTx(p,P))+'</div>'+addBtn(p.k)+'</div>'; n++; });
-  if(GK.length){ h+='<div class="rcsec">'+esc(T("유명한 곳 (구글 별점·리뷰 많은 순)","Popular places (by Google rating & reviews)"))+'</div>';   // 구글 — 카드만, 지도 핀 없음 (10-20)
+  if(GK.length){ var gd=R.gord==="d"; GK=GK.slice().sort(gd?function(a,b){ return (a.dist==null?1e12:a.dist)-(b.dist==null?1e12:b.dist); }:function(a,b){ return (+b.rating-+a.rating)||(+b.n-+a.n); });   // 거리순·별점순 (사장님 10-21) — 구글 칸만, 카카오 칸은 거리순 그대로
+    h+='<div class="rcsec">'+esc(gd?T("유명한 곳 (구글 · 가까운 순)","Popular places (Google · nearest first)"):T("유명한 곳 (구글 별점 높은 순)","Popular places (Google · top rated)"))+'</div>'
+      +'<div class="rcord"><button type="button" data-rc="gord" data-o="r" class="'+(gd?'':'on')+'">'+esc(T("별점순","Top rated"))+'</button><button type="button" data-rc="gord" data-o="d" class="'+(gd?'on':'')+'">'+esc(T("거리순","Nearest"))+'</button></div>';   // 구글 — 카드만, 지도 핀 없음 (10-20)
     GK.forEach(function(x){ h+='<div class="item rcg"><div class="t">⭐ '+esc(x.name)+'</div>'+(x.addr?'<div class="d">'+esc(x.addr)+'</div>':'')
       +'<div class="d"><b style="color:#f08c00">★'+(+x.rating).toFixed(1)+'</b> ('+(+x.n).toLocaleString("en-US")+') · <span style="font-weight:700">Google</span>'+(x.dist!=null?' · '+esc(T("나에게서","From you"))+' <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
       +(x.uri&&/^https:\/\//.test(x.uri)?'<div class="d" style="margin-top:4px"><a href="'+esc(x.uri)+'" target="_blank" rel="noopener">'+esc(T("구글 지도에서 보기","View on Google Maps"))+'</a></div>':'')+'</div>'; n++; }); }
@@ -158,7 +160,7 @@ function rcOff(){ R.on=false; R.back=false; ringClear(); }
 
 // ── 누르기 ──
 document.addEventListener("click",function(e){ var t=e.target;
-  var b=t.closest&&t.closest("[data-rc]"); if(b){ e.preventDefault(); if(b.dataset.rc==="again") recoGo(true); else if(b.dataset.rc==="search"){ var q=R.q; rcOff(); $("q").value=q; try{ qxSync(); }catch(x){} go(q); } else if(b.dataset.rc==="back"){ paint(); } else if(b.dataset.rc==="clear"){ rcOff(); R.picks=[]; R.kits=[]; window._RR=null; $("res").innerHTML=""; }   /* ✕ 추천 지우기 — 주황 고리·목록 모두 (사장님 10-18) */ else if(b.dataset.rc==="buy"){ try{ openPricing(); }catch(x){} } else if(b.dataset.rc==="resend"){ try{ NPASS.resend(); }catch(x){} } return; }
+  var b=t.closest&&t.closest("[data-rc]"); if(b){ e.preventDefault(); if(b.dataset.rc==="gord"){ R.gord=b.dataset.o==="d"?"d":"r"; paint(true); } else if(b.dataset.rc==="again") recoGo(true); else if(b.dataset.rc==="search"){ var q=R.q; rcOff(); $("q").value=q; try{ qxSync(); }catch(x){} go(q); } else if(b.dataset.rc==="back"){ paint(); } else if(b.dataset.rc==="clear"){ rcOff(); R.picks=[]; R.kits=[]; window._RR=null; $("res").innerHTML=""; }   /* ✕ 추천 지우기 — 주황 고리·목록 모두 (사장님 10-18) */ else if(b.dataset.rc==="buy"){ try{ openPricing(); }catch(x){} } else if(b.dataset.rc==="resend"){ try{ NPASS.resend(); }catch(x){} } return; }
   if(t.closest&&(t.closest("a")||t.closest(".tradd"))) return;
   var c=t.closest&&t.closest("#res .rcit"); if(c){ var k=c.dataset.rk, P=PLACES[k]; if(!P) return; R.back=true;
     var id0=meBest(+P.lat,+P.lng)||NAVI_ROOT; if(DET){ try{ _nm.setCenter(new naver.maps.LatLng(+P.lat,+P.lng)); }catch(x){} } else spinGo(id0===NAVI_ROOT?"kr":id0,+P.lat,+P.lng,null);
