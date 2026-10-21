@@ -196,7 +196,7 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
     <div class="tbs">
     <button id="inst" onclick="instGo()" hidden style="white-space:nowrap;margin-left:auto;border:0;border-radius:999px;padding:8px 14px;background:var(--blue);color:#fff;font-weight:700;font-size:13px;cursor:pointer">⬇ 앱 설치</button>
     <button id="rs" onclick="resetAll()" class="tb">처음으로</button>
-    <select id="lang" class="tb" onchange="setLang(this.value)" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zhs">简体中文</option><option value="zht">繁體中文</option></select>
+    <select id="lang" class="tb" onchange="setLang(this.value)" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="es">Español</option><option value="ja">日本語</option><option value="zhs">简体中文</option><option value="zht">繁體中文</option></select>
     <button id="sh" onclick="shOpen()" aria-label="share" class="tb">공유</button>
     <button id="th" onclick="thTog()" aria-label="theme" style="border:0;background:none;font-size:20px;line-height:1;padding:4px 4px;cursor:pointer">🌙</button>
     <button id="mb" onclick="mbTog(event)" aria-label="menu" style="border:0;background:none;font-size:24px;line-height:1;padding:4px 6px;cursor:pointer;color:var(--ink)">⋮</button>
@@ -234,7 +234,7 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
-<script src="i18n.js?v=1021ja"></script>
+<script src="i18n.js?v=1022es"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
 // 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
@@ -351,9 +351,9 @@ document.addEventListener("pointerdown",function(e){ try{ if(!e.isPrimary||!e.ta
   document.addEventListener("pointerup",done,true); document.addEventListener("pointercancel",done,true); document.addEventListener("pointermove",mv,true); }catch(z){} },true);
 document.addEventListener("click",function(e){ if(window._mpLD&&Date.now()-window._mpLD<2000){ e.stopPropagation(); e.preventDefault(); } },true);
 // 언어 (10-18) — ko·en·ja·zhs(简体)·zht(繁體). ?lang= > 저장한 것 > 폰 언어(한국어 폰은 ko, 일본어 ja, 중국어 zh-TW/HK/Hant 는 zht·나머지 zhs, 그 밖은 en)
-var LANGS=["ko","en","ja","zhs","zht"];
-function langAuto(){ var n=String(navigator.language||""); if(/^ko/i.test(n)) return "ko"; if(/^ja/i.test(n)) return "ja"; if(/^zh/i.test(n)) return /hant|-tw|-hk|-mo/i.test(n)?"zht":"zhs"; return "en"; }
-var LANG="ko", _ql=((location.search.match(/[?&]lang=(ko|en|ja|zhs|zht)(?![A-Za-z])/i)||[])[1]||"").toLowerCase();
+var LANGS=["ko","en","ja","zhs","zht","es"];   // es 스페인어 (10-22)
+function langAuto(){ var n=String(navigator.language||""); if(/^ko/i.test(n)) return "ko"; if(/^ja/i.test(n)) return "ja"; if(/^es/i.test(n)) return "es"; if(/^zh/i.test(n)) return /hant|-tw|-hk|-mo/i.test(n)?"zht":"zhs"; return "en"; }
+var LANG="ko", _ql=((location.search.match(/[?&]lang=(ko|en|ja|zhs|zht|es)(?![A-Za-z])/i)||[])[1]||"").toLowerCase();
 try{ if(_ql) localStorage.setItem("mpv_lang",_ql); var _sv=localStorage.getItem("mpv_lang"); LANG=LANGS.indexOf(_sv)>=0?_sv:langAuto(); }catch(e){ LANG=_ql||langAuto(); }
 // T(한글, 영어) — 일본어·중국어는 영어 문장을 열쇠로 i18n.js 표(I18N)·약도 자료 표(DTR)에서 찾고, 없으면 영어. 숫자가 든 문장은 숫자를 # 로 바꾼 꼴로도 찾는다
 var DTR={};
@@ -365,20 +365,20 @@ function TE(e){ if(LANG==="ko"||LANG==="en"||e==null) return e; var s=String(e),
 var _TL=new Map();   // T 가 낸 글자 → [한, 영] (lang.js 가 열린 창 글자를 그 자리에서 다른 언어로 옮길 때, 10-18)
 function T(k,e){ var r=LANG==="ko"?k:TE(e); if(typeof r==="string"&&r.length<400&&typeof k==="string"){ _TL.set(r,[k,e]); if(_TL.size>20000){ var n=0; _TL.forEach(function(v,x){ if(n++<6000) _TL.delete(x); }); } } return r; }
 // 일·중 화면엔 어떤 경우든 한글 이름을 보이지 않는다 — 한글이 남으면 로마자로 (사장님 10-18 「차라리 영어 이름」)
-function KS(s){ s=String(s==null?"":s); if(!/^(ja|zhs|zht)$/.test(LANG)||!/[가-힣]/.test(s)) return s;
+function KS(s){ s=String(s==null?"":s); if(!/^(ja|zhs|zht|es)$/.test(LANG)||!/[가-힣]/.test(s)) return s;
   var I=["g","kk","n","d","tt","r","m","b","pp","s","ss","","j","jj","ch","k","t","p","h"], M=["a","ae","ya","yae","eo","e","yeo","ye","o","wa","wae","oe","yo","u","wo","we","wi","yu","eu","ui","i"], F=["","k","k","k","n","n","n","t","l","k","m","l","l","l","p","l","m","p","p","t","t","ng","t","t","k","t","p","t"];
   return s.replace(/[가-힣]+/g,function(w,at,all){ var r=""; for(var i=0;i<w.length;i++){ var c=w.charCodeAt(i)-0xAC00; r+=I[Math.floor(c/588)]+M[Math.floor((c%588)/28)]+F[c%28]; } return at===0||/[\s(（·]/.test(all.charAt(at-1))?r.charAt(0).toUpperCase()+r.slice(1):r; }).replace(/\s{2,}/g," ").trim(); }
 function TF(e){ var a=arguments; return TE(e).replace(/\{(\d)\}/g,function(m,i){ return a[+i+1]; }); }   // 영어 틀 "…{0}…" 에 값 넣기
 function LN(o){ return !o?"":LANG==="ko"?o.ko:(o[LANG]||o.en||o.ko); }        // 자료 이름 (ja·zhs·zht 칸 → 없으면 en)
 function LD(o){ return !o?"":LANG==="ko"?o.dko:(o["d"+LANG]||o.den); }        // 자료 설명 (dja·dzhs·dzht → den)
-function LP(a){ if(!a) return ""; var i={ko:0,en:1,ja:2,zhs:3,zht:4}[LANG]||0; return a[i]||(i?TE(a[1]):a[0])||a[0]; }   // [한, 영, 일, 简, 繁] 줄
+function LP(a){ if(!a) return ""; var i={ko:0,en:1,ja:2,zhs:3,zht:4,es:5}[LANG]||0; return a[i]||(i?TE(a[1]):a[0])||a[0]; }   // [한, 영, 일, 简, 繁] 줄
 function L2(){ return LANG==="ko"?"ko":"en"; }   // 허브가 ko/en 만 받는 곳
 function kpL(){ return LANG==="ko"?"":"&lang=en"+(LANG==="en"?"":"&ul="+LANG); }   // /kplace·/neat — ul 이 있으면 허브가 name_en·cat_en 칸에 그 언어(일·简·繁)로 넣어 준다 (10-18)
-function hlG(){ return {ko:"",en:"&hl=en",ja:"&hl=ja",zhs:"&hl=zh-CN",zht:"&hl=zh-TW"}[LANG]||""; }
+function hlG(){ return {ko:"",en:"&hl=en",ja:"&hl=ja",zhs:"&hl=zh-CN",zht:"&hl=zh-TW",es:"&hl=es"}[LANG]||""; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function setLang(l){ if(LANGS.indexOf(l)<0) l="ko"; LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} }
 function paint(){
-  var _ls=document.getElementById("lang"); if(_ls) _ls.value=LANG; document.documentElement.lang={ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant"}[LANG]||"ko";
+  var _ls=document.getElementById("lang"); if(_ls) _ls.value=LANG; document.documentElement.lang={ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant",es:"es"}[LANG]||"ko";
   document.getElementById("ttl").textContent="Tour for Korea";   /* 앱 이름 Money Puzzle Tour for Korea — 모든 언어 같음 (사장님 10-22) */
   document.getElementById("inst").textContent=T("⬇ 앱 설치","⬇ Install");
   document.getElementById("rs").textContent=T("처음으로","Reset");
@@ -540,7 +540,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="c579d0ee98", NAVI_ROOT="kr";
+var NAVI_V="c735d7f005", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -800,14 +800,14 @@ function lblDraw(){ [].forEach.call(document.querySelectorAll("#mz .mlb"),functi
 // 제주 올레 팻말 카드 (사장님 10-21 「번호판을 누르면 올레길 몇 번인지, 근처에 명소가 있으면 알려줘」) — 자료 maps/jeju.json "olle" {코스:{km, from?, to?, near:[[키,km]]}} (tour_icons\jeju\map\olle_info.py)
 //   길이는 OSM 길 자료로 잰 어림(OSM 에 시작·끝·거리 태그가 없어서) · 시작·끝은 자료에 있을 때만 · 근처 명소 = 코스 선에서 2 km 안, 누르면 그 명소 카드
 function olShow(c){ var C=CITY[VIEW], o=C&&C.olle&&C.olle[c]; if(!o) return; inBlur(); clearTimeout(_tapT);
-  var f=function(){ var h='<div class="item"><div class="t">🥾 '+esc(LP(["제주 올레 "+c+"코스","Jeju Olle Trail "+c,"済州オルレ "+c+"コース","济州偶来 "+c+" 路线","濟州偶來 "+c+" 路線"]))+'</div>';
+  var f=function(){ var h='<div class="item"><div class="t">🥾 '+esc(LP(["제주 올레 "+c+"코스","Jeju Olle Trail "+c,"済州オルレ "+c+"コース","济州偶来 "+c+" 路线","濟州偶來 "+c+" 路線","Ruta Jeju Olle "+c]))+'</div>';
     if(o.from&&o.to) h+='<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(o.from)+' → '+esc(o.to)+'</div>';
-    if(o.km) h+='<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LP(["길이 약 "+o.km+" km","Length: about "+o.km+" km","長さ 約"+o.km+" km","全长约 "+o.km+" 公里","全長約 "+o.km+" 公里"]))+' <span style="opacity:.7">('+esc(LP(["OpenStreetMap 길 자료로 잰 어림","estimated from OpenStreetMap paths","OpenStreetMapの道データからの概算","按 OpenStreetMap 路线数据估算","依 OpenStreetMap 路線資料估算"]))+')</span></div>';
+    if(o.km) h+='<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LP(["길이 약 "+o.km+" km","Length: about "+o.km+" km","長さ 約"+o.km+" km","全长约 "+o.km+" 公里","全長約 "+o.km+" 公里","Longitud: unos "+o.km+" km"]))+' <span style="opacity:.7">('+esc(LP(["OpenStreetMap 길 자료로 잰 어림","estimated from OpenStreetMap paths","OpenStreetMapの道データからの概算","按 OpenStreetMap 路线数据估算","依 OpenStreetMap 路線資料估算","estimado con los caminos de OpenStreetMap"]))+')</span></div>';
     var nr=(o.near||[]).filter(function(x){ return PLACES[x[0]]; });
-    if(nr.length){ h+='<div class="d" style="margin:6px 0 2px;font-weight:800;color:var(--ink)">'+esc(LP(["근처 명소 (코스에서 2 km 안)","Nearby sights (within 2 km of the trail)","近くの名所(コースから2km以内)","附近景点(距路线 2 公里内)","附近景點(距路線 2 公里內)"]))+'</div>';
-      nr.forEach(function(x){ h+='<div class="d"><a href="#" onclick="olGo(\''+x[0]+'\');return false" style="font-weight:800">'+esc(LN(PLACES[x[0]]))+'</a> · '+esc(x[1]<0.1?LP(["코스 바로 옆","right on the trail","コースのすぐそば","就在路线旁","就在路線旁"]):x[1]+" km")+'</div>'; }); }
-    else h+='<div class="d" style="margin:6px 0 2px">'+esc(LP(["근처 명소 없음","No sights nearby","近くの名所なし","附近没有景点","附近沒有景點"]))+'</div>';
-    h+='<div class="d" style="margin-top:8px"><a href="https://www.jejuolle.org/" target="_blank" rel="noopener">'+esc(LP(["올레길 공식 안내 (제주올레) ↗","Official Jeju Olle website ↗","済州オルレ公式サイト ↗","济州偶来官方网站 ↗","濟州偶來官方網站 ↗"]))+'</a></div></div>';
+    if(nr.length){ h+='<div class="d" style="margin:6px 0 2px;font-weight:800;color:var(--ink)">'+esc(LP(["근처 명소 (코스에서 2 km 안)","Nearby sights (within 2 km of the trail)","近くの名所(コースから2km以内)","附近景点(距路线 2 公里内)","附近景點(距路線 2 公里內)","Lugares de interés cercanos (a menos de 2 km de la ruta)"]))+'</div>';
+      nr.forEach(function(x){ h+='<div class="d"><a href="#" onclick="olGo(\''+x[0]+'\');return false" style="font-weight:800">'+esc(LN(PLACES[x[0]]))+'</a> · '+esc(x[1]<0.1?LP(["코스 바로 옆","right on the trail","コースのすぐそば","就在路线旁","就在路線旁","junto a la ruta"]):x[1]+" km")+'</div>'; }); }
+    else h+='<div class="d" style="margin:6px 0 2px">'+esc(LP(["근처 명소 없음","No sights nearby","近くの名所なし","附近没有景点","附近沒有景點","No hay lugares de interés cerca"]))+'</div>';
+    h+='<div class="d" style="margin-top:8px"><a href="https://www.jejuolle.org/" target="_blank" rel="noopener">'+esc(LP(["올레길 공식 안내 (제주올레) ↗","Official Jeju Olle website ↗","済州オルレ公式サイト ↗","济州偶来官方网站 ↗","濟州偶來官方網站 ↗","Web oficial de Jeju Olle ↗"]))+'</a></div></div>';
     document.getElementById("res").innerHTML=h; };
   window._cardK=null; f(); window._RR={f:f}; clearTimeout(window._scT); window._scT=setTimeout(function(){ window.scrollTo({top:0,behavior:"smooth"}); },460); }
 function olGo(k){ hitClick(k); }
@@ -1024,7 +1024,7 @@ function mePose(p,ms){ var near=ME.pos&&kmLL(ME.pos,ICN)<3; clearTimeout(ME.pT);
   if(near&&(!p||p==="me")) ME.pose="airport";
   meDraw(); if(p&&p!=="me") ME.pT=setTimeout(function(){ mePose(null); },ms||8000); }
 function kmLL(a,b){ var R=6371, rd=Math.PI/180, dLa=(b[0]-a[0])*rd, dLo=(b[1]-a[1])*rd, h=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(a[0]*rd)*Math.cos(b[0]*rd)*Math.sin(dLo/2)*Math.sin(dLo/2); return 2*R*Math.asin(Math.sqrt(h)); }
-function meSet(p){ ME.pos=p; if(p){ PLACES.__me={ko:"내 위치",en:"My location",ja:"現在地",zhs:"我的位置",zht:"我的位置",lat:p[0],lng:p[1],addr:""}; ISLE.__me=(p[0]<34&&p[1]<127.5)?"jeju":(p[1]>130.5?"ulleung":"land"); } else delete PLACES.__me; if(ME.pose==="me"||ME.pose==="airport") mePose(null); else meDraw(); }
+function meSet(p){ ME.pos=p; if(p){ PLACES.__me={ko:"내 위치",en:"My location",ja:"現在地",zhs:"我的位置",zht:"我的位置",lat:p[0],lng:p[1],addr:"",es:"Mi ubicación"}; ISLE.__me=(p[0]<34&&p[1]<127.5)?"jeju":(p[1]>130.5?"ulleung":"land"); } else delete PLACES.__me; if(ME.pose==="me"||ME.pose==="airport") mePose(null); else meDraw(); }
 function meWatch(hi){ if(!navigator.geolocation) return; hi=!!hi; if(ME.wid!=null){ if(ME.hi===hi) return; try{ navigator.geolocation.clearWatch(ME.wid); }catch(e){} ME.wid=null; }
   ME.hi=hi;   // 배터리: 평소엔 정확도 낮게 · 걸어서 가는 중(목적지 있음)에만 정확하게 · 10초에 한 번만 반영
   try{ ME.wid=navigator.geolocation.watchPosition(function(p){ var n=Date.now(); if(n-ME.last<10000) return; ME.last=n; var q=[p.coords.latitude,p.coords.longitude]; meSet(q); try{ meWalk(q,p.coords.accuracy); }catch(e){} },function(){},{enableHighAccuracy:hi,maximumAge:hi?5000:10000,timeout:20000}); }catch(e){} }
@@ -1105,7 +1105,7 @@ function linksTo(nmKo,lat,lng,naverName,addr){ lat=+lat; lng=+lng; var f=meFrom(
   var L=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };
   // 「자세히 보기」(사장님 10-20) — 외국어 화면은 구글 지도 장소 화면(앱 언어 hl 연동), 한국어 화면은 네이버 플레이스(이름 검색)
   var gq=nmKo+(addr?" "+addr:""), mr=FG()?"https://www.google.com/maps/search/?api=1"+hlG()+"&query="+encodeURIComponent(gq):"https://map.naver.com/p/search/"+encodeURIComponent(naverName||nmKo);
-  var mt={ko:"ℹ️ 자세히 보기 (네이버)",en:"ℹ️ More info (Google)",ja:"ℹ️ 詳しく見る (Google)",zhs:"ℹ️ 查看详情 (Google)",zht:"ℹ️ 查看詳情 (Google)"}[LANG]||"ℹ️ More info (Google)";
+  var mt={ko:"ℹ️ 자세히 보기 (네이버)",en:"ℹ️ More info (Google)",ja:"ℹ️ 詳しく見る (Google)",zhs:"ℹ️ 查看详情 (Google)",zht:"ℹ️ 查看詳情 (Google)",es:"ℹ️ Más información (Google)"}[LANG]||"ℹ️ More info (Google)";
   return L(mr,mt)+(FG()?L(go,TE("Google Maps (English)"))+L(nv,TE("Naver Map"))+krideL(nmKo,addr):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도")); }
 // 영어 화면 — 외국인용 카카오 택시 앱 K.Ride (사장님 10-15). 주소·패키지는 스토어에서 확인함(2026-10-15):
 //   Play com.kakaomobility.kride · App Store id6474654222 · 소개 kride.kakaomobility.com
@@ -1188,12 +1188,12 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
-<script src="trip.js?v=1021nm"></script>
-<script src="gift.js?v=1021nb2"></script>
-<script src="near.js?v=1021fd"></script>
+<script src="trip.js?v=1022es"></script>
+<script src="gift.js?v=1022es"></script>
+<script src="near.js?v=1022es"></script>
 <script src="reco.js?v=1021od"></script>
 <script src="gu.js?v=f29da37807"></script>
-<script src="citytour.js?v=e1168f0b12"></script>
+<script src="citytour.js?v=1022es"></script>
 <script src="pass.js?v=1018i"></script>
 <script>
 // ── ★ 관심 장소 (사장님 10-17) — 손님 폰 안에만 저장·분석. 서버로 보내지 않는다(통로 FAV_SEND 는 꺼 둠)
@@ -1325,8 +1325,8 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
     if(_spm&&_spm.getElement){ var r2=_spm.getElement().getBoundingClientRect(); if(r2.width&&Math.hypot(x-(r2.left+r2.width/2),y-(r2.top+r2.height*0.4))<28){ spinCard(); return; } }
   }catch(z){} },true);
 </script>
-<script src="lang.js?v=1018gl"></script>
-<script src="interp.js?v=1020tr"></script>
+<script src="lang.js?v=1022es"></script>
+<script src="interp.js?v=1022es"></script>
 <script src="billboard.js?v=1021pl"></script>
 </body>
 </html>
