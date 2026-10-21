@@ -532,7 +532,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="6201411846", NAVI_ROOT="kr";
+var NAVI_V="c13d47722b", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -799,7 +799,7 @@ function lodEl(id,cls,a){ var e=LOD.el[id]; if(!e){ e=document.createElement("di
 //   [키, 시청 위도, 경도, 들어갈 약도 id, 약도가 아직 없을 때 띄울 도시 카드, 한글, 영어] · 부산·경주 약도(regions 의 busan·gyeongju)가 생기면 카드 대신 그 약도로 바로 들어간다
 //   자리: 도시의 아래·옆 중 그림(누르기 지도 HG)과 겹치지 않는 가장 가까운 곳. 지도와 같이 커지고 작아지니 확대해도 안 겹친다
 //   [7] = 이 그림(누르기 지도 키) 바로 밑 가장자리에 붙인다 — 경주는 석굴암 그림 밑 (사장님 10-16)
-var CT=[["seoul",37.5663,126.9779,"seoulall",null,"서울","Seoul",null,[0.03,0]],["busan",35.1798,129.0750,"busan","city_busan","부산","Busan"],["gyeongju",35.8562,129.2247,"gyeongju","city_gyeongju","경주","Gyeongju","seok"],["capital",37.9558,126.6771,"capital",null,"경기","Gyeonggi","pmj"],["gangwon",38.1191,128.4654,"gangwon",null,"강원","Gangwon","seorak"]];   /* 수도권 약도 — 판문점 그림 밑 (사장님 10-17) */
+var CT=[["seoul",37.5663,126.9779,"seoulall",null,"서울","Seoul",null,[0.03,0]],["busan",35.1798,129.0750,"busan","city_busan","부산","Busan"],["gyeongju",35.8562,129.2247,"gyeongju","city_gyeongju","경주","Gyeongju","seok"],["capital",37.9558,126.6771,"capital",null,"경기","Gyeonggi","pmj"],["gangwon",38.1191,128.4654,"gangwon",null,"강원","Gangwon","seorak"],["chungcheong",36.5417,127.8330,"chungcheong",null,"충청도","Chungcheong","beopju"]];   /* 충청 약도 — 법주사 그림 밑 (사장님 10-21) */   /* 수도권 약도 — 판문점 그림 밑 (사장님 10-17) */
 function ctGo(id){ var t=CT.filter(function(q){ return q[0]===id; })[0]; if(!t) return; if(CITY[t[3]]){ ntap(t[3],"open_area"); viewSet(t[3]); } else if(t[4]) placeShow(t[4]); }
 function ctFree(x0,y0,x1,y1,put,m){ if(x0<0||y0<0||x1>1||y1>1) return false; if(m==null) m=1/256;   // 그림 칸에서 한 칸(0.4%) 더 띄운다
   for(var i=0;i<put.length;i++){ var q=put[i]; if(x0<q[2]&&x1>q[0]&&y0<q[3]&&y1>q[1]) return false; }
