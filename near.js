@@ -126,7 +126,7 @@ function fetchKind(t,p){ if(t.g){ var gk="g|"+p[0].toFixed(3)+","+p[1].toFixed(3
     if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); return (j.items||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }); },function(e){ delete CACHE[key]; throw e; }).catch(function(e){ delete CACHE[key]; throw e; }); }
 function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.byL={}; S.fl="";
   if(t.fixed){ var mp=ME.pos||null; S.base=null; S.src="";   // 대사관: 고정 목록 · 위치를 묻지 않는다 · 「나」 위치가 있으면 거리만 (폰 안에서 계산)
-    S.items=EMB.map(function(x){ var o=Object.assign({},x); o.dist=(mp&&x.y)?Math.round(kmLL(mp,[x.y,x.x])*1000):null; return o; }); if(embL()) S.items.sort(function(a,b){ return embKey(a).localeCompare(embKey(b),{ja:"ja",zhs:"zh-CN",zht:"zh-TW"}[LANG]); }); paint(); return; }
+    S.items=EMB.map(function(x){ var o=Object.assign({},x); o.dist=(mp&&x.y)?Math.round(kmLL(mp,[x.y,x.x])*1000):null; return o; }); if(embL()) S.items.sort(function(a,b){ return embKey(a).localeCompare(embKey(b),{ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]); }); paint(); return; }
   paint();
   var my=S.k+S.tab+LANG;
   pickBase(false).then(function(b){ if(!b){ S.base=null; S.err="loc"; paint(); return; }
@@ -159,12 +159,12 @@ function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=KS(en?x.name_en:x.name), ad
     +'<div class="row">'+tel+'<span class="go">'+T("지도에 핀","Pin on map")+' ›</span></div></div>'; }
 // 대사관 — 일본어·중국어 화면은 나라 이름(EMB_L)으로 「아르헨티나 대사관」 꼴 (10-18). 표에 없으면 영어 이름
 // 일·중 화면은 나라 이름을 그 언어로만, 그 언어 순서(일: 50음, 简: 병음, 繁: 획수)로 (10-18)
-function embL(){ return {ja:1,zhs:1,zht:1}[LANG]===1; }
+function embL(){ return {ja:1,zhs:1,zht:1,es:1}[LANG]===1; }
 var EMB_KANA={CN:"ちゅうごく",JP:"にほん",EU:"おうしゅうれんごう"};
 function embKey(x){ return (LANG==="ja"&&EMB_KANA[x.f])||embC(x); }
-function embC(x){ var l=window.EMB_L&&EMB_L[x.f], i={ja:0,zhs:1,zht:2}[LANG]; return (l&&i!=null&&l[i])||x.k; }
-function embN(x){ if(LANG==="ko") return x.n; if(LANG==="en") return x.ne; var l=window.EMB_L&&EMB_L[x.f], i={ja:0,zhs:1,zht:2}[LANG]; if(!l||i==null) return x.ne;
-  var nm=l[i]; if(x.f==="EU") return [nm+"代表部","欧盟驻韩国代表团","歐盟駐韓國代表處"][i]; return [nm+"大使館（在韓国）",nm+"驻韩国大使馆",nm+"駐韓國大使館"][i]; }
+function embC(x){ var l=window.EMB_L&&EMB_L[x.f], i={ja:0,zhs:1,zht:2,es:3}[LANG]; return (l&&i!=null&&l[i])||x.k; }
+function embN(x){ if(LANG==="ko") return x.n; if(LANG==="en") return x.ne; var l=window.EMB_L&&EMB_L[x.f], i={ja:0,zhs:1,zht:2,es:3}[LANG]; if(!l||i==null) return x.ne;
+  var nm=l[i]; if(x.f==="EU") return [nm+"代表部","欧盟驻韩国代表团","歐盟駐韓國代表處","Delegación de la Unión Europea en Corea"][i]; return [nm+"大使館（在韓国）",nm+"驻韩国大使馆",nm+"駐韓國大使館","Embajada de "+nm+" en Corea"][i]; }
 // 국기 = 나라 두 글자 → 지역 표시 글자 둘 (사장님 10-16: 이모지 금지의 예외, 국기만). 윈도우 PC 크롬은 글자(US)로 보일 수 있다
 function flag(c){ if(!c||c.length!==2) return ""; try{ return String.fromCodePoint(0x1F1E6+c.charCodeAt(0)-65,0x1F1E6+c.charCodeAt(1)-65)+" "; }catch(e){ return ""; } }
 // 대사관 한 줄: 「영문 나라 · 한글 나라」 / 대사관 이름 / 주소 / 전화(흰 전화기 단추) / 길찾기(linksTo)
