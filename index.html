@@ -534,13 +534,13 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="6fe4037366", NAVI_ROOT="kr";
+var NAVI_V="0ff629b177", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
 function mapMerge(id,d){ var k, pl=d.places||{}; for(k in pl) if(!PLACES[k]) PLACES[k]=pl[k];
   if(d.tr) for(var lg in d.tr){ DTR[lg]=DTR[lg]||{}; for(k in d.tr[lg]) DTR[lg][k]=d.tr[lg][k]; }   // 약도 글자·정류장·역 이름 번역 (build_navi.py, 10-18)
-  if(d.spots&&CITY[id]) CITY[id].spots=d.spots; if(d.labels&&CITY[id]){ CITY[id].labels=d.labels; if(id===VIEW) try{ lblDraw(); }catch(e){} } if(d.subs&&CITY[id]){ CITY[id].subs=d.subs; if(id===VIEW) try{ lodDraw(); }catch(e){} }
+  if(d.spots&&CITY[id]) CITY[id].spots=d.spots; if(d.olle&&CITY[id]) CITY[id].olle=d.olle; if(d.labels&&CITY[id]){ CITY[id].labels=d.labels; if(id===VIEW) try{ lblDraw(); }catch(e){} } if(d.subs&&CITY[id]){ CITY[id].subs=d.subs; if(id===VIEW) try{ lodDraw(); }catch(e){} }
   if(d.hit){ HIT=d.hit; HG=hgMake(HIT); } if(d.stn) STN=d.stn; if(d.stn_en) STN_EN=d.stn_en; if(d.isle) ISLE=d.isle;
   try{ nmMark(); }catch(e){} }
 // 약도 자료는 그 약도에 들어갈 때 받는다 (한 번 받으면 기억)
@@ -789,8 +789,22 @@ function zApply(){ var m=document.getElementById("map"), w=m.clientWidth, hc=MH(
 function lblDraw(){ [].forEach.call(document.querySelectorAll("#mz .mlb"),function(e){ e.remove(); }); var c=CITY[VIEW]; if(!c||!c.labels) return; var z=document.getElementById("mz");
   c.labels.forEach(function(t){ var e=document.createElement("div"); e.className="mlb"; e.textContent=LANG==="ko"?t[2]:TE(t[3]); e._ax=t[4]||0; e._ay=t[5]||0; e.style.left=(t[0]*100)+"%"; e.style.top=(t[1]*100)+"%"; var w=document.getElementById("map").clientWidth, fs=Math.max(4,w*0.016);
     e.style.fontSize=fs+"px"; e.style.padding=(fs*0.15)+"px "+(fs*0.6)+"px"; e.style.borderWidth=Math.max(0.6,fs*0.14)+"px"; e.style.transform="translate("+(-e._ax*100)+"%,"+(-e._ay*100)+"%)"; if(t[6]){ e.dataset.k=t[6]; e.style.pointerEvents="auto"; e.style.cursor="pointer"; }
-    if(t[7]==="post"){ var pf=Math.max(3,w*0.012); e.className="mlb post"; e.style.fontSize=pf+"px"; e.style.padding=(pf*0.08)+"px "+(pf*0.45)+"px"; e.style.borderWidth=Math.max(0.5,pf*0.12)+"px"; e.style.transform="translate(-50%,calc(-100% - "+(pf*0.7)+"px))"; }   /* t[7]="post" = 제주 올레 코스 번호 나무 팻말 — 다리 끝이 길 위 그 점 (사장님 10-21) */
+    if(t[7]==="post"){ var pf=Math.max(3,w*0.012); e.className="mlb post"; e.style.fontSize=pf+"px"; e.style.padding=(pf*0.08)+"px "+(pf*0.45)+"px"; e.style.borderWidth=Math.max(0.5,pf*0.12)+"px"; e.style.transform="translate(-50%,calc(-100% - "+(pf*0.7)+"px))"; if(c.olle&&c.olle[t[2]]){ e.dataset.ol=t[2]; e.style.pointerEvents="auto"; e.style.cursor="pointer"; } }   /* t[7]="post" = 제주 올레 코스 번호 나무 팻말 — 다리 끝이 길 위 그 점 (사장님 10-21) */
     z.appendChild(e); }); }   /* t[6]=장소 키 — 글자를 누르면 그 장소 카드 (매표소 → 시티투어 시간표, 사장님 10-16) */
+// 제주 올레 팻말 카드 (사장님 10-21 「번호판을 누르면 올레길 몇 번인지, 근처에 명소가 있으면 알려줘」) — 자료 maps/jeju.json "olle" {코스:{km, from?, to?, near:[[키,km]]}} (tour_icons\jeju\map\olle_info.py)
+//   길이는 OSM 길 자료로 잰 어림(OSM 에 시작·끝·거리 태그가 없어서) · 시작·끝은 자료에 있을 때만 · 근처 명소 = 코스 선에서 2 km 안, 누르면 그 명소 카드
+function olShow(c){ var C=CITY[VIEW], o=C&&C.olle&&C.olle[c]; if(!o) return; inBlur(); clearTimeout(_tapT);
+  var f=function(){ var h='<div class="item"><div class="t">🥾 '+esc(LP(["제주 올레 "+c+"코스","Jeju Olle Trail "+c,"済州オルレ "+c+"コース","济州偶来 "+c+" 路线","濟州偶來 "+c+" 路線"]))+'</div>';
+    if(o.from&&o.to) h+='<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(o.from)+' → '+esc(o.to)+'</div>';
+    if(o.km) h+='<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LP(["길이 약 "+o.km+" km","Length: about "+o.km+" km","長さ 約"+o.km+" km","全长约 "+o.km+" 公里","全長約 "+o.km+" 公里"]))+' <span style="opacity:.7">('+esc(LP(["OpenStreetMap 길 자료로 잰 어림","estimated from OpenStreetMap paths","OpenStreetMapの道データからの概算","按 OpenStreetMap 路线数据估算","依 OpenStreetMap 路線資料估算"]))+')</span></div>';
+    var nr=(o.near||[]).filter(function(x){ return PLACES[x[0]]; });
+    if(nr.length){ h+='<div class="d" style="margin:6px 0 2px;font-weight:800;color:var(--ink)">'+esc(LP(["근처 명소 (코스에서 2 km 안)","Nearby sights (within 2 km of the trail)","近くの名所(コースから2km以内)","附近景点(距路线 2 公里内)","附近景點(距路線 2 公里內)"]))+'</div>';
+      nr.forEach(function(x){ h+='<div class="d"><a href="#" onclick="olGo(\''+x[0]+'\');return false" style="font-weight:800">'+esc(LN(PLACES[x[0]]))+'</a> · '+esc(x[1]<0.1?LP(["코스 바로 옆","right on the trail","コースのすぐそば","就在路线旁","就在路線旁"]):x[1]+" km")+'</div>'; }); }
+    else h+='<div class="d" style="margin:6px 0 2px">'+esc(LP(["근처 명소 없음","No sights nearby","近くの名所なし","附近没有景点","附近沒有景點"]))+'</div>';
+    h+='<div class="d" style="margin-top:8px"><a href="https://www.jejuolle.org/" target="_blank" rel="noopener">'+esc(LP(["올레길 공식 안내 (제주올레) ↗","Official Jeju Olle website ↗","済州オルレ公式サイト ↗","济州偶来官方网站 ↗","濟州偶來官方網站 ↗"]))+'</a></div></div>';
+    document.getElementById("res").innerHTML=h; };
+  window._cardK=null; f(); window._RR={f:f}; clearTimeout(window._scT); window._scT=setTimeout(function(){ window.scrollTo({top:0,behavior:"smooth"}); },460); }
+function olGo(k){ hitClick(k); }
 // 빨간 네모 줌 단계 (사장님 10-15) — 보통 크기엔 이름표+대표 그림 1~2장, 당기면 그림이 제자리에 늘고, 네모가 화면 70% 넘게 차면 그 약도로 들어간다
 var LOD={el:{},s0:1,v:null,wt:null};
 function ZMAX(){ var c=CITY[VIEW], mx=5; if(c&&c.areas) for(var a in c.areas){ var b=c.areas[a]; mx=Math.max(mx,0.75/((b[2]-b[0])*ASP())); } return Math.min(20,mx)*Math.max(1,ZB()); }
@@ -886,6 +900,7 @@ function hitInit(){ var m=document.getElementById("map"), drag=null, pan=null, m
     var f={button:0,target:e.target,clientX:e.clientX,clientY:e.clientY}; dlLast={t:now,x:e.clientX,y:e.clientY}; dlT=setTimeout(function(){ dlT=null; dlLast=null; mClick(f); },350); },true);
   function mClick(e){ if(DET) return; if(e.button!==0||e.target.closest(".zb")||e.target.closest("#zme")||e.target.closest("#vback")||e.target.closest("#vdet")||e.target.closest("#osm")) return;
     if(e.target.closest("#lod [data-a]")){ if(moved){ moved=false; return; } lodTap(e); return; }
+    var ol=e.target.closest(".mlb.post[data-ol]"); if(ol){ if(moved){ moved=false; return; } olShow(ol.dataset.ol); return; }   /* 올레 팻말 = 코스 카드 (사장님 10-21) */
     var lk=e.target.closest(".mlb[data-k]"); if(lk){ if(moved){ moved=false; return; } hitClick(lk.dataset.k); return; }
     if(VIEW!=="kr"){ if(!moved){ var hk=hitAt(e.clientX,e.clientY); if(hk){ var at=cityFor(hk)?0:areaTap(e.clientX,e.clientY); if(at===1){ clearTimeout(_tapT); _tapT=setTimeout(function(){ hitClick(hk); },450); } else if(!at) hitClick(hk); } else if(!areaTap(e.clientX,e.clientY)&&ME.sel) meSelOff(true); }   /* 박스 안 그림: 한 번 = 0.45초 뒤 카드(카드가 지도를 밀어 두 번째 누름이 빗나가지 않게) · 두 번 = 그 박스 약도 */ moved=false; return; } if(moved){ moved=false; return; } hitClick(hitAt(e.clientX,e.clientY)); }
   m.addEventListener("click",mClick);
