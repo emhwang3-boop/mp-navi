@@ -18,6 +18,8 @@
     +".xbb .xp{position:absolute;top:66%;width:5.5%;height:34%;background:linear-gradient(90deg,#2a2e35,#5a606b 45%,#1c1f24);border-radius:2px 2px 0 0}"
     +".xbb .xb{position:absolute;top:97%;width:13%;height:3%;background:#2a2e35;border-radius:3px}"
     // 입체 글자 화면 — 밤하늘 바탕 + 금빛 두꺼운 글자(아래로 겹친 그림자 = 두께) + 빛 한 줄이 지나간다
+    +".xbb .xlv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}"
+    +".xbb .xlv+.xw{opacity:0;transition:opacity .8s}.xbb .xlv+.xw.on{opacity:1}"
     +".xbb .xw{position:absolute;inset:0;container-type:size;background:radial-gradient(ellipse at 50% 35%,#2b5fb8 0%,#123a7a 45%,#071a3d 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;perspective:60cqw}"
     +".xbb .xw::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 18% 22%,rgba(255,255,255,.9) 0 .35cqw,transparent .5cqw),radial-gradient(circle at 76% 18%,rgba(255,255,255,.8) 0 .3cqw,transparent .45cqw),radial-gradient(circle at 88% 70%,rgba(255,255,255,.7) 0 .3cqw,transparent .45cqw),radial-gradient(circle at 9% 76%,rgba(255,255,255,.7) 0 .3cqw,transparent .45cqw),radial-gradient(circle at 60% 85%,rgba(255,255,255,.6) 0 .25cqw,transparent .4cqw)}"
     +".xbb .xt{position:relative;font-family:'Arial Black','Segoe UI',Impact,sans-serif;font-weight:900;line-height:1.02;text-align:center;white-space:nowrap;letter-spacing:.02em;transform:rotateX(14deg);animation:xwTilt 6s ease-in-out infinite;"
@@ -68,7 +70,15 @@
   var kr=board({ map:"kr", id:"xbbkr", bw:KW,
     at:function(){ var f=null; try{ f=meGeoFrac("kr",ICN[0],ICN[1]); }catch(e){} if(!f) f=[0.12,0.27];
       return [0.026, f[1]+0.256]; },
-    fill:function(xs){ var w=document.createElement("div"); w.className="xw"; w.innerHTML='<div class="xt xt1">Welcome to</div><div class="xt xt2">KOREA</div><i class="xsh"></i>'; xs.appendChild(w); return null; } });
+    // 점보기 착륙 영상(8초, 멈출 때까지) → 끝나면 「Welcome to KOREA」 글자로 넘어가 6초 → 다시 영상 (사장님 10-21)
+    fill:function(xs){ var v=document.createElement("video"); v.className="xlv";
+      v.muted=true; v.defaultMuted=true; v.autoplay=true; v.playsInline=true; v.preload="auto";
+      ["muted","autoplay","playsinline","webkit-playsinline","disablepictureinpicture"].forEach(function(a){ v.setAttribute(a,""); });
+      v.poster="img/welcome/poster.jpg?v=1021pl"; v.src="img/welcome/landing.mp4?v=1021pl"; xs.appendChild(v);
+      var w=document.createElement("div"); w.className="xw"; w.innerHTML='<div class="xt xt1">Welcome to</div><div class="xt xt2">KOREA</div><i class="xsh"></i>'; xs.appendChild(w);
+      var tm=null; v.addEventListener("ended",function(){ w.classList.add("on"); clearTimeout(tm); tm=setTimeout(function(){ w.classList.remove("on"); try{ v.currentTime=0; var p=v.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} },6000); });
+      v.addEventListener("error",function(){ w.classList.add("on"); });   // 영상을 못 받으면 글자만
+      return { get paused(){ return v.paused&&!w.classList.contains("on"); }, play:function(){ return w.classList.contains("on")?Promise.resolve():v.play(); }, pause:function(){ try{ v.pause(); }catch(e){} } }; } });
 
   function tick(){ seoul(); kr(); }
   setInterval(tick,400); document.addEventListener("visibilitychange",tick);
