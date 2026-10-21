@@ -108,6 +108,12 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
   .sbox #qx{width:24px;height:24px;line-height:24px;font-size:12px;right:9px}
   .map{margin-top:10px}
 }
+/* 넓은 PC(웹앱): 검색칸·검색·추천받기 첫 줄, 칩(숙소·편의시설·선물·긴급)은 그 아래 한 줄 (사장님 10-22) */
+@media (min-width:900px) and (min-height:561px){
+  .sbox{flex-wrap:wrap!important;row-gap:8px}
+  .sbox::before{content:"";flex:0 0 100%;order:1;height:0}
+  .sbox .qw{flex:0 1 460px!important}
+}
 @media (orientation:landscape) and (max-height:560px){ .map{--W:calc(100vw - 112px)}   /* 가로 화면: 지도 양옆 손잡이(지도 밖 = 화면 넘김) */ .wrap{padding:6px 12px}.top{margin:0 0 6px}.logo{font-size:17px}.logo img{height:26px}.tbs .tb{font-size:12px;padding:5px 8px} }
 .map{position:relative}.map img{display:block;width:100%;height:auto}
 .map{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.map img{-webkit-user-drag:none;pointer-events:none}
