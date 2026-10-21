@@ -117,6 +117,8 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 #lod .lt.ct{border:0}
 #lod .lp{border:solid #fff;background:#fff center/cover no-repeat;box-shadow:0 1px 6px rgba(0,0,0,.4)}
 #mz .mlb{position:absolute;pointer-events:none;white-space:nowrap;background:#fff;color:#c2410c;border:solid #e8590c;border-radius:999px;font-weight:900;line-height:1.3;box-shadow:0 0 2px rgba(0,0,0,.25);z-index:2}
+#mz .mlb.post{background:linear-gradient(#dcac6c,#b8803f);color:#17702c;border-color:#6b411d;border-radius:.2em;line-height:1.2;text-shadow:0 0 1px #f6e6c4;box-shadow:0 1px 2px rgba(0,0,0,.35)}   /* 제주 올레 코스 번호 나무 팻말 (사장님 10-21) — 나무색 판·초록 글자 */
+#mz .mlb.post::after{content:"";position:absolute;left:26%;right:26%;top:100%;height:.7em;border-left:.2em solid #6b411d;border-right:.2em solid #6b411d}   /* 짧은 다리 둘 */
 #mz{position:relative;transform-origin:0 0;will-change:transform}
 .map.zoomed{touch-action:none}
 .zb{position:absolute;right:10px;bottom:10px;z-index:3;display:none!important;flex-direction:column;align-items:flex-end;gap:6px}   /* ＋ − ⟲ 단추 숨김 — 손가락 벌리기·휠로 대신 (사장님 10-16) */
@@ -532,7 +534,7 @@ function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="5321590d2b", NAVI_ROOT="kr";
+var NAVI_V="6fe4037366", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -786,7 +788,9 @@ function zApply(){ var m=document.getElementById("map"), w=m.clientWidth, hc=MH(
 // 약도 글자 표시 — 자료 labels [[x,y,한글,영어,ax,ay],...] 를 지도 위 그 자리에 (지도와 같이 커진다 — 이름표와 같은 원칙, 매표소 등 · fix3 10-15)
 function lblDraw(){ [].forEach.call(document.querySelectorAll("#mz .mlb"),function(e){ e.remove(); }); var c=CITY[VIEW]; if(!c||!c.labels) return; var z=document.getElementById("mz");
   c.labels.forEach(function(t){ var e=document.createElement("div"); e.className="mlb"; e.textContent=LANG==="ko"?t[2]:TE(t[3]); e._ax=t[4]||0; e._ay=t[5]||0; e.style.left=(t[0]*100)+"%"; e.style.top=(t[1]*100)+"%"; var w=document.getElementById("map").clientWidth, fs=Math.max(4,w*0.016);
-    e.style.fontSize=fs+"px"; e.style.padding=(fs*0.15)+"px "+(fs*0.6)+"px"; e.style.borderWidth=Math.max(0.6,fs*0.14)+"px"; e.style.transform="translate("+(-e._ax*100)+"%,"+(-e._ay*100)+"%)"; if(t[6]){ e.dataset.k=t[6]; e.style.pointerEvents="auto"; e.style.cursor="pointer"; } z.appendChild(e); }); }   /* t[6]=장소 키 — 글자를 누르면 그 장소 카드 (매표소 → 시티투어 시간표, 사장님 10-16) */
+    e.style.fontSize=fs+"px"; e.style.padding=(fs*0.15)+"px "+(fs*0.6)+"px"; e.style.borderWidth=Math.max(0.6,fs*0.14)+"px"; e.style.transform="translate("+(-e._ax*100)+"%,"+(-e._ay*100)+"%)"; if(t[6]){ e.dataset.k=t[6]; e.style.pointerEvents="auto"; e.style.cursor="pointer"; }
+    if(t[7]==="post"){ var pf=Math.max(3,w*0.012); e.className="mlb post"; e.style.fontSize=pf+"px"; e.style.padding=(pf*0.08)+"px "+(pf*0.45)+"px"; e.style.borderWidth=Math.max(0.5,pf*0.12)+"px"; e.style.transform="translate(-50%,calc(-100% - "+(pf*0.7)+"px))"; }   /* t[7]="post" = 제주 올레 코스 번호 나무 팻말 — 다리 끝이 길 위 그 점 (사장님 10-21) */
+    z.appendChild(e); }); }   /* t[6]=장소 키 — 글자를 누르면 그 장소 카드 (매표소 → 시티투어 시간표, 사장님 10-16) */
 // 빨간 네모 줌 단계 (사장님 10-15) — 보통 크기엔 이름표+대표 그림 1~2장, 당기면 그림이 제자리에 늘고, 네모가 화면 70% 넘게 차면 그 약도로 들어간다
 var LOD={el:{},s0:1,v:null,wt:null};
 function ZMAX(){ var c=CITY[VIEW], mx=5; if(c&&c.areas) for(var a in c.areas){ var b=c.areas[a]; mx=Math.max(mx,0.75/((b[2]-b[0])*ASP())); } return Math.min(20,mx)*Math.max(1,ZB()); }
@@ -799,7 +803,7 @@ function lodEl(id,cls,a){ var e=LOD.el[id]; if(!e){ e=document.createElement("di
 //   [키, 시청 위도, 경도, 들어갈 약도 id, 약도가 아직 없을 때 띄울 도시 카드, 한글, 영어] · 부산·경주 약도(regions 의 busan·gyeongju)가 생기면 카드 대신 그 약도로 바로 들어간다
 //   자리: 도시의 아래·옆 중 그림(누르기 지도 HG)과 겹치지 않는 가장 가까운 곳. 지도와 같이 커지고 작아지니 확대해도 안 겹친다
 //   [7] = 이 그림(누르기 지도 키) 바로 밑 가장자리에 붙인다 — 경주는 석굴암 그림 밑 (사장님 10-16)
-var CT=[["seoul",37.5663,126.9779,"seoulall",null,"서울","Seoul",null,[0.03,0]],["busan",35.1798,129.0750,"busan","city_busan","부산","Busan"],["gyeongju",35.8562,129.2247,"gyeongju","city_gyeongju","경주","Gyeongju","seok"],["capital",37.9558,126.6771,"capital",null,"경기도","Gyeonggi-do","pmj",null,1],["gangwon",38.1191,128.4654,"gangwon",null,"강원도","Gangwon-do","seorak",null,1],["chungcheong",36.5417,127.8330,"chungcheong",null,"충청도","Chungcheong-do","beopju",null,1],["jeolla",35.3776,127.0517,"jeolla",null,"전라도","Jeolla-do",null,null,1],["gyeongsang",35.3916,128.5918,"gyeongsang",null,"경상도","Gyeongsang-do",null,null,1]];   /* 경상 약도 — 하회탈·거북선·케이블카 세 그림 근처 빈 자리 (사장님 10-21) */   /* 전라 약도 — 비빔밥·대나무·녹차밭 세 그림 가운데 빈 자리 (사장님 10-21) · 도 명찰은 한국어 화면도 영어 「○○-do」 (사장님 10-21) */   /* 충청 약도 — 법주사 그림 밑 (사장님 10-21) */   /* 수도권 약도 — 판문점 그림 밑 (사장님 10-17) */
+var CT=[["seoul",37.5663,126.9779,"seoulall",null,"서울","Seoul",null,[0.03,0]],["busan",35.1798,129.0750,"busan","city_busan","부산","Busan"],["gyeongju",35.8562,129.2247,"gyeongju","city_gyeongju","경주","Gyeongju","seok"],["capital",37.9558,126.6771,"capital",null,"경기도","Gyeonggi-do","pmj",null,1],["gangwon",38.1191,128.4654,"gangwon",null,"강원도","Gangwon-do","seorak",null,1],["chungcheong",36.5417,127.8330,"chungcheong",null,"충청도","Chungcheong-do","beopju",null,1],["jeolla",35.3776,127.0517,"jeolla",null,"전라도","Jeolla-do",null,null,1],["gyeongsang",35.3916,128.5918,"gyeongsang",null,"경상도","Gyeongsang-do",null,null,1],["jeju",33.38,126.575,"jeju",null,"제주도","Jeju-do","dolha",[-0.122,-0.087],1]];   /* 제주 약도 — 왼쪽 아래 네모 안 왼쪽 위 빈 자리(사슴 머리 위) — 돌하르방 밑 자리에서 [8] 만큼 민다 (한라산·돌하르방 밑은 지도 끝·네모 테두리에 걸려서, 사장님 10-21) */   /* 경상 약도 — 하회탈·거북선·케이블카 세 그림 근처 빈 자리 (사장님 10-21) */   /* 전라 약도 — 비빔밥·대나무·녹차밭 세 그림 가운데 빈 자리 (사장님 10-21) · 도 명찰은 한국어 화면도 영어 「○○-do」 (사장님 10-21) */   /* 충청 약도 — 법주사 그림 밑 (사장님 10-21) */   /* 수도권 약도 — 판문점 그림 밑 (사장님 10-17) */
 function ctGo(id){ var t=CT.filter(function(q){ return q[0]===id; })[0]; if(!t) return; if(CITY[t[3]]){ ntap(t[3],"open_area"); viewSet(t[3]); } else if(t[4]) placeShow(t[4]); }
 function ctFree(x0,y0,x1,y1,put,m){ if(x0<0||y0<0||x1>1||y1>1) return false; if(m==null) m=1/256;   // 그림 칸에서 한 칸(0.4%) 더 띄운다
   for(var i=0;i<put.length;i++){ var q=put[i]; if(x0<q[2]&&x1>q[0]&&y0<q[3]&&y1>q[1]) return false; }
