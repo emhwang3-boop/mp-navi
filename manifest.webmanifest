@@ -1,6 +1,6 @@
 {
- "name": "머니퍼즐 - 투어",
- "short_name": "머니퍼즐 투어",
+ "name": "Money Puzzle Tour for Korea",
+ "short_name": "Tour for Korea",
  "id": "./",
  "start_url": "./?src=pwa",
  "scope": "./",
