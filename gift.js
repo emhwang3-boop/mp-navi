@@ -26,25 +26,25 @@ function ranked(){ if(!G) return []; var w=S.who, b=S.bud;
 // ── 근처 가게 (사장님 10-21) ──
 // 다섯 언어 글자 [한, 영, 일, 简, 繁]
 var W5={
-  near:["📍 근처 가게 보기","📍 Shops near you","📍 近くのお店を見る","📍 查看附近店铺","📍 查看附近店家"],
-  hide:["접기","Hide","閉じる","收起","收起"],
-  dist:["거리순","Nearest","近い順","距离优先","距離優先"],
-  rate:["별점순 (구글)","Top rated (Google)","評価順（Google）","评分优先（Google）","評分優先（Google）"],
-  bme:["📍 내 위치에서 가까운 순 (비슷한 거리는 별점순)","📍 Nearest to you (similar distance: higher rating first)","📍 現在地から近い順（同じくらいの距離なら評価順）","📍 离我最近（距离相近时按评分）","📍 離我最近（距離相近時依評分）"],
-  bmap:["🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map","🗺 表示中の地図の中心から近い順","🗺 离当前地图中心最近","🗺 離目前地圖中心最近"],
-  r3:["⭐ 3km 안 구글 별점 높은 순","⭐ Highest Google rating within 3 km","⭐ 3km以内でGoogle評価が高い順","⭐ 3公里内 Google 评分最高","⭐ 3公里內 Google 評分最高"],
-  r10:["⭐ 10km 안 구글 별점 높은 순","⭐ Highest Google rating within 10 km","⭐ 10km以内でGoogle評価が高い順","⭐ 10公里内 Google 评分最高","⭐ 10公里內 Google 評分最高"],
-  r30:["⭐ 30km 안 구글 별점 높은 순","⭐ Highest Google rating within 30 km","⭐ 30km以内でGoogle評価が高い順","⭐ 30公里内 Google 评分最高","⭐ 30公里內 Google 評分最高"],
-  far:["가까운 곳(10km 안)에 없어 30km 안에서 찾았습니다.","None within 10 km — showing shops within 30 km.","10km以内にないため、30km以内で探しました。","10公里内没有，已在30公里内查找。","10公里內沒有，已在30公里內搜尋。"],
-  abt:["약 "," about ","約","约","約"],
-  useme:["📍 내 위치로","📍 Use my location","📍 現在地にする","📍 用我的位置","📍 用我的位置"],
-  srch:["찾는 중…","Searching…","検索中…","正在查找…","正在搜尋…"],
-  none:["근처에 없습니다.","None found nearby.","近くにありません。","附近没有。","附近沒有。"],
-  err:["잠시 뒤 다시 해 주세요.","Please try again shortly.","しばらくしてからもう一度お試しください。","请稍后再试。","請稍後再試。"],
-  loc:["위치를 받을 수 없습니다 — 위치 권한을 켜거나, 지도를 보고 싶은 동네로 옮긴 뒤 다시 눌러 주세요.","Could not get your location — allow location access, or move the map to the area you want and try again.","現在地を取得できません — 位置情報を許可するか、地図を見たい地域に動かしてからもう一度押してください。","无法获取位置 — 请开启定位权限，或把地图移到想看的地区后再点一次。","無法取得位置 — 請開啟定位權限，或把地圖移到想看的地區後再按一次。"],
-  seoul:["서울 대표 매장","Seoul flagship stores","ソウルの代表店","首尔代表门店","首爾代表門市"],
-  local:["📍 이 지역 특산물","📍 Local specialties here","📍 この地域の特産品","📍 本地特产","📍 本地特產"],
-  map:["지도","Map","地図","地图","地圖"]
+  near:["📍 근처 가게 보기","📍 Shops near you","📍 近くのお店を見る","📍 查看附近店铺","📍 查看附近店家","📍 Tiendas cerca de ti"],
+  hide:["접기","Hide","閉じる","收起","收起","Ocultar"],
+  dist:["거리순","Nearest","近い順","距离优先","距離優先","Más cercanas"],
+  rate:["별점순 (구글)","Top rated (Google)","評価順（Google）","评分优先（Google）","評分優先（Google）","Mejor valoradas (Google)"],
+  bme:["📍 내 위치에서 가까운 순 (비슷한 거리는 별점순)","📍 Nearest to you (similar distance: higher rating first)","📍 現在地から近い順（同じくらいの距離なら評価順）","📍 离我最近（距离相近时按评分）","📍 離我最近（距離相近時依評分）","📍 Más cerca de ti (a distancia similar, primero las mejor valoradas)"],
+  bmap:["🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map","🗺 表示中の地図の中心から近い順","🗺 离当前地图中心最近","🗺 離目前地圖中心最近","🗺 Más cerca del centro del mapa"],
+  r3:["⭐ 3km 안 구글 별점 높은 순","⭐ Highest Google rating within 3 km","⭐ 3km以内でGoogle評価が高い順","⭐ 3公里内 Google 评分最高","⭐ 3公里內 Google 評分最高","⭐ Mejor valoración en Google a menos de 3 km"],
+  r10:["⭐ 10km 안 구글 별점 높은 순","⭐ Highest Google rating within 10 km","⭐ 10km以内でGoogle評価が高い順","⭐ 10公里内 Google 评分最高","⭐ 10公里內 Google 評分最高","⭐ Mejor valoración en Google a menos de 10 km"],
+  r30:["⭐ 30km 안 구글 별점 높은 순","⭐ Highest Google rating within 30 km","⭐ 30km以内でGoogle評価が高い順","⭐ 30公里内 Google 评分最高","⭐ 30公里內 Google 評分最高","⭐ Mejor valoración en Google a menos de 30 km"],
+  far:["가까운 곳(10km 안)에 없어 30km 안에서 찾았습니다.","None within 10 km — showing shops within 30 km.","10km以内にないため、30km以内で探しました。","10公里内没有，已在30公里内查找。","10公里內沒有，已在30公里內搜尋。","No hay ninguna a menos de 10 km — se muestran tiendas a menos de 30 km."],
+  abt:["약 "," about ","約","约","約"," unos "],
+  useme:["📍 내 위치로","📍 Use my location","📍 現在地にする","📍 用我的位置","📍 用我的位置","📍 Usar mi ubicación"],
+  srch:["찾는 중…","Searching…","検索中…","正在查找…","正在搜尋…","Buscando…"],
+  none:["근처에 없습니다.","None found nearby.","近くにありません。","附近没有。","附近沒有。","No se encontró nada cerca."],
+  err:["잠시 뒤 다시 해 주세요.","Please try again shortly.","しばらくしてからもう一度お試しください。","请稍后再试。","請稍後再試。","Vuelve a intentarlo en un momento."],
+  loc:["위치를 받을 수 없습니다 — 위치 권한을 켜거나, 지도를 보고 싶은 동네로 옮긴 뒤 다시 눌러 주세요.","Could not get your location — allow location access, or move the map to the area you want and try again.","現在地を取得できません — 位置情報を許可するか、地図を見たい地域に動かしてからもう一度押してください。","无法获取位置 — 请开启定位权限，或把地图移到想看的地区后再点一次。","無法取得位置 — 請開啟定位權限，或把地圖移到想看的地區後再按一次。","No se pudo obtener tu ubicación — permite el acceso a la ubicación o mueve el mapa a la zona que quieras e inténtalo de nuevo."],
+  seoul:["서울 대표 매장","Seoul flagship stores","ソウルの代表店","首尔代表门店","首爾代表門市","Tiendas principales en Seúl"],
+  local:["📍 이 지역 특산물","📍 Local specialties here","📍 この地域の特産品","📍 本地特产","📍 本地特產","📍 Productos típicos de esta zona"],
+  map:["지도","Map","地図","地图","地圖","Mapa"]
 };
 function W(k){ return LP(W5[k]); }
 // 기준 위치 — near.js pickBase 와 같은 규칙 (그 코드를 옮겨 씀, near.js 는 그대로)
@@ -58,7 +58,7 @@ function pickBase(force){
   return myPos().then(function(p){ if(p){ try{ if(!ME.pos) meSet(p); }catch(e){} return {p:p,src:"me"}; } return null; }); }
 // 선물 고르기를 열 때마다 기준 위치를 한 번 정한다 (보는 동안은 그대로)
 function baseGo(force){ S.bst="ld"; NB={}; return pickBase(force).then(function(b){ if(b){ S.base=b.p; S.src=b.src; S.bst="ok"; } else { S.base=null; S.bst="no"; } paint(); },function(){ S.base=null; S.bst="no"; paint(); }); }
-function kmT(m){ return m<1000?m+" m":m<10000?(m/1000).toFixed(1)+" km":W("abt").trim()+(LANG==="ko"||LANG==="en"?" ":"")+Math.round(m/1000)+" km"; }   // 10km 넘으면 「약 25 km」 (10-21 2차)
+function kmT(m){ return m<1000?m+" m":m<10000?(m/1000).toFixed(1)+" km":W("abt").trim()+(LANG==="ko"||LANG==="en"||LANG==="es"?" ":"")+Math.round(m/1000)+" km"; }   // 10km 넘으면 「약 25 km」 (10-21 2차)
 function KM(a,b){ var R=6371, rd=Math.PI/180, x=(b[0]-a[0])*rd, y=(b[1]-a[1])*rd, h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a[0]*rd)*Math.cos(b[0]*rd)*Math.sin(y/2)*Math.sin(y/2); return 2*R*Math.asin(Math.sqrt(h)); }
 // 이 지역 특산물 — at.reg: regions.json 약도 bb 안 · at.ll: [위도, 경도, km] 둘레 안. 가까운 것 먼저 3개까지
 function localKinds(){ if(!G||!G.local||!S.base) return []; var p=S.base;
@@ -172,7 +172,7 @@ function tips(){ if(!G.tips||!G.tips.length) return "";
     return '<div class="gftip">'+esc(nm(x))+(/^https:\/\//.test(u)?'<a href="'+esc(u)+'" target="_blank" rel="noopener">'+T("출처","source")+'</a>':'')+'</div>'; }).join("")+'</div>'; }
 
 // 매장 이름을 다섯 언어 모두 핀에 넘긴다 — 핀 카드에서 언어를 바꿔도 그 자리에서 그 언어 이름 (lang.js, 10-18)
-function gLL(s,ad){ var o={}; ["en","ja","zhs","zht"].forEach(function(l){ var n=l==="en"?s.en:(s[l]||s.en); if(!n) return; o[l]={n:n,a:s.addr_en||s.addr||"",c:ad?TEL(l,"Shop (Ad)"):((l!=="en"&&s["cat_"+l])||s.cat_en||"")}; }); return o; }
+function gLL(s,ad){ var o={}; ["en","ja","zhs","zht","es"].forEach(function(l){ var n=l==="en"?s.en:(s[l]||s.en); if(!n) return; o[l]={n:n,a:s.addr_en||s.addr||"",c:ad?TEL(l,"Shop (Ad)"):((l!=="en"&&s["cat_"+l])||s.cat_en||"")}; }); return o; }
 function TEL(l,e){ if(l==="en") return e; var t=(window.I18N&&I18N[l])||{}; return t[e]||e; }
 // ── 매장 누르기 → 약도 핀 + 카드 ──
 function showStore(s){ close();
