@@ -237,7 +237,7 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
-<script src="i18n.js?v=1023hk"></script>
+<script src="i18n.js?v=1023gr"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
 // 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
@@ -405,6 +405,20 @@ function paint(){
 function myPos(){ return new Promise(function(ok){ if(!navigator.geolocation) return ok(null); var t=setTimeout(function(){ ok(null); },4000);
   navigator.geolocation.getCurrentPosition(function(p){ clearTimeout(t); ok([p.coords.latitude,p.coords.longitude]); },function(){ clearTimeout(t); ok(null); },{enableHighAccuracy:false,timeout:3800,maximumAge:120000}); }); }
 function kmTxt(m){ return m<1000?m+" m":(m/1000).toFixed(1)+" km"; }
+// 검색 차례 = 구글 별점 높은 순 → 같으면 가까운 순 (사장님 10-23). 카카오 결과는 그대로 두고(이름 번역·전화), 같은 검색어로 구글을 한 번 받아 이름·200m 안이 맞는 곳에 ★ 를 붙인다
+//  구글 못 받으면(하루 상한·오류) 별점 없이 가까운 순. 검색어와 이름이 똑같은 곳은 맨 위
+function gRate(q,ps,it){ if(!it||!it.length) return Promise.resolve(it);
+  return fetch(HUB+"/gplace?all=1&lang=ko&q="+encodeURIComponent(q)+(ps?"&lat="+ps[0].toFixed(5)+"&lng="+ps[1].toFixed(5):"")).then(function(r){ return r.json(); }).then(function(j){ var g=(j&&j.ok&&j.items)||[]; if(!g.length) return it;
+    it.forEach(function(x){ var nb=spinNorm(x.name), best=null, bd=1e9; if(!nb) return;
+      g.forEach(function(p){ var a=spinNorm(p.name); if(!a) return; var d=kmLL([+x.y,+x.x],[+p.lat,+p.lng]); if(d>0.2||d>=bd) return;
+        if(a.indexOf(nb)>=0||nb.indexOf(a)>=0||(nb.length>=3&&a.slice(0,3)===nb.slice(0,3))){ bd=d; best=p; } });
+      if(best&&best.rating){ x.rating=+best.rating; x.n=+best.n||0; } }); return it; }).catch(function(){ return it; }); }
+function rateSort(it,q){ var nq=q?spinNorm(q):"";
+  return it.sort(function(a,c){ var ea=nq&&spinNorm(a.name)===nq?1:0, ec=nq&&spinNorm(c.name)===nq?1:0; if(ea!==ec) return ec-ea;
+    var ra=a.rating?1:0, rc=c.rating?1:0; if(ra!==rc) return rc-ra;
+    var ta=(a.n||0)>=10?1:0, tc=(c.n||0)>=10?1:0; if(ta!==tc) return tc-ta;
+    if((c.rating||0)!==(a.rating||0)) return (c.rating||0)-(a.rating||0);
+    var da=a.dist==null?1e12:a.dist, dc=c.dist==null?1e12:c.dist; if(da!==dc) return da-dc; return (c.n||0)-(a.n||0); }); }
 // 검색창 ✕ — 검색어가 있을 때만 보인다 (사장님 10-15)
 function qxSync(){ document.getElementById("qx").hidden=!document.getElementById("q").value; }
 function qClear(){ try{ spinClear(); }catch(e){} var q=document.getElementById("q"); q.value=""; qxSync(); q.focus(); }
@@ -422,12 +436,12 @@ function go(kq){
   var ps0=null, lg=LANG;   // 모든 검색에 내 위치(있으면) — 가까운 순 · lg = 이 검색을 받은 언어
   (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(ps){ ps0=ps; return fetch(HUB+"/kplace?q="+encodeURIComponent(q)+kpL()+(ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"")); }).then(function(r){ return r.json(); }).then(function(j){
     var it=(j&&j.ok&&j.items)||[]; it.forEach(function(x){ x._l=lg; });
-    var ps=ps0; if(ps){ it.forEach(function(x){ if(x.dist==null) x.dist=Math.round(kmLL(ps,[+x.y,+x.x])*1000); });   // 거리는 화면에서 계산(위치는 안 남김)
-      if(/\s/.test(q)||poseForQuery(q,it)) it.sort(function(a,b){ return a.dist-b.dist; }); }   // 먹을 곳·카페처럼 고르는 검색·문장 검색은 가까운 순 (이름으로 찾는 곳은 이름 맞는 차례)
+    var ps=ps0; if(ps){ it.forEach(function(x){ if(x.dist==null) x.dist=Math.round(kmLL(ps,[+x.y,+x.x])*1000); }); }   // 거리는 화면에서 계산(위치는 안 남김)
+    return gRate(q,ps,it).then(function(it){ rateSort(it,q);   // 구글 별점 높은 순 → 가까운 순 (사장님 10-23)
     if(!it.length){ resMsg("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words."); return; }
     window._sresQ={q:q,guess:j.guess||""}; window._sres=it.slice(0,10); sresPaint();
     try{ var ps2=poseForQuery(q,it); if(ps2) mePose(ps2,10000); }catch(e){}
-  }).catch(function(){ resMsg("잠시 뒤 다시 해 주세요.","Please try again shortly."); });
+    }); }).catch(function(){ resMsg("잠시 뒤 다시 해 주세요.","Please try again shortly."); });
 }
 // 검색 결과 목록 — 받아 둔 window._sres 로만 그린다. 언어를 바꾸면 검색을 다시 하지 않고 이것만 (한국어 = name, 다른 외국어로 처음이면 KL 이 이름만 받아 옴, 10-18)
 function sresPaint(){ var S=window._sresQ, it=window._sres, out=document.getElementById("res"); if(!S||!it) return; var q=S.q;
@@ -435,7 +449,7 @@ function sresPaint(){ var S=window._sresQ, it=window._sres, out=document.getElem
   var gs=S.guess?'<div class="d" style="margin:0 4px 6px">'+(LANG==="ko"?'「'+esc(q)+'」을(를) 「'+esc(S.guess)+'」(으)로 찾았습니다':TF('Showing results for “{1}” (from “{0}”)',esc(q),esc(S.guess)))+'</div>':'';
   out.innerHTML=gs+it.map(function(x,i){
       var en=FG()&&x.name_en, ttl=KS(en?x.name_en:x.name), ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
-      return '<div class="item sres" data-i="'+i+'" style="cursor:pointer"><div class="t">📍 '+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
+      return '<div class="item sres" data-i="'+i+'" style="cursor:pointer"><div class="t">📍 '+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+(x.rating?' · <b style="color:#e8590c">★ '+x.rating.toFixed(1)+'</b> ('+x.n+')':'')+'</div>'
         +telLine(x.tel)+linksTo(x.name,x.y,x.x,x.name,x.addr)+'</div>';   // 목록에도 전화 (사장님 10-16)
     }).join("");
   window._RR={f:sresPaint,sres:1}; }
@@ -1198,7 +1212,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1022es"></script>
 <script src="gift.js?v=1022es"></script>
-<script src="near.js?v=1023hk"></script>
+<script src="near.js?v=1023gr"></script>
 <script src="reco.js?v=1021od"></script>
 <script src="gu.js?v=f29da37807"></script>
 <script src="citytour.js?v=1022es"></script>
