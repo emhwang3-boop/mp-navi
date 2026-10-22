@@ -97,6 +97,8 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".nremb{cursor:default}.nremb .c{color:#1864ab;font-size:12.5px;font-weight:900;margin-bottom:2px}.nremb .lks{margin-top:8px}"
   +".nremb .lks a{display:inline-block;margin:0 6px 6px 0;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700;color:var(--ink);background:#f8fafc}"
   +".nrph{display:inline-block;width:1em;height:1em;vertical-align:-0.14em;margin-right:5px;color:inherit}"
+  +".nrdt{display:inline-block;border:1px solid #e8590c;color:#d9480f;border-radius:6px;font-size:11px;font-weight:900;padding:0 5px;margin-left:5px;vertical-align:2px;white-space:nowrap}"
+  +".nrtb{margin:8px 0 4px;padding:8px 10px;border:1px solid #ffd8a8;background:#fff4e6;border-radius:10px;font-size:14px;font-weight:800;color:#5c3d10;line-height:1.5}.nrtb a{color:#1c5fb8;text-decoration:underline;margin:0 2px;white-space:nowrap}"
   +".nrord{display:flex;gap:6px;margin:8px 0 2px}.nrord button{flex:1;border:1px solid #c5d3e8;background:#fff;color:#1c5fb8;border-radius:999px;padding:7px 0;font-weight:800;font-size:14px}.nrord button.on{background:#1c5fb8;color:#fff;border-color:#1c5fb8}"
   +".nrbig,.item a.nrbig{display:block!important;text-align:center;background:#e03131!important;color:#fff!important;border:0!important;border-radius:12px!important;padding:12px 8px!important;font-size:18px!important;font-weight:900!important;text-decoration:none;margin:4px 0 10px!important}";
   document.head.appendChild(s); }
@@ -114,8 +116,8 @@ function pickBase(force){
 // ── 자료 ──
 // 음식점 (사장님 10-21) — 허브 /gnear(구글 근처 음식점, 별점 포함). 차례 = 가까운 곳 먼저, 거리가 비슷하면(200m 안쪽 같은 칸) 리뷰 10개 이상인 곳 먼저(사장님 10-21) → 별점 높은 순 → 리뷰 많은 순
 function sortIt(it,t){ if(!t.g) return it.sort(function(a,c){ return a.dist-c.dist; });
-  if(S.ord==="r") return it.sort(function(a,c){ var ta=(a.n||0)>=10?1:0, tc=(c.n||0)>=10?1:0; if(ta!==tc) return tc-ta; if((c.rating||0)!==(a.rating||0)) return (c.rating||0)-(a.rating||0); if((c.n||0)!==(a.n||0)) return (c.n||0)-(a.n||0); return a.dist-c.dist; });   // 「별점순」 (사장님 10-21) — 구글 별점 높은 순, 리뷰 10개 미만은 뒤로
-  return it.sort(function(a,c){ var ba=Math.floor(a.dist/200), bc=Math.floor(c.dist/200); if(ba!==bc) return ba-bc; var ta=(a.n||0)>=10?1:0, tc=(c.n||0)>=10?1:0; if(ta!==tc) return tc-ta; if((c.rating||0)!==(a.rating||0)) return (c.rating||0)-(a.rating||0); if((c.n||0)!==(a.n||0)) return (c.n||0)-(a.n||0); return a.dist-c.dist; }); }
+  if(S.ord==="r") return it.sort(function(a,c){ var ta=(a.n||0)>=10?1:0, tc=(c.n||0)>=10?1:0; if(ta!==tc) return tc-ta; if((c.rating||0)!==(a.rating||0)) return (c.rating||0)-(a.rating||0); if((c.dt||0)!==(a.dt||0)) return (c.dt||0)-(a.dt||0); if((c.n||0)!==(a.n||0)) return (c.n||0)-(a.n||0); return a.dist-c.dist; });   // 「별점순」 (사장님 10-21) — 구글 별점 높은 순, 리뷰 10개 미만은 뒤로
+  return it.sort(function(a,c){ var ba=Math.floor(a.dist/200), bc=Math.floor(c.dist/200); if(ba!==bc) return ba-bc; var ta=(a.n||0)>=10?1:0, tc=(c.n||0)>=10?1:0; if(ta!==tc) return tc-ta; if((c.rating||0)!==(a.rating||0)) return (c.rating||0)-(a.rating||0); if((c.dt||0)!==(a.dt||0)) return (c.dt||0)-(a.dt||0); if((c.n||0)!==(a.n||0)) return (c.n||0)-(a.n||0); return a.dist-c.dist; }); }
 function fetchKind(t,p){ if(t.g){ var gk="g|"+(t.gt||"")+"|"+p[0].toFixed(3)+","+p[1].toFixed(3)+"|"+LANG; if(CACHE[gk]) return CACHE[gk];
     return CACHE[gk]=fetch(HUB+"/gnear?lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)+"&lang="+encodeURIComponent(LANG)+(t.gt?"&type="+t.gt:"")).then(function(x){ return x.json(); }).then(function(j){ if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); var a=j.items||[]; a.r=+j.r||t.r; return a; }).catch(function(e){ delete CACHE[gk]; throw e; }); }
   var en=kpL(), key=t.c+(t.kind||"")+"|"+p[0].toFixed(3)+","+p[1].toFixed(3)+en, need=t.c==="HP8"||t.c==="PM9"?10:3;
@@ -154,9 +156,16 @@ function sos(){ return '<div class="nrsos"><a class="s119" href="tel:119">'+PH+T
 function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=KS(en?x.name_en:x.name), ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
   var tel=""; if(x.tel){ var shown=L()?(/^0/.test(x.tel)?"+82 "+x.tel.slice(1):"+82 "+x.tel):x.tel;
     tel=em?'<a class="nrcall" href="tel:'+esc(telIntl(x.tel))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>':'<a class="nrcall am" href="tel:'+esc(telIntl(x.tel))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>'; }   // 편의점·마트도 같은 흰 전화기 단추 (파랑)
-  return '<div class="nrit" data-nr="pick" data-i="'+i+'"><div class="h"><span class="nrrank">'+(i+1)+'</span><b>'+esc(nm)+(x.kto?'<span class="nrkto" title="'+T("한국관광공사 관광정보에 실린 숙소","Listed by the Korea Tourism Organization")+'">'+T("관광공사","KTO")+'</span>':'')+'</b><i>'+km(x.dist)+'</i></div>'
+  return '<div class="nrit" data-nr="pick" data-i="'+i+'"><div class="h"><span class="nrrank">'+(i+1)+'</span><b>'+esc(nm)+(x.kto?'<span class="nrkto" title="'+T("한국관광공사 관광정보에 실린 숙소","Listed by the Korea Tourism Organization")+'">'+T("관광공사","KTO")+'</span>':'')+(x.dt?'<span class="nrdt">'+T("🎟 당일 투어","🎟 Day tour")+'</span>':'')+'</b><i>'+km(x.dist)+'</i></div>'
     +(en&&x.name_en!==x.name?'<div class="ko">'+esc(x.name)+'</div>':'')+(x.rating?'<div class="d"><b style="color:#e8590c">★ '+x.rating.toFixed(1)+'</b> ('+x.n+')</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div>'
     +'<div class="row">'+tel+'<span class="go">'+T("지도에 핀","Pin on map")+' ›</span></div></div>'; }
+// 「📱 내일 투어를 바로 예약」 띠 (사장님 10-22) — 기준 위치(내 위치·지도 가운데)에서 가까운 도시의 당일 투어 검색. 제휴 코드 없음 · 새 창
+//  Klook 언어 = 주소 앞 /ko/·/ja/·/zh-CN/·/zh-TW/·/es/·/en-US/ · GetYourGuide = /ja-jp/·/zh-cn/·/es-es/ (한국어·번체는 그런 주소가 없어 브라우저 언어로)
+var TB_CITY=[["Seoul",37.5665,126.978,40],["Incheon",37.456,126.705,20],["Busan",35.1796,129.0756,35],["Jeju",33.38,126.55,70],["Gyeongju",35.856,129.225,25],["Jeonju",35.82,127.148,20],["Gangneung",37.752,128.876,25],["Sokcho",38.207,128.592,20],["Daegu",35.871,128.601,25],["Yeosu",34.76,127.662,25]];
+function tourBand(){ var c="South Korea", best=1e9, b=S.base;
+  if(b) TB_CITY.forEach(function(x){ var d=kmLL(b,[x[1],x[2]]); if(d<=x[3]&&d<best){ best=d; c=x[0]; } });
+  var q=encodeURIComponent(c+" day tour"), kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en-US", gl={ja:"ja-jp/",zhs:"zh-cn/",es:"es-es/"}[LANG]||"";
+  return '<div class="nrtb">'+T("📱 내일 투어를 바로 예약:","📱 Book a tour for tomorrow:")+' <a href="https://www.klook.com/'+kl+'/search/result/?query='+q+'" target="_blank" rel="noopener">Klook</a> · <a href="https://www.getyourguide.com/'+gl+'s/?q='+q+'" target="_blank" rel="noopener">GetYourGuide</a></div>'; }
 // 대사관 — 일본어·중국어 화면은 나라 이름(EMB_L)으로 「아르헨티나 대사관」 꼴 (10-18). 표에 없으면 영어 이름
 // 일·중 화면은 나라 이름을 그 언어로만, 그 언어 순서(일: 50음, 简: 병음, 繁: 획수)로 (10-18)
 function embL(){ return {ja:1,zhs:1,zht:1,es:1}[LANG]===1; }
@@ -189,6 +198,7 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
     if(tg&&S.items&&S.items.length) h+='<div class="nrord"><button type="button" data-nr="ord" data-o="d" class="'+(rr?'':'on')+'">'+T("거리순","Nearest")+'</button><button type="button" data-nr="ord" data-o="r" class="'+(rr?'on':'')+'">'+T("별점순 (구글)","Top rated (Google)")+'</button></div>';   // 구글 자료(음식점·여행사)만 거리순·별점순 (사장님 10-21)
     if(S.base) h+='<div class="nrbase">'+(rr?(function(){ var g=((S.gr||k.tabs[S.tab].r)/1000).toFixed(1).replace(/\.0$/,""); return T("⭐ "+g+"km 안 구글 별점 높은 순","⭐ Highest Google rating within "+g+" km"); })():(S.src==="me"?(tg?T("📍 내 위치에서 가까운 순 (비슷한 거리는 별점순)","📍 Nearest to you (similar distance: higher rating first)"):T("📍 내 위치에서 가까운 순","📍 Nearest to you")):T("🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map")))
       +(S.src!=="me"?' <button type="button" class="nrme" data-nr="me">📍 '+T("내 위치로","Use my location")+'</button>':'')+'</div>';
+    if(k.tabs[S.tab].gt==="travel_agency") h+=tourBand();   // 여행사 맨 위 띠 — Klook·GetYourGuide 당일 투어 검색 (10-22)
     if(!S.items) h+='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
     else if(!S.items.length) h+='<div class="msg">'+T("가까운 곳에 없습니다.","None found nearby.")+'</div>';
     else h+=S.items.map(function(x,i){ return itemHtml(x,i,em); }).join(""); }
