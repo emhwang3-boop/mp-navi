@@ -418,7 +418,13 @@ window.I18N={
 "🚶 ~# min walk": "🚶 徒歩約#分",
 "🛒 My trip": "🛒 私の旅",
 "🛒 My trip (#)": "🛒 私の旅（#）",
-"🛒 My trip plan": "🛒 私の旅程"
+"🛒 My trip plan": "🛒 私の旅程",
+"Travel agency": "旅行会社",
+"Restaurant": "飲食店",
+"Nearest": "距離順",
+"Top rated (Google)": "評価順（Google）",
+"⭐ Highest Google rating within # km": "⭐ #km以内でGoogle評価の高い順",
+"📍 Nearest to you (similar distance: higher rating first)": "📍 現在地から近い順（距離が近いものは評価の高い順）"
 },
 "zhs":{
 "Always check the exact location on the detailed map — sketch maps are approximate": "在简图上看到的地点，请务必用详细地图确认准确位置",
@@ -835,7 +841,13 @@ window.I18N={
 "🚶 ~# min walk": "🚶 步行约#分钟",
 "🛒 My trip": "🛒 我的行程",
 "🛒 My trip (#)": "🛒 我的行程（#）",
-"🛒 My trip plan": "🛒 我的行程安排"
+"🛒 My trip plan": "🛒 我的行程安排",
+"Travel agency": "旅行社",
+"Restaurant": "餐厅",
+"Nearest": "距离优先",
+"Top rated (Google)": "评分优先（Google）",
+"⭐ Highest Google rating within # km": "⭐ #公里内Google评分从高到低",
+"📍 Nearest to you (similar distance: higher rating first)": "📍 离您最近（距离相近时评分高的优先）"
 },
 "zht":{
 "Always check the exact location on the detailed map — sketch maps are approximate": "在簡圖上看到的地點，請務必用詳細地圖確認正確位置",
@@ -1252,7 +1264,13 @@ window.I18N={
 "🚶 ~# min walk": "🚶 步行約 # 分鐘",
 "🛒 My trip": "🛒 我的行程",
 "🛒 My trip (#)": "🛒 我的行程 (#)",
-"🛒 My trip plan": "🛒 我的行程表"
+"🛒 My trip plan": "🛒 我的行程表",
+"Travel agency": "旅行社",
+"Restaurant": "餐廳",
+"Nearest": "距離優先",
+"Top rated (Google)": "評分優先（Google）",
+"⭐ Highest Google rating within # km": "⭐ #公里內Google評分從高到低",
+"📍 Nearest to you (similar distance: higher rating first)": "📍 離您最近（距離相近時評分高的優先）"
 },
 "es":{
 "Always check the exact location on the detailed map — sketch maps are approximate": "Comprueba siempre la ubicación exacta en el mapa detallado: los croquis son aproximados",
@@ -1671,7 +1689,13 @@ window.I18N={
 "🛒 My trip (#)": "🛒 Mi viaje (#)",
 "🛒 My trip plan": "🛒 Mi plan de viaje",
 "City Tour Bus Departure Point": "Salida del autobús turístico (City Tour Bus)",
-"🏪 Convenience (stores · restaurants)": "🏪 Servicios (tiendas · restaurantes)"
+"🏪 Convenience (stores · restaurants)": "🏪 Servicios (tiendas · restaurantes)",
+"Travel agency": "Agencia de viajes",
+"Restaurant": "Restaurante",
+"Nearest": "Más cerca",
+"Top rated (Google)": "Mejor valoradas (Google)",
+"⭐ Highest Google rating within # km": "⭐ Mejor valoración de Google a menos de # km",
+"📍 Nearest to you (similar distance: higher rating first)": "📍 Lo más cerca de ti (a distancia similar, mejor valoradas primero)"
 }
 };
 window.EMB_L={"AR": ["アルゼンチン", "阿根廷", "阿根廷", "Argentina"], "AU": ["オーストラリア", "澳大利亚", "澳洲", "Australia"], "BD": ["バングラデシュ", "孟加拉国", "孟加拉", "Bangladés"], "BR": ["ブラジル", "巴西", "巴西", "Brasil"], "BN": ["ブルネイ", "文莱", "汶萊", "Brunéi"], "KH": ["カンボジア", "柬埔寨", "柬埔寨", "Camboya"], "CA": ["カナダ", "加拿大", "加拿大", "Canadá"], "CN": ["中国", "中国", "中國", "China"], "EU": ["欧州連合", "欧盟", "歐盟", "Unión Europea"], "FR": ["フランス", "法国", "法國", "Francia"], "DE": ["ドイツ", "德国", "德國", "Alemania"], "IN": ["インド", "印度", "印度", "India"], "ID": ["インドネシア", "印度尼西亚", "印尼", "Indonesia"], "IT": ["イタリア", "意大利", "義大利", "Italia"], "JP": ["日本", "日本", "日本", "Japón"], "KG": ["キルギス", "吉尔吉斯斯坦", "吉爾吉斯", "Kirguistán"], "LA": ["ラオス", "老挝", "寮國", "Laos"], "MY": ["マレーシア", "马来西亚", "馬來西亞", "Malasia"], "MX": ["メキシコ", "墨西哥", "墨西哥", "México"], "MN": ["モンゴル", "蒙古国", "蒙古", "Mongolia"], "MM": ["ミャンマー", "缅甸", "緬甸", "Myanmar"], "NP": ["ネパール", "尼泊尔", "尼泊爾", "Nepal"], "PK": ["パキスタン", "巴基斯坦", "巴基斯坦", "Pakistán"], "PH": ["フィリピン", "菲律宾", "菲律賓", "Filipinas"], "RU": ["ロシア", "俄罗斯", "俄羅斯", "Rusia"], "SA": ["サウジアラビア", "沙特阿拉伯", "沙烏地阿拉伯", "Arabia Saudí"], "SG": ["シンガポール", "新加坡", "新加坡", "Singapur"], "ZA": ["南アフリカ", "南非", "南非", "Sudáfrica"], "LK": ["スリランカ", "斯里兰卡", "斯里蘭卡", "Sri Lanka"], "TJ": ["タジキスタン", "塔吉克斯坦", "塔吉克", "Tayikistán"], "TH": ["タイ", "泰国", "泰國", "Tailandia"], "TL": ["東ティモール", "东帝汶", "東帝汶", "Timor Oriental"], "TR": ["トルコ", "土耳其", "土耳其", "Turquía"], "GB": ["イギリス", "英国", "英國", "Reino Unido"], "US": ["アメリカ", "美国", "美國", "Estados Unidos"], "UZ": ["ウズベキスタン", "乌兹别克斯坦", "烏茲別克", "Uzbekistán"], "VN": ["ベトナム", "越南", "越南", "Vietnam"]};
