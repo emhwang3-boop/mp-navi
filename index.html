@@ -109,10 +109,12 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
   .map{margin-top:10px}
 }
 /* 넓은 PC(웹앱): 검색칸·검색·추천받기 첫 줄, 칩(숙소·편의시설·선물·긴급)은 그 아래 한 줄 (사장님 10-22) */
+/* 칩 4개는 같은 너비로, 검색칸 바로 아래 정가운데 (사장님 10-23) */
 @media (min-width:900px) and (min-height:561px){
-  .sbox{flex-wrap:wrap!important;row-gap:8px}
-  .sbox::before{content:"";flex:0 0 100%;order:1;height:0}
-  .sbox .qw{flex:0 1 460px!important}
+  .sbox{display:grid!important;grid-template-columns:1fr minmax(0,460px) auto auto 1fr;column-gap:5px;row-gap:8px;align-items:center}
+  .sbox .qw{grid-column:2;grid-row:1}.sbox #gob{grid-column:3;grid-row:1}.sbox #recob{grid-column:4;grid-row:1}
+  .sbox #gfchips{display:grid!important;grid-column:2;grid-row:2;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;margin:0}
+  .sbox #gfchips>button{width:auto!important}
 }
 @media (orientation:landscape) and (max-height:560px){ .map{--W:calc(100vw - 112px)}   /* 가로 화면: 지도 양옆 손잡이(지도 밖 = 화면 넘김) */ .wrap{padding:6px 12px}.top{margin:0 0 6px}.logo{font-size:17px}.logo img{height:26px}.tbs .tb{font-size:12px;padding:5px 8px} }
 .map{position:relative}.map img{display:block;width:100%;height:auto}
