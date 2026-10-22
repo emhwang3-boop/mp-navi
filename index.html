@@ -237,7 +237,7 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
-<script src="i18n.js?v=1023gr"></script>
+<script src="i18n.js?v=1023gm"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
 // 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
@@ -407,12 +407,18 @@ function myPos(){ return new Promise(function(ok){ if(!navigator.geolocation) re
 function kmTxt(m){ return m<1000?m+" m":(m/1000).toFixed(1)+" km"; }
 // 검색 차례 = 구글 별점 높은 순 → 같으면 가까운 순 (사장님 10-23). 카카오 결과는 그대로 두고(이름 번역·전화), 같은 검색어로 구글을 한 번 받아 이름·200m 안이 맞는 곳에 ★ 를 붙인다
 //  구글 못 받으면(하루 상한·오류) 별점 없이 가까운 순. 검색어와 이름이 똑같은 곳은 맨 위
-function gRate(q,ps,it){ if(!it||!it.length) return Promise.resolve(it);
+function gRate(q,ps,it){ it=it||[];
   return fetch(HUB+"/gplace?all=1&lang=ko&q="+encodeURIComponent(q)+(ps?"&lat="+ps[0].toFixed(5)+"&lng="+ps[1].toFixed(5):"")).then(function(r){ return r.json(); }).then(function(j){ var g=(j&&j.ok&&j.items)||[]; if(!g.length) return it;
     it.forEach(function(x){ var nb=spinNorm(x.name), best=null, bd=1e9; if(!nb) return;
       g.forEach(function(p){ var a=spinNorm(p.name); if(!a) return; var d=kmLL([+x.y,+x.x],[+p.lat,+p.lng]); if(d>0.2||d>=bd) return;
         if(a.indexOf(nb)>=0||nb.indexOf(a)>=0||(nb.length>=3&&a.slice(0,3)===nb.slice(0,3))){ bd=d; best=p; } });
-      if(best&&best.rating){ x.rating=+best.rating; x.n=+best.n||0; } }); return it; }).catch(function(){ return it; }); }
+      if(best){ best._u=1; if(best.rating){ x.rating=+best.rating; x.n=+best.n||0; } } });
+    // 카카오에 없는 구글 장소도 더한다 — 카카오가 한 상호만 잔뜩 줄 때(「헤어샵」→ 준오헤어만, 10-23). 별점 있는 곳만, 내 위치 40km 안
+    var add=g.filter(function(p){ return !p._u&&p.rating&&(!ps||kmLL(ps,[+p.lat,+p.lng])<=40); }).map(function(p){ return {gid:p.id,name:p.name,addr:p.addr,x:p.lng,y:p.lat,rating:+p.rating,n:+p.n||0,cat:"",_l:LANG,dist:ps?Math.round(kmLL(ps,[+p.lat,+p.lng])*1000):null}; });
+    it=it.concat(add); if(LANG==="ko"||!add.length) return it;
+    return fetch(HUB+"/gplace?all=1&lang="+encodeURIComponent(LANG)+"&q="+encodeURIComponent(q)+(ps?"&lat="+ps[0].toFixed(5)+"&lng="+ps[1].toFixed(5):"")).then(function(r){ return r.json(); }).then(function(j2){ var m={};   // 외국어 화면: 더한 곳 이름을 그 언어로
+      ((j2&&j2.ok&&j2.items)||[]).forEach(function(p){ m[p.id]=p; }); add.forEach(function(x){ var p=m[x.gid]; if(p){ x.name_en=p.name; x.addr_en=p.addr; } }); return it; }).catch(function(){ return it; });
+  }).catch(function(){ return it; }); }
 function rateSort(it,q){ var nq=q?spinNorm(q):"";
   return it.sort(function(a,c){ var ea=nq&&spinNorm(a.name)===nq?1:0, ec=nq&&spinNorm(c.name)===nq?1:0; if(ea!==ec) return ec-ea;
     var ra=a.rating?1:0, rc=c.rating?1:0; if(ra!==rc) return rc-ra;
@@ -1212,7 +1218,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1022es"></script>
 <script src="gift.js?v=1022es"></script>
-<script src="near.js?v=1023gr"></script>
+<script src="near.js?v=1023gm"></script>
 <script src="reco.js?v=1021od"></script>
 <script src="gu.js?v=f29da37807"></script>
 <script src="citytour.js?v=1022es"></script>
