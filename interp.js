@@ -26,10 +26,13 @@
     var g=document.getElementById("lgP"), y=g?g.getBoundingClientRect().bottom+8:Math.round(innerHeight*0.58)+52; b.style.top=Math.min(y,innerHeight-60)+"px"; }
   paintBtn(); setInterval(paintBtn,600);   /* 🌐 단추를 끌어 옮기면 따라간다 · 언어가 바뀌면 글자도 */
   /* 지금 장소 = _ntK 의 명소 자료, 없으면 일정에서 고른 곳(_itPick — 카카오 등 명소 목록 밖, trip.js 가 넣음 10-20) */
-  function curP(){ try{ var k=window._ntK, p=k&&window.PLACES&&window.PLACES[k]; if(p&&p.ko) return p; var q=window._itPick; return q&&q.k===k&&q.ko?q:null; }catch(e){ return null; } }
+  /* 카드가 없어도 지도에 검색 핀(이름표)이 떠 있으면 그 곳 — 「기사님, 채효당으로 가 주세요」 (사장님 10-23) */
+  function curP(){ try{ var k=window._ntK, p=k&&window.PLACES&&window.PLACES[k]; if(p&&p.ko) return p; var q=window._itPick; if(q&&q.k===k&&q.ko) return q;
+    var pn=window.PLACES&&window.PLACES.__pin; return pn&&pn.ko?pn:null; }catch(e){ return null; } }
   function placeKo(){ var p=curP(); return p&&p.ko?String(p.ko):""; }
   /* 아래 작은 줄(손님 말)에는 장소 이름도 손님 말로 — 장소 자료의 ja·zhs·zht·en 이름 (사장님 10-19 「한글 아래는 다 외국어」) */
-  function placeLoc(){ var p=curP(); if(!p) return ""; return String(p[window.LANG]||p.en||p.ko||""); }
+  function placeLoc(){ var p=curP(); if(!p) return ""; if(window.LANG!=="ko"&&window.PLACES&&p===window.PLACES.__pin){ var e=document.getElementById("spin"), t=e&&String(e.innerText||"").trim(); if(t) return t; }   /* 핀은 지도 이름표 글자 그대로 */
+    return String(p[window.LANG]||p.en||p.ko||""); }
   function phrases(){ var pk=placeKo(), pf=placeLoc()||pk, out=[];
     if(pk){ out.push([pk+"에 어떻게 가요?",{ko:pk+"에 어떻게 가요?",en:"How do I get to "+pf+"?",ja:pf+"へはどう行けばいいですか？",zhs:"请问"+pf+"怎么走？",zht:"請問"+pf+"怎麼走？",es:"¿Cómo llego a "+pf+"?"}]);
       /* 택시 — 「기사님, ○○(으)로 가 주세요」 (사장님 10-19) · 받침 있으면(ㄹ 빼고) 「으로」 */
