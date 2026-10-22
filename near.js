@@ -165,7 +165,7 @@ var TB_CITY=[["Seoul",37.5665,126.978,40],["Incheon",37.456,126.705,20],["Busan"
 function tourBand(){ var c="South Korea", best=1e9, b=S.base;
   if(b) TB_CITY.forEach(function(x){ var d=kmLL(b,[x[1],x[2]]); if(d<=x[3]&&d<best){ best=d; c=x[0]; } });
   var q=encodeURIComponent(c+" day tour"), kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en-US", gl={ja:"ja-jp/",zhs:"zh-cn/",es:"es-es/"}[LANG]||"";
-  return '<div class="nrtb">'+T("📱 내일 투어를 바로 예약:","📱 Book a tour for tomorrow:")+' <a href="https://www.klook.com/'+kl+'/search/result/?query='+q+'" target="_blank" rel="noopener">Klook</a> · <a href="https://www.getyourguide.com/'+gl+'s/?q='+q+'" target="_blank" rel="noopener">GetYourGuide</a></div>'; }
+  return '<div class="nrtb"><img src="img/phone_tour.png" alt="" style="height:22px;width:auto;vertical-align:-5px;margin-right:4px">'+T("📱 내일 투어를 바로 예약:","📱 Book a tour for tomorrow:").replace(/^📱\s*/,"")+' <a href="https://www.klook.com/'+kl+'/search/result/?query='+q+'" target="_blank" rel="noopener">Klook</a> · <a href="https://www.getyourguide.com/'+gl+'s/?q='+q+'" target="_blank" rel="noopener">GetYourGuide</a></div>'; }
 // 대사관 — 일본어·중국어 화면은 나라 이름(EMB_L)으로 「아르헨티나 대사관」 꼴 (10-18). 표에 없으면 영어 이름
 // 일·중 화면은 나라 이름을 그 언어로만, 그 언어 순서(일: 50음, 简: 병음, 繁: 획수)로 (10-18)
 function embL(){ return {ja:1,zhs:1,zht:1,es:1}[LANG]===1; }
