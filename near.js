@@ -126,7 +126,24 @@ function fetchKind(t,p){ if(t.g){ var gk="g|"+(t.gt||"")+"|"+p[0].toFixed(3)+","
   var one=function(r){ return fetch(HUB+"/kplace?cat="+t.c+"&x="+p[1].toFixed(5)+"&y="+p[0].toFixed(5)+"&radius="+r+en).then(function(x){ return x.json(); }); };
   return CACHE[key]=one(t.r).then(function(j){ if(j&&j.ok&&cnt(j)>=need) return j; return one(10000); }).then(function(j){
     if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); return (j.items||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }); },function(e){ delete CACHE[key]; throw e; })
-    .then(function(a){ return (t.kind==="hanok"&&!a.length)?hanokFar(p,a):a; }).catch(function(e){ delete CACHE[key]; throw e; }); }
+    .then(function(a){ return (t.kind==="hanok"&&!a.length)?hanokFar(p,a):a; })
+    // 숙소(AD5) = 구글 별점 높은 순 → 같으면 가까운 순 (사장님 10-23)
+    .then(function(a){ if(a.far||!/^AD5$/.test(t.c)||!a.length||!window.gRate) return a; var f=a.far; return stayRate(t,p,a).then(function(b){ b.far=f; return b; }); }).catch(function(e){ delete CACHE[key]; throw e; }); }
+// 숙소 구글 별점 — 「종로구 호텔」처럼 그 동네 구 이름 + 종류로 구글을 한 번 받아, 카카오 숙소에 ★ 를 붙이고 카카오에 없는 10km 안 구글 숙소도 더한다 (사장님 10-23)
+function stayRate(t,p,a){ var cnt={}, gu=""; a.forEach(function(x){ var w=String(x.addr||"").split(/\s+/)[1]||""; if(/[구군시]$/.test(w)) cnt[w]=(cnt[w]||0)+1; });
+  Object.keys(cnt).forEach(function(k){ if(!gu||cnt[k]>cnt[gu]) gu=k; });
+  var b=a.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(p,[+x.y,+x.x])*1000); return o; });
+  return fetch(HUB+"/gplace?all=1&lang=ko&q="+encodeURIComponent((gu?gu+" ":"")+t.ko)+"&lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)).then(function(r){ return r.json(); }).then(function(j){ var g=(j&&j.ok&&j.items)||[], used={};
+    b.forEach(function(x){ var nb=spinNorm(x.name), best=-1, bd=1e9; if(!nb) return;
+      g.forEach(function(q,i){ var n=spinNorm(q.name); if(!n) return; var d=kmLL([+x.y,+x.x],[+q.lat,+q.lng]); if(d>0.2||d>=bd) return;
+        if(n.indexOf(nb)>=0||nb.indexOf(n)>=0||(nb.length>=3&&n.slice(0,3)===nb.slice(0,3))){ bd=d; best=i; } });
+      if(best>=0){ used[best]=1; if(g[best].rating){ x.rating=+g[best].rating; x.n=+g[best].n||0; } } });
+    g.forEach(function(q,i){ if(used[i]||!q.rating) return; var d=kmLL(p,[+q.lat,+q.lng]); if(d>10) return;
+      b.push({gid:q.id,name:q.name,addr:q.addr,x:q.lng,y:q.lat,rating:+q.rating,n:+q.n||0,kind:t.kind,cat:t.ko,cat_en:t.en,dist:Math.round(d*1000)}); });
+    if(LANG==="ko"||!b.some(function(x){ return x.gid; })) return b;   // 외국어 화면: 구글에서 더한 곳은 그 언어 이름으로 한 번 더 받는다
+    return fetch(HUB+"/gplace?all=1&lang="+encodeURIComponent(LANG)+"&q="+encodeURIComponent((gu?gu+" ":"")+t.ko)+"&lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)).then(function(r){ return r.json(); }).then(function(j2){ var m={};
+      ((j2&&j2.ok&&j2.items)||[]).forEach(function(q){ m[q.id]=q; }); b.forEach(function(x){ var q=x.gid&&m[x.gid]; if(q){ x.name_en=q.name; x.addr_en=q.addr; } }); return b; }).catch(function(){ return b; });
+  }).catch(function(){ return b; }); }
 // 한옥스테이가 10km 안에 없으면 — 멀어도 구글 별점 높은 한옥스테이 (허브 /gplace, 별점 4.0·리뷰 20개 이상만, 사장님 10-23) · 40km 안 먼저, 그 안에서 별점 높은 순. 못 받으면 빈 목록 그대로
 function hanokFar(p,a0){ return fetch(HUB+"/gplace?q="+encodeURIComponent("한옥스테이")+"&lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)+"&lang="+encodeURIComponent(LANG)).then(function(x){ return x.json(); }).then(function(j){
     if(!j||!j.ok||!(j.items||[]).length) return a0;
@@ -140,7 +157,7 @@ function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.by
   pickBase(false).then(function(b){ if(!b){ S.base=null; S.err="loc"; paint(); return; }
     S.base=b.p; S.src=b.src; paint();
     return fetchKind(t,b.p).then(function(it){ if(S.k+S.tab+LANG!==my) return;
-      S.gr=it.r||t.r; S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b.p,[+x.y,+x.x])*1000); return o; }); S.far=!!it.far; it=(it.far?S.raw.slice():sortIt(S.raw.slice(),t)).slice(0,10);
+      S.gr=it.r||t.r; S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b.p,[+x.y,+x.x])*1000); return o; }); S.far=!!it.far; it=(it.far?S.raw.slice():S.k==="st"?rateSort(S.raw.slice()):sortIt(S.raw.slice(),t)).slice(0,10);
       S.items=it; S.fl=LANG; S.byL[LANG]=it; paint(); }); }).catch(function(){ S.err="net"; paint(); }); }
 // 언어를 바꿀 때 — 목록을 비우지 않고 그 자리에서 (한국어 = 받은 이름 그대로, 그 언어로 받아 둔 게 있으면 그것, 처음 가는 외국어만 같은 자리로 다시 받음, 10-18)
 function relang(){ var k=KINDS[S.k]; if(!k) return; var t=k.tabs[S.tab];
@@ -148,7 +165,7 @@ function relang(){ var k=KINDS[S.k]; if(!k) return; var t=k.tabs[S.tab];
   S.byL=S.byL||{}; if(!L()||S.fl===LANG){ paint(); return; }
   if(S.byL[LANG]){ S.items=S.byL[LANG]; S.fl=LANG; paint(); return; }
   paint(); var my=S.k+S.tab+LANG, b=S.base; try{ if(window.KL&&KL.bz) KL.bz(1); }catch(e){}
-  fetchKind(t,b).then(function(it){ if(S.k+S.tab+LANG!==my) return; S.gr=it.r||t.r; S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b,[+x.y,+x.x])*1000); return o; }); S.far=!!it.far; it=(it.far?S.raw.slice():sortIt(S.raw.slice(),t)).slice(0,10);
+  fetchKind(t,b).then(function(it){ if(S.k+S.tab+LANG!==my) return; S.gr=it.r||t.r; S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b,[+x.y,+x.x])*1000); return o; }); S.far=!!it.far; it=(it.far?S.raw.slice():S.k==="st"?rateSort(S.raw.slice()):sortIt(S.raw.slice(),t)).slice(0,10);
     S.items=it; S.fl=LANG; S.byL[LANG]=it; paint(); }).catch(function(){}).then(function(){ try{ if(window.KL&&KL.bz) KL.bz(-1); }catch(e){} }); }
 
 // ── 화면 ──
@@ -202,7 +219,7 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
   else if(k.tabs[S.tab].fixed&&S.items) h+='<div class="nrbase">'+(embL()?TE("Sorted by country name (local order)"):T("나라 영문 이름 순","Sorted by country name (A–Z)"))+'</div>'+S.items.map(embHtml).join("");
   else { var tg=k.tabs[S.tab].g, rr=tg&&S.ord==="r";
     if(tg&&S.items&&S.items.length) h+='<div class="nrord"><button type="button" data-nr="ord" data-o="d" class="'+(rr?'':'on')+'">'+T("거리순","Nearest")+'</button><button type="button" data-nr="ord" data-o="r" class="'+(rr?'on':'')+'">'+T("별점순 (구글)","Top rated (Google)")+'</button></div>';   // 구글 자료(음식점·여행사)만 거리순·별점순 (사장님 10-21)
-    if(S.base) h+='<div class="nrbase">'+(rr?(function(){ var g=((S.gr||k.tabs[S.tab].r)/1000).toFixed(1).replace(/\.0$/,""); return T("⭐ "+g+"km 안 구글 별점 높은 순","⭐ Highest Google rating within "+g+" km"); })():(S.src==="me"?(tg?T("📍 내 위치에서 가까운 순 (비슷한 거리는 별점순)","📍 Nearest to you (similar distance: higher rating first)"):T("📍 내 위치에서 가까운 순","📍 Nearest to you")):T("🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map")))
+    if(S.base) h+='<div class="nrbase">'+(rr?(function(){ var g=((S.gr||k.tabs[S.tab].r)/1000).toFixed(1).replace(/\.0$/,""); return T("⭐ "+g+"km 안 구글 별점 높은 순","⭐ Highest Google rating within "+g+" km"); })():(S.src==="me"?(tg?T("📍 내 위치에서 가까운 순 (비슷한 거리는 별점순)","📍 Nearest to you (similar distance: higher rating first)"):(S.k==="st"&&!S.far)?T("⭐ 구글 별점 높은 순 (같으면 가까운 순)","⭐ Highest Google rating first (then nearest)"):T("📍 내 위치에서 가까운 순","📍 Nearest to you")):T("🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map")))
       +(S.src!=="me"?' <button type="button" class="nrme" data-nr="me">📍 '+T("내 위치로","Use my location")+'</button>':'')+'</div>';
     if(k.tabs[S.tab].gt==="travel_agency") h+=tourBand();   // 여행사 맨 위 띠 — Klook·GetYourGuide 당일 투어 검색 (10-22)
     if(!S.items) h+='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
