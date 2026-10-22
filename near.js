@@ -18,7 +18,7 @@ var KINDS={
 };
 // 칩 글자 (아이콘 없이, 사장님 10-16) · ⋮ 메뉴 글자
 var CHIP={am:["편의시설","Convenience"],em:["긴급","Emergency"],st:["숙소","Stay"]};
-var MENU={am:["🏪 편의시설 (편의점·음식점)","🏪 Convenience (stores · restaurants)"],em:["🚑 긴급 (병원·약국)","🚑 Emergency (hospital · pharmacy)"],st:["🏨 숙소 (호텔·모텔·게스트하우스·한옥)","🏨 Stay (hotel · motel · guesthouse · hanok)"]};
+var MENU={am:["🏪 편의시설 (편의점·음식점·여행사)","🏪 Convenience (stores · restaurants · travel agencies)"],em:["🚑 긴급 (병원·약국)","🚑 Emergency (hospital · pharmacy)"],st:["🏨 숙소 (호텔·모텔·게스트하우스·한옥)","🏨 Stay (hotel · motel · guesthouse · hanok)"]};
 // 대사관 (사장님 10-16) — 고정 목록 37곳(G20·동남아·고용허가제 송출국). 나라 영문 이름 알파벳 순(거리로 줄 세우지 않음)
 //  이름·주소·전화: 외교부 「주한공관주소록」 국문·영문판(mofa.go.kr inKoEmblgbdAdres, 2026-10-16 읽음) · 전화는 첫 번호만
 //  좌표: 허브 /kplace 카카오 「<나라> 대사관」 자리(전화 또는 외교부 주소 검색 자리와 맞춘 것). 몽골은 카카오 자리와 외교부 주소가 580m 어긋나 좌표 비움(주소로 지도 검색)
