@@ -110,7 +110,9 @@ function kGet(kws,nms,np){ if(!kws.length&&!nms.length) return Promise.resolve([
     all=all.filter(function(x){ var cm=x._src==="k"&&KCAT.find(function(z){ return z[3]&&kws.some(function(k){ return z[0].test(k); }); }); return !cm||x._n>=cm[3]; });   // 놀이공원은 시설이 여럿 모인 곳만(방탈출 가게 빼기)
     if(all.filter(function(x){ return x._src==="n"; }).length>=2) all=all.filter(function(x){ return x._src==="n"; });   // AI 가 아는 이름(카카오 확인)이 둘 이상이면 그것만 — 근처 아무 절·방탈출 가게보다 낫다
     all.sort(function(a,b){ return a.dist-b.dist; });
-    var n=Math.max(3,5-Math.min(np,2)); G.sort(function(a,b){ return b.s-a.s; }); var g=G.slice(0,n), r=all.slice(0,g.length?Math.max(2,n-g.length):n);   // 구글은 유명도 순(거리 아님)
+    var n=Math.max(3,5-Math.min(np,2)); G.sort(function(a,b){ return b.s-a.s; }); var g=G.slice(0,n);
+    all=all.filter(function(x){ var xn=kNorm(x.name), ll=[+x.y,+x.x]; return !g.some(function(y){ var yn=kNorm(y.name), d=kmLL(ll,[+y.lat,+y.lng]); return d<0.4||(d<3&&xn.length>=2&&yn.length>=2&&(xn.indexOf(yn)>=0||yn.indexOf(xn)>=0)); }); });   // 위 구글 칸에 이미 나온 곳은 아래 칸에서 빼기 (남산골·북촌 두 번, 사장님 10-23)
+    var r=all.slice(0,g.length?Math.max(2,n-g.length):n);   // 구글은 유명도 순(거리 아님)
     g.forEach(function(x){ R.kseen["g:"+x.id]=1; }); r.forEach(function(x){ R.kseen[x._k]=1; R.kpos.push([+x.y,+x.x]); }); return g.concat(r); }); }
 
 // ── 그리기 ──
