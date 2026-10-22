@@ -125,7 +125,13 @@ function fetchKind(t,p){ if(t.g){ var gk="g|"+(t.gt||"")+"|"+p[0].toFixed(3)+","
   if(CACHE[key]) return CACHE[key];
   var one=function(r){ return fetch(HUB+"/kplace?cat="+t.c+"&x="+p[1].toFixed(5)+"&y="+p[0].toFixed(5)+"&radius="+r+en).then(function(x){ return x.json(); }); };
   return CACHE[key]=one(t.r).then(function(j){ if(j&&j.ok&&cnt(j)>=need) return j; return one(10000); }).then(function(j){
-    if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); return (j.items||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }); },function(e){ delete CACHE[key]; throw e; }).catch(function(e){ delete CACHE[key]; throw e; }); }
+    if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); return (j.items||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }); },function(e){ delete CACHE[key]; throw e; })
+    .then(function(a){ return (t.kind==="hanok"&&!a.length)?hanokFar(p,a):a; }).catch(function(e){ delete CACHE[key]; throw e; }); }
+// 한옥스테이가 10km 안에 없으면 — 멀어도 구글 별점 높은 한옥스테이 (허브 /gplace, 별점 4.0·리뷰 20개 이상만, 사장님 10-23) · 40km 안 먼저, 그 안에서 별점 높은 순. 못 받으면 빈 목록 그대로
+function hanokFar(p,a0){ return fetch(HUB+"/gplace?q="+encodeURIComponent("한옥스테이")+"&lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)+"&lang="+encodeURIComponent(LANG)).then(function(x){ return x.json(); }).then(function(j){
+    if(!j||!j.ok||!(j.items||[]).length) return a0;
+    var a=j.items.map(function(g){ return {name:g.name,addr:g.addr,x:g.lng,y:g.lat,rating:g.rating,n:g.n,kind:"hanok"}; })
+      .sort(function(u,v){ var fu=kmLL(p,[u.y,u.x])>40?1:0, fv=kmLL(p,[v.y,v.x])>40?1:0; return (fu-fv)||(v.rating-u.rating)||(v.n-u.n); }); a.far=1; return a; }).catch(function(){ return a0; }); }
 function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.byL={}; S.fl=""; S.gr=0;
   if(t.fixed){ var mp=ME.pos||null; S.base=null; S.src="";   // 대사관: 고정 목록 · 위치를 묻지 않는다 · 「나」 위치가 있으면 거리만 (폰 안에서 계산)
     S.items=EMB.map(function(x){ var o=Object.assign({},x); o.dist=(mp&&x.y)?Math.round(kmLL(mp,[x.y,x.x])*1000):null; return o; }); if(embL()) S.items.sort(function(a,b){ return embKey(a).localeCompare(embKey(b),{ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]); }); paint(); return; }
@@ -134,7 +140,7 @@ function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.by
   pickBase(false).then(function(b){ if(!b){ S.base=null; S.err="loc"; paint(); return; }
     S.base=b.p; S.src=b.src; paint();
     return fetchKind(t,b.p).then(function(it){ if(S.k+S.tab+LANG!==my) return;
-      S.gr=it.r||t.r; S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b.p,[+x.y,+x.x])*1000); return o; }); it=sortIt(S.raw.slice(),t).slice(0,10);
+      S.gr=it.r||t.r; S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b.p,[+x.y,+x.x])*1000); return o; }); S.far=!!it.far; it=(it.far?S.raw.slice():sortIt(S.raw.slice(),t)).slice(0,10);
       S.items=it; S.fl=LANG; S.byL[LANG]=it; paint(); }); }).catch(function(){ S.err="net"; paint(); }); }
 // 언어를 바꿀 때 — 목록을 비우지 않고 그 자리에서 (한국어 = 받은 이름 그대로, 그 언어로 받아 둔 게 있으면 그것, 처음 가는 외국어만 같은 자리로 다시 받음, 10-18)
 function relang(){ var k=KINDS[S.k]; if(!k) return; var t=k.tabs[S.tab];
@@ -142,7 +148,7 @@ function relang(){ var k=KINDS[S.k]; if(!k) return; var t=k.tabs[S.tab];
   S.byL=S.byL||{}; if(!L()||S.fl===LANG){ paint(); return; }
   if(S.byL[LANG]){ S.items=S.byL[LANG]; S.fl=LANG; paint(); return; }
   paint(); var my=S.k+S.tab+LANG, b=S.base; try{ if(window.KL&&KL.bz) KL.bz(1); }catch(e){}
-  fetchKind(t,b).then(function(it){ if(S.k+S.tab+LANG!==my) return; S.gr=it.r||t.r; S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b,[+x.y,+x.x])*1000); return o; }); it=sortIt(S.raw.slice(),t).slice(0,10);
+  fetchKind(t,b).then(function(it){ if(S.k+S.tab+LANG!==my) return; S.gr=it.r||t.r; S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b,[+x.y,+x.x])*1000); return o; }); S.far=!!it.far; it=(it.far?S.raw.slice():sortIt(S.raw.slice(),t)).slice(0,10);
     S.items=it; S.fl=LANG; S.byL[LANG]=it; paint(); }).catch(function(){}).then(function(){ try{ if(window.KL&&KL.bz) KL.bz(-1); }catch(e){} }); }
 
 // ── 화면 ──
@@ -201,7 +207,7 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
     if(k.tabs[S.tab].gt==="travel_agency") h+=tourBand();   // 여행사 맨 위 띠 — Klook·GetYourGuide 당일 투어 검색 (10-22)
     if(!S.items) h+='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
     else if(!S.items.length) h+='<div class="msg">'+T("가까운 곳에 없습니다.","None found nearby.")+'</div>';
-    else h+=S.items.map(function(x,i){ return itemHtml(x,i,em); }).join(""); }
+    else h+=(S.far?'<div class="msg">'+T("가까운 곳에 한옥스테이가 없어, 멀어도 별점 높은 곳을 보여 드립니다.","No hanok stays nearby — showing top-rated ones farther away.")+'</div>':"")+S.items.map(function(x,i){ return itemHtml(x,i,em); }).join(""); }
   b.innerHTML=h; }
 
 // ── 한 곳 고르기 → 기존 검색 핀 ──
