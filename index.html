@@ -237,7 +237,7 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
-<script src="i18n.js?v=1023t5"></script>
+<script src="i18n.js?v=1023kr"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
 // 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
@@ -1148,11 +1148,12 @@ function krideHref(){ var ua=navigator.userAgent||"";
   if(/Android/i.test(ua)) return "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.kakaomobility.kride;S.browser_fallback_url="+encodeURIComponent(KRIDE_PLAY)+";end";
   if(/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)) return KRIDE_IOS;
   return KRIDE_WEB; }
-function krideL(ko,addr){ var h=krideHref(), app=/^intent:/.test(h);
-  return '<a href="'+esc(h)+'"'+(app?'':' target="_blank" rel="noopener"')+' class="kride" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'">'+esc(TE("🚕 Call a taxi (K.Ride)"))+'</a>'; }
+function krideL(ko,addr){ var h=krideHref(), app=/^intent:/.test(h), pc=h===KRIDE_WEB;   // PC = 앱 설치 화면으로 안 보내고 안내 한 줄만 (사장님 10-23)
+  return '<a href="'+(pc?'#':esc(h))+'"'+(app||pc?'':' target="_blank" rel="noopener"')+' class="kride'+(pc?' kpc':'')+'" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'">'+esc(TE("🚕 Call a taxi (K.Ride)"))+'</a>'; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("a.kride"); if(!a) return;
   var t=(a.dataset.ko||"")+(a.dataset.ad?" "+a.dataset.ad:""), m=a.parentNode.querySelector(".kmsg");
   if(!m){ m=document.createElement("div"); m.className="d kmsg"; m.style.cssText="margin:6px 0 0;color:#1a73e8;font-weight:700"; a.insertAdjacentElement("afterend",m); }
+  if(a.classList.contains("kpc")){ e.preventDefault(); m.textContent=TE("Taxi booking works on your phone (K.Ride app)."); return; }
   m.textContent=TE("Destination copied — paste it in K.Ride");
   try{ navigator.clipboard.writeText(t).catch(function(){}); }catch(x){} },true);
 function poseForQuery(q,it){ var p=poseFor1(String(q).toLowerCase()); if(p) return p; return poseFor1((it||[]).slice(0,3).map(function(x){ return (x.cat||"")+" "+(x.cat_en||""); }).join(" ").toLowerCase()); }   /* 검색어가 먼저, 없으면 결과 종류 */
