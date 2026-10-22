@@ -11,7 +11,7 @@
 (function(){
 "use strict";
 var KINDS={
-  am:{e:"amenity", t:["🏪 편의시설","🏪 Convenience"], tabs:[{c:"CS2",ko:"편의점",en:"Convenience store",i:"🏪",r:1000},{c:"FD6",g:1,ko:"음식점",en:"Restaurant",i:"🍽",r:1500},{c:"FX",ko:"환전소",en:"Currency Exchange",i:"",r:2000},{c:"EMB",ko:"대사관",en:"Embassies",i:"",fixed:1}]},   // 편의시설은 풀다운 하나 (10-16) · 마트 → 음식점(구글, 별점) (사장님 10-21) · 환전소 = 허브 키워드 검색, 은행 뺌
+  am:{e:"amenity", t:["🏪 편의시설","🏪 Convenience"], tabs:[{c:"CS2",ko:"편의점",en:"Convenience store",i:"🏪",r:1000},{c:"FD6",g:1,ko:"음식점",en:"Restaurant",i:"🍽",r:1500},{c:"TA",g:1,gt:"travel_agency",ko:"여행사",en:"Travel agency",i:"🧭",r:3000},{c:"FX",ko:"환전소",en:"Currency Exchange",i:"",r:2000},{c:"EMB",ko:"대사관",en:"Embassies",i:"",fixed:1}]},   // 편의시설은 풀다운 하나 (10-16) · 마트 → 음식점(구글, 별점) (사장님 10-21) · 환전소 = 허브 키워드 검색, 은행 뺌 · 여행사(구글 /gnear?type=travel_agency, 별점, 3→10→30km) — 계획 없이 온 손님이 근처 가이드 투어 찾기 (사장님 10-22)
   em:{e:"emergency", t:["🚑 긴급","🚑 Emergency"], tabs:[{c:"HP8",ko:"병원",en:"Hospital",i:"🏥",r:2000},{c:"PM9",ko:"약국",en:"Pharmacy",i:"💊",r:2000}]},
   // 숙소 (사장님 10-16) — 카카오 숙박(AD5)을 허브가 종류로 나눔 + 관광공사 관광정보에 실린 숙소는 kto=1 (「관광공사」 표시)
   st:{e:"stay", t:["🏨 숙소","🏨 Stay"], tabs:[{c:"AD5",kind:"hotel",ko:"호텔",en:"Hotel",i:"🏨",r:3000},{c:"AD5",kind:"motel",ko:"모텔",en:"Motel",i:"🛏",r:3000},{c:"AD5",kind:"gh",ko:"게스트하우스",en:"Guesthouse",i:"🎒",r:3000},{c:"AD5",kind:"hanok",ko:"한옥스테이",en:"Hanok stay",i:"🏯",r:3000}]}
@@ -116,15 +116,15 @@ function pickBase(force){
 function sortIt(it,t){ if(!t.g) return it.sort(function(a,c){ return a.dist-c.dist; });
   if(S.ord==="r") return it.sort(function(a,c){ var ta=(a.n||0)>=10?1:0, tc=(c.n||0)>=10?1:0; if(ta!==tc) return tc-ta; if((c.rating||0)!==(a.rating||0)) return (c.rating||0)-(a.rating||0); if((c.n||0)!==(a.n||0)) return (c.n||0)-(a.n||0); return a.dist-c.dist; });   // 「별점순」 (사장님 10-21) — 구글 별점 높은 순, 리뷰 10개 미만은 뒤로
   return it.sort(function(a,c){ var ba=Math.floor(a.dist/200), bc=Math.floor(c.dist/200); if(ba!==bc) return ba-bc; var ta=(a.n||0)>=10?1:0, tc=(c.n||0)>=10?1:0; if(ta!==tc) return tc-ta; if((c.rating||0)!==(a.rating||0)) return (c.rating||0)-(a.rating||0); if((c.n||0)!==(a.n||0)) return (c.n||0)-(a.n||0); return a.dist-c.dist; }); }
-function fetchKind(t,p){ if(t.g){ var gk="g|"+p[0].toFixed(3)+","+p[1].toFixed(3)+"|"+LANG; if(CACHE[gk]) return CACHE[gk];
-    return CACHE[gk]=fetch(HUB+"/gnear?lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)+"&lang="+encodeURIComponent(LANG)).then(function(x){ return x.json(); }).then(function(j){ if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); return j.items||[]; }).catch(function(e){ delete CACHE[gk]; throw e; }); }
+function fetchKind(t,p){ if(t.g){ var gk="g|"+(t.gt||"")+"|"+p[0].toFixed(3)+","+p[1].toFixed(3)+"|"+LANG; if(CACHE[gk]) return CACHE[gk];
+    return CACHE[gk]=fetch(HUB+"/gnear?lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)+"&lang="+encodeURIComponent(LANG)+(t.gt?"&type="+t.gt:"")).then(function(x){ return x.json(); }).then(function(j){ if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); var a=j.items||[]; a.r=+j.r||t.r; return a; }).catch(function(e){ delete CACHE[gk]; throw e; }); }
   var en=kpL(), key=t.c+(t.kind||"")+"|"+p[0].toFixed(3)+","+p[1].toFixed(3)+en, need=t.c==="HP8"||t.c==="PM9"?10:3;
   var cnt=function(j){ return ((j&&j.items)||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }).length; };
   if(CACHE[key]) return CACHE[key];
   var one=function(r){ return fetch(HUB+"/kplace?cat="+t.c+"&x="+p[1].toFixed(5)+"&y="+p[0].toFixed(5)+"&radius="+r+en).then(function(x){ return x.json(); }); };
   return CACHE[key]=one(t.r).then(function(j){ if(j&&j.ok&&cnt(j)>=need) return j; return one(10000); }).then(function(j){
     if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); return (j.items||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }); },function(e){ delete CACHE[key]; throw e; }).catch(function(e){ delete CACHE[key]; throw e; }); }
-function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.byL={}; S.fl="";
+function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.byL={}; S.fl=""; S.gr=0;
   if(t.fixed){ var mp=ME.pos||null; S.base=null; S.src="";   // 대사관: 고정 목록 · 위치를 묻지 않는다 · 「나」 위치가 있으면 거리만 (폰 안에서 계산)
     S.items=EMB.map(function(x){ var o=Object.assign({},x); o.dist=(mp&&x.y)?Math.round(kmLL(mp,[x.y,x.x])*1000):null; return o; }); if(embL()) S.items.sort(function(a,b){ return embKey(a).localeCompare(embKey(b),{ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]); }); paint(); return; }
   paint();
@@ -132,7 +132,7 @@ function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.by
   pickBase(false).then(function(b){ if(!b){ S.base=null; S.err="loc"; paint(); return; }
     S.base=b.p; S.src=b.src; paint();
     return fetchKind(t,b.p).then(function(it){ if(S.k+S.tab+LANG!==my) return;
-      S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b.p,[+x.y,+x.x])*1000); return o; }); it=sortIt(S.raw.slice(),t).slice(0,10);
+      S.gr=it.r||t.r; S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b.p,[+x.y,+x.x])*1000); return o; }); it=sortIt(S.raw.slice(),t).slice(0,10);
       S.items=it; S.fl=LANG; S.byL[LANG]=it; paint(); }); }).catch(function(){ S.err="net"; paint(); }); }
 // 언어를 바꿀 때 — 목록을 비우지 않고 그 자리에서 (한국어 = 받은 이름 그대로, 그 언어로 받아 둔 게 있으면 그것, 처음 가는 외국어만 같은 자리로 다시 받음, 10-18)
 function relang(){ var k=KINDS[S.k]; if(!k) return; var t=k.tabs[S.tab];
@@ -140,7 +140,7 @@ function relang(){ var k=KINDS[S.k]; if(!k) return; var t=k.tabs[S.tab];
   S.byL=S.byL||{}; if(!L()||S.fl===LANG){ paint(); return; }
   if(S.byL[LANG]){ S.items=S.byL[LANG]; S.fl=LANG; paint(); return; }
   paint(); var my=S.k+S.tab+LANG, b=S.base; try{ if(window.KL&&KL.bz) KL.bz(1); }catch(e){}
-  fetchKind(t,b).then(function(it){ if(S.k+S.tab+LANG!==my) return; S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b,[+x.y,+x.x])*1000); return o; }); it=sortIt(S.raw.slice(),t).slice(0,10);
+  fetchKind(t,b).then(function(it){ if(S.k+S.tab+LANG!==my) return; S.gr=it.r||t.r; S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b,[+x.y,+x.x])*1000); return o; }); it=sortIt(S.raw.slice(),t).slice(0,10);
     S.items=it; S.fl=LANG; S.byL[LANG]=it; paint(); }).catch(function(){}).then(function(){ try{ if(window.KL&&KL.bz) KL.bz(-1); }catch(e){} }); }
 
 // ── 화면 ──
@@ -186,8 +186,8 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
   else if(S.err) h+='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>';
   else if(k.tabs[S.tab].fixed&&S.items) h+='<div class="nrbase">'+(embL()?TE("Sorted by country name (local order)"):T("나라 영문 이름 순","Sorted by country name (A–Z)"))+'</div>'+S.items.map(embHtml).join("");
   else { var tg=k.tabs[S.tab].g, rr=tg&&S.ord==="r";
-    if(tg&&S.items&&S.items.length) h+='<div class="nrord"><button type="button" data-nr="ord" data-o="d" class="'+(rr?'':'on')+'">'+T("거리순","Nearest")+'</button><button type="button" data-nr="ord" data-o="r" class="'+(rr?'on':'')+'">'+T("별점순 (구글)","Top rated (Google)")+'</button></div>';   // 구글 자료(음식점)만 거리순·별점순 (사장님 10-21)
-    if(S.base) h+='<div class="nrbase">'+(rr?T("⭐ 1.5km 안 구글 별점 높은 순","⭐ Highest Google rating within 1.5 km"):(S.src==="me"?(tg?T("📍 내 위치에서 가까운 순 (비슷한 거리는 별점순)","📍 Nearest to you (similar distance: higher rating first)"):T("📍 내 위치에서 가까운 순","📍 Nearest to you")):T("🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map")))
+    if(tg&&S.items&&S.items.length) h+='<div class="nrord"><button type="button" data-nr="ord" data-o="d" class="'+(rr?'':'on')+'">'+T("거리순","Nearest")+'</button><button type="button" data-nr="ord" data-o="r" class="'+(rr?'on':'')+'">'+T("별점순 (구글)","Top rated (Google)")+'</button></div>';   // 구글 자료(음식점·여행사)만 거리순·별점순 (사장님 10-21)
+    if(S.base) h+='<div class="nrbase">'+(rr?(function(){ var g=((S.gr||k.tabs[S.tab].r)/1000).toFixed(1).replace(/\.0$/,""); return T("⭐ "+g+"km 안 구글 별점 높은 순","⭐ Highest Google rating within "+g+" km"); })():(S.src==="me"?(tg?T("📍 내 위치에서 가까운 순 (비슷한 거리는 별점순)","📍 Nearest to you (similar distance: higher rating first)"):T("📍 내 위치에서 가까운 순","📍 Nearest to you")):T("🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map")))
       +(S.src!=="me"?' <button type="button" class="nrme" data-nr="me">📍 '+T("내 위치로","Use my location")+'</button>':'')+'</div>';
     if(!S.items) h+='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
     else if(!S.items.length) h+='<div class="msg">'+T("가까운 곳에 없습니다.","None found nearby.")+'</div>';
