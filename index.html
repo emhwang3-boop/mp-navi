@@ -115,6 +115,7 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
   .sbox .qw{grid-column:2;grid-row:1}.sbox #gob{grid-column:3;grid-row:1}.sbox #recob{grid-column:4;grid-row:1}
   .sbox #gfchips{display:grid!important;grid-column:2;grid-row:2;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;margin:0}
   .sbox #gfchips>button{width:auto!important}
+  .sbox #gob,.sbox #recob{min-width:var(--bw,0)}   /* 검색·추천받기 같은 너비 — --bw 는 bwSync() 가 잰다 (사장님 10-23) */
 }
 @media (orientation:landscape) and (max-height:560px){ .map{--W:calc(100vw - 112px)}   /* 가로 화면: 지도 양옆 손잡이(지도 밖 = 화면 넘김) */ .wrap{padding:6px 12px}.top{margin:0 0 6px}.logo{font-size:17px}.logo img{height:26px}.tbs .tb{font-size:12px;padding:5px 8px} }
 .map{position:relative}.map img{display:block;width:100%;height:auto}
@@ -408,6 +409,11 @@ function kmTxt(m){ return m<1000?m+" m":(m/1000).toFixed(1)+" km"; }
 function qxSync(){ document.getElementById("qx").hidden=!document.getElementById("q").value; }
 function qClear(){ try{ spinClear(); }catch(e){} var q=document.getElementById("q"); q.value=""; qxSync(); q.focus(); }
 document.getElementById("q").addEventListener("input",qxSync);
+// 넓은 PC: 검색·추천받기 단추를 둘 중 넓은 쪽 너비로 맞춘다 — 언어 바뀌면 글자 길이가 달라져 다시 잰다 (사장님 10-23)
+function bwSync(){ var sb=document.querySelector(".sbox"), a=document.getElementById("gob"), b=document.getElementById("recob"); if(!sb||!a||!b) return;
+  sb.style.removeProperty("--bw"); var w=Math.ceil(Math.max(a.offsetWidth,b.offsetWidth)); if(w) sb.style.setProperty("--bw",w+"px"); }
+(function(){ var t=0, k=function(){ clearTimeout(t); t=setTimeout(bwSync,60); }; window.addEventListener("load",k); window.addEventListener("resize",k);
+  try{ new MutationObserver(k).observe(document.querySelector(".sbox"),{childList:true,subtree:true,characterData:true}); }catch(e){} })();
 // #res 한 줄 안내 — 언어를 바꾸면 그 자리에서 다시 (lang.js 가 window._RR.f 를 부른다, 10-18)
 function resMsg(k,e){ var out=document.getElementById("res"), f=function(){ out.innerHTML='<div class="msg">'+T(k,e)+'</div>'; }; f(); window._RR={f:f}; }
 function go(kq){
