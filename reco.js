@@ -75,6 +75,7 @@ function recoGo(more){
   }).catch(function(){ R.busy=false; RM(function(){ out.innerHTML='<div class="msg">'+esc(T("잠시 뒤 다시 해 주세요.","Please try again shortly."))+'</div>'; }); });
 }
 // 카카오 실제 장소 — 기존 /kplace(near=1). 위치는 기존 검색처럼 ux/uy(있을 때만), 거리는 화면에서
+var KHALL=/공간대여|웨딩|예식|돌잔치|연회/;   // AI 가 준 이름으로 찾을 때 예식장·공간대여는 빼기 (학인당 → 「학인당 영빈관 웨딩&돌잔치」, 사장님 10-23)
 var KBAD=/편의점|주차장|부동산|주유소|은행|ATM|세탁|미용|학원|병원|약국/, KFOOD=/카페|커피|맛집|음식|식당|호텔|숙소|펜션|숙박/;
 var KCAT=[[/스키|스노보드/,/^(스키장|슬로프)$/],[/해수욕장|해변|바다/,/해수욕장|해변/],[/온천/,/^온천/],[/아쿠아리움|수족관/,/아쿠아리움/],[/놀이공원|테마파크|놀이동산/,/^(테마파크|놀이공원)$/,null,3],[/사찰|산사|절$|템플/,/사찰/],
   [/캠핑|야영/,/캠핑|야영/],[/휴양림/,/휴양림/],[/계곡/,/계곡/],[/등산|산행/,/^(등산로|산)$/],[/동물원/,/동물원/],[/수목원|식물원/,/수목원|식물원/]];   // 검색어 종류 → 카카오 분류 끝칸
@@ -97,7 +98,7 @@ function kGet(kws,nms,np){ if(!kws.length&&!nms.length) return Promise.resolve([
         return tk.some(function(t){ return ls.indexOf(t)>=0; })||(/관광|명소|여행/.test(c)&&tk.some(function(t){ return String(x.name).indexOf(t)>=0; })); });
       it.forEach(function(x){ x._src="k"; x._g=!!cm||np>0; }); return it; }); });
   var B=nms.map(function(nm){ return kOne(HUB+"/kplace?q="+encodeURIComponent(nm)+lg+pq).then(function(it){ var a=kNorm(nm);
-      var x=it.slice(0,5).find(function(y){ var b=kNorm(y.name); return (b===a||b.indexOf(a)===0)&&!KBAD.test(String(y.cat||""))&&!/음식점|카페/.test(String(y.cat||"")); });
+      var x=it.slice(0,5).find(function(y){ var b=kNorm(y.name); return (b===a||b.indexOf(a)===0)&&!KBAD.test(String(y.cat||""))&&!/음식점|카페/.test(String(y.cat||""))&&!KHALL.test(String(y.cat||"")+" "+y.name); });
       if(x){ x._src="n"; x._g=true; } return x?[x]:[]; }); });
   return Promise.all(B.concat(A)).then(function(ls){ var all=[], pk=R.picks.map(function(p){ var P=PLACES[p.k]; return [+P.lat,+P.lng,kNorm(String(P.ko).split(" (")[0])]; });
     ls.forEach(function(l){ l.forEach(function(x){ var ll=[+x.y,+x.x]; x._k=x.name+"|"+(+x.x).toFixed(3)+"|"+(+x.y).toFixed(3); x.dist=Math.round(kmLL(o,ll)*1000); x._n=1;
@@ -133,8 +134,8 @@ function paint(keep){ var out=$("res"), en=L(), h='', n=0;
     GK.forEach(function(x){ h+='<div class="item rcg"><div class="t">⭐ '+esc(x.name)+'</div>'+(x.addr?'<div class="d">'+esc(x.addr)+'</div>':'')
       +'<div class="d"><b style="color:#f08c00">★'+(+x.rating).toFixed(1)+'</b> ('+(+x.n).toLocaleString("en-US")+') · <span style="font-weight:700">Google</span>'+(x.dist!=null?' · '+esc(T("나에게서","From you"))+' <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
       +(x.uri&&/^https:\/\//.test(x.uri)?'<div class="d" style="margin-top:4px"><a href="'+esc(x.uri)+'" target="_blank" rel="noopener">'+esc(T("구글 지도에서 보기","View on Google Maps"))+'</a></div>':'')+'</div>'; n++; }); }
-  if(KK.length){ var fs=!(ME&&ME.pos);
-    h+='<div class="rcsec">'+esc(fs?T("가까운 곳 (서울에서 가까운 순)","More places nearby (closest to Seoul)"):T("가까운 곳 (나에게서 가까운 순)","More places nearby (closest to you)"))+'</div>';
+  if(KK.length){ var fs=!(ME&&ME.pos), ai=KK.every(function(x){ return x._src==="n"; })&&KK.some(function(x){ return x.dist>30000; });   // AI 가 이름으로 고른 먼 곳이면 「가까운 곳」이 아니다 (사장님 10-23)
+    h+='<div class="rcsec">'+esc(ai?T("AI가 고른 다른 지역","Other regions picked by AI"):fs?T("가까운 곳 (서울에서 가까운 순)","More places nearby (closest to Seoul)"):T("가까운 곳 (나에게서 가까운 순)","More places nearby (closest to you)"))+'</div>';
     window._sres=KK;
     KK.forEach(function(x,i){ var e2=en&&x.name_en, ttl=KS(e2?x.name_en:x.name), ad=e2?(x.addr_en||x.addr):x.addr, ct=e2?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
       h+='<div class="item sres rck" data-i="'+i+'" style="cursor:pointer"><div class="t">📍 '+esc(ttl)+'</div>'+(e2?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
