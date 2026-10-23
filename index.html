@@ -113,8 +113,9 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 @media (min-width:900px) and (min-height:561px){
   .sbox{display:grid!important;grid-template-columns:1fr minmax(0,460px) auto auto 1fr;column-gap:5px;row-gap:8px;align-items:center}
   .sbox .qw{grid-column:2;grid-row:1}.sbox #gob{grid-column:3;grid-row:1}.sbox #recob{grid-column:4;grid-row:1}
-  .sbox #gfchips{display:grid!important;grid-column:2;grid-row:2;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;margin:0}
+  .sbox #gfchips{display:grid!important;grid-column:2;grid-row:2;grid-auto-flow:column;grid-auto-columns:var(--cw,1fr);gap:6px;margin:0;justify-self:center;width:max-content}   /* 칩 너비 --cw = bwSync() 가 잰 가장 긴 칩(검색칸보다 길면 검색칸 가운데 기준으로 양쪽 같게, 10-23) */
   .sbox #gfchips>button{width:auto!important}
+  .sbox #gfchips.cwide{display:flex!important;flex-wrap:wrap;justify-content:center;width:auto;grid-column:1/-1}.sbox #gfchips.cwide>button{width:var(--cw)!important}
   .sbox #gob,.sbox #recob{min-width:var(--bw,0)}   /* 검색·추천받기 같은 너비 — --bw 는 bwSync() 가 잰다 (사장님 10-23) */
 }
 @media (orientation:landscape) and (max-height:560px){ .map{--W:calc(100vw - 112px)}   /* 가로 화면: 지도 양옆 손잡이(지도 밖 = 화면 넘김) */ .wrap{padding:6px 12px}.top{margin:0 0 6px}.logo{font-size:17px}.logo img{height:26px}.tbs .tb{font-size:12px;padding:5px 8px} }
@@ -162,6 +163,7 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 .dist{font-size:22px;font-weight:900;color:var(--green);margin:2px 0 4px}
 table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}   /* table 만 — 「내 여행」 목록 번호(b.trn)가 100% 로 늘어나던 것 (10-18) */.trn td{padding:6px 4px;border-top:1px solid var(--line)}.trn td.f{text-align:right;font-weight:700}
 .trh{font-weight:800;margin:12px 0 2px}
+.ktxb .kxsel{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0 4px}.ktxb .kxsel label{font-weight:700;font-size:14px}.ktxb select{font-size:15px;padding:6px 8px;border-radius:8px;border:1px solid #c5d3e8;margin-left:4px}.ktxb #kxSw{border:1px solid #c5d3e8;background:#fff;border-radius:999px;padding:5px 12px;font-size:16px;cursor:pointer}.ktxb .kxbk{display:flex;gap:12px;margin-top:6px}
 .res{margin-top:14px;position:relative}
 .xbtn{position:absolute;top:6px;right:6px;z-index:2;width:34px;height:34px;border:0;border-radius:50%;background:var(--bg);color:var(--sub);font-size:20px;line-height:34px;cursor:pointer;padding:0}
 .xbtn:hover{background:var(--line);color:var(--ink)}
@@ -237,7 +239,7 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
-<script src="i18n.js?v=1023kr"></script>
+<script src="i18n.js?v=1023kx"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
 // 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
@@ -431,7 +433,18 @@ function qClear(){ try{ spinClear(); }catch(e){} var q=document.getElementById("
 document.getElementById("q").addEventListener("input",qxSync);
 // 넓은 PC: 검색·추천받기 단추를 둘 중 넓은 쪽 너비로 맞춘다 — 언어 바뀌면 글자 길이가 달라져 다시 잰다 (사장님 10-23)
 function bwSync(){ var sb=document.querySelector(".sbox"), a=document.getElementById("gob"), b=document.getElementById("recob"); if(!sb||!a||!b) return;
-  sb.style.removeProperty("--bw"); var w=Math.ceil(Math.max(a.offsetWidth,b.offsetWidth)); if(w) sb.style.setProperty("--bw",w+"px"); }
+  sb.style.removeProperty("--bw"); var w=Math.ceil(Math.max(a.offsetWidth,b.offsetWidth)); if(w) sb.style.setProperty("--bw",w+"px");
+  // 칩: 영어·스페인어처럼 글자가 길면 칩마다 너비가 달라지고 한쪽으로 쏠렸다 — 가장 긴 칩 너비(검색칸 폭을 칩 수로 나눈 것보다 작으면 그것)로 모두 같게 (사장님 10-23)
+  var gc=document.getElementById("gfchips"), qw=sb.querySelector(".qw"); if(!gc) return;
+  if(!matchMedia("(min-width:900px) and (min-height:561px)").matches){ gc.style.removeProperty("--cw"); return; }
+  gc.style.removeProperty("--cw"); gc.style.gridAutoColumns="max-content"; var bs=[].slice.call(gc.children).filter(function(x){ return x.offsetWidth>0; }), mx=0;
+  bs.forEach(function(x){ mx=Math.max(mx,x.offsetWidth); }); gc.style.gridAutoColumns="";
+  gc.classList.remove("cwide");
+  if(bs.length){ var fill=qw?(qw.offsetWidth-6*(bs.length-1))/bs.length:0, cw=Math.ceil(Math.max(mx,fill)); gc.style.setProperty("--cw",cw+"px");
+    // 칩 줄이 화면 밖으로 나가면(스페인어·좁은 PC) — 먼저 줄 전체 가운데로, 그래도 넘치면 두 줄로 (10-23)
+    var tot=bs.length*cw+6*(bs.length-1), sr=sb.getBoundingClientRect(), qr=qw?qw.getBoundingClientRect():sr, mid=(qr.left+qr.right)/2;
+    var vw=document.documentElement.clientWidth;   // 화면 가장자리 8px 안쪽에 들어오는지
+    if(mid-tot/2<8||mid+tot/2>vw-8) gc.classList.add("cwide"); } }   // 넘치면 줄 전체 가운데로, 그래도 넘치면 두 줄
 (function(){ var t=0, k=function(){ clearTimeout(t); t=setTimeout(bwSync,60); }; window.addEventListener("load",k); window.addEventListener("resize",k);
   try{ new MutationObserver(k).observe(document.querySelector(".sbox"),{childList:true,subtree:true,characterData:true}); }catch(e){} })();
 // #res 한 줄 안내 — 언어를 바꾸면 그 자리에서 다시 (lang.js 가 window._RR.f 를 부른다, 10-18)
@@ -673,7 +686,46 @@ function hitAt(cx,cy){ var spe=document.getElementById("spin"); if(spe){ var sr=
   for(var y=Math.max(0,gy-R);y<=Math.min(255,gy+R);y++) for(var x=Math.max(0,gx-R);x<=Math.min(255,gx+R);x++){ var w=HG[y*256+x]; if(!w) continue; var d=(x+.5-fx)*(x+.5-fx)+(y+.5-fy)*(y+.5-fy); if(d<bd&&d<=R*R){ bd=d; best=w; } }
   return best?HIT.keys[best-1]:null; }
 function pName(k){ var p=PLACES[k]; return p?(LN(p)):""; }
-function ktxErr(){ document.getElementById("res").innerHTML='<div class="err">⚠ '+T("오류 — KTX 그림은 장소가 아닙니다.","Error — the KTX picture is not a place.")+'</div>'; }
+// KTX 그림 = KTX·SRT 시간표 (사장님 10-23). 출발·도착 역 고르기(가까운 역이 처음 출발) · 오늘 남은 열차, 없으면 내일 · KTX·SRT 만 · 허브 /train(TAGO)
+//  역 = [한국어, TAGO 코드, 위도, 경도, 영어, 일본어, 중국어 간체, 번체] — TAGO 역 목록에서 코드 확인(2026-10-23). SRT 는 수서·동탄에서만 나온다
+var KXS=[["서울","NAT010000",37.5547,126.9707,"Seoul","ソウル","首尔","首爾"],["용산","NAT010032",37.5299,126.9648,"Yongsan","龍山","龙山","龍山"],["청량리","NAT130126",37.5803,127.0469,"Cheongnyangni","清凉里","清凉里","清涼里"],
+  ["수서","NATH30000",37.4876,127.1018,"Suseo (SRT)","水西 (SRT)","水西 (SRT)","水西 (SRT)"],["동탄","NATH30326",37.2001,127.0957,"Dongtan (SRT)","東灘 (SRT)","东滩 (SRT)","東灘 (SRT)"],["광명","NATH10219",37.4163,126.8848,"Gwangmyeong","光明","光明","光明"],
+  ["천안아산","NATH10960",36.7944,127.1045,"Cheonan-Asan","天安牙山","天安牙山","天安牙山"],["오송","NAT050044",36.6201,127.3275,"Osong","五松","五松","五松"],["대전","NAT011668",36.3322,127.4346,"Daejeon","大田","大田","大田"],
+  ["김천구미","NATH12383",36.1137,128.1807,"Gimcheon-Gumi","金泉亀尾","金泉龟尾","金泉龜尾"],["동대구","NAT013271",35.8794,128.6287,"Dongdaegu","東大邱","东大邱","東大邱"],["경주","NATH13421",35.7982,129.1388,"Gyeongju","慶州","庆州","慶州"],
+  ["포항","NAT8B0351",36.0718,129.3418,"Pohang","浦項","浦项","浦項"],["부산","NAT014445",35.1151,129.0418,"Busan","釜山","釜山","釜山"],["마산","NAT880345",35.2559,128.5752,"Masan","馬山","马山","馬山"],
+  ["창원중앙","NAT880281",35.2391,128.6918,"Changwon Jungang","昌原中央","昌原中央","昌原中央"],["진주","NAT881014",35.161,128.1173,"Jinju","晋州","晋州","晉州"],["안동","NAT022558",36.5647,128.6959,"Andong","安東","安东","安東"],
+  ["강릉","NAT601936",37.7638,128.8996,"Gangneung","江陵","江陵","江陵"],["익산","NAT030879",35.9405,126.9465,"Iksan","益山","益山","益山"],["전주","NAT040257",35.8497,127.1618,"Jeonju","全州","全州","全州"],
+  ["광주송정","NAT031857",35.1376,126.7914,"Gwangju-Songjeong","光州松汀","光州松汀","光州松汀"],["목포","NAT032563",34.7914,126.3868,"Mokpo","木浦","木浦","木浦"],["순천","NAT041595",34.9455,127.5036,"Suncheon","順天","顺天","順天"],
+  ["여수EXPO","NAT041993",34.753,127.748,"Yeosu EXPO","麗水EXPO","丽水EXPO","麗水EXPO"]];
+function kxN(i){ var s=KXS[i]; return LANG==="ko"?s[0]:LANG==="ja"?s[5]:LANG==="zhs"?s[6]:LANG==="zht"?s[7]:s[4]; }
+function ktxErr(){ var K=window._kx; if(!K){ var a=0, b=13, ps=ME&&ME.pos;
+    if(ps){ var bd=1e9; KXS.forEach(function(s,i){ var d=kmLL(ps,[s[2],s[3]]); if(d<bd){ bd=d; a=i; } }); }
+    if(a===13||KXS[a][2]<36.0) b=0;   // 부산·남쪽에서 = 서울행
+    K=window._kx={a:a,b:b}; }
+  var op=function(sel){ return KXS.map(function(s,i){ return '<option value="'+i+'"'+(i===sel?' selected':'')+'>'+esc(kxN(i))+'</option>'; }).join(""); };
+  document.getElementById("res").innerHTML='<div class="item ktxb"><div class="t">🚆 '+T("KTX · SRT 시간표","KTX · SRT timetable")+'</div>'
+    +'<div class="kxsel"><label>'+T("출발","Departure")+' <select id="kxA">'+op(K.a)+'</select></label><button type="button" id="kxSw" aria-label="swap">⇄</button><label>'+T("도착","Arrival")+' <select id="kxB">'+op(K.b)+'</select></label></div>'
+    +'<div class="d">'+T("SRT는 수서·동탄역에서 출발합니다.","SRT trains leave from Suseo or Dongtan.")+'</div><div id="kxT"></div></div>';
+  var A=document.getElementById("kxA"), B=document.getElementById("kxB");
+  A.onchange=function(){ K.a=+A.value; ktxLoad(); }; B.onchange=function(){ K.b=+B.value; ktxLoad(); };
+  document.getElementById("kxSw").onclick=function(){ var t=K.a; K.a=K.b; K.b=t; ktxErr(); };
+  ktxLoad(); }
+function ktxLoad(){ var K=window._kx, box=document.getElementById("kxT"); if(!K||!box) return; var A=KXS[K.a], B=KXS[K.b];
+  if(K.a===K.b){ box.innerHTML='<div class="d">'+T("출발역과 도착역을 다르게 골라 주세요.","Please choose two different stations.")+'</div>'; return; }
+  box.innerHTML='<div class="d">'+T("열차 찾는 중…","Finding trains…")+'</div>'; var my=K.a+"|"+K.b+"|"+LANG;
+  function load(add){ var d=kstDay(add), ck=A[1]+"|"+B[1]+"|"+d, TC=window._trC||(window._trC={});
+    return (TC[ck]||(TC[ck]=fetch(HUB+"/train?dep="+A[1]+"&arr="+B[1]+"&date="+d).then(function(r){ return r.json(); }).catch(function(e){ delete TC[ck]; throw e; }))).then(function(j){
+      var it=((j&&j.ok&&j.items)||[]).filter(function(x){ return /^(KTX|SRT)/.test(trGrade(x)); }), now=kstDay(0)===d?new Date(Date.now()+9*3600e3).toISOString().slice(11,16).replace(":",""):"0000";
+      return { add:add, all:it, left:it.filter(function(x){ return x.dp>=now; }) }; }); }
+  load(0).then(function(r){ return (r.left.length||!r.all.length)?r:load(1); }).then(function(r){ if(K.a+"|"+K.b+"|"+LANG!==my||!document.getElementById("kxT")) return;
+    var rows=r.add?r.all:r.left;
+    if(!rows.length){ box.innerHTML='<div class="d">'+T("이 구간에는 KTX·SRT 열차가 없습니다.","No KTX or SRT trains on this route.")+'</div>'; return; }
+    var srt=rows.some(function(x){ return trGrade(x)==="SRT"; }), ktx=rows.some(function(x){ return /^KTX/.test(trGrade(x)); });
+    box.innerHTML='<div class="trh">'+esc(kxN(K.a))+' → '+esc(kxN(K.b))+' · '+(r.add?T("내일","Tomorrow"):T("오늘","Today"))+'</div><table class="trn">'+rows.slice(0,12).map(function(x){ var m=(+x.ar.slice(0,2)*60+ +x.ar.slice(2))-(+x.dp.slice(0,2)*60+ +x.dp.slice(2)); if(m<0) m+=1440;
+      return '<tr><td>'+trBadge(trGrade(x))+'</td><td>'+hm(x.dp)+' → '+hm(x.ar)+'</td><td>'+Math.floor(m/60)+T("시간 ","h ")+(m%60)+T("분","m")+'</td><td class="f">'+(x.fare?x.fare.toLocaleString()+T("원"," KRW"):"-")+'</td></tr>'; }).join("")+'</table>'
+      +(rows.length>12?'<div class="d">'+T("외 ","+ ")+(rows.length-12)+T("편 더"," more")+'</div>':'')
+      +'<div class="kxbk">'+(ktx?'<a href="https://www.letskorail.com/" target="_blank" rel="noopener">'+T("코레일 예매","Book on Korail")+'</a>':'')+(srt?'<a href="https://etk.srail.kr/" target="_blank" rel="noopener">'+T("SRT 예매","Book on SRT")+'</a>':'')+'</div>';
+  }).catch(function(){ box.innerHTML='<div class="d">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>'; }); }
 // 도시 그림은 한 번 누르면 잠깐(0.45초) 기다렸다 장소 정보 — 그 사이 또 누르면 도시 약도 (정보 카드가 지도를 밀어 두 번째 누름이 빗나가지 않게)
 var _tapT=null;
 function mePt(k){ var p=PLACES[k]; if(!p) return null; var f=meGeoFrac(VIEW,p.lat,p.lng); if(k!=="__me"&&VIEW!=="kr"&&CITY[VIEW]&&CITY[VIEW].spots){ var b=CITY[VIEW].spots[k]; if(b) f=[(b[0]+b[2])/2,(b[1]+b[3])/2]; } return f?[f[0]*1000,f[1]*1000]:null; }
