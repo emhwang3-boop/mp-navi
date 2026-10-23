@@ -14,11 +14,8 @@
 <script>
 /* 머니퍼즐 내비 첫 화면 (사장님 2026-10-14) — 다른 앱과 같은 출입: 사장님 기기·초대 링크·홈페이지에서 온 사람만 */
 (function(){ try{
-  /* 🧪 결제 테스트 모드 (사장님 10-23) — ?paytest=1 이면 이 기기만 테스트(5분 체험→결제→기기추가) 흐름을 켠다. 실 손님은 절대 지나오지 않는다.
-     mpv_paytest=1 로 표시하고(앱 로직은 pass.js), 테스트 기기도 앱이 뜨게 mpv_ok 를 같이 켠다. ?paytest=0 이면 끈다. 주소에서 지운다(?inv 처럼). */
-  if(/[?&]paytest=1/i.test(location.search)){ try{ localStorage.setItem("mpv_paytest","1"); localStorage.setItem("mpv_ok","1"); }catch(z){} }
-  else if(/[?&]paytest=0/i.test(location.search)){ try{ localStorage.removeItem("mpv_paytest"); }catch(z){} }
-  if(/[?&]paytest=\d/i.test(location.search)){ try{ var qsp=location.search.slice(1).split("&").filter(function(x){ return !/^paytest=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qsp?"?"+qsp:"")+location.hash); }catch(z){} }
+  /* 🧪 결제 테스트 모드(?paytest)는 2026-10-24 제거됨 — 앱은 무료(제휴·광고). 혹시 남은 표시는 지운다. */
+  try{ localStorage.removeItem("mpv_paytest"); }catch(z){}
   if(/[?&]me=EM2410/i.test(location.search)) localStorage.setItem("mp_owner","1");
   var ok=!!localStorage.getItem("mp_owner")||!!localStorage.getItem("mpv_ok")||/^https:\/\/([a-z0-9-]+\.)?moneypuzzle\.co\.kr|^https:\/\/emhwang3-boop\.github\.io\/(home|mp-navi)/.test(document.referrer||"");   /* 홈페이지에서 온 사람도 다시 들임 — ODsay 키는 서버로 옮김 (사장님 10-17) */
   if(localStorage.getItem("mp_owner")||localStorage.getItem("mpv_inv")) document.addEventListener("DOMContentLoaded",function(){ var l=document.querySelector('link[rel="mp-manifest"]'); if(l) l.rel="manifest"; });
@@ -281,6 +278,8 @@ function inqOpen(){ inqCss(); var b=document.getElementById("inqBox"); if(b) b.r
   b=document.createElement("div"); b.id="inqBox"; b.onclick=function(e){ if(e.target===b) b.remove(); };
   b.innerHTML='<div id="inqIn"><div style="display:flex;align-items:center"><h3 style="flex:1">'+T("입점·광고 문의","Advertise with us")+'</h3><button class="g" onclick="document.getElementById(\'inqBox\').remove()">✕</button></div>'
    +'<div class="m">'+T("이 지도에 가게·기업을 알리고 싶다면 남겨 주세요. 먼저 두 가지를 확인합니다.","Want your shop or company on this map? Please verify two things first.")+'</div>'
+   +'<button type="button" style="width:100%;margin:10px 0 2px;background:#0c8599" onclick="document.getElementById(\'inqBox\').remove(); if(window.GUIDEREG) window.GUIDEREG();">🧭 '+T("관광 가이드 등록","Register as a tour guide")+'</button>'
+   +'<div class="m" style="margin-bottom:6px">'+T("관광통역안내사 등 통역·길안내를 해 주실 분은 여기서 등록하세요 (무료).","Licensed interpreter-guides can register here (free).")+'</div>'
    +'<div class="st" id="inqS1"><b>1. '+T("사업자등록번호","Business registration number")+'</b><div class="rw" style="margin-top:6px"><input id="inqBno" inputmode="numeric" maxlength="12" placeholder="000-00-00000"><button id="inqBnoB" onclick="inqBiz()">'+T("확인","Check")+'</button></div><div class="m" id="inqBnoM"></div></div>'
    +'<div class="st" id="inqS2"><b>2. '+T("이메일 인증","Email verification")+'</b><div class="rw" style="margin-top:6px"><input id="inqEm" type="email" maxlength="120" placeholder="name@company.com" autocomplete="email"><button id="inqEmB" onclick="inqCode()">'+T("코드 받기","Send code")+'</button></div>'
    +'<div class="rw" style="margin-top:6px"><input id="inqCd" inputmode="numeric" maxlength="6" placeholder="'+T("6자리 코드","6-digit code")+'"><button id="inqCdB" onclick="inqVerify()">'+T("확인","Verify")+'</button></div><div class="m" id="inqEmM"></div></div>'
@@ -1296,11 +1295,11 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1023mi"></script>
 <script src="gift.js?v=1023mi"></script>
-<script src="near.js?v=1024guide"></script>
+<script src="near.js?v=1024gmatch"></script>
 <script src="reco.js?v=1023dd"></script>
 <script src="gu.js?v=f29da37807"></script>
 <script src="citytour.js?v=1022es"></script>
-<script src="pass.js?v=1024guide"></script>
+<script src="pass.js?v=1024gmatch"></script>
 <script>
 // ── ★ 관심 장소 (사장님 10-17) — 손님 폰 안에만 저장·분석. 서버로 보내지 않는다(통로 FAV_SEND 는 꺼 둠)
 //   저장: 장소 카드 ☆ · 약도를 0.7초 길게 눌러 「여기 저장」 / 모음: 지도 바로 아래 테두리를 따라 작은 노란 별 한 줄(저장한 만큼) — 누르면 목록
