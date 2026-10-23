@@ -50,11 +50,13 @@ f0(HUB+"/npass/cfg",{cache:"no-store"}).then(function(r){ return r.json(); }).th
 var sl0=window.setLang; if(typeof sl0==="function") window.setLang=function(){ var r=sl0.apply(this,arguments); try{ menu(); }catch(e){} return r; };
 window.NPASS={has:function(){ return !!tok(); },exp:function(){ var t=tok(); return t?t.split(".")[1]:""; },resend:resendOpen,on:function(){ return ON; }};
 
-/* ───────── 🧪 결제 테스트 모드 (사장님 2026-10-23) ─────────
- *  🔴 mpv_paytest==="1" 일 때만 전부 돈다. 실 손님 화면·동작은 한 글자도 안 바뀐다(이 블록을 통째로 건너뜀).
- *  켜는 법: navi.moneypuzzle.co.kr/?paytest=1 로 연다(끄기 ?paytest=0). 벽 빨리 보기: ?paytest=1&trialsecs=5
- *  흐름: 앱 열림 → (이용권 있으면 벽 없음) / 없으면 5분 무료 체험 → 0 되면 전체 화면 벽 → 결제(이용권 고르기 → 가짜 승인) → 이용권 들어옴 → 기기 추가(QR·링크)
- *  결제는 지금 "가짜"다 — 허브 /npass/buy 가 테스트 이용권만 찍는다. PG(토스) 정해지면 /npass/toss 로 바꾸고 이 Pay 를 토스 위젯으로 교체. */
+/* ───────── 🧪 결제 테스트 모드 (사장님 2026-10-23 밤 — 건별 소액 모델) ─────────
+ *  🔴 mpv_paytest==="1" 일 때만 전부 돈다. 실 손님 화면·동작은 한 글자도 안 바뀐다(이 블록을 통째로 건너뜀). 앱은 계속 무료(지도·명소·검색·별점).
+ *  켜는 법: navi.moneypuzzle.co.kr/?paytest=1 로 연다(끄기 ?paytest=0).
+ *  건별 소액(가짜 승인, 허브 /npass/pay):
+ *    · AI 여행 플래너(추천받기 /nreco · 여행카트 일정 /ntrip): 실행할 때 그 자리에서 1,000원 결제창 → 가짜 승인하면 그 건 실행. (fetch 를 감싸서 가로챈다 — reco.js·trip.js 는 안 고침)
+ *    · 통역·길안내(🗣 통역 단추): 10회 묶음 1,000원 → 기기에 10회 쌓고 쓸 때마다 1 차감(남은 횟수 ⋮메뉴에). '잔액'이 아니라 '남은 횟수'.
+ *  7/15/30일 이용권·전체 화면 벽·기기추가 코드는 아래에 그대로 두되(보류) 화면엔 안 띄운다. PG(토스) 정해지면 가짜 승인을 토스 위젯으로 교체. */
 (function(){
   function pt1(){ return ls("mpv_paytest")==="1"; }
   if(!pt1()) return;
@@ -63,7 +65,8 @@ window.NPASS={has:function(){ return !!tok(); },exp:function(){ var t=tok(); ret
   var active=false, wtmr=0;
   function dlabel(d){ return T(d+"일",d+" days"); }
   function pcss(){ if(document.getElementById("ptCss")) return; var s=document.createElement("style"); s.id="ptCss";
-    s.textContent="#psBox{z-index:1070!important}"
+    s.textContent="#psBox{z-index:2147483010!important}"
+    +"#psBox .ptitem{display:flex;justify-content:space-between;align-items:center;padding:14px 14px;border:1.5px solid var(--blue);border-radius:12px;margin:12px 0;font-weight:800}#psBox .ptitem .pts{font-size:16px}#psBox .ptitem .ptpr{font-size:16px}#psBox .ptitem .ptpr small{color:var(--sub);font-weight:600;font-size:13px}"
     +"#psBox .ptopts{margin:12px 0 4px}"
     +"#psBox .ptopt{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;margin:8px 0;cursor:pointer}"
     +"#psBox .ptopt input{width:18px;height:18px;margin:0;flex:0 0 auto}"
@@ -125,22 +128,54 @@ window.NPASS={has:function(){ return !!tok(); },exp:function(){ var t=tok(); ret
     var sh=document.getElementById("ptShare");
     sh.onclick=navigator.share?function(){ try{ navigator.share({title:"Money Puzzle Tour for Korea",text:T("머니퍼즐 투어 이용권","Money Puzzle Tour pass"),url:link}).catch(function(){}); }catch(e){ copy(link); } }:function(){ copy(link); };
     loadQR(function(okq){ var q=document.getElementById("ptQR"); if(!q) return; if(okq&&window.QRCode){ try{ q.innerHTML=""; new window.QRCode(q,{text:link,width:150,height:150,correctLevel:window.QRCode.CorrectLevel.M}); return; }catch(e){} } q.textContent=T("(QR 준비 실패 — 링크를 복사해 주세요)","(QR unavailable — please copy the link)"); }); }
-  // ── ⋮ 메뉴에 결제·기기추가 (테스트 모드에서만)
+  // ═══════════ 건별 소액 모델 (사장님 10-23 밤) ═══════════
   function mmAdd(id,fn){ var mm=document.getElementById("mm"); if(!mm) return null; var a=document.getElementById(id);
     if(!a){ mm.insertAdjacentHTML("afterbegin",'<a href="#" id="'+id+'" class="mi"></a>'); a=document.getElementById(id); a.onclick=function(e){ e.preventDefault(); mm.hidden=true; fn(); }; } return a; }
-  function tmenu(){ var a=mmAdd("mpay",payModal); if(a) a.innerHTML='<img class="miic" src="img/menu/mi_pay.png" alt="">'+esc(T("결제","Pay"));
-    if(active){ var d=mmAdd("mdev",addDevice); if(d) d.innerHTML='<img class="miic" src="img/menu/mi_device.png" alt="">'+esc(T("기기 추가","Add a device")); }
-    else { var x=document.getElementById("mdev"); if(x) x.remove(); } }
-  // ── 앱 열림: 이용권 있으면 벽 없음 / 없으면 5분 무료 체험 → 0 되면 벽
-  function trial(){ var body={pd:dev()}; if(TSECS) body.secs=+TSECS;
-    hub("/npass/trial",body).then(function(j){ var left=j&&typeof j.left==="number"?j.left:300; tmenu();
-      clearTimeout(wtmr); if(left<=0) wall(); else wtmr=setTimeout(wall,left*1000); })
-    .catch(function(){ tmenu(); }); }   // 허브가 안 되면 막지 않는다
-  function start(){ var t=tok();
-    if(t){ hub("/npass/check",{t:t,pd:dev()}).then(function(j){ if(j&&j.ok){ active=true; tmenu(); } else trial(); }).catch(trial); }
-    else trial(); }
+  function L6(o){ return o[LANG]||o.en; }   // 이 블록 새 문구는 6개 언어를 바로 넣는다(i18n.js 안 건드림)
+  var CRED=0;   // 통역·길안내 남은 횟수 (허브 기준, 화면 표시용)
+  var PLAN={item:"plan",title:{ko:"AI 여행 플래너",en:"AI travel planner",ja:"AI旅行プランナー",zhs:"AI行程规划",zht:"AI行程規劃",es:"Planificador de viaje IA"},sub:{ko:"1건 실행",en:"1 use",ja:"1件",zhs:"1次",zht:"1次",es:"1 uso"},w:"1,000",u:"0.79"};
+  var INTERP={item:"interp",title:{ko:"통역·길안내",en:"Interpreter & directions",ja:"通訳・道案内",zhs:"翻译·路线",zht:"翻譯·路線",es:"Intérprete y rutas"},sub:{ko:"10회 묶음",en:"10-use pack",ja:"10回パック",zhs:"10次套餐",zht:"10次套餐",es:"Paquete de 10 usos"},w:"1,000",u:"0.79"};
+  // ── 건별 결제창: 한 가지 항목 + 결제수단(자리만, 회색) + 가짜 승인. onOk(j)=승인, onCancel()=닫기
+  function payMicro(cfg,onOk,onCancel){ css(); pcss(); var done=false; var fin=function(v,j){ if(done) return; done=true; var x=document.getElementById("psBox"); if(x) x.remove(); if(v){ if(onOk) onOk(j); } else if(onCancel) onCancel(); };
+    var b=document.getElementById("psBox"); if(b) b.remove(); b=document.createElement("div"); b.id="psBox";
+    var meths=[['<img src="img/menu/mi_pay.png" style="width:20px;height:20px;object-fit:contain;vertical-align:-4px" alt="">',T("카드","Card")],["🅿","PayPal"],["📲",T("간편결제","Easy pay")],["📱",T("휴대폰에 카드를 대세요","Tap your card to your phone")]];
+    var ml=meths.map(function(m){ return '<div class="ptm">'+m[0]+' '+esc(m[1])+' <em>'+esc(T("준비 중","coming soon"))+'</em></div>'; }).join("");
+    b.innerHTML='<div class="in"><b>'+esc(L6(cfg.title))+'</b>'
+      +'<div class="ptitem"><span class="pts">'+esc(L6(cfg.sub))+'</span><span class="ptpr">₩'+cfg.w+' <small>($'+cfg.u+')</small></span></div>'
+      +'<div class="ptmlbl">'+esc(T("결제수단","Payment method"))+'</div>'+ml
+      +'<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button type="button" class="g" id="ptC">'+esc(T("닫기","Close"))+'</button><button type="button" id="ptGo">'+esc(T("결제하기(테스트)","Pay (test)"))+'</button></div></div>';
+    b.onclick=function(e){ if(e.target===b) fin(false); }; document.body.appendChild(b);
+    document.getElementById("ptC").onclick=function(){ fin(false); };
+    document.getElementById("ptGo").onclick=function(){ var g=document.getElementById("ptGo"); if(g) g.disabled=true;
+      hub("/npass/pay",{item:cfg.item,pd:dev(),test:1}).then(function(j){ if(j&&j.ok) fin(true,j); else { if(g) g.disabled=false; toast(T("결제(테스트)에 실패했어요","Test payment failed")); } })
+      .catch(function(){ if(g) g.disabled=false; toast(T("결제(테스트)에 실패했어요","Test payment failed")); }); }; }
+  // ── AI 플래너 건별: 결제창 띄우고 승인 여부를 Promise 로 (fetch 게이트가 쓴다)
+  function planGate(){ return new Promise(function(res){ payMicro(PLAN,function(){ res(true); },function(){ res(false); }); }); }
+  // ── fetch 가로채기: /nreco(추천받기)·/ntrip(여행 일정) 은 보내기 전에 1,000원 결제창. 취소하면 {ok:false} 로 돌려 앱이 조용히 멈춘다
+  var fPrev=window.fetch;
+  window.fetch=function(u,o){ try{ var s=typeof u==="string"?u:(u&&u.url)||"";
+      if(s.indexOf(HUB)===0&&/\/(nreco|ntrip)(\?|$)/.test(s)&&o&&o.body){ var self=this,args=arguments;
+        return planGate().then(function(ok){ return ok?fPrev.apply(self,args):new Response(JSON.stringify({ok:false,err:"cancel"}),{headers:{"Content-Type":"application/json"}}); }); } }catch(e){}
+    return fPrev.apply(this,arguments); };
+  // ── 통역·길안내 크레딧
+  function openInterp(){ try{ if(window.ITP&&ITP.open) ITP.open(); }catch(e){} }
+  function creditSet(n){ CRED=n|0; tmenu(); }
+  function usedToast(n){ return L6({ko:"통역·길안내 1회 사용 · 남은 "+n+"회",en:"Interpreter & directions: 1 used · "+n+" left",ja:"通訳・道案内 1回使用 · 残り"+n+"回",zhs:"翻译·路线 使用1次 · 剩余"+n+"次",zht:"翻譯·路線 使用1次 · 剩餘"+n+"次",es:"Intérprete y rutas: 1 usado · "+n+" restantes"}); }
+  function addToast(n){ return L6({ko:"통역·길안내 10회가 들어왔어요 · 남은 "+n+"회",en:"10 uses added · "+n+" left",ja:"通訳・道案内10回を追加 · 残り"+n+"回",zhs:"已添加10次 · 剩余"+n+"次",zht:"已新增10次 · 剩餘"+n+"次",es:"10 usos añadidos · "+n+" restantes"}); }
+  function buyInterp(after){ payMicro(INTERP,function(j){ var n=j&&j.left!=null?j.left:CRED+10; creditSet(n); toast(addToast(n)); if(after) after(); },function(){}); }
+  // 🗣 통역 단추 누름을 가로챈다(interp.js 는 안 고침) — 크레딧 있으면 1 차감 후 열고, 없으면 10회 묶음 결제창
+  document.addEventListener("click",function(e){ var t=e.target&&e.target.closest&&e.target.closest("#itP"); if(!t) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    hub("/npass/usecredit",{pd:dev()}).then(function(j){
+      if(j&&j.used){ creditSet(j.left); toast(usedToast(j.left)); openInterp(); }
+      else buyInterp(function(){ hub("/npass/usecredit",{pd:dev()}).then(function(k){ creditSet(k&&k.left!=null?k.left:CRED-1); openInterp(); }).catch(openInterp); }); })
+    .catch(function(){ openInterp(); }); },true);   // 허브 실패 시 막지 않는다
+  // ── ⋮ 메뉴: 통역·길안내 남은 횟수 (누르면 10회 더 사기)
+  function tmenu(){ var a=mmAdd("mcred",function(){ buyInterp(); });
+    if(a) a.innerHTML='<img class="miic" src="img/menu/mi_guide.png" alt="">'+esc(L6({ko:"통역·길안내 (남은 "+CRED+"회)",en:"Interpreter & directions ("+CRED+" left)",ja:"通訳・道案内（残り"+CRED+"回）",zhs:"翻译·路线（剩余"+CRED+"次）",zht:"翻譯·路線（剩餘"+CRED+"次）",es:"Intérprete y rutas ("+CRED+" restantes)"})); }
+  function loadCredit(){ hub("/npass/credit",{pd:dev()}).then(function(j){ CRED=j&&j.left!=null?j.left:0; tmenu(); }).catch(function(){ tmenu(); }); }
   // 언어 바꾸면 메뉴 글자도 다시
   var sl1=window.setLang; if(typeof sl1==="function") window.setLang=function(){ var r=sl1.apply(this,arguments); try{ tmenu(); }catch(e){} return r; };
-  try{ start(); }catch(e){}
+  try{ loadCredit(); }catch(e){}
 })();
 })();
