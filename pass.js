@@ -55,11 +55,13 @@ window.NPASS={has:function(){ return !!tok(); },exp:function(){ var t=tok(); ret
  *  켜는 법: navi.moneypuzzle.co.kr/?paytest=1 로 연다(끄기 ?paytest=0).
  *  건별 소액(가짜 승인, 허브 /npass/pay):
  *    · AI 여행 플래너(추천받기 /nreco · 여행카트 일정 /ntrip): 실행할 때 그 자리에서 1,000원 결제창 → 가짜 승인하면 그 건 실행. (fetch 를 감싸서 가로챈다 — reco.js·trip.js 는 안 고침)
- *    · 통역·길안내(🗣 통역 단추): 10회 묶음 1,000원 → 기기에 10회 쌓고 쓸 때마다 1 차감(남은 횟수 ⋮메뉴에). '잔액'이 아니라 '남은 횟수'.
+ *    · 🗣 통역(소프트웨어 문구 도우미)은 무료 — 건별 결제는 AI 여행 플래너뿐. (통역·길안내 10회 묶음은 2026-10-24 취소, 무료로 되돌림.)
  *  7/15/30일 이용권·전체 화면 벽·기기추가 코드는 아래에 그대로 두되(보류) 화면엔 안 띄운다. PG(토스) 정해지면 가짜 승인을 토스 위젯으로 교체. */
 (function(){
   function pt1(){ return ls("mpv_paytest")==="1"; }
   if(!pt1()) return;
+  // 결제수단 아이콘(자리만, 회색) — 카드=기존 그림, 페이팔=브랜드 로고 SVG, 간편결제·카드탭=후보3 바나나 그림 (사장님 10-24)
+  function mimg(f){ return '<img src="img/menu/'+f+'" style="width:20px;height:20px;object-fit:contain;vertical-align:-4px" alt="">'; }
   var TSECS=(location.search.match(/[?&]trialsecs=(\d{1,3})/)||[])[1];   // 테스트 단축창(벽 빨리 보기) — 테스트 모드에서만
   var PLANS=[{d:7,w:"9,900",u:"7.99"},{d:15,w:"17,900",u:"13.99"},{d:30,w:"29,900",u:"22.99"}];
   var active=false, wtmr=0;
@@ -88,13 +90,13 @@ window.NPASS={has:function(){ return !!tok(); },exp:function(){ var t=tok(); ret
   function buyPass(days){ hub("/npass/buy",{days:days,pd:dev(),test:1}).then(function(j){
       if(j&&j.ok&&j.t){ ls("mpv_pass",j.t); ls("mpv_ok","1"); active=true; clearTimeout(wtmr);
         var w=document.getElementById("pwWall"); if(w) w.remove(); var b=document.getElementById("psBox"); if(b) b.remove();
-        tmenu(); toast(T("이용권이 들어왔어요 · ","Pass activated · ")+dfmt(j.exp)+T(" 까지"," (valid until)")); }
+        toast(T("이용권이 들어왔어요 · ","Pass activated · ")+dfmt(j.exp)+T(" 까지"," (valid until)")); }
       else toast(T("결제(테스트)에 실패했어요","Test payment failed")); })
     .catch(function(){ toast(T("결제(테스트)에 실패했어요","Test payment failed")); }); }
   // ── 이용권 고르기 + 결제수단(자리만) + 가짜 결제 단추
   function payModal(){ css(); pcss(); var b=document.getElementById("psBox"); if(b) b.remove(); b=document.createElement("div"); b.id="psBox";
     var opts=PLANS.map(function(p,i){ return '<label class="ptopt"><input type="radio" name="ptplan" value="'+p.d+'"'+(i===0?" checked":"")+'><span class="ptd">'+esc(dlabel(p.d))+'</span><span class="ptp">₩'+p.w+' <small>($'+p.u+')</small></span></label>'; }).join("");
-    var meths=[['<img src="img/menu/mi_pay.png" style="width:20px;height:20px;object-fit:contain;vertical-align:-4px" alt="">',T("카드","Card")],["🅿","PayPal"],["📲",T("간편결제","Easy pay")],["📱",T("휴대폰에 카드를 대세요","Tap your card to your phone")]];
+    var meths=[[mimg("mi_pay.png"),T("카드","Card")],[mimg("pay_paypal.svg"),"PayPal"],[mimg("pay_easy.png"),T("간편결제","Easy pay")],[mimg("pay_tap.png"),T("휴대폰에 카드를 대세요","Tap your card to your phone")]];
     var ml=meths.map(function(m){ return '<div class="ptm">'+m[0]+' '+esc(m[1])+' <em>'+esc(T("준비 중","coming soon"))+'</em></div>'; }).join("");
     b.innerHTML='<div class="in"><b>'+esc(T("이용권","Pass"))+'</b><div class="ptopts">'+opts+'</div>'
       +'<div class="ptmlbl">'+esc(T("결제수단","Payment method"))+'</div>'+ml
@@ -132,13 +134,11 @@ window.NPASS={has:function(){ return !!tok(); },exp:function(){ var t=tok(); ret
   function mmAdd(id,fn){ var mm=document.getElementById("mm"); if(!mm) return null; var a=document.getElementById(id);
     if(!a){ mm.insertAdjacentHTML("afterbegin",'<a href="#" id="'+id+'" class="mi"></a>'); a=document.getElementById(id); a.onclick=function(e){ e.preventDefault(); mm.hidden=true; fn(); }; } return a; }
   function L6(o){ return o[LANG]||o.en; }   // 이 블록 새 문구는 6개 언어를 바로 넣는다(i18n.js 안 건드림)
-  var CRED=0;   // 통역·길안내 남은 횟수 (허브 기준, 화면 표시용)
   var PLAN={item:"plan",title:{ko:"AI 여행 플래너",en:"AI travel planner",ja:"AI旅行プランナー",zhs:"AI行程规划",zht:"AI行程規劃",es:"Planificador de viaje IA"},sub:{ko:"1건 실행",en:"1 use",ja:"1件",zhs:"1次",zht:"1次",es:"1 uso"},w:"1,000",u:"0.79"};
-  var INTERP={item:"interp",title:{ko:"통역·길안내",en:"Interpreter & directions",ja:"通訳・道案内",zhs:"翻译·路线",zht:"翻譯·路線",es:"Intérprete y rutas"},sub:{ko:"10회 묶음",en:"10-use pack",ja:"10回パック",zhs:"10次套餐",zht:"10次套餐",es:"Paquete de 10 usos"},w:"1,000",u:"0.79"};
   // ── 건별 결제창: 한 가지 항목 + 결제수단(자리만, 회색) + 가짜 승인. onOk(j)=승인, onCancel()=닫기
   function payMicro(cfg,onOk,onCancel){ css(); pcss(); var done=false; var fin=function(v,j){ if(done) return; done=true; var x=document.getElementById("psBox"); if(x) x.remove(); if(v){ if(onOk) onOk(j); } else if(onCancel) onCancel(); };
     var b=document.getElementById("psBox"); if(b) b.remove(); b=document.createElement("div"); b.id="psBox";
-    var meths=[['<img src="img/menu/mi_pay.png" style="width:20px;height:20px;object-fit:contain;vertical-align:-4px" alt="">',T("카드","Card")],["🅿","PayPal"],["📲",T("간편결제","Easy pay")],["📱",T("휴대폰에 카드를 대세요","Tap your card to your phone")]];
+    var meths=[[mimg("mi_pay.png"),T("카드","Card")],[mimg("pay_paypal.svg"),"PayPal"],[mimg("pay_easy.png"),T("간편결제","Easy pay")],[mimg("pay_tap.png"),T("휴대폰에 카드를 대세요","Tap your card to your phone")]];
     var ml=meths.map(function(m){ return '<div class="ptm">'+m[0]+' '+esc(m[1])+' <em>'+esc(T("준비 중","coming soon"))+'</em></div>'; }).join("");
     b.innerHTML='<div class="in"><b>'+esc(L6(cfg.title))+'</b>'
       +'<div class="ptitem"><span class="pts">'+esc(L6(cfg.sub))+'</span><span class="ptpr">₩'+cfg.w+' <small>($'+cfg.u+')</small></span></div>'
@@ -157,25 +157,8 @@ window.NPASS={has:function(){ return !!tok(); },exp:function(){ var t=tok(); ret
       if(s.indexOf(HUB)===0&&/\/(nreco|ntrip)(\?|$)/.test(s)&&o&&o.body){ var self=this,args=arguments;
         return planGate().then(function(ok){ return ok?fPrev.apply(self,args):new Response(JSON.stringify({ok:false,err:"cancel"}),{headers:{"Content-Type":"application/json"}}); }); } }catch(e){}
     return fPrev.apply(this,arguments); };
-  // ── 통역·길안내 크레딧
-  function openInterp(){ try{ if(window.ITP&&ITP.open) ITP.open(); }catch(e){} }
-  function creditSet(n){ CRED=n|0; tmenu(); }
-  function usedToast(n){ return L6({ko:"통역·길안내 1회 사용 · 남은 "+n+"회",en:"Interpreter & directions: 1 used · "+n+" left",ja:"通訳・道案内 1回使用 · 残り"+n+"回",zhs:"翻译·路线 使用1次 · 剩余"+n+"次",zht:"翻譯·路線 使用1次 · 剩餘"+n+"次",es:"Intérprete y rutas: 1 usado · "+n+" restantes"}); }
-  function addToast(n){ return L6({ko:"통역·길안내 10회가 들어왔어요 · 남은 "+n+"회",en:"10 uses added · "+n+" left",ja:"通訳・道案内10回を追加 · 残り"+n+"回",zhs:"已添加10次 · 剩余"+n+"次",zht:"已新增10次 · 剩餘"+n+"次",es:"10 usos añadidos · "+n+" restantes"}); }
-  function buyInterp(after){ payMicro(INTERP,function(j){ var n=j&&j.left!=null?j.left:CRED+10; creditSet(n); toast(addToast(n)); if(after) after(); },function(){}); }
-  // 🗣 통역 단추 누름을 가로챈다(interp.js 는 안 고침) — 크레딧 있으면 1 차감 후 열고, 없으면 10회 묶음 결제창
-  document.addEventListener("click",function(e){ var t=e.target&&e.target.closest&&e.target.closest("#itP"); if(!t) return;
-    e.preventDefault(); e.stopImmediatePropagation();
-    hub("/npass/usecredit",{pd:dev()}).then(function(j){
-      if(j&&j.used){ creditSet(j.left); toast(usedToast(j.left)); openInterp(); }
-      else buyInterp(function(){ hub("/npass/usecredit",{pd:dev()}).then(function(k){ creditSet(k&&k.left!=null?k.left:CRED-1); openInterp(); }).catch(openInterp); }); })
-    .catch(function(){ openInterp(); }); },true);   // 허브 실패 시 막지 않는다
-  // ── ⋮ 메뉴: 통역·길안내 남은 횟수 (누르면 10회 더 사기)
-  function tmenu(){ var a=mmAdd("mcred",function(){ buyInterp(); });
-    if(a) a.innerHTML='<img class="miic" src="img/menu/mi_guide.png" alt="">'+esc(L6({ko:"통역·길안내 (남은 "+CRED+"회)",en:"Interpreter & directions ("+CRED+" left)",ja:"通訳・道案内（残り"+CRED+"回）",zhs:"翻译·路线（剩余"+CRED+"次）",zht:"翻譯·路線（剩餘"+CRED+"次）",es:"Intérprete y rutas ("+CRED+" restantes)"})); }
-  function loadCredit(){ hub("/npass/credit",{pd:dev()}).then(function(j){ CRED=j&&j.left!=null?j.left:0; tmenu(); }).catch(function(){ tmenu(); }); }
-  // 언어 바꾸면 메뉴 글자도 다시
-  var sl1=window.setLang; if(typeof sl1==="function") window.setLang=function(){ var r=sl1.apply(this,arguments); try{ tmenu(); }catch(e){} return r; };
-  try{ loadCredit(); }catch(e){}
+  // ── 🗣 통역·길안내(소프트웨어 문구 도우미)는 무료로 되돌림 (사장님 10-24) — interp.js 🗣 단추는 결제 없이 바로 열린다.
+  //    크레딧 가로채기·「통역·길안내 (남은 N회)」 ⋮메뉴 항목 제거. 유일한 건별 결제는 AI 여행 플래너(/nreco·/ntrip)뿐.
+  //    (허브 /npass/credit·usecredit 엔드포인트는 그대로 두되 클라이언트에서 더는 부르지 않는다.)
 })();
 })();
