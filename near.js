@@ -16,7 +16,9 @@ var KINDS={
   tg:{e:"tour", t:["🧭 투어 가이드","🧭 Tour guide"], tabs:[{c:"TA",ko:"투어",en:"Tour",i:"🧭"}]},
   em:{e:"emergency", t:["🚑 긴급","🚑 Emergency"], tabs:[{c:"HP8",ko:"병원",en:"Hospital",i:"🏥",r:2000},{c:"PM9",ko:"약국",en:"Pharmacy",i:"💊",r:2000}]},
   // 숙소 (사장님 10-16) — 카카오 숙박(AD5)을 허브가 종류로 나눔 + 관광공사 관광정보에 실린 숙소는 kto=1 (「관광공사」 표시)
-  st:{e:"stay", t:["🏨 숙소","🏨 Stay"], tabs:[{c:"AD5",kind:"hotel",ko:"호텔",en:"Hotel",i:"🏨",r:3000},{c:"AD5",kind:"motel",ko:"모텔",en:"Motel",i:"🛏",r:3000},{c:"AD5",kind:"gh",ko:"게스트하우스",en:"Guesthouse",i:"🎒",r:3000},{c:"AD5",kind:"hanok",ko:"한옥스테이",en:"Hanok stay",i:"🏯",r:3000}]}
+  st:{e:"stay", t:["🏨 숙소","🏨 Stay"], tabs:[{c:"AD5",kind:"hotel",ko:"호텔",en:"Hotel",i:"🏨",r:3000},{c:"AD5",kind:"motel",ko:"모텔",en:"Motel",i:"🛏",r:3000},{c:"AD5",kind:"gh",ko:"게스트하우스",en:"Guesthouse",i:"🎒",r:3000},{c:"AD5",kind:"hanok",ko:"한옥스테이",en:"Hanok stay",i:"🏯",r:3000}]},
+  // 통역·길안내 (사장님 10-24) — 실제 통역·가이드를 연결(GoWithGuide 소개). 무료. 목록이 아니라 링크 판(tg 와 같은 방식)
+  ig:{e:"guide", t:["통역·길안내","Interpreter & guide"], tabs:[{c:"IG"}]}
 };
 // 칩 글자 (아이콘 없이, 사장님 10-16) · ⋮ 메뉴 글자
 var CHIP={tg:["투어 가이드","Tour guide"],am:["편의시설","Convenience"],em:["긴급","Emergency"],st:["숙소","Stay"]};
@@ -67,6 +69,7 @@ var EMB=[
 ];
 var S={k:"",tab:0,base:null,src:"",items:null,err:""}, CACHE={}, PICK=null;
 function L(){ return window.LANG!=="ko"; }   // 외국어 화면(영·일·중) — 10-18
+function LG6(o){ return o[window.LANG]||o.en; }   // 통역·길안내 새 문구는 6개 언어를 바로 넣는다(i18n.js 안 건드림, 10-24)
 // 빨간·파란 단추 안 전화기 — 흰 선 그림(글자색 그대로, 사장님 10-16: 이모지는 분홍빛이라)
 var PH='<svg class="nrph" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function km(m){ return m<1000?Math.round(m)+" m":(m/1000).toFixed(1)+" km"; }
@@ -105,7 +108,13 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".nrtg{margin:10px 0;padding:12px 14px;border:1px solid #c5d3e8;background:#fff;border-radius:12px}.nrtg a{display:inline-block;font-size:19px;font-weight:900;color:#1c5fb8;text-decoration:none;margin-bottom:4px}.nrtg .d{font-size:14.5px;color:#444;line-height:1.6}"
   +".nrtb{margin:8px 0 4px;padding:8px 10px;border:1px solid #ffd8a8;background:#fff4e6;border-radius:10px;font-size:14px;font-weight:800;color:#5c3d10;line-height:1.5}.nrtb a{color:#1c5fb8;text-decoration:underline;margin:0 2px;white-space:nowrap}"
   +".nrord{display:flex;gap:6px;margin:8px 0 2px}.nrord button{flex:1;border:1px solid #c5d3e8;background:#fff;color:#1c5fb8;border-radius:999px;padding:7px 0;font-weight:800;font-size:14px}.nrord button.on{background:#1c5fb8;color:#fff;border-color:#1c5fb8}"
-  +".nrbig,.item a.nrbig{display:block!important;text-align:center;background:#e03131!important;color:#fff!important;border:0!important;border-radius:12px!important;padding:12px 8px!important;font-size:18px!important;font-weight:900!important;text-decoration:none;margin:4px 0 10px!important}";
+  +".nrbig,.item a.nrbig{display:block!important;text-align:center;background:#e03131!important;color:#fff!important;border:0!important;border-radius:12px!important;padding:12px 8px!important;font-size:18px!important;font-weight:900!important;text-decoration:none;margin:4px 0 10px!important}"
+  +".ignote{background:#e3fafc;border:1px solid #99e9f2;color:#0b7285;border-radius:12px;padding:12px 14px;font-size:14px;font-weight:700;line-height:1.5;margin:4px 0 14px}"
+  +".iglbl{font-size:13px;color:var(--sub);font-weight:800;margin:0 2px 8px}"
+  +".iglangs{display:flex;flex-direction:column;gap:9px}"
+  +".iglangs a.iglang{display:block;text-align:center;text-decoration:none;border:1.5px solid #0c8599;background:#e3fafc;color:#0b7285;border-radius:12px;padding:13px 10px;font-size:16px;font-weight:900}"
+  +".igbook{margin:16px 2px 4px;padding:10px 12px;border:1px solid #ffd8a8;background:#fff4e6;border-radius:10px;font-size:14px;font-weight:800;color:#5c3d10;line-height:1.5}"
+  +".ignt{font-size:12.5px;color:var(--sub);line-height:1.5;margin:10px 2px 0}";
   document.head.appendChild(s); }
 
 // ── 기준 위치 ──
@@ -155,6 +164,7 @@ function hanokFar(p,a0){ return fetch(HUB+"/gplace?q="+encodeURIComponent("한�
     var a=j.items.map(function(g){ return {name:g.name,addr:g.addr,x:g.lng,y:g.lat,rating:g.rating,n:g.n,kind:"hanok"}; })
       .sort(function(u,v){ var fu=kmLL(p,[u.y,u.x])>40?1:0, fv=kmLL(p,[v.y,v.x])>40?1:0; return (fu-fv)||(v.rating-u.rating)||(v.n-u.n); }); a.far=1; return a; }).catch(function(){ return a0; }); }
 function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.byL={}; S.fl=""; S.gr=0;
+  if(S.k==="ig"){ S.items=[]; S.base=null; paint(); return; }   // 통역·길안내 = 링크 판, 위치·목록 없음 (10-24)
   if(S.k==="tg"){ S.items=[]; paint(); pickBase(false).then(function(b){ if(S.k!=="tg") return; S.base=b?b.p:null; paint(); },function(){}); return; }   // 투어 가이드 = Klook·GetYourGuide 링크만 (근처 여행사는 아웃바운드라 뺌, 사장님 10-23). 위치는 가까운 도시 이름에만
   if(t.fixed){ var mp=ME.pos||null; S.base=null; S.src="";   // 대사관: 고정 목록 · 위치를 묻지 않는다 · 「나」 위치가 있으면 거리만 (폰 안에서 계산)
     S.items=EMB.map(function(x){ var o=Object.assign({},x); o.dist=(mp&&x.y)?Math.round(kmLL(mp,[x.y,x.x])*1000):null; return o; }); if(embL()) S.items.sort(function(a,b){ return embKey(a).localeCompare(embKey(b),{ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]); }); paint(); return; }
@@ -197,6 +207,35 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
   var one=function(u,nm){ return '<div class="nrtg"><a href="'+u+'" target="_blank" rel="noopener">'+nm+' ›</a>'+ds+'</div>'; };
   var cl={ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en";   // 크리에이트립 (사장님 10-23) — 한국어판은 없어 영어로 연다
   return one("https://www.klook.com/"+kl+"/","Klook")+one("https://www.getyourguide.com/"+gl,"GetYourGuide")+one("https://creatrip.com/"+cl,"Creatrip"); }
+// 통역·길안내 (사장님 10-24) — 실제 통역·가이드 연결(GoWithGuide 소개, 중개 아님). 무료. 언어 단추마다 GoWithGuide 한국 페이지를 새 창으로.
+//  GWG = https://gowithguide.com/korea (200 확인). /ja/korea 같은 언어 경로는 404라 쓰지 않는다 — 공통 페이지를 열고 사이트에서 언어 선택.
+//  TODO(제휴): Awin 제휴(어필리에이트) 링크가 생기면 이 평딥링크를 Awin 래퍼로 교체한다. (지금은 제휴 코드 없이 평딥링크)
+var GWG="https://gowithguide.com/korea";
+function igHtml(){
+  var note=LG6({ko:"실제 통역·길안내를 해 주는 사람을 연결해 드립니다. (소개이며 중개가 아닙니다)",
+    en:"We connect you with a real interpreter-guide. (introduction only, not a broker)",
+    ja:"実際に通訳・道案内をしてくれる人をおつなぎします。（紹介であり仲介ではありません）",
+    zhs:"为您联系真人口译·向导。（仅为介绍，并非中介）",
+    zht:"為您聯繫真人口譯·嚮導。（僅為介紹，並非仲介）",
+    es:"Te ponemos en contacto con un intérprete-guía real. (solo presentación, no intermediación)"});
+  var chooseL=LG6({ko:"언어를 고르세요",en:"Choose your language",ja:"言語を選んでください",zhs:"请选择语言",zht:"請選擇語言",es:"Elige tu idioma"});
+  var book=LG6({ko:"예약: 내일 또는 모레 (당일 예약은 받지 않습니다)",
+    en:"Book for tomorrow or the day after (no same-day)",
+    ja:"予約：明日または明後日（当日の予約は不可）",
+    zhs:"预约：明天或后天（不接受当天预约）",
+    zht:"預約：明天或後天（不接受當天預約）",
+    es:"Reserva para mañana o pasado mañana (no el mismo día)"});
+  var nt=LG6({ko:"GoWithGuide 사이트가 새 창으로 열립니다. 사이트에서 언어를 고를 수 있어요.",
+    en:"GoWithGuide opens in a new tab. You can choose your language on their site.",
+    ja:"GoWithGuideが新しいタブで開きます。サイトで言語を選べます。",
+    zhs:"GoWithGuide将在新标签页打开，可在其网站上选择语言。",
+    zht:"GoWithGuide將在新分頁開啟，可在其網站上選擇語言。",
+    es:"GoWithGuide se abre en una pestaña nueva. Puedes elegir tu idioma en su sitio."});
+  var langs=[["한국어","ko"],["English","en"],["日本語","ja"],["中文(简)","zhs"],["中文(繁)","zht"],["Español","es"]];
+  var btns=langs.map(function(l){ return '<a class="iglang" href="'+GWG+'" target="_blank" rel="noopener" data-iglang="'+l[1]+'">'+esc(l[0])+' ›</a>'; }).join("");
+  return '<div class="ignote">ⓘ '+esc(note)+'</div>'
+    +'<div class="iglbl">'+esc(chooseL)+'</div><div class="iglangs">'+btns+'</div>'
+    +'<div class="igbook">📅 '+esc(book)+'</div><div class="ignt">'+esc(nt)+'</div>'; }
 function tourBand(){ var c="South Korea", best=1e9, b=S.base;
   if(b) TB_CITY.forEach(function(x){ var d=kmLL(b,[x[1],x[2]]); if(d<=x[3]&&d<best){ best=d; c=x[0]; } });
   var q=encodeURIComponent(c+" day tour"), kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en-US", gl={ja:"ja-jp/",zhs:"zh-cn/",es:"es-es/"}[LANG]||"";
@@ -220,7 +259,9 @@ function embHtml(x){ var en=L(), tel="", lk;
   return '<div class="nrit nremb" data-ak="'+esc(x.f)+'"><div class="c">'+flag(x.f)+(embL()?esc(embC(x)):esc(x.e)+' · '+esc(embC(x)))+'</div><div class="h"><b>'+esc(embN(x))+'</b>'+(x.dist!=null?'<i>'+km(x.dist)+'</i>':'')+'</div>'
     +(en?'<div class="ko">'+esc(x.n)+'</div>':'')+'<div class="d">'+esc(en?(x.ae||x.a):x.a)+'</div>'
     +(tel?'<div class="row">'+tel+'</div>':'')+'<div class="lks">'+lk+'</div></div>'; }
-function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) return; var k=KINDS[S.k], em=S.k==="em";
+function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) return;
+  if(S.k==="ig"){ b.className="nrin"; b.innerHTML='<div class="nrtop"><b>'+esc(LG6({ko:"통역·길안내",en:"Interpreter & guide",ja:"通訳・ガイド",zhs:"翻译·向导",zht:"翻譯·嚮導",es:"Intérprete y guía"}))+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>'+igHtml(); return; }   // 통역·길안내 판 (10-24)
+  var k=KINDS[S.k], em=S.k==="em";
   b.className="nrin"+(em?" nrem":"")+(S.k==="st"?" nrst":"");
   var h='<div class="nrtop"><b>'+T(k.t[0],k.t[1])+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
   if(em) h+=sos();
@@ -288,7 +329,7 @@ document.addEventListener("change",function(e){ if(e.target&&e.target.id==="nrSe
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("[data-nr]"); if(!t||!t.closest("#nrBox,#gfchips,#mm")) return;
   if(e.target.closest("a[href^='tel:']")) return;   // 전화는 그대로 건다
   e.preventDefault(); var g=t.dataset.nr;
-  if(g==="tg"||g==="am"||g==="em"||g==="st") return open(g);
+  if(g==="tg"||g==="am"||g==="em"||g==="st"||g==="ig") return open(g);
   if(g==="x") return close();
   if(g==="tab"){ S.tab=+t.dataset.i; load(); return; }
   if(g==="ord"){ S.ord=t.dataset.o==="r"?"r":"d"; var kt=KINDS[S.k].tabs[S.tab]; if(S.raw){ S.items=sortIt(S.raw.slice(),kt).slice(0,10); S.byL={}; S.byL[LANG]=S.items; } paint(); return; }
@@ -300,9 +341,9 @@ function entries(){ css(); var box=document.getElementById("gfchips");
   if(!box){ var h=document.getElementById("gob")||document.getElementById("hint"); if(!h) return; h.insertAdjacentHTML("afterend",'<div id="gfchips" style="display:flex;justify-content:center;gap:6px;margin:10px 0 0;flex-wrap:wrap"></div>'); box=document.getElementById("gfchips"); }
   ["tg","am","em","st"].forEach(function(k){ var c=box.querySelector('.nrchip[data-nr="'+k+'"]'); if(!c){ box.insertAdjacentHTML("beforeend",'<button type="button" class="nrchip'+(k!=="am"?' '+k:'')+'" data-nr="'+k+'"></button>'); c=box.querySelector('.nrchip[data-nr="'+k+'"]'); }
     c.textContent=T(CHIP[k][0],CHIP[k][1]); });
-  var mm=document.getElementById("mm"); if(mm) ["tg","am","em","st"].forEach(function(k){ var id="mnear_"+k, a=document.getElementById(id);
+  var mm=document.getElementById("mm"); if(mm) ["tg","am","em","st","ig"].forEach(function(k){ var id="mnear_"+k, a=document.getElementById(id);
     if(!a){ a=document.createElement("a"); a.id=id; a.href="#"; a.className="mi"; a.dataset.nr=k; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); }
-    a.innerHTML=miLbl(k); }); }
+    a.innerHTML=k==="ig"?'<img class="miic" src="img/menu/mi_guideperson.png" alt="">'+esc(LG6({ko:"통역·길안내",en:"Interpreter & guide",ja:"通訳・ガイド",zhs:"翻译·向导",zht:"翻譯·嚮導",es:"Intérprete y guía"})):miLbl(k); }); }
 var f=window.setLang; if(typeof f==="function"&&!f._nr){ var g=function(){ var r=f.apply(this,arguments); try{ entries(); if(document.getElementById("nrBox")) relang(); var bk=document.getElementById("nrBk"); if(bk&&BK) bookOpen(); }catch(e){} return r; }; g._nr=1; g._gf=f._gf; g._tr=f._tr; window.setLang=g; }   // 열린 목록·예약 창은 그 자리에서 (10-18)
 entries();
 window.NEAR={open:open,close:close,state:function(){ return S; }};
