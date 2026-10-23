@@ -163,6 +163,8 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 .dist{font-size:22px;font-weight:900;color:var(--green);margin:2px 0 4px}
 table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}   /* table 만 — 「내 여행」 목록 번호(b.trn)가 100% 로 늘어나던 것 (10-18) */.trn td{padding:6px 4px;border-top:1px solid var(--line)}.trn td.f{text-align:right;font-weight:700}
 .trh{font-weight:800;margin:12px 0 2px}
+.item .cph{float:right;width:min(340px,42%);margin:0 0 8px 14px}.item .cph img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;background:#e9edf3}.item .cph .cpa{font-size:11px;color:#6b7280;margin-top:3px;text-align:right;line-height:1.4}.item .cph .cpa a{all:unset;color:#6b7280;text-decoration:underline;cursor:pointer}
+@media (max-width:640px){.item .cph{float:none;width:100%;margin:0 0 10px}.item .cph img{aspect-ratio:16/9}}   /* 폰 = 카드 맨 위 넓게 */
 .ktxb .kxsel{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0 4px}.ktxb .kxsel label{font-weight:700;font-size:14px}.ktxb select{font-size:15px;padding:6px 8px;border-radius:8px;border:1px solid #c5d3e8;margin-left:4px}.ktxb #kxSw{border:1px solid #c5d3e8;background:#fff;border-radius:999px;padding:5px 12px;font-size:16px;cursor:pointer}.ktxb .kxbk{display:flex;gap:12px;margin-top:6px}
 .res{margin-top:14px;position:relative}
 .xbtn{position:absolute;top:6px;right:6px;z-index:2;width:34px;height:34px;border:0;border-radius:50%;background:var(--bg);color:var(--sub);font-size:20px;line-height:34px;cursor:pointer;padding:0}
@@ -239,7 +241,7 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
-<script src="i18n.js?v=1023kx"></script>
+<script src="i18n.js?v=1023ph"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
 // 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
@@ -504,11 +506,22 @@ function spinShow0(x){ var lat=+x.y, lng=+x.x, nb=spinNorm(x.name);
     +'<div class="spl" style="position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:1px;white-space:nowrap;background:#fff;color:#c92a2a;border:'+Math.max(0.6,fs*0.12)+'px solid #e03131;border-radius:999px;padding:'+(fs*0.12)+'px '+(fs*0.5)+'px;font-size:'+fs+'px;font-weight:900;line-height:1.3">'+esc(FG()?KS(x.name_en||x.name):x.name)+'</div>';
   document.getElementById("mz").appendChild(e); SPIN=x; spinCard();
   clearTimeout(window._scT); window._scT=setTimeout(function(){ var m=document.getElementById("map"); window.scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:"smooth"}); },200); }
+// 안내 카드 사진 (사장님 10-23) — 허브 /gphoto 가 그 자리 1.5km 안 구글 장소의 첫 사진을 준다. PC 는 카드 오른쪽 빈자리, 폰은 카드 맨 위. 못 찾으면 자리를 접는다
+//  구글 약관: 찍은 사람 이름과 「Google」 표시를 사진 아래에 붙인다 · 사진은 기기에 오래 남기지 않는다(허브가 1시간)
+var _cphC={};
+function cphSlot(){ return '<div class="cph" hidden></div>'; }
+function cphLoad(k,ko,lat,lng){ if(!ko||!(+lat)) return; var ck=ko+"|"+(+lat).toFixed(4)+","+(+lng).toFixed(4);
+  var put=function(j){ if(window._cardK!==k) return; var e=document.querySelector("#res .cph"); if(!e||!j||!j.ok) return;
+    var at=(j.attr||[]).filter(function(a){ return a&&a.n; }).map(function(a){ return /^https:\/\//.test(a.u||"")?'<a href="'+esc(a.u)+'" target="_blank" rel="noopener">'+esc(a.n)+'</a>':esc(a.n); }).join(", ");
+    e.innerHTML='<img alt="" src="'+HUB+esc(j.img)+'"><div class="cpa">'+(at?T("사진","Photo")+': '+at+' · ':'')+'Google</div>';
+    var im=e.querySelector("img"); im.onerror=function(){ e.hidden=true; }; im.onload=function(){ e.hidden=false; }; };
+  if(_cphC[ck]) return put(_cphC[ck]);
+  fetch(HUB+"/gphoto?q="+encodeURIComponent(ko)+"&lat="+(+lat).toFixed(5)+"&lng="+(+lng).toFixed(5)).then(function(r){ return r.json(); }).then(function(j){ _cphC[ck]=j; put(j); }).catch(function(){}); }
 function spinCard(){ var p=PLACES.__pin; if(!p) return; if(window.KL) KL.ensure([p],"pin",null,function(){ if(window._cardK==="__pin"&&PLACES.__pin===p) window.spinCard(); });   // 다른 외국어로 처음이면 이름만 받아 와 다시 (10-18)
   try{ var sl=document.querySelector("#spin .spl"); if(sl) sl.textContent=FG()?KS(p.en||p.ko):p.ko; }catch(e){}
   var en=FG(), nm=LN(p), ad=en?p.addr_en:p.addr, ct=en?p.cat_en:String(p.cat||"").split(">").pop().trim();
   var d=""; window._cardK="__pin";
-  document.getElementById("res").innerHTML='<div class="item">'+meDistLine("__pin")+'<div class="t">📍 '+esc(nm)+'</div>'+(en&&p.en!==p.ko?'<div class="d" style="margin:1px 0 0">'+esc(p.ko)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+d+'</div>'+telLine(p.tel)+linksTo(p.ko,p.lat,p.lng,p.ko,p.addr)+'</div>'; }
+  document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine("__pin")+'<div class="t">📍 '+esc(nm)+'</div>'+(en&&p.en!==p.ko?'<div class="d" style="margin:1px 0 0">'+esc(p.ko)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+d+'</div>'+telLine(p.tel)+linksTo(p.ko,p.lat,p.lng,p.ko,p.addr)+'</div>'; try{ cphLoad("__pin",p.ko,p.lat,p.lng); }catch(e){} }
 document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest("a")) return; var it=e.target.closest&&e.target.closest("#res .sres"); if(!it) return; var x=(window._sres||[])[+it.dataset.i]; if(x) spinShow(x); });
 // 공유 — 화면은 보여 주되 실제로는 보내지 않는다 (체험판, 사장님 기기 포함 · 2026-10-12)
 // HTS 앱 공유 창을 그대로 옮겨 왔다 — 단추는 모두 막힘 (2026-10-12)
@@ -611,8 +624,9 @@ function appGo(a){ var o=APPGO[a]; if(!o) return; var ua=navigator.userAgent||""
   var w=null; try{ w=window.open(o.web,"_blank"); if(w) w.opener=null; }catch(e){} if(!w) location.href=o.web; }
 function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } if(p.app){ appGo(p.app); return; } var nm=LN(p), ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
-  window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
+  window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
     +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng,null,p.addr))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
+  if(k!=="mpstat") try{ cphLoad(k,p.ko,p.lat,p.lng); }catch(e){}   // 카드 빈자리에 구글 사진 (사장님 10-23)
   /*nolink*/   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 · 출발지는 내 위치(있으면)
   if(k==="mpstat") document.getElementById("res").firstElementChild.insertAdjacentHTML("beforeend",'<div class="d" style="margin-top:6px">'+T("머니퍼즐 통계청 — 주식회사 부만","Money Puzzle Data Center — Booman Inc.")+'<br>'+T("사업자등록번호 297-81-03712 · 연락처 ","Business Reg. No. 297-81-03712 · Contact ")+'<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a></div>');   // 회사 카드 (10-15)
   ntMark(k);
