@@ -203,7 +203,7 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
 function entries(){ var h=document.getElementById("gob")||document.getElementById("hint");
   if(h&&!document.getElementById("gfchips")){ css(); h.insertAdjacentHTML("afterend",'<div id="gfchips"><button type="button" class="gfchip" data-gf="open"></button></div>'); }
   var c=document.querySelector("#gfchips .gfchip"); if(c) c.textContent=T("선물 고르기","Gift finder");   // 칩은 글자만 (사장님 10-16), ⋮ 메뉴는 아이콘 그대로
-  var mm=document.getElementById("mm"); if(mm){ var a=document.getElementById("mgift"); if(!a){ a=document.createElement("a"); a.id="mgift"; a.href="#"; a.className="mi"; a.dataset.gf="open"; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); } a.textContent=T("🎁 선물 고르기","🎁 Gift finder"); } }
+  var mm=document.getElementById("mm"); if(mm){ var a=document.getElementById("mgift"); if(!a){ a=document.createElement("a"); a.id="mgift"; a.href="#"; a.className="mi"; a.dataset.gf="open"; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); } a.innerHTML='<img class="miic" src="img/menu/mi_gift.png" alt="">'+esc(T("선물 고르기","Gift finder")); } }
 var DFS_TEL=[[/신라아이파크|HDC\s*신라/,"1688-8800"],[/롯데면세점/,"1688-3000"],[/신라면세점/,"1688-1110"],[/신세계면세점/,"1661-8778"],[/현대(백화점)?면세점/,"1811-6688"],[/동화면세점/,"02-399-3000"]];
 function dfsTel(ko){ for(var i=0;i<DFS_TEL.length;i++) if(DFS_TEL[i][0].test(ko||"")) return DFS_TEL[i][1]; return ""; }
 var sc0=window.spinCard; if(typeof sc0==="function"&&!sc0._gf){ var sc1=function(){ try{ var p=PLACES.__pin; if(p&&!p.tel){ var t=dfsTel(p.ko); if(t) p.tel=t; } }catch(e){} return sc0.apply(this,arguments); }; sc1._gf=1; sc1._tr=sc0._tr; window.spinCard=sc1; }
