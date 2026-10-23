@@ -21,6 +21,8 @@ var KINDS={
 // 칩 글자 (아이콘 없이, 사장님 10-16) · ⋮ 메뉴 글자
 var CHIP={tg:["투어 가이드","Tour guide"],am:["편의시설","Convenience"],em:["긴급","Emergency"],st:["숙소","Stay"]};
 var MENU={tg:["투어 가이드","Tour guide"],am:["🏪 편의시설 (편의점·음식점·환전소·대사관)","🏪 Convenience (stores · restaurants · exchange · embassies)"],em:["🚑 긴급 (병원·약국)","🚑 Emergency (hospital · pharmacy)"],st:["🏨 숙소 (호텔·모텔·게스트하우스·한옥)","🏨 Stay (hotel · motel · guesthouse · hanok)"]};
+var MENU_ICON={tg:"mi_guide",am:"mi_amenity",em:"mi_emergency",st:"mi_stay"};   // ⋮ 메뉴 라벨 앞 그림 아이콘 (후보3, 사장님 10-23)
+function miLbl(k){ return '<img class="miic" src="img/menu/'+MENU_ICON[k]+'.png" alt="">'+esc(T(MENU[k][0],MENU[k][1]).replace(/^[\u{1F000}-\u{1FAFF}☀-➿⬀-⯿️]+\s*/u,"")); }
 // 대사관 (사장님 10-16) — 고정 목록 37곳(G20·동남아·고용허가제 송출국). 나라 영문 이름 알파벳 순(거리로 줄 세우지 않음)
 //  이름·주소·전화: 외교부 「주한공관주소록」 국문·영문판(mofa.go.kr inKoEmblgbdAdres, 2026-10-16 읽음) · 전화는 첫 번호만
 //  좌표: 허브 /kplace 카카오 「<나라> 대사관」 자리(전화 또는 외교부 주소 검색 자리와 맞춘 것). 몽골은 카카오 자리와 외교부 주소가 580m 어긋나 좌표 비움(주소로 지도 검색)
@@ -300,7 +302,7 @@ function entries(){ css(); var box=document.getElementById("gfchips");
     c.textContent=T(CHIP[k][0],CHIP[k][1]); });
   var mm=document.getElementById("mm"); if(mm) ["tg","am","em","st"].forEach(function(k){ var id="mnear_"+k, a=document.getElementById(id);
     if(!a){ a=document.createElement("a"); a.id=id; a.href="#"; a.className="mi"; a.dataset.nr=k; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); }
-    a.textContent=T(MENU[k][0],MENU[k][1]); }); }
+    a.innerHTML=miLbl(k); }); }
 var f=window.setLang; if(typeof f==="function"&&!f._nr){ var g=function(){ var r=f.apply(this,arguments); try{ entries(); if(document.getElementById("nrBox")) relang(); var bk=document.getElementById("nrBk"); if(bk&&BK) bookOpen(); }catch(e){} return r; }; g._nr=1; g._gf=f._gf; g._tr=f._tr; window.setLang=g; }   // 열린 목록·예약 창은 그 자리에서 (10-18)
 entries();
 window.NEAR={open:open,close:close,state:function(){ return S; }};
