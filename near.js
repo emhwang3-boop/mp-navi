@@ -193,7 +193,8 @@ var TB_CITY=[["Seoul",37.5665,126.978,40],["Incheon",37.456,126.705,20],["Busan"
 function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en-US", gl={ja:"ja-jp/",zhs:"zh-cn/",es:"es-es/"}[LANG]||"";
   var ds='<div class="d">'+T("당일 투어 가능","Day tours available")+'</div><div class="d">'+T("내일 투어 예약 가능","Book tomorrow’s tour")+'</div><div class="d">'+T("검색창에 가고 싶은 도시 입력 (예: 서울)","Type the city you want in the search box (e.g. Seoul)")+'</div>';
   var one=function(u,nm){ return '<div class="nrtg"><a href="'+u+'" target="_blank" rel="noopener">'+nm+' ›</a>'+ds+'</div>'; };
-  return one("https://www.klook.com/"+kl+"/","Klook")+one("https://www.getyourguide.com/"+gl,"GetYourGuide"); }
+  var cl={ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en";   // 크리에이트립 (사장님 10-23) — 한국어판은 없어 영어로 연다
+  return one("https://www.klook.com/"+kl+"/","Klook")+one("https://www.getyourguide.com/"+gl,"GetYourGuide")+one("https://creatrip.com/"+cl,"Creatrip"); }
 function tourBand(){ var c="South Korea", best=1e9, b=S.base;
   if(b) TB_CITY.forEach(function(x){ var d=kmLL(b,[x[1],x[2]]); if(d<=x[3]&&d<best){ best=d; c=x[0]; } });
   var q=encodeURIComponent(c+" day tour"), kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en-US", gl={ja:"ja-jp/",zhs:"zh-cn/",es:"es-es/"}[LANG]||"";
