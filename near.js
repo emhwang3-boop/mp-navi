@@ -17,14 +17,14 @@ var KINDS={
   em:{e:"emergency", t:["🚑 긴급","🚑 Emergency"], tabs:[{c:"HP8",ko:"병원",en:"Hospital",i:"🏥",r:2000},{c:"PM9",ko:"약국",en:"Pharmacy",i:"💊",r:2000}]},
   // 숙소 (사장님 10-16) — 카카오 숙박(AD5)을 허브가 종류로 나눔 + 관광공사 관광정보에 실린 숙소는 kto=1 (「관광공사」 표시)
   st:{e:"stay", t:["🏨 숙소","🏨 Stay"], tabs:[{c:"AD5",kind:"hotel",ko:"호텔",en:"Hotel",i:"🏨",r:3000},{c:"AD5",kind:"motel",ko:"모텔",en:"Motel",i:"🛏",r:3000},{c:"AD5",kind:"gh",ko:"게스트하우스",en:"Guesthouse",i:"🎒",r:3000},{c:"AD5",kind:"hanok",ko:"한옥스테이",en:"Hanok stay",i:"🏯",r:3000}]},
-  // 통역·길안내 (사장님 10-24) — 실제 통역·가이드를 연결(GoWithGuide 소개). 무료. 목록이 아니라 링크 판(tg 와 같은 방식)
+  // 통역·길안내 (사장님 10-24) — 우리 가이드(관광통역안내사) 등록·매칭 판. 무료. 언어 고르기→승인된 가이드 목록→요청 (GoWithGuide 외부 링크 대신)
   ig:{e:"guide", t:["통역·길안내","Interpreter & guide"], tabs:[{c:"IG"}]}
 };
 // 칩 글자 (아이콘 없이, 사장님 10-16) · ⋮ 메뉴 글자
 var CHIP={tg:["투어 가이드","Tour guide"],am:["편의시설","Convenience"],em:["긴급","Emergency"],st:["숙소","Stay"]};
 var MENU={tg:["투어 가이드","Tour guide"],am:["🏪 편의시설 (편의점·음식점·환전소·대사관)","🏪 Convenience (stores · restaurants · exchange · embassies)"],em:["🚑 긴급 (병원·약국)","🚑 Emergency (hospital · pharmacy)"],st:["🏨 숙소 (호텔·모텔·게스트하우스·한옥)","🏨 Stay (hotel · motel · guesthouse · hanok)"]};
 var MENU_ICON={tg:"mi_guide",am:"mi_amenity",em:"mi_emergency",st:"mi_stay"};   // ⋮ 메뉴 라벨 앞 그림 아이콘 (후보3, 사장님 10-23)
-function miLbl(k){ return '<img class="miic" src="img/menu/'+MENU_ICON[k]+'.png" alt="">'+esc(T(MENU[k][0],MENU[k][1]).replace(/^[\u{1F000}-\u{1FAFF}☀-➿⬀-⯿️]+\s*/u,"")); }
+function miLbl(k){ var lbl=k==="tg"?LG6(TOURS6):T(MENU[k][0],MENU[k][1]).replace(/^[\u{1F000}-\u{1FAFF}☀-➿⬀-⯿️]+\s*/u,""); return '<img class="miic" src="img/menu/'+MENU_ICON[k]+'.png" alt="">'+esc(lbl); }
 // 대사관 (사장님 10-16) — 고정 목록 37곳(G20·동남아·고용허가제 송출국). 나라 영문 이름 알파벳 순(거리로 줄 세우지 않음)
 //  이름·주소·전화: 외교부 「주한공관주소록」 국문·영문판(mofa.go.kr inKoEmblgbdAdres, 2026-10-16 읽음) · 전화는 첫 번호만
 //  좌표: 허브 /kplace 카카오 「<나라> 대사관」 자리(전화 또는 외교부 주소 검색 자리와 맞춘 것). 몽골은 카카오 자리와 외교부 주소가 580m 어긋나 좌표 비움(주소로 지도 검색)
@@ -70,6 +70,8 @@ var EMB=[
 var S={k:"",tab:0,base:null,src:"",items:null,err:""}, CACHE={}, PICK=null;
 function L(){ return window.LANG!=="ko"; }   // 외국어 화면(영·일·중) — 10-18
 function LG6(o){ return o[window.LANG]||o.en; }   // 통역·길안내 새 문구는 6개 언어를 바로 넣는다(i18n.js 안 건드림, 10-24)
+// 「투어·입장권 / Tours & tickets」 (사장님 10-24) — 옛 「투어 가이드」. 내용(Klook·GetYourGuide·Creatrip)은 그대로, 이름만 6개 언어로
+var TOURS6={ko:"투어·입장권",en:"Tours & tickets",ja:"ツアー・チケット",zhs:"旅游·门票",zht:"旅遊·門票",es:"Tours y entradas"};
 // 빨간·파란 단추 안 전화기 — 흰 선 그림(글자색 그대로, 사장님 10-16: 이모지는 분홍빛이라)
 var PH='<svg class="nrph" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function km(m){ return m<1000?Math.round(m)+" m":(m/1000).toFixed(1)+" km"; }
@@ -114,7 +116,15 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".iglangs{display:flex;flex-direction:column;gap:9px}"
   +".iglangs a.iglang{display:block;text-align:center;text-decoration:none;border:1.5px solid #0c8599;background:#e3fafc;color:#0b7285;border-radius:12px;padding:13px 10px;font-size:16px;font-weight:900}"
   +".igbook{margin:16px 2px 4px;padding:10px 12px;border:1px solid #ffd8a8;background:#fff4e6;border-radius:10px;font-size:14px;font-weight:800;color:#5c3d10;line-height:1.5}"
-  +".ignt{font-size:12.5px;color:var(--sub);line-height:1.5;margin:10px 2px 0}";
+  +".ignt{font-size:12.5px;color:var(--sub);line-height:1.5;margin:10px 2px 0}"
+  +".igback{border:0;background:none;color:#0b7285;font-size:14px;font-weight:800;padding:4px 0;margin:2px 0 4px;cursor:pointer}"
+  +".igcard{display:flex;gap:11px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin:9px 0;cursor:pointer}"
+  +".igav{width:56px;height:56px;border-radius:12px;object-fit:cover;flex:0 0 auto;background:#e3fafc}.igav.igavx{display:flex;align-items:center;justify-content:center;font-size:26px}"
+  +".igcard .igb{flex:1;min-width:0}.igcard .igb b{font-size:15.5px}.igm{color:var(--sub);font-size:12.5px;margin-top:2px}.igi{color:var(--ink);font-size:13px;margin-top:4px;line-height:1.45}"
+  +".igpk{display:inline-block;margin-top:6px;color:#0c8599;font-weight:800;font-size:13px}"
+  +".iglb{display:block;font-size:13px;color:var(--sub);font-weight:700;margin:10px 2px 3px}"
+  +".igin{width:100%;box-sizing:border-box;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 11px}"
+  +".igchk{display:flex;gap:7px;align-items:flex-start;font-size:13px;color:var(--ink);margin:12px 2px 0;line-height:1.5}.igchk input{width:18px;height:18px;margin-top:1px;flex:0 0 auto}";
   document.head.appendChild(s); }
 
 // ── 기준 위치 ──
@@ -164,7 +174,7 @@ function hanokFar(p,a0){ return fetch(HUB+"/gplace?q="+encodeURIComponent("한�
     var a=j.items.map(function(g){ return {name:g.name,addr:g.addr,x:g.lng,y:g.lat,rating:g.rating,n:g.n,kind:"hanok"}; })
       .sort(function(u,v){ var fu=kmLL(p,[u.y,u.x])>40?1:0, fv=kmLL(p,[v.y,v.x])>40?1:0; return (fu-fv)||(v.rating-u.rating)||(v.n-u.n); }); a.far=1; return a; }).catch(function(){ return a0; }); }
 function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.byL={}; S.fl=""; S.gr=0;
-  if(S.k==="ig"){ S.items=[]; S.base=null; paint(); return; }   // 통역·길안내 = 링크 판, 위치·목록 없음 (10-24)
+  if(S.k==="ig"){ IG={view:"pick",lang:"",guides:null,gid:null,gobj:null,err:"",busy:false,done:false}; S.items=[]; S.base=null; paint(); return; }   // 통역·길안내 = 가이드 매칭 판, 위치·목록 없음 (10-24)
   if(S.k==="tg"){ S.items=[]; paint(); pickBase(false).then(function(b){ if(S.k!=="tg") return; S.base=b?b.p:null; paint(); },function(){}); return; }   // 투어 가이드 = Klook·GetYourGuide 링크만 (근처 여행사는 아웃바운드라 뺌, 사장님 10-23). 위치는 가까운 도시 이름에만
   if(t.fixed){ var mp=ME.pos||null; S.base=null; S.src="";   // 대사관: 고정 목록 · 위치를 묻지 않는다 · 「나」 위치가 있으면 거리만 (폰 안에서 계산)
     S.items=EMB.map(function(x){ var o=Object.assign({},x); o.dist=(mp&&x.y)?Math.round(kmLL(mp,[x.y,x.x])*1000):null; return o; }); if(embL()) S.items.sort(function(a,b){ return embKey(a).localeCompare(embKey(b),{ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]); }); paint(); return; }
@@ -176,7 +186,7 @@ function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.by
       S.gr=it.r||t.r; S.raw=it.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(b.p,[+x.y,+x.x])*1000); return o; }); S.far=!!it.far; it=(it.far?S.raw.slice():S.k==="st"?rateSort(S.raw.slice()):sortIt(S.raw.slice(),t)).slice(0,10);
       S.items=it; S.fl=LANG; S.byL[LANG]=it; paint(); }); }).catch(function(){ S.err="net"; paint(); }); }
 // 언어를 바꿀 때 — 목록을 비우지 않고 그 자리에서 (한국어 = 받은 이름 그대로, 그 언어로 받아 둔 게 있으면 그것, 처음 가는 외국어만 같은 자리로 다시 받음, 10-18)
-function relang(){ var k=KINDS[S.k]; if(!k) return; var t=k.tabs[S.tab];
+function relang(){ var k=KINDS[S.k]; if(!k) return; if(S.k==="ig"){ paint(); return; } var t=k.tabs[S.tab];
   if(t.fixed||!S.items||!S.base||S.err) return load();
   S.byL=S.byL||{}; if(!L()||S.fl===LANG){ paint(); return; }
   if(S.byL[LANG]){ S.items=S.byL[LANG]; S.fl=LANG; paint(); return; }
@@ -207,35 +217,67 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
   var one=function(u,nm){ return '<div class="nrtg"><a href="'+u+'" target="_blank" rel="noopener">'+nm+' ›</a>'+ds+'</div>'; };
   var cl={ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en";   // 크리에이트립 (사장님 10-23) — 한국어판은 없어 영어로 연다
   return one("https://www.klook.com/"+kl+"/","Klook")+one("https://www.getyourguide.com/"+gl,"GetYourGuide")+one("https://creatrip.com/"+cl,"Creatrip"); }
-// 통역·길안내 (사장님 10-24) — 실제 통역·가이드 연결(GoWithGuide 소개, 중개 아님). 무료. 언어 단추마다 GoWithGuide 한국 페이지를 새 창으로.
-//  GWG = https://gowithguide.com/korea (200 확인). /ja/korea 같은 언어 경로는 404라 쓰지 않는다 — 공통 페이지를 열고 사이트에서 언어 선택.
-//  TODO(제휴): Awin 제휴(어필리에이트) 링크가 생기면 이 평딥링크를 Awin 래퍼로 교체한다. (지금은 제휴 코드 없이 평딥링크)
-var GWG="https://gowithguide.com/korea";
-function igHtml(){
-  var note=LG6({ko:"실제 통역·길안내를 해 주는 사람을 연결해 드립니다. (소개이며 중개가 아닙니다)",
-    en:"We connect you with a real interpreter-guide. (introduction only, not a broker)",
-    ja:"実際に通訳・道案内をしてくれる人をおつなぎします。（紹介であり仲介ではありません）",
-    zhs:"为您联系真人口译·向导。（仅为介绍，并非中介）",
-    zht:"為您聯繫真人口譯·嚮導。（僅為介紹，並非仲介）",
-    es:"Te ponemos en contacto con un intérprete-guía real. (solo presentación, no intermediación)"});
-  var chooseL=LG6({ko:"언어를 고르세요",en:"Choose your language",ja:"言語を選んでください",zhs:"请选择语言",zht:"請選擇語言",es:"Elige tu idioma"});
-  var book=LG6({ko:"예약: 내일 또는 모레 (당일 예약은 받지 않습니다)",
-    en:"Book for tomorrow or the day after (no same-day)",
-    ja:"予約：明日または明後日（当日の予約は不可）",
-    zhs:"预约：明天或后天（不接受当天预约）",
-    zht:"預約：明天或後天（不接受當天預約）",
-    es:"Reserva para mañana o pasado mañana (no el mismo día)"});
-  var nt=LG6({ko:"GoWithGuide 사이트가 새 창으로 열립니다. 사이트에서 언어를 고를 수 있어요.",
-    en:"GoWithGuide opens in a new tab. You can choose your language on their site.",
-    ja:"GoWithGuideが新しいタブで開きます。サイトで言語を選べます。",
-    zhs:"GoWithGuide将在新标签页打开，可在其网站上选择语言。",
-    zht:"GoWithGuide將在新分頁開啟，可在其網站上選擇語言。",
-    es:"GoWithGuide se abre en una pestaña nueva. Puedes elegir tu idioma en su sitio."});
-  var langs=[["한국어","ko"],["English","en"],["日本語","ja"],["中文(简)","zhs"],["中文(繁)","zht"],["Español","es"]];
-  var btns=langs.map(function(l){ return '<a class="iglang" href="'+GWG+'" target="_blank" rel="noopener" data-iglang="'+l[1]+'">'+esc(l[0])+' ›</a>'; }).join("");
-  return '<div class="ignote">ⓘ '+esc(note)+'</div>'
-    +'<div class="iglbl">'+esc(chooseL)+'</div><div class="iglangs">'+btns+'</div>'
-    +'<div class="igbook">📅 '+esc(book)+'</div><div class="ignt">'+esc(nt)+'</div>'; }
+// 통역·길안내 (사장님 10-24) — 우리 가이드(관광통역안내사) 등록·매칭. 무료. GoWithGuide 외부 링크 대신 우리 목록.
+//   손님: 언어 고르기 → 승인된 가이드 목록(사진·이름·언어·경력·지역·소개) → 한 명 골라 요청(이름·연락처·날짜·메모) → 가이드 이메일 + 우리 텔레그램
+//   가이드 등록은 「입점 문의」 빌딩 → 「관광 가이드 등록」(window.GUIDEREG) · 승인은 통계청(관리자)
+var GLANG6=[["한국어","ko"],["English","en"],["日本語","ja"],["中文(简)","zhs"],["中文(繁)","zht"],["Español","es"]];
+var IG={view:"pick",lang:"",guides:null,gid:null,gobj:null,err:"",busy:false,done:false};
+function igNote(){ return LG6({ko:"실제 통역·길안내를 해 주는 사람(관광통역안내사)을 연결해 드립니다. (소개이며 중개가 아닙니다)",
+  en:"We connect you with a real licensed interpreter-guide. (introduction only, not a broker)",
+  ja:"実際に通訳・道案内をしてくれる人（通訳案内士）をおつなぎします。（紹介であり仲介ではありません）",
+  zhs:"为您联系真人口译·向导（持证导游）。（仅为介绍，并非中介）",
+  zht:"為您聯繫真人口譯·嚮導（持證導遊）。（僅為介紹，並非仲介）",
+  es:"Te ponemos en contacto con un intérprete-guía con licencia real. (solo presentación, no intermediación)"}); }
+function igDates(){ var out=[]; for(var i=1;i<=2;i++){ var d=new Date(Date.now()+9*3600e3+i*864e5), s=d.toISOString().slice(0,10);
+    out.push([s, (i===1?LG6({ko:"내일",en:"Tomorrow",ja:"明日",zhs:"明天",zht:"明天",es:"Mañana"}):LG6({ko:"모레",en:"Day after tomorrow",ja:"明後日",zhs:"后天",zht:"後天",es:"Pasado mañana"}))+" ("+s+")"]); } return out; }
+function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) return GLANG6[i][0]; return c; }
+// 한 판 안에서 세 화면(pick=언어 고르기 · list=가이드 목록 · req=요청하기) 을 state(IG)로
+function igRender(b){
+  var head='<div class="nrtop"><b>'+esc(LG6({ko:"통역·길안내",en:"Interpreter & guide",ja:"通訳・ガイド",zhs:"翻译·向导",zht:"翻譯·嚮導",es:"Intérprete y guía"}))+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
+  var back='<button type="button" class="igback" data-igback="1">‹ '+esc(LG6({ko:"뒤로",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Atrás"}))+'</button>';
+  if(IG.view==="done"){ b.innerHTML=head+'<div class="ignote">✓ '+esc(LG6({ko:"요청이 전달되었습니다. 가이드가 곧 연락 드릴 거예요.",en:"Your request was sent. The guide will contact you soon.",ja:"リクエストを送りました。ガイドからまもなくご連絡します。",zhs:"请求已发送，向导会尽快与您联系。",zht:"請求已發送，嚮導會盡快與您聯繫。",es:"Tu solicitud fue enviada. El guía te contactará pronto."}))+'</div><button type="button" class="nrsel" data-igback="pick">'+esc(LG6({ko:"처음으로",en:"Start over",ja:"最初に戻る",zhs:"返回开始",zht:"返回開始",es:"Volver al inicio"}))+'</button>'; igWire(b); return; }
+  if(IG.view==="req"&&IG.gobj){ var g=IG.gobj, ds=igDates();
+    b.innerHTML=head+back
+      +'<div class="igcard" style="margin-top:8px">'+igFace(g)+'<div class="igb"><b>'+esc(g.name)+'</b><div class="igm">'+g.langs.map(igLangName).map(esc).join(" · ")+'</div></div></div>'
+      +'<div class="iglbl" style="margin-top:12px">'+esc(LG6({ko:"요청 내용을 적어 주세요",en:"Fill in your request",ja:"リクエストを入力してください",zhs:"请填写您的请求",zht:"請填寫您的請求",es:"Completa tu solicitud"}))+'</div>'
+      +'<label class="iglb">'+esc(LG6({ko:"이름 *",en:"Your name *",ja:"お名前 *",zhs:"您的姓名 *",zht:"您的姓名 *",es:"Tu nombre *"}))+'</label><input class="igin" id="igqNm" maxlength="30">'
+      +'<label class="iglb">'+esc(LG6({ko:"연락처 (이메일 또는 전화) *",en:"Contact (email or phone) *",ja:"連絡先（メールまたは電話）*",zhs:"联系方式（邮箱或电话）*",zht:"聯絡方式（電郵或電話）*",es:"Contacto (correo o teléfono) *"}))+'</label><input class="igin" id="igqCt" maxlength="60">'
+      +'<label class="iglb">'+esc(LG6({ko:"희망 날짜 (당일 예약은 받지 않습니다)",en:"Date (no same-day booking)",ja:"希望日（当日予約不可）",zhs:"日期（不接受当天预约）",zht:"日期（不接受當天預約）",es:"Fecha (no el mismo día)"}))+'</label><select class="igin" id="igqDt">'+ds.map(function(d){ return '<option value="'+d[0]+'">'+esc(d[1])+'</option>'; }).join("")+'</select>'
+      +'<label class="iglb">'+esc(LG6({ko:"요청 메모 (선택)",en:"Message (optional)",ja:"メモ（任意）",zhs:"留言（可选）",zht:"留言（可選）",es:"Mensaje (opcional)"}))+'</label><textarea class="igin" id="igqMs" maxlength="600" style="min-height:70px"></textarea>'
+      +'<label class="igchk"><input type="checkbox" id="igqAg"> '+esc(LG6({ko:"내 이름·연락처를 이 가이드에게 전달하는 데 동의합니다.",en:"I agree to share my name and contact with this guide.",ja:"氏名・連絡先をこのガイドに伝えることに同意します。",zhs:"我同意将我的姓名和联系方式转交给该向导。",zht:"我同意將我的姓名和聯絡方式轉交給該嚮導。",es:"Acepto compartir mi nombre y contacto con este guía."}))+'</label>'
+      +'<button type="button" class="nrsel" id="igqGo" style="background:#0c8599;color:#fff;border-color:#0c8599;margin-top:10px">'+esc(LG6({ko:"이 가이드에게 요청",en:"Send request",ja:"このガイドに依頼",zhs:"向该向导发送请求",zht:"向該嚮導發送請求",es:"Enviar solicitud"}))+'</button>'
+      +'<div class="ignt" id="igqM"></div>'; igWire(b); return; }
+  if(IG.view==="list"){ var h=head+back+'<div class="iglbl" style="margin-top:8px">'+esc(LG6({ko:igLangName(IG.lang)+" 가이드",en:igLangName(IG.lang)+" guides",ja:igLangName(IG.lang)+"のガイド",zhs:igLangName(IG.lang)+"向导",zht:igLangName(IG.lang)+"嚮導",es:"Guías de "+igLangName(IG.lang)}))+'</div>';
+    if(IG.err) h+='<div class="msg">'+esc(LG6({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again shortly.",ja:"しばらくしてからもう一度お試しください。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo de nuevo en un momento."}))+'</div>';
+    else if(!IG.guides) h+='<div class="msg">'+esc(LG6({ko:"찾는 중…",en:"Searching…",ja:"検索中…",zhs:"搜索中…",zht:"搜尋中…",es:"Buscando…"}))+'</div>';
+    else if(!IG.guides.length) h+='<div class="ignote">'+esc(LG6({ko:"아직 등록된 가이드가 없습니다. 곧 추가될 예정이에요.",en:"No guides registered yet. More coming soon.",ja:"まだ登録されたガイドがいません。近日追加予定です。",zhs:"暂无已登记的向导，即将新增。",zht:"暫無已登記的嚮導，即將新增。",es:"Aún no hay guías registrados. Pronto habrá más."}))+'</div>';
+    else h+=IG.guides.map(function(g,i){ return '<div class="igcard" data-igpick="'+i+'">'+igFace(g)+'<div class="igb"><b>'+esc(g.name)+'</b><div class="igm">'+g.langs.map(igLangName).map(esc).join(" · ")+(g.years?' · '+g.years+(window.LANG==="ko"?"년":"y"):"")+(g.region?' · '+esc(g.region):"")+'</div>'+(g.intro?'<div class="igi">'+esc(g.intro)+'</div>':"")+'<span class="igpk">'+esc(LG6({ko:"요청하기 ›",en:"Request ›",ja:"依頼する ›",zhs:"请求 ›",zht:"請求 ›",es:"Solicitar ›"}))+'</span></div></div>'; }).join("");
+    b.innerHTML=h; igWire(b); return; }
+  // pick
+  var btns=GLANG6.map(function(l){ return '<a class="iglang" href="#" data-iglang="'+l[1]+'">'+esc(l[0])+' ›</a>'; }).join("");
+  b.innerHTML=head+'<div class="ignote">ⓘ '+esc(igNote())+'</div>'
+    +'<div class="iglbl">'+esc(LG6({ko:"필요한 언어를 고르세요",en:"Choose the language you need",ja:"必要な言語を選んでください",zhs:"请选择您需要的语言",zht:"請選擇您需要的語言",es:"Elige el idioma que necesitas"}))+'</div><div class="iglangs">'+btns+'</div>';
+  igWire(b);
+}
+function igFace(g){ return g.photo?'<img class="igav" src="'+HUB+'/guide/photo?id='+encodeURIComponent(g.id)+'" alt="" loading="lazy">':'<span class="igav igavx">🧭</span>'; }
+function igWire(b){
+  [].forEach.call(b.querySelectorAll("[data-iglang]"),function(a){ a.onclick=function(e){ e.preventDefault(); IG.lang=a.dataset.iglang; IG.view="list"; IG.guides=null; IG.err=""; paint(); igLoad(); }; });
+  [].forEach.call(b.querySelectorAll("[data-igback]"),function(a){ a.onclick=function(e){ e.preventDefault(); var to=a.dataset.igback==="pick"?"pick":(IG.view==="req"?"list":"pick"); IG.view=to; if(to==="pick"){ IG.lang=""; IG.guides=null; } IG.done=false; paint(); }; });
+  [].forEach.call(b.querySelectorAll("[data-igpick]"),function(c){ c.onclick=function(){ var g=IG.guides&&IG.guides[+c.dataset.igpick]; if(g){ IG.gobj=g; IG.gid=g.id; IG.view="req"; paint(); } }; });
+  var go=b.querySelector("#igqGo"); if(go) go.onclick=igSend;
+}
+function igLoad(){ var lang=IG.lang; fetch(HUB+"/guide/guides?lang="+encodeURIComponent(lang)).then(function(r){ return r.json(); }).then(function(j){ if(IG.lang!==lang||IG.view!=="list") return;
+    if(j&&j.ok){ IG.guides=j.items||[]; } else IG.err="x"; paint(); }).catch(function(){ if(IG.lang===lang&&IG.view==="list"){ IG.err="net"; paint(); } }); }
+function igSend(){ if(IG.busy) return; var g=function(i){ var e=document.getElementById(i); return e?String(e.value||"").trim():""; };
+  var nm=g("igqNm"), ct=g("igqCt"), dt=g("igqDt"), ms=g("igqMs"), ag=document.getElementById("igqAg"), M=document.getElementById("igqM");
+  var set=function(t){ if(M){ M.textContent=t; } };
+  if(!nm||!ct){ set(LG6({ko:"이름과 연락처를 넣어 주세요.",en:"Please enter your name and contact.",ja:"お名前と連絡先を入力してください。",zhs:"请填写姓名和联系方式。",zht:"請填寫姓名和聯絡方式。",es:"Introduce tu nombre y contacto."})); return; }
+  if(!ag||!ag.checked){ set(LG6({ko:"전달 동의에 체크해 주세요.",en:"Please check the consent box.",ja:"同意にチェックしてください。",zhs:"请勾选同意。",zht:"請勾選同意。",es:"Marca la casilla de consentimiento."})); return; }
+  IG.busy=true; set("…"); var go=document.getElementById("igqGo"); if(go) go.disabled=true;
+  fetch(HUB+"/guide/lead",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({gid:IG.gid,name:nm,contact:ct,date:dt,msg:ms,lang:LANG,consent:true}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ IG.busy=false; if(go) go.disabled=false;
+    if(j&&j.ok){ IG.view="done"; paint(); return; }
+    set(j&&j.err==="contact"?LG6({ko:"연락처를 확인해 주세요.",en:"Please check your contact.",ja:"連絡先を確認してください。",zhs:"请检查联系方式。",zht:"請檢查聯絡方式。",es:"Revisa tu contacto."}):j&&j.err==="rate"?LG6({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてからもう一度。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):LG6({ko:"보내지 못했습니다.",en:"Could not send.",ja:"送信できませんでした。",zhs:"发送失败。",zht:"發送失敗。",es:"No se pudo enviar."})); })
+  .catch(function(){ IG.busy=false; if(go) go.disabled=false; set(LG6({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
 function tourBand(){ var c="South Korea", best=1e9, b=S.base;
   if(b) TB_CITY.forEach(function(x){ var d=kmLL(b,[x[1],x[2]]); if(d<=x[3]&&d<best){ best=d; c=x[0]; } });
   var q=encodeURIComponent(c+" day tour"), kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en-US", gl={ja:"ja-jp/",zhs:"zh-cn/",es:"es-es/"}[LANG]||"";
@@ -260,10 +302,10 @@ function embHtml(x){ var en=L(), tel="", lk;
     +(en?'<div class="ko">'+esc(x.n)+'</div>':'')+'<div class="d">'+esc(en?(x.ae||x.a):x.a)+'</div>'
     +(tel?'<div class="row">'+tel+'</div>':'')+'<div class="lks">'+lk+'</div></div>'; }
 function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) return;
-  if(S.k==="ig"){ b.className="nrin"; b.innerHTML='<div class="nrtop"><b>'+esc(LG6({ko:"통역·길안내",en:"Interpreter & guide",ja:"通訳・ガイド",zhs:"翻译·向导",zht:"翻譯·嚮導",es:"Intérprete y guía"}))+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>'+igHtml(); return; }   // 통역·길안내 판 (10-24)
+  if(S.k==="ig"){ b.className="nrin"; igRender(b); return; }   // 통역·길안내 판 (10-24) — 가이드 등록·매칭
   var k=KINDS[S.k], em=S.k==="em";
   b.className="nrin"+(em?" nrem":"")+(S.k==="st"?" nrst":"");
-  var h='<div class="nrtop"><b>'+T(k.t[0],k.t[1])+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
+  var h='<div class="nrtop"><b>'+(S.k==="tg"?"🧭 "+esc(LG6(TOURS6)):T(k.t[0],k.t[1]))+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
   if(em) h+=sos();
   if(S.k==="am") h+='<select class="nrsel" id="nrSel" aria-label="'+T("종류","Type")+'">'+k.tabs.map(function(t,i){ return '<option value="'+i+'"'+(i===S.tab?' selected':'')+'>'+esc(T(t.ko,t.en))+'</option>'; }).join("")+'</select>';   // 편의시설 = 풀다운 (사장님 10-16, 이모지 없이)
   else if(S.k==="tg"){ b.innerHTML=h+tgHtml(); return; }   // 투어 가이드 — Klook·GetYourGuide 두 칸, 그 아래 설명 세 줄 (사장님 10-23)
@@ -340,12 +382,71 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
 function entries(){ css(); var box=document.getElementById("gfchips");
   if(!box){ var h=document.getElementById("gob")||document.getElementById("hint"); if(!h) return; h.insertAdjacentHTML("afterend",'<div id="gfchips" style="display:flex;justify-content:center;gap:6px;margin:10px 0 0;flex-wrap:wrap"></div>'); box=document.getElementById("gfchips"); }
   ["tg","am","em","st"].forEach(function(k){ var c=box.querySelector('.nrchip[data-nr="'+k+'"]'); if(!c){ box.insertAdjacentHTML("beforeend",'<button type="button" class="nrchip'+(k!=="am"?' '+k:'')+'" data-nr="'+k+'"></button>'); c=box.querySelector('.nrchip[data-nr="'+k+'"]'); }
-    c.textContent=T(CHIP[k][0],CHIP[k][1]); });
+    c.textContent=k==="tg"?LG6(TOURS6):T(CHIP[k][0],CHIP[k][1]); });
   var mm=document.getElementById("mm"); if(mm) ["tg","am","em","st","ig"].forEach(function(k){ var id="mnear_"+k, a=document.getElementById(id);
     if(!a){ a=document.createElement("a"); a.id=id; a.href="#"; a.className="mi"; a.dataset.nr=k; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); }
     a.innerHTML=k==="ig"?'<img class="miic" src="img/menu/mi_guideperson.png" alt="">'+esc(LG6({ko:"통역·길안내",en:"Interpreter & guide",ja:"通訳・ガイド",zhs:"翻译·向导",zht:"翻譯·嚮導",es:"Intérprete y guía"})):miLbl(k); }); }
 var f=window.setLang; if(typeof f==="function"&&!f._nr){ var g=function(){ var r=f.apply(this,arguments); try{ entries(); if(document.getElementById("nrBox")) relang(); var bk=document.getElementById("nrBk"); if(bk&&BK) bookOpen(); }catch(e){} return r; }; g._nr=1; g._gf=f._gf; g._tr=f._tr; window.setLang=g; }   // 열린 목록·예약 창은 그 자리에서 (10-18)
 entries();
+// ── 관광 가이드 등록 (공급 측, 사장님 10-24) — 「입점 문의」 빌딩에서 window.GUIDEREG() 로 연다. 별도 전체 화면 · 6개 언어 ──
+//   필수: 이름·사진·가능 언어·자격증 번호·자격증 사본·연락처 이메일 + 개인정보 동의. 사진은 폰에서 줄여 ≤120KB JPEG 로 보낸다.
+//   자격증 번호 = 자유 영숫자(관광통역안내사 실제 형식 확인 전) · 제출 → 허브 /guide/join (대기 → 관리자 승인)
+var GREGV={photo:null,lic:null};
+function gShrink(file,cb){ if(!file){ cb(null); return; } var r=new FileReader();
+  r.onload=function(){ var img=new Image(); img.onload=function(){ try{ var mx=1000, w=img.width, h=img.height, sc=Math.min(1,mx/Math.max(w,h||1)), cw=Math.max(1,Math.round(w*sc)), ch=Math.max(1,Math.round(h*sc));
+      var c=document.createElement("canvas"); c.width=cw; c.height=ch; var x=c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,cw,ch); x.drawImage(img,0,0,cw,ch);
+      var q=0.85, out=c.toDataURL("image/jpeg",q), guard=0; while(out.length>158000&&q>0.3&&guard<8){ q-=0.1; out=c.toDataURL("image/jpeg",q); guard++; }
+      cb(out.indexOf("data:image/jpeg")===0&&out.length<=170000?out:null); }catch(e){ cb(null); } }; img.onerror=function(){ cb(null); }; img.src=r.result; };
+  r.onerror=function(){ cb(null); }; r.readAsDataURL(file); }
+function gReg(){ css(); var o=document.getElementById("gregBox"); if(o) o.remove();
+  if(!document.getElementById("gregCss")){ var gs=document.createElement("style"); gs.id="gregCss";
+    gs.textContent="#gregBox{position:fixed;inset:0;z-index:2147483040;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch}"
+      +"#gregBox .gin{max-width:560px;margin:0 auto;padding:16px 16px 48px}"
+      +"#gregBox h3{font-size:19px;margin:4px 0 2px}#gregBox .gsub{color:var(--sub);font-size:13.5px;line-height:1.5;margin-bottom:6px}"
+      +"#gregBox textarea.igin{min-height:72px;resize:vertical}"
+      +"#gregBox .glg{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0}#gregBox .glg label{display:flex;align-items:center;gap:5px;border:1.5px solid var(--line);border-radius:999px;padding:7px 12px;font-size:14px;font-weight:700;cursor:pointer}#gregBox .glg input{width:16px;height:16px;margin:0}"
+      +"#gregBox .gph{display:flex;align-items:center;gap:10px;margin:4px 0}#gregBox .gpv{width:60px;height:60px;border-radius:12px;object-fit:cover;background:#e3fafc;border:1px solid var(--line)}"
+      +"#gregBox .ghint{font-size:12px;color:var(--sub);margin:2px 2px 0}"
+      +"#gregBox .gbtn{width:100%;border:0;border-radius:12px;padding:13px;font-size:16px;font-weight:900;cursor:pointer;margin-top:14px;background:#0c8599;color:#fff}#gregBox .gbtn:disabled{opacity:.5}"
+      +"#gregBox .gx{position:absolute;top:12px;right:14px;width:36px;height:36px;border:0;border-radius:50%;background:var(--card);color:var(--sub);font-size:20px;cursor:pointer}";
+    document.head.appendChild(gs); }
+  GREGV={photo:null,lic:null};
+  var L=LG6, langsH=GLANG6.map(function(l){ return '<label><input type="checkbox" value="'+l[1]+'" class="gLchk"> '+esc(l[0])+'</label>'; }).join("");
+  o=document.createElement("div"); o.id="gregBox";
+  o.innerHTML='<div class="gin"><button type="button" class="gx" id="gX">✕</button>'
+    +'<h3>🧭 '+esc(L({ko:"관광 가이드 등록",en:"Register as a tour guide",ja:"観光ガイド登録",zhs:"导游登记",zht:"導遊登記",es:"Regístrate como guía turístico"}))+'</h3>'
+    +'<div class="gsub">'+esc(L({ko:"관광통역안내사 등 실제로 통역·길안내를 해 주실 분을 등록합니다. 담당자가 자격증을 확인한 뒤 승인합니다. (무료)",en:"Register if you are a real (licensed) interpreter-guide. We approve after verifying your license. (free)",ja:"通訳案内士など、実際に通訳・道案内をされる方の登録です。資格を確認後に承認します。（無料）",zhs:"面向真正的持证口译·向导。核验资格证后审核通过。（免费）",zht:"面向真正的持證口譯·嚮導。核驗資格證後審核通過。（免費）",es:"Regístrate si eres un intérprete-guía real (con licencia). Aprobamos tras verificar tu licencia. (gratis)"}))+'</div>'
+    +'<label class="iglb">'+esc(L({ko:"이름 *",en:"Name *",ja:"お名前 *",zhs:"姓名 *",zht:"姓名 *",es:"Nombre *"}))+'</label><input class="igin" id="gNm" maxlength="40">'
+    +'<label class="iglb">'+esc(L({ko:"사진 *",en:"Photo *",ja:"写真 *",zhs:"照片 *",zht:"照片 *",es:"Foto *"}))+'</label><div class="gph"><img class="gpv" id="gPv" alt="" style="display:none"><input type="file" accept="image/*" id="gPh"></div>'
+    +'<label class="iglb">'+esc(L({ko:"가능 언어 * (여러 개)",en:"Languages spoken * (multiple)",ja:"対応言語 *（複数可）",zhs:"可用语言 *（可多选）",zht:"可用語言 *（可多選）",es:"Idiomas * (varios)"}))+'</label><div class="glg">'+langsH+'</div>'
+    +'<label class="iglb">'+esc(L({ko:"관광통역안내사 자격증 번호 *",en:"Tour-guide license number *",ja:"通訳案内士 資格番号 *",zhs:"导游资格证号 *",zht:"導遊資格證號 *",es:"Número de licencia de guía *"}))+'</label><input class="igin" id="gLic" maxlength="40" placeholder="예: A1234567"><div class="ghint">'+esc(L({ko:"자격증에 적힌 번호를 영문·숫자로 적어 주세요.",en:"Enter the alphanumeric number shown on your license.",ja:"資格証の番号を英数字で入力してください。",zhs:"请输入资格证上的英数字号码。",zht:"請輸入資格證上的英數字號碼。",es:"Introduce el número alfanumérico de tu licencia."}))+'</div>'
+    +'<label class="iglb">'+esc(L({ko:"자격증 사본 *",en:"License photo *",ja:"資格証の写し *",zhs:"资格证照片 *",zht:"資格證照片 *",es:"Foto de la licencia *"}))+'</label><div class="gph"><img class="gpv" id="gLv" alt="" style="display:none"><input type="file" accept="image/*" id="gLp"></div>'
+    +'<label class="iglb">'+esc(L({ko:"경력 (년)",en:"Years of experience",ja:"経験年数",zhs:"从业年数",zht:"從業年數",es:"Años de experiencia"}))+'</label><input class="igin" id="gYr" inputmode="numeric" maxlength="2">'
+    +'<label class="iglb">'+esc(L({ko:"활동 지역",en:"Region",ja:"活動地域",zhs:"活动地区",zht:"活動地區",es:"Región"}))+'</label><input class="igin" id="gRg" maxlength="40" placeholder="'+esc(L({ko:"예: 서울, 부산",en:"e.g. Seoul, Busan",ja:"例：ソウル、釜山",zhs:"例：首尔、釜山",zht:"例：首爾、釜山",es:"p. ej. Seúl, Busan"}))+'">'
+    +'<label class="iglb">'+esc(L({ko:"자기소개 (짧게)",en:"Short self-introduction",ja:"自己紹介（短く）",zhs:"简短自我介绍",zht:"簡短自我介紹",es:"Breve presentación"}))+'</label><textarea class="igin" id="gIn" maxlength="500"></textarea>'
+    +'<label class="iglb">'+esc(L({ko:"이메일 *",en:"Email *",ja:"メール *",zhs:"邮箱 *",zht:"電郵 *",es:"Correo *"}))+'</label><input class="igin" id="gEm" type="email" maxlength="120" autocomplete="email">'
+    +'<label class="iglb">'+esc(L({ko:"전화 (선택)",en:"Phone (optional)",ja:"電話（任意）",zhs:"电话（可选）",zht:"電話（可選）",es:"Teléfono (opcional)"}))+'</label><input class="igin" id="gTel" inputmode="tel" maxlength="30">'
+    +'<label class="igchk"><input type="checkbox" id="gAg"> '+esc(L({ko:"개인정보 수집·이용에 동의합니다. (목적: 가이드 등록·승인·손님 연결 · 항목: 이름·사진·언어·자격증 번호·자격증 사본·연락처 · 보관: 탈퇴 또는 1년 뒤 손님 요청 삭제 · 연락처는 암호화 보관)",en:"I agree to the collection and use of my personal data. (Purpose: guide registration, approval and traveler matching · Items: name, photo, languages, license number, license photo, contact · Contact stored encrypted)",ja:"個人情報の収集・利用に同意します。（目的：ガイド登録・承認・お客様とのマッチング／項目：氏名・写真・言語・資格番号・資格証の写し・連絡先／連絡先は暗号化保管）",zhs:"我同意收集和使用个人信息。（目的：导游登记·审核·对接游客／项目：姓名·照片·语言·资格证号·资格证照片·联系方式／联系方式加密保存）",zht:"我同意收集和使用個人資訊。（目的：嚮導登記·審核·對接旅客／項目：姓名·照片·語言·資格證號·資格證照片·聯絡方式／聯絡方式加密保存）",es:"Acepto la recogida y uso de mis datos personales. (Fin: registro, aprobación y conexión con viajeros · Datos: nombre, foto, idiomas, número de licencia, foto de licencia, contacto · Contacto cifrado)"}))+'</label>'
+    +'<button type="button" class="gbtn" id="gGo">'+esc(L({ko:"등록 신청",en:"Register",ja:"登録申請",zhs:"提交登记",zht:"提交登記",es:"Registrarme"}))+'</button>'
+    +'<div class="ignt" id="gMsg"></div></div>';
+  document.body.appendChild(o);
+  document.getElementById("gX").onclick=function(){ o.remove(); };
+  var bindPhoto=function(inp,prev,key){ var e=document.getElementById(inp); e.onchange=function(){ var f=e.files&&e.files[0]; if(!f){ GREGV[key]=null; return; } gShrink(f,function(d){ GREGV[key]=d; var p=document.getElementById(prev); if(d&&p){ p.src=d; p.style.display="inline-block"; } }); }; };
+  bindPhoto("gPh","gPv","photo"); bindPhoto("gLp","gLv","lic");
+  document.getElementById("gGo").onclick=gRegSend;
+}
+function gRegSend(){ var L=LG6, M=document.getElementById("gMsg"), set=function(t){ if(M) M.textContent=t; };
+  var g=function(i){ var e=document.getElementById(i); return e?String(e.value||"").trim():""; };
+  var langs=[].map.call(document.querySelectorAll(".gLchk:checked"),function(c){ return c.value; });
+  var nm=g("gNm"), lic=g("gLic"), em=g("gEm"), rg=g("gRg");
+  if(!nm||!langs.length||!lic||!em||!rg||!GREGV.photo||!GREGV.lic){ set(L({ko:"* 칸(이름·사진·언어·자격증 번호·자격증 사본·지역·이메일)을 채워 주세요.",en:"Please fill the * fields (name, photo, languages, license number, license photo, region, email).",ja:"*項目（氏名・写真・言語・資格番号・資格証の写し・地域・メール）を入力してください。",zhs:"请填写*项（姓名·照片·语言·资格证号·资格证照片·地区·邮箱）。",zht:"請填寫*項（姓名·照片·語言·資格證號·資格證照片·地區·電郵）。",es:"Completa los campos * (nombre, foto, idiomas, licencia, foto de licencia, región, correo)."})); return; }
+  if(!document.getElementById("gAg").checked){ set(L({ko:"개인정보 수집·이용에 동의해 주세요.",en:"Please agree to the privacy notice.",ja:"個人情報の取り扱いに同意してください。",zhs:"请同意个人信息处理。",zht:"請同意個人資訊處理。",es:"Acepta el aviso de privacidad."})); return; }
+  var go=document.getElementById("gGo"); if(go) go.disabled=true; set("…");
+  fetch(HUB+"/guide/join",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:nm,langs:langs,lic:lic,years:g("gYr"),region:rg,intro:g("gIn"),email:em,phone:g("gTel"),photo:GREGV.photo,licPhoto:GREGV.lic,consent:true}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ if(go) go.disabled=false;
+    if(j&&j.ok){ var o=document.getElementById("gregBox"); if(o) o.querySelector(".gin").innerHTML='<button type="button" class="gx" onclick="document.getElementById(\'gregBox\').remove()">✕</button><h3>✓ '+esc(L({ko:"등록 신청이 접수되었습니다",en:"Registration received",ja:"登録申請を受け付けました",zhs:"已收到登记申请",zht:"已收到登記申請",es:"Registro recibido"}))+'</h3><div class="gsub">'+esc(L({ko:"담당자가 자격증을 확인한 뒤 승인해 드립니다. 승인되면 손님이 통역·길안내에서 회원님을 볼 수 있어요.",en:"We will approve after verifying your license. Once approved, travelers can find you under Interpreter & guide.",ja:"資格確認後に承認します。承認後、お客様が通訳・ガイドで見つけられます。",zhs:"核验资格后审核通过。通过后游客可在翻译·向导中找到您。",zht:"核驗資格後審核通過。通過後旅客可在翻譯·嚮導中找到您。",es:"Aprobaremos tras verificar tu licencia. Luego los viajeros podrán encontrarte en Intérprete y guía."}))+'</div><button type="button" class="gbtn" onclick="document.getElementById(\'gregBox\').remove()">'+esc(L({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}))+'</button>'; return; }
+    set(j&&j.err==="photo"||j&&j.err==="licphoto"?L({ko:"사진을 다시 올려 주세요 (JPEG).",en:"Please re-upload the photo (JPEG).",ja:"写真を再アップロードしてください（JPEG）。",zhs:"请重新上传照片（JPEG）。",zht:"請重新上傳照片（JPEG）。",es:"Vuelve a subir la foto (JPEG)."}):j&&j.err==="rate"?L({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてから。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):L({ko:"보내지 못했습니다. 칸을 확인해 주세요.",en:"Could not send. Please check the fields.",ja:"送信できませんでした。入力をご確認ください。",zhs:"发送失败，请检查填写。",zht:"發送失敗，請檢查填寫。",es:"No se pudo enviar. Revisa los campos."})); })
+  .catch(function(){ if(go) go.disabled=false; set(L({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
+window.GUIDEREG=gReg;
 window.NEAR={open:open,close:close,state:function(){ return S; }};
 var qm=location.search.match(/[?&]near=(am|em)/); if(qm) setTimeout(function(){ open(qm[1]); },300);
 })();
