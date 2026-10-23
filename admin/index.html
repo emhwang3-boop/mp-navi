@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권·결제 내역","장부 · 엑셀 받기"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권·결제 내역","장부 · 엑셀 받기"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
 function usd(n){ return "$"+(Math.round((n||0)*100)/100).toLocaleString(); }
 function tile(v,l){ return '<div class="tile"><b>'+v+'</b><span>'+l+'</span></div>'; }
@@ -211,6 +211,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="visit"){ visitLoad(); return; }
   if(id==="voice"){ voiceLoad(); return; }
   if(id==="inq"){ inqLoad(); return; }
+  if(id==="guide"){ guideLoad(); return; }   // 통역·길안내 가이드 승인 (2026-10-24)
   if(id==="ptn"){ ptnLoad(); return; }   // 제휴 가게 — partner.js (2026-10-16)
   if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
   if(id==="pay"){ payLoad(); return; }
@@ -305,6 +306,36 @@ function xlsSel(){ if(!ST||!window.XLSX){ alert("자료나 엑셀 도구를 아�
   var wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,sheet(s1,[30,30]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[22,26,14,8,9,8,8,12,6,6,12]),"그림별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[12,22,8,9,12]),"날짜별");
   save(wb,"머니퍼즐내비_"+(its.length===1?nmOf(its[0]).ko:its.length+"개그림")+"_"+ST.from+"_"+ST.to+(ST.test?"_시험":"")+".xlsx"); }
+
+// ── 가이드 승인 (통역·길안내, 2026-10-24) — 허브 /guide/admin/* (x-admin). 자격증 사본은 「사본 보기」로 하나씩 ──
+var GLN={ko:"한국어",en:"영어",ja:"일본어",zhs:"중국어(간체)",zht:"중국어(번체)",es:"스페인어"};
+function gLangNm(c){ return GLN[c]||c; }
+function guideLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>가이드 승인</b><div class="msg">불러오는 중…</div></div>';
+  api("/guide/admin/all").then(function(j){ if(!j.ok) throw new Error("x");
+    var pend=j.pending||[], appr=j.approved||[], rej=j.rejected||[], leads=j.leads||[], H='';
+    H+='<div class="card"><b>승인 대기 ('+pend.length+')</b><div class="msg">자격증 번호와 사본을 확인하고 승인/거절하세요.</div>'+(pend.length?pend.map(gCard).join(""):'<div class="msg">대기 중인 신청이 없습니다.</div>')+'</div>';
+    H+='<div class="card"><b>승인된 가이드 ('+appr.length+')</b>'+(appr.length?appr.map(gCard).join(""):'<div class="msg">아직 없습니다.</div>')+'</div>';
+    if(rej.length) H+='<div class="card"><b>거절 ('+rej.length+')</b>'+rej.map(gCard).join("")+'</div>';
+    H+='<div class="card"><b>손님 요청 ('+leads.length+')</b><div class="msg">손님이 가이드에게 보낸 요청입니다. 가이드에게 이메일로도 갑니다. 1년 지나면 지워집니다.</div>'+(leads.length?leads.map(gLead).join(""):'<div class="msg">아직 없습니다.</div>')+'</div>';
+    P.innerHTML=H;
+  }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+').</div></div>'; }); }
+function gCard(g){ var langs=(g.langs||[]).map(gLangNm).join(", ");
+  return '<div class="inv"><div class="row" style="align-items:flex-start;gap:10px">'
+    +'<img src="'+HUB+'/guide/photo?id='+encodeURIComponent(g.id)+'" style="width:64px;height:64px;border-radius:10px;object-fit:cover;background:var(--bg)" onerror="this.style.display=\'none\'">'
+    +'<div style="flex:1;min-width:0"><div><b>'+esc(g.name)+'</b> <span class="sub">'+esc(langs)+(g.years?' · 경력 '+g.years+'년':'')+(g.region?' · '+esc(g.region):'')+'</span></div>'
+    +'<div class="sub">자격증 번호 <b>'+esc(g.lic||'')+'</b> · 접수 '+esc(g.at||'')+(g.status==='approved'?' · <b style="color:var(--ok)">승인됨</b>':g.status==='rejected'?' · 거절됨':'')+'</div>'
+    +(g.intro?'<div style="white-space:pre-wrap;margin:4px 0">'+esc(g.intro)+'</div>':'')
+    +(g.email?'<div class="sub">연락처 '+esc(g.email)+(g.phone?' · '+esc(g.phone):'')+'</div>':'')
+    +'<div class="row" style="margin-top:6px"><button class="g" data-id="'+esc(g.id)+'" onclick="gLic(this.dataset.id)">자격증 사본 보기</button>'
+    +(g.status!=='approved'?'<button data-id="'+esc(g.id)+'" onclick="gAct(\'approve\',this.dataset.id)">승인</button>':'')
+    +(g.status==='new'?'<button class="g" data-id="'+esc(g.id)+'" onclick="gAct(\'reject\',this.dataset.id)">거절</button>':'')
+    +'<button class="g" data-id="'+esc(g.id)+'" onclick="gAct(\'delete\',this.dataset.id)">지우기</button></div>'
+    +'<div id="glic_'+esc(g.id)+'"></div></div></div></div>'; }
+function gLead(x){ return '<div class="inv"><div class="sub">'+esc(x.at||'')+' · 가이드 '+esc(x.gname||x.gid||'')+(x.lang?' · '+esc(x.lang):'')+'</div><div style="margin:4px 0"><b>'+esc(x.name||'')+'</b> · '+esc(x.contact||'')+(x.date?' · 희망 날짜 '+esc(x.date):'')+'</div>'+(x.msg?'<div style="white-space:pre-wrap">'+esc(x.msg)+'</div>':'')+'</div>'; }
+function gLic(id){ var box=$("glic_"+id); if(!box) return; if(box.innerHTML){ box.innerHTML=''; return; } box.innerHTML='<div class="msg">불러오는 중…</div>';
+  api("/guide/admin/lic?id="+encodeURIComponent(id)).then(function(j){ box.innerHTML=j&&j.ok&&j.data?'<img src="'+j.data+'" style="max-width:100%;border-radius:10px;margin-top:6px">':'<div class="msg">사본을 불러오지 못했습니다.</div>'; }).catch(function(){ box.innerHTML='<div class="msg err">불러오지 못했습니다.</div>'; }); }
+function gAct(a,id){ if(a==='delete'&&!confirm('이 가이드를 지울까요?')) return; if(a==='reject'&&!confirm('이 신청을 거절할까요?')) return;
+  api("/guide/admin/"+a,{method:"POST",body:JSON.stringify({id:id})}).then(function(j){ if(j&&j.ok) guideLoad(); else alert('처리하지 못했습니다.'); }).catch(function(){ alert('처리하지 못했습니다.'); }); }
 
 if(TOK) login();
 </script>
