@@ -63,7 +63,7 @@ window.NPASS={has:function(){ return !!tok(); },exp:function(){ var t=tok(); ret
   var active=false, wtmr=0;
   function dlabel(d){ return T(d+"일",d+" days"); }
   function pcss(){ if(document.getElementById("ptCss")) return; var s=document.createElement("style"); s.id="ptCss";
-    s.textContent="#psBox{z-index:1070}"
+    s.textContent="#psBox{z-index:1070!important}"
     +"#psBox .ptopts{margin:12px 0 4px}"
     +"#psBox .ptopt{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;margin:8px 0;cursor:pointer}"
     +"#psBox .ptopt input{width:18px;height:18px;margin:0;flex:0 0 auto}"
@@ -91,7 +91,7 @@ window.NPASS={has:function(){ return !!tok(); },exp:function(){ var t=tok(); ret
   // ── 이용권 고르기 + 결제수단(자리만) + 가짜 결제 단추
   function payModal(){ css(); pcss(); var b=document.getElementById("psBox"); if(b) b.remove(); b=document.createElement("div"); b.id="psBox";
     var opts=PLANS.map(function(p,i){ return '<label class="ptopt"><input type="radio" name="ptplan" value="'+p.d+'"'+(i===0?" checked":"")+'><span class="ptd">'+esc(dlabel(p.d))+'</span><span class="ptp">₩'+p.w+' <small>($'+p.u+')</small></span></label>'; }).join("");
-    var meths=[["💳",T("카드","Card")],["🅿","PayPal"],["📲",T("간편결제","Easy pay")],["📱",T("휴대폰에 카드를 대세요","Tap your card to your phone")]];
+    var meths=[['<img src="img/menu/mi_pay.png" style="width:20px;height:20px;object-fit:contain;vertical-align:-4px" alt="">',T("카드","Card")],["🅿","PayPal"],["📲",T("간편결제","Easy pay")],["📱",T("휴대폰에 카드를 대세요","Tap your card to your phone")]];
     var ml=meths.map(function(m){ return '<div class="ptm">'+m[0]+' '+esc(m[1])+' <em>'+esc(T("준비 중","coming soon"))+'</em></div>'; }).join("");
     b.innerHTML='<div class="in"><b>'+esc(T("이용권","Pass"))+'</b><div class="ptopts">'+opts+'</div>'
       +'<div class="ptmlbl">'+esc(T("결제수단","Payment method"))+'</div>'+ml
@@ -105,7 +105,7 @@ window.NPASS={has:function(){ return !!tok(); },exp:function(){ var t=tok(); ret
     var w=document.createElement("div"); w.id="pwWall";
     w.innerHTML='<div class="pwIn"><div class="pwLogo">🧩</div><b>'+esc(T("무료 체험이 끝났어요","Your free trial has ended"))+'</b>'
       +'<div class="m">'+esc(T("이용권을 구매하시면 계속 이용하실 수 있어요.","Buy a pass to keep using the app."))+'</div>'
-      +'<div>'+rows+'</div><button type="button" id="pwBuy">💳 '+esc(T("결제","Pay"))+'</button></div>';
+      +'<div>'+rows+'</div><button type="button" id="pwBuy"><img src="img/menu/mi_pay.png" style="width:20px;height:20px;object-fit:contain;vertical-align:-4px;margin-right:6px" alt="">'+esc(T("결제","Pay"))+'</button></div>';
     document.body.appendChild(w); document.getElementById("pwBuy").onclick=payModal; }
   // ── QR 라이브러리(그 자리에서 그린다 — 밖으로 안 보냄)
   function loadQR(cb){ if(window.QRCode){ cb(true); return; } var s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"; s.onload=function(){ cb(!!window.QRCode); }; s.onerror=function(){ cb(false); }; document.head.appendChild(s); }
@@ -128,8 +128,8 @@ window.NPASS={has:function(){ return !!tok(); },exp:function(){ var t=tok(); ret
   // ── ⋮ 메뉴에 결제·기기추가 (테스트 모드에서만)
   function mmAdd(id,fn){ var mm=document.getElementById("mm"); if(!mm) return null; var a=document.getElementById(id);
     if(!a){ mm.insertAdjacentHTML("afterbegin",'<a href="#" id="'+id+'" class="mi"></a>'); a=document.getElementById(id); a.onclick=function(e){ e.preventDefault(); mm.hidden=true; fn(); }; } return a; }
-  function tmenu(){ var a=mmAdd("mpay",payModal); if(a) a.textContent="💳 "+T("결제","Pay");
-    if(active){ var d=mmAdd("mdev",addDevice); if(d) d.textContent="📱 "+T("기기 추가","Add a device"); }
+  function tmenu(){ var a=mmAdd("mpay",payModal); if(a) a.innerHTML='<img class="miic" src="img/menu/mi_pay.png" alt="">'+esc(T("결제","Pay"));
+    if(active){ var d=mmAdd("mdev",addDevice); if(d) d.innerHTML='<img class="miic" src="img/menu/mi_device.png" alt="">'+esc(T("기기 추가","Add a device")); }
     else { var x=document.getElementById("mdev"); if(x) x.remove(); } }
   // ── 앱 열림: 이용권 있으면 벽 없음 / 없으면 5분 무료 체험 → 0 되면 벽
   function trial(){ var body={pd:dev()}; if(TSECS) body.secs=+TSECS;
