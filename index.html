@@ -98,7 +98,7 @@ html:lang(zh-Hant) body,html:lang(zh-Hant) :is(button,input,select,textarea){fon
 .map{margin:18px 0 0;border-radius:18px;overflow:hidden;background:#96b2c4;box-shadow:0 2px 14px rgba(0,0,0,.08)}
 /* 지도는 화면 폭 거의 전부 × 화면 높이 거의 전부(제목줄·칩 줄만 남김) — 정사각형 아님. 높이 --MH 는 mapFit() 이 잰다 (사장님 10-16) */
 .map{--W:min(calc(100vw - 24px),1600px);width:var(--W);margin-left:calc((100% - var(--W)) / 2);height:var(--MH,max(320px,calc(100vh - 300px)))}
-html,body{overflow-x:hidden}   /* 당겨서 새로고침 다시 허용 (사장님 10-23, 폰에서 새 판 받기) — 지도 끌기는 .map touch-action:none 이라 새로고침 안 됨 · 옛: 당겨서 새로고침·바운스 막음 — html 에만 (body 에 걸면 body 가 스크롤 상자라 화면 넘김이 막힌다, 10-16) */
+html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새로고침·바운스 막음 (10-23 잠깐 풀었다 다시 막음 — 새로고침은 ⋮ 메뉴 단추) — html 에만 (body 에 걸면 body 가 스크롤 상자라 화면 넘김이 막힌다, 10-16) */
 /* 가로 화면(폰 눕힘)·넓은 PC — 제목줄·검색칸·칩을 얇게 한 줄로, 지도에 높이를 몰아준다 */
 @media (orientation:landscape) and (max-height:560px),(min-width:900px) and (min-height:561px){
   .wrap{padding-top:8px}.top{margin:2px 0 8px}
