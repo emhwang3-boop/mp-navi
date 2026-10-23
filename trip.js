@@ -111,7 +111,7 @@ function flags(){ var z=document.getElementById("mz"); if(!z) return; [].forEach
 // ── 메뉴·칩 ──
 function refresh(){ var n=TR.items.length, mm=document.getElementById("mm");
   if(mm){ var a=document.getElementById("mtrip"); if(!a){ a=document.createElement("a"); a.id="mtrip"; a.href="#"; a.className="mi"; a.onclick=function(){ mm.hidden=true; openPanel(); return false; }; mm.insertBefore(a,mm.firstChild); }
-    a.textContent=T("🛒 내 여행 ("+n+")","🛒 My trip ("+n+")"); }
+    a.innerHTML='<img class="miic" src="img/menu/mi_cart.png" alt="">'+esc(T("여행카트 ("+n+")","My trip ("+n+")")); }
   var tb=document.querySelector(".tbs"), c=document.getElementById("trchip");
   if(tb&&!c){ c=document.createElement("button"); c.id="trchip"; c.type="button"; c.className="tb"; c.onclick=openPanel; tb.insertBefore(c,document.getElementById("rs")); }
   if(c){ c.hidden=false; c.textContent="🛒 "+n; c.title=T("내 여행","My trip"); }
