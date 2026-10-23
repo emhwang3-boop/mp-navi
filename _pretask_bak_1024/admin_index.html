@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<title>머니퍼즐 통계청</title>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#1b2230;--sub:#667085;--line:#e3e7ee;--acc:#2f5bd3;--bar:#5b8def;--bar2:#f59f00;--ok:#2b8a3e;--bad:#c92a2a}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1420;--card:#171d2b;--ink:#e8ecf2;--sub:#9aa4b2;--line:#263044;--acc:#7aa2ff;--bar:#5b8def;--bar2:#f5b33b;--ok:#69db7c;--bad:#ff8787}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Malgun Gothic",sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:6px 0 2px}
+.sub{color:var(--sub);font-size:13px}
+#hero{display:none;width:100%;max-height:220px;object-fit:contain;margin:4px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+input,select,button{font:inherit;color:inherit}
+input[type=password],input[type=text],input[type=date],select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;max-width:100%}
+button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:8px 14px;cursor:pointer}
+button.g{background:transparent;color:var(--acc);border:1px solid var(--line)}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.menu button{background:var(--card);color:var(--ink);border:1px solid var(--line);text-align:left;padding:12px;border-radius:12px}
+.menu button.on{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.menu small{display:block;color:var(--sub);font-size:12px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:10px 0}
+.tile{background:var(--bg);border-radius:12px;padding:10px}
+.tile b{display:block;font-size:24px}
+.tile span{color:var(--sub);font-size:12px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:7px 6px;border-bottom:1px solid var(--line);white-space:nowrap;text-align:right}
+th{color:var(--sub);font-weight:600;font-size:12px}
+td.l,th.l{text-align:left;white-space:normal;min-width:120px}
+.barc{width:140px}
+.bar{height:10px;border-radius:5px;background:var(--bar)}
+.bar.u{background:var(--bar2);height:6px;margin-top:2px}
+.msg{color:var(--sub);font-size:13px;margin-top:6px}
+.err{color:var(--bad)}
+.prep{color:var(--sub);padding:20px 4px}
+.inv{word-break:break-all;background:var(--bg);border-radius:10px;padding:10px;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- 머리 그림 자리 — 「머니퍼즐 통계청」 그림을 admin/hero.png 로 두면 나온다 (없으면 안 보임) -->
+  <img id="hero" src="hero.png" alt="" onload="this.style.display='block'" onerror="this.remove()">
+  <h1>머니퍼즐 통계청 · 관리자 메뉴판</h1>
+  <div class="sub">주식회사 부만 · 머니퍼즐 내비</div>
+
+  <div class="card" id="gate">
+    <div class="row">
+      <input type="password" id="tok" placeholder="관리 비밀번호" autocomplete="off" style="flex:1;min-width:200px">
+      <button onclick="login()">들어가기</button>
+      <button class="g" onclick="logout()">이 기기에서 지우기</button>
+      <button class="g" onclick="location.href='../'">← 지도로 나가기</button>
+    </div>
+    <div class="msg" id="gmsg">비밀번호는 이 기기 브라우저에만 저장됩니다. 5번 틀리면 15분 동안 잠깁니다.</div>
+  </div>
+
+  <div id="app" hidden>
+    <div class="row" style="justify-content:flex-end;margin-bottom:6px"><button class="g" onclick="location.href='../'">← 지도로 나가기</button><button class="g" onclick="show('pw')" title="비밀번호 변경">⚙ 비밀번호 변경</button><button class="g" onclick="TOK='';try{localStorage.removeItem('mpadm_tok')}catch(e){}location.href='../'" title="이 기기에서 비밀번호를 지우고 지도로">🔒 잠그고 나가기</button></div>
+    <div class="menu" id="menu"></div>
+    <div id="pane"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+var HUB="https://brief-live-hub.emhwang3.workers.dev", CO="주식회사 부만 · 머니퍼즐 내비";
+var TOK=""; try{ TOK=localStorage.getItem("mpadm_tok")||""; }catch(e){}
+function $(i){ return document.getElementById(i); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function kday(add){ return new Date(Date.now()+9*3600e3+(add||0)*864e5).toISOString().slice(0,10); }
+function api(path,opt){ opt=opt||{}; opt.headers={"x-admin":encodeURIComponent(TOK)};   /* 한글 비밀번호도 머리줄에 실리게 */ opt.cache="no-store";
+  return fetch(HUB+path,opt).then(function(r){ if(r.status===403) throw new Error("admin"); if(r.status===429) throw new Error("locked"); return r.json(); }); }
+
+// ── 들어가기 — 허브가 토큰을 확인해야만 메뉴가 열린다 ──
+function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").textContent="토큰을 넣어 주세요."; return; }
+  $("gmsg").textContent="확인 중…";
+  api("/ntapstats?from="+kday(0)+"&to="+kday(0)).then(function(j){ if(!j.ok) throw new Error("x");
+    try{ localStorage.setItem("mpadm_tok",TOK); }catch(e){} $("tok").value=""; $("gate").hidden=true; $("app").hidden=false; menu(); show("home");
+  }).catch(function(e){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(x){} $("gmsg").innerHTML='<span class="err">'+(e.message==="admin"?"비밀번호가 맞지 않습니다.":e.message==="locked"?"5번 틀려 15분 동안 잠겼습니다. 잠시 뒤 다시 넣어 주세요.":"허브에 닿지 못했습니다.")+'</span>'; });
+}
+function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
+
+var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권·결제 내역","장부 · 엑셀 받기"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
+function usd(n){ return "$"+(Math.round((n||0)*100)/100).toLocaleString(); }
+function tile(v,l){ return '<div class="tile"><b>'+v+'</b><span>'+l+'</span></div>'; }
+// ── 계기판 — 건물에 들어오면 바로 보이는 장부 ──
+function homeLoad(){ var P=$("pane"), td=kday(0), ms=td.slice(0,8)+"01";
+  P.innerHTML='<div class="card"><b>오늘 '+td+'</b><div id="hsum"><div class="msg">불러오는 중…</div></div></div><div class="card"><b>새 고객의 소리</b><div id="hvc"></div></div><div class="card"><b>최근 7일</b><div class="tw"><table id="h7"></table></div></div>';
+  Promise.all([api("/ntapstats?from="+kday(-6)+"&to="+td),api("/nledger?from="+td+"&to="+td),api("/nledger?from="+ms+"&to="+td),api("/nvoice").catch(function(){ return {ok:false}; }),api("/ninq/admin").catch(function(){ return {ok:false}; })]).then(function(a){
+    var w=a[0], tdy=(w.days||[]).filter(function(d){ return d.d===td; })[0]||{}, L0=a[1].total, LM=a[2].total, V=a[3], IQ=a[4];
+    $("hsum").innerHTML='<div class="tiles">'
+      +tile((tdy.vis||0).toLocaleString(),"오늘 방문 (열림)")+tile((tdy.visU||0).toLocaleString(),"오늘 방문 기기 수")
+      +tile((tdy.t||0).toLocaleString(),"오늘 그림 누름")+tile((tdy.u||0).toLocaleString(),"오늘 사람 수")
+      +tile(L0.KRW.n+L0.USD.n+"건","오늘 결제")+tile(won(L0.KRW.amt)+(L0.USD.amt?" · "+usd(L0.USD.amt):""),"오늘 결제금액")
+      +tile(won(LM.KRW.amt)+(LM.USD.amt?" · "+usd(LM.USD.amt):""),"이번 달 매출 ("+ms.slice(5,7)+"월)")
+      +tile(V.ok?V.unread+"건":"-","새 고객의 소리")+tile(IQ.ok?IQ.unread+"건":"-","새 입점 문의")+'</div>'
+      +(a[1].pg===false?'<div class="msg">결제 연결 전 — 0원 (결제를 붙이면 자동으로 쌓입니다)</div>':'');
+    var it=V.ok?V.items.filter(function(x){ return !x.read; }).slice(0,3):[];
+    $("hvc").innerHTML=it.length?it.map(function(x){ return '<div class="inv"><div class="sub">'+esc(x.at)+(x.lang?' · '+esc(x.lang):'')+'</div>'+esc(x.text)+'</div>'; }).join("")+'<div class="row" style="margin-top:8px"><button class="g" onclick="show(\'voice\')">모두 보기</button></div>':'<div class="msg">새 글 없음</div>';
+    var h='<tr><th class="l">날짜</th><th>방문</th><th>기기</th><th>누름</th><th>사람 수</th><th>길찾기</th></tr>';
+    (w.days||[]).slice().reverse().forEach(function(d){ h+='<tr><td class="l">'+d.d+'</td><td>'+(d.vis||0)+'</td><td>'+(d.visU||0)+'</td><td>'+d.t+'</td><td>'+d.u+'</td><td>'+d.r+'</td></tr>'; });
+    $("h7").innerHTML=h;
+  }).catch(function(e){ $("hsum").innerHTML='<div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div>'; }); }
+// ── 방문 — 내비 숫자는 토큰 경로(/ntapstats)에서, 허브 공개 화면은 단추로 ──
+function visitLoad(){ var P=$("pane");
+  P.innerHTML='<div class="card"><b>내비 방문 (최근 30일)</b><div class="msg">앱이 열릴 때 1번 셉니다. 기기 수 = 그날 처음 연 기기 (사장님 기기 제외)</div><div class="tw"><table id="vt"></table></div></div>'
+    +'<div class="card"><b>허브 방문 통계 화면</b><div class="row" style="margin-top:8px"><a href="'+HUB+'/stats" target="_blank" rel="noopener"><button class="g">앱 방문 통계 (/stats)</button></a><a href="'+HUB+'/hstats" target="_blank" rel="noopener"><button class="g">홈페이지 방문 (/hstats)</button></a></div></div>';
+  api("/ntapstats?from="+kday(-29)+"&to="+kday(0)).then(function(j){ var h='<tr><th class="l">날짜</th><th>방문</th><th>기기 수</th><th>누른 기기</th></tr>';
+    j.days.slice().reverse().forEach(function(d){ h+='<tr><td class="l">'+d.d+'</td><td>'+(d.vis||0)+'</td><td>'+(d.visU||0)+'</td><td>'+(d.dev||0)+'</td></tr>'; });
+    h+='<tr><td class="l"><b>합계</b></td><td><b>'+j.total.vis+'</b></td><td><b>'+j.total.visU+'</b></td><td><b>'+j.total.dev+'</b></td></tr>'; $("vt").innerHTML=h; })
+  .catch(function(e){ $("vt").innerHTML='<tr><td class="l err">불러오지 못했습니다</td></tr>'; }); }
+// ── 고객의 소리 — 허브에 저장된 내비 글. 연락처는 가려 두고 단추로 하나씩 ──
+function voiceLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>고객의 소리 (내비)</b><div class="msg">메일로도 갑니다. 연락처는 「연락처 보기」를 눌러야 보입니다.</div><div id="vl"><div class="msg">불러오는 중…</div></div></div>';
+  api("/nvoice").then(function(j){ if(!j.items.length){ $("vl").innerHTML='<div class="msg">아직 글이 없습니다.</div>'; return; }
+    $("vl").innerHTML=j.items.map(function(x){ return '<div class="inv" style="'+(x.read?'opacity:.65':'border-left:4px solid var(--acc)')+'"><div class="sub">'+esc(x.at)+(x.lang?' · '+(x.lang==="en"?"영어":"한국어"):'')+(x.read?' · 읽음':' · 새 글')+'</div>'
+      +'<div style="white-space:pre-wrap;margin:4px 0">'+esc(x.text)+'</div><div class="row">'
+      +(x.read?'':'<button class="g" data-id="'+esc(x.id)+'" onclick="vRead(this.dataset.id)">읽음</button>')
+      +(x.hasContact?'<button class="g" data-id="'+esc(x.id)+'" onclick="vContact(this)">연락처 보기</button>':'')
+      +'<button class="g" data-id="'+esc(x.id)+'" onclick="vDel(this.dataset.id)">지우기</button></div></div>'; }).join("");
+  }).catch(function(e){ $("vl").innerHTML='<div class="msg err">불러오지 못했습니다</div>'; }); }
+function vRead(id){ api("/nvoice?read="+encodeURIComponent(id),{method:"POST"}).then(voiceLoad); }
+function vDel(id){ if(!confirm("이 글을 지울까요?")) return; api("/nvoice?del="+encodeURIComponent(id),{method:"POST"}).then(voiceLoad); }
+function vContact(b){ api("/nvoice?contact="+encodeURIComponent(b.dataset.id)).then(function(j){ var s=document.createElement("span"); s.textContent=j.contact||"(없음)"; s.style.padding="8px"; b.replaceWith(s); }); }
+// ── 비밀번호 변경 — 허브가 지금 비밀번호를 확인한 뒤에만 바꾼다 (저장은 소금+해시) ──
+function pwChange(){ var a=$("pw0").value, b=$("pw1").value, c=$("pw2").value, m=$("pwm");
+  if(!a){ m.innerHTML='<span class="err">지금 비밀번호를 넣어 주세요.</span>'; return; }
+  if([...b].length<10){ m.innerHTML='<span class="err">새 비밀번호는 10자 이상이어야 합니다.</span>'; return; }
+  if(b!==c){ m.innerHTML='<span class="err">새 비밀번호와 확인이 다릅니다.</span>'; return; }
+  if(b===a){ m.innerHTML='<span class="err">지금 비밀번호와 다른 것으로 정해 주세요.</span>'; return; }
+  $("pwb").disabled=true; m.textContent="바꾸는 중…";
+  fetch(HUB+"/nadminpw",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cur:a,"new":b}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ $("pwb").disabled=false;
+    if(j.ok){ TOK=b; try{ localStorage.setItem("mpadm_tok",b); }catch(e){} $("pw0").value=$("pw1").value=$("pw2").value="";
+      m.innerHTML='<b>바꿨습니다.</b> 이 기기에는 새 비밀번호로 저장했습니다. 다른 기기(폰 등)에서는 새 비밀번호를 다시 넣어 주세요.'; return; }
+    m.innerHTML='<span class="err">'+(j.err==="locked"?"5번 틀려 15분 동안 잠겼습니다.":j.err==="admin"?"지금 비밀번호가 맞지 않습니다.":j.err==="weak"?"새 비밀번호가 너무 짧습니다 (10자 이상).":"바꾸지 못했습니다.")+'</span>';
+  }).catch(function(){ $("pwb").disabled=false; m.innerHTML='<span class="err">허브에 닿지 못했습니다.</span>'; }); }
+// ── 입점 문의 — 사업자번호·이메일 확인을 거친 업체 문의. 연락처는 가려 두고 단추로 · 업종 코드표는 허브 /ninq/cats 한 곳 ──
+var IQS={active:"계속사업자 ✓ (국세청)",pending:"국세청 확인 대기 (형식·체크섬만)"}, IQD=null, IQC=null, IQF={a:"",b:""};
+function iqCats(){ if(IQC) return Promise.resolve(IQC); return fetch(HUB+"/ninq/cats").then(function(r){ return r.json(); }).then(function(j){ IQC=j.cats||[]; return IQC; }).catch(function(){ IQC=[]; return IQC; }); }
+function iqCatNm(code){ var p=String(code||"").split("."), t=(IQC||[]).filter(function(x){ return x.c===p[0]; })[0]; if(!t) return [code||"",""];
+  var s=p[1]&&t.sub?t.sub.filter(function(x){ return x.c===p[1]; })[0]:null; return [t.ko, s?s.ko:""]; }
+function inqLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><div class="row"><b style="flex:1">입점·광고 문의</b><button class="g" onclick="xlsInq()">엑셀 받기</button></div><div class="msg">메일로도 갑니다. 이메일·전화는 「연락처 보기」를 눌러야 보입니다. 1년 지나면 지워집니다.</div>'
+  +'<div class="row" style="margin-top:8px"><select id="iqA" onchange="IQF.a=this.value;IQF.b=\'\';iqDraw()"></select><select id="iqB" onchange="IQF.b=this.value;iqDraw()"></select></div><div id="iqCnt" class="msg"></div><div id="iql"><div class="msg">불러오는 중…</div></div></div>';
+  Promise.all([iqCats(),api("/ninq/admin")]).then(function(a){ IQD=a[1]; iqDraw(); }).catch(function(e){ $("iql").innerHTML='<div class="msg err">불러오지 못했습니다</div>'; }); }
+function iqDraw(){ if(!IQD) return; var all=IQD.items, cnt={}, cntB={};
+  all.forEach(function(x){ var p=String(x.cat||"").split("."); cnt[p[0]]=(cnt[p[0]]||0)+1; if(p[1]) cntB[x.cat]=(cntB[x.cat]||0)+1; });
+  $("iqA").innerHTML='<option value="">대분류 전체 ('+all.length+')</option>'+IQC.map(function(c){ return '<option value="'+c.c+'"'+(IQF.a===c.c?" selected":"")+'>'+esc(c.ko)+' ('+(cnt[c.c]||0)+')</option>'; }).join("");
+  var top=IQC.filter(function(c){ return c.c===IQF.a; })[0];
+  $("iqB").hidden=!(top&&top.sub); $("iqB").innerHTML=top&&top.sub?'<option value="">소분류 전체</option>'+top.sub.map(function(s){ var k=top.c+"."+s.c; return '<option value="'+k+'"'+(IQF.b===k?" selected":"")+'>'+esc(s.ko)+' ('+(cntB[k]||0)+')</option>'; }).join(""):"";
+  $("iqCnt").textContent="업종별: "+IQC.filter(function(c){ return cnt[c.c]; }).map(function(c){ return c.ko+" "+cnt[c.c]; }).join(" · ");
+  var R=all.filter(function(x){ var c=String(x.cat||""); return (!IQF.a||c.split(".")[0]===IQF.a)&&(!IQF.b||c===IQF.b); });
+  if(!R.length){ $("iql").innerHTML='<div class="msg">해당 문의가 없습니다.</div>'; return; }
+  $("iql").innerHTML=R.map(function(x){ var cn=iqCatNm(x.cat); return '<div class="inv" style="'+(x.read?'opacity:.65':'border-left:4px solid var(--acc)')+'"><div class="sub">'+esc(x.at)+' · '+(x.lang==="en"?"영어":"한국어")+(x.read?' · 읽음':' · 새 문의')+(x.mailFail?' · <span class="err">메일 실패</span>':'')+'</div>'
+      +'<div style="margin:4px 0"><b>'+esc(x.biz)+'</b> · '+esc(cn[0])+(cn[1]?' &gt; '+esc(cn[1]):'')+(x.catx?' ('+esc(x.catx)+')':'')+' · 담당 '+esc(x.name)+'</div>'
+      +'<div class="sub">사업자 '+esc(String(x.bno||"").replace(/^(\d{3})(\d{2})(\d{5})$/,"$1-$2-$3"))+' · '+esc(IQS[x.bizSt]||x.bizSt||"")+(x.loc?' · 위치 '+esc(x.loc):'')+'</div>'
+      +'<div style="white-space:pre-wrap;margin:6px 0">'+esc(x.msg)+'</div><div class="row">'
+      +(x.read?'':'<button class="g" data-id="'+esc(x.id)+'" onclick="iqAct(\'read\',this.dataset.id)">읽음</button>')
+      +(x.hasContact?'<button class="g" data-id="'+esc(x.id)+'" onclick="iqContact(this)">연락처 보기</button>':'')
+      +'<button class="g" data-id="'+esc(x.id)+'" onclick="iqAct(\'del\',this.dataset.id)">지우기</button></div></div>'; }).join(""); }
+function iqAct(a,id){ if(a==="del"&&!confirm("이 문의를 지울까요?")) return; api("/ninq/admin?"+a+"="+encodeURIComponent(id),{method:"POST"}).then(inqLoad); }
+function iqContact(b){ api("/ninq/admin?contact="+encodeURIComponent(b.dataset.id)).then(function(j){ var s=document.createElement("span"); s.textContent=(j.email||"")+(j.contact?" · "+j.contact:""); s.style.padding="8px"; b.replaceWith(s); }); }
+function xlsInq(){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀습니다."); return; }
+  Promise.all([iqCats(),api("/ninq/admin?full=1")]).then(function(a){ var j=a[1], rows=[[CO],["입점·광고 문의"+(IQF.a?" — "+iqCatNm(IQF.b||IQF.a).filter(Boolean).join(" > "):"")],["만든 날",kday(0)],[],["시각","상호/회사","대분류","소분류","업종(직접 입력)","담당자","사업자등록번호","사업자 확인","이메일(인증)","전화","위치","언어","문의 내용","읽음"]];
+    j.items.filter(function(x){ var c=String(x.cat||""); return (!IQF.a||c.split(".")[0]===IQF.a)&&(!IQF.b||c===IQF.b); }).forEach(function(x){ var cn=iqCatNm(x.cat);
+      rows.push([x.at,x.biz,cn[0],cn[1],x.catx||"",x.name,String(x.bno||"").replace(/^(\d{3})(\d{2})(\d{5})$/,"$1-$2-$3"),IQS[x.bizSt]||x.bizSt||"",x.email||"",x.contact||"",x.loc||"",x.lang==="en"?"영어":"한국어",x.msg,x.read?"읽음":""]); });
+    var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[16,20,14,16,14,10,14,22,24,14,20,6,50,6]),"입점 문의"); save(wb,"머니퍼즐내비_입점문의_"+kday(0)+".xlsx"); })
+  .catch(function(){ alert("불러오지 못했습니다"); }); }
+// ── 이용권·결제 장부 ──
+var LG=null, PRN={"7d":"7일권","15d":"15일권","30d":"30일권"};
+function payLoad(){ var P=$("pane"), td=kday(0);
+  P.innerHTML='<div class="card"><b>이용권·결제 장부</b><div class="row" style="margin-top:8px"><input type="date" id="lf" value="'+td.slice(0,8)+'01"> ~ <input type="date" id="lt" value="'+td+'"><button onclick="ledLoad()">보기</button><button class="g" onclick="xlsLed()">엑셀 받기</button></div><div id="lsum"></div><div class="tw"><table id="ltab"></table></div><div class="tw" style="margin-top:12px"><table id="lrec"></table></div></div>'
+    +'<div class="card"><b>이용권 손 발급</b><div class="msg">결제 연결 전·환불 대신 등에 씁니다. 이메일을 넣으면 손님에게 이용권 링크 메일이 갑니다(이메일은 저장 안 하고 해시만). 메일이 안 나가면 링크가 여기 나옵니다.</div>'
+    +'<div class="row" style="margin-top:8px"><select id="psD"><option value="7">7일</option><option value="15">15일</option><option value="30">30일</option></select><input id="psE" type="email" placeholder="손님 이메일 (선택)" style="min-width:220px"><select id="psL"><option value="en">영어 메일</option><option value="ko">한글 메일</option></select><label><input type="checkbox" id="psT"> 시험</label><button onclick="passIssue()">발급</button></div><div id="psOut"></div></div>';
+  ledLoad(); }
+// 이용권 손 발급 (2026-10-16) — 허브 /npass/admin
+function passIssue(){ var o=$("psOut"); o.innerHTML='<div class="msg">발급 중…</div>';
+  api("/npass/admin",{method:"POST",body:JSON.stringify({days:+$("psD").value,email:$("psE").value.trim(),lang:$("psL").value,test:$("psT").checked})}).then(function(j){
+    if(!j.ok){ o.innerHTML='<div class="msg">실패: '+esc(j.err||"")+'</div>'; return; } var e=j.exp||"";
+    o.innerHTML='<div class="msg">발급됨 · 만료 '+esc(e.slice(0,4)+"-"+e.slice(4,6)+"-"+e.slice(6))+(j.mailed?' · 메일 보냄':'')+'</div>'+(j.link?'<div class="inv">'+esc(j.link)+'</div><div class="row" style="margin-top:6px"><button class="g" id="psCp">복사</button></div>':'');
+    if(j.link) $("psCp").onclick=function(){ try{ navigator.clipboard.writeText(j.link).then(function(){ $("psCp").textContent="복사됨"; }); }catch(x){} };
+  }).catch(function(e){ o.innerHTML='<div class="msg">실패: '+esc(e.message)+'</div>'; }); }
+function ledLoad(){ api("/nledger?from="+$("lf").value+"&to="+$("lt").value).then(function(j){ LG=j; var T=j.total;
+  $("lsum").innerHTML='<div class="tiles">'+tile(T.KRW.n+T.USD.n+"건","결제 건수")+tile(won(T.KRW.amt),"원화 합계")+tile(usd(T.USD.amt),"달러 합계")+tile((j.products["7d"]||0)+" / "+(j.products["15d"]||0)+" / "+(j.products["30d"]||0),"7일 / 15일 / 30일권")+'</div>'
+    +(j.pg===false?'<div class="msg">결제 연결 전 — 0원</div>':'');
+  var h='<tr><th class="l">날짜</th><th>건수</th><th>원화</th><th>달러</th><th>7일권</th><th>15일권</th><th>30일권</th></tr>';
+  j.days.forEach(function(d){ h+='<tr><td class="l">'+d.d+'</td><td>'+(d.KRW.n+d.USD.n)+'</td><td>'+won(d.KRW.amt)+'</td><td>'+usd(d.USD.amt)+'</td><td>'+(d.p["7d"]||0)+'</td><td>'+(d.p["15d"]||0)+'</td><td>'+(d.p["30d"]||0)+'</td></tr>'; });
+  if(!j.days.length) h+='<tr><td class="l" colspan="7">아직 결제 기록이 없습니다.</td></tr>';
+  $("ltab").innerHTML=h;
+  var r='<tr><th class="l">시각</th><th class="l">상품</th><th>통화</th><th>금액</th><th class="l">상태</th><th class="l">주문번호</th></tr>';
+  j.items.forEach(function(x){ r+='<tr><td class="l">'+esc(x.at)+'</td><td class="l">'+esc(PRN[x.product]||x.product)+'</td><td>'+esc(x.cur)+'</td><td>'+(x.cur==="USD"?usd(x.amount):won(x.amount))+'</td><td class="l">'+(x.status==="refund"?"환불":"결제")+'</td><td class="l">'+esc(x.oid||"")+'</td></tr>'; });
+  $("lrec").innerHTML=j.items.length?r:"";
+}).catch(function(e){ $("lsum").innerHTML='<div class="msg err">불러오지 못했습니다</div>'; }); }
+function xlsLed(){ if(!LG||!window.XLSX){ alert("자료나 엑셀 도구를 아직 못 불렀습니다."); return; } var T=LG.total;
+  var s1=[[CO],["이용권·결제 장부"],["기간",LG.from+" ~ "+LG.to+" (한국 시간)"],["만든 날",kday(0)],[],["결제 건수",T.KRW.n+T.USD.n],["원화 합계",T.KRW.amt],["달러 합계",T.USD.amt],["7일권",LG.products["7d"]||0],["15일권",LG.products["15d"]||0],["30일권",LG.products["30d"]||0]].concat(LG.pg===false?[[],["결제 연결 전 — 0원"]]:[]);
+  var s2=[["날짜","건수","원화","달러","7일권","15일권","30일권"]].concat(LG.days.map(function(d){ return [d.d,d.KRW.n+d.USD.n,d.KRW.amt,d.USD.amt,d.p["7d"]||0,d.p["15d"]||0,d.p["30d"]||0]; }));
+  var s3=[["시각","상품","통화","금액","상태","주문번호"]].concat(LG.items.map(function(x){ return [x.at,PRN[x.product]||x.product,x.cur,x.amount,x.status==="refund"?"환불":"결제",x.oid||""]; }));
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(s1,[20,24]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[12,8,12,10,8,8,8]),"날짜별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[18,10,6,12,6,24]),"기록");
+  save(wb,"머니퍼즐내비_장부_"+LG.from+"_"+LG.to+".xlsx"); }
+function menu(){ $("menu").innerHTML=MENU.map(function(m){ return '<button id="m_'+m[0]+'" onclick="show(\''+m[0]+'\')">'+esc(m[1])+'<small>'+esc(m[2])+'</small></button>'; }).join(""); }
+function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",m[0]===id); });
+  var P=$("pane");
+  if(id==="tap"){ P.innerHTML=TAP_HTML; tapInit(); return; }
+  if(id==="home"){ homeLoad(); return; }
+  if(id==="visit"){ visitLoad(); return; }
+  if(id==="voice"){ voiceLoad(); return; }
+  if(id==="inq"){ inqLoad(); return; }
+  if(id==="ptn"){ ptnLoad(); return; }   // 제휴 가게 — partner.js (2026-10-16)
+  if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
+  if(id==="pay"){ payLoad(); return; }
+  if(id==="pw"){ P.innerHTML='<div class="card"><b>비밀번호 변경</b><div class="msg">새 비밀번호는 10자 이상 (한글·숫자·영문 섞어도 됩니다). 바꾸면 옛 비밀번호는 바로 안 통합니다.</div>'
+    +'<div style="display:grid;gap:8px;margin-top:10px;max-width:420px"><input type="password" id="pw0" placeholder="지금 비밀번호" autocomplete="current-password"><input type="password" id="pw1" placeholder="새 비밀번호 (10자 이상)" autocomplete="new-password"><input type="password" id="pw2" placeholder="새 비밀번호 확인" autocomplete="new-password"><button id="pwb" onclick="pwChange()">바꾸기</button></div><div class="msg" id="pwm"></div></div>'; return; }
+}
+function invMint(){ var o=$("invOut"); o.innerHTML='<div class="msg">만드는 중…</div>';
+  fetch(HUB+"/invmint?app=navi&me=EM2410",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
+    if(!j.ok||!/^\d{8}\.[0-9a-f]{10}$/.test(j.inv||"")) throw new Error(j.err||"x");
+    var u="https://navi.moneypuzzle.co.kr/?inv="+j.inv, e=j.exp||"";
+    o.innerHTML='<div class="inv">'+esc(u)+'</div><div class="msg">만료 '+esc(e.slice(0,4)+"-"+e.slice(4,6)+"-"+e.slice(6))+' (UTC)</div><div class="row" style="margin-top:6px"><button class="g" id="invCp">복사</button></div>';
+    $("invCp").onclick=function(){ try{ navigator.clipboard.writeText(u).then(function(){ $("invCp").textContent="복사됨"; }); }catch(x){} };
+  }).catch(function(e){ o.innerHTML='<div class="msg err">만들지 못했습니다 ('+esc(e.message)+')</div>'; }); }
+
+// ── 그림별 누름 통계 ──
+var TAP_HTML='<div class="card"><div class="row">'
+ +'<select id="per" onchange="perSet()"><option value="0">오늘</option><option value="6" selected>최근 7일</option><option value="29">최근 30일</option><option value="89">최근 90일</option><option value="c">직접 고르기</option></select>'
+ +'<input type="date" id="fr"> ~ <input type="date" id="to"> <button onclick="tapLoad()">보기</button>'
+ +'<label class="sub"><input type="checkbox" id="tst" onchange="tapLoad()"> 시험 자료</label></div>'
+ +'<div id="tsum"></div></div>'
+ +'<div class="card"><div class="row"><b style="flex:1">그림별</b><input type="text" id="flt" placeholder="그림 찾기" oninput="tapTable()" style="width:150px">'
+ +'<button onclick="xlsAll()">엑셀 받기</button><button class="g" onclick="xlsSel()">고른 그림만 엑셀</button></div>'
+ +'<div class="msg">왼쪽 칸을 고르면 그 그림만 업체용 보고서로 뽑습니다. 막대: 파랑=누름, 주황=사람 수</div>'
+ +'<div class="tw"><table id="ttab"></table></div><div id="tdel"></div></div>';
+var NM=null, ST=null, SEL={};
+function names(){ if(NM) return Promise.resolve(NM); NM={p:{},m:{}};
+  return fetch("../data/regions.json",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(rg){
+    var ids=Object.keys(rg.maps||{}); if(ids.indexOf(rg.root)<0) ids.push(rg.root);
+    ids.forEach(function(i){ var m=rg.maps[i]||{}; NM.m[i]={ko:m.ko||i,en:m.en||i}; });
+    return Promise.all(ids.map(function(i){ return fetch("../data/maps/"+i+".json",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(d){
+      var ps=d.places||{}; for(var k in ps) if(!NM.p[k]) NM.p[k]={ko:ps[k].ko||k,en:ps[k].en||k}; }).catch(function(){}); }));
+  }).then(function(){ return NM; },function(){ return NM; }); }
+function nmOf(it){ var k=it.k; if(k==="_app") return {ko:"앱 공유",en:"App share"};
+  if(NM.p[k]&&!(it.a&&!it.t)) return NM.p[k]; if(NM.m[k]) return {ko:NM.m[k].ko+" (약도)",en:NM.m[k].en+" (area map)"}; return NM.p[k]||{ko:k,en:k}; }
+function mapOf(m){ return m&&NM.m[m]?NM.m[m].ko:(m||""); }
+function perSet(){ var v=$("per").value; if(v==="c") return; $("to").value=kday(0); $("fr").value=kday(-(+v)); tapLoad(); }
+function tapInit(){ $("to").value=kday(0); $("fr").value=kday(-6); tapLoad(); }
+function pct(a,b){ return b?Math.round(a*100/b)+"%":"-"; }
+function tapLoad(){ var t=$("tst").checked;
+  $("tsum").innerHTML='<div class="msg">불러오는 중…</div>';
+  Promise.all([names(),api("/ntapstats?from="+$("fr").value+"&to="+$("to").value+(t?"&test=1":""))]).then(function(a){ ST=a[1]; if(!ST.ok) throw new Error(ST.err||"x"); SEL={};
+    var T=ST.total; $("tsum").innerHTML='<div class="tiles">'
+      +'<div class="tile"><b>'+T.t.toLocaleString()+'</b><span>그림 누름</span></div>'
+      +'<div class="tile"><b>'+T.u.toLocaleString()+'</b><span>사람 수 (그림별 하루 1번)</span></div>'
+      +'<div class="tile"><b>'+T.dev.toLocaleString()+'</b><span>누른 기기 수 (하루 1번 합)</span></div>'
+      +'<div class="tile"><b>'+T.r.toLocaleString()+'</b><span>길찾기·교통편</span></div>'
+      +'<div class="tile"><b>'+(T.c||0).toLocaleString()+'</b><span>전화</span></div>'
+      +'<div class="tile"><b>'+pct(T.ko,T.ko+T.en)+' / '+pct(T.en,T.ko+T.en)+'</b><span>한국어 / 영어</span></div>'
+      +'<div class="tile"><b>'+T.a.toLocaleString()+'</b><span>약도 들어가기</span></div></div>'
+      +'<div class="msg">'+esc(ST.from)+' ~ '+esc(ST.to)+(ST.test?' · <b>시험 자료</b>':'')+' · 날짜는 한국 시간</div>';
+    $("tdel").innerHTML=ST.test?'<div class="row" style="margin-top:8px"><button class="g" onclick="tstDel()">시험 자료 모두 지우기</button></div>':'';
+    tapTable();
+  }).catch(function(e){ $("tsum").innerHTML='<div class="msg err">'+(e.message==="admin"?"토큰이 맞지 않습니다.":"불러오지 못했습니다.")+'</div>'; }); }
+function tstDel(){ if(!confirm("시험 자료를 지울까요?")) return; api("/ntapstats?clear=test",{method:"POST"}).then(function(){ tapLoad(); }); }
+function rows(){ var f=($("flt")&&$("flt").value||"").trim().toLowerCase();
+  return (ST&&ST.items||[]).filter(function(it){ if(!f) return true; var n=nmOf(it); return (n.ko+" "+n.en+" "+it.k).toLowerCase().indexOf(f)>=0; }); }
+function tapTable(){ if(!ST) return; var R=rows(), mx=1; R.forEach(function(it){ mx=Math.max(mx,it.t||0,it.a||0); });
+  var h='<tr><th class="l">고름</th><th class="l">그림</th><th class="l">지도</th><th>누름</th><th>사람 수</th><th>한 / 영</th><th>길찾기</th><th>전화</th><th>공유</th><th>약도</th><th class="l barc"></th></tr>';
+  R.forEach(function(it){ var n=nmOf(it), t=it.t||0, ko=it.ko||0, en=it.en||0, v=t||it.a||0, uu=t?(it.u||0):(it.au||0);
+    h+='<tr><td class="l"><input type="checkbox" data-k="'+esc(it.k)+'" '+(SEL[it.k]?"checked":"")+' onchange="SEL[this.dataset.k]=this.checked"></td>'
+      +'<td class="l">'+esc(n.ko)+'<div class="sub">'+esc(n.en)+'</div></td><td class="l">'+esc(mapOf(it.m))+'</td>'
+      +'<td>'+t+'</td><td>'+(it.u||0)+'</td><td>'+(ko+en?pct(ko,ko+en)+' / '+pct(en,ko+en):'-')+'</td><td>'+(it.r||0)+'</td><td>'+(it.c||0)+'</td><td>'+(it.s||0)+'</td><td>'+(it.a||0)+'</td>'
+      +'<td class="l barc"><div class="bar" style="width:'+(v*100/mx)+'%"></div><div class="bar u" style="width:'+(uu*100/mx)+'%"></div></td></tr>'; });
+  if(!R.length) h+='<tr><td class="l" colspan="11">아직 자료가 없습니다.</td></tr>';
+  $("ttab").innerHTML=h; }
+
+// ── 엑셀 — 시트1 요약 · 시트2 그림별 · 시트3 날짜별 (개인정보 없음: 수만 들어간다) ──
+function head(title,extra){ return [[CO],[title],["기간",ST.from+" ~ "+ST.to+" (한국 시간)"],["만든 날",kday(0)]].concat(extra||[]).concat([[]]); }
+function itemRow(it){ var n=nmOf(it); return [n.ko,n.en,mapOf(it.m),it.t||0,it.u||0,it.ko||0,it.en||0,it.r||0,it.c||0,it.s||0,it.a||0]; }
+var ICOL=["이름(한글)","이름(영어)","지도","누름","사람 수","한국어","영어","길찾기·교통편","전화","공유","약도 들어가기"];
+function sheet(aoa,w){ var s=XLSX.utils.aoa_to_sheet(aoa); s["!cols"]=(w||[]).map(function(x){ return {wch:x}; }); return s; }
+function save(wb,name){ XLSX.writeFile(wb,name); }
+function xlsAll(){ if(!ST||!window.XLSX){ alert("자료나 엑셀 도구를 아직 못 불렀습니다."); return; }
+  var T=ST.total, top=ST.items.filter(function(i){ return i.t; }).slice(0,10);
+  var s1=head("그림별 누름 보고서",[]).concat([["전체 누름",T.t],["사람 수 (그림별 하루 기기당 1번 합)",T.u],["누른 기기 수 (하루 1번 합)",T.dev],["길찾기·교통편",T.r],["전화",T.c||0],["공유",T.s],["한국어 / 영어 누름",T.ko+" / "+T.en],[],["상위 그림","누름","사람 수"]])
+    .concat(top.map(function(i){ return [nmOf(i).ko+" · "+nmOf(i).en,i.t||0,i.u||0]; }))
+    .concat([[],["※ 개인정보(IP·기기 식별자·위치)는 모으지 않습니다. 사람 수는 같은 기기가 같은 그림을 하루 여러 번 눌러도 1로 셉니다."]]);
+  var s2=[ICOL].concat(ST.items.map(itemRow));
+  var s3=[["날짜","누름","사람 수","누른 기기 수","길찾기·교통편","전화","공유","약도 들어가기"]].concat(ST.days.map(function(d){ return [d.d,d.t,d.u,d.dev,d.r,d.c||0,d.s,d.a]; }));
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,sheet(s1,[38,16,12]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[22,26,14,8,9,8,8,12,6,6,12]),"그림별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[12,8,9,12,12,6,12]),"날짜별");
+  save(wb,"머니퍼즐내비_그림별누름_"+ST.from+"_"+ST.to+(ST.test?"_시험":"")+".xlsx"); }
+function xlsSel(){ if(!ST||!window.XLSX){ alert("자료나 엑셀 도구를 아직 못 불렀습니다."); return; }
+  var ks=Object.keys(SEL).filter(function(k){ return SEL[k]; }); if(!ks.length){ alert("표 왼쪽에서 그림을 골라 주세요."); return; }
+  var its=ST.items.filter(function(i){ return ks.indexOf(i.k)>=0; }), nm=its.map(function(i){ return nmOf(i).ko; }).join(", ");
+  var sum={t:0,u:0,r:0,c:0,s:0,ko:0,en:0}; its.forEach(function(i){ for(var f in sum) sum[f]+=i[f]||0; });
+  var s1=head("그림 누름 보고서 — "+nm,[]).concat([["그림",nm],["누름",sum.t],["사람 수 (하루 기기당 1번)",sum.u],["길찾기·교통편",sum.r],["전화",sum.c],["공유",sum.s],["한국어 / 영어 누름",sum.ko+" / "+sum.en],[],
+    ["※ 개인정보(IP·기기 식별자·위치)는 모으지 않습니다. 사람 수는 같은 기기가 같은 그림을 하루 여러 번 눌러도 1로 셉니다."]]);
+  var s2=[ICOL].concat(its.map(itemRow));
+  var s3=[["날짜","그림","누름","사람 수","길찾기·교통편","전화"]];
+  ST.days.forEach(function(d){ var dk=ST.daily[d.d]||{}; its.forEach(function(i){ var r=dk[i.k]||[0,0,0,0,0,0,0]; s3.push([d.d,nmOf(i).ko,r[0],r[1],r[2],r[6]||0]); }); });
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,sheet(s1,[30,30]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[22,26,14,8,9,8,8,12,6,6,12]),"그림별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[12,22,8,9,12]),"날짜별");
+  save(wb,"머니퍼즐내비_"+(its.length===1?nmOf(its[0]).ko:its.length+"개그림")+"_"+ST.from+"_"+ST.to+(ST.test?"_시험":"")+".xlsx"); }
+
+if(TOK) login();
+</script>
+<script src="partner.js?v=1016"></script>
+</body>
+</html>
