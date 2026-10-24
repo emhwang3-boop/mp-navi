@@ -47,6 +47,8 @@ var W5={
   map:["지도","Map","地図","地图","地圖","Mapa"]
 };
 function W(k){ return LP(W5[k]); }
+var WICON={near:"mi_pin",bme:"mi_pin",bmap:"mi_map",r3:"mi_star",r10:"mi_star",r30:"mi_star",useme:"mi_pin",local:"mi_pin"};   // 앞 이모지를 떼고 그림 아이콘을 붙인다 (6개 언어 한 번에, 사장님 10-24)
+function WI(k){ return WICON[k]?MPICO(WICON[k],W(k),MIS):W(k); }
 // 기준 위치 — near.js pickBase 와 같은 규칙 (그 코드를 옮겨 씀, near.js 는 그대로)
 function mapCenter(){ try{
     if(window.DET&&window._nm){ var c=_nm.getCenter(); return [c.lat(),c.lng()]; }
@@ -81,23 +83,23 @@ function nbSort(it){ it=it.slice();
   return it.sort(function(a,c){ var ba=Math.floor(a.dist/200), bc=Math.floor(c.dist/200); if(ba!==bc) return ba-bc; var ta=(a.n||0)>=10?1:0, tc=(c.n||0)>=10?1:0; if(ta!==tc) return tc-ta; if((c.rating||0)!==(a.rating||0)) return (c.rating||0)-(a.rating||0); if((c.n||0)!==(a.n||0)) return (c.n||0)-(a.n||0); return a.dist-c.dist; }); }
 function nbList(k){ var d=S.base&&NB[nbKey(k)]; return d&&d.st==="ok"?nbSort(d.items).slice(0,10):[]; }
 function seoulHtml(k){ if(!k.stores||!k.stores.length) return "";
-  return '<div class="gfsl">'+W("seoul")+'</div>'+k.stores.map(function(s,j){ return '<button type="button" class="gfs" data-gf="s" data-kc="'+esc(k.c)+'" data-j="'+j+'"><b>📍 '+esc(nm(s))+'</b><i>'+esc(s.area?t2(s.area):"")+'</i><span class="go">'+W("map")+' ›</span></button>'; }).join(""); }
+  return '<div class="gfsl">'+W("seoul")+'</div>'+k.stores.map(function(s,j){ return '<button type="button" class="gfs" data-gf="s" data-kc="'+esc(k.c)+'" data-j="'+j+'"><b>'+MPICO("mi_pin",nm(s),MIS)+'</b><i>'+esc(s.area?t2(s.area):"")+'</i><span class="go">'+W("map")+' ›</span></button>'; }).join(""); }
 function nbItem(k,x,i){ var fl=L()&&x.name_l, n=fl?x.name_l:x.name, ad=fl?(x.addr_l||x.addr):x.addr, ct=fl?(x.cat_l||""):String(x.cat||"").split(">").pop().trim();
   return '<button type="button" class="gfn" data-gf="n" data-kc="'+esc(k.c)+'" data-j="'+i+'"><div class="h"><span class="gfnr">'+(i+1)+'</span><b>'+esc(n)+'</b><i>'+kmT(x.dist)+'</i></div>'
     +(fl&&x.name_l!==x.name?'<div class="ko">'+esc(x.name)+'</div>':'')
     +(x.rating?'<div class="d"><b class="st">★ '+(+x.rating).toFixed(1)+'</b> ('+(x.n||0)+')</div>':'')
     +'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div><div class="d"><span class="go">'+W("map")+' ›</span></div></button>'; }
-function nbHtml(k){ if(!OPEN[k.c]) return '<button type="button" class="gfnb" data-gf="nb" data-kc="'+esc(k.c)+'">'+W("near")+'</button>';
+function nbHtml(k){ if(!OPEN[k.c]) return '<button type="button" class="gfnb" data-gf="nb" data-kc="'+esc(k.c)+'">'+WI("near")+'</button>';
   var h='<div class="gfnbox"><button type="button" class="gfnx" data-gf="nbx" data-kc="'+esc(k.c)+'">'+W("hide")+' ▴</button>';
   if(S.bst!=="ok"&&S.bst!=="no") return h+'<div class="msg">'+W("srch")+'</div></div>';
-  if(S.bst==="no") return h+'<div class="msg">'+W("loc")+'</div><div class="gfbase"><button type="button" class="gfme" data-gf="me">'+W("useme")+'</button></div>'+seoulHtml(k)+'</div>';
+  if(S.bst==="no") return h+'<div class="msg">'+W("loc")+'</div><div class="gfbase"><button type="button" class="gfme" data-gf="me">'+WI("useme")+'</button></div>'+seoulHtml(k)+'</div>';
   var d=NB[nbKey(k)]; if(!d){ nbLoad(k); d=NB[nbKey(k)]; }
   if(d.st==="ld") return h+'<div class="msg">'+W("srch")+'</div></div>';
   if(d.st==="err") return h+'<div class="msg">'+W("err")+'</div>'+seoulHtml(k)+'</div>';
   var it=nbList(k), rr=S.ord==="r";
   if(!it.length) return h+'<div class="msg">'+W("none")+'</div>'+seoulHtml(k)+'</div>';
   h+='<div class="gford"><button type="button" data-gf="ord" data-o="d" class="'+(rr?'':'on')+'">'+W("dist")+'</button><button type="button" data-gf="ord" data-o="r" class="'+(rr?'on':'')+'">'+W("rate")+'</button></div>';
-  h+='<div class="gfbase">'+(rr?W(d.r>10000?"r30":d.r>3000?"r10":"r3"):W(S.src==="me"?"bme":"bmap"))+(S.src!=="me"?' <button type="button" class="gfme" data-gf="me">'+W("useme")+'</button>':'')+'</div>'+(d.r>10000?'<div class="gfbase">'+W("far")+'</div>':'');
+  h+='<div class="gfbase">'+(rr?WI(d.r>10000?"r30":d.r>3000?"r10":"r3"):WI(S.src==="me"?"bme":"bmap"))+(S.src!=="me"?' <button type="button" class="gfme" data-gf="me">'+WI("useme")+'</button>':'')+'</div>'+(d.r>10000?'<div class="gfbase">'+W("far")+'</div>':'');
   return h+it.map(function(x,i){ return nbItem(k,x,i); }).join("")+'</div>'; }
 function nbPick(k,j){ var x=nbList(k)[j]; if(!x) return; try{ ntap(k.c,"gift"); }catch(e){} close();
   var fl=x.name_l&&L();
@@ -147,7 +149,7 @@ function open(){ css(); var mm=document.getElementById("mm"); if(mm) mm.hidden=t
 function close(){ var o=document.getElementById("gfBox"); if(o) o.remove(); document.documentElement.classList.remove("gflock"); }
 function opt(kind,c,label,on){ return '<button type="button" class="gfopt'+(on?' on':'')+'" data-gf="'+kind+'" data-c="'+esc(c)+'">'+label+'</button>'; }
 function paint(){ var b=document.querySelector("#gfBox .gfin"); if(!b) return;
-  var h='<div class="gftop"><b>'+T("🎁 선물 고르기","🎁 Gift finder")+'</b><button type="button" class="gfx" data-gf="x" aria-label="close">✕</button></div>';
+  var h='<div class="gftop"><b>'+MPICO("mi_gift",T("🎁 선물 고르기","🎁 Gift finder"),MIS)+'</b><button type="button" class="gfx" data-gf="x" aria-label="close">✕</button></div>';
   if(!G){ b.innerHTML=h+'<div class="msg">'+T("불러오는 중…","Loading…")+'</div>'; return; }
   if(S.who) h+='<button type="button" class="gfrs" data-gf="rs">'+T("↺ 처음부터 다시","↺ Start over")+'</button>';
   h+='<div class="gfq">1. '+T("누구에게 주나요?","Who is it for?")+'</div><div class="gfopts">'+G.who.map(function(x){ return opt("w",x.c,(x.i?x.i+" ":"")+esc(nm(x)),S.who===x.c); }).join("")+'</div>';
@@ -155,7 +157,7 @@ function paint(){ var b=document.querySelector("#gfBox .gfin"); if(!b) return;
   if(S.who&&S.bud){ var R=ranked();
     if(!S.bst) setTimeout(function(){ baseGo(false); },0);
     h+='<div class="gfq">3. '+T("이런 선물을 추천해요","Our picks for you")+'</div>'+dfsHtml();
-    var LK=localKinds(); if(LK.length) h+='<div class="gflh">'+W("local")+'</div>'+LK.map(function(k){ return '<div class="gfk gfl" data-kc="'+esc(k.c)+'"><div class="h">'+k.i+' '+esc(nm(k))+'</div><div class="d">'+esc(LD(k))+'</div>'+nbHtml(k)+'</div>'; }).join("");
+    var LK=localKinds(); if(LK.length) h+='<div class="gflh">'+WI("local")+'</div>'+LK.map(function(k){ return '<div class="gfk gfl" data-kc="'+esc(k.c)+'"><div class="h">'+k.i+' '+esc(nm(k))+'</div><div class="d">'+esc(LD(k))+'</div>'+nbHtml(k)+'</div>'; }).join("");
     h+=R.map(function(k,i){ var n=[k.note&&k.note[S.who],k.note&&k.note[S.bud]].filter(Boolean).map(function(a){ return '<div class="n">👉 '+esc(t2(a))+'</div>'; }).join("");
       return '<div class="gfk" data-kc="'+esc(k.c)+'"><div class="h"><span class="gfrank">'+(i+1)+'</span>'+k.i+' '+esc(nm(k))+'</div><div class="d">'+esc(LD(k))+'</div>'+n
         +'<div class="gfads"></div>'+nbHtml(k)+'</div>'; }).join("");
@@ -164,11 +166,11 @@ function paint(){ var b=document.querySelector("#gfBox .gfin"); if(!b) return;
   if(S.who&&S.bud) ranked().forEach(function(k){ adsFor(k).then(function(ads){ var box=b.querySelector('.gfk[data-kc="'+k.c+'"] .gfads'); if(!box||!ads.length) return;
     box.innerHTML=ads.map(function(a,j){ return '<button type="button" class="gfs" data-gf="a" data-kc="'+esc(k.c)+'" data-j="'+j+'"><b><span class="gfad">'+T("광고","Ad")+'</span>'+esc(L()?(a.en||a.ko):a.ko)+'</b><i>'+(a.dist!=null?(a.dist<1000?a.dist+" m":(a.dist/1000).toFixed(1)+" km"):"")+'</i><span class="go">'+T("지도","Map")+' ›</span></button>'; }).join(""); box._ads=ads; }); }); }
 // 면세점은 목록 대신 검색으로 (사장님 10-16) — 기존 검색 흐름(go) 그대로, 결과를 누르면 검색 핀
-function dfsHtml(){ return '<div class="gfdfs"><button type="button" class="gfdb" data-gf="dfs">'+T("🔎 면세점","🔎 Duty-free shops")+'</button></div>'; }
+function dfsHtml(){ return '<div class="gfdfs"><button type="button" class="gfdb" data-gf="dfs">'+MPICO("mi_search",T("🔎 면세점","🔎 Duty-free shops"),MIS)+'</button></div>'; }
 function dfsGo(){ close(); var q=document.getElementById("q"); if(q){ q.value=T("면세점","duty free"); try{ qxSync(); }catch(e){} } try{ ntap("_dfs","gift"); }catch(e){}
   go("면세점"); var r=document.getElementById("res"); if(r) setTimeout(function(){ window.scrollTo({top:r.getBoundingClientRect().top+scrollY-80,behavior:"smooth"}); },100); }
 function tips(){ if(!G.tips||!G.tips.length) return "";
-  return '<div class="gftips"><div class="h">'+T("💡 사기 전에","💡 Before you buy")+'</div>'+G.tips.map(function(x){ var u=String(x.src||"").split(" · ")[0];
+  return '<div class="gftips"><div class="h">'+MPICO("mi_tip",T("💡 사기 전에","💡 Before you buy"),MIS)+'</div>'+G.tips.map(function(x){ var u=String(x.src||"").split(" · ")[0];
     return '<div class="gftip">'+esc(nm(x))+(/^https:\/\//.test(u)?'<a href="'+esc(u)+'" target="_blank" rel="noopener">'+T("출처","source")+'</a>':'')+'</div>'; }).join("")+'</div>'; }
 
 // 매장 이름을 다섯 언어 모두 핀에 넘긴다 — 핀 카드에서 언어를 바꿔도 그 자리에서 그 언어 이름 (lang.js, 10-18)
