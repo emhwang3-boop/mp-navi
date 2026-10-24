@@ -315,6 +315,7 @@ function gLangNm(c){ return GLN[c]||c; }
 function guideLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>가이드 승인</b><div class="msg">불러오는 중…</div></div>';
   api("/guide/admin/all").then(function(j){ if(!j.ok) throw new Error("x");
     var pend=j.pending||[], appr=j.approved||[], rej=j.rejected||[], leads=j.leads||[], H='';
+    GGUIDES={}; pend.concat(appr,rej).forEach(function(g){ GGUIDES[g.id]=g; });   // 수정 폼 미리채움용
     H+='<div class="card"><b>승인 대기 ('+pend.length+')</b><div class="msg">자격증 번호와 사본을 확인하고 승인/거절하세요.</div>'+(pend.length?pend.map(gCard).join(""):'<div class="msg">대기 중인 신청이 없습니다.</div>')+'</div>';
     H+='<div class="card"><b>승인된 가이드 ('+appr.length+')</b>'+(appr.length?appr.map(gCard).join(""):'<div class="msg">아직 없습니다.</div>')+'</div>';
     if(rej.length) H+='<div class="card"><b>거절 ('+rej.length+')</b>'+rej.map(gCard).join("")+'</div>';
@@ -331,8 +332,45 @@ function gCard(g){ var langs=(g.langs||[]).map(gLangNm).join(", ");
     +'<div class="row" style="margin-top:6px"><button class="g" data-id="'+esc(g.id)+'" onclick="gLic(this.dataset.id)">자격증 사본 보기</button>'
     +(g.status!=='approved'?'<button data-id="'+esc(g.id)+'" onclick="gAct(\'approve\',this.dataset.id)">승인</button>':'')
     +(g.status==='new'?'<button class="g" data-id="'+esc(g.id)+'" onclick="gAct(\'reject\',this.dataset.id)">거절</button>':'')
+    +'<button class="g" data-id="'+esc(g.id)+'" onclick="gEdit(this.dataset.id)">수정</button>'
     +'<button class="g" data-id="'+esc(g.id)+'" onclick="gAct(\'delete\',this.dataset.id)">지우기</button></div>'
-    +'<div id="glic_'+esc(g.id)+'"></div></div></div></div>'; }
+    +'<div id="glic_'+esc(g.id)+'"></div><div id="gedit_'+esc(g.id)+'"></div></div></div></div>'; }
+// ── 가이드 프로필 수정 (관리자, 2026-10-24) — /guide/admin/edit. 사진·자격증 사본은 바꿀 때만 올린다(안 바꾸면 그대로). 상태는 유지(수정이 승인을 풀지 않음) ──
+var GGUIDES={}, GEDIT={photo:null,lic:null};
+var GLANG6A=[["한국어","ko"],["영어","en"],["일본어","ja"],["중국어(간체)","zhs"],["중국어(번체)","zht"],["스페인어","es"]];
+function gxShrink(file,cb){ if(!file){ cb(null); return; } var r=new FileReader();
+  r.onload=function(){ var img=new Image(); img.onload=function(){ try{ var mx=1000,w=img.width,h=img.height,sc=Math.min(1,mx/Math.max(w,h||1)),cw=Math.max(1,Math.round(w*sc)),ch=Math.max(1,Math.round(h*sc));
+    var c=document.createElement("canvas"); c.width=cw; c.height=ch; var x=c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,cw,ch); x.drawImage(img,0,0,cw,ch);
+    var q=0.85,out=c.toDataURL("image/jpeg",q),guard=0; while(out.length>158000&&q>0.3&&guard<8){ q-=0.1; out=c.toDataURL("image/jpeg",q); guard++; }
+    cb(out.indexOf("data:image/jpeg")===0&&out.length<=170000?out:null); }catch(e){ cb(null); } }; img.onerror=function(){ cb(null); }; img.src=r.result; };
+  r.onerror=function(){ cb(null); }; r.readAsDataURL(file); }
+function gEdit(id){ var box=$("gedit_"+id); if(!box) return; if(box.innerHTML){ box.innerHTML=''; return; }
+  var g=GGUIDES[id]; if(!g){ box.innerHTML='<div class="msg err">정보를 불러오지 못했습니다.</div>'; return; }
+  GEDIT={photo:null,lic:null};
+  var langsH=GLANG6A.map(function(l){ return '<label style="display:inline-flex;align-items:center;gap:5px;margin:3px 8px 3px 0;font-weight:600"><input type="checkbox" class="gedL_'+esc(id)+'" value="'+l[1]+'"'+((g.langs||[]).indexOf(l[1])>=0?" checked":"")+'> '+esc(l[0])+'</label>'; }).join("");
+  box.innerHTML='<div class="inv" style="margin-top:8px;border:1.5px dashed var(--line)"><b>프로필 수정</b>'
+    +'<label>이름<br><input id="ge_nm_'+esc(id)+'" maxlength="40" value="'+esc(g.name||'')+'" style="width:100%"></label>'
+    +'<div style="margin:6px 0">가능 언어<br>'+langsH+'</div>'
+    +'<label>자격증 번호<br><input id="ge_lic_'+esc(id)+'" maxlength="40" value="'+esc(g.lic||'')+'" style="width:100%"></label>'
+    +'<label>경력(년)<br><input id="ge_yr_'+esc(id)+'" inputmode="numeric" maxlength="2" value="'+esc(String(g.years||''))+'" style="width:100%"></label>'
+    +'<label>활동 지역<br><input id="ge_rg_'+esc(id)+'" maxlength="40" value="'+esc(g.region||'')+'" style="width:100%"></label>'
+    +'<label>자기소개<br><textarea id="ge_in_'+esc(id)+'" maxlength="500" style="width:100%;min-height:64px">'+esc(g.intro||'')+'</textarea></label>'
+    +'<label>이메일<br><input id="ge_em_'+esc(id)+'" type="email" maxlength="120" value="'+esc(g.email||'')+'" style="width:100%"></label>'
+    +'<label>전화<br><input id="ge_tel_'+esc(id)+'" inputmode="tel" maxlength="30" value="'+esc(g.phone||'')+'" style="width:100%"></label>'
+    +'<label>얼굴 사진 바꾸기(안 바꾸면 그대로)<br><input type="file" accept="image/*" id="ge_ph_'+esc(id)+'"></label>'
+    +'<label>자격증 사본 바꾸기(안 바꾸면 그대로)<br><input type="file" accept="image/*" id="ge_lp_'+esc(id)+'"></label>'
+    +'<div class="row" style="margin-top:8px"><button data-id="'+esc(id)+'" onclick="gEditSave(this.dataset.id)">저장</button><button class="g" data-id="'+esc(id)+'" onclick="var b=$(\'gedit_\'+this.dataset.id);if(b)b.innerHTML=\'\'">취소</button></div>'
+    +'<div class="msg" id="ge_m_'+esc(id)+'"></div></div>';
+  var ph=$("ge_ph_"+id); if(ph) ph.onchange=function(){ gxShrink(ph.files&&ph.files[0],function(d){ GEDIT.photo=d; }); };
+  var lp=$("ge_lp_"+id); if(lp) lp.onchange=function(){ gxShrink(lp.files&&lp.files[0],function(d){ GEDIT.lic=d; }); }; }
+function gEditSave(id){ var v=function(i){ var e=$(i); return e?String(e.value||'').trim():''; }, m=$("ge_m_"+id), set=function(t){ if(m) m.textContent=t; };
+  var langs=[].map.call(document.querySelectorAll(".gedL_"+id+":checked"),function(c){ return c.value; });
+  var nm=v("ge_nm_"+id), lic=v("ge_lic_"+id), rg=v("ge_rg_"+id), em=v("ge_em_"+id);
+  if(!nm||!langs.length||!lic||!rg||!em){ set("이름·언어·자격증 번호·지역·이메일을 채워 주세요."); return; }
+  var body={id:id,name:nm,langs:langs,lic:lic,years:v("ge_yr_"+id),region:rg,intro:v("ge_in_"+id),email:em,phone:v("ge_tel_"+id)};
+  if(GEDIT.photo) body.photo=GEDIT.photo; if(GEDIT.lic) body.licPhoto=GEDIT.lic;
+  set("저장 중…");
+  api("/guide/admin/edit",{method:"POST",body:JSON.stringify(body)}).then(function(j){ if(j&&j.ok){ alert("수정했습니다. 가이드에게 안내 메일을 보냈습니다."); guideLoad(); } else set(j&&j.err==="photo"||j&&j.err==="licphoto"?"사진을 다시 올려 주세요 (JPEG).":j&&j.err==="empty"?"필수 칸을 확인해 주세요.":"저장하지 못했습니다."); }).catch(function(){ set("저장하지 못했습니다."); }); }
 function gLead(x){ var rl=x.reviewLink||'';
   return '<div class="inv"><div class="sub">'+esc(x.at||'')+' · 가이드 '+esc(x.gname||x.gid||'')+(x.lang?' · '+esc(x.lang):'')+(x.completed?' · <b style="color:#2b8a3e">완료 '+esc(x.completed)+'</b>':'')+(x.reviewed?' · <b style="color:#e8590c">후기 받음</b>':'')+'</div>'
     +'<div style="margin:4px 0"><b>'+esc(x.name||'')+'</b> · '+esc(x.contact||'')+(x.date?' · 희망 날짜 '+esc(x.date):'')+'</div>'
