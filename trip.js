@@ -210,7 +210,7 @@ function dayLoad(H,arr){ return arr.reduce(function(s,x){ return s+x.stay; },0)+
 //   · 고정 씨앗 + 여러 번 시작 → 같은 입력이면 같은 결과. 하루 cap 초과·시간 균형은 improve(이동/옮기기)에 맡긴다
 function splitDays(H,P,D,cap){ if(OLD()) return splitDaysAngular(H,P,D,cap);
   var n=P.length; if(!n) return []; var tot=P.reduce(function(s,x){ return s+x.stay; },0), avg=tot/D;
-  if(n<=D){ var g0=[]; for(var gi=0;gi<D;gi++) g0.push(gi<n?[P[gi]]:[]); return improve(H,g0,cap,avg); }
+  if(n<=D){ var g0=[]; for(var gi=0;gi<D;gi++) g0.push(gi<n?[P[gi]]:[]); return g0; }
   var mlat=P.reduce(function(s,x){ return s+x.lat; },0)/n, kx=Math.cos(mlat*Math.PI/180);   // 등거리 투영 — 경도는 위도만큼 줄여 거리 왜곡 없이
   var px=P.map(function(x){ return [x.lat,x.lng*kx]; }), dist2=function(a,b){ var dy=a[0]-b[0], dx=a[1]-b[1]; return dy*dy+dx*dx; };
   var cst=function(g){ if(!g.length) return 500; var ld=dayLoad(H,g), st=g.reduce(function(q,x){ return q+x.stay; },0); return (ld-st)+Math.max(0,ld-cap)*20+0.01*(st-avg)*(st-avg); };   // improve 와 같은 식(이동+시간초과+균형)
@@ -227,7 +227,9 @@ function splitDays(H,P,D,cap){ if(OLD()) return splitDaysAngular(H,P,D,cap);
       if(!ch) break; }
     var gs2=[]; for(c=0;c<D;c++) gs2.push([]); for(k=0;k<n;k++) gs2[asg[k]].push(P[k]);
     var tc=gs2.reduce(function(s,g){ return s+cst(g); },0); if(tc<bc){ bc=tc; best=gs2.map(function(g){ return g.slice(); }); } }
-  return improve(H,best,cap,avg); }
+  // 한 날이라도 하루 시간 cap 을 넘을 때만 improve 로 다시 균형 — cap 안에 다 들어오면 묶음(지리) 그대로 둔다 (사장님 10-24: 가까운 곳을 같은 날로)
+  var over=best.some(function(g){ return dayLoad(H,g)>cap; });
+  return over?improve(H,best,cap,avg):best; }
 // (옛) 숙소 둘레 각도로 줄 세운 뒤 D 덩어리로 (모든 시작점 × DP) — 이동 + 시간초과 벌점 + 날짜 고르기 벌점 최소
 function splitDaysAngular(H,P,D,cap){ var n=P.length; if(!n) return []; var C=H||{lat:P.reduce(function(s,x){ return s+x.lat; },0)/n,lng:P.reduce(function(s,x){ return s+x.lng; },0)/n};
   var srt=P.map(function(x){ return {x:x,a:Math.atan2(x.lat-C.lat,(x.lng-C.lng)*Math.cos(C.lat*Math.PI/180))}; }).sort(function(a,b){ return a.a-b.a; }).map(function(o){ return o.x; });
@@ -316,7 +318,7 @@ function realTimesFetch(pl,H,cb){ var pairs=[], keys=[], seen={};
     for(var i=0;i<set.length;i++) for(var j=i+1;j<set.length;j++) add(set[i],set[j]); });
   if(!pairs.length){ cb(); return; }
   pairs=pairs.slice(0,60); keys=keys.slice(0,60);   // 플랜마다 구간 상한(허브도 하루 한도로 또 막는다)
-  var ctl=("AbortController" in window)?new AbortController():null, t=setTimeout(function(){ if(ctl) try{ ctl.abort(); }catch(e){} },7000);
+  var ctl=("AbortController" in window)?new AbortController():null, t=setTimeout(function(){ if(ctl) try{ ctl.abort(); }catch(e){} },20000);   // 넉넉히 — 첫 화면은 6초에 직선거리로 이미 뜨고, 이건 그 뒤 실제 시간이 와서 그 자리에서 다듬어지는 요청
   fetch(HUB+"/ntimes",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pairs:pairs,mode:"transit"}),signal:ctl?ctl.signal:undefined})
     .then(function(r){ return r.json(); }).then(function(j){ clearTimeout(t); var ts=(j&&j.times)||[], used=0;
       keys.forEach(function(kk,i){ var m=ts[i]&&ts[i].min; if(typeof m==="number"&&m>0){ RT[kk]=m; used++; try{ sessionStorage.setItem("nt:"+kk,String(m)); }catch(e){} } });
