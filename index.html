@@ -750,7 +750,7 @@ function areaExpShow(k){ var cat=AREAEXP[k]; if(!cat) return; var p=PLACES[k]; i
 //  AREAPERF 에 적힌 명소만 공연 목록이 붙는다. AREAEXP(구글 가게)와 같은 모양·6개 언어·맞춤 아이콘(mi_ticket). 읽기 전용. 키 없으면 "공연 정보 준비 중"
 // 명소키 → 공연 섹션 설정(헤더·아이콘). 데이터로 두어 공연장마다 쉽게 붙인다. 자료는 허브 /gperf 가 명소키로 KOPIS 질의를 고른다
 var AREAPERF={
-  smartium:{ ic:"mi_ticket", h:["서울 K-pop·콘서트","K-pop & concerts in Seoul","ソウルの K-POP・コンサート","首尔 K-pop·演唱会","首爾 K-pop·演唱會","Conciertos y K-pop en Seúl"] },   // 코엑스 아티움 (SM타운) = 서울 대중음악·K-pop 콘서트
+  // 코엑스 아티움(SM타운)은 공연 목록 안 붙임 — 서울 전체 콘서트가 떠 오해 (사장님 10-25 「sm타운 공연 아님」). 빅4는 사옥 안내만. 사진 명소 카드만 뜬다
   // 진짜 공연장 5곳 (사장님 2026-10-25) — 각 공연장을 누르면 그 공연장 실제 공연 (허브 PERF_Q venue 방식, KOPIS)
   sejongctr:{ ic:"mi_ticket", h:["세종문화회관 공연","At the Sejong Center","世宗文化会館の公演","世宗文化会馆演出","世宗文化會館演出","En el Sejong Center"] },
   sac:{ ic:"mi_ticket", h:["예술의전당 공연","At the Seoul Arts Center","芸術の殿堂の公演","艺术殿堂演出","藝術殿堂演出","En el Seoul Arts Center"] },
@@ -780,7 +780,8 @@ function phItem(x){ var tt=esc(x.title||"");
     +'<div class="d" style="margin:2px 0 1px">'+MPIMG("mi_calendar",MIS)+phDate(x.from)+(x.to&&x.to!==x.from?' ~ '+phDate(x.to):'')+'</div>'
     +(x.place?'<div class="d" style="margin:0 0 1px">'+MPIMG("mi_pin",MIS)+esc(x.place)+'</div>':'')
     +(x.genre?'<div class="d" style="margin:0 0 3px;color:var(--sub)">'+phG(x.genre)+'</div>':'')
-    +(x.id?'<div class="d"><a href="https://www.kopis.or.kr/por/db/pblprfr/pblprfrView.do?mt20id='+encodeURIComponent(x.id)+'" target="_blank" rel="noopener">'+T("자세히·예매 정보","Details & tickets")+' ↗</a></div>':'')
+    +(x.book?'<div class="d"><a href="'+esc(x.book)+'" target="_blank" rel="noopener">'+T("예매하기","Book tickets")+(x.bookNm?' · '+esc(x.bookNm):'')+' ↗</a></div>'
+      :(x.id?'<div class="d"><a href="https://www.google.com/search?q='+encodeURIComponent((x.tko||x.title||'')+' 공연 예매')+'" target="_blank" rel="noopener">'+T("예매 정보 찾기","Find tickets")+' ↗</a></div>':''))
     +'</div></div>'; }
 var _phC={};   // 세션 캐시 (명소키|언어)
 function perfShow(k){ var cf=AREAPERF[k]; if(!cf) return; var p=PLACES[k]; if(!p) return;
