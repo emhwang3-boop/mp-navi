@@ -672,7 +672,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025kpop", NAVI_ROOT="kr";
+var NAVI_V="1025legend", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -1064,19 +1064,43 @@ function zApply(){ var m=document.getElementById("map"), w=m.clientWidth, hc=MH(
   var iw=w*as*ZM.s, ih=w*ZM.s; ZM.tx=iw>=w?Math.min(0,Math.max(w-iw,ZM.tx)):(w-iw)/2; ZM.ty=ih>=hc?Math.min(0,Math.max(hc-ih,ZM.ty)):(hc-ih)/2;
   z.style.transform="translate("+ZM.tx+"px,"+ZM.ty+"px) scale("+ZM.s+")"; m.classList.toggle("zoomed",ZM.s>ZB()*1.001);   // 처음 배율에선 위아래 밀기 = 화면 넘김
   var lb=document.getElementById("dlb"); if(lb) lb.style.transform="translate(-50%,-50%) scale("+(1/ZM.s)+")"; try{ lodDraw(); }catch(e){} try{ meDraw(); }catch(e){} try{ bbDraw(); }catch(e){} }
+// 서울 약도 범례 박스 (사장님 10-25) — 북쪽 빈자리(도봉/노원 쪽) 테두리 상자, 진짜 위치 아님(index/범례). 묶음을 누르면 목록이 주르륵, 고르면 그 장소 카드(공연장은 KOPIS 공연). 우리 아이콘 사용(이모지 아님)
+var LEG_PERF=["sejongctr","sac","bluesq","lgart","olympichall"];
+var LEG_KPOP=["smartium","hybe","jyp","yg"];   // smartium(코엑스 아티움)은 삼성동 약도에 삶 — kpopJump 로 그 약도 열며 연다
+function legName(k){ if(PLACES[k]) return LN(PLACES[k]); if(k==="smartium") return LP(["코엑스 아티움","COEX Artium","COEXアーティアム","COEX 아티움","COEX 阿提安","COEX Artium"]); return k; }
+function legOpen(k){ try{ inBlur(); }catch(e){} if(k==="smartium"){ try{ kpopJump(); }catch(e){} return; } if(PLACES[k]){ try{ placeShow(k); }catch(e){} } }
+function legDraw(z){ if(VIEW!=="seoulall") return; var w=document.getElementById("map").clientWidth, fs=Math.max(5,w*0.0135), ic=fs*2.1;
+  var box=document.createElement("div"); box.className="mleg";
+  box.style.cssText="position:absolute;left:2.5%;top:2.5%;width:"+(w*0.34)+"px;max-width:260px;background:rgba(255,255,255,.93);border:"+Math.max(1,fs*0.16)+"px solid #94a3b8;border-radius:"+(fs*0.9)+"px;box-shadow:0 2px 6px rgba(0,0,0,.22);padding:"+(fs*0.55)+"px "+(fs*0.6)+"px "+(fs*0.5)+"px;z-index:6;pointer-events:auto;font-family:inherit;-webkit-user-select:none;user-select:none";
+  var ti=document.createElement("div"); ti.textContent=LP(["범례","Legend","凡例","图例","圖例","Leyenda"]); ti.style.cssText="font-size:"+(fs*0.92)+"px;font-weight:900;color:#475569;letter-spacing:.02em;margin:0 0 "+(fs*0.4)+"px;text-align:center;border-bottom:"+Math.max(0.6,fs*0.09)+"px solid #cbd5e1;padding-bottom:"+(fs*0.3)+"px"; box.appendChild(ti);
+  var mk=function(gid,img,label,keys,col){ var row=document.createElement("div");
+      row.style.cssText="display:flex;align-items:center;gap:"+(fs*0.4)+"px;cursor:pointer;padding:"+(fs*0.25)+"px "+(fs*0.2)+"px;border-radius:"+(fs*0.5)+"px";
+      var im=document.createElement("img"); im.src=img; im.alt=""; im.style.cssText="width:"+ic+"px;height:auto;flex:0 0 auto;pointer-events:none";
+      var lb=document.createElement("span"); lb.textContent=label; lb.style.cssText="flex:1 1 auto;font-size:"+fs+"px;font-weight:800;color:"+col+";line-height:1.15";
+      var ar=document.createElement("span"); ar.textContent=window._legG===gid?"▾":"▸"; ar.style.cssText="flex:0 0 auto;font-size:"+(fs*0.9)+"px;color:#64748b;font-weight:900";
+      row.appendChild(im); row.appendChild(lb); row.appendChild(ar);
+      row.onclick=function(ev){ ev.stopPropagation(); window._legG=(window._legG===gid?null:gid); try{ lblDraw(); }catch(e){} };
+      box.appendChild(row);
+      if(window._legG===gid){ var ul=document.createElement("div"); ul.style.cssText="margin:"+(fs*0.15)+"px 0 "+(fs*0.35)+"px "+(ic+fs*0.4)+"px;display:flex;flex-direction:column;gap:"+(fs*0.12)+"px";
+        keys.forEach(function(kk){ var it=document.createElement("div"); it.textContent="· "+legName(kk); it.style.cssText="font-size:"+(fs*0.92)+"px;font-weight:700;color:#334155;cursor:pointer;padding:"+(fs*0.18)+"px "+(fs*0.3)+"px;border-radius:"+(fs*0.4)+"px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis";
+          it.onclick=function(ev){ ev.stopPropagation(); legOpen(kk); }; ul.appendChild(it); }); box.appendChild(ul); } };
+  mk("perf","img/perf_marker.png",LP(["공연장","Performance venues","公演会場","演出场馆","演出場館","Salas de espectáculos"]),LEG_PERF,"#c2410c");
+  mk("kpop","img/kpop_marker.png",LP(["K-pop 명소","K-pop spots","K-popスポット","K-pop 景点","K-pop 景點","Lugares K-pop"]),LEG_KPOP,"#7c3aed");
+  ["pointerdown","pointermove","pointerup","touchstart","touchmove","touchend","click"].forEach(function(ev){ box.addEventListener(ev,function(e){ e.stopPropagation(); },{passive:true}); });
+  z.appendChild(box); }
 // 약도 글자 표시 — 자료 labels [[x,y,한글,영어,ax,ay],...] 를 지도 위 그 자리에 (지도와 같이 커진다 — 이름표와 같은 원칙, 매표소 등 · fix3 10-15)
-function lblDraw(){ [].forEach.call(document.querySelectorAll("#mz .mlb"),function(e){ e.remove(); }); var c=CITY[VIEW]; if(!c||!c.labels) return; var z=document.getElementById("mz");
+function lblDraw(){ [].forEach.call(document.querySelectorAll("#mz .mlb, #mz .mleg"),function(e){ e.remove(); }); var c=CITY[VIEW]; if(!c||!c.labels) return; var z=document.getElementById("mz"); try{ legDraw(z); }catch(e){}
   c.labels.forEach(function(t){ var e=document.createElement("div"); e.className="mlb"; e.textContent=LANG==="ko"?t[2]:TE(t[3]); e._ax=t[4]||0; e._ay=t[5]||0; e.style.left=(t[0]*100)+"%"; e.style.top=(t[1]*100)+"%"; var w=document.getElementById("map").clientWidth, fs=Math.max(4,w*0.016);
     e.style.fontSize=fs+"px"; e.style.padding=(fs*0.15)+"px "+(fs*0.6)+"px"; e.style.borderWidth=Math.max(0.6,fs*0.14)+"px"; e.style.transform="translate("+(-e._ax*100)+"%,"+(-e._ay*100)+"%)"; if(t[6]){ e.dataset.k=t[6]; e.style.pointerEvents="auto"; e.style.cursor="pointer"; }
-    if(t[7]==="perf"){ var iw=w*0.06;   /* 공연장 = 지도 위 아이콘 명소, 이름표는 아이콘 밑 작은 알약 (사장님 10-25) */
+    if(t[7]==="perf"){ var iw=w*0.033, cf2=fs*0.78;   /* 공연장 = 지도 위 아이콘 명소, 작게 줄여 이웃 안 가림 (사장님 10-25) */
       e.className="mlb perf"; e.style.background="none"; e.style.border="0"; e.style.boxShadow="none"; e.style.padding="0"; e.style.borderRadius="0"; e.style.transform="translate(-50%,-100%)"; e.textContent="";
       var pim=document.createElement("img"); pim.src="img/perf_marker.png"; pim.alt=""; pim.style.cssText="display:block;width:"+iw+"px;height:auto;margin:0 auto;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))";
-      var pcap=document.createElement("span"); pcap.textContent=LANG==="ko"?t[2]:TE(t[3]); pcap.style.cssText="display:block;margin:"+(fs*0.12)+"px auto 0;width:max-content;max-width:"+(iw*1.8)+"px;background:#fff;color:#c2410c;border:"+Math.max(0.6,fs*0.12)+"px solid #e8590c;border-radius:999px;font-size:"+fs+"px;font-weight:900;line-height:1.2;padding:"+(fs*0.12)+"px "+(fs*0.5)+"px;text-align:center;white-space:nowrap;box-shadow:0 0 2px rgba(0,0,0,.25);pointer-events:none";
+      var pcap=document.createElement("span"); pcap.textContent=LANG==="ko"?t[2]:TE(t[3]); pcap.style.cssText="display:block;margin:"+(fs*0.08)+"px auto 0;width:max-content;max-width:"+(iw*2.6)+"px;background:#fff;color:#c2410c;border:"+Math.max(0.5,fs*0.1)+"px solid #e8590c;border-radius:999px;font-size:"+cf2+"px;font-weight:900;line-height:1.15;padding:"+(cf2*0.12)+"px "+(cf2*0.5)+"px;text-align:center;white-space:nowrap;box-shadow:0 0 2px rgba(0,0,0,.25);pointer-events:none";
       e.appendChild(pim); e.appendChild(pcap); z.appendChild(e); return; }
-    if(t[7]==="kpop"){ var iw2=w*0.06;   /* K-pop 기획사 사옥 = 지도 위 아이콘 명소, 이름표는 아이콘 밑 작은 알약 (사장님 10-25) */
+    if(t[7]==="kpop"){ var iw2=w*0.033, cf3=fs*0.78;   /* K-pop 기획사 사옥 = 지도 위 아이콘 명소, 작게 줄여 이웃 안 가림 (사장님 10-25) */
       e.className="mlb kpop"; e.style.background="none"; e.style.border="0"; e.style.boxShadow="none"; e.style.padding="0"; e.style.borderRadius="0"; e.style.transform="translate(-50%,-100%)"; e.textContent="";
       var kim=document.createElement("img"); kim.src="img/kpop_marker.png"; kim.alt=""; kim.style.cssText="display:block;width:"+iw2+"px;height:auto;margin:0 auto;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))";
-      var kcap=document.createElement("span"); kcap.textContent=LANG==="ko"?t[2]:TE(t[3]); kcap.style.cssText="display:block;margin:"+(fs*0.12)+"px auto 0;width:max-content;max-width:"+(iw2*1.8)+"px;background:#fff;color:#7c3aed;border:"+Math.max(0.6,fs*0.12)+"px solid #8b5cf6;border-radius:999px;font-size:"+fs+"px;font-weight:900;line-height:1.2;padding:"+(fs*0.12)+"px "+(fs*0.5)+"px;text-align:center;white-space:nowrap;box-shadow:0 0 2px rgba(0,0,0,.25);pointer-events:none";
+      var kcap=document.createElement("span"); kcap.textContent=LANG==="ko"?t[2]:TE(t[3]); kcap.style.cssText="display:block;margin:"+(fs*0.08)+"px auto 0;width:max-content;max-width:"+(iw2*2.6)+"px;background:#fff;color:#7c3aed;border:"+Math.max(0.5,fs*0.1)+"px solid #8b5cf6;border-radius:999px;font-size:"+cf3+"px;font-weight:900;line-height:1.15;padding:"+(cf3*0.12)+"px "+(cf3*0.5)+"px;text-align:center;white-space:nowrap;box-shadow:0 0 2px rgba(0,0,0,.25);pointer-events:none";
       e.appendChild(kim); e.appendChild(kcap); z.appendChild(e); return; }
     if(t[7]==="post"){ var pf=Math.max(3,w*0.012); e.className="mlb post"; e.style.fontSize=pf+"px"; e.style.padding=(pf*0.08)+"px "+(pf*0.45)+"px"; e.style.borderWidth=Math.max(0.5,pf*0.12)+"px"; e.style.transform="translate(-50%,calc(-100% - "+(pf*0.7)+"px))"; if(c.olle&&c.olle[t[2]]){ e.dataset.ol=t[2]; e.style.pointerEvents="auto"; e.style.cursor="pointer"; } }   /* t[7]="post" = 제주 올레 코스 번호 나무 팻말 — 다리 끝이 길 위 그 점 (사장님 10-21) */
     z.appendChild(e); }); }   /* t[6]=장소 키 — 글자를 누르면 그 장소 카드 (매표소 → 시티투어 시간표, 사장님 10-16) */
