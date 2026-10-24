@@ -22,6 +22,10 @@
   var rvm=/[?&]review=([0-9a-f]{32})(?![0-9a-z])/i.exec(location.search);
   if(/[?&]review=/i.test(location.search)){ try{ var qsr=location.search.slice(1).split("&").filter(function(x){ return !/^review=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qsr?"?"+qsr:"")+location.hash); }catch(x){} }
   if(rvm){ window.__mpReview=rvm[1]; localStorage.setItem("mpv_ok","1"); ok=true; }
+  /* 가이드 본인 프로필 수정 링크 (2026-10-24, near.js igEditForm 과 짝) — 메일로 보낸 ?gedit=<토큰>. 토큰 가진 가이드만 자기 프로필을 고친다. 들어온 사람이니 통과시킨다 */
+  var gem=/[?&]gedit=([0-9a-f]{32})(?![0-9a-z])/i.exec(location.search);
+  if(/[?&]gedit=/i.test(location.search)){ try{ var qsg=location.search.slice(1).split("&").filter(function(x){ return !/^gedit=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qsg?"?"+qsg:"")+location.hash); }catch(x){} }
+  if(gem){ window.__mpGedit=gem[1]; localStorage.setItem("mpv_ok","1"); ok=true; }
   if(localStorage.getItem("mp_owner")||localStorage.getItem("mpv_inv")) document.addEventListener("DOMContentLoaded",function(){ var l=document.querySelector('link[rel="mp-manifest"]'); if(l) l.rel="manifest"; });
   /* 7일짜리 초대 링크 (사장님 2026-10-15) — 고정 코드는 더 안 받는다. 허브가 서명·만료를 확인한다 */
   var IH="https://brief-live-hub.emhwang3.workers.dev", IA="navi";
@@ -1312,8 +1316,9 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1024icons"></script>
 <script src="gift.js?v=1024icons"></script>
-<script src="near.js?v=1024icons"></script>
-<script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}</script>
+<script src="near.js?v=1024gedit"></script>
+<script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
+/* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}</script>
 <script src="reco.js?v=1024icons"></script>
 <script src="gu.js?v=f29da37807"></script>
 <script src="citytour.js?v=1024icons"></script>
