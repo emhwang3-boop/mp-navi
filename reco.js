@@ -133,14 +133,14 @@ function paint(keep){ var out=$("res"), en=L(), h='', n=0;
   if(GK.length){ var gd=R.gord==="d"; GK=GK.slice().sort(gd?function(a,b){ return (a.dist==null?1e12:a.dist)-(b.dist==null?1e12:b.dist); }:function(a,b){ return (+b.rating-+a.rating)||(+b.n-+a.n); });   // 거리순·별점순 (사장님 10-21) — 구글 칸만, 카카오 칸은 거리순 그대로
     h+='<div class="rcsec">'+esc(gd?T("유명한 곳 (구글 · 가까운 순)","Popular places (Google · nearest first)"):T("유명한 곳 (구글 별점 높은 순)","Popular places (Google · top rated)"))+'</div>'
       +'<div class="rcord"><button type="button" data-rc="gord" data-o="r" class="'+(gd?'':'on')+'">'+esc(T("별점순","Top rated"))+'</button><button type="button" data-rc="gord" data-o="d" class="'+(gd?'on':'')+'">'+esc(T("거리순","Nearest"))+'</button></div>';   // 구글 — 카드만, 지도 핀 없음 (10-20)
-    GK.forEach(function(x){ h+='<div class="item rcg"><div class="t">⭐ '+esc(x.name)+'</div>'+(x.addr?'<div class="d">'+esc(x.addr)+'</div>':'')
+    GK.forEach(function(x){ h+='<div class="item rcg"><div class="t">'+MPICO("mi_star",x.name,MIS)+'</div>'+(x.addr?'<div class="d">'+esc(x.addr)+'</div>':'')
       +'<div class="d"><b style="color:#f08c00">★'+(+x.rating).toFixed(1)+'</b> ('+(+x.n).toLocaleString("en-US")+') · <span style="font-weight:700">Google</span>'+(x.dist!=null?' · '+esc(T("나에게서","From you"))+' <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
       +(x.uri&&/^https:\/\//.test(x.uri)?'<div class="d" style="margin-top:4px"><a href="'+esc(x.uri)+'" target="_blank" rel="noopener">'+esc(T("구글 지도에서 보기","View on Google Maps"))+'</a></div>':'')+'</div>'; n++; }); }
   if(KK.length){ var fs=!(ME&&ME.pos), ai=KK.every(function(x){ return x._src==="n"; })&&KK.some(function(x){ return x.dist>30000; });   // AI 가 이름으로 고른 먼 곳이면 「가까운 곳」이 아니다 (사장님 10-23)
     h+='<div class="rcsec">'+esc(ai?T("AI가 고른 다른 지역","Other regions picked by AI"):fs?T("가까운 곳 (서울에서 가까운 순)","More places nearby (closest to Seoul)"):T("가까운 곳 (나에게서 가까운 순)","More places nearby (closest to you)"))+'</div>';
     window._sres=KK;
     KK.forEach(function(x,i){ var e2=en&&x.name_en, ttl=KS(e2?x.name_en:x.name), ad=e2?(x.addr_en||x.addr):x.addr, ct=e2?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
-      h+='<div class="item sres rck" data-i="'+i+'" style="cursor:pointer"><div class="t">📍 '+esc(ttl)+'</div>'+(e2?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
+      h+='<div class="item sres rck" data-i="'+i+'" style="cursor:pointer"><div class="t">'+MPICO("mi_pin",ttl,MIS)+'</div>'+(e2?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+'</div>'
         +telLine(x.tel)+linksTo(x.name,x.y,x.x,x.name,x.addr)+'</div>'; n++; }); }
   if(!n) h+='<div class="rcmsg">'+esc(R.ex.length||R.exk.length?T("더 알맞은 곳이 적어요. 일반 검색으로도 찾아 보세요.","Few more places match. Try a regular search too."):T("알맞은 곳이 적어요. 일반 검색으로 찾아 보세요.","Few places match this. Try a regular search."))+'</div>';
   else if(R.picks.length+R.kits.length<3) h+='<div class="rcmsg">'+esc(T("알맞은 곳이 적어요 — 일반 검색도 해 보세요.","Only a few places match — try a regular search too."))+'</div>';
