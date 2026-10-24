@@ -22,7 +22,7 @@
     +"#itB .nt{font-size:12.5px;color:#6b7280;text-align:center;line-height:1.5}";
   document.head.appendChild(st);
   var b=document.createElement("button"); b.id="itP"; b.type="button"; document.body.appendChild(b);
-  function paintBtn(){ b.textContent="🗣 "+L5({ko:"통역",en:"Interpreter",ja:"通訳",zhs:"翻译",zht:"翻譯",es:"Intérprete"}); b.setAttribute("aria-label",b.textContent);
+  function paintBtn(){ var _il=L5({ko:"통역",en:"Interpreter",ja:"通訳",zhs:"翻译",zht:"翻譯",es:"Intérprete"}); b.innerHTML=MPIMG("mi_interpreter",MIS)+esc(_il); b.setAttribute("aria-label",_il);
     var g=document.getElementById("lgP"), y=g?g.getBoundingClientRect().bottom+8:Math.round(innerHeight*0.58)+52; b.style.top=Math.min(y,innerHeight-60)+"px"; }
   paintBtn(); setInterval(paintBtn,600);   /* 🌐 단추를 끌어 옮기면 따라간다 · 언어가 바뀌면 글자도 */
   /* 지금 장소 = _ntK 의 명소 자료, 없으면 일정에서 고른 곳(_itPick — 카카오 등 명소 목록 밖, trip.js 가 넣음 10-20) */
@@ -58,7 +58,7 @@
   function open(){
     var o=document.getElementById("itB"); if(o) o.remove();
     o=document.createElement("div"); o.id="itB"; o.onclick=function(e){ if(e.target===o) o.remove(); };
-    var h='<div class="in"><div class="hd">🗣 '+esc(L5({ko:"한국 사람에게 보여 주세요",en:"Show this to a Korean",ja:"韓国の人に見せてください",zhs:"给韩国人看",zht:"給韓國人看",es:"Muéstraselo a un coreano"}))+'<button type="button" aria-label="close">✕</button></div>';
+    var h='<div class="in"><div class="hd">'+MPIMG("mi_interpreter",MIS)+esc(L5({ko:"한국 사람에게 보여 주세요",en:"Show this to a Korean",ja:"韓国の人に見せてください",zhs:"给韩国人看",zht:"給韓國人看",es:"Muéstraselo a un coreano"}))+'<button type="button" aria-label="close">✕</button></div>';
     phrases().forEach(function(p,i){ h+='<div class="ph" data-i="'+i+'"><div class="k">'+esc(p[0])+'</div>'+(window.LANG==="ko"?'':'<div class="m">'+esc(L5(p[1]))+'</div>')+'</div>'; });
     h+='<a class="gt" href="'+esc(gtUrl(""))+'" target="_blank" rel="noopener">'+esc(L5({ko:"구글 번역으로 대화하기",en:"Talk with Google Translate",ja:"Google翻訳で会話する",zhs:"用Google翻译对话",zht:"用Google翻譯對話",es:"Hablar con Google Traductor"}))+'</a>'
       +'<div class="nt">'+esc(L5({ko:"구글 번역 앱(없으면 웹)이 열립니다. 다 쓰면 뒤로가기(아이폰은 왼쪽 위 ◀)로 돌아오세요 — 보던 화면은 그대로입니다.",
@@ -72,7 +72,7 @@
     [].forEach.call(o.querySelectorAll(".ph"),function(el){ el.onclick=function(){ var p=P[+el.getAttribute("data-i")];   /* 누르면 큰 글씨로 — 폰을 그대로 보여 준다 */
       LAST=window.LANG==="ko"?p[0]:L5(p[1]); var gt0=o.querySelector(".in .gt"); if(gt0) gt0.setAttribute("href",gtUrl(LAST));   /* 판의 구글 단추도 고른 문장으로 */
       var bg=document.createElement("div"); bg.className="big";
-      bg.innerHTML='<div class="k">'+esc(p[0])+'</div>'+(window.LANG==="ko"?'':'<div class="m">'+esc(L5(p[1]))+'</div>')+'<a class="gt" style="margin:22px 0 0;padding:12px 22px" href="'+esc(gtUrl(LAST))+'" target="_blank" rel="noopener">🔊 '+esc(L5({ko:"구글 번역으로 열기",en:"Open in Google Translate",ja:"Google翻訳で開く",zhs:"在Google翻译中打开",zht:"在Google翻譯中開啟",es:"Abrir en Google Traductor"}))+'</a>'
+      bg.innerHTML='<div class="k">'+esc(p[0])+'</div>'+(window.LANG==="ko"?'':'<div class="m">'+esc(L5(p[1]))+'</div>')+'<a class="gt" style="margin:22px 0 0;padding:12px 22px" href="'+esc(gtUrl(LAST))+'" target="_blank" rel="noopener">'+MPIMG("mi_speaker",MIS)+esc(L5({ko:"구글 번역으로 열기",en:"Open in Google Translate",ja:"Google翻訳で開く",zhs:"在Google翻译中打开",zht:"在Google翻譯中開啟",es:"Abrir en Google Traductor"}))+'</a>'
         +'<button class="x" type="button">✕ '+esc(L5({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}))+'</button>';
       bg.querySelector(".x").onclick=function(e){ e.stopPropagation(); bg.remove(); }; o.appendChild(bg); }; });
   }
