@@ -239,6 +239,7 @@ var TG_PERF=[["sejongctr",{ko:"세종문화회관",en:"Sejong Center for the Per
   ["lgart",{ko:"LG아트센터 서울",en:"LG Arts Center Seoul",ja:"LGアートセンター ソウル",zhs:"LG艺术中心首尔",zht:"LG藝術中心首爾",es:"LG Arts Center Seoul"}],
   ["olympichall",{ko:"올림픽홀 (올림픽공원)",en:"Olympic Hall (Olympic Park)",ja:"オリンピックホール（オリンピック公園）",zhs:"奥林匹克大厅（奥林匹克公园）",zht:"奧林匹克大廳（奧林匹克公園）",es:"Olympic Hall (Parque Olímpico)"}]];
 var TG_KPOP=[["smartium",{ko:"코엑스 아티움 (SM타운)",en:"COEX Artium (SMTOWN)",ja:"COEXアティウム（SMTOWN）",zhs:"COEX Artium（SMTOWN）",zht:"COEX Artium (SMTOWN)",es:"COEX Artium (SMTOWN)"}],
+  ["smksu",{ko:"SM 성수 (KWANGYA@SEOUL)",en:"SM Seongsu (KWANGYA@SEOUL)",ja:"SM 聖水（KWANGYA@SEOUL）",zhs:"SM圣水（KWANGYA@SEOUL）",zht:"SM 聖水（KWANGYA@SEOUL）",es:"SM Seongsu (KWANGYA@SEOUL)"}],
   ["hybe",{ko:"하이브 HYBE",en:"HYBE",ja:"HYBE",zhs:"HYBE",zht:"HYBE",es:"HYBE"}],
   ["jyp",{ko:"JYP엔터테인먼트",en:"JYP Entertainment",ja:"JYPエンターテインメント",zhs:"JYP娱乐",zht:"JYP娛樂",es:"JYP Entertainment"}],
   ["yg",{ko:"YG엔터테인먼트",en:"YG Entertainment",ja:"YGエンターテインメント",zhs:"YG娱乐",zht:"YG娛樂",es:"YG Entertainment"}]];
@@ -257,7 +258,7 @@ function tgPick(k){ close();
 // B4 사옥 투어 패키지 (사장님 2026-10-25) — 가이드 포함 유료 반일. 예약은 통역·길안내(가이드 신청) 흐름으로 연결. 요금은 GetYourGuide HYBE투어 $55·K-pop 워킹투어 ₩4~7만 참고 → ₩89,000(2인+ ₩79,000). 빅4는 외관·굿즈샵(입장 무료)이라 값은 가이드·동선
 var B4PKG={ t:{ko:"K-POP 빅4 사옥 투어",en:"K-pop Big4 Agency Tour",ja:"K-POP BIG4 社屋ツアー",zhs:"K-POP四大社参观团",zht:"K-POP四大社參觀團",es:"Tour de las Big4 del K-pop"},
   g:{ko:"가이드 동행 · 반일",en:"With a guide · half day",ja:"ガイド同行・半日",zhs:"向导同行·半天",zht:"嚮導同行·半天",es:"Con guía · medio día"},
-  c:{ko:"HYBE·SM·JYP·YG 사옥 외관과 굿즈샵을 가이드와 함께 돕니다 (외관 관람·사진).",en:"Tour the HYBE, SM, JYP and YG building exteriors and goods shops with a guide (exterior & photos).",ja:"HYBE・SM・JYP・YGの社屋外観とグッズショップをガイドと巡ります（外観・写真）。",zhs:"在向导带领下游览HYBE·SM·JYP·YG大楼外观和周边店（外观·拍照）。",zht:"在嚮導帶領下遊覽HYBE·SM·JYP·YG大樓外觀和周邊店（外觀·拍照）。",es:"Recorre con guía los exteriores de HYBE, SM, JYP y YG y las tiendas de productos (exterior y fotos)."},
+  c:{ko:"HYBE·SM·JYP·YG 사옥 외관(삼성동 코엑스 아티움 포함)과 SM KWANGYA(성수) 굿즈샵을 가이드와 함께 돕니다 (외관 관람·사진).",en:"Tour the HYBE, SM, JYP and YG building exteriors (incl. COEX Artium in Samseong) and the SM KWANGYA goods shop in Seongsu, with a guide (exterior & photos).",ja:"HYBE・SM・JYP・YGの社屋外観（三成洞COEXアティウム含む）とSM KWANGYA（聖水）のグッズショップをガイドと巡ります（外観・写真）。",zhs:"在向导带领下游览HYBE·SM·JYP·YG大楼外观（含三成洞COEX Artium）和SM KWANGYA（圣水）周边店（外观·拍照）。",zht:"在嚮導帶領下遊覽HYBE·SM·JYP·YG大樓外觀（含三成洞COEX Artium）和SM KWANGYA（聖水）周邊店（外觀·拍照）。",es:"Recorre con guía los exteriores de HYBE, SM, JYP y YG (incl. COEX Artium en Samseong) y la tienda SM KWANGYA en Seongsu (exterior y fotos)."},
   p:{ko:"₩89,000 / 1인 · 2인 이상 ₩79,000",en:"₩89,000 / person · ₩79,000 for 2+",ja:"₩89,000 / 1名 · 2名以上は₩79,000",zhs:"₩89,000 / 人 · 2人以上₩79,000",zht:"₩89,000 / 人 · 2人以上₩79,000",es:"₩89,000 / persona · ₩79,000 para 2+"},
   b:{ko:"예약·문의",en:"Book / inquire",ja:"予約・問い合わせ",zhs:"预约·咨询",zht:"預約·諮詢",es:"Reservar / consultar"},
   n:{ko:"예약은 가이드 신청으로 연결됩니다.",en:"Booking goes through our guide request.",ja:"予約はガイド申請につながります。",zhs:"预约将通过向导申请办理。",zht:"預約將透過嚮導申請辦理。",es:"La reserva se realiza mediante la solicitud de guía."} };
