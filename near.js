@@ -71,7 +71,7 @@ var S={k:"",tab:0,base:null,src:"",items:null,err:""}, CACHE={}, PICK=null;
 function L(){ return window.LANG!=="ko"; }   // 외국어 화면(영·일·중) — 10-18
 function LG6(o){ return o[window.LANG]||o.en; }   // 통역·길안내 새 문구는 6개 언어를 바로 넣는다(i18n.js 안 건드림, 10-24)
 // 「투어·입장권 / Tours & tickets」 (사장님 10-24) — 옛 「투어 가이드」. 내용(Klook·GetYourGuide·Creatrip)은 그대로, 이름만 6개 언어로
-var TOURS6={ko:"체험 입장권",en:"Experiences & tickets",ja:"体験・入場券",zhs:"体验·门票",zht:"體驗·門票",es:"Experiencias y entradas"};
+var TOURS6={ko:"체험·입장권",en:"Experiences & tickets",ja:"体験・入場券",zhs:"体验·门票",zht:"體驗·門票",es:"Experiencias y entradas"};
 // 「투어 가이드」 칩 글자 (사장님 10-24) — 맨 앞 칩. 누르면 통역·길안내(ig) 가이드 매칭 판이 열린다
 var IG_CHIP6={ko:"투어 가이드",en:"Tour guide",ja:"ツアーガイド",zhs:"旅游向导",zht:"旅遊嚮導",es:"Guía turístico"};
 // 빨간·파란 단추 안 전화기 — 흰 선 그림(글자색 그대로, 사장님 10-16: 이모지는 분홍빛이라)
