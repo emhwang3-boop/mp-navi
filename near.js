@@ -126,7 +126,11 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".igpk{display:inline-block;margin-top:6px;color:#0c8599;font-weight:800;font-size:13px}"
   +".iglb{display:block;font-size:13px;color:var(--sub);font-weight:700;margin:10px 2px 3px}"
   +".igin{width:100%;box-sizing:border-box;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 11px}"
-  +".igchk{display:flex;gap:7px;align-items:flex-start;font-size:13px;color:var(--ink);margin:12px 2px 0;line-height:1.5}.igchk input{width:18px;height:18px;margin-top:1px;flex:0 0 auto}";
+  +".igchk{display:flex;gap:7px;align-items:flex-start;font-size:13px;color:var(--ink);margin:12px 2px 0;line-height:1.5}.igchk input{width:18px;height:18px;margin-top:1px;flex:0 0 auto}"
+  +".igrb{display:inline-block;font-size:12.5px;font-weight:800;color:#e8590c;white-space:nowrap}.igrb0{color:var(--sub);font-weight:700;font-size:12px}"
+  +".igrsum{font-size:15px;font-weight:800;color:#e8590c;margin:2px 2px 8px}.igrsum b{color:var(--ink)}.igrsum0{color:var(--sub);font-weight:700;font-size:13px}"
+  +".igrv{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 11px;margin:7px 0}.igrvh{font-size:14px;color:#e8590c;font-weight:800}.igrvh b{color:var(--ink);margin-left:3px}.igrvd{color:var(--sub);font-size:12px;font-weight:600;margin-left:4px}.igrvt{color:var(--ink);font-size:13.5px;margin-top:4px;line-height:1.5;white-space:pre-wrap}"
+  +".igrvpick{display:flex;gap:4px;margin:2px 0 4px}.igrvstar{border:0;background:none;font-size:32px;line-height:1;color:#ccc;cursor:pointer;padding:2px 4px}.igrvstar.on{color:#f59f00}";
   document.head.appendChild(s); }
 
 // ── 기준 위치 ──
@@ -237,7 +241,8 @@ function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) re
 function igRender(b){
   var head='<div class="nrtop"><b>'+esc(LG6({ko:"통역·길안내",en:"Interpreter & guide",ja:"通訳・ガイド",zhs:"翻译·向导",zht:"翻譯·嚮導",es:"Intérprete y guía"}))+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
   var back='<button type="button" class="igback" data-igback="1">‹ '+esc(LG6({ko:"뒤로",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Atrás"}))+'</button>';
-  if(IG.view==="done"){ b.innerHTML=head+'<div class="ignote">✓ '+esc(LG6({ko:"요청이 전달되었습니다. 가이드가 곧 연락 드릴 거예요.",en:"Your request was sent. The guide will contact you soon.",ja:"リクエストを送りました。ガイドからまもなくご連絡します。",zhs:"请求已发送，向导会尽快与您联系。",zht:"請求已發送，嚮導會盡快與您聯繫。",es:"Tu solicitud fue enviada. El guía te contactará pronto."}))+'</div><button type="button" class="nrsel" data-igback="pick">'+esc(LG6({ko:"처음으로",en:"Start over",ja:"最初に戻る",zhs:"返回开始",zht:"返回開始",es:"Volver al inicio"}))+'</button>'; igWire(b); return; }
+  if(IG.view==="review"){ b.innerHTML=head+igReviewForm(); igWire(b); return; }
+  if(IG.view==="done"){ b.innerHTML=head+'<div class="ignote">✓'+esc(LG6({ko:"요청이 전달되었습니다. 가이드가 곧 연락 드릴 거예요.",en:"Your request was sent. The guide will contact you soon.",ja:"リクエストを送りました。ガイドからまもなくご連絡します。",zhs:"请求已发送，向导会尽快与您联系。",zht:"請求已發送，嚮導會盡快與您聯繫。",es:"Tu solicitud fue enviada. El guía te contactará pronto."}))+'</div><button type="button" class="nrsel" data-igback="pick">'+esc(LG6({ko:"처음으로",en:"Start over",ja:"最初に戻る",zhs:"返回开始",zht:"返回開始",es:"Volver al inicio"}))+'</button>'; igWire(b); return; }
   if(IG.view==="req"&&IG.gobj){ var g=IG.gobj, ds=igDates();
     b.innerHTML=head+back
       +'<div class="igcard" style="margin-top:8px">'+igFace(g)+'<div class="igb"><b>'+esc(g.name)+'</b><div class="igm">'+g.langs.map(igLangName).map(esc).join(" · ")+'</div></div></div>'
@@ -248,12 +253,13 @@ function igRender(b){
       +'<label class="iglb">'+esc(LG6({ko:"요청 메모 (선택)",en:"Message (optional)",ja:"メモ（任意）",zhs:"留言（可选）",zht:"留言（可選）",es:"Mensaje (opcional)"}))+'</label><textarea class="igin" id="igqMs" maxlength="600" style="min-height:70px"></textarea>'
       +'<label class="igchk"><input type="checkbox" id="igqAg"> '+esc(LG6({ko:"내 이름·연락처를 이 가이드에게 전달하는 데 동의합니다.",en:"I agree to share my name and contact with this guide.",ja:"氏名・連絡先をこのガイドに伝えることに同意します。",zhs:"我同意将我的姓名和联系方式转交给该向导。",zht:"我同意將我的姓名和聯絡方式轉交給該嚮導。",es:"Acepto compartir mi nombre y contacto con este guía."}))+'</label>'
       +'<button type="button" class="nrsel" id="igqGo" style="background:#0c8599;color:#fff;border-color:#0c8599;margin-top:10px">'+esc(LG6({ko:"이 가이드에게 요청",en:"Send request",ja:"このガイドに依頼",zhs:"向该向导发送请求",zht:"向該嚮導發送請求",es:"Enviar solicitud"}))+'</button>'
-      +'<div class="ignt" id="igqM"></div>'; igWire(b); return; }
+      +'<div class="ignt" id="igqM"></div>'
+      +'<div id="igRevWrap">'+igReviewsBlock()+'</div>'; igWire(b); return; }
   if(IG.view==="list"){ var h=head+back+'<div class="iglbl" style="margin-top:8px">'+esc(LG6({ko:igLangName(IG.lang)+" 가이드",en:igLangName(IG.lang)+" guides",ja:igLangName(IG.lang)+"のガイド",zhs:igLangName(IG.lang)+"向导",zht:igLangName(IG.lang)+"嚮導",es:"Guías de "+igLangName(IG.lang)}))+'</div>';
     if(IG.err) h+='<div class="msg">'+esc(LG6({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again shortly.",ja:"しばらくしてからもう一度お試しください。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo de nuevo en un momento."}))+'</div>';
     else if(!IG.guides) h+='<div class="msg">'+esc(LG6({ko:"찾는 중…",en:"Searching…",ja:"検索中…",zhs:"搜索中…",zht:"搜尋中…",es:"Buscando…"}))+'</div>';
     else if(!IG.guides.length) h+='<div class="ignote">'+esc(LG6({ko:"아직 등록된 가이드가 없습니다. 곧 추가될 예정이에요.",en:"No guides registered yet. More coming soon.",ja:"まだ登録されたガイドがいません。近日追加予定です。",zhs:"暂无已登记的向导，即将新增。",zht:"暫無已登記的嚮導，即將新增。",es:"Aún no hay guías registrados. Pronto habrá más."}))+'</div>';
-    else h+=IG.guides.map(function(g,i){ return '<div class="igcard" data-igpick="'+i+'">'+igFace(g)+'<div class="igb"><b>'+esc(g.name)+'</b><div class="igm">'+g.langs.map(igLangName).map(esc).join(" · ")+(g.years?' · '+g.years+(window.LANG==="ko"?"년":"y"):"")+(g.region?' · '+esc(g.region):"")+'</div>'+(g.intro?'<div class="igi">'+esc(g.intro)+'</div>':"")+'<span class="igpk">'+esc(LG6({ko:"요청하기 ›",en:"Request ›",ja:"依頼する ›",zhs:"请求 ›",zht:"請求 ›",es:"Solicitar ›"}))+'</span></div></div>'; }).join("");
+    else h+=IG.guides.map(function(g,i){ return '<div class="igcard" data-igpick="'+i+'">'+igFace(g)+'<div class="igb"><b>'+esc(g.name)+'</b> '+igBadge(g)+'<div class="igm">'+g.langs.map(igLangName).map(esc).join(" · ")+(g.years?' · '+g.years+(window.LANG==="ko"?"년":"y"):"")+(g.region?' · '+esc(g.region):"")+'</div>'+(g.intro?'<div class="igi">'+esc(g.intro)+'</div>':"")+'<span class="igpk">'+esc(LG6({ko:"요청하기 ›",en:"Request ›",ja:"依頼する ›",zhs:"请求 ›",zht:"請求 ›",es:"Solicitar ›"}))+'</span></div></div>'; }).join("");
     b.innerHTML=h; igWire(b); return; }
   // pick
   var btns=GLANG6.map(function(l){ return '<a class="iglang" href="#" data-iglang="'+l[1]+'">'+esc(l[0])+' ›</a>'; }).join("");
@@ -265,9 +271,53 @@ function igFace(g){ return g.photo?'<img class="igav" src="'+HUB+'/guide/photo?i
 function igWire(b){
   [].forEach.call(b.querySelectorAll("[data-iglang]"),function(a){ a.onclick=function(e){ e.preventDefault(); IG.lang=a.dataset.iglang; IG.view="list"; IG.guides=null; IG.err=""; paint(); igLoad(); }; });
   [].forEach.call(b.querySelectorAll("[data-igback]"),function(a){ a.onclick=function(e){ e.preventDefault(); var to=a.dataset.igback==="pick"?"pick":(IG.view==="req"?"list":"pick"); IG.view=to; if(to==="pick"){ IG.lang=""; IG.guides=null; } IG.done=false; paint(); }; });
-  [].forEach.call(b.querySelectorAll("[data-igpick]"),function(c){ c.onclick=function(){ var g=IG.guides&&IG.guides[+c.dataset.igpick]; if(g){ IG.gobj=g; IG.gid=g.id; IG.view="req"; paint(); } }; });
+  [].forEach.call(b.querySelectorAll("[data-igpick]"),function(c){ c.onclick=function(){ var g=IG.guides&&IG.guides[+c.dataset.igpick]; if(g){ IG.gobj=g; IG.gid=g.id; IG.view="req"; IG.reviews=null; paint(); igLoadReviews(g.id); } }; });
   var go=b.querySelector("#igqGo"); if(go) go.onclick=igSend;
+  [].forEach.call(b.querySelectorAll("[data-rvstar]"),function(bt){ bt.onclick=function(){ var t=document.getElementById("igrvText"), n=document.getElementById("igrvName"); if(t) IG.rvText=t.value; if(n) IG.rvName=n.value; IG.rvStars=+bt.dataset.rvstar; paint(); }; });
+  var rgo=b.querySelector("#igrvGo"); if(rgo) rgo.onclick=igRvSend;
 }
+// ── 가이드 후기 (사장님 2026-10-24) — 목록 옆 ★평균(후기수) · 상세의 후기 목록 · 완료된 손님만 쓰는 후기 폼(?review 토큰) ──
+function igStars(n){ n=Math.max(0,Math.min(5,Math.round(n||0))); var s=""; for(var i=0;i<5;i++) s+=(i<n?"★":"☆"); return s; }
+function igBadge(g){ if(g&&g.count>0) return '<span class="igrb">★'+(g.avg!=null?g.avg:0)+' ('+g.count+')</span>'; return '<span class="igrb igrb0">'+esc(LG6({ko:"후기 없음",en:"No reviews yet",ja:"レビューなし",zhs:"暂无评价",zht:"暫無評價",es:"Sin reseñas"}))+'</span>'; }
+function igLoadReviews(gid){ fetch(HUB+"/guide/reviews?guideId="+encodeURIComponent(gid)).then(function(r){ return r.json(); }).then(function(j){ if(IG.gid!==gid||IG.view!=="req") return;
+  if(j&&j.ok){ IG.reviews=j.items||[]; if(IG.gobj){ IG.gobj.avg=j.avg; IG.gobj.count=j.count; } } else IG.reviews=[];
+  var w=document.getElementById("igRevWrap"); if(w) w.innerHTML=igReviewsBlock(); }).catch(function(){ if(IG.gid!==gid||IG.view!=="req") return; IG.reviews=[]; var w=document.getElementById("igRevWrap"); if(w) w.innerHTML=igReviewsBlock(); }); }
+function igReviewsBlock(){ var g=IG.gobj||{}, c=g.count||0, a=g.avg||0;
+  var sum=c>0?'<div class="igrsum">'+igStars(a)+' <b>'+a+'</b> · '+esc(LG6({ko:"후기 "+c+"개",en:c+(c===1?" review":" reviews"),ja:"レビュー"+c+"件",zhs:c+"条评价",zht:c+"則評價",es:c+(c===1?" reseña":" reseñas")}))+'</div>':'<div class="igrsum igrsum0">'+esc(LG6({ko:"아직 후기가 없습니다.",en:"No reviews yet.",ja:"まだレビューがありません。",zhs:"暂无评价。",zht:"暫無評價。",es:"Aún no hay reseñas."}))+'</div>';
+  var title='<div class="iglbl" style="margin-top:16px">'+esc(LG6({ko:"손님 후기",en:"Traveler reviews",ja:"旅行者のレビュー",zhs:"旅客评价",zht:"旅客評價",es:"Reseñas de viajeros"}))+'</div>';
+  if(IG.reviews==null) return title+sum+'<div class="ignt">…</div>';
+  var anon=LG6({ko:"익명",en:"Anonymous",ja:"匿名",zhs:"匿名",zht:"匿名",es:"Anónimo"});
+  var list=IG.reviews.length?IG.reviews.map(function(r){ return '<div class="igrv"><div class="igrvh">'+igStars(r.stars)+' <b>'+esc(r.name||anon)+'</b> <span class="igrvd">'+esc(r.date||"")+'</span></div>'+(r.text?'<div class="igrvt">'+esc(r.text)+'</div>':"")+'</div>'; }).join(""):"";
+  return title+sum+list;
+}
+function igReviewForm(){
+  if(IG.rvDone) return '<div class="ignote">✓ '+esc(LG6({ko:"후기 감사합니다!",en:"Thank you for your review!",ja:"レビューありがとうございます！",zhs:"感谢您的评价！",zht:"感謝您的評價！",es:"¡Gracias por tu reseña!"}))+'</div>';
+  if(IG.rvErr==="used") return '<div class="ignote">'+esc(LG6({ko:"이미 후기를 남기셨습니다. 감사합니다!",en:"You have already left a review. Thank you!",ja:"すでにレビューをいただきました。ありがとうございます！",zhs:"您已提交过评价，谢谢！",zht:"您已提交過評價，謝謝！",es:"Ya has dejado una reseña. ¡Gracias!"}))+'</div>';
+  if(IG.rvErr==="invalid"||IG.rvErr==="expired") return '<div class="ignote">'+esc(LG6({ko:"후기 링크가 올바르지 않거나 만료되었습니다.",en:"This review link is invalid or has expired.",ja:"レビューリンクが無効または期限切れです。",zhs:"评价链接无效或已过期。",zht:"評價連結無效或已過期。",es:"Este enlace de reseña no es válido o ha caducado."}))+'</div>';
+  if(IG.rvErr==="net") return '<div class="msg">'+esc(LG6({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again shortly.",ja:"しばらくしてからもう一度お試しください。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo de nuevo en un momento."}))+'</div>';
+  if(IG.rvGuide==null) return '<div class="msg">'+esc(LG6({ko:"불러오는 중…",en:"Loading…",ja:"読み込み中…",zhs:"加载中…",zht:"載入中…",es:"Cargando…"}))+'</div>';
+  var stars='<div class="igrvpick">'+[1,2,3,4,5].map(function(n){ return '<button type="button" class="igrvstar'+(n<=(IG.rvStars||0)?" on":"")+'" data-rvstar="'+n+'" aria-label="'+n+'">'+(n<=(IG.rvStars||0)?"★":"☆")+'</button>'; }).join("")+'</div>';
+  return '<div class="iglbl" style="margin-top:4px">'+esc(LG6({ko:"가이드 후기를 남겨 주세요",en:"Leave a review for your guide",ja:"ガイドのレビューを残してください",zhs:"为您的向导留下评价",zht:"為您的嚮導留下評價",es:"Deja una reseña para tu guía"}))+'</div>'
+    +'<div class="igcard" style="cursor:default"><span class="igav igavx">🧭</span><div class="igb"><b>'+esc(IG.rvGuide||"")+'</b></div></div>'
+    +'<label class="iglb">'+esc(LG6({ko:"별점 *",en:"Star rating *",ja:"評価 *",zhs:"评分 *",zht:"評分 *",es:"Valoración *"}))+'</label>'+stars
+    +'<label class="iglb">'+esc(LG6({ko:"칭찬 한마디 (선택)",en:"Your praise (optional)",ja:"ひとこと（任意）",zhs:"赞美留言（可选）",zht:"讚美留言（可選）",es:"Tu elogio (opcional)"}))+'</label><textarea class="igin" id="igrvText" maxlength="500" style="min-height:80px">'+esc(IG.rvText||"")+'</textarea>'
+    +'<label class="iglb">'+esc(LG6({ko:"이름 또는 이니셜 (선택)",en:"Name or initials (optional)",ja:"名前またはイニシャル（任意）",zhs:"姓名或缩写（可选）",zht:"姓名或縮寫（可選）",es:"Nombre o iniciales (opcional)"}))+'</label><input class="igin" id="igrvName" maxlength="30" value="'+esc(IG.rvName||"")+'">'
+    +'<button type="button" class="nrsel" id="igrvGo" style="background:#0c8599;color:#fff;border-color:#0c8599;margin-top:12px">'+esc(LG6({ko:"후기 보내기",en:"Submit review",ja:"レビューを送る",zhs:"提交评价",zht:"提交評價",es:"Enviar reseña"}))+'</button>'
+    +'<div class="ignt" id="igrvM"></div>';
+}
+function igRvCheck(){ var tok=IG.rvToken; fetch(HUB+"/guide/review/check?token="+encodeURIComponent(tok)).then(function(r){ return r.json(); }).then(function(j){ if(IG.rvToken!==tok||IG.view!=="review") return;
+  if(j&&j.ok){ IG.rvGuide=j.guideName||""; IG.rvErr=""; if(j.lang&&window.setLang&&j.lang!==window.LANG){ try{ window.setLang(j.lang); }catch(e){} } paint(); }
+  else { IG.rvErr=(j&&j.err)||"invalid"; IG.rvGuide=""; paint(); } }).catch(function(){ if(IG.rvToken===tok&&IG.view==="review"){ IG.rvErr="net"; IG.rvGuide=""; paint(); } }); }
+function igRvSend(){ if(IG.busy) return; var t=document.getElementById("igrvText"), n=document.getElementById("igrvName"), M=document.getElementById("igrvM"), set=function(x){ if(M) M.textContent=x; };
+  if(t) IG.rvText=t.value; if(n) IG.rvName=n.value;
+  if(!IG.rvStars){ set(LG6({ko:"별점을 골라 주세요.",en:"Please choose a star rating.",ja:"評価を選んでください。",zhs:"请选择评分。",zht:"請選擇評分。",es:"Elige una valoración."})); return; }
+  IG.busy=true; set("…"); var go=document.getElementById("igrvGo"); if(go) go.disabled=true;
+  fetch(HUB+"/guide/review",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token:IG.rvToken,stars:IG.rvStars,text:IG.rvText||"",name:IG.rvName||""}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ IG.busy=false; if(go) go.disabled=false;
+    if(j&&j.ok){ IG.rvDone=true; paint(); return; }
+    if(j&&j.err==="used"){ IG.rvErr="used"; paint(); return; }
+    set(j&&j.err==="stars"?LG6({ko:"별점을 골라 주세요.",en:"Please choose a star rating.",ja:"評価を選んでください。",zhs:"请选择评分。",zht:"請選擇評分。",es:"Elige una valoración."}):LG6({ko:"보내지 못했습니다.",en:"Could not send.",ja:"送信できませんでした。",zhs:"发送失败。",zht:"發送失敗。",es:"No se pudo enviar."})); })
+  .catch(function(){ IG.busy=false; if(go) go.disabled=false; set(LG6({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
+function openReview(token){ open("ig"); IG.view="review"; IG.rvToken=String(token||""); IG.rvGuide=null; IG.rvErr=""; IG.rvDone=false; IG.rvStars=0; IG.rvText=""; IG.rvName=""; IG.busy=false; paint(); igRvCheck(); }
 function igLoad(){ var lang=IG.lang; fetch(HUB+"/guide/guides?lang="+encodeURIComponent(lang)).then(function(r){ return r.json(); }).then(function(j){ if(IG.lang!==lang||IG.view!=="list") return;
     if(j&&j.ok){ IG.guides=j.items||[]; } else IG.err="x"; paint(); }).catch(function(){ if(IG.lang===lang&&IG.view==="list"){ IG.err="net"; paint(); } }); }
 function igSend(){ if(IG.busy) return; var g=function(i){ var e=document.getElementById(i); return e?String(e.value||"").trim():""; };
@@ -449,6 +499,6 @@ function gRegSend(){ var L=LG6, M=document.getElementById("gMsg"), set=function(
     set(j&&j.err==="photo"||j&&j.err==="licphoto"?L({ko:"사진을 다시 올려 주세요 (JPEG).",en:"Please re-upload the photo (JPEG).",ja:"写真を再アップロードしてください（JPEG）。",zhs:"请重新上传照片（JPEG）。",zht:"請重新上傳照片（JPEG）。",es:"Vuelve a subir la foto (JPEG)."}):j&&j.err==="rate"?L({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてから。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):L({ko:"보내지 못했습니다. 칸을 확인해 주세요.",en:"Could not send. Please check the fields.",ja:"送信できませんでした。入力をご確認ください。",zhs:"发送失败，请检查填写。",zht:"發送失敗，請檢查填寫。",es:"No se pudo enviar. Revisa los campos."})); })
   .catch(function(){ if(go) go.disabled=false; set(L({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
 window.GUIDEREG=gReg;
-window.NEAR={open:open,close:close,state:function(){ return S; }};
+window.NEAR={open:open,close:close,review:openReview,state:function(){ return S; }};
 var qm=location.search.match(/[?&]near=(am|em)/); if(qm) setTimeout(function(){ open(qm[1]); },300);
 })();
