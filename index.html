@@ -672,7 +672,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1024guide", NAVI_ROOT="kr";
+var NAVI_V="1025venue5", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -750,7 +750,13 @@ function areaExpShow(k){ var cat=AREAEXP[k]; if(!cat) return; var p=PLACES[k]; i
 //  AREAPERF 에 적힌 명소만 공연 목록이 붙는다. AREAEXP(구글 가게)와 같은 모양·6개 언어·맞춤 아이콘(mi_ticket). 읽기 전용. 키 없으면 "공연 정보 준비 중"
 // 명소키 → 공연 섹션 설정(헤더·아이콘). 데이터로 두어 공연장마다 쉽게 붙인다. 자료는 허브 /gperf 가 명소키로 KOPIS 질의를 고른다
 var AREAPERF={
-  smartium:{ ic:"mi_ticket", h:["서울 K-pop·콘서트","K-pop & concerts in Seoul","ソウルの K-POP・コンサート","首尔 K-pop·演唱会","首爾 K-pop·演唱會","Conciertos y K-pop en Seúl"] }   // 코엑스 아티움 (SM타운) = 서울 대중음악·K-pop 콘서트
+  smartium:{ ic:"mi_ticket", h:["서울 K-pop·콘서트","K-pop & concerts in Seoul","ソウルの K-POP・コンサート","首尔 K-pop·演唱会","首爾 K-pop·演唱會","Conciertos y K-pop en Seúl"] },   // 코엑스 아티움 (SM타운) = 서울 대중음악·K-pop 콘서트
+  // 진짜 공연장 5곳 (사장님 2026-10-25) — 각 공연장을 누르면 그 공연장 실제 공연 (허브 PERF_Q venue 방식, KOPIS)
+  sejongctr:{ ic:"mi_ticket", h:["세종문화회관 공연","At the Sejong Center","世宗文化会館の公演","世宗文化会馆演出","世宗文化會館演出","En el Sejong Center"] },
+  sac:{ ic:"mi_ticket", h:["예술의전당 공연","At the Seoul Arts Center","芸術の殿堂の公演","艺术殿堂演出","藝術殿堂演出","En el Seoul Arts Center"] },
+  bluesq:{ ic:"mi_ticket", h:["블루스퀘어 공연","At Blue Square","ブルースクエアの公演","Blue Square 演出","Blue Square 演出","En Blue Square"] },
+  lgart:{ ic:"mi_ticket", h:["LG아트센터 서울 공연","At the LG Arts Center Seoul","LGアートセンター ソウルの公演","LG艺术中心首尔演出","LG藝術中心首爾演出","En el LG Arts Center Seoul"] },
+  olympichall:{ ic:"mi_ticket", h:["올림픽홀 공연","At the Olympic Hall","オリンピックホールの公演","奥林匹克大厅演出","奧林匹克大廳演出","En el Olympic Hall"] }
 };
 var PH_H=["공연 프로그램","What’s on","公演プログラム","演出节目","演出節目","Programación"];   // 기본 헤더 (명소 설정에 h 없을 때)
 var PH_NOTE=["출처: 공연예술통합전산망(KOPIS, www.kopis.or.kr) · 일정은 바뀔 수 있어요","Source: KOPIS, Performing Arts Box Office (www.kopis.or.kr) · schedule may change","出典: 公演芸術統合電算網(KOPIS, www.kopis.or.kr) · 日程は変わることがあります","来源: 演出艺术综合电算网(KOPIS, www.kopis.or.kr) · 日程可能变动","來源: 表演藝術綜合電算網(KOPIS, www.kopis.or.kr) · 日程可能變動","Fuente: KOPIS (www.kopis.or.kr) · el calendario puede cambiar"];
