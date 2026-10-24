@@ -266,6 +266,8 @@ html.mpc-lock #treasIsle{visibility:hidden}
   </form>
   <div class="res" id="res"></div>
   <div id="vbar" hidden><button type="button" id="vback" hidden>←</button><div id="vttl" hidden></div><button type="button" id="vdet" hidden>자세히</button></div>
+  <!-- 🎪 이번 주 행사·체험 (사장님 2026-10-24) — 한국관광공사 TourAPI, 허브 /nevents. ★ 리뷰용 초안 블록: 칩 아래·지도 위. 통째로 떼거나 옮기기 쉽게 한 곳에 모았다(아래 nev 스크립트와 짝). 비면 숨김 -->
+  <div id="nevSec" hidden style="margin:14px 0 0"><div class="item phExp" style="margin:0"><div class="t" id="nevTtl"></div><div id="nevList"></div></div></div>
   <div class="map onkr" id="map"><div id="mz"><img src="img/maps/kr.jpg?h=904a2cac" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg><div id="lod"></div><div id="treasIsle" role="button" tabindex="0" aria-label="Replay intro" style="left:85%;top:51%;transform:translate(-50%,-50%)"><img src="img/treasure_island.png?v=1024ti" alt=""></div></div><a id="osm" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" hidden>© OpenStreetMap</a><div id="nmapw" hidden><div id="nmap"></div></div><button type="button" id="zme" aria-label="my location">◎ 현재 위치</button><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
   <div id="infob">
   <div id="infot">안내</div>
@@ -454,7 +456,7 @@ window.EMO_LEAD=/^(?:[\u{1F000}-\u{1FAFF}☀-➿⬀-⯿℀-⅏⌀-⏿]️?|️|�
 window.MIS="height:1.1em;width:auto;vertical-align:-0.18em;margin-right:4px";
 window.MPIMG=function(n,st){ return '<img class="miic" src="img/menu/'+n+'.png" alt=""'+(st?' style="'+st+'"':'')+'>'; };
 window.MPICO=function(n,l,st){ var s=String(l==null?"":l).replace(EMO_LEAD,""); return (n?MPIMG(n,st):"")+esc(s); };
-function setLang(l){ if(LANGS.indexOf(l)<0) l="ko"; LANG=l; try{ localStorage.setItem("mpv_lang",l); localStorage.setItem("mpv_lang_changed","1"); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} }
+function setLang(l){ if(LANGS.indexOf(l)<0) l="ko"; LANG=l; try{ localStorage.setItem("mpv_lang",l); localStorage.setItem("mpv_lang_changed","1"); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} try{ nevPaint(); }catch(e){} }
 function paint(){
   var _ls=document.getElementById("lang"); if(_ls) _ls.value=LANG; document.documentElement.lang={ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant",es:"es"}[LANG]||"ko";
   document.getElementById("ttl").textContent="Tour for Korea";   /* 앱 이름 Money Puzzle Tour for Korea — 모든 언어 같음 (사장님 10-22) */
@@ -512,9 +514,19 @@ function bwSync(){ var sb=document.querySelector(".sbox"), a=document.getElement
   try{ new MutationObserver(k).observe(document.querySelector(".sbox"),{childList:true,subtree:true,characterData:true}); }catch(e){} })();
 // #res 한 줄 안내 — 언어를 바꾸면 그 자리에서 다시 (lang.js 가 window._RR.f 를 부른다, 10-18)
 function resMsg(k,e){ var out=document.getElementById("res"), f=function(){ out.innerHTML='<div class="msg">'+T(k,e)+'</div>'; }; f(); window._RR={f:f}; }
+// ── K-pop 검색 → 코엑스 아티움(SM타운) 공연장 먼저 (사장님 2026-10-24) — 떼기 쉬운 한 블록 ──
+//   검색어가 kpop/케이팝 계열이면, 「명소 키로 카드 열기」 경로(favGo 와 같음)로 smartium 을 바로 연다.
+//   그 밖의 검색은 그대로. smartium 카드를 열면 perfShow 가 서울 K-pop·콘서트 일정(/gperf)을 붙인다.
+function kpopQ(q){ var n=String(q||"").toLowerCase().replace(/[\s.\-_]/g,"");
+  return /^(kpop|koreanpop|케이팝|k팝)(concert|concerts|콘서트|공연|live|라이브|show|쇼)?$/.test(n); }
+function kpopJump(){ var open=function(){ var p=PLACES.smartium; if(!p) return false;
+    try{ spinClear(); }catch(e){} var la=+p.lat, lo=+p.lng, id=meBest(la,lo)||NAVI_ROOT; spinGo(id===NAVI_ROOT?"kr":id,la,lo,null); placeShow("smartium"); return true; };
+  if(open()) return;   // 이미 약도 자료가 있으면 바로
+  Promise.all(Object.keys(CITY).map(function(id){ return mapLoad(id).catch(function(){}); })).then(function(){ if(!open()) resMsg("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words."); }); }
 function go(kq){
   var q=(typeof kq==="string"&&kq)||document.getElementById("q").value.trim(), out=document.getElementById("res"); if(!q){ out.innerHTML=""; window._RR=null; return; }
   resMsg("찾는 중…","Searching…"); try{ spinClear(); }catch(e){}
+  if(kpopQ(q)){ kpopJump(); return; }   // ★ K-pop → 코엑스 아티움(SM타운) (사장님 10-24)
   var ps0=null, lg=LANG;   // 모든 검색에 내 위치(있으면) — 가까운 순 · lg = 이 검색을 받은 언어
   (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(ps){ ps0=ps; return fetch(HUB+"/kplace?q="+encodeURIComponent(q)+kpL()+(ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"")); }).then(function(r){ return r.json(); }).then(function(j){
     var it=(j&&j.ok&&j.items)||[]; it.forEach(function(x){ x._l=lg; });
@@ -1412,6 +1424,34 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
   INFO=a[1]; infoPaint();
   myPos().then(function(p){ if(!p) return; meSet(p); meWatch(); });   // 앱을 열면 위치 한 번 — 보고 있는 지도(전국)에 「나」만 표시, 지도는 안 옮긴다. 약도로 가는 건 「◎ 현재 위치」 단추로만 (사장님 10-17)
   }).catch(function(e){ try{ console.error(e); }catch(x){} });
+</script>
+<script>
+/* 🎪 이번 주 행사·체험 (사장님 2026-10-24) — 한국관광공사 TourAPI 행사/축제, 허브 /nevents.
+   ★ 리뷰용 초안 블록 — 한 곳에 모아 두었다. 섹션 HTML = #nevSec(칩 아래·지도 위). 자료가 비거나 오류면 섹션을 숨긴다. 6개 언어. */
+(function(){
+  var NEV_TTL=["🎪 이번 주 행사·체험","🎪 This week’s events","🎪 今週のイベント・体験","🎪 本周活动·体验","🎪 本週活動·體驗","🎪 Eventos de esta semana"];
+  var NEV_NOTE=["출처: 한국관광공사 TourAPI · 일정은 바뀔 수 있어요","Source: Korea Tourism Organization (TourAPI) · schedule may change","出典: 韓国観光公社 TourAPI · 日程は変わることがあります","来源: 韩国旅游发展局 TourAPI · 日程可能变动","來源: 韓國觀光公社 TourAPI · 日程可能變動","Fuente: Organización de Turismo de Corea (TourAPI) · el calendario puede cambiar"];
+  var GO_LBL={ko:"가는 길",en:"Directions",ja:"行き方",zhs:"路线",zht:"路線",es:"Cómo llegar"};
+  function evDate(s){ s=String(s||""); return s.length===8?s.slice(0,4)+"."+s.slice(4,6)+"."+s.slice(6,8):s; }
+  function evCard(x,i){ var nm=esc(x.title||"");
+    var go=(x.lat&&x.lng)?'<div class="d" style="margin-top:4px"><a href="#" onclick="return nevGo('+i+')">'+MPICO("mi_pin",(GO_LBL[LANG]||GO_LBL.en),MIS)+'</a></div>':'';
+    return '<div class="gavit phit">'+(x.img?'<img class="phpos" loading="lazy" src="'+esc(x.img)+'" alt="" onerror="this.style.display=\'none\'">':'')
+      +'<div class="phbody"><div class="gavh"><b>'+nm+'</b></div>'
+      +'<div class="d" style="margin:2px 0 1px">'+MPIMG("mi_calendar",MIS)+esc(evDate(x.from))+(x.to&&x.to!==x.from?' ~ '+esc(evDate(x.to)):'')+'</div>'
+      +(x.addr?'<div class="d" style="margin:0 0 1px">'+MPIMG("mi_pin",MIS)+esc(x.addr)+'</div>':'')
+      +go+'</div></div>'; }
+  window._nevItems=null;
+  window.nevGo=function(i){ var x=(window._nevItems||[])[i]; if(x&&x.lat&&x.lng){ try{ spinShow({name:x.title,name_en:x.title,addr:x.addr,addr_en:x.addr,x:x.lng,y:x.lat,cat:"",_l:LANG}); }catch(e){} } return false; };
+  function nevPaint(){ var it=window._nevItems, sec=document.getElementById("nevSec"); if(!sec) return;
+    if(!it||!it.length){ sec.hidden=true; return; }
+    var tt=document.getElementById("nevTtl"); if(tt) tt.innerHTML=MPICO("mi_ticket",LP(NEV_TTL),MIS);
+    var ls=document.getElementById("nevList"); if(ls) ls.innerHTML=it.map(evCard).join("")+'<div class="d phNote" style="margin:7px 0 1px;color:var(--sub)">'+esc(LP(NEV_NOTE))+'</div>';
+    sec.hidden=false; }
+  window.nevPaint=nevPaint;
+  function nevLoad(){ fetch(HUB+"/nevents").then(function(r){ return r.json(); }).then(function(j){ window._nevItems=(j&&j.ok&&j.items)||[]; nevPaint(); }).catch(function(){ window._nevItems=[]; var s=document.getElementById("nevSec"); if(s) s.hidden=true; }); }
+  window.nevLoad=nevLoad;
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",nevLoad); else nevLoad();
+})();
 </script>
 <script>
 /* 뒤로가기(안드로이드 가장자리 제스처) = 열린 창·카드·약도만 한 단계 닫기 · 전국 지도에선 「한 번 더 누르면 종료」 2초 (사장님 10-16)
