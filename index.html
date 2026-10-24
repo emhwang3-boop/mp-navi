@@ -189,6 +189,10 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
 .gaExp .gaNote{font-size:12.5px;color:var(--sub)}
 .gavit{border-top:1px solid var(--line);padding:9px 0 3px}.gavit:last-child{padding-bottom:0}
 .gavh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.gavh b{font-weight:800;font-size:14.5px;color:var(--ink)}.gavh i{font-style:normal;font-size:12.5px;color:var(--sub);white-space:nowrap}
+.phExp .phNote{font-size:12.5px;color:var(--sub)}
+.phit{display:flex;gap:10px;align-items:flex-start}.phit .phbody{flex:1;min-width:0}
+.phpos{width:56px;height:78px;object-fit:cover;border-radius:6px;flex:0 0 auto;background:var(--line)}
+.phst{font-style:normal;font-size:11.5px;font-weight:700;color:var(--sub);white-space:nowrap}.phst.on{color:#2f9e44}
 .msg{color:var(--sub);text-align:center;padding:14px 0}
 .desc{color:var(--sub);font-size:14px;margin:-2px 4px 0;text-align:center;line-height:1.5}
 .foot{color:var(--sub);font-size:12px;line-height:1.85;text-align:center;margin:28px 0 22px;padding:0 12px}.foot>div{word-break:keep-all}
@@ -701,6 +705,45 @@ function areaExpShow(k){ var cat=AREAEXP[k]; if(!cat) return; var p=PLACES[k]; i
   fetch(HUB+"/garea?key="+encodeURIComponent(k)+"&type="+cat+"&lat="+p.lat.toFixed(5)+"&lng="+p.lng.toFixed(5)+"&lang="+encodeURIComponent(LANG))
     .then(function(r){ return r.json(); }).then(function(j){ var a=(j&&j.ok&&j.items)||[]; _gaC[ck]=a; paint(a); })
     .catch(function(){ if(window._cardK===k){ var e=res.querySelector(".gaExp .gamsg"); if(e) e.textContent=LP(GA_NONE); } }); }
+// ── 공연장 명소 「공연 프로그램」 (사장님 2026-10-24) — 공연장 명소를 누르면 설명·가는 길 아래에 지금·다가올 공연. 자료는 허브 /gperf (KOPIS 공연예술통합전산망) ──
+//  AREAPERF 에 적힌 명소만 공연 목록이 붙는다. AREAEXP(구글 가게)와 같은 모양·6개 언어·맞춤 아이콘(mi_ticket). 읽기 전용. 키 없으면 "공연 정보 준비 중"
+var AREAPERF={ smartium:1 };   // 코엑스 아티움 (SM타운)
+var PH_H=["🎭 공연 프로그램","🎭 What’s on","🎭 公演プログラム","🎭 演出节目","🎭 演出節目","🎭 Programación"];
+var PH_NOTE=["출처: 공연예술통합전산망(KOPIS, www.kopis.or.kr) · 일정은 바뀔 수 있어요","Source: KOPIS, Performing Arts Box Office (www.kopis.or.kr) · schedule may change","出典: 公演芸術統合電算網(KOPIS, www.kopis.or.kr) · 日程は変わることがあります","来源: 演出艺术综合电算网(KOPIS, www.kopis.or.kr) · 日程可能变动","來源: 表演藝術綜合電算網(KOPIS, www.kopis.or.kr) · 日程可能變動","Fuente: KOPIS (www.kopis.or.kr) · el calendario puede cambiar"];
+var PH_LOAD=["공연 프로그램을 불러오는 중…","Loading what’s on…","公演プログラムを読み込み中…","正在加载演出节目…","正在載入演出節目…","Cargando la programación…"];
+var PH_NONE=["공연 정보 준비 중","Performance info coming soon","公演情報は準備中です","演出信息准备中","演出資訊準備中","Información de espectáculos próximamente"];
+var PH_STATE={   // KOPIS prfstate → 6개 언어
+  "공연중":["공연중","Now showing","公演中","演出中","演出中","En cartel"],
+  "공연예정":["공연예정","Upcoming","公演予定","即将上演","即將上演","Próximamente"],
+  "공연완료":["공연완료","Ended","公演終了","已结束","已結束","Finalizado"]};
+var PH_GEN={   // 자주 나오는 KOPIS 장르 → 6개 언어 (없으면 원문 그대로)
+  "연극":["연극","Play","演劇","话剧","話劇","Teatro"],"뮤지컬":["뮤지컬","Musical","ミュージカル","音乐剧","音樂劇","Musical"],
+  "무용":["무용","Dance","舞踊","舞蹈","舞蹈","Danza"],"대중무용":["대중무용","Dance","ダンス","舞蹈","舞蹈","Danza"],
+  "클래식":["클래식","Classical","クラシック","古典音乐","古典音樂","Clásica"],"서양음악(클래식)":["클래식","Classical","クラシック","古典音乐","古典音樂","Clásica"],
+  "한국음악(국악)":["국악","Korean music","韓国音楽","韩国传统音乐","韓國傳統音樂","Música coreana"],"국악":["국악","Korean music","韓国音楽","韩国传统音乐","韓國傳統音樂","Música coreana"],
+  "대중음악":["대중음악","Pop / Concert","ポピュラー音楽","流行音乐","流行音樂","Música pop"],"복합":["복합","Mixed","複合","综合","綜合","Mixto"],"서커스/마술":["서커스·마술","Circus / Magic","サーカス・マジック","马戏·魔术","馬戲·魔術","Circo / Magia"]};
+function phG(s){ var a=PH_GEN[s]; return a?LP(a):esc(s||""); }
+function phDate(s){ return esc(String(s||"").replace(/\./g,". ").replace(/\s+$/,"").replace(/\.\s$/,".")); }
+function phItem(x){ var tt=esc(x.title||"");
+  return '<div class="gavit phit">'+(x.poster?'<img class="phpos" loading="lazy" src="'+esc(x.poster)+'" alt="" onerror="this.style.display=\'none\'">':'')
+    +'<div class="phbody"><div class="gavh"><b>'+tt+'</b>'+(x.state&&PH_STATE[x.state]?'<i class="phst'+(/공연중/.test(x.state)?' on':'')+'">'+esc(LP(PH_STATE[x.state]))+'</i>':'')+'</div>'
+    +'<div class="d" style="margin:2px 0 1px">'+MPIMG("mi_calendar",MIS)+phDate(x.from)+(x.to&&x.to!==x.from?' ~ '+phDate(x.to):'')+'</div>'
+    +(x.place?'<div class="d" style="margin:0 0 1px">'+MPIMG("mi_pin",MIS)+esc(x.place)+'</div>':'')
+    +(x.genre?'<div class="d" style="margin:0 0 3px;color:var(--sub)">'+phG(x.genre)+'</div>':'')
+    +(x.id?'<div class="d"><a href="https://www.kopis.or.kr/por/db/pblprfr/pblprfrView.do?mt20id='+encodeURIComponent(x.id)+'" target="_blank" rel="noopener">'+T("자세히·예매 정보","Details & tickets")+' ↗</a></div>':'')
+    +'</div></div>'; }
+var _phC={};   // 세션 캐시 (명소키|언어)
+function perfShow(k){ if(!AREAPERF[k]) return; var p=PLACES[k]; if(!p) return;
+  var hd=MPICO("mi_ticket",LP(PH_H),MIS), res=document.getElementById("res"); if(!res) return;
+  var box=document.createElement("div"); box.className="item phExp";
+  box.innerHTML='<div class="t">'+hd+'</div><div class="phmsg d">'+esc(LP(PH_LOAD))+'</div>'; res.appendChild(box);
+  var paint=function(items){ if(window._cardK!==k) return; var e=res.querySelector(".phExp"); if(!e) return;
+    if(!items||!items.length){ e.innerHTML='<div class="t">'+hd+'</div><div class="phmsg d">'+esc(LP(PH_NONE))+'</div>'; return; }
+    e.innerHTML='<div class="t">'+hd+'</div>'+items.map(phItem).join('')+'<div class="d phNote" style="margin:7px 0 0">'+esc(LP(PH_NOTE))+'</div>'; };
+  var ck=k+"|"+LANG; if(_phC[ck]) return paint(_phC[ck]);
+  fetch(HUB+"/gperf?key="+encodeURIComponent(k)+"&lang="+encodeURIComponent(LANG))
+    .then(function(r){ return r.json(); }).then(function(j){ var a=(j&&j.ok&&j.items)||[]; _phC[ck]=a; paint(a); })
+    .catch(function(){ if(window._cardK===k){ var e=res.querySelector(".phExp .phmsg"); if(e) e.textContent=LP(PH_NONE); } }); }
 function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } if(p.app){ appGo(p.app); return; } var nm=LN(p), ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
   window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
@@ -712,6 +755,7 @@ function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); 
   try{ mePose("photo"); }catch(e){}
   if(p.route&&p.route.map===VIEW) routeShow(p); else rtClear();
   try{ areaExpShow(k); }catch(e){}   // 구역형 명소면 설명·가는 길 아래에 「이 안의 추천」 (사장님 10-24)
+  try{ perfShow(k); }catch(e){}   // 공연장 명소면 설명·가는 길 아래에 「공연 프로그램」 (KOPIS, 사장님 10-24)
   clearTimeout(window._scT); window._scT=setTimeout(function(){ window.scrollTo({top:0,behavior:"smooth"}); },460); }
 // 노선 — 장소 자료의 route{map, stops:[[x,y,한글,영어],...], info:[한,영]} 를 그 약도 위에 점선과 번호로 (시티투어, 사장님 10-15)
 function rtClear(){ var g=document.getElementById("rt"); if(g) g.remove(); }
