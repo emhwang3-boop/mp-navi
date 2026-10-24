@@ -209,11 +209,11 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
   <div class="top">
     <div class="logo" onclick="resetAll()"><img src="logo.png" alt=""><span style="white-space:nowrap">Money Puzzle<b style="margin-left:4px" id="ttl">Tour for Korea</b></span></div>
     <div class="tbs">
-    <button id="inst" onclick="instGo()" hidden style="white-space:nowrap;margin-left:auto;border:0;border-radius:999px;padding:8px 14px;background:var(--blue);color:#fff;font-weight:700;font-size:13px;cursor:pointer">⬇ 앱 설치</button>
+    <button id="inst" onclick="instGo()" hidden style="white-space:nowrap;margin-left:auto;border:0;border-radius:999px;padding:8px 14px;background:var(--blue);color:#fff;font-weight:700;font-size:13px;cursor:pointer"><img class="miic" src="img/menu/mi_install.png" alt="" style="height:1.1em;width:auto;vertical-align:-0.18em;margin-right:4px">앱 설치</button>
     <button id="rs" onclick="resetAll()" class="tb">처음으로</button>
     <select id="lang" class="tb" onchange="setLang(this.value)" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="es">Español</option><option value="ja">日本語</option><option value="zhs">简体中文</option><option value="zht">繁體中文</option></select>
     <button id="sh" onclick="shOpen()" aria-label="share" class="tb">공유</button>
-    <button id="th" onclick="thTog()" aria-label="theme" style="border:0;background:none;font-size:20px;line-height:1;padding:4px 4px;cursor:pointer">🌙</button>
+    <button id="th" onclick="thTog()" aria-label="theme" style="border:0;background:none;font-size:20px;line-height:1;padding:4px 4px;cursor:pointer"><img class="miic" src="img/menu/mi_moon.png" alt="theme" style="height:20px;width:20px;vertical-align:-3px;margin:0"></button>
     <button id="mb" onclick="mbTog(event)" aria-label="menu" style="border:0;background:none;font-size:24px;line-height:1;padding:4px 6px;cursor:pointer;color:var(--ink)">⋮</button>
     </div>
     <div id="mm" hidden style="position:absolute;right:0;top:50px;z-index:20;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);min-width:200px;overflow:hidden">
@@ -249,7 +249,7 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
-<script src="geoconsent.js?v=1024geo"></script>
+<script src="geoconsent.js?v=1024icons"></script>
 <script src="i18n.js?v=1023pay"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
@@ -411,11 +411,16 @@ function footBuild(){ var e=document.getElementById("foot"); if(!e) return;
 function kpL(){ return LANG==="ko"?"":"&lang=en"+(LANG==="en"?"":"&ul="+LANG); }   // /kplace·/neat — ul 이 있으면 허브가 name_en·cat_en 칸에 그 언어(일·简·繁)로 넣어 준다 (10-18)
 function hlG(){ return {ko:"",en:"&hl=en",ja:"&hl=ja",zhs:"&hl=zh-CN",zht:"&hl=zh-TW",es:"&hl=es"}[LANG]||""; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+// ── UI 아이콘 (이모지 → 커스텀 그림, 사장님 2026-10-24) : 라벨 앞 이모지를 떼고 그림을 붙인다 → ja/zh/es 번역본의 이모지도 한 번에 사라진다 ──
+window.EMO_LEAD=/^(?:[\u{1F000}-\u{1FAFF}☀-➿⬀-⯿℀-⅏⌀-⏿]️?|️|⃣)+\s*/u;
+window.MIS="height:1.1em;width:auto;vertical-align:-0.18em;margin-right:4px";
+window.MPIMG=function(n,st){ return '<img class="miic" src="img/menu/'+n+'.png" alt=""'+(st?' style="'+st+'"':'')+'>'; };
+window.MPICO=function(n,l,st){ var s=String(l==null?"":l).replace(EMO_LEAD,""); return (n?MPIMG(n,st):"")+esc(s); };
 function setLang(l){ if(LANGS.indexOf(l)<0) l="ko"; LANG=l; try{ localStorage.setItem("mpv_lang",l); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} }
 function paint(){
   var _ls=document.getElementById("lang"); if(_ls) _ls.value=LANG; document.documentElement.lang={ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant",es:"es"}[LANG]||"ko";
   document.getElementById("ttl").textContent="Tour for Korea";   /* 앱 이름 Money Puzzle Tour for Korea — 모든 언어 같음 (사장님 10-22) */
-  document.getElementById("inst").textContent=T("⬇ 앱 설치","⬇ Install");
+  document.getElementById("inst").innerHTML=MPICO("mi_install",T("⬇ 앱 설치","⬇ Install"),MIS);
   document.getElementById("rs").textContent=T("처음으로","Reset");
   document.getElementById("sh").textContent=T("공유","Share");
   document.getElementById("mcopy").innerHTML='<img class="miic" src="img/menu/mi_copy.png" alt="">'+esc(T("링크 복사","Copy link"));
@@ -487,7 +492,7 @@ function sresPaint(){ var S=window._sresQ, it=window._sres, out=document.getElem
   var gs=S.guess?'<div class="d" style="margin:0 4px 6px">'+(LANG==="ko"?'「'+esc(q)+'」을(를) 「'+esc(S.guess)+'」(으)로 찾았습니다':TF('Showing results for “{1}” (from “{0}”)',esc(q),esc(S.guess)))+'</div>':'';
   out.innerHTML=gs+it.map(function(x,i){
       var en=FG()&&x.name_en, ttl=KS(en?x.name_en:x.name), ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
-      return '<div class="item sres" data-i="'+i+'" style="cursor:pointer"><div class="t">📍 '+esc(ttl)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+(x.rating?' · <b style="color:#e8590c">★ '+x.rating.toFixed(1)+'</b> ('+x.n+')':'')+'</div>'
+      return '<div class="item sres" data-i="'+i+'" style="cursor:pointer"><div class="t">'+MPICO("mi_pin",ttl,MIS)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+(x.rating?' · <b style="color:#e8590c">★ '+x.rating.toFixed(1)+'</b> ('+x.n+')':'')+'</div>'
         +telLine(x.tel)+linksTo(x.name,x.y,x.x,x.name,x.addr)+'</div>';   // 목록에도 전화 (사장님 10-16)
     }).join("");
   window._RR={f:sresPaint,sres:1}; }
@@ -538,7 +543,7 @@ function spinCard(){ var p=PLACES.__pin; if(!p) return; if(window.KL) KL.ensure(
   try{ var sl=document.querySelector("#spin .spl"); if(sl) sl.textContent=FG()?KS(p.en||p.ko):p.ko; }catch(e){}
   var en=FG(), nm=LN(p), ad=en?p.addr_en:p.addr, ct=en?p.cat_en:String(p.cat||"").split(">").pop().trim();
   var d=""; window._cardK="__pin";
-  document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine("__pin")+'<div class="t">📍 '+esc(nm)+'</div>'+(en&&p.en!==p.ko?'<div class="d" style="margin:1px 0 0">'+esc(p.ko)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+d+'</div>'+telLine(p.tel)+linksTo(p.ko,p.lat,p.lng,p.ko,p.addr)+'</div>'; try{ cphLoad("__pin",p.ko,p.lat,p.lng); }catch(e){} }
+  document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine("__pin")+'<div class="t">'+MPICO("mi_pin",nm,MIS)+'</div>'+(en&&p.en!==p.ko?'<div class="d" style="margin:1px 0 0">'+esc(p.ko)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+d+'</div>'+telLine(p.tel)+linksTo(p.ko,p.lat,p.lng,p.ko,p.addr)+'</div>'; try{ cphLoad("__pin",p.ko,p.lat,p.lng); }catch(e){} }
 document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest("a")) return; var it=e.target.closest&&e.target.closest("#res .sres"); if(!it) return; var x=(window._sres||[])[+it.dataset.i]; if(x) spinShow(x); });
 // 공유 — 화면은 보여 주되 실제로는 보내지 않는다 (체험판, 사장님 기기 포함 · 2026-10-12)
 // HTS 앱 공유 창을 그대로 옮겨 왔다 — 단추는 모두 막힘 (2026-10-12)
@@ -612,7 +617,7 @@ document.addEventListener("click",function(e){ var m=document.getElementById("mm
 function mbCopy(){ document.getElementById("mm").hidden=true; var u=location.origin+location.pathname.replace(/index\.html$/,"");
   try{ navigator.clipboard.writeText(u).then(function(){ alert(T("링크를 복사했습니다","Link copied")); }); }catch(e){ prompt("Link:",u); } }
 function thDark(){ return document.documentElement.getAttribute("data-theme")==="dark"; }
-function thPaint(){ document.getElementById("th").textContent=thDark()?"☀️":"🌙"; }
+function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_sun":"mi_moon","height:20px;width:20px;vertical-align:-3px;margin:0"); }
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
@@ -631,7 +636,7 @@ function mapLoad(id){ if(id!==NAVI_ROOT&&!(CITY[id]&&CITY[id].data)) return Prom
 // 전화번호 줄 — 자료 tel(국내 꼴 02-123-4567) → tel:+82-2-123-4567 · 영어 화면은 +82 2-123-4567 로 보인다 (10-15)
 function telIntl(t){ return /^0/.test(t)?"+82-"+t.slice(1):"+82-"+t; }
 function telLine(t){ if(!t) return ""; var shown=FG()?(/^0/.test(t)?"+82 "+t.slice(1):"+82 "+t):t;
-  return '<div class="d" style="margin:2px 0 8px"><a class="tel" href="tel:'+esc(telIntl(t))+'" style="border:0;background:none;padding:0;margin:0;font-size:14px;font-weight:800;color:var(--ink)">📞 '+esc(shown)+'</a></div>'; }
+  return '<div class="d" style="margin:2px 0 8px"><a class="tel" href="tel:'+esc(telIntl(t))+'" style="border:0;background:none;padding:0;margin:0;font-size:14px;font-weight:800;color:var(--ink)">'+MPIMG("mi_phone",MIS)+esc(shown)+'</a></div>'; }
 // 지도·카드에서 입력칸 포커스 놓기 — 검색칸에 포커스가 남은 채 카드가 칸 글자를 바꾸면 폰 자판이 다시 뜬다 (사장님 10-16)
 function inBlur(){ try{ var a=document.activeElement; if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) a.blur(); }catch(e){} }
 // 넷플릭스·유튜브 상영관 (사장님 10-20) — 남산 기슭 그림을 누르면 앱으로. 안드로이드는 깔려 있으면 앱(MAIN/LAUNCHER 꼴), 없으면 웹. 아이폰·PC 는 웹 주소(아이폰은 앱이 있으면 앱이 받는다)
@@ -659,7 +664,7 @@ function routeShow(p){ rtClear(); var r=p.route, s=document.getElementById("dl")
     var tx=document.createElementNS(ns,"text"); tx.setAttribute("x",t[0]*1000); tx.setAttribute("y",t[1]*1000+6); tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size","17"); tx.setAttribute("font-weight","900"); tx.setAttribute("fill","#c2410c"); tx.textContent=i+1; g.appendChild(tx); });
   s.appendChild(g);
   var li=r.stops.map(function(t,i){ return (i+1)+". "+esc(LANG==="ko"?t[2]:TE(t[3])); }).join("<br>");
-  document.getElementById("res").insertAdjacentHTML("beforeend",'<div class="item"><div class="t">🚌 '+T("시티투어 노선 (도심·고궁·남산)","City Tour route (Downtown · Palaces · Namsan)")+'</div><div class="d" style="margin:4px 0">'+esc(LP(r.info))+'</div><div class="d" style="line-height:1.7;color:var(--ink)">'+li+'</div></div>'); }
+  document.getElementById("res").insertAdjacentHTML("beforeend",'<div class="item"><div class="t">'+MPICO("mi_bus",T("시티투어 노선 (도심·고궁·남산)","City Tour route (Downtown · Palaces · Namsan)"),MIS)+'</div><div class="d" style="margin:4px 0">'+esc(LP(r.info))+'</div><div class="d" style="line-height:1.7;color:var(--ink)">'+li+'</div></div>'); }
 var HIT={keys:[],rle:""};
 var HG=new Uint8Array(65536);
 // 그림 근처만 눌러도 된다 — 바로 그 자리가 비면 손가락 한 마디(화면 24px) 안의 가장 가까운 그림 (사장님 10-15)
@@ -734,7 +739,7 @@ function ktxErr(){ var K=window._kx; if(!K){ var a=0, b=13, ps=ME&&ME.pos;
     if(a===13||KXS[a][2]<36.0) b=0;   // 부산·남쪽에서 = 서울행
     K=window._kx={a:a,b:b}; }
   var op=function(sel){ return KXS.map(function(s,i){ return '<option value="'+i+'"'+(i===sel?' selected':'')+'>'+esc(kxN(i))+'</option>'; }).join(""); };
-  document.getElementById("res").innerHTML='<div class="item ktxb"><div class="t">🚆 '+T("KTX · SRT 시간표","KTX · SRT timetable")+'</div>'
+  document.getElementById("res").innerHTML='<div class="item ktxb"><div class="t">'+MPICO("mi_train",T("KTX · SRT 시간표","KTX · SRT timetable"),MIS)+'</div>'
     +'<div class="kxsel"><label>'+T("출발","Departure")+' <select id="kxA">'+op(K.a)+'</select></label><button type="button" id="kxSw" aria-label="swap">⇄</button><label>'+T("도착","Arrival")+' <select id="kxB">'+op(K.b)+'</select></label></div>'
     +'<div class="d">'+T("SRT는 수서·동탄역에서 출발합니다.","SRT trains leave from Suseo or Dongtan.")+'</div><div id="kxT"></div></div>';
   var A=document.getElementById("kxA"), B=document.getElementById("kxB");
@@ -802,13 +807,13 @@ function trBadge(g){ var c=/^SRT/.test(g)?"#7b2d8e":/^KTX/.test(g)?"#1f4fa3":/IT
   return '<span style="display:inline-block;padding:2px 8px;border-radius:6px;background:'+c+';color:#fff;font-weight:800;font-size:12.5px;white-space:nowrap">'+esc(g)+'</span>'; }
 function trainBox(a,b){ var box=document.getElementById("trn"); if(!box) return; var A=STN[a], B=STN[b];
   if(!A||!B||A[1]===B[1]){ box.innerHTML=""; return; }
-  box.innerHTML='<div class="trh">🚆 '+esc(stName(A))+' → '+esc(stName(B))+'</div><div class="d">'+T("열차 찾는 중…","Finding trains…")+'</div>';
+  box.innerHTML='<div class="trh">'+MPIMG("mi_train",MIS)+esc(stName(A))+' → '+esc(stName(B))+'</div><div class="d">'+T("열차 찾는 중…","Finding trains…")+'</div>';
   function load(add){ var d=kstDay(add), ck=A[1]+"|"+B[1]+"|"+d, TC=window._trC||(window._trC={});   // 같은 구간·같은 날은 한 번만 (언어를 바꿔 다시 그릴 때, 10-18)
     return (TC[ck]||(TC[ck]=fetch(HUB+"/train?dep="+A[1]+"&arr="+B[1]+"&date="+d).then(function(r){ return r.json(); }).catch(function(e){ delete TC[ck]; throw e; }))).then(function(j){
       var it=(j&&j.ok&&j.items)||[], now=kstDay(0)===d?new Date(Date.now()+9*3600e3).toISOString().slice(11,16).replace(":",""):"0000";
       return { add:add, all:it, left:it.filter(function(x){ return x.dp>=now; }) }; }); }
   load(0).then(function(r){ return (r.left.length||!r.all.length)?r:load(1); }).then(function(r){
-    var rows=r.add?r.all:r.left, hd='<div class="trh">🚆 '+esc(stName(A))+' → '+esc(stName(B))+(r.add?' · '+T("내일","Tomorrow"):' · '+T("오늘","Today"))+'</div>';
+    var rows=r.add?r.all:r.left, hd='<div class="trh">'+MPIMG("mi_train",MIS)+esc(stName(A))+' → '+esc(stName(B))+(r.add?' · '+T("내일","Tomorrow"):' · '+T("오늘","Today"))+'</div>';
     if(!rows.length){ box.innerHTML=""; return; }
     box.innerHTML=hd+'<table class="trn">'+rows.slice(0,8).map(function(x){ var m=(+x.ar.slice(0,2)*60+ +x.ar.slice(2))-(+x.dp.slice(0,2)*60+ +x.dp.slice(2)); if(m<0) m+=1440;
       return '<tr><td>'+trBadge(trGrade(x))+'</td><td>'+hm(x.dp)+' → '+hm(x.ar)+'</td><td>'+Math.floor(m/60)+T("시간 ","h ")+(m%60)+T("분","m")+'</td><td class="f">'+(x.fare?x.fare.toLocaleString()+T("원"," KRW"):"-")+'</td></tr>'; }).join("")+'</table>'
@@ -828,21 +833,21 @@ function routePlan(a,b,km){ var p=PLACES[a], q=PLACES[b], na=encodeURIComponent(
   if(ia!==ib){
     if(ia==="ulleung"||ib==="ulleung"){
       var dk=(a==="dokdo"||b==="dokdo")&&(ia===ib||ia==="ulleung"&&ib==="ulleung");
-      return {train:false,html:'<div class="trh">⛴ '+T("배로 가야 합니다","By ferry")+'</div><div class="d">'
+      return {train:false,html:'<div class="trh">'+MPICO("mi_ferry",T("배로 가야 합니다","By ferry"),MIS)+'</div><div class="d">'
         +T("포항·강릉·묵호·후포항에서 울릉도 가는 여객선을 탑니다. 독도는 울릉도에서 다시 배를 탑니다.","Ferries to Ulleungdo leave from Pohang, Gangneung, Mukho and Hupo. Dokdo boats leave from Ulleungdo.")+'</div>'
         +L("https://island.haewoon.co.kr/",T("여객선 예매 (가보고 싶은 섬)","Ferry booking"))};
     }
-    return {train:false,html:'<div class="trh">✈ '+T("비행기로 가야 합니다","By plane")+'</div><div class="d">'
+    return {train:false,html:'<div class="trh">'+MPICO("mi_plane",T("비행기로 가야 합니다","By plane"),MIS)+'</div><div class="d">'
       +T("제주는 비행기(또는 목포·완도·여수 여객선)로 갑니다.","Jeju is reached by plane (or ferry from Mokpo, Wando or Yeosu).")+'</div>'
       +L("https://www.google.com/travel/flights?q="+encodeURIComponent("flights to Jeju"),T("항공권 찾기","Find flights"))
       +L("https://island.haewoon.co.kr/",T("여객선 예매","Ferry booking"))};
   }
-  if(ia==="ulleung"&&ib==="ulleung") return {train:false,html:'<div class="trh">⛴ '+T("울릉도에서 독도 가는 배","Boat from Ulleungdo to Dokdo")+'</div>'+L("https://island.haewoon.co.kr/",T("여객선 예매","Ferry booking"))};
-  if(km<=60) return {train:false,ods:true,html:'<div id="ods"></div><div class="trh">'+(ia==="jeju"?'🚌 '+T("버스·택시","Bus, taxi"):'🚇 '+T("지하철·버스·택시","Subway, bus, taxi"))+'</div>'
+  if(ia==="ulleung"&&ib==="ulleung") return {train:false,html:'<div class="trh">'+MPICO("mi_ferry",T("울릉도에서 독도 가는 배","Boat from Ulleungdo to Dokdo"),MIS)+'</div>'+L("https://island.haewoon.co.kr/",T("여객선 예매","Ferry booking"))};
+  if(km<=60) return {train:false,ods:true,html:'<div id="ods"></div><div class="trh">'+(ia==="jeju"?MPICO("mi_bus",T("버스·택시","Bus, taxi"),MIS):MPICO("mi_subway",T("지하철·버스·택시","Subway, bus, taxi"),MIS))+'</div>'
     +(FG()?L(go+"transit",TE("Google Maps (English)"))+L(nv+"transit",TE("Naver transit"))+L(nv+"car",TE("Taxi (fare, Naver)"))+krideL(q.ko,q.addr)
       +'<div class="d" style="margin-top:6px">'+esc(TE("Tip: in the Naver Map app, Settings → Language → English shows routes in English."))+'</div>'
      :L(nv+"transit","네이버 대중교통")+L(kk,"카카오맵 길찾기")+L(nv+"car","택시 (요금 보기)")+L(go+"transit","구글 지도"))};
-  return {train:ia==="land",html:'<div class="trh">🧭 '+T("고속버스·자동차","Express bus, car")+'</div>'
+  return {train:ia==="land",html:'<div class="trh">'+MPICO("mi_guide",T("고속버스·자동차","Express bus, car"),MIS)+'</div>'
     +(FG()?L(go+"driving",TE("Google driving (English)"))+L(nv+"transit",TE("Naver transit (incl. intercity bus)"))+L(nv+"car",TE("Naver car"))
      :L(nv+"transit","네이버 대중교통 (고속·시외버스 포함)")+L(nv+"car","네이버 자동차")+L(go+"driving","구글 자동차"))};
 }
@@ -865,8 +870,8 @@ function subBadge(nm){ var s=String(nm), m=s.match(/(\d)\s*(호선|号線|号线
 function odsBox(a,b){ var box=document.getElementById("ods"); if(!box) return; var p=PLACES[a], q=PLACES[b], ck="ods:"+LANG+":"+a+":"+b, cached=null;
   try{ cached=JSON.parse(sessionStorage.getItem(ck)||"null"); }catch(e){}
   var draw=function(j){ var ps=(j&&j.result&&j.result.path)||[]; if(!ps.length){ box.innerHTML=(j&&j.err==="cap")?'<div class="d" style="margin:6px 0">'+T("오늘 대중교통 안내가 모두 끝났습니다. 아래 구글·네이버 지도 단추로 보세요.","Transit directions are used up for today. Please use the Google / Naver Maps buttons below.")+'</div>':""; return; }   /* 하루 한도(28건) 찼을 때 안내 (사장님 10-17) */ try{ mePose("subway",10000); }catch(e){}
-    box.innerHTML='<div class="trh">🚇 '+T("대중교통 추천 경로","Best transit routes")+'</div>'+ps.slice(0,2).map(function(pt){ var f=pt.info||{};
-      var steps=(pt.subPath||[]).map(function(s){ if(s.trafficType===3) return s.sectionTime?'🚶 '+s.sectionTime+T("분","m"):"";
+    box.innerHTML='<div class="trh">'+MPICO("mi_subway",T("대중교통 추천 경로","Best transit routes"),MIS)+'</div>'+ps.slice(0,2).map(function(pt){ var f=pt.info||{};
+      var steps=(pt.subPath||[]).map(function(s){ if(s.trafficType===3) return s.sectionTime?MPIMG("mi_walk",MIS)+s.sectionTime+T("분","m"):"";
         var ln=(s.lane&&s.lane[0])||{}, nm=s.trafficType===1?(ln.name||""):(T("버스 ","Bus ")+(ln.busNo||""));
         return (s.trafficType===1?subBadge(ln.name||""):busIcon(ln.type)+' ')+'<b>'+esc(nm)+'</b> '+esc(s.startName||"")+' → '+esc(s.endName||"")+(s.stationCount?' ('+s.stationCount+T("정거장"," stops")+')':''); }).filter(Boolean).join('<br>');
       return '<div style="border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:6px 0"><div style="font-weight:800">'+(f.totalTime>=60?Math.floor(f.totalTime/60)+T("시간 ","h "):"")+(f.totalTime%60)+T("분","m")+' · '+(f.payment||0).toLocaleString()+T("원"," KRW")+'</div><div class="d" style="line-height:1.6;margin:4px 0 0">'+steps+'</div></div>'; }).join("")
@@ -916,7 +921,7 @@ function lblDraw(){ [].forEach.call(document.querySelectorAll("#mz .mlb"),functi
 // 제주 올레 팻말 카드 (사장님 10-21 「번호판을 누르면 올레길 몇 번인지, 근처에 명소가 있으면 알려줘」) — 자료 maps/jeju.json "olle" {코스:{km, from?, to?, near:[[키,km]]}} (tour_icons\jeju\map\olle_info.py)
 //   길이는 OSM 길 자료로 잰 어림(OSM 에 시작·끝·거리 태그가 없어서) · 시작·끝은 자료에 있을 때만 · 근처 명소 = 코스 선에서 2 km 안, 누르면 그 명소 카드
 function olShow(c){ var C=CITY[VIEW], o=C&&C.olle&&C.olle[c]; if(!o) return; inBlur(); clearTimeout(_tapT);
-  var f=function(){ var h='<div class="item"><div class="t">🥾 '+esc(LP(["제주 올레 "+c+"코스","Jeju Olle Trail "+c,"済州オルレ "+c+"コース","济州偶来 "+c+" 路线","濟州偶來 "+c+" 路線","Ruta Jeju Olle "+c]))+'</div>';
+  var f=function(){ var h='<div class="item"><div class="t">'+MPIMG("mi_hike",MIS)+esc(LP(["제주 올레 "+c+"코스","Jeju Olle Trail "+c,"済州オルレ "+c+"コース","济州偶来 "+c+" 路线","濟州偶來 "+c+" 路線","Ruta Jeju Olle "+c]))+'</div>';
     if(o.from&&o.to) h+='<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(o.from)+' → '+esc(o.to)+'</div>';
     if(o.km) h+='<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LP(["길이 약 "+o.km+" km","Length: about "+o.km+" km","長さ 約"+o.km+" km","全长约 "+o.km+" 公里","全長約 "+o.km+" 公里","Longitud: unos "+o.km+" km"]))+' <span style="opacity:.7">('+esc(LP(["OpenStreetMap 길 자료로 잰 어림","estimated from OpenStreetMap paths","OpenStreetMapの道データからの概算","按 OpenStreetMap 路线数据估算","依 OpenStreetMap 路線資料估算","estimado con los caminos de OpenStreetMap"]))+')</span></div>';
     var nr=(o.near||[]).filter(function(x){ return PLACES[x[0]]; });
@@ -1123,7 +1128,7 @@ function meSelHint(){ return T("가고 싶은 그림을 누르세요 — 「나�
 function meTipEl(){ var t=document.getElementById("meTip"); if(!t){ t=document.createElement("div"); t.id="meTip"; t.hidden=true; document.getElementById("map").appendChild(t); } return t; }
 function meTipSync(){ var t=document.getElementById("meTip"); if(ME.sel&&!DET){ t=meTipEl(); var s=meSelHint(); if(t.textContent!==s) t.textContent=s; t.hidden=false; } else if(t&&!ME.tipT) t.hidden=true; }
 function meTipFlash(s,ms){ var t=meTipEl(); clearTimeout(ME.tipT); t.textContent=s; t.hidden=false; ME.tipT=setTimeout(function(){ ME.tipT=null; meTipSync(); },ms||1600); }
-function meSelCard(){ var mf=function(){ document.getElementById("res").innerHTML=ME.sel?'<div class="item"><div class="t">📍 '+T("내 위치","My location")+'</div><div class="d">'+T("다른 그림을 누르면 내 위치에서 그곳까지 거리·교통편이 나옵니다","Tap another picture to see the distance and routes from you")+'</div></div>':""; }; mf(); window._RR=ME.sel?{f:mf,me:1}:null; }
+function meSelCard(){ var mf=function(){ document.getElementById("res").innerHTML=ME.sel?'<div class="item"><div class="t">'+MPICO("mi_pin",T("내 위치","My location"),MIS)+'</div><div class="d">'+T("다른 그림을 누르면 내 위치에서 그곳까지 거리·교통편이 나옵니다","Tap another picture to see the distance and routes from you")+'</div></div>':""; }; mf(); window._RR=ME.sel?{f:mf,me:1}:null; }
 // 「나」 누르기 (사장님 10-20) — ① 고른 장소 없음: 내 자리로(내가 있는 약도·구, 나를 가운데) + 거리재기 대기 → ② 이어서 그림을 누르면 거리선·교통편
 //   ③ 장소를 먼저 골랐으면(카드 열림): 화면 그대로 나 ↔ 그 장소 거리선 · 위치가 없으면 예전 「현재 위치」 단추처럼 위치를 받는다(권한 요청·안내)
 function meTap(){ if(!ME.pos){ meBtn(); return; }
@@ -1167,7 +1172,7 @@ function meBtn(){ var b=document.getElementById("zme")||{}; b.disabled=true;
 function meDistLine(k){ var p=PLACES[k]; if(!ME.pos||!p||k==="__me") return ""; var km=kmLL(ME.pos,[+p.lat,+p.lng]), t=km<1?Math.round(km*1000)+" m":(km<10?km.toFixed(1):Math.round(km))+" km", x="";
   if(km<=2){ var mi=Math.max(1,Math.round(km*1.3/4.5*60)); x=T(" · 걸어서 약 "+mi+"분"," · ~"+mi+" min walk"); }   // 직선×1.3, 시속 4.5km
   else if(km<=50) x=' · <a href="#" class="medist" data-k="'+esc(k)+'" style="border:0;background:none;padding:0;margin:0;font-size:13px;color:#1a73e8;font-weight:800;text-decoration:underline">'+T("교통편 보기","See routes")+'</a>';
-  return '<div class="d" style="margin:0 0 4px;color:#1a73e8;font-weight:800">📍 '+T("나에게서 "+t,t+" from you")+x+'</div>'; }
+  return '<div class="d" style="margin:0 0 4px;color:#1a73e8;font-weight:800">'+MPIMG("mi_pin",MIS)+T("나에게서 "+t,t+" from you")+x+'</div>'; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("a.medist"); if(!a) return; e.preventDefault(); e.stopPropagation(); meLineTo(a.dataset.k); },true);
 // 나 ↔ 장소 거리선 — 둘 다 덮는 가장 자세한 약도에서 (같은 약도면 그대로)
 function meCover(a,b){ var best=null, bd=-1, ba=1e9; for(var id in CITY){ var q=CITY[id].bb; if(!q) continue; var ok=[a,b].every(function(p){ return p[0]>=q[0]&&p[0]<=q[2]&&p[1]>=q[1]&&p[1]<=q[3]; }); if(!ok) continue;
@@ -1222,7 +1227,7 @@ function linksTo(nmKo,lat,lng,naverName,addr){ lat=+lat; lng=+lng; var f=meFrom(
   // 「자세히 보기」(사장님 10-20) — 외국어 화면은 구글 지도 장소 화면(앱 언어 hl 연동), 한국어 화면은 네이버 플레이스(이름 검색)
   var gq=nmKo+(addr?" "+addr:""), mr=FG()?"https://www.google.com/maps/search/?api=1"+hlG()+"&query="+encodeURIComponent(gq):"https://search.naver.com/search.naver?query="+encodeURIComponent(nmKo);   // 한국어 화면 = 네이버 통합검색(지식백과·블로그·플레이스 한 화면, 사장님 10-22)
   var mt={ko:"ℹ️ 자세히 보기 (네이버)",en:"ℹ️ More info (Google)",ja:"ℹ️ 詳しく見る (Google)",zhs:"ℹ️ 查看详情 (Google)",zht:"ℹ️ 查看詳情 (Google)",es:"ℹ️ Más información (Google)"}[LANG]||"ℹ️ More info (Google)";
-  return L(mr,mt)+(FG()?L(go,TE("Google Maps (English)"))+L(nv,TE("Naver Map"))+krideL(nmKo,addr):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도")); }
+  return L(mr,MPICO("mi_info",mt,MIS))+(FG()?L(go,TE("Google Maps (English)"))+L(nv,TE("Naver Map"))+krideL(nmKo,addr):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도")); }
 // 영어 화면 — 외국인용 카카오 택시 앱 K.Ride (사장님 10-15). 주소·패키지는 스토어에서 확인함(2026-10-15):
 //   Play com.kakaomobility.kride · App Store id6474654222 · 소개 kride.kakaomobility.com
 //   안드로이드는 깔려 있으면 앱을 열고(MAIN/LAUNCHER 꼴) 없으면 Play 상세로, 아이폰은 App Store, PC 는 소개 페이지. 누르면 목적지 이름·주소를 복사한다
@@ -1232,7 +1237,7 @@ function krideHref(){ var ua=navigator.userAgent||"";
   if(/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)) return KRIDE_IOS;
   return KRIDE_WEB; }
 function krideL(ko,addr){ var h=krideHref(), app=/^intent:/.test(h), pc=h===KRIDE_WEB;   // PC = 앱 설치 화면으로 안 보내고 안내 한 줄만 (사장님 10-23)
-  return '<a href="'+(pc?'#':esc(h))+'"'+(app||pc?'':' target="_blank" rel="noopener"')+' class="kride'+(pc?' kpc':'')+'" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'">'+esc(TE("🚕 Call a taxi (K.Ride)"))+'</a>'; }
+  return '<a href="'+(pc?'#':esc(h))+'"'+(app||pc?'':' target="_blank" rel="noopener"')+' class="kride'+(pc?' kpc':'')+'" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'">'+MPICO("mi_taxi",TE("🚕 Call a taxi (K.Ride)"),MIS)+'</a>'; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("a.kride"); if(!a) return;
   var t=(a.dataset.ko||"")+(a.dataset.ad?" "+a.dataset.ad:""), m=a.parentNode.querySelector(".kmsg");
   if(!m){ m=document.createElement("div"); m.className="d kmsg"; m.style.cssText="margin:6px 0 0;color:#1a73e8;font-weight:700"; a.insertAdjacentElement("afterend",m); }
@@ -1305,13 +1310,13 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
-<script src="trip.js?v=1024noimg"></script>
-<script src="gift.js?v=1023mi"></script>
-<script src="near.js?v=1024tripshare"></script>
+<script src="trip.js?v=1024icons"></script>
+<script src="gift.js?v=1024icons"></script>
+<script src="near.js?v=1024icons"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}</script>
-<script src="reco.js?v=1023dd"></script>
+<script src="reco.js?v=1024icons"></script>
 <script src="gu.js?v=f29da37807"></script>
-<script src="citytour.js?v=1022es"></script>
+<script src="citytour.js?v=1024icons"></script>
 <script src="pass.js?v=1024gmatch"></script>
 <script>
 // ── ★ 관심 장소 (사장님 10-17) — 손님 폰 안에만 저장·분석. 서버로 보내지 않는다(통로 FAV_SEND 는 꺼 둠)
@@ -1444,7 +1449,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
   }catch(z){} },true);
 </script>
 <script src="lang.js?v=1022es"></script>
-<script src="interp.js?v=1023pin"></script>
+<script src="interp.js?v=1024icons"></script>
 <script src="billboard.js?v=1021pl"></script>
 </body>
 </html>
