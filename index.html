@@ -688,8 +688,9 @@ var GA_LOAD=["이 안의 추천을 불러오는 중…","Loading what’s inside
 var GA_NONE=["표시할 가게를 찾지 못했어요.","Nothing to show here right now.","表示できるお店が見つかりませんでした。","暂时没有可显示的店铺。","暫時沒有可顯示的店家。","No hay lugares que mostrar ahora."];
 var _gaC={};   // 세션 캐시 (명소키|언어) — 같은 명소를 다시 눌러도 구글·허브에 다시 안 묻는다
 function gaDistTxt(m){ return m<1000?Math.round(m)+" m":(m/1000).toFixed(1)+" km"; }
-function areaExpVenue(x){ var nm=esc(x.name), ad=esc(x.addr||""), ct=esc(x.cat||"");
+function areaExpVenue(x){ var ol=LANG!=="ko"&&x.name_l&&x.name_l!==x.name, nm=esc(ol?x.name_l:x.name), ad=esc(x.addr||""), ct=esc(x.cat||"");
   return '<div class="gavit">'+'<div class="gavh"><b>'+nm+'</b><i>'+gaDistTxt(x.dist)+'</i></div>'
+    +(ol?'<div class="d" style="color:#999;margin:1px 0 2px">'+esc(x.name)+'</div>':'')
     +(x.rating?'<div class="d" style="margin:2px 0 4px"><b style="color:#e8590c">★ '+x.rating.toFixed(1)+'</b> ('+(x.n||0)+')'+(ct?' · '+ct:'')+'</div>':(ct?'<div class="d" style="margin:2px 0 4px">'+ct+'</div>':''))
     +(ad?'<div class="d" style="margin:0 0 5px">'+ad+'</div>':'')
     +linksTo(x.name,x.y,x.x,x.name,x.addr)+telLine(x.tel)+'</div>'; }
@@ -1417,7 +1418,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1024sendfix"></script>
 <script src="gift.js?v=1024icons"></script>
-<script src="near.js?v=1024ignote3"></script>
+<script src="near.js?v=1024three"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}</script>
 <script src="reco.js?v=1024icons"></script>
