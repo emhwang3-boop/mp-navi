@@ -72,6 +72,8 @@ function L(){ return window.LANG!=="ko"; }   // 외국어 화면(영·일·중) 
 function LG6(o){ return o[window.LANG]||o.en; }   // 통역·길안내 새 문구는 6개 언어를 바로 넣는다(i18n.js 안 건드림, 10-24)
 // 「투어·입장권 / Tours & tickets」 (사장님 10-24) — 옛 「투어 가이드」. 내용(Klook·GetYourGuide·Creatrip)은 그대로, 이름만 6개 언어로
 var TOURS6={ko:"투어·입장권",en:"Tours & tickets",ja:"ツアー・チケット",zhs:"旅游·门票",zht:"旅遊·門票",es:"Tours y entradas"};
+// 「투어 가이드」 칩 글자 (사장님 10-24) — 맨 앞 칩. 누르면 통역·길안내(ig) 가이드 매칭 판이 열린다
+var IG_CHIP6={ko:"투어 가이드",en:"Tour guide",ja:"ツアーガイド",zhs:"旅游向导",zht:"旅遊嚮導",es:"Guía turístico"};
 // 빨간·파란 단추 안 전화기 — 흰 선 그림(글자색 그대로, 사장님 10-16: 이모지는 분홍빛이라)
 var PH='<svg class="nrph" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function km(m){ return m<1000?Math.round(m)+" m":(m/1000).toFixed(1)+" km"; }
@@ -95,7 +97,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".nrcall{display:inline-block;background:#e03131;color:#fff!important;border-radius:10px;padding:8px 16px;font-size:16px;font-weight:900;text-decoration:none}"
   +".nrcall.am{background:#1971c2}"
   +".nrkto{display:inline-block;border:1px solid #2f9e44;color:#2b8a3e;border-radius:6px;font-size:11px;font-weight:900;padding:0 5px;margin-left:5px;vertical-align:2px;white-space:nowrap}"
-  +".nrst .nrtab.on{border-color:#7048e8;background:#f3f0ff;color:#5f3dc4}.nrst .nrrank{background:#7048e8}#gfchips .nrchip.st{border-color:#7048e8;background:#f3f0ff;color:#5f3dc4}#gfchips .nrchip.tg{border-color:#0c8599;background:#e3fafc;color:#0b7285}"
+  +".nrst .nrtab.on{border-color:#7048e8;background:#f3f0ff;color:#5f3dc4}.nrst .nrrank{background:#7048e8}#gfchips .nrchip.st{border-color:#7048e8;background:#f3f0ff;color:#5f3dc4}#gfchips .nrchip.tg,#gfchips .nrchip.ig{border-color:#0c8599;background:#e3fafc;color:#0b7285}"
   +".nrtabs{flex-wrap:wrap}.nrst .nrtab{flex:1 1 40%}"
   +".nrbook,.item a.nrbook{display:inline-block!important;background:#7048e8!important;color:#fff!important;border:0!important;border-radius:999px!important;padding:7px 16px!important;font-size:14px!important;font-weight:900!important;margin:2px 0 8px!important;cursor:pointer}"
   +"#nrBk{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}#nrBk .in{background:var(--card);color:var(--ink);width:100%;max-width:480px;border-radius:16px 16px 0 0;padding:14px 16px 22px;box-sizing:border-box}"
@@ -381,8 +383,8 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
 // ── 들어가는 곳: 검색창 아래 칩(선물 고르기 옆) · ⋮ 메뉴 ──
 function entries(){ css(); var box=document.getElementById("gfchips");
   if(!box){ var h=document.getElementById("gob")||document.getElementById("hint"); if(!h) return; h.insertAdjacentHTML("afterend",'<div id="gfchips" style="display:flex;justify-content:center;gap:6px;margin:10px 0 0;flex-wrap:wrap"></div>'); box=document.getElementById("gfchips"); }
-  ["tg","am","em","st"].forEach(function(k){ var c=box.querySelector('.nrchip[data-nr="'+k+'"]'); if(!c){ box.insertAdjacentHTML("beforeend",'<button type="button" class="nrchip'+(k!=="am"?' '+k:'')+'" data-nr="'+k+'"></button>'); c=box.querySelector('.nrchip[data-nr="'+k+'"]'); }
-    c.textContent=k==="tg"?LG6(TOURS6):T(CHIP[k][0],CHIP[k][1]); });
+  ["ig","tg","am","em","st"].forEach(function(k){ var c=box.querySelector('.nrchip[data-nr="'+k+'"]'); if(!c){ box.insertAdjacentHTML("beforeend",'<button type="button" class="nrchip'+(k!=="am"?' '+k:'')+'" data-nr="'+k+'"></button>'); c=box.querySelector('.nrchip[data-nr="'+k+'"]'); }
+    c.textContent=k==="tg"?LG6(TOURS6):k==="ig"?LG6(IG_CHIP6):T(CHIP[k][0],CHIP[k][1]); });
   var mm=document.getElementById("mm"); if(mm) ["tg","am","em","st","ig"].forEach(function(k){ var id="mnear_"+k, a=document.getElementById(id);
     if(!a){ a=document.createElement("a"); a.id=id; a.href="#"; a.className="mi"; a.dataset.nr=k; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); }
     a.innerHTML=k==="ig"?'<img class="miic" src="img/menu/mi_guideperson.png" alt="">'+esc(LG6({ko:"통역·길안내",en:"Interpreter & guide",ja:"通訳・ガイド",zhs:"翻译·向导",zht:"翻譯·嚮導",es:"Intérprete y guía"})):miLbl(k); }); }
