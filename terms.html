@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terms of Service · Money Puzzle Tour for Korea</title>
+<meta name="robots" content="index,follow">
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#111827;--sub:#5b6474;--line:#e6e9ef;--green:#2f9e44;--blue:#3d5af1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;-webkit-text-size-adjust:100%;line-height:1.7}
+html:lang(ja) body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Hiragino Sans','Yu Gothic UI','Noto Sans JP',sans-serif}
+html:lang(zh-Hans) body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif}
+html:lang(zh-Hant) body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 60px}
+.langbar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px 0 22px}
+.langbar button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;font-size:13px;font-weight:700;padding:6px 13px;cursor:pointer;font-family:inherit}
+.langbar button.on{background:var(--green);border-color:var(--green);color:#fff}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.3px}
+.eff{color:var(--sub);font-size:13px;margin:0 0 20px}
+h2{font-size:16.5px;margin:26px 0 8px;padding-top:14px;border-top:1px solid var(--line);letter-spacing:-.2px}
+p{margin:8px 0}
+ul{margin:8px 0;padding-left:20px}
+li{margin:4px 0}
+a{color:var(--blue)}
+.op{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:30px 0 0;font-size:14px;color:var(--sub)}
+.op b{color:var(--ink)}
+.op div{margin:3px 0}
+.back{display:inline-block;margin-top:24px;font-size:14px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="langbar" id="langbar"></div>
+  <div id="doc"></div>
+  <a class="back" id="back" href="https://navi.moneypuzzle.co.kr/">← <span id="backt">앱으로 돌아가기</span></a>
+</div>
+<script>
+"use strict";
+var LANGS=["ko","en","ja","zhs","zht","es"];
+var HLANG={ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant",es:"es"};
+var LBL={ko:"한국어",en:"English",ja:"日本語",zhs:"简体",zht:"繁體",es:"Español"};
+
+var OP={
+ ko:{t:"사업자 정보",cn:"주식회사 부만 (Booman Inc.)",rn:"사업자등록번호",rv:"297-81-03712",ceo:"대표",cev:"전현진",po:"개인정보 보호책임자",pov:"황의만",cs:"고객센터",csv:"1599-7065",em:"이메일",ad:"주소",adv:"경기도 남양주시 진접읍 해밀예당1로 220, 엠타워 707호"},
+ en:{t:"Operator information",cn:"Booman Inc.",rn:"Business Reg. No.",rv:"297-81-03712",ceo:"CEO",cev:"Jeon Hyeonjin",po:"Privacy Officer",pov:"Hwang Euiman",cs:"Support",csv:"+82-1599-7065",em:"Email",ad:"Address",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"},
+ ja:{t:"事業者情報",cn:"株式会社 부만 (Booman Inc.)",rn:"事業者登録番号",rv:"297-81-03712",ceo:"代表",cev:"全賢珍 (Jeon Hyeonjin)",po:"個人情報保護責任者",pov:"黄義晩 (Hwang Euiman)",cs:"カスタマーセンター",csv:"+82-1599-7065",em:"メール",ad:"住所",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"},
+ zhs:{t:"经营者信息",cn:"Booman Inc.（株式会社 부만）",rn:"营业执照号",rv:"297-81-03712",ceo:"代表",cev:"Jeon Hyeonjin",po:"个人信息保护负责人",pov:"Hwang Euiman",cs:"客服",csv:"+82-1599-7065",em:"邮箱",ad:"地址",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"},
+ zht:{t:"經營者資訊",cn:"Booman Inc.（株式會社 부만）",rn:"營業執照號",rv:"297-81-03712",ceo:"代表",cev:"Jeon Hyeonjin",po:"個人資料保護負責人",pov:"Hwang Euiman",cs:"客服",csv:"+82-1599-7065",em:"電郵",ad:"地址",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"},
+ es:{t:"Información del operador",cn:"Booman Inc.",rn:"N.º de registro mercantil",rv:"297-81-03712",ceo:"Representante",cev:"Jeon Hyeonjin",po:"Responsable de privacidad",pov:"Hwang Euiman",cs:"Atención",csv:"+82-1599-7065",em:"Correo",ad:"Dirección",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"}
+};
+var BACK={ko:"앱으로 돌아가기",en:"Back to the app",ja:"アプリに戻る",zhs:"返回应用",zht:"返回應用",es:"Volver a la app"};
+
+var D={};
+D.ko={title:"이용약관", eff:"시행일 2026-10-24", app:"Money Puzzle Tour for Korea",
+ sec:[
+ {h:"제1조 (목적)", b:["본 약관은 주식회사 부만(이하 '회사')이 제공하는 외국인 관광 안내 앱 'Money Puzzle Tour for Korea'(https://navi.moneypuzzle.co.kr, 이하 '서비스')의 이용 조건을 정하는 것을 목적으로 합니다."]},
+ {h:"제2조 (서비스의 내용)", b:[
+   "서비스는 다음을 제공합니다.",
+   ["관광지·맛집·숙소·편의시설 등 여행 정보 제공",
+    "현재 위치 기반의 주변 추천 및 길 안내",
+    "관광 가이드 등록 및 이용자와 가이드의 연결 소개",
+    "외부 여행 예약 플랫폼(Klook, GetYourGuide, Creatrip 등)으로의 연결"],
+   "서비스는 앱 내에서 결제 기능을 제공하지 않습니다."]},
+ {h:"제3조 (중개가 아닌 소개)", b:[
+   "회사는 가이드와 이용자를 연결하는 '소개'를 제공할 뿐이며, 가이드 서비스의 당사자가 아닙니다. 가이드 서비스의 내용·품질·이행·요금 등은 해당 가이드와 이용자 사이에서 정해지며 그 책임은 당사자에게 있습니다.",
+   "외부 플랫폼을 통한 예약·결제·취소·환불 등은 해당 업체의 약관과 책임에 따릅니다."]},
+ {h:"제4조 (외부 링크 면책)", b:[
+   "서비스는 이용자의 편의를 위해 외부 사이트·앱으로 연결되는 링크를 제공할 수 있습니다. 회사는 외부 서비스의 내용·거래·정확성에 대해 책임지지 않습니다."]},
+ {h:"제5조 (이용자의 의무 및 금지 행위)", b:[
+   "이용자는 다음 행위를 하여서는 안 됩니다.",
+   ["허위 정보 등록(특히 가이드 자격 관련) 또는 타인의 정보 도용",
+    "법령 또는 공서양속에 반하는 행위",
+    "서비스의 정상적인 운영을 방해하거나 무단으로 데이터를 수집하는 행위",
+    "타인의 권리를 침해하는 행위"]]},
+ {h:"제6조 (책임의 한계)", b:[
+   "서비스가 제공하는 지도·교통·영업 정보 등은 여행 참고용이며, 실제와 다를 수 있습니다. 운행 시간·요금·영업 여부 등은 현장과 공식 안내로 확인하시기 바랍니다.",
+   "회사는 천재지변, 외부 API·통신의 장애 등 회사의 합리적 통제를 벗어난 사유로 인한 손해에 대해 책임을 지지 않습니다."]},
+ {h:"제7조 (준거법 및 관할)", b:[
+   "본 약관은 대한민국 법률에 따라 해석되며, 서비스 이용과 관련한 분쟁은 관련 법령에 따른 관할 법원에서 다룹니다."]},
+ {h:"제8조 (문의)", b:[
+   "서비스 이용에 관한 문의는 고객센터(1599-7065) 또는 이메일(emhwang3@moneypuzzle.co.kr)로 연락하실 수 있습니다."]}
+ ]};
+
+D.en={title:"Terms of Service", eff:"Effective date: 2026-10-24", app:"Money Puzzle Tour for Korea",
+ sec:[
+ {h:"Article 1 (Purpose)", b:["These Terms govern your use of the tourist guide app \"Money Puzzle Tour for Korea\" (https://navi.moneypuzzle.co.kr, \"the Service\") provided by Booman Inc. (\"the Company\")."]},
+ {h:"Article 2 (The Service)", b:[
+   "The Service provides:",
+   ["Travel information such as attractions, restaurants, stays and amenities",
+    "Nearby recommendations and directions based on your current location",
+    "Tour-guide registration and introductions connecting travelers with guides",
+    "Links out to external travel booking platforms (Klook, GetYourGuide, Creatrip, etc.)"],
+   "The Service does not provide any in-app payment function."]},
+ {h:"Article 3 (Introduction, not brokerage)", b:[
+   "The Company only introduces guides to travelers and is not a party to any guide service. The content, quality, performance and fees of a guide service are agreed between the guide and the traveler, who bear responsibility for them.",
+   "Booking, payment, cancellation and refunds through external platforms are governed by those providers' terms and responsibility."]},
+ {h:"Article 4 (External links)", b:[
+   "The Service may provide links to external sites or apps for your convenience. The Company is not responsible for the content, transactions or accuracy of those external services."]},
+ {h:"Article 5 (User obligations and prohibited acts)", b:[
+   "You must not:",
+   ["register false information (especially regarding guide credentials) or misuse another person's information",
+    "act in violation of law or public order and morals",
+    "interfere with the normal operation of the Service or collect data without authorization",
+    "infringe the rights of others"]]},
+ {h:"Article 6 (Limitation of liability)", b:[
+   "Maps, transit and business information provided by the Service are for travel reference and may differ from reality. Please verify schedules, fares and opening status on site and through official sources.",
+   "The Company is not liable for damage arising from causes beyond its reasonable control, such as force majeure or failures of external APIs or communications."]},
+ {h:"Article 7 (Governing law and jurisdiction)", b:[
+   "These Terms are construed under the laws of the Republic of Korea, and disputes relating to the Service are handled by the court of competent jurisdiction under applicable law."]},
+ {h:"Article 8 (Contact)", b:[
+   "For questions about the Service, contact Support (+82-1599-7065) or email (emhwang3@moneypuzzle.co.kr)."]}
+ ]};
+
+D.ja={title:"利用規約", eff:"施行日 2026-10-24", app:"Money Puzzle Tour for Korea",
+ sec:[
+ {h:"第1条（目的）", b:["本規約は、株式会社 부만（Booman Inc.、以下「当社」）が提供する外国人観光案内アプリ「Money Puzzle Tour for Korea」（https://navi.moneypuzzle.co.kr、以下「本サービス」）の利用条件を定めることを目的とします。"]},
+ {h:"第2条（サービスの内容）", b:[
+   "本サービスは次を提供します。",
+   ["観光地・グルメ・宿泊・施設などの旅行情報の提供",
+    "現在地に基づく周辺のおすすめおよび道案内",
+    "観光ガイドの登録、ならびに利用者とガイドをつなぐ紹介",
+    "外部の旅行予約プラットフォーム（Klook、GetYourGuide、Creatrip 等）への誘導"],
+   "本サービスはアプリ内での決済機能を提供しません。"]},
+ {h:"第3条（仲介ではなく紹介）", b:[
+   "当社はガイドと利用者をつなぐ「紹介」を提供するのみで、ガイドサービスの当事者ではありません。ガイドサービスの内容・品質・履行・料金等はガイドと利用者の間で定められ、その責任は当事者にあります。",
+   "外部プラットフォームを通じた予約・決済・キャンセル・返金等は、当該事業者の規約と責任に従います。"]},
+ {h:"第4条（外部リンクの免責）", b:[
+   "本サービスは利便のため外部サイト・アプリへのリンクを提供する場合があります。当社は外部サービスの内容・取引・正確性について責任を負いません。"]},
+ {h:"第5条（利用者の義務および禁止行為）", b:[
+   "利用者は次の行為をしてはなりません。",
+   ["虚偽情報の登録（特にガイド資格に関するもの）または他人の情報の盗用",
+    "法令または公序良俗に反する行為",
+    "本サービスの正常な運営を妨げ、または無断でデータを収集する行為",
+    "他人の権利を侵害する行為"]]},
+ {h:"第6条（責任の限界）", b:[
+   "本サービスが提供する地図・交通・営業情報等は旅行の参考用であり、実際と異なる場合があります。運行時間・料金・営業の有無等は、現場および公式案内でご確認ください。",
+   "当社は、天災や外部 API・通信の障害など、当社の合理的な支配を超える事由による損害について責任を負いません。"]},
+ {h:"第7条（準拠法および管轄）", b:[
+   "本規約は大韓民国の法律に従って解釈され、本サービスの利用に関する紛争は関連法令に基づく管轄裁判所で取り扱われます。"]},
+ {h:"第8条（お問い合わせ）", b:[
+   "本サービスの利用に関するお問い合わせは、カスタマーセンター（+82-1599-7065）またはメール（emhwang3@moneypuzzle.co.kr）までご連絡ください。"]}
+ ]};
+
+D.zhs={title:"使用条款", eff:"施行日期 2026-10-24", app:"Money Puzzle Tour for Korea",
+ sec:[
+ {h:"第1条（目的）", b:["本条款旨在规定 Booman Inc.（株式会社 부만，以下称\"本公司\"）提供的面向外国游客的旅游向导应用\"Money Puzzle Tour for Korea\"（https://navi.moneypuzzle.co.kr，以下称\"本服务\"）的使用条件。"]},
+ {h:"第2条（服务内容）", b:[
+   "本服务提供以下内容：",
+   ["景点·美食·住宿·便利设施等旅行信息",
+    "基于当前位置的周边推荐及路线指引",
+    "旅游向导的注册，以及连接用户与向导的介绍",
+    "引导至外部旅行预订平台（Klook、GetYourGuide、Creatrip 等）"],
+   "本服务不在应用内提供支付功能。"]},
+ {h:"第3条（介绍而非居间）", b:[
+   "本公司仅提供连接向导与用户的\"介绍\"，并非向导服务的当事方。向导服务的内容·质量·履行·费用等由向导与用户之间约定，责任由当事方承担。",
+   "通过外部平台进行的预订·支付·取消·退款等，依照该经营者的条款及责任办理。"]},
+ {h:"第4条（外部链接免责）", b:[
+   "为方便用户，本服务可能提供指向外部网站·应用的链接。本公司对外部服务的内容·交易·准确性不承担责任。"]},
+ {h:"第5条（用户义务及禁止行为）", b:[
+   "用户不得有下列行为：",
+   ["登记虚假信息（尤其是涉及向导资格的信息）或盗用他人信息",
+    "违反法律或公序良俗的行为",
+    "妨碍本服务正常运营或擅自收集数据的行为",
+    "侵害他人权利的行为"]]},
+ {h:"第6条（责任限制）", b:[
+   "本服务提供的地图·交通·营业信息等仅供旅行参考，可能与实际不符。运行时间·费用·是否营业等请在现场及官方指南确认。",
+   "对于天灾、外部 API·通信故障等超出本公司合理控制范围的事由所致损害，本公司不承担责任。"]},
+ {h:"第7条（准据法及管辖）", b:[
+   "本条款依大韩民国法律解释，与本服务使用相关的纠纷由依相关法律确定的管辖法院处理。"]},
+ {h:"第8条（咨询）", b:[
+   "有关本服务使用的咨询，请联系客服（+82-1599-7065）或邮箱（emhwang3@moneypuzzle.co.kr）。"]}
+ ]};
+
+D.zht={title:"使用條款", eff:"施行日期 2026-10-24", app:"Money Puzzle Tour for Korea",
+ sec:[
+ {h:"第1條（目的）", b:["本條款旨在規定 Booman Inc.（株式會社 부만，以下稱「本公司」）提供的面向外國旅客的旅遊嚮導應用程式「Money Puzzle Tour for Korea」（https://navi.moneypuzzle.co.kr，以下稱「本服務」）的使用條件。"]},
+ {h:"第2條（服務內容）", b:[
+   "本服務提供以下內容：",
+   ["景點·美食·住宿·便利設施等旅遊資訊",
+    "基於目前位置的周邊推薦及路線指引",
+    "旅遊嚮導的註冊，以及連接使用者與嚮導的介紹",
+    "引導至外部旅遊預訂平台（Klook、GetYourGuide、Creatrip 等）"],
+   "本服務不在應用程式內提供付款功能。"]},
+ {h:"第3條（介紹而非仲介）", b:[
+   "本公司僅提供連接嚮導與使用者的「介紹」，並非嚮導服務的當事方。嚮導服務的內容·品質·履行·費用等由嚮導與使用者之間約定，責任由當事方承擔。",
+   "透過外部平台進行的預訂·付款·取消·退款等，依照該經營者的條款及責任辦理。"]},
+ {h:"第4條（外部連結免責）", b:[
+   "為方便使用者，本服務可能提供指向外部網站·應用程式的連結。本公司對外部服務的內容·交易·準確性不承擔責任。"]},
+ {h:"第5條（使用者義務及禁止行為）", b:[
+   "使用者不得有下列行為：",
+   ["登記虛假資訊（尤其是涉及嚮導資格的資訊）或盜用他人資訊",
+    "違反法律或公序良俗的行為",
+    "妨礙本服務正常運營或擅自蒐集資料的行為",
+    "侵害他人權利的行為"]]},
+ {h:"第6條（責任限制）", b:[
+   "本服務提供的地圖·交通·營業資訊等僅供旅遊參考，可能與實際不符。運行時間·費用·是否營業等請在現場及官方指南確認。",
+   "對於天災、外部 API·通訊故障等超出本公司合理控制範圍的事由所致損害，本公司不承擔責任。"]},
+ {h:"第7條（準據法及管轄）", b:[
+   "本條款依大韓民國法律解釋，與本服務使用相關的糾紛由依相關法律確定的管轄法院處理。"]},
+ {h:"第8條（諮詢）", b:[
+   "有關本服務使用的諮詢，請聯絡客服（+82-1599-7065）或電郵（emhwang3@moneypuzzle.co.kr）。"]}
+ ]};
+
+D.es={title:"Términos de Servicio", eff:"Fecha de entrada en vigor: 2026-10-24", app:"Money Puzzle Tour for Korea",
+ sec:[
+ {h:"Artículo 1 (Objeto)", b:["Estos Términos regulan el uso de la app de guía turística \"Money Puzzle Tour for Korea\" (https://navi.moneypuzzle.co.kr, \"el Servicio\"), prestada por Booman Inc. (\"la Empresa\")."]},
+ {h:"Artículo 2 (El Servicio)", b:[
+   "El Servicio ofrece:",
+   ["información de viaje como atracciones, restaurantes, alojamientos y servicios",
+    "recomendaciones cercanas e indicaciones según su ubicación actual",
+    "registro de guías turísticos e introducciones que conectan a viajeros con guías",
+    "enlaces a plataformas externas de reservas de viaje (Klook, GetYourGuide, Creatrip, etc.)"],
+   "El Servicio no ofrece ninguna función de pago dentro de la app."]},
+ {h:"Artículo 3 (Introducción, no intermediación)", b:[
+   "La Empresa solo presenta guías a los viajeros y no es parte de ningún servicio de guía. El contenido, la calidad, la ejecución y las tarifas de un servicio de guía se acuerdan entre el guía y el viajero, quienes asumen su responsabilidad.",
+   "Las reservas, pagos, cancelaciones y reembolsos a través de plataformas externas se rigen por los términos y la responsabilidad de esos proveedores."]},
+ {h:"Artículo 4 (Enlaces externos)", b:[
+   "El Servicio puede ofrecer enlaces a sitios o apps externos para su comodidad. La Empresa no se responsabiliza del contenido, las transacciones ni la exactitud de esos servicios externos."]},
+ {h:"Artículo 5 (Obligaciones del usuario y actos prohibidos)", b:[
+   "El usuario no debe:",
+   ["registrar información falsa (en especial sobre credenciales de guía) ni usar indebidamente la información de otra persona",
+    "actuar en contra de la ley o del orden público y las buenas costumbres",
+    "interferir en el funcionamiento normal del Servicio o recopilar datos sin autorización",
+    "vulnerar los derechos de terceros"]]},
+ {h:"Artículo 6 (Limitación de responsabilidad)", b:[
+   "Los mapas y la información de transporte y de negocios del Servicio son de referencia para el viaje y pueden diferir de la realidad. Verifique horarios, tarifas y apertura en el lugar y en fuentes oficiales.",
+   "La Empresa no responde por daños derivados de causas ajenas a su control razonable, como fuerza mayor o fallos de API externas o de las comunicaciones."]},
+ {h:"Artículo 7 (Ley aplicable y jurisdicción)", b:[
+   "Estos Términos se interpretan conforme a las leyes de la República de Corea, y los conflictos relativos al Servicio se resuelven ante el tribunal competente según la ley aplicable."]},
+ {h:"Artículo 8 (Contacto)", b:[
+   "Para consultas sobre el Servicio, contacte con Atención (+82-1599-7065) o por correo (emhwang3@moneypuzzle.co.kr)."]}
+ ]};
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
+function inline(s){ return esc(s).replace(/emhwang3@moneypuzzle\.co\.kr/g,'<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a>'); }
+
+function opBlock(lang){ var o=OP[lang]; var L=[
+  ['', '<b>'+esc(o.cn)+'</b>'],
+  [o.rn, o.rv],[o.ceo, o.cev],[o.po, o.pov],
+  [o.cs, o.csv],[o.em, '<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a>'],
+  [o.ad, o.adv]];
+  var h='<div class="op"><div><b>'+esc(o.t)+'</b></div>';
+  for(var i=0;i<L.length;i++){ h+='<div>'+(L[i][0]?esc(L[i][0])+' : ':'')+L[i][1]+'</div>'; }
+  return h+'</div>';
+}
+
+function render(lang){
+  if(LANGS.indexOf(lang)<0) lang="ko";
+  document.documentElement.lang=HLANG[lang];
+  var d=D[lang], h='';
+  h+='<h1>'+esc(d.title)+'</h1>';
+  h+='<p class="eff">'+esc(d.app)+' · '+esc(d.eff)+'</p>';
+  for(var i=0;i<d.sec.length;i++){ var s=d.sec[i];
+    if(s.h) h+='<h2>'+esc(s.h)+'</h2>';
+    for(var j=0;j<s.b.length;j++){ var b=s.b[j];
+      if(Object.prototype.toString.call(b)==="[object Array]"){ h+='<ul>'; for(var k=0;k<b.length;k++) h+='<li>'+inline(b[k])+'</li>'; h+='</ul>'; }
+      else h+='<p>'+inline(b)+'</p>';
+    }
+  }
+  h+=opBlock(lang);
+  document.getElementById("doc").innerHTML=h;
+  document.getElementById("backt").textContent=BACK[lang];
+  document.getElementById("back").href="https://navi.moneypuzzle.co.kr/?lang="+lang;
+  document.title=d.title+" · Money Puzzle Tour for Korea";
+  var bs=document.getElementById("langbar").children;
+  for(var m=0;m<bs.length;m++) bs[m].className=(bs[m].getAttribute("data-l")===lang)?"on":"";
+  try{ localStorage.setItem("mpv_lang",lang); }catch(e){}
+  try{ history.replaceState(null,"","?lang="+lang); }catch(e){}
+}
+
+function pick(){
+  var q=(location.search.match(/[?&]lang=([a-z]+)/)||[])[1];
+  if(q&&LANGS.indexOf(q)>=0) return q;
+  var st; try{ st=localStorage.getItem("mpv_lang"); }catch(e){}
+  if(st&&LANGS.indexOf(st)>=0) return st;
+  var n=(navigator.language||"en").toLowerCase();
+  if(n.indexOf("ko")===0) return "ko";
+  if(n.indexOf("ja")===0) return "ja";
+  if(n.indexOf("es")===0) return "es";
+  if(n.indexOf("zh")===0) return (n.indexOf("tw")>=0||n.indexOf("hant")>=0||n.indexOf("hk")>=0)?"zht":"zhs";
+  return "en";
+}
+
+(function(){
+  var bar=document.getElementById("langbar"),h="";
+  for(var i=0;i<LANGS.length;i++) h+='<button data-l="'+LANGS[i]+'">'+LBL[LANGS[i]]+'</button>';
+  bar.innerHTML=h;
+  var btns=bar.children;
+  for(var j=0;j<btns.length;j++) btns[j].addEventListener("click",function(){ render(this.getAttribute("data-l")); });
+  render(pick());
+})();
+</script>
+</body>
+</html>
