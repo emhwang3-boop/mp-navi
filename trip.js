@@ -187,8 +187,15 @@ function dragInit(ol){ if(!ol) return; var cur=null;
 
 // ── 일정 계산 ──
 function walkKm(){ return [1,2,3][TR.opt.walk]||2; }
+// 옛 알고리즘으로 돌리는 스위치(비교·시험용) — window.__TRIP_OLD 또는 localStorage mpv_oldalgo=1
+function OLD(){ try{ return !!window.__TRIP_OLD||localStorage.getItem("mpv_oldalgo")==="1"; }catch(e){ return !!window.__TRIP_OLD; } }
+// ── 실제 대중교통 시간 캐시 (사장님 10-24) — 구간(반올림 좌표 한 쌍, 방향 무관)별 분. 이 화면 메모리 + sessionStorage. 좌표만 저장(위치 아님)
+var RT={};
+function rkPt(p){ return (+p.lat).toFixed(4)+","+(+p.lng).toFixed(4); }
+function rtKey(a,b){ var x=rkPt(a), y=rkPt(b); return (x<y?x+"|"+y:y+"|"+x)+"|t"; }
 function leg(a,b){ var d=km(a,b), w=walkKm();
-  if(d<=w) return {mode:"walk",km:d,min:Math.max(3,Math.round(d*1.3/4.5*60))};
+  if(d<=w) return {mode:"walk",km:d,min:Math.max(3,Math.round(d*1.3/4.5*60))};   // 가까운 곳은 늘 걷기(실제 시간 있어도)
+  if(!OLD()){ var rt=RT[rtKey(a,b)]; if(typeof rt==="number"&&rt>0) return {mode:"transit",km:d,min:rt,real:1}; }
   if(d<=60) return {mode:"transit",km:d,min:Math.round(10+d*3.2)};
   return {mode:"far",km:d,min:Math.round(40+d/70*60)}; }
 function legMin(a,b){ return leg(a,b).min; }
@@ -198,8 +205,31 @@ function nnOrder(H,arr){ var left=arr.slice(), out=[], p=H; if(!p){ var w=left.r
 function twoOpt(H,arr){ var a=arr.slice(), imp=true, it=0;
   while(imp&&it++<50){ imp=false; for(var i=0;i<a.length-1;i++) for(var j=i+1;j<a.length;j++){ var b=a.slice(0,i).concat(a.slice(i,j+1).reverse(),a.slice(j+1)); if(tourCost(H,b)+0.01<tourCost(H,a)){ a=b; imp=true; } } } return a; }
 function dayLoad(H,arr){ return arr.reduce(function(s,x){ return s+x.stay; },0)+tourCost(H,nnOrder(H,arr))+(arr.length?60:0); }
-// 숙소 둘레 각도로 줄 세운 뒤 D 덩어리로 (모든 시작점 × DP) — 이동 + 시간초과 벌점 + 날짜 고르기 벌점 최소
-function splitDays(H,P,D,cap){ var n=P.length; if(!n) return []; var C=H||{lat:P.reduce(function(s,x){ return s+x.lat; },0)/n,lng:P.reduce(function(s,x){ return s+x.lng; },0)/n};
+// 가까운 곳끼리 같은 날로 (사장님 10-24) — 좌표 k-means(체류시간 가중·여러 번 시작해 가장 싼 것) → 숙소 왕복 포함 비용으로 고른 뒤 improve 로 다듬기
+//   · 각도로만 나누면 (옛 방식) 같은 방향이면 멀어도 묶여버린다. 좌표로 묶으면 가까운 곳이 한 날로 모인다
+//   · 고정 씨앗 + 여러 번 시작 → 같은 입력이면 같은 결과. 하루 cap 초과·시간 균형은 improve(이동/옮기기)에 맡긴다
+function splitDays(H,P,D,cap){ if(OLD()) return splitDaysAngular(H,P,D,cap);
+  var n=P.length; if(!n) return []; var tot=P.reduce(function(s,x){ return s+x.stay; },0), avg=tot/D;
+  if(n<=D){ var g0=[]; for(var gi=0;gi<D;gi++) g0.push(gi<n?[P[gi]]:[]); return improve(H,g0,cap,avg); }
+  var mlat=P.reduce(function(s,x){ return s+x.lat; },0)/n, kx=Math.cos(mlat*Math.PI/180);   // 등거리 투영 — 경도는 위도만큼 줄여 거리 왜곡 없이
+  var px=P.map(function(x){ return [x.lat,x.lng*kx]; }), dist2=function(a,b){ var dy=a[0]-b[0], dx=a[1]-b[1]; return dy*dy+dx*dx; };
+  var cst=function(g){ if(!g.length) return 500; var ld=dayLoad(H,g), st=g.reduce(function(q,x){ return q+x.stay; },0); return (ld-st)+Math.max(0,ld-cap)*20+0.01*(st-avg)*(st-avg); };   // improve 와 같은 식(이동+시간초과+균형)
+  var rng=function(seed){ return function(){ seed=(seed*1664525+1013904223)>>>0; return seed/4294967296; }; };
+  var best=null, bc=1e18;
+  for(var r=0;r<8;r++){ var rnd=rng((2654435761+r*40503)>>>0), cen=[px[Math.floor(rnd()*n)].slice()];
+    while(cen.length<D){ var w=[], sum=0;   // k-means++ 씨앗, 체류시간 가중
+      for(var ii=0;ii<n;ii++){ var m=1e18; for(var c=0;c<cen.length;c++) m=Math.min(m,dist2(px[ii],cen[c])); var v=m*(P[ii].stay||1); w.push(v); sum+=v; }
+      var pick=Math.floor(rnd()*n); if(sum>0){ var t=rnd()*sum, acc=0; for(ii=0;ii<n;ii++){ acc+=w[ii]; if(acc>=t){ pick=ii; break; } } } cen.push(px[pick].slice()); }
+    var asg=new Array(n).fill(0);   // 로이드 반복 (체류시간 가중 중심)
+    for(var it2=0;it2<40;it2++){ var ch=false;
+      for(var k=0;k<n;k++){ var bi=0, bd=1e18; for(c=0;c<D;c++){ var dv=dist2(px[k],cen[c]); if(dv<bd){ bd=dv; bi=c; } } if(asg[k]!==bi){ asg[k]=bi; ch=true; } }
+      for(c=0;c<D;c++){ var sy=0,sx=0,sw=0; for(k=0;k<n;k++) if(asg[k]===c){ var wt=P[k].stay||1; sy+=px[k][0]*wt; sx+=px[k][1]*wt; sw+=wt; } if(sw>0) cen[c]=[sy/sw,sx/sw]; }
+      if(!ch) break; }
+    var gs2=[]; for(c=0;c<D;c++) gs2.push([]); for(k=0;k<n;k++) gs2[asg[k]].push(P[k]);
+    var tc=gs2.reduce(function(s,g){ return s+cst(g); },0); if(tc<bc){ bc=tc; best=gs2.map(function(g){ return g.slice(); }); } }
+  return improve(H,best,cap,avg); }
+// (옛) 숙소 둘레 각도로 줄 세운 뒤 D 덩어리로 (모든 시작점 × DP) — 이동 + 시간초과 벌점 + 날짜 고르기 벌점 최소
+function splitDaysAngular(H,P,D,cap){ var n=P.length; if(!n) return []; var C=H||{lat:P.reduce(function(s,x){ return s+x.lat; },0)/n,lng:P.reduce(function(s,x){ return s+x.lng; },0)/n};
   var srt=P.map(function(x){ return {x:x,a:Math.atan2(x.lat-C.lat,(x.lng-C.lng)*Math.cos(C.lat*Math.PI/180))}; }).sort(function(a,b){ return a.a-b.a; }).map(function(o){ return o.x; });
   var tot=P.reduce(function(s,x){ return s+x.stay; },0), avg=tot/D, best=null, bc=1e18;
   for(var s=0;s<n;s++){ var seq=srt.slice(s).concat(srt.slice(0,s)), gc={};
@@ -266,7 +296,37 @@ function planGo(){ if(!hasPass()){ openPricing(); return; } if(!TR.items.length)
   var b=document.getElementById("trPlan"); if(b){ b.disabled=true; b.textContent=T("짜는 중…","Planning…"); }
   hotelPos(function(H){ setTimeout(function(){ var pl;
     try{ pl=compute(H); }catch(e){ try{ console.error(e); }catch(x){} if(b){ b.disabled=false; b.textContent=T("🗓 일정 짜기","🗓 Plan my trip"); } return; }
-    pl.H=H&&!H.here?H:null; TR.plan=pl; save(); try{ ntap("_trip","trip_plan"); }catch(e){} openReport(H); },30); }); }
+    pl.H=H&&!H.here?H:null; TR.plan=pl; save();
+    var shown=false, show=function(){ if(shown) return; shown=true; try{ ntap("_trip","trip_plan"); }catch(e){} openReport(H); };
+    if(OLD()||typeof fetch!=="function"){ show(); return; }
+    // 실제 대중교통 시간 — 6초 안에 오면 그걸로 보여주고, 늦으면 직선거리로 먼저 보여준 뒤 오는 대로 그 자리에서 다듬는다 (recsFetch·aiFetch 처럼)
+    var to=setTimeout(show,6000);
+    realTimesFetch(pl,H,function(){ reorderWithReal(pl,H); save(); if(shown){ if(document.getElementById("trRep")) repPaint(); } else { clearTimeout(to); show(); } });
+  },30); }); }
+// 실제 대중교통 시간이 온 뒤 — 날짜 묶음은 그대로, 그날 안 순서만 실제 시간표로 다시 (2-opt 가 실제 시간을 본다)
+function reorderWithReal(pl,H){ if(!pl||!pl.days) return; var from=pl.from;
+  pl.days.forEach(function(d){ var dt=new Date(d.date+"T00:00:00Z"), arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean); if(!arr.length) return;
+    var ord=orderDay(H,arr,dt,from), s=sched(H,ord,dt,from); d.stops=ord.map(function(x){ return x.k; }); d.end=s.end; }); }
+// 일정에 실제로 나오는 구간만(날짜 안 — 날짜끼리는 직선거리 그대로) 허브 /ntimes 로 한 번에. 짧은 걷기 구간은 빼고, 캐시(sessionStorage)는 다시 안 묻는다. 허브가 ODsay 하루 한도를 지킨다
+function realTimesFetch(pl,H,cb){ var pairs=[], keys=[], seen={};
+  var add=function(a,b){ if(!a||!b||!isFinite(a.lat)||!isFinite(b.lat)) return; if(km(a,b)<=walkKm()) return; var kk=rtKey(a,b); if(seen[kk]) return; seen[kk]=1;
+    if(typeof RT[kk]==="number") return; var sv=null; try{ sv=sessionStorage.getItem("nt:"+kk); }catch(e){} if(sv!=null&&sv!==""){ RT[kk]=+sv; return; }
+    keys.push(kk); pairs.push([+a.lat,+a.lng,+b.lat,+b.lng]); };
+  pl.days.forEach(function(d){ var arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), set=(H?[H]:[]).concat(arr);
+    for(var i=0;i<set.length;i++) for(var j=i+1;j<set.length;j++) add(set[i],set[j]); });
+  if(!pairs.length){ cb(); return; }
+  pairs=pairs.slice(0,60); keys=keys.slice(0,60);   // 플랜마다 구간 상한(허브도 하루 한도로 또 막는다)
+  var ctl=("AbortController" in window)?new AbortController():null, t=setTimeout(function(){ if(ctl) try{ ctl.abort(); }catch(e){} },7000);
+  fetch(HUB+"/ntimes",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pairs:pairs,mode:"transit"}),signal:ctl?ctl.signal:undefined})
+    .then(function(r){ return r.json(); }).then(function(j){ clearTimeout(t); var ts=(j&&j.times)||[], used=0;
+      keys.forEach(function(kk,i){ var m=ts[i]&&ts[i].min; if(typeof m==="number"&&m>0){ RT[kk]=m; used++; try{ sessionStorage.setItem("nt:"+kk,String(m)); }catch(e){} } });
+      window.__trRtUsed=used; window.__trRtAsk=keys.length; cb(); })
+    .catch(function(e){ clearTimeout(t); window.__trRtErr=String(e); cb(); }); }
+// 이 일정이 실제 대중교통 시간을 쓰는 구간이 하나라도 있나 (아래 안내 문구 고르기용)
+function planUsesReal(pl,H){ if(OLD()||!pl||!pl.days) return false; var any=false;
+  pl.days.forEach(function(d){ var arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), p=H;
+    arr.forEach(function(x){ if(p&&km(p,x)>walkKm()&&typeof RT[rtKey(p,x)]==="number") any=true; p=x; });
+    if(H&&arr.length&&km(p,H)>walkKm()&&typeof RT[rtKey(p,H)]==="number") any=true; }); return any; }
 function planHotel(cb){ var pl=TR.plan; if(!pl||!pl.hotel) return cb(null); if(pl.hotel.type==="here") return hotelPos(cb); cb({k:"__hotel",ko:pl.hotel.ko,en:pl.hotel.en,lat:+pl.hotel.lat,lng:+pl.hotel.lng,hotel:1}); }
 function aiFetch(){ var pl=TR.plan; if(!pl) return; var hn=pl.hotel&&pl.hotel.type!=="here"?pl.hotel.ko:"";
   var H0=pl.H||null, body={h:hn,d:pl.days.map(function(d){ var dt=new Date(d.date+"T00:00:00Z"), s=sched(H0,d.stops.map(function(k){ return pl.pool[k]; }),dt,pl.from);
@@ -284,7 +344,7 @@ function openReport(H){ if(!TR.plan) return; sheetClose("trBox"); sheet("trRep")
   if(H!==undefined){ REPH=H; repPaint(); aiGo(); } else planHotel(function(h){ REPH=h; repPaint(); aiGo(); }); }
 function legTxt(lg){ if(!lg) return ""; var d=lg.km<1?Math.round(lg.km*1000)+" m":lg.km.toFixed(1)+" km";
   if(lg.mode==="walk") return T("🚶 걸어서 약 "+lg.min+"분","🚶 ~"+lg.min+" min walk")+" · "+d;
-  if(lg.mode==="transit") return T("🚇 대중교통 약 ","🚇 Transit ~")+durTxt(lg.min)+" · "+d;
+  if(lg.mode==="transit") return T("🚇 대중교통 약 ","🚇 Transit ~")+durTxt(lg.min)+(lg.real?" ✓":"")+" · "+d;
   return T("🚄 장거리 이동 약 ","🚄 Long trip ~")+durTxt(lg.min)+T(" (기차·버스)"," (train/bus)")+" · "+Math.round(lg.km)+" km"; }
 function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan; if(!box||!pl) return; var H=REPH, ai=pl.ai||{}, tips=ai.tips||{};
   var mp=(window.ME&&ME.pos)||GEO; REPME=mp?{k:"__me",ko:"현재 위치",en:"Current location",lat:+mp[0],lng:+mp[1],me:1}:null;
@@ -323,7 +383,14 @@ function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan;
     else h+='<div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+T("일정 끝","End of day")+'</span></div>';
     if(s.end>pl.to) h+='<div class="tmemo" style="margin-top:4px">⚠ '+T("하루 끝 시각("+m2hm(pl.to)+")을 넘어요 — 장소를 빼거나 날짜를 늘려 보세요","Runs past your end time ("+m2hm(pl.to)+") — remove a place or add a day")+'</div>';
     h+='</div></div>'; });
-  h+='<div class="d" style="margin:10px 2px">'+T("이동 시간은 직선거리 어림입니다. 「실제 경로 보기」를 누르면 그 구간만 대중교통을 찾아요.","Travel times are straight-line estimates. Tap “See real routes” to look up transit for that leg.")+'</div>';
+  h+='<div class="d" style="margin:10px 2px">'+(planUsesReal(pl,H)
+    ? T5({ko:"이동 시간은 가능한 구간은 실제 대중교통 기준입니다. 일부 구간은 직선거리 어림이에요. 「실제 경로 보기」로 자세한 길을 볼 수 있어요.",
+          en:"Travel times use real public transit where available; some legs are straight-line estimates. Tap “See real routes” for details.",
+          ja:"移動時間は可能な区間は実際の公共交通機関に基づきます。一部は直線距離の目安です。「実際の経路を見る」で詳しく確認できます。",
+          zhs:"交通时间尽可能采用实际公共交通，部分路段为直线距离估算。点按「查看实际路线」查看详情。",
+          zht:"交通時間盡可能採用實際大眾運輸，部分路段為直線距離估算。點按「查看實際路線」查看詳情。",
+          es:"Los tiempos usan transporte público real cuando es posible; algunos tramos son estimaciones en línea recta. Toca “Ver rutas reales” para más detalles."})
+    : T("이동 시간은 직선거리 어림입니다. 「실제 경로 보기」를 누르면 그 구간만 대중교통을 찾아요.","Travel times are straight-line estimates. Tap “See real routes” to look up transit for that leg."))+'</div>';
   box.innerHTML=h; var g=function(id){ return document.getElementById(id); };
   g("trNext").onclick=nextStop; g("trPdf").onclick=pdfGo; g("trShare").onclick=shareGo; g("trEdit").onclick=function(){ sheetClose("trRep"); openPanel(); };
   g("trInfo").onclick=function(){ tPop(function(){ return '<b>ⓘ</b><div style="margin-top:6px;line-height:1.6">'+T("· PDF는 휴대폰 「다운로드」에 저장돼요 — 안드로이드는 파일 앱에서 PDF를 길게 눌러 「홈 화면에 추가」하면 바로 열 수 있어요.<br>· 궁궐 휴무(월: 창덕궁·창경궁·덕수궁·숭례문 / 화: 경복궁·종묘)는 궁능유적본부 안내 기준 — 휴무일이 공휴일이면 열고 다음 평일에 쉽니다.<br>· 다른 곳의 운영 시간은 현장·공식 안내를 확인하세요.","· The PDF is saved to Downloads — on Android, long-press it in the Files app and choose “Add to Home screen”.<br>· Palace closures (Mon: Changdeokgung, Changgyeonggung, Deoksugung, Sungnyemun / Tue: Gyeongbokgung, Jongmyo) follow the official Royal Palaces notice — if the closing day is a public holiday they open and close the next weekday.<br>· Check other opening hours on site or official pages.")+'</div>'; }); };
