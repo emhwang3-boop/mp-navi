@@ -1092,12 +1092,12 @@ function legDraw(z){ return; /* 범례 박스 삭제 (사장님 10-25) */ var w=
 function lblDraw(){ [].forEach.call(document.querySelectorAll("#mz .mlb, #mz .mleg"),function(e){ e.remove(); }); var c=CITY[VIEW]; if(!c||!c.labels) return; var z=document.getElementById("mz"); try{ legDraw(z); }catch(e){}
   c.labels.forEach(function(t){ var e=document.createElement("div"); e.className="mlb"; e.textContent=LANG==="ko"?t[2]:TE(t[3]); e._ax=t[4]||0; e._ay=t[5]||0; e.style.left=(t[0]*100)+"%"; e.style.top=(t[1]*100)+"%"; var w=document.getElementById("map").clientWidth, fs=Math.max(4,w*0.016);
     e.style.fontSize=fs+"px"; e.style.padding=(fs*0.15)+"px "+(fs*0.6)+"px"; e.style.borderWidth=Math.max(0.6,fs*0.14)+"px"; e.style.transform="translate("+(-e._ax*100)+"%,"+(-e._ay*100)+"%)"; if(t[6]){ e.dataset.k=t[6]; e.style.pointerEvents="auto"; e.style.cursor="pointer"; }
-    if(t[7]==="perf"){ var iw=w*0.033, cf2=fs*0.78;   /* 공연장 = 지도 위 아이콘 명소, 작게 줄여 이웃 안 가림 (사장님 10-25) */
+    if(t[7]==="perf"){ return;   /* 공연장 마커 제거 (사장님 10-25) — 접근은 체험·입장권 패널 메뉴로만 */ var iw=w*0.033, cf2=fs*0.78;
       e.className="mlb perf"; e.style.background="none"; e.style.border="0"; e.style.boxShadow="none"; e.style.padding="0"; e.style.borderRadius="0"; e.style.transform="translate(-50%,-100%)"; e.textContent="";
       var pim=document.createElement("img"); pim.src="img/perf_marker.png"; pim.alt=""; pim.style.cssText="display:block;width:"+iw+"px;height:auto;margin:0 auto;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))";
       var pcap=document.createElement("span"); pcap.textContent=LANG==="ko"?t[2]:TE(t[3]); pcap.style.cssText="display:block;margin:"+(fs*0.08)+"px auto 0;width:max-content;max-width:"+(iw*2.6)+"px;background:#fff;color:#c2410c;border:"+Math.max(0.5,fs*0.1)+"px solid #e8590c;border-radius:999px;font-size:"+cf2+"px;font-weight:900;line-height:1.15;padding:"+(cf2*0.12)+"px "+(cf2*0.5)+"px;text-align:center;white-space:nowrap;box-shadow:0 0 2px rgba(0,0,0,.25);pointer-events:none";
       e.appendChild(pim); e.appendChild(pcap); z.appendChild(e); return; }
-    if(t[7]==="kpop"){ var iw2=w*0.033, cf3=fs*0.78;   /* K-pop 기획사 사옥 = 지도 위 아이콘 명소, 작게 줄여 이웃 안 가림 (사장님 10-25) */
+    if(t[7]==="kpop"){ return;   /* K-pop 사옥 마커 제거 (사장님 10-25) — 접근은 체험·입장권 패널 메뉴로만 */ var iw2=w*0.033, cf3=fs*0.78;
       e.className="mlb kpop"; e.style.background="none"; e.style.border="0"; e.style.boxShadow="none"; e.style.padding="0"; e.style.borderRadius="0"; e.style.transform="translate(-50%,-100%)"; e.textContent="";
       var kim=document.createElement("img"); kim.src="img/kpop_marker.png"; kim.alt=""; kim.style.cssText="display:block;width:"+iw2+"px;height:auto;margin:0 auto;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))";
       var kcap=document.createElement("span"); kcap.textContent=LANG==="ko"?t[2]:TE(t[3]); kcap.style.cssText="display:block;margin:"+(fs*0.08)+"px auto 0;width:max-content;max-width:"+(iw2*2.6)+"px;background:#fff;color:#7c3aed;border:"+Math.max(0.5,fs*0.1)+"px solid #8b5cf6;border-radius:999px;font-size:"+cf3+"px;font-weight:900;line-height:1.15;padding:"+(cf3*0.12)+"px "+(cf3*0.5)+"px;text-align:center;white-space:nowrap;box-shadow:0 0 2px rgba(0,0,0,.25);pointer-events:none";
@@ -1526,7 +1526,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1024sendfix"></script>
 <script src="gift.js?v=1024icons"></script>
-<script src="near.js?v=1024try"></script>
+<script src="near.js?v=1025tg"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}</script>
 <script src="reco.js?v=1024icons"></script>
