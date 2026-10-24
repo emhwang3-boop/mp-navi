@@ -28,7 +28,7 @@
       b.addEventListener("click",function(e){ e.stopPropagation(); e.preventDefault(); exit(); }); } return b; }
   function layer(){ var l=document.getElementById("ctl"); if(!l){ l=document.createElement("div"); l.id="ctl"; document.getElementById("mz").appendChild(l); } return l; }
   function title(){ var tt=document.getElementById("vttl"); if(tt) tt.textContent=W("서울 · 시티투어버스","Seoul · City Tour Bus","ソウル · シティツアーバス","首尔 · 城市观光巴士","首爾 · 城市觀光巴士","Seúl · Autobús turístico");
-    var b=chip(); b.hidden=false; b.textContent="🚌 "+W("서울시티투어버스","Seoul City Tour Bus","ソウルシティツアーバス","首尔城市观光巴士","首爾城市觀光巴士","Seoul City Tour Bus (autobús turístico)")+"  ✕"; }
+    var b=chip(); b.hidden=false; b.innerHTML=MPIMG("mi_bus",MIS)+esc(W("서울시티투어버스","Seoul City Tour Bus","ソウルシティツアーバス","首尔城市观光巴士","首爾城市觀光巴士","Seoul City Tour Bus (autobús turístico)"))+"  ✕"; }
   // 그리기 — 지도(#mz) 안에 두고 글자·핀은 1/배율로 줄여 화면 크기를 고정
   function draw(){ var m=document.getElementById("map"); if(!m) return; var l=document.getElementById("ctl");
     if(!C.on||!C.d||window.DET||VIEW!=="seoulall"){ if(l) l.hidden=true; var b0=document.getElementById("ctX"); if(b0) b0.hidden=true; return; }
@@ -47,34 +47,34 @@
   // 카드
   function head(t){ return '<h4>'+t+'</h4>'; }
   function common(){ var d=C.d;
-    return head("📅 "+W("운행 안 하는 날","Days not operating","運休日","停运日","停駛日","Días sin servicio"))+'<div class="d">'+W("매주 월요일 (월요일이 공휴일이면 정상 운행하고 화요일 휴무)","Closed Mondays; open on holiday Mondays (closed Tuesday instead).","毎週月曜日運休（月曜日が祝日の場合は通常運行し、火曜日が運休）","每周一停运（若周一为公共假日则照常运营，周二停运）","每週一停駛（若週一為國定假日則照常營運，週二停駛）","Cerrado los lunes; si el lunes es festivo, funciona y cierra el martes.")+'</div>'
-      +head("📞 "+W("문의","Contact","お問い合わせ","咨询","諮詢","Contacto"))+telLine(d.tel)
+    return head(MPIMG("mi_calendar",MIS)+W("운행 안 하는 날","Days not operating","運休日","停运日","停駛日","Días sin servicio"))+'<div class="d">'+W("매주 월요일 (월요일이 공휴일이면 정상 운행하고 화요일 휴무)","Closed Mondays; open on holiday Mondays (closed Tuesday instead).","毎週月曜日運休（月曜日が祝日の場合は通常運行し、火曜日が運休）","每周一停运（若周一为公共假日则照常运营，周二停运）","每週一停駛（若週一為國定假日則照常營運，週二停駛）","Cerrado los lunes; si el lunes es festivo, funciona y cierra el martes.")+'</div>'
+      +head(MPIMG("mi_phone",MIS)+W("문의","Contact","お問い合わせ","咨询","諮詢","Contacto"))+telLine(d.tel)
       +'<div class="src">'+esc(d.asof)+' '+W("기준","as of","時点","为准","為準","(datos a esa fecha)")+' · '+W("출처","Source","出典","来源","來源","Fuente")+': '+W("서울시티투어버스 공식 누리집","Seoul City Tour Bus official website","ソウルシティツアーバス公式サイト","首尔城市观光巴士官方网站","首爾城市觀光巴士官方網站","Web oficial de Seoul City Tour Bus")+'<br>'
       +d.src.map(function(s){ var lp={en:"/en/",ja:"/ja/",zhs:"/zh/",zht:"/zh/",es:"/en/"}[LANG]; if(lp) s=[s[0].replace("/ko/",lp),s[1].replace("/ko/",lp)]; return '<a href="'+esc(s[0])+'" target="_blank" rel="noopener">'+esc(s[1])+'</a>'; }).join(" · ")+'</div>'; }
   function fareRows(fa,child){ return '<table><tr><td>'+W("어른","Adult","大人","成人","成人","Adulto")+'</td><td class="r">'+fare(fa.a)+'</td></tr><tr><td>'+W("소인","Child","小人","儿童","兒童","Niño")+'<br><span class="d">'+child+'</span></td><td class="r">'+fare(fa.c)+'</td></tr></table>'; }
   function childTxt(){ return W("48개월~18세 · 48개월 미만 무료(보호자 1명당 1명, 좌석 없음)","48 months to 18 years · under 48 months free (one per adult, no seat)","48ヶ月～18歳 · 48ヶ月未満は無料（保護者1名につき1名、座席なし）","48个月至18岁 · 未满48个月免费（每名家长限1名，不提供座位）","48個月至18歲 · 未滿48個月免費（每名家長限1名，不提供座位）","De 48 meses a 18 años · menores de 48 meses gratis (uno por adulto, sin asiento)"); }
   function dayBlock(){ var d=C.d, y=d.day;
-    return head("🚌 "+esc(L(y.n))+' <span class="d">('+esc(y.id)+')</span>')
+    return head(MPIMG("mi_bus",MIS)+esc(L(y.n))+' <span class="d">('+esc(y.id)+')</span>')
       +'<div class="d">'+W("첫차","First bus","始発","首班","首班","Primer bus")+' <b>'+y.first+'</b> · '+W("막차","Last bus","最終","末班","末班","Último bus")+' <b>'+y.last+'</b> ('+W("광화문 출발","from Gwanghwamun","光化門発","光化门出发","光化門出發","desde Gwanghwamun")+') · '
       +W(y.gap+"분 간격",y.gap+" min intervals",y.gap+"分間隔","间隔"+y.gap+"分钟","間隔"+y.gap+"分鐘","cada "+y.gap+" min")+' · '+W("한 바퀴 약 "+y.loop+"시간","about "+y.loop+" h a loop","1周 約"+y.loop+"時間","一圈约"+y.loop+"小时","一圈約"+y.loop+"小時","unas "+y.loop+" h por vuelta")+' · '
       +W("15개 정류장 자유 승하차","Hop on/off at 15 stops","15停留所 乗り降り自由","15个站点随上随下","15個站點隨上隨下","Sube y baja libremente en 15 paradas")+'</div>'
       +'<div class="d">'+W("당일 표는 매표소에서 구매 · 온라인 예매는 하루 전까지","Same-day tickets at the ticket booth · online booking until the day before","当日券はチケット売り場で · オンライン予約は前日まで","当日票请在售票处购买 · 在线预订截至前一天","當日票請在售票處購買 · 線上預訂截至前一天","Billetes del día en la taquilla · reserva en línea hasta el día anterior")+'</div>'
       +fareRows(y.fare,childTxt()); }
   function nightBlock(){ var n=C.d.night;
-    return head("🌙 "+esc(L(n.n))+' <span class="d">('+esc(n.id)+')</span>')
+    return head(MPIMG("mi_moon",MIS)+esc(L(n.n))+' <span class="d">('+esc(n.id)+')</span>')
       +'<div class="d">'+W("출발","Departure","出発","出发","出發","Salida")+' '+n.dep.map(function(t){ return '<b>'+t[1]+'</b> ('+t[0]+')'; }).join(" · ")+'</div>'
       +'<div class="d">'+W("하루 1회 · 광화문 매표소 앞 출발 · 무정차 약 90분 · N서울타워 25분 정차","Once a day · departs in front of the Gwanghwamun ticket booth · non-stop about 90 min · 25 min photo stop at N Seoul Tower","1日1回 · 光化門チケット売り場前発 · ノンストップ約90分 · Nソウルタワーで25分停車","每天1班 · 光化门售票处前出发 · 直达约90分钟 · N首尔塔停留25分钟","每天1班 · 光化門售票處前出發 · 直達約90分鐘 · N首爾塔停留25分鐘","Una vez al día · sale frente a la taquilla de Gwanghwamun · sin paradas unos 90 min · parada de 25 min para fotos en la N Seoul Tower")+'</div>'
       +'<div class="d">'+W("예약 10명 미만이면 운행 안 함","Does not run with fewer than 10 bookings","予約が10名未満の場合は運行なし","预订不足10人时不运行","預訂不足10人時不運行","No sale con menos de 10 reservas")+'</div>'
       +'<div class="d">'+n.stops.map(function(s){ return esc(L(s)); }).join(" → ")+'</div>'
       +fareRows(n.fare,W("48개월~18세","48 months to 18 years","48ヶ月～18歳","48个月至18岁","48個月至18歲","De 48 meses a 18 años")); }
-  function stopTable(){ var d=C.d; return head("🕘 "+W("정류장별 첫차 · 막차","First · last bus at each stop","停留所別 始発 · 最終","各站首班 · 末班","各站首班 · 末班","Primer · último bus en cada parada")+' <span class="d">('+esc(L(d.day.n))+')</span>')
+  function stopTable(){ var d=C.d; return head(MPIMG("mi_clock",MIS)+W("정류장별 첫차 · 막차","First · last bus at each stop","停留所別 始発 · 最終","各站首班 · 末班","各站首班 · 末班","Primer · último bus en cada parada")+' <span class="d">('+esc(L(d.day.n))+')</span>')
       +'<table>'+d.stops.map(function(s,i){ return '<tr data-ct="s'+i+'" style="cursor:pointer"><td>'+(i+1)+'. '+esc(L(s.n))+'</td><td class="r">'+s.t[0]+' ~ '+s.t[s.t.length-1]+'</td></tr>'; }).join("")
       +'<tr><td>↩ '+W("광화문역 도착","Arrive Gwanghwamun Stn.","光化門駅 到着","到达光化门站","抵達光化門站","Llegada a la estación de Gwanghwamun")+'</td><td class="r">'+d.arr[0]+' ~ '+d.arr[d.arr.length-1]+'</td></tr></table>'; }
   function show(w){ var d=C.d; if(!d) return; C.card=w; window._cardK="__ct"; var o=d.office, h;
-    if(w==="o"){ h='<div class="item ctc"><div class="t">🚌 '+esc(L(o.n))+'</div><div class="d">'+esc(L(o.addr))+'</div><div class="d">'+esc(L(o.dir))+'</div>'
+    if(w==="o"){ h='<div class="item ctc"><div class="t">'+MPIMG("mi_bus",MIS)+esc(L(o.n))+'</div><div class="d">'+esc(L(o.addr))+'</div><div class="d">'+esc(L(o.dir))+'</div>'
         +dayBlock()+nightBlock()+stopTable()+common()+(typeof linksTo==="function"?linksTo(o.n[0],o.lat,o.lng,null,o.addr[0]):"")+'</div>'; }
     else { var i=+w.slice(1), s=d.stops[i]; if(!s) return;
-      h='<div class="item ctc"><div class="t">🚏 '+(i+1)+'. '+esc(L(s.n))+'</div><div class="d">'+esc(L(d.day.n))+' ('+esc(d.day.id)+')</div>'
+      h='<div class="item ctc"><div class="t">'+MPIMG("mi_bus",MIS)+(i+1)+'. '+esc(L(s.n))+'</div><div class="d">'+esc(L(d.day.n))+' ('+esc(d.day.id)+')</div>'
         +'<div class="d">'+W("첫차","First bus","始発","首班","首班","Primer bus")+' <b>'+s.t[0]+'</b> · '+W("막차","Last bus","最終","末班","末班","Último bus")+' <b>'+s.t[s.t.length-1]+'</b> · '+W(d.day.gap+"분 간격",d.day.gap+" min intervals",d.day.gap+"分間隔","间隔"+d.day.gap+"分钟","間隔"+d.day.gap+"分鐘","cada "+d.day.gap+" min")+'</div>'
         +'<div class="d tt">'+s.t.join(" ")+'</div>'
         +'<div class="d">'+W("표 사는 곳","Tickets","チケット購入","购票","購票","Billetes")+': <a href="#" data-ct="o">'+esc(L(o.n))+'</a></div>'
