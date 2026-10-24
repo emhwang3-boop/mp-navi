@@ -229,6 +229,16 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
 #mpcrawl .mpc-skip{position:absolute;right:14px;bottom:14px;z-index:5;border:1px solid rgba(255,213,74,.55);background:rgba(0,0,0,.4);color:#ffd54a;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;cursor:pointer}
 #mpcrawl .mpc-static{animation:none !important;top:10% !important;transform:translateX(-50%) rotateX(0deg) !important}
 html.mpc-lock,html.mpc-lock body{overflow:hidden !important}
+/* ★ 동해 보물섬(+롱 존 실버) — 누르면 인트로 크롤 다시보기 (사장님 10-24). kr 전국 지도에서만, 지도와 함께 pan/zoom. kr 원본 이미지는 안 건드리고 오버레이로만 */
+#treasIsle{position:absolute;z-index:4;width:10%;cursor:pointer;display:none;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+.map.onkr #treasIsle{display:block}
+#treasIsle img{display:block;width:100%;height:auto;pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));animation:tiBob 2.8s ease-in-out infinite;transform-origin:50% 100%}
+#treasIsle .tiLbl{position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:3px;white-space:nowrap;background:rgba(42,28,10,.82);color:#ffe08a;font-weight:800;border-radius:999px;padding:1px 7px;box-shadow:0 1px 3px rgba(0,0,0,.45);pointer-events:none;letter-spacing:.02em}
+#treasIsle::after{content:"";position:absolute;right:6%;top:4%;width:20%;height:20%;background:radial-gradient(circle,#fff 0%,#fff3b0 38%,transparent 70%);opacity:0;pointer-events:none;animation:tiSpark 2.8s ease-in-out infinite}
+@keyframes tiBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6%)}}
+@keyframes tiSpark{0%,100%{opacity:0;transform:scale(.6)}50%{opacity:.9;transform:scale(1)}}
+html.mpc-lock #treasIsle{visibility:hidden}
+@media (prefers-reduced-motion:reduce){#treasIsle img,#treasIsle::after{animation:none !important}}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&display=swap">
 </head>
@@ -246,8 +256,7 @@ html.mpc-lock,html.mpc-lock body{overflow:hidden !important}
     </div>
     <div id="mm" hidden style="position:absolute;right:0;top:50px;z-index:20;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);min-width:200px;overflow:hidden">
       <a href="#" id="mcopy" hidden onclick="mbCopy();return false" class="mi"><img class="miic" src="img/menu/mi_copy.png" alt="">링크 복사</a>
-      <a href="#" id="mref" onclick="location.reload();return false" class="mi"><img class="miic" src="img/menu/mi_refresh.png" alt="">새로고침</a>
-      <a href="#" id="mreplay" onclick="try{document.getElementById('mm').hidden=true;window.mpCrawlReplay&&window.mpCrawlReplay();}catch(e){}return false" class="mi" style="border-bottom:0"><img class="miic" src="img/menu/mi_refresh.png" alt="">Replay intro</a>
+      <a href="#" id="mref" onclick="location.reload();return false" class="mi" style="border-bottom:0"><img class="miic" src="img/menu/mi_refresh.png" alt="">새로고침</a>
     </div>
   </div>
   <form class="sbox" onsubmit="go();return false">
@@ -257,7 +266,7 @@ html.mpc-lock,html.mpc-lock body{overflow:hidden !important}
   </form>
   <div class="res" id="res"></div>
   <div id="vbar" hidden><button type="button" id="vback" hidden>←</button><div id="vttl" hidden></div><button type="button" id="vdet" hidden>자세히</button></div>
-  <div class="map onkr" id="map"><div id="mz"><img src="img/maps/kr.jpg?h=904a2cac" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg><div id="lod"></div></div><a id="osm" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" hidden>© OpenStreetMap</a><div id="nmapw" hidden><div id="nmap"></div></div><button type="button" id="zme" aria-label="my location">◎ 현재 위치</button><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
+  <div class="map onkr" id="map"><div id="mz"><img src="img/maps/kr.jpg?h=904a2cac" alt="대한민국 관광 지도" id="mapimg"><svg id="dl" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg><div id="lod"></div><div id="treasIsle" role="button" tabindex="0" aria-label="Replay intro" style="left:76%;top:47%;transform:translate(-50%,-50%)"><img src="img/treasure_island.png?v=1024ti" alt=""></div></div><a id="osm" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" hidden>© OpenStreetMap</a><div id="nmapw" hidden><div id="nmap"></div></div><button type="button" id="zme" aria-label="my location">◎ 현재 위치</button><div class="zb"><button type="button" id="zin" aria-label="zoom in">＋</button><button type="button" id="zout" aria-label="zoom out">－</button><button type="button" id="zrs" aria-label="reset">⟲</button></div></div>
   <div id="infob">
   <div id="infot">안내</div>
   <div id="infoboard"><div class="pl" id="pl0"></div><div class="pl" id="pl1"></div><div class="pl" id="pl2"></div><button type="button" id="infomore" hidden aria-label="more">⋮</button></div>
@@ -1577,6 +1586,21 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script src="lang.js?v=1022es"></script>
 <script src="interp.js?v=1024icons"></script>
 <script src="billboard.js?v=1021pl"></script>
+<script>
+/* ★ 동해 보물섬(+롱 존 실버·앵무새) = 인트로 크롤 다시보기 (사장님 10-24) — ⋮ 메뉴 항목 대신 이 섬 하나로. 자족적, 실패해도 앱은 그대로 */
+(function(){ try{
+  var el=document.getElementById("treasIsle"); if(!el) return;
+  function lbl(){ try{ var t; if(typeof LP==="function") t=LP(["보물섬","Treasure Island","宝島","宝岛","寶島","Isla del tesoro"]);
+      else t=(typeof LANG!=="undefined"&&LANG==="ko")?"보물섬":"Treasure Island";
+      var s=el.querySelector(".tiLbl"); if(s) s.textContent=t; }catch(e){} }
+  lbl();
+  try{ if(typeof setLang==="function" && !setLang.__tiWrap){ var _o=setLang; var w=function(){ var r=_o.apply(this,arguments); try{ lbl(); }catch(e){} return r; }; w.__tiWrap=1; setLang=w; window.setLang=w; } }catch(e){}   // 언어 바뀌면 라벨도 6개 언어로
+  function play(e){ try{ if(e){ e.preventDefault(); e.stopPropagation(); } window.mpCrawlReplay && window.mpCrawlReplay(); }catch(x){} }
+  el.addEventListener("click",play,false);
+  el.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "||e.key==="Spacebar") play(e); },false);
+  ["pointerdown","mousedown","touchstart"].forEach(function(ev){ el.addEventListener(ev,function(e){ e.stopPropagation(); },false); });   // 지도 끌기·거리재기 시작 막기 — 섬 누름은 지도 조작이 아니다
+}catch(e){} })();
+</script>
 <script>
 /* ★ 스타워즈 오프닝 크롤 인트로 (영어 고정) — 자족적, 어떤 실패에도 앱은 그대로 뜬다 (사장님 10-24)
    노출: 영어 사용자는 1회 · 다른 언어로 바꾼 사용자는 총 2회 · 그 뒤 안 뜸. mpv_crawl_n / mpv_lang_changed. 모든 localStorage 는 try/catch. */
