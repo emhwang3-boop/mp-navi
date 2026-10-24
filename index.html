@@ -456,7 +456,7 @@ window.EMO_LEAD=/^(?:[\u{1F000}-\u{1FAFF}☀-➿⬀-⯿℀-⅏⌀-⏿]️?|️|�
 window.MIS="height:1.1em;width:auto;vertical-align:-0.18em;margin-right:4px";
 window.MPIMG=function(n,st){ return '<img class="miic" src="img/menu/'+n+'.png" alt=""'+(st?' style="'+st+'"':'')+'>'; };
 window.MPICO=function(n,l,st){ var s=String(l==null?"":l).replace(EMO_LEAD,""); return (n?MPIMG(n,st):"")+esc(s); };
-function setLang(l){ if(LANGS.indexOf(l)<0) l="ko"; LANG=l; try{ localStorage.setItem("mpv_lang",l); localStorage.setItem("mpv_lang_changed","1"); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} try{ nevPaint(); }catch(e){} }
+function setLang(l){ if(LANGS.indexOf(l)<0) l="ko"; LANG=l; try{ localStorage.setItem("mpv_lang",l); localStorage.setItem("mpv_lang_changed","1"); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} try{ nevPaint(); }catch(e){} try{ b4Draw(); }catch(e){} }
 function paint(){
   var _ls=document.getElementById("lang"); if(_ls) _ls.value=LANG; document.documentElement.lang={ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant",es:"es"}[LANG]||"ko";
   document.getElementById("ttl").textContent="Tour for Korea";   /* 앱 이름 Money Puzzle Tour for Korea — 모든 언어 같음 (사장님 10-22) */
@@ -672,7 +672,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025smks", NAVI_ROOT="kr";
+var NAVI_V="1025b4r", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -819,6 +819,27 @@ function routeShow(p){ rtClear(); var r=p.route, s=document.getElementById("dl")
   s.appendChild(g);
   var li=r.stops.map(function(t,i){ return (i+1)+". "+esc(LANG==="ko"?t[2]:TE(t[3])); }).join("<br>");
   document.getElementById("res").insertAdjacentHTML("beforeend",'<div class="item"><div class="t">'+MPICO("mi_bus",T("시티투어 노선 (도심·고궁·남산)","City Tour route (Downtown · Palaces · Namsan)"),MIS)+'</div><div class="d" style="margin:4px 0">'+esc(LP(r.info))+'</div><div class="d" style="line-height:1.7;color:var(--ink)">'+li+'</div></div>'); }
+// ── K-POP 빅4 투어 노선도 (전용 보기, 사장님 10-25) — 깨끗한 서울 베이스(주황선·빌딩 bake)에 언어별 명찰만 얹는다. 평소 지도엔 영향 없음(메뉴 단추로만 연다) ──
+var B4ORDER=["yg","hybe","smartium","smksu","jyp"];
+var B4LAB={ yg:{ko:"YG",en:"YG",ja:"YG",zhs:"YG",zht:"YG",es:"YG"},
+  hybe:{ko:"HYBE",en:"HYBE",ja:"HYBE",zhs:"HYBE",zht:"HYBE",es:"HYBE"},
+  smartium:{ko:"코엑스 아티움 (SM타운)",en:"COEX Artium (SMTOWN)",ja:"COEXアティウム（SMTOWN）",zhs:"COEX Artium（SMTOWN）",zht:"COEX Artium (SMTOWN)",es:"COEX Artium (SMTOWN)"},
+  smksu:{ko:"SM 성수 (KWANGYA)",en:"SM Seongsu (KWANGYA)",ja:"SM 聖水（KWANGYA）",zhs:"SM圣水（KWANGYA）",zht:"SM 聖水（KWANGYA）",es:"SM Seongsu (KWANGYA)"},
+  jyp:{ko:"JYP",en:"JYP",ja:"JYP",zhs:"JYP",zht:"JYP",es:"JYP"} };
+var B4LL={ yg:[37.5505,126.9115], hybe:[37.5298,126.9648], smartium:[37.509808,127.061653], smksu:[37.5443,127.0557], jyp:[37.5304,127.1253] };
+function b4Name(k){ var o=B4LAB[k]; return o?(o[LANG]||o.en):k; }
+function b4Clear(){ var e=document.getElementById("b4lab"); if(e) e.remove(); }
+function b4Draw(){ b4Clear(); if(VIEW!=="b4route"||!CITY.b4route) return; var mz=document.getElementById("mz"); if(!mz) return;
+  var w=document.getElementById("map").clientWidth, fs=Math.max(6,w*0.0135), box=document.createElement("div"); box.id="b4lab";
+  B4ORDER.forEach(function(k){ var ll=B4LL[k], f=meGeoFrac("b4route",ll[0],ll[1]); if(!f) return;
+    var d=document.createElement("div");
+    d.style.cssText="position:absolute;left:"+(f[0]*100)+"%;top:"+((f[1]+0.072)*100)+"%;transform:translateX(-50%);white-space:nowrap;background:#fff;color:#d9480f;border:"+Math.max(0.7,fs*0.1)+"px solid #ff7a00;border-radius:999px;padding:"+(fs*0.14)+"px "+(fs*0.55)+"px;font-size:"+fs+"px;font-weight:900;line-height:1.25;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.18)";
+    d.textContent=b4Name(k); box.appendChild(d); });
+  mz.appendChild(box); }
+function b4RouteShow(){ try{ inBlur(); }catch(e){} try{ spinClear(); }catch(e){}
+  if(!(CITY.b4route&&CITY.b4route.geo)) return; viewSet("b4route"); setTimeout(function(){ try{ b4Draw(); }catch(e){} },50);
+  clearTimeout(window._scT); window._scT=setTimeout(function(){ var m=document.getElementById("map"); window.scrollTo({top:m.getBoundingClientRect().top+scrollY-60,behavior:"smooth"}); },150); }
+window.b4RouteShow=b4RouteShow;
 var HIT={keys:[],rle:""};
 var HG=new Uint8Array(65536);
 // 그림 근처만 눌러도 된다 — 바로 그 자리가 비면 손가락 한 마디(화면 24px) 안의 가장 가까운 그림 (사장님 10-15)
@@ -860,7 +881,7 @@ var ROOT_IMG=document.getElementById("mapimg").getAttribute("src");
 function viewSet(v){ clearTimeout(window._scT); try{ spinClear(); }catch(e){} VIEW=v; document.getElementById("map").classList.toggle("onkr",!CITY[v]); if(CITY[v]) mapLoad(v).catch(function(){}); detSet(false); document.getElementById("vdet").hidden=!CITY[v]; document.getElementById("vbar").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:ROOT_IMG;
   document.getElementById("vback").hidden=!c; var tt=document.getElementById("vttl"); tt.hidden=!c; if(c) tt.textContent=LN(c);
   var vb=document.getElementById("vback"); vb.textContent="←"; vb.title=vb.ariaLabel=c&&c.parent!=="kr"?T(CITY[c.parent].ko+"로",LN(CITY[c.parent])):T("전국 지도로","Korea map");
-  try{ dlDraw(null); }catch(e){} try{ lblDraw(); }catch(e){} var w0=document.getElementById("map").clientWidth, s0=ZB(); ZM={s:s0,tx:w0/2-((c&&c.fx)||0.5)*w0*((c&&c.aspect)||1)*s0,ty:0}; zApply(); LOD.s0=ZM.s; }
+  try{ dlDraw(null); }catch(e){} try{ lblDraw(); }catch(e){} var w0=document.getElementById("map").clientWidth, s0=ZB(); ZM={s:s0,tx:w0/2-((c&&c.fx)||0.5)*w0*((c&&c.aspect)||1)*s0,ty:0}; zApply(); LOD.s0=ZM.s; try{ b4Draw(); }catch(e){} }
 var _lastTap={k:null,t:0}, _lastArea={a:null,t:0};
 function areaTap(cx,cy){ var c=CITY[VIEW]; if(!c||!c.areas) return; var r=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-r.left)/r.width, fy=(cy-r.top)/r.height, now=Date.now();
   var a=null, bd=9; for(var k in c.areas){ var b=c.areas[k]; if(fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]){ var dd=Math.max(Math.abs(fx-(b[0]+b[2])/2)/(b[2]-b[0]),Math.abs(fy-(b[1]+b[3])/2)/(b[3]-b[1])); if(dd<bd){ bd=dd; a=k; } } }   // 겹친 네모는 가운데에 가까운 쪽
@@ -1528,7 +1549,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1024sendfix"></script>
 <script src="gift.js?v=1024icons"></script>
-<script src="near.js?v=1025smks"></script>
+<script src="near.js?v=1025b4r"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}</script>
 <script src="reco.js?v=1024icons"></script>
