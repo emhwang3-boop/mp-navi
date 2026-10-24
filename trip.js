@@ -551,7 +551,7 @@ function shareData(){ var pl=TR.plan, r=function(n){ return Math.round(n*1e5)/1e
 function tripUrl(){ return zip(JSON.stringify(shareData())).then(function(z){ return location.origin+location.pathname.replace(/index\.html$/,"")+"?trip=1#tp="+z; }); }
 function shareGo(){ var box=document.getElementById("trNextBox");
   box.innerHTML='<div class="item"><div class="t">'+T("🔗 공유","🔗 Share")+'</div>'
-    +'<div class="shgrid" style="margin-top:8px"><button type="button" id="trShL">🔗 '+T("링크","Link")+'</button><button type="button" id="trShI">🖼 '+T("그림","Image")+'</button><button type="button" id="trShP">📄 '+T("PDF 보내기","Send PDF")+'</button><button type="button" id="trShMail">✉ '+T("메일","Email")+'</button></div>'
+    +'<div class="shgrid" style="margin-top:8px"><button type="button" id="trShL">🔗 '+T("링크","Link")+'</button><button type="button" id="trShP">📄 '+T("PDF 보내기","Send PDF")+'</button><button type="button" id="trShMail">✉ '+T("메일","Email")+'</button></div>'
     +'<div class="shmsg" id="trShM"></div></div>';
   document.getElementById("trShL").onclick=function(){ tripUrl().then(function(u){ var m=document.getElementById("trShM");
     if(navigator.share) navigator.share({title:T("내 여행 일정","My trip plan"),url:u}).catch(function(){});
@@ -559,14 +559,7 @@ function shareGo(){ var box=document.getElementById("trNextBox");
   // ✉ 메일 — 데스크톱·공유 시트 없을 때도 메일 앱으로 일정 링크를 보낼 수 있게 (사장님 10-24)
   document.getElementById("trShMail").onclick=function(){ var m=document.getElementById("trShM"); m.textContent=T("메일 여는 중…","Opening email…"); tripUrl().then(function(u){ m.textContent=""; window.__trShareUrl=u;
     var subj=encodeURIComponent(T("내 여행 일정","My trip plan")), body=encodeURIComponent(T("여행 일정을 공유합니다:","Here is my trip plan:")+"\n"+u); try{ ntap("_trip","share_mail"); }catch(e){} location.href="mailto:?subject="+subj+"&body="+body; }); };
-  document.getElementById("trShP").onclick=pdfShareGo;
-  document.getElementById("trShI").onclick=function(){ var m=document.getElementById("trShM"); m.textContent=T("그림 만드는 중…","Making image…");
-    shotDays().then(function(cvs){ var W=Math.max.apply(null,cvs.map(function(c){ return c.width; })), Hh=cvs.reduce(function(s,c){ return s+c.height+20; },0), cv=document.createElement("canvas"); cv.width=W; cv.height=Hh;
-      var g=cv.getContext("2d"), y=0; g.fillStyle="#fff"; g.fillRect(0,0,W,Hh); cvs.forEach(function(c){ g.drawImage(c,0,y); y+=c.height+20; });
-      cv.toBlob(function(b){ var f=new File([b],"my-trip.png",{type:"image/png"}); m.textContent="";
-        if(navigator.canShare&&navigator.canShare({files:[f]})) navigator.share({files:[f],title:T("내 여행 일정","My trip plan")}).catch(function(){});
-        else { var a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="my-trip.png"; document.body.appendChild(a); a.click(); a.remove(); } },"image/png"); })
-      .catch(function(){ m.textContent=T("그림을 만들지 못했어요","Could not make the image"); }); }; }
+  document.getElementById("trShP").onclick=pdfShareGo; }
 function fromShare(z){ return unzip(z).then(function(s){ var o=JSON.parse(s); if(!o||o.v!==1||!Array.isArray(o.d)) throw 0;
   return Promise.all(Object.keys(CITY).map(function(id){ return mapLoad(id).catch(function(){}); })).then(function(){
     var items=[], days=[], pool={};
