@@ -18,6 +18,10 @@
   try{ localStorage.removeItem("mpv_paytest"); }catch(z){}
   if(/[?&]me=EM2410/i.test(location.search)) localStorage.setItem("mp_owner","1");
   var ok=!!localStorage.getItem("mp_owner")||!!localStorage.getItem("mpv_ok")||/^https:\/\/([a-z0-9-]+\.)?moneypuzzle\.co\.kr|^https:\/\/emhwang3-boop\.github\.io\/(home|mp-navi)/.test(document.referrer||"");   /* 홈페이지에서 온 사람도 다시 들임 — ODsay 키는 서버로 옮김 (사장님 10-17) */
+  /* 가이드 후기 링크 (2026-10-24, near.js igReviewForm 과 짝) — 완료된 손님에게 메일로 보낸 ?review=<토큰>. 손님 정보 없음. 들어온 손님이니 통과시킨다 */
+  var rvm=/[?&]review=([0-9a-f]{32})(?![0-9a-z])/i.exec(location.search);
+  if(/[?&]review=/i.test(location.search)){ try{ var qsr=location.search.slice(1).split("&").filter(function(x){ return !/^review=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qsr?"?"+qsr:"")+location.hash); }catch(x){} }
+  if(rvm){ window.__mpReview=rvm[1]; localStorage.setItem("mpv_ok","1"); ok=true; }
   if(localStorage.getItem("mp_owner")||localStorage.getItem("mpv_inv")) document.addEventListener("DOMContentLoaded",function(){ var l=document.querySelector('link[rel="mp-manifest"]'); if(l) l.rel="manifest"; });
   /* 7일짜리 초대 링크 (사장님 2026-10-15) — 고정 코드는 더 안 받는다. 허브가 서명·만료를 확인한다 */
   var IH="https://brief-live-hub.emhwang3.workers.dev", IA="navi";
@@ -1303,7 +1307,8 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1023mi"></script>
 <script src="gift.js?v=1023mi"></script>
-<script src="near.js?v=1024tgchip2"></script>
+<script src="near.js?v=1024greview"></script>
+<script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}</script>
 <script src="reco.js?v=1023dd"></script>
 <script src="gu.js?v=f29da37807"></script>
 <script src="citytour.js?v=1022es"></script>
