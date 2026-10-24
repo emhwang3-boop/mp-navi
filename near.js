@@ -281,6 +281,7 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
     +'<div class="d" style="font-weight:700;color:var(--ink)">'+esc(LG6(B4PKG.g))+'</div>'
     +'<div class="d">'+esc(LG6(B4PKG.c))+'</div>'
     +'<div class="d" style="font-weight:800;color:var(--ink);margin-top:2px">'+esc(LG6(B4PKG.p))+'</div>'
+    +'<button type="button" class="nrsel" data-nr="b4map" style="margin-top:7px;background:#fff;color:#d9480f;border-color:#ff7a00">'+MPICO("mi_bus",LG6({ko:"투어 노선도 보기",en:"View tour route",ja:"ツアー路線図を見る",zhs:"查看游览路线图",zht:"查看遊覽路線圖",es:"Ver la ruta del tour"}),MIS)+' ›</button>'
     +'<button type="button" class="nrsel" data-nr="ig" style="margin-top:7px;background:#7c3aed;color:#fff;border-color:#7c3aed">'+esc(LG6(B4PKG.b))+' ›</button>'
     +'<div class="d" style="color:var(--sub);margin-top:4px">'+esc(LG6(B4PKG.n))+'</div></div>';
   var part='<div class="tgpart">'+esc(LG6(PARTNER6))+'</div>';
@@ -557,6 +558,7 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   if(g==="me"){ S.items=null; S.err=""; paint(); myPos().then(function(p){ if(p){ try{ meSet(p); }catch(z){} } load(); }); return; }
   if(g==="tgx"){ TGX[t.dataset.g]=!TGX[t.dataset.g]; paint(); return; }   // 체험·입장권 우리 메뉴 펼침/접기 (10-25)
   if(g==="tgp"){ tgPick(t.dataset.k); return; }   // 그 장소 열기 (공연장=카드+KOPIS, 빅4=카드)
+  if(g==="b4map"){ close(); try{ if(window.b4RouteShow) b4RouteShow(); }catch(z){} return; }   // 빅4 투어 노선도 보기 (10-25)
   if(g==="pick"){ var x=S.items&&S.items[+t.dataset.i]; if(x) pick(x); } });
 
 // ── 들어가는 곳: 검색창 아래 칩(선물 고르기 옆) · ⋮ 메뉴 ──
