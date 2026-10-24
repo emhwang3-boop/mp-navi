@@ -1069,7 +1069,7 @@ var LEG_PERF=["sejongctr","sac","bluesq","lgart","olympichall"];
 var LEG_KPOP=["smartium","hybe","jyp","yg"];   // smartium(코엑스 아티움)은 삼성동 약도에 삶 — kpopJump 로 그 약도 열며 연다
 function legName(k){ if(PLACES[k]) return LN(PLACES[k]); if(k==="smartium") return LP(["코엑스 아티움","COEX Artium","COEXアーティアム","COEX 아티움","COEX 阿提安","COEX Artium"]); return k; }
 function legOpen(k){ try{ inBlur(); }catch(e){} if(k==="smartium"){ try{ kpopJump(); }catch(e){} return; } if(PLACES[k]){ try{ placeShow(k); }catch(e){} } }
-function legDraw(z){ if(VIEW!=="seoulall") return; var w=document.getElementById("map").clientWidth, fs=Math.max(5,w*0.0135), ic=fs*2.1;
+function legDraw(z){ return; /* 범례 박스 삭제 (사장님 10-25) */ var w=document.getElementById("map").clientWidth, fs=Math.max(5,w*0.0135), ic=fs*2.1;
   var box=document.createElement("div"); box.className="mleg";
   box.style.cssText="position:absolute;left:40%;top:19%;width:"+(w*0.34)+"px;max-width:260px;background:rgba(255,255,255,.93);border:"+Math.max(1,fs*0.16)+"px solid #94a3b8;border-radius:"+(fs*0.9)+"px;box-shadow:0 2px 6px rgba(0,0,0,.22);padding:"+(fs*0.55)+"px "+(fs*0.6)+"px "+(fs*0.5)+"px;z-index:6;pointer-events:auto;font-family:inherit;-webkit-user-select:none;user-select:none";
   var ti=document.createElement("div"); ti.textContent=LP(["범례","Legend","凡例","图例","圖例","Leyenda"]); ti.style.cssText="display:block;width:fit-content;max-width:100%;font-size:"+(fs*0.95)+"px;font-weight:900;color:#fff;background:#475569;letter-spacing:.05em;margin:0 auto "+(fs*0.55)+"px;padding:"+(fs*0.25)+"px "+(fs*0.85)+"px;border-radius:999px;text-align:center"; box.appendChild(ti);
