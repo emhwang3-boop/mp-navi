@@ -398,7 +398,11 @@ function footBuild(){ var e=document.getElementById("foot"); if(!e) return;
     zht:["Booman Inc.（株式會社 부만） | 營業執照號 : 297-81-03712","代表 : Jeon Hyeonjin | 個人資料管理負責人 : Hwang Euiman","客服 : 1599-7065 | 電郵 : "+em,ADDR_EN],
     es:["Booman Inc. | N.º de registro mercantil : 297-81-03712","Representante : Jeon Hyeonjin | Resp. de privacidad : Hwang Euiman","Atención : 1599-7065 | Correo : "+em,ADDR_EN]
   };
-  var lg=F[window.LANG]?window.LANG:"en"; e.innerHTML=F[lg].map(function(x){ return '<div>'+x+'</div>'; }).join(""); }
+  var lg=F[window.LANG]?window.LANG:"en";
+  var PL={ko:["이용약관","개인정보처리방침"],en:["Terms","Privacy"],ja:["利用規約","プライバシー"],zhs:["使用条款","隐私政策"],zht:["使用條款","隱私政策"],es:["Términos","Privacidad"]};
+  var pl=PL[lg]||PL.en, qs="?lang="+lg;
+  var links='<div style="margin-top:6px"><a href="terms.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[0]+'</a> · <a href="privacy.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[1]+'</a></div>';
+  e.innerHTML=F[lg].map(function(x){ return '<div>'+x+'</div>'; }).join("")+links; }
 function kpL(){ return LANG==="ko"?"":"&lang=en"+(LANG==="en"?"":"&ul="+LANG); }   // /kplace·/neat — ul 이 있으면 허브가 name_en·cat_en 칸에 그 언어(일·简·繁)로 넣어 준다 (10-18)
 function hlG(){ return {ko:"",en:"&hl=en",ja:"&hl=ja",zhs:"&hl=zh-CN",zht:"&hl=zh-TW",es:"&hl=es"}[LANG]||""; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
