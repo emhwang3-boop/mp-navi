@@ -21,7 +21,6 @@ function save(){ try{ localStorage.setItem(KEY,JSON.stringify(TR)); }catch(e){} 
 function L(){ return window.LANG!=="ko"; }   // 외국어 화면(영·일·중) — 10-18
 function nm(it){ if(!it) return ""; if(!L()) return it.ko; var p=it.k&&window.PLACES&&PLACES[it.k]; return (p&&p[LANG])||it[LANG]||it.en||it.ko; }   // 일·중 이름은 지금 받은 장소 자료에서
 function T5(o){ return o[window.LANG]||o.en; }   // 다섯 말 문구 (10-20)
-function LG6(o){ return o[window.LANG]||o.en; }   // 6개 언어 문구 (일정 공유·가이드 보내기, 10-24)
 function aiTx(a){ return !a?"":LANG==="ko"?a.ko:(a[LANG]||a.en); }   // AI 설명 — 허브가 그 언어 칸을 주면 그것, 아니면 영어
 function km(a,b){ var R=6371, rd=Math.PI/180, dLa=(b.lat-a.lat)*rd, dLo=(b.lng-a.lng)*rd, h=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(a.lat*rd)*Math.cos(b.lat*rd)*Math.sin(dLo/2)*Math.sin(dLo/2); return 2*R*Math.asin(Math.sqrt(h)); }
 function hm2m(s){ var m=/^(\d{1,2}):(\d{2})$/.exec(s||""); return m?(+m[1])*60+(+m[2]):null; }
@@ -90,7 +89,7 @@ wrap("placeShow",function(){ cardBtn(); });
 wrap("spinCard",function(){ cardBtn(); });
 wrap("zApply",function(){ flags(); });
 wrap("setLang",function(){ refresh(); if(document.getElementById("trBox")){ var aq=document.getElementById("trAddrQ"), av=aq?aq.value:""; panelPaint(); var aq2=document.getElementById("trAddrQ"); if(aq2) aq2.value=av; addrPaint(); }
-  if(document.getElementById("trRep")) repAgain(); if(document.getElementById("trGd")) gdPaint(); });   // 열린 창은 그 자리에서 (lang.js, 10-18)
+  if(document.getElementById("trRep")) repAgain(); });   // 열린 창은 그 자리에서 (lang.js, 10-18)
 // 보고서를 그 자리에서 다시 — 「다음 갈 곳」·「공유」 칸과 펼쳐 둔 「실제 경로」 구간을 그대로 다시 연다 (같은 구간은 sessionStorage 캐시)
 function repAgain(){ var nb=document.getElementById("trNextBox"), nx=nb&&nb.firstElementChild?(nb.querySelector("#trShL")?"share":"next"):"", open=[];
   [].forEach.call(document.querySelectorAll("#trRep .tlg"),function(r){ var t=r.querySelector(".tods"); if(t&&t.firstElementChild) open.push([r.dataset.a,r.dataset.b,r.dataset.d]); });
@@ -548,13 +547,11 @@ function unzip(s){ var u=ub64(s.slice(1)); if(s.charAt(0)==="0") return Promise.
 function shareData(){ var pl=TR.plan, r=function(n){ return Math.round(n*1e5)/1e5; };
   return {v:1,s:pl.days[0]&&pl.days[0].date,f:m2hm(pl.from),t:m2hm(pl.to),w:TR.opt.walk,h:pl.hotel&&pl.hotel.type!=="here"?[pl.hotel.ko,pl.hotel.en,r(pl.hotel.lat),r(pl.hotel.lng)]:null,
     d:pl.days.map(function(d){ return d.stops.map(function(k){ var x=pl.pool[k]; return x.pin?[x.ko,x.en,r(x.lat),r(x.lng)]:k; }); })}; }
-// 일정을 # 뒤에 압축해 담은 공유 링크(읽기 전용으로 앱에서 열린다) — 링크·메일·가이드 보내기 공용
+// 일정을 # 뒤에 압축해 담은 공유 링크(읽기 전용으로 앱에서 열린다) — 링크·메일 공용
 function tripUrl(){ return zip(JSON.stringify(shareData())).then(function(z){ return location.origin+location.pathname.replace(/index\.html$/,"")+"?trip=1#tp="+z; }); }
-var SENDGUIDE6={ko:"가이드에게 보내기",en:"Send to a guide",ja:"ガイドに送る",zhs:"发送给向导",zht:"發送給嚮導",es:"Enviar a un guía"};
 function shareGo(){ var box=document.getElementById("trNextBox");
   box.innerHTML='<div class="item"><div class="t">'+T("🔗 공유","🔗 Share")+'</div>'
     +'<div class="shgrid" style="margin-top:8px"><button type="button" id="trShL">🔗 '+T("링크","Link")+'</button><button type="button" id="trShI">🖼 '+T("그림","Image")+'</button><button type="button" id="trShP">📄 '+T("PDF 보내기","Send PDF")+'</button><button type="button" id="trShMail">✉ '+T("메일","Email")+'</button></div>'
-    +'<button type="button" class="trgdbtn" id="trShGd"><img class="miic trgdic" src="img/menu/mi_guideperson.png" alt="">'+esc(LG6(SENDGUIDE6))+'</button>'
     +'<div class="shmsg" id="trShM"></div></div>';
   document.getElementById("trShL").onclick=function(){ tripUrl().then(function(u){ var m=document.getElementById("trShM");
     if(navigator.share) navigator.share({title:T("내 여행 일정","My trip plan"),url:u}).catch(function(){});
@@ -563,7 +560,6 @@ function shareGo(){ var box=document.getElementById("trNextBox");
   document.getElementById("trShMail").onclick=function(){ var m=document.getElementById("trShM"); m.textContent=T("메일 여는 중…","Opening email…"); tripUrl().then(function(u){ m.textContent=""; window.__trShareUrl=u;
     var subj=encodeURIComponent(T("내 여행 일정","My trip plan")), body=encodeURIComponent(T("여행 일정을 공유합니다:","Here is my trip plan:")+"\n"+u); try{ ntap("_trip","share_mail"); }catch(e){} location.href="mailto:?subject="+subj+"&body="+body; }); };
   document.getElementById("trShP").onclick=pdfShareGo;
-  document.getElementById("trShGd").onclick=gdOpen;
   document.getElementById("trShI").onclick=function(){ var m=document.getElementById("trShM"); m.textContent=T("그림 만드는 중…","Making image…");
     shotDays().then(function(cvs){ var W=Math.max.apply(null,cvs.map(function(c){ return c.width; })), Hh=cvs.reduce(function(s,c){ return s+c.height+20; },0), cv=document.createElement("canvas"); cv.width=W; cv.height=Hh;
       var g=cv.getContext("2d"), y=0; g.fillStyle="#fff"; g.fillRect(0,0,W,Hh); cvs.forEach(function(c){ g.drawImage(c,0,y); y+=c.height+20; });
@@ -581,50 +577,6 @@ function fromShare(z){ return unzip(z).then(function(s){ var o=JSON.parse(s); if
     TR={items:items.map(function(x){ var y=Object.assign({},x); delete y.stay; return y; }),opt:{n:days.length,start:o.s,from:o.f,to:o.t,walk:+o.w||1,hotel:h}};
     TR.plan={v:1,at:Date.now(),from:hm2m(o.f)||570,to:hm2m(o.t)||1200,hotel:h,days:days.map(function(ks,i){ return {date:dayDate(i).toISOString().slice(0,10),stops:ks}; }),pool:pool,skip:[],ai:null};
     TR.plan.H=h?{k:"__hotel",ko:h.ko,en:h.en,lat:h.lat,lng:h.lng,hotel:1}:null; save(); refresh(); }); }); }
-
-// ── 가이드에게 보내기 (사장님 2026-10-24) — 짜 둔 일정을 등록된(승인된) 가이드에게 이메일로 전달 + 우리 텔레그램 ──
-//   near.js 통역·길안내(igRender)의 언어 고르기 → 가이드 목록 → 폼 흐름을 그대로 베낌. 결제 없음.
-//   보내는 것: 가이드 선택 언어 · 일정 공유 링크(?trip=1#tp=…) · 손님 이름(선택) · 쪽지(선택) · 전달 동의
-//   가이드 알림은 지금 이메일(허브 /guide/itinerary → Resend) + 우리 텔레그램. 가이드 앱/웹푸시는 Phase2 (가이드 앱 생길 때)
-var GLANG6=[["한국어","ko"],["English","en"],["日本語","ja"],["中文(简)","zhs"],["中文(繁)","zht"],["Español","es"]];
-var GD={view:"pick",lang:"",guides:null,gid:null,gobj:null,busy:false,err:""};
-function gdLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) return GLANG6[i][0]; return c; }
-function gdFace(g){ return g.photo?'<img class="gdav" src="'+HUB+'/guide/photo?id='+encodeURIComponent(g.id)+'" alt="" loading="lazy">':'<span class="gdav gdavx"><img class="trgdic2" src="img/menu/mi_guideperson.png" alt=""></span>'; }
-function gdOpen(){ GD={view:"pick",lang:"",guides:null,gid:null,gobj:null,busy:false,err:""}; sheet("trGd"); gdPaint(); try{ ntap("_trip","trip_guide_open"); }catch(e){} }
-function gdLoad(){ var lang=GD.lang; fetch(HUB+"/guide/guides?lang="+encodeURIComponent(lang)).then(function(r){ return r.json(); }).then(function(j){ if(GD.lang!==lang||GD.view!=="list") return; if(j&&j.ok) GD.guides=j.items||[]; else GD.err="x"; gdPaint(); }).catch(function(){ if(GD.lang===lang&&GD.view==="list"){ GD.err="net"; gdPaint(); } }); }
-function gdPaint(){ var box=document.querySelector("#trGd .trin"); if(!box) return;
-  var head='<div class="trtop"><b><img class="miic trgdic" src="img/menu/mi_guideperson.png" alt="">'+esc(LG6(SENDGUIDE6))+'</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.closeGuide()">✕</button></div>';
-  var back='<button type="button" class="trbtn" id="gdBack" style="margin:0 0 6px">‹ '+esc(LG6({ko:"뒤로",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Atrás"}))+'</button>';
-  if(GD.view==="done"){ box.innerHTML=head+'<div class="gdnote">✓ '+esc(LG6({ko:"가이드에게 일정을 보냈어요. 가이드가 이메일로 받습니다.",en:"Sent. The guide will receive it by email.",ja:"ガイドに日程を送りました。ガイドはメールで受け取ります。",zhs:"已将行程发送给向导。向导将通过邮件收到。",zht:"已將行程發送給嚮導。嚮導將透過電子郵件收到。",es:"Enviado. El guía lo recibirá por correo electrónico."}))+'</div><button type="button" class="trbtn" onclick="TRIP.closeGuide()">'+T("닫기","Close")+'</button>'; return; }
-  if(GD.view==="req"&&GD.gobj){ var g=GD.gobj;
-    box.innerHTML=head+back
-      +'<div class="gdcard" style="cursor:default">'+gdFace(g)+'<div class="gdb"><b>'+esc(g.name)+'</b><div class="gdm">'+g.langs.map(gdLangName).map(esc).join(" · ")+'</div></div></div>'
-      +'<label class="gdlb">'+esc(LG6({ko:"손님 이름 (선택)",en:"Your name (optional)",ja:"お名前（任意）",zhs:"您的姓名（可选）",zht:"您的姓名（可選）",es:"Tu nombre (opcional)"}))+'</label><input class="gdin" id="gdNm" maxlength="30">'
-      +'<label class="gdlb">'+esc(LG6({ko:"쪽지 (선택)",en:"Message (optional)",ja:"メモ（任意）",zhs:"留言（可选）",zht:"留言（可選）",es:"Mensaje (opcional)"}))+'</label><textarea class="gdin" id="gdMs" maxlength="500" style="min-height:70px"></textarea>'
-      +'<label class="gdchk"><input type="checkbox" id="gdAg"> '+esc(LG6({ko:"내 여행 일정을 이 가이드에게 전달하는 데 동의합니다.",en:"I agree to share my trip itinerary with this guide.",ja:"私の旅程をこのガイドに伝えることに同意します。",zhs:"我同意将我的行程转交给该向导。",zht:"我同意將我的行程轉交給該嚮導。",es:"Acepto compartir mi itinerario con este guía."}))+'</label>'
-      +'<button type="button" class="trbtn big" id="gdGo" style="margin-top:10px"><img class="trgdic" src="img/menu/mi_guideperson.png" alt="" style="filter:brightness(0) invert(1)">'+esc(LG6(SENDGUIDE6))+'</button><div class="shmsg" id="gdM"></div>';
-    document.getElementById("gdBack").onclick=function(){ GD.view="list"; gdPaint(); };
-    document.getElementById("gdGo").onclick=gdSend; return; }
-  if(GD.view==="list"){ var h=head+back+'<div class="gdlbl">'+esc(LG6({ko:gdLangName(GD.lang)+" 가이드",en:gdLangName(GD.lang)+" guides",ja:gdLangName(GD.lang)+"のガイド",zhs:gdLangName(GD.lang)+"向导",zht:gdLangName(GD.lang)+"嚮導",es:"Guías de "+gdLangName(GD.lang)}))+'</div>';
-    if(GD.err) h+='<div class="msg">'+esc(LG6({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again shortly.",ja:"しばらくしてからもう一度お試しください。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo de nuevo en un momento."}))+'</div>';
-    else if(!GD.guides) h+='<div class="msg">'+esc(LG6({ko:"찾는 중…",en:"Searching…",ja:"検索中…",zhs:"搜索中…",zht:"搜尋中…",es:"Buscando…"}))+'</div>';
-    else if(!GD.guides.length) h+='<div class="gdnote">'+esc(LG6({ko:"아직 등록된 가이드가 없습니다. 곧 추가될 예정이에요.",en:"No guides registered yet. More coming soon.",ja:"まだ登録されたガイドがいません。近日追加予定です。",zhs:"暂无已登记的向导，即将新增。",zht:"暫無已登記的嚮導，即將新增。",es:"Aún no hay guías registrados. Pronto habrá más."}))+'</div>';
-    else h+=GD.guides.map(function(g,i){ return '<div class="gdcard" data-gdi="'+i+'">'+gdFace(g)+'<div class="gdb"><b>'+esc(g.name)+'</b>'+(g.count>0?' <span class="gdrb">★'+(g.avg!=null?g.avg:0)+' ('+g.count+')</span>':'')+'<div class="gdm">'+g.langs.map(gdLangName).map(esc).join(" · ")+(g.years?' · '+g.years+(window.LANG==="ko"?"년":"y"):"")+(g.region?' · '+esc(g.region):"")+'</div>'+(g.intro?'<div class="gdi">'+esc(g.intro)+'</div>':"")+'<span class="gdpk">'+esc(LG6({ko:"이 가이드에게 보내기 ›",en:"Send to this guide ›",ja:"このガイドに送る ›",zhs:"发送给该向导 ›",zht:"發送給該嚮導 ›",es:"Enviar a este guía ›"}))+'</span></div></div>'; }).join("");
-    box.innerHTML=h; document.getElementById("gdBack").onclick=function(){ GD.view="pick"; GD.lang=""; GD.guides=null; gdPaint(); };
-    [].forEach.call(box.querySelectorAll("[data-gdi]"),function(c){ c.onclick=function(){ var g=GD.guides&&GD.guides[+c.dataset.gdi]; if(g){ GD.gobj=g; GD.gid=g.id; GD.view="req"; gdPaint(); } }; }); return; }
-  // pick
-  box.innerHTML=head+'<div class="gdnote">ⓘ '+esc(LG6({ko:"짜 둔 여행 일정을 가이드에게 보내면, 가이드가 이메일로 받아 미리 볼 수 있어요.",en:"Send your trip itinerary to a guide; they’ll receive it by email and can review it beforehand.",ja:"作成した旅程をガイドに送ると、ガイドはメールで受け取り、事前に確認できます。",zhs:"将您的行程发送给向导，向导将通过邮件收到并提前查看。",zht:"將您的行程發送給嚮導，嚮導將透過電子郵件收到並提前查看。",es:"Envía tu itinerario a un guía; lo recibirá por correo y podrá revisarlo antes."}))+'</div>'
-    +'<div class="gdlbl">'+esc(LG6({ko:"필요한 언어를 고르세요",en:"Choose the language you need",ja:"必要な言語を選んでください",zhs:"请选择您需要的语言",zht:"請選擇您需要的語言",es:"Elige el idioma que necesitas"}))+'</div><div class="gdlangs">'
-    +GLANG6.map(function(l){ return '<button type="button" class="gdlang" data-gdl="'+l[1]+'">'+esc(l[0])+' ›</button>'; }).join("")+'</div>';
-  [].forEach.call(box.querySelectorAll("[data-gdl]"),function(a){ a.onclick=function(){ GD.lang=a.dataset.gdl; GD.view="list"; GD.guides=null; GD.err=""; gdPaint(); gdLoad(); }; }); }
-function gdSend(){ if(GD.busy) return; var ag=document.getElementById("gdAg"), M=document.getElementById("gdM"), set=function(t){ if(M) M.textContent=t; };
-  if(!ag||!ag.checked){ set(LG6({ko:"전달 동의에 체크해 주세요.",en:"Please check the consent box.",ja:"同意にチェックしてください。",zhs:"请勾选同意。",zht:"請勾選同意。",es:"Marca la casilla de consentimiento."})); return; }
-  var nm=document.getElementById("gdNm"), ms=document.getElementById("gdMs"), nmv=nm?nm.value:"", msv=ms?ms.value:"";
-  GD.busy=true; set("…"); var go=document.getElementById("gdGo"); if(go) go.disabled=true;
-  tripUrl().then(function(u){ window.__trShareUrl=u; return fetch(HUB+"/guide/itinerary",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({guideId:GD.gid,lang:LANG,tripUrl:u,name:nmv,msg:msv,consent:true}),cache:"no-store"}); }).then(function(r){ return r.json(); }).then(function(j){ GD.busy=false; if(go) go.disabled=false;
-    if(j&&j.ok){ GD.view="done"; gdPaint(); try{ ntap("_trip","trip_guide_send"); }catch(e){} return; }
-    set(j&&j.err==="url"?LG6({ko:"일정 링크를 만들지 못했어요.",en:"Could not build the itinerary link.",ja:"日程リンクを作成できませんでした。",zhs:"无法生成行程链接。",zht:"無法產生行程連結。",es:"No se pudo crear el enlace."}):j&&j.err==="rate"?LG6({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてからもう一度。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):LG6({ko:"보내지 못했습니다.",en:"Could not send.",ja:"送信できませんでした。",zhs:"发送失败。",zht:"發送失敗。",es:"No se pudo enviar."})); })
-  .catch(function(){ GD.busy=false; if(go) go.disabled=false; set(LG6({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
 
 // ── 시작 ──
 var css=document.createElement("style"); css.textContent=
@@ -647,15 +599,10 @@ var css=document.createElement("style"); css.textContent=
 +".teact{display:block;margin-top:4px}.teact a{display:inline-block;margin:3px 5px 0 0;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;color:var(--ink);background:var(--bg)}.trck{flex-direction:row!important;align-items:center;gap:6px!important;font-size:13px!important}.trck input{width:auto!important}"
 +".trpop{position:fixed;inset:0;z-index:1050;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}.trpop>div{background:var(--card);color:var(--ink);max-width:440px;border-radius:16px;padding:16px 18px;font-size:14.5px;text-align:center}"
 +".trshot{position:absolute;left:-12000px;top:0;width:680px;background:var(--bg);padding:0}.trshot .tday{margin:0}"
-// 공유 칸 단추 + 가이드에게 보내기 판 (사장님 10-24)
-+".shgrid{display:flex;flex-wrap:wrap;gap:8px}.shgrid button{flex:1 1 40%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 10px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit}.shmsg{font-size:13px;color:var(--sub);margin-top:8px;word-break:break-all}"
-+".trgdbtn{display:flex;align-items:center;justify-content:center;width:100%;margin-top:8px;border:1.5px solid #0c8599;background:#e3fafc;color:#0b7285;border-radius:12px;padding:11px 10px;font-weight:900;font-size:15px;cursor:pointer;font-family:inherit}:root[data-theme=dark] .trgdbtn{background:#0b2b31}.trgdic{height:18px;width:auto;vertical-align:-3px;margin-right:6px}"
-+".gdlbl{font-size:13px;color:var(--sub);font-weight:800;margin:10px 2px 6px}.gdnote{background:#e3fafc;border:1px solid #99e9f2;color:#0b7285;border-radius:12px;padding:12px 14px;font-size:14px;font-weight:700;line-height:1.5;margin:6px 0 12px}:root[data-theme=dark] .gdnote{background:#0b2b31}"
-+".gdlangs{display:flex;flex-direction:column;gap:9px}.gdlang{display:block;width:100%;text-align:center;border:1.5px solid #0c8599;background:#e3fafc;color:#0b7285;border-radius:12px;padding:13px 10px;font-size:16px;font-weight:900;cursor:pointer;font-family:inherit}:root[data-theme=dark] .gdlang{background:#0b2b31}"
-+".gdcard{display:flex;gap:11px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin:9px 0;cursor:pointer}.gdav{width:56px;height:56px;border-radius:12px;object-fit:cover;flex:0 0 auto;background:#e3fafc}.gdav.gdavx{display:flex;align-items:center;justify-content:center}.gdavx .trgdic2{height:32px;width:auto}.gdb{flex:1;min-width:0}.gdb b{font-size:15.5px}.gdm{color:var(--sub);font-size:12.5px;margin-top:2px}.gdi{color:var(--ink);font-size:13px;margin-top:4px;line-height:1.45}.gdpk{display:inline-block;margin-top:6px;color:#0c8599;font-weight:800;font-size:13px}.gdrb{display:inline-block;font-size:12.5px;font-weight:800;color:#e8590c;white-space:nowrap}"
-+".gdlb{display:block;font-size:13px;color:var(--sub);font-weight:700;margin:10px 2px 3px}.gdin{width:100%;box-sizing:border-box;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 11px}.gdchk{display:flex;gap:7px;align-items:flex-start;font-size:13px;color:var(--ink);margin:12px 2px 0;line-height:1.5}.gdchk input{width:18px;height:18px;margin-top:1px;flex:0 0 auto}";
+// 공유 칸 단추 (사장님 10-24)
++".shgrid{display:flex;flex-wrap:wrap;gap:8px}.shgrid button{flex:1 1 40%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 10px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit}.shmsg{font-size:13px;color:var(--sub);margin-top:8px;word-break:break-all}";
 document.head.appendChild(css);
-window.TRIP={open:openPanel,report:openReport,close:sheetClose,closeGuide:function(){ sheetClose("trGd"); },guide:gdOpen,state:function(){ return TR; },hasPass:hasPass,
+window.TRIP={open:openPanel,report:openReport,close:sheetClose,state:function(){ return TR; },hasPass:hasPass,
   debug:function(){ var pl=TR.plan; if(!pl) return null; var H=REPH||pl.H||null, tot=0, tr=0, rl=0;   // 읽기 전용 — 날짜별 묶음·이동시간·실제구간 수 (시험·비교용)
     var days=pl.days.map(function(d){ var arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), p=H, tv=0, legs=0, real=0;
       arr.forEach(function(x){ if(p){ var lg=leg(p,x); if(lg.mode!=="walk"){ legs++; if(lg.real) real++; } tv+=lg.min; } p=x; });
