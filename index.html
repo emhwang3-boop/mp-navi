@@ -94,10 +94,12 @@ html:lang(zh-Hant) body,html:lang(zh-Hant) :is(button,input,select,textarea){fon
 /* 검색 단추 + 칩 3개(gift.js·near.js 가 붙임)를 한 줄에 하나씩, 같은 너비·같은 간격 (사장님 10-16) */
 /* 폰 세로 = 검색 단추·칩 4개를 한 줄에 하나씩 같은 너비로 · 가로·PC = 아래 @media 에서 한 줄로 (사장님 10-16) */
 .sbox .qw{order:-2}.sbox .desc{order:-1}
-.sbox #gfchips{display:contents!important}
-.sbox #gob,.sbox #gfchips>button{width:min(260px,70%)!important;box-sizing:border-box;text-align:center;margin:0!important;white-space:nowrap}
-.sbox #gob{order:0}
-.sbox #gfchips>.nrchip.tg{order:1}.sbox #gfchips>.nrchip.st{order:2}.sbox #gfchips>.nrchip:not(.st):not(.em):not(.tg){order:3}.sbox #gfchips>.gfchip{order:4}.sbox #gfchips>.nrchip.em{order:5}
+/* 칩을 2열 종대(한 줄에 둘씩)로 — 검색칸·검색·추천받기 줄 아래 자기 줄에 (사장님 10-24) */
+.sbox #gfchips{order:1;flex:0 0 100%;width:100%;display:grid!important;grid-template-columns:repeat(2,minmax(0,170px));justify-content:center;gap:6px;margin:12px 0 0;box-sizing:border-box}
+.sbox #gob{width:min(260px,70%)!important;box-sizing:border-box;text-align:center;margin:0!important;white-space:nowrap;order:0}
+.sbox #gfchips>button{width:auto!important;box-sizing:border-box;text-align:center;margin:0!important;white-space:nowrap}
+/* 2열 채우는 순서: 투어가이드·투어입장권 / 숙소·편의시설 / 선물·긴급 */
+.sbox #gfchips>.nrchip.ig{order:1}.sbox #gfchips>.nrchip.tg{order:2}.sbox #gfchips>.nrchip.st{order:3}.sbox #gfchips>.nrchip:not(.st):not(.em):not(.tg):not(.ig){order:4}.sbox #gfchips>.gfchip{order:5}.sbox #gfchips>.nrchip.em{order:6}
 .map{margin:18px 0 0;border-radius:18px;overflow:hidden;background:#96b2c4;box-shadow:0 2px 14px rgba(0,0,0,.08)}
 /* 지도는 화면 폭 거의 전부 × 화면 높이 거의 전부(제목줄·칩 줄만 남김) — 정사각형 아님. 높이 --MH 는 mapFit() 이 잰다 (사장님 10-16) */
 .map{--W:min(calc(100vw - 24px),1600px);width:var(--W);margin-left:calc((100% - var(--W)) / 2);height:var(--MH,max(320px,calc(100vh - 300px)))}
@@ -116,12 +118,11 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 @media (min-width:900px) and (min-height:561px){
   .sbox{display:grid!important;grid-template-columns:1fr minmax(0,460px) auto auto 1fr;column-gap:5px;row-gap:8px;align-items:center}
   .sbox .qw{grid-column:2;grid-row:1}.sbox #gob{grid-column:3;grid-row:1}.sbox #recob{grid-column:4;grid-row:1}
-  .sbox #gfchips{display:grid!important;grid-column:2;grid-row:2;grid-auto-flow:column;grid-auto-columns:var(--cw,1fr);gap:6px;margin:0;justify-self:center;width:max-content}   /* 칩 너비 --cw = bwSync() 가 잰 가장 긴 칩(검색칸보다 길면 검색칸 가운데 기준으로 양쪽 같게, 10-23) */
+  .sbox #gfchips{display:grid!important;grid-column:2;grid-row:2;grid-template-columns:1fr 1fr;gap:6px;margin:0;justify-self:stretch;width:100%}   /* 칩 2열 종대 — 검색칸 바로 아래 (사장님 10-24) */
   .sbox #gfchips>button{width:auto!important}
-  .sbox #gfchips.cwide{display:flex!important;flex-wrap:wrap;justify-content:center;width:auto;grid-column:1/-1}.sbox #gfchips.cwide>button{width:var(--cw)!important}
   .sbox #gob,.sbox #recob{min-width:var(--bw,0)}   /* 검색·추천받기 같은 너비 — --bw 는 bwSync() 가 잰다 (사장님 10-23) */
 }
-@media (orientation:landscape) and (max-height:560px){ .map{--W:calc(100vw - 112px)}   /* 가로 화면: 지도 양옆 손잡이(지도 밖 = 화면 넘김) */ .wrap{padding:6px 12px}.top{margin:0 0 6px}.logo{font-size:17px}.logo img{height:26px}.tbs .tb{font-size:12px;padding:5px 8px} }
+@media (orientation:landscape) and (max-height:560px){ .map{--W:calc(100vw - 112px)}   /* 가로 화면: 지도 양옆 손잡이(지도 밖 = 화면 넘김) */ .wrap{padding:6px 12px}.top{margin:0 0 6px}.logo{font-size:17px}.logo img{height:26px}.tbs .tb{font-size:12px;padding:5px 8px} .wrap .sbox{flex-wrap:wrap}   /* 칩 2열 그리드는 제 줄로 (사장님 10-24) */ }
 .map{position:relative}.map img{display:block;width:100%;height:auto}
 .map{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.map img{-webkit-user-drag:none;pointer-events:none}
 #dl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}   /* 길 점선은 그림 위로 (사장님 10-16) */
@@ -458,18 +459,7 @@ function qClear(){ try{ spinClear(); }catch(e){} var q=document.getElementById("
 document.getElementById("q").addEventListener("input",qxSync);
 // 넓은 PC: 검색·추천받기 단추를 둘 중 넓은 쪽 너비로 맞춘다 — 언어 바뀌면 글자 길이가 달라져 다시 잰다 (사장님 10-23)
 function bwSync(){ var sb=document.querySelector(".sbox"), a=document.getElementById("gob"), b=document.getElementById("recob"); if(!sb||!a||!b) return;
-  sb.style.removeProperty("--bw"); var w=Math.ceil(Math.max(a.offsetWidth,b.offsetWidth)); if(w) sb.style.setProperty("--bw",w+"px");
-  // 칩: 영어·스페인어처럼 글자가 길면 칩마다 너비가 달라지고 한쪽으로 쏠렸다 — 가장 긴 칩 너비(검색칸 폭을 칩 수로 나눈 것보다 작으면 그것)로 모두 같게 (사장님 10-23)
-  var gc=document.getElementById("gfchips"), qw=sb.querySelector(".qw"); if(!gc) return;
-  if(!matchMedia("(min-width:900px) and (min-height:561px)").matches){ gc.style.removeProperty("--cw"); return; }
-  gc.style.removeProperty("--cw"); gc.style.gridAutoColumns="max-content"; var bs=[].slice.call(gc.children).filter(function(x){ return x.offsetWidth>0; }), mx=0;
-  bs.forEach(function(x){ mx=Math.max(mx,x.offsetWidth); }); gc.style.gridAutoColumns="";
-  gc.classList.remove("cwide");
-  if(bs.length){ var fill=qw?(qw.offsetWidth-6*(bs.length-1))/bs.length:0, cw=Math.ceil(Math.max(mx,fill)); gc.style.setProperty("--cw",cw+"px");
-    // 칩 줄이 화면 밖으로 나가면(스페인어·좁은 PC) — 먼저 줄 전체 가운데로, 그래도 넘치면 두 줄로 (10-23)
-    var tot=bs.length*cw+6*(bs.length-1), sr=sb.getBoundingClientRect(), qr=qw?qw.getBoundingClientRect():sr, mid=(qr.left+qr.right)/2;
-    var vw=document.documentElement.clientWidth;   // 화면 가장자리 8px 안쪽에 들어오는지
-    if(mid-tot/2<8||mid+tot/2>vw-8) gc.classList.add("cwide"); } }   // 넘치면 줄 전체 가운데로, 그래도 넘치면 두 줄
+  sb.style.removeProperty("--bw"); var w=Math.ceil(Math.max(a.offsetWidth,b.offsetWidth)); if(w) sb.style.setProperty("--bw",w+"px"); }   // 칩은 이제 2열 그리드라 너비 계산 안 함 (사장님 10-24)
 (function(){ var t=0, k=function(){ clearTimeout(t); t=setTimeout(bwSync,60); }; window.addEventListener("load",k); window.addEventListener("resize",k);
   try{ new MutationObserver(k).observe(document.querySelector(".sbox"),{childList:true,subtree:true,characterData:true}); }catch(e){} })();
 // #res 한 줄 안내 — 언어를 바꾸면 그 자리에서 다시 (lang.js 가 window._RR.f 를 부른다, 10-18)
@@ -1313,7 +1303,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1023mi"></script>
 <script src="gift.js?v=1023mi"></script>
-<script src="near.js?v=1024gic"></script>
+<script src="near.js?v=1024tgchip2"></script>
 <script src="reco.js?v=1023dd"></script>
 <script src="gu.js?v=f29da37807"></script>
 <script src="citytour.js?v=1022es"></script>
