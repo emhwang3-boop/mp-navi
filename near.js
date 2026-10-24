@@ -110,6 +110,13 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".nrph{display:inline-block;width:1em;height:1em;vertical-align:-0.14em;margin-right:5px;color:inherit}"
   +".nrdt{display:inline-block;border:1px solid #e8590c;color:#d9480f;border-radius:6px;font-size:11px;font-weight:900;padding:0 5px;margin-left:5px;vertical-align:2px;white-space:nowrap}"
   +".nrtg{margin:10px 0;padding:12px 14px;border:1px solid #c5d3e8;background:#fff;border-radius:12px}.nrtg a{display:inline-block;font-size:19px;font-weight:900;color:#1c5fb8;text-decoration:none;margin-bottom:4px}.nrtg .d{font-size:14.5px;color:#444;line-height:1.6}"
+  // 체험·입장권 맨 위 우리 메뉴 2개 (공연관람·K-POP BIG4 사옥견학, 사장님 2026-10-25) — 펼침 목록, 고르면 placeShow/kpopJump
+  +".tgm{margin:9px 0;border:1px solid #c5d3e8;background:var(--card);border-radius:12px;overflow:hidden}"
+  +".tgh{display:flex;align-items:center;gap:9px;padding:13px 14px;cursor:pointer;font-weight:900;font-size:16px;color:var(--ink)}.tgh img{height:26px;width:auto;flex:0 0 auto;margin:0}.tgh>span:first-of-type{flex:1}.tgh .tgar{color:#0b7285;font-size:15px;font-weight:900}"
+  +".tgsub{padding:0 14px 10px;color:var(--sub);font-size:12.5px;line-height:1.5}"
+  +".tgli{display:flex;align-items:center;gap:7px;padding:12px 14px;border-top:1px solid var(--line);cursor:pointer;font-size:15px;font-weight:700;color:var(--ink)}.tgli>span:first-child{flex:1}.tgli .tgar2{color:#1a73e8;font-weight:900;font-size:13px;white-space:nowrap}"
+  +".tgbook{margin:2px 14px 12px;padding:10px 12px;border:1px solid #ffd8a8;background:#fff4e6;border-radius:10px}.tgbook .tgbh{font-weight:900;font-size:14.5px;color:#5c3d10;display:flex;align-items:center;gap:7px}.tgbook .tgbh img{height:20px;width:auto}.tgbook .d{font-size:13px;color:#5c3d10;margin:3px 0 7px;line-height:1.5}.tgbook a{display:inline-block;margin:0 14px 0 0;font-size:14.5px;font-weight:900;color:#1c5fb8;text-decoration:none}"
+  +".tgpart{display:flex;align-items:center;gap:8px;margin:18px 2px 4px;color:var(--sub);font-size:12.5px;font-weight:800}.tgpart:before,.tgpart:after{content:'';flex:1;height:1px;background:var(--line)}"
   +".nrtb{margin:8px 0 4px;padding:8px 10px;border:1px solid #ffd8a8;background:#fff4e6;border-radius:10px;font-size:14px;font-weight:800;color:#5c3d10;line-height:1.5}.nrtb a{color:#1c5fb8;text-decoration:underline;margin:0 2px;white-space:nowrap}"
   +".nrord{display:flex;gap:6px;margin:8px 0 2px}.nrord button{flex:1;border:1px solid #c5d3e8;background:#fff;color:#1c5fb8;border-radius:999px;padding:7px 0;font-weight:800;font-size:14px}.nrord button.on{background:#1c5fb8;color:#fff;border-color:#1c5fb8}"
   +".nrbig,.item a.nrbig{display:block!important;text-align:center;background:#e03131!important;color:#fff!important;border:0!important;border-radius:12px!important;padding:12px 8px!important;font-size:18px!important;font-weight:900!important;text-decoration:none;margin:4px 0 10px!important}"
@@ -217,6 +224,32 @@ function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=KS(en?x.name_en:x.name), ad
 // 「📱 내일 투어를 바로 예약」 띠 (사장님 10-22) — 기준 위치(내 위치·지도 가운데)에서 가까운 도시의 당일 투어 검색. 제휴 코드 없음 · 새 창
 //  Klook 언어 = 주소 앞 /ko/·/ja/·/zh-CN/·/zh-TW/·/es/·/en-US/ · GetYourGuide = /ja-jp/·/zh-cn/·/es-es/ (한국어·번체는 그런 주소가 없어 브라우저 언어로)
 var TB_CITY=[["Seoul",37.5665,126.978,40],["Incheon",37.456,126.705,20],["Busan",35.1796,129.0756,35],["Jeju",33.38,126.55,70],["Gyeongju",35.856,129.225,25],["Jeonju",35.82,127.148,20],["Gangneung",37.752,128.876,25],["Sokcho",38.207,128.592,20],["Daegu",35.871,128.601,25],["Yeosu",34.76,127.662,25]];
+// ── 체험·입장권 맨 위 우리 메뉴 2개 (사장님 2026-10-25) — 공연관람(공연장5)·K-POP BIG4 사옥견학(4). 펼치면 목록, 고르면 그 장소 카드(공연장은 KOPIS 공연 프로그램도) ──
+//   여는 길은 index.html legDraw 의 open 경로 재사용: 공연장·빅3(hybe/jyp/yg)=placeShow(키)(placeShow 안에서 perfShow 로 KOPIS), smartium=kpopJump(). 지도 자료가 아직이면 먼저 받아 둔다(spinShow·kpopJump 와 같은 방식)
+var TGX={perf:false,kpop:false};
+var PERF6={ko:"공연관람",en:"Performance viewing",ja:"公演鑑賞",zhs:"演出观赏",zht:"演出觀賞",es:"Ver espectáculos"};
+var KPOP6={ko:"K-POP BIG4 사옥 견학",en:"K-pop Big4 agency buildings",ja:"K-POP BIG4 社屋見学",zhs:"K-POP四大社参观",zht:"K-POP四大社參觀",es:"Edificios de las Big4 del K-pop"};
+var KPOPNOTE6={ko:"사옥 외관만 보고 사진 찍는 곳입니다 — 공연 관람이 아니며, 사무실이라 내부 입장은 안 됩니다.",en:"Exterior photo spots only — not performances; offices, no public entry inside.",ja:"社屋の外観を見て写真を撮る場所です — 公演鑑賞ではなく、オフィスのため館内への入場はできません。",zhs:"只是观看大楼外观、拍照的地方——并非观看演出，且为办公楼，内部不对外开放。",zht:"只是觀看大樓外觀、拍照的地方——並非觀看演出，且為辦公大樓，內部不對外開放。",es:"Solo puntos para fotos del exterior — no son espectáculos; son oficinas, sin acceso al público."};
+var PARTNER6={ko:"제휴 사이트",en:"Partner sites",ja:"提携サイト",zhs:"合作网站",zht:"合作網站",es:"Sitios asociados"};
+var KTOUR6={ko:"K-pop 투어 예약",en:"Book a K-pop tour",ja:"K-popツアー予約",zhs:"预订K-pop之旅",zht:"預訂K-pop之旅",es:"Reservar tour de K-pop"};
+var KTOURD6={ko:"사옥·굿즈샵 도는 당일 K-pop 투어 (가이드 동행)",en:"Day K-pop tours around agency buildings & goods shops",ja:"社屋・グッズショップを巡る日帰りK-popツアー（ガイド同行）",zhs:"环游社屋·周边店的当日K-pop之旅（向导同行）",zht:"環遊社屋·周邊店的當日K-pop之旅（嚮導同行）",es:"Tours de K-pop de un día por edificios de agencias y tiendas de productos"};
+var TG_PERF=[["sejongctr",{ko:"세종문화회관",en:"Sejong Center for the Performing Arts",ja:"世宗文化会館",zhs:"世宗文化会馆",zht:"世宗文化會館",es:"Centro Sejong de Artes Escénicas"}],
+  ["sac",{ko:"예술의전당",en:"Seoul Arts Center",ja:"芸術の殿堂",zhs:"艺术殿堂",zht:"藝術殿堂",es:"Seoul Arts Center"}],
+  ["bluesq",{ko:"블루스퀘어",en:"Blue Square",ja:"ブルースクエア",zhs:"Blue Square（蓝色广场）",zht:"Blue Square（藍色廣場）",es:"Blue Square"}],
+  ["lgart",{ko:"LG아트센터 서울",en:"LG Arts Center Seoul",ja:"LGアートセンター ソウル",zhs:"LG艺术中心首尔",zht:"LG藝術中心首爾",es:"LG Arts Center Seoul"}],
+  ["olympichall",{ko:"올림픽홀 (올림픽공원)",en:"Olympic Hall (Olympic Park)",ja:"オリンピックホール（オリンピック公園）",zhs:"奥林匹克大厅（奥林匹克公园）",zht:"奧林匹克大廳（奧林匹克公園）",es:"Olympic Hall (Parque Olímpico)"}]];
+var TG_KPOP=[["smartium",{ko:"코엑스 아티움 (SM타운)",en:"COEX Artium (SMTOWN)",ja:"COEXアティウム（SMTOWN）",zhs:"COEX Artium（SMTOWN）",zht:"COEX Artium (SMTOWN)",es:"COEX Artium (SMTOWN)"}],
+  ["hybe",{ko:"하이브 HYBE",en:"HYBE",ja:"HYBE",zhs:"HYBE",zht:"HYBE",es:"HYBE"}],
+  ["jyp",{ko:"JYP엔터테인먼트",en:"JYP Entertainment",ja:"JYPエンターテインメント",zhs:"JYP娱乐",zht:"JYP娛樂",es:"JYP Entertainment"}],
+  ["yg",{ko:"YG엔터테인먼트",en:"YG Entertainment",ja:"YGエンターテインメント",zhs:"YG娱乐",zht:"YG娛樂",es:"YG Entertainment"}]];
+function tgOpenTxt(){ return LG6({ko:"열기",en:"Open",ja:"開く",zhs:"打开",zht:"打開",es:"Abrir"}); }
+function tgRow(k,o){ return '<div class="tgli" data-nr="tgp" data-k="'+esc(k)+'"><span>'+esc(LG6(o))+'</span><span class="tgar2">'+esc(tgOpenTxt())+' ›</span></div>'; }
+// 한 곳 고르기 → 패널 닫고 그 장소 카드 (지도 자료 없으면 먼저 받고) · legDraw.legOpen 과 같은 경로
+function tgPick(k){ close();
+  if(k==="smartium"){ try{ if(window.kpopJump) kpopJump(); }catch(e){} return; }
+  var go=function(){ try{ if(window.PLACES&&PLACES[k]&&window.placeShow){ placeShow(k); return true; } }catch(e){} return false; };
+  if(go()) return;
+  try{ var C=window.CITY||{}; Promise.all(Object.keys(C).map(function(id){ return window.mapLoad(id).catch(function(){}); })).then(go,go); }catch(e){ go(); } }
 // 투어 가이드 창 (사장님 10-23) — 폰 그림·노란 띠 없이 Klook·GetYourGuide 링크(첫 화면, 그 언어)와 설명 세 줄씩. 손님이 그 사이트 검색칸에 도시를 넣는다
 function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en-US", gl={ja:"ja-jp/",zhs:"zh-cn/",es:"es-es/"}[LANG]||"";
   var ds='<div class="d">'+T("당일 투어 가능","Day tours available")+'</div><div class="d">'+T("내일 투어 예약 가능","Book tomorrow’s tour")+'</div><div class="d">'+T("검색창에 가고 싶은 도시 입력 (예: 서울)","Type the city you want in the search box (e.g. Seoul)")+'</div>';
@@ -224,7 +257,17 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
   var cl={ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en";   // 크리에이트립 (사장님 10-23) — 한국어판은 없어 영어로 연다
   // Trazy (사장님 10-24) — 한국 체험·액티비티 플랫폼. 영어 중심이라 언어 꼬리 없이 www.trazy.com. 설명은 6개 언어
   var tzd='<div class="d">'+LG6({ko:"한국 체험·액티비티",en:"Korea experiences & activities",ja:"韓国の体験・アクティビティ",zhs:"韩国体验·活动",zht:"韓國體驗·活動",es:"Experiencias y actividades en Corea"})+'</div><div class="d">'+LG6({ko:"찜질방·K-뷰티·한복·쿠킹클래스",en:"Jjimjilbang, K-beauty, hanbok, cooking classes",ja:"チムジルバン・K-ビューティー・韓服・料理教室",zhs:"汗蒸幕·K-美妆·韩服·烹饪课",zht:"汗蒸幕·K-美妝·韓服·烹飪課",es:"Jjimjilbang, K-beauty, hanbok, clases de cocina"})+'</div>';
-  return one("https://www.klook.com/"+kl+"/","Klook")+one("https://www.getyourguide.com/"+gl,"GetYourGuide")+one("https://creatrip.com/"+cl,"Creatrip")+one("https://www.trazy.com/","Trazy",tzd); }
+  // ── 우리 메뉴 2개 (맨 위) ──
+  var mPerf='<div class="tgm"><div class="tgh" data-nr="tgx" data-g="perf">'+MPIMG("mi_ticket")+'<span>'+esc(LG6(PERF6))+'</span><span class="tgar">'+(TGX.perf?"▾":"▸")+'</span></div>'
+    +(TGX.perf?TG_PERF.map(function(r){ return tgRow(r[0],r[1]); }).join(""):"")+'</div>';
+  var kBook='<div class="tgbook"><div class="tgbh"><img src="img/kpop_marker.png" alt="">'+esc(LG6(KTOUR6))+'</div><div class="d">'+esc(LG6(KTOURD6))+'</div>'
+    +'<a href="https://www.klook.com/'+kl+'/search/result/?query=k-pop" target="_blank" rel="noopener">Klook ›</a>'
+    +'<a href="https://www.trazy.com/" target="_blank" rel="noopener">Trazy ›</a></div>';
+  var mKpop='<div class="tgm"><div class="tgh" data-nr="tgx" data-g="kpop"><img src="img/kpop_marker.png" alt=""><span>'+esc(LG6(KPOP6))+'</span><span class="tgar">'+(TGX.kpop?"▾":"▸")+'</span></div>'
+    +(TGX.kpop?('<div class="tgsub">'+esc(LG6(KPOPNOTE6))+'</div>'+TG_KPOP.map(function(r){ return tgRow(r[0],r[1]); }).join("")+kBook):"")+'</div>';
+  var part='<div class="tgpart">'+esc(LG6(PARTNER6))+'</div>';
+  return mPerf+mKpop+part
+    +one("https://www.klook.com/"+kl+"/","Klook")+one("https://www.getyourguide.com/"+gl,"GetYourGuide")+one("https://creatrip.com/"+cl,"Creatrip")+one("https://www.trazy.com/","Trazy",tzd); }
 // 통역·길안내 (사장님 10-24) — 우리 가이드(관광통역안내사) 등록·매칭. 무료. GoWithGuide 외부 링크 대신 우리 목록.
 //   손님: 언어 고르기 → 승인된 가이드 목록(사진·이름·언어·경력·지역·소개) → 한 명 골라 요청(이름·연락처·날짜·메모) → 가이드 이메일 + 우리 텔레그램
 //   가이드 등록은 「입점 문의」 빌딩 → 「관광 가이드 등록」(window.GUIDEREG) · 승인은 통계청(관리자)
@@ -494,6 +537,8 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   if(g==="tab"){ S.tab=+t.dataset.i; load(); return; }
   if(g==="ord"){ S.ord=t.dataset.o==="r"?"r":"d"; var kt=KINDS[S.k].tabs[S.tab]; if(S.raw){ S.items=sortIt(S.raw.slice(),kt).slice(0,10); S.byL={}; S.byL[LANG]=S.items; } paint(); return; }
   if(g==="me"){ S.items=null; S.err=""; paint(); myPos().then(function(p){ if(p){ try{ meSet(p); }catch(z){} } load(); }); return; }
+  if(g==="tgx"){ TGX[t.dataset.g]=!TGX[t.dataset.g]; paint(); return; }   // 체험·입장권 우리 메뉴 펼침/접기 (10-25)
+  if(g==="tgp"){ tgPick(t.dataset.k); return; }   // 그 장소 열기 (공연장=카드+KOPIS, 빅4=카드)
   if(g==="pick"){ var x=S.items&&S.items[+t.dataset.i]; if(x) pick(x); } });
 
 // ── 들어가는 곳: 검색창 아래 칩(선물 고르기 옆) · ⋮ 메뉴 ──
