@@ -254,6 +254,13 @@ function tgPick(k){ close();
       placeShow(k); return true; }catch(e){} return false; };
   if(go()) return;
   try{ var C=window.CITY||{}; Promise.all(Object.keys(C).map(function(id){ return window.mapLoad(id).catch(function(){}); })).then(go,go); }catch(e){ go(); } }
+// B4 사옥 투어 패키지 (사장님 2026-10-25) — 가이드 포함 유료 반일. 예약은 통역·길안내(가이드 신청) 흐름으로 연결. 요금은 GetYourGuide HYBE투어 $55·K-pop 워킹투어 ₩4~7만 참고 → ₩89,000(2인+ ₩79,000). 빅4는 외관·굿즈샵(입장 무료)이라 값은 가이드·동선
+var B4PKG={ t:{ko:"K-POP 빅4 사옥 투어",en:"K-pop Big4 Agency Tour",ja:"K-POP BIG4 社屋ツアー",zhs:"K-POP四大社参观团",zht:"K-POP四大社參觀團",es:"Tour de las Big4 del K-pop"},
+  g:{ko:"가이드 동행 · 반일",en:"With a guide · half day",ja:"ガイド同行・半日",zhs:"向导同行·半天",zht:"嚮導同行·半天",es:"Con guía · medio día"},
+  c:{ko:"HYBE·SM·JYP·YG 사옥 외관과 굿즈샵을 가이드와 함께 돕니다 (외관 관람·사진).",en:"Tour the HYBE, SM, JYP and YG building exteriors and goods shops with a guide (exterior & photos).",ja:"HYBE・SM・JYP・YGの社屋外観とグッズショップをガイドと巡ります（外観・写真）。",zhs:"在向导带领下游览HYBE·SM·JYP·YG大楼外观和周边店（外观·拍照）。",zht:"在嚮導帶領下遊覽HYBE·SM·JYP·YG大樓外觀和周邊店（外觀·拍照）。",es:"Recorre con guía los exteriores de HYBE, SM, JYP y YG y las tiendas de productos (exterior y fotos)."},
+  p:{ko:"₩89,000 / 1인 · 2인 이상 ₩79,000",en:"₩89,000 / person · ₩79,000 for 2+",ja:"₩89,000 / 1名 · 2名以上は₩79,000",zhs:"₩89,000 / 人 · 2人以上₩79,000",zht:"₩89,000 / 人 · 2人以上₩79,000",es:"₩89,000 / persona · ₩79,000 para 2+"},
+  b:{ko:"예약·문의",en:"Book / inquire",ja:"予約・問い合わせ",zhs:"预约·咨询",zht:"預約·諮詢",es:"Reservar / consultar"},
+  n:{ko:"예약은 가이드 신청으로 연결됩니다.",en:"Booking goes through our guide request.",ja:"予約はガイド申請につながります。",zhs:"预约将通过向导申请办理。",zht:"預約將透過嚮導申請辦理。",es:"La reserva se realiza mediante la solicitud de guía."} };
 // 투어 가이드 창 (사장님 10-23) — 폰 그림·노란 띠 없이 Klook·GetYourGuide 링크(첫 화면, 그 언어)와 설명 세 줄씩. 손님이 그 사이트 검색칸에 도시를 넣는다
 function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en-US", gl={ja:"ja-jp/",zhs:"zh-cn/",es:"es-es/"}[LANG]||"";
   var ds='<div class="d">'+T("당일 투어 가능","Day tours available")+'</div><div class="d">'+T("내일 투어 예약 가능","Book tomorrow’s tour")+'</div><div class="d">'+T("검색창에 가고 싶은 도시 입력 (예: 서울)","Type the city you want in the search box (e.g. Seoul)")+'</div>';
@@ -269,8 +276,14 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
     +'<a href="https://www.trazy.com/" target="_blank" rel="noopener">Trazy ›</a></div>';
   var mKpop='<div class="tgm"><div class="tgh" data-nr="tgx" data-g="kpop"><img src="img/kpop_marker.png" alt=""><span>'+esc(LG6(KPOP6))+'</span><span class="tgar">'+(TGX.kpop?"▾":"▸")+'</span></div>'
     +(TGX.kpop?('<div class="tgsub">'+esc(LG6(KPOPNOTE6))+'</div>'+TG_KPOP.map(function(r){ return tgRow(r[0],r[1]); }).join("")+kBook):"")+'</div>';
+  var pkg='<div class="tgbook b4pkg"><div class="tgbh"><img src="img/kpop_marker.png" alt="">'+esc(LG6(B4PKG.t))+'</div>'
+    +'<div class="d" style="font-weight:700;color:var(--ink)">'+esc(LG6(B4PKG.g))+'</div>'
+    +'<div class="d">'+esc(LG6(B4PKG.c))+'</div>'
+    +'<div class="d" style="font-weight:800;color:var(--ink);margin-top:2px">'+esc(LG6(B4PKG.p))+'</div>'
+    +'<button type="button" class="nrsel" data-nr="ig" style="margin-top:7px;background:#7c3aed;color:#fff;border-color:#7c3aed">'+esc(LG6(B4PKG.b))+' ›</button>'
+    +'<div class="d" style="color:var(--sub);margin-top:4px">'+esc(LG6(B4PKG.n))+'</div></div>';
   var part='<div class="tgpart">'+esc(LG6(PARTNER6))+'</div>';
-  return mPerf+mKpop+part
+  return pkg+mPerf+mKpop+part
     +one("https://www.klook.com/"+kl+"/","Klook")+one("https://www.getyourguide.com/"+gl,"GetYourGuide")+one("https://creatrip.com/"+cl,"Creatrip")+one("https://www.trazy.com/","Trazy",tzd); }
 // 통역·길안내 (사장님 10-24) — 우리 가이드(관광통역안내사) 등록·매칭. 무료. GoWithGuide 외부 링크 대신 우리 목록.
 //   손님: 언어 고르기 → 승인된 가이드 목록(사진·이름·언어·경력·지역·소개) → 한 명 골라 요청(이름·연락처·날짜·메모) → 가이드 이메일 + 우리 텔레그램
