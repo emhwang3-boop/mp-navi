@@ -278,7 +278,7 @@ function inqOpen(){ inqCss(); var b=document.getElementById("inqBox"); if(b) b.r
   b=document.createElement("div"); b.id="inqBox"; b.onclick=function(e){ if(e.target===b) b.remove(); };
   b.innerHTML='<div id="inqIn"><div style="display:flex;align-items:center"><h3 style="flex:1">'+T("입점·광고 문의","Advertise with us")+'</h3><button class="g" onclick="document.getElementById(\'inqBox\').remove()">✕</button></div>'
    +'<div class="m">'+T("이 지도에 가게·기업을 알리고 싶다면 남겨 주세요. 먼저 두 가지를 확인합니다.","Want your shop or company on this map? Please verify two things first.")+'</div>'
-   +'<button type="button" style="width:100%;margin:10px 0 2px;background:#0c8599" onclick="document.getElementById(\'inqBox\').remove(); if(window.GUIDEREG) window.GUIDEREG();">🧭 '+T("관광 가이드 등록","Register as a tour guide")+'</button>'
+   +'<button type="button" style="width:100%;margin:10px 0 2px;background:#0c8599" onclick="document.getElementById(\'inqBox\').remove(); if(window.GUIDEREG) window.GUIDEREG();"><img src="img/menu/mi_guideperson.png" alt="" style="height:20px;width:auto;vertical-align:-4px;margin-right:6px">'+T("관광 가이드 등록","Register as a tour guide")+'</button>'
    +'<div class="m" style="margin-bottom:6px">'+T("관광통역안내사 등 통역·길안내를 해 주실 분은 여기서 등록하세요 (무료).","Licensed interpreter-guides can register here (free).")+'</div>'
    +'<div class="st" id="inqS1"><b>1. '+T("사업자등록번호","Business registration number")+'</b><div class="rw" style="margin-top:6px"><input id="inqBno" inputmode="numeric" maxlength="12" placeholder="000-00-00000"><button id="inqBnoB" onclick="inqBiz()">'+T("확인","Check")+'</button></div><div class="m" id="inqBnoM"></div></div>'
    +'<div class="st" id="inqS2"><b>2. '+T("이메일 인증","Email verification")+'</b><div class="rw" style="margin-top:6px"><input id="inqEm" type="email" maxlength="120" placeholder="name@company.com" autocomplete="email"><button id="inqEmB" onclick="inqCode()">'+T("코드 받기","Send code")+'</button></div>'
@@ -1295,7 +1295,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1023mi"></script>
 <script src="gift.js?v=1023mi"></script>
-<script src="near.js?v=1024gmatch"></script>
+<script src="near.js?v=1024gic"></script>
 <script src="reco.js?v=1023dd"></script>
 <script src="gu.js?v=f29da37807"></script>
 <script src="citytour.js?v=1022es"></script>
