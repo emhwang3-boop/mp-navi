@@ -242,6 +242,9 @@ function igRender(b){
   var head='<div class="nrtop"><b>'+esc(LG6({ko:"통역·길안내",en:"Interpreter & guide",ja:"通訳・ガイド",zhs:"翻译·向导",zht:"翻譯·嚮導",es:"Intérprete y guía"}))+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
   var back='<button type="button" class="igback" data-igback="1">‹ '+esc(LG6({ko:"뒤로",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Atrás"}))+'</button>';
   if(IG.view==="review"){ b.innerHTML=head+igReviewForm(); igWire(b); return; }
+  if(IG.view==="editask"){ b.innerHTML=head+'<button type="button" class="igback" data-igback="pick">‹ '+esc(LG6({ko:"뒤로",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Atrás"}))+'</button>'+igEditAskForm(); igWire(b); return; }   // 가이드 본인 — 등록 이메일 넣기
+  if(IG.view==="editdone"){ b.innerHTML=head+'<div class="ignote">'+esc(LG6({ko:"요청을 받았습니다. 등록된 이메일이면 수정 링크를 보냈습니다. 메일함을 확인해 주세요.",en:"If that email is registered, we've sent an edit link. Please check your inbox.",ja:"リクエストを受け付けました。登録済みのメールであれば編集リンクをお送りしました。メールをご確認ください。",zhs:"已收到请求。如果该邮箱已登记，我们已发送修改链接，请查收。",zht:"已收到請求。如果該電郵已登記，我們已寄出修改連結，請查收。",es:"Si ese correo está registrado, te hemos enviado un enlace de edición. Revisa tu bandeja de entrada."}))+'</div><button type="button" class="nrsel" data-igback="pick">'+esc(LG6({ko:"처음으로",en:"Start over",ja:"最初に戻る",zhs:"返回开始",zht:"返回開始",es:"Volver al inicio"}))+'</button>'; igWire(b); return; }
+  if(IG.view==="edit"){ b.innerHTML=head+igEditForm(); igWire(b); return; }   // 가이드 본인 — ?gedit= 토큰으로 연 수정 폼
   if(IG.view==="done"){ b.innerHTML=head+'<div class="ignote">✓'+esc(LG6({ko:"요청이 전달되었습니다. 가이드가 곧 연락 드릴 거예요.",en:"Your request was sent. The guide will contact you soon.",ja:"リクエストを送りました。ガイドからまもなくご連絡します。",zhs:"请求已发送，向导会尽快与您联系。",zht:"請求已發送，嚮導會盡快與您聯繫。",es:"Tu solicitud fue enviada. El guía te contactará pronto."}))+'</div><button type="button" class="nrsel" data-igback="pick">'+esc(LG6({ko:"처음으로",en:"Start over",ja:"最初に戻る",zhs:"返回开始",zht:"返回開始",es:"Volver al inicio"}))+'</button>'; igWire(b); return; }
   if(IG.view==="req"&&IG.gobj){ var g=IG.gobj, ds=igDates();
     b.innerHTML=head+back
@@ -262,9 +265,11 @@ function igRender(b){
     else h+=IG.guides.map(function(g,i){ return '<div class="igcard" data-igpick="'+i+'">'+igFace(g)+'<div class="igb"><b>'+esc(g.name)+'</b> '+igBadge(g)+'<div class="igm">'+g.langs.map(igLangName).map(esc).join(" · ")+(g.years?' · '+g.years+(window.LANG==="ko"?"년":"y"):"")+(g.region?' · '+esc(g.region):"")+'</div>'+(g.intro?'<div class="igi">'+esc(g.intro)+'</div>':"")+'<span class="igpk">'+esc(LG6({ko:"요청하기 ›",en:"Request ›",ja:"依頼する ›",zhs:"请求 ›",zht:"請求 ›",es:"Solicitar ›"}))+'</span></div></div>'; }).join("");
     b.innerHTML=h; igWire(b); return; }
   // pick
-  var btns=GLANG6.map(function(l){ return '<a class="iglang" href="#" data-iglang="'+l[1]+'">'+esc(l[0])+' ›</a>'; }).join("");
+  var FLAG6={ko:"🇰🇷",en:"🇺🇸",ja:"🇯🇵",zhs:"🇨🇳",zht:"🇹🇼",es:"🇪🇸"};   // 언어 고르기 버튼 국기 (사장님 10-24) — MPICO 안 거치는 평범한 <a> 라 그대로 보인다
+  var btns=GLANG6.map(function(l){ return '<a class="iglang" href="#" data-iglang="'+l[1]+'">'+(FLAG6[l[1]]||"")+' '+esc(l[0])+' ›</a>'; }).join("");
   b.innerHTML=head+'<div class="ignote">ⓘ '+esc(igNote())+'</div>'
-    +'<div class="iglbl">'+esc(LG6({ko:"필요한 언어를 고르세요",en:"Choose the language you need",ja:"必要な言語を選んでください",zhs:"请选择您需要的语言",zht:"請選擇您需要的語言",es:"Elige el idioma que necesitas"}))+'</div><div class="iglangs">'+btns+'</div>';
+    +'<div class="iglbl">'+esc(LG6({ko:"필요한 언어를 고르세요",en:"Choose the language you need",ja:"必要な言語を選んでください",zhs:"请选择您需要的语言",zht:"請選擇您需要的語言",es:"Elige el idioma que necesitas"}))+'</div><div class="iglangs">'+btns+'</div>'
+    +'<div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--line)"><a href="#" data-igedit="1" style="display:inline-flex;align-items:center;gap:7px;color:var(--sub);font-size:13.5px;font-weight:700;text-decoration:none"><img src="img/menu/mi_guideperson.png" alt="" style="width:20px;height:20px;object-fit:contain">'+esc(LG6({ko:"가이드이신가요? 내 프로필 수정 ›",en:"Are you a guide? Edit my profile ›",ja:"ガイドの方はこちら：プロフィール編集 ›",zhs:"您是向导吗？修改我的资料 ›",zht:"您是嚮導嗎？修改我的資料 ›",es:"¿Eres guía? Editar mi perfil ›"}))+'</a></div>';
   igWire(b);
 }
 function igFace(g){ return g.photo?'<img class="igav" src="'+HUB+'/guide/photo?id='+encodeURIComponent(g.id)+'" alt="" loading="lazy">':'<span class="igav igavx">🧭</span>'; }
@@ -275,6 +280,9 @@ function igWire(b){
   var go=b.querySelector("#igqGo"); if(go) go.onclick=igSend;
   [].forEach.call(b.querySelectorAll("[data-rvstar]"),function(bt){ bt.onclick=function(){ var t=document.getElementById("igrvText"), n=document.getElementById("igrvName"); if(t) IG.rvText=t.value; if(n) IG.rvName=n.value; IG.rvStars=+bt.dataset.rvstar; paint(); }; });
   var rgo=b.querySelector("#igrvGo"); if(rgo) rgo.onclick=igRvSend;
+  [].forEach.call(b.querySelectorAll("[data-igedit]"),function(a){ a.onclick=function(e){ e.preventDefault(); IG.view="editask"; IG.busy=false; paint(); }; });   // 가이드 본인 — 내 프로필 수정
+  var ego=b.querySelector("#igeGo"); if(ego) ego.onclick=igEditSendLink;
+  var esv=b.querySelector("#geSave"); if(esv){ esv.onclick=igEditSave; geBind("gePh","gePv","photo"); geBind("geLp","geLv","lic"); }
 }
 // ── 가이드 후기 (사장님 2026-10-24) — 목록 옆 ★평균(후기수) · 상세의 후기 목록 · 완료된 손님만 쓰는 후기 폼(?review 토큰) ──
 function igStars(n){ n=Math.max(0,Math.min(5,Math.round(n||0))); var s=""; for(var i=0;i<5;i++) s+=(i<n?"★":"☆"); return s; }
@@ -330,6 +338,62 @@ function igSend(){ if(IG.busy) return; var g=function(i){ var e=document.getElem
     if(j&&j.ok){ IG.view="done"; paint(); return; }
     set(j&&j.err==="contact"?LG6({ko:"연락처를 확인해 주세요.",en:"Please check your contact.",ja:"連絡先を確認してください。",zhs:"请检查联系方式。",zht:"請檢查聯絡方式。",es:"Revisa tu contacto."}):j&&j.err==="rate"?LG6({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてからもう一度。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):LG6({ko:"보내지 못했습니다.",en:"Could not send.",ja:"送信できませんでした。",zhs:"发送失败。",zht:"發送失敗。",es:"No se pudo enviar."})); })
   .catch(function(){ IG.busy=false; if(go) go.disabled=false; set(LG6({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
+// ── 가이드 본인 프로필 수정 (사장님 2026-10-24) — 등록 이메일 → 메일로 1회용 수정 링크 → ?gedit= 로 열어 바로 고친다. 이메일·자격증 번호는 못 바꿈 ──
+var GE={photo:null,lic:null};
+function igEditAskForm(){ var L=LG6;
+  return '<div class="iglbl" style="margin-top:8px">'+esc(L({ko:"내 프로필 수정",en:"Edit my profile",ja:"プロフィール編集",zhs:"修改我的资料",zht:"修改我的資料",es:"Editar mi perfil"}))+'</div>'
+    +'<div class="ignote">'+esc(L({ko:"등록하신 이메일을 넣어 주세요. 등록된 이메일이면 수정 링크를 메일로 보내 드립니다.",en:"Enter the email you registered with. If it is registered, we'll email you an edit link.",ja:"登録したメールを入力してください。登録済みなら編集リンクをメールします。",zhs:"请输入您登记时用的邮箱。若已登记，我们会把修改链接发到邮箱。",zht:"請輸入您登記時用的電郵。若已登記，我們會把修改連結寄到信箱。",es:"Introduce el correo con el que te registraste. Si está registrado, te enviaremos un enlace de edición."}))+'</div>'
+    +'<label class="iglb">'+esc(L({ko:"등록 이메일",en:"Registered email",ja:"登録メール",zhs:"登记邮箱",zht:"登記電郵",es:"Correo registrado"}))+'</label><input class="igin" id="igeEm" type="email" maxlength="120" autocomplete="email">'
+    +'<button type="button" class="nrsel" id="igeGo" style="background:#0c8599;color:#fff;border-color:#0c8599;margin-top:10px">'+esc(L({ko:"수정 링크 받기",en:"Get edit link",ja:"編集リンクを受け取る",zhs:"获取修改链接",zht:"取得修改連結",es:"Recibir enlace de edición"}))+'</button>'
+    +'<div class="ignt" id="igeM"></div>'; }
+function igEditSendLink(){ if(IG.busy) return; var L=LG6, e=document.getElementById("igeEm"), M=document.getElementById("igeM"), set=function(t){ if(M) M.textContent=t; };
+  var em=e?String(e.value||"").trim():""; if(!em||em.indexOf("@")<0){ set(L({ko:"이메일을 넣어 주세요.",en:"Please enter your email.",ja:"メールを入力してください。",zhs:"请输入邮箱。",zht:"請輸入電郵。",es:"Introduce tu correo."})); return; }
+  IG.busy=true; set("…"); var go=document.getElementById("igeGo"); if(go) go.disabled=true;
+  fetch(HUB+"/guide/editlink",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ IG.busy=false;
+    if(j&&j.ok){ IG.view="editdone"; paint(); return; }
+    if(go) go.disabled=false; set(j&&j.err==="rate"?L({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてからもう一度。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):L({ko:"보내지 못했습니다.",en:"Could not send.",ja:"送信できませんでした。",zhs:"发送失败。",zht:"發送失敗。",es:"No se pudo enviar."})); })
+  .catch(function(){ IG.busy=false; if(go) go.disabled=false; set(L({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
+function igEditForm(){ var L=LG6;
+  if(IG.geErr==="used") return '<div class="ignote">'+esc(L({ko:"이 수정 링크는 이미 사용되었습니다. 다시 요청해 주세요.",en:"This edit link has already been used. Please request a new one.",ja:"この編集リンクはすでに使用されています。もう一度リクエストしてください。",zhs:"该修改链接已被使用，请重新申请。",zht:"該修改連結已被使用，請重新申請。",es:"Este enlace de edición ya se usó. Solicita uno nuevo."}))+'</div>'+igEditAgain();
+  if(IG.geErr==="expired"||IG.geErr==="invalid") return '<div class="ignote">'+esc(L({ko:"수정 링크가 올바르지 않거나 만료되었습니다. 다시 요청해 주세요.",en:"This edit link is invalid or has expired. Please request a new one.",ja:"編集リンクが無効または期限切れです。もう一度リクエストしてください。",zhs:"修改链接无效或已过期，请重新申请。",zht:"修改連結無效或已過期，請重新申請。",es:"El enlace de edición no es válido o ha caducado. Solicita uno nuevo."}))+'</div>'+igEditAgain();
+  if(IG.geErr==="net") return '<div class="msg">'+esc(L({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again shortly.",ja:"しばらくしてからもう一度お試しください。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo de nuevo en un momento."}))+'</div>';
+  if(IG.geDone) return '<div class="ignote">✓ '+esc(L({ko:"수정되었습니다. 바로 반영됩니다.",en:"Saved. Your changes are now live.",ja:"保存しました。すぐに反映されます。",zhs:"已保存，立即生效。",zht:"已儲存，立即生效。",es:"Guardado. Tus cambios ya están activos."}))+'</div>';
+  if(IG.geGuide==null) return '<div class="msg">'+esc(L({ko:"불러오는 중…",en:"Loading…",ja:"読み込み中…",zhs:"加载中…",zht:"載入中…",es:"Cargando…"}))+'</div>';
+  var g=IG.geGuide;
+  var langsH='<div style="display:flex;flex-wrap:wrap;gap:8px;margin:4px 0">'+GLANG6.map(function(l){ return '<label style="display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--line);border-radius:999px;padding:6px 11px;font-size:13.5px;font-weight:700;cursor:pointer"><input type="checkbox" value="'+l[1]+'" class="geLchk"'+((g.langs||[]).indexOf(l[1])>=0?" checked":"")+' style="width:15px;height:15px;margin:0"> '+esc(l[0])+'</label>'; }).join("")+'</div>';
+  var pvS='width:56px;height:56px;border-radius:12px;object-fit:cover;background:#e3fafc;border:1px solid var(--line)';
+  return '<div class="iglbl" style="margin-top:8px">'+esc(L({ko:"내 프로필 수정",en:"Edit my profile",ja:"プロフィール編集",zhs:"修改我的资料",zht:"修改我的資料",es:"Editar mi perfil"}))+'</div>'
+    +'<div class="ignote">'+esc(L({ko:"바꾼 내용은 바로 반영됩니다. 이메일·자격증 번호는 여기서 바꿀 수 없습니다(바꾸려면 관리자에게 문의).",en:"Changes go live immediately. Email and license number can't be changed here (contact admin).",ja:"変更はすぐ反映されます。メール・資格番号はここでは変更できません（変更は管理者へ）。",zhs:"修改立即生效。邮箱和资格证号在此不可修改（如需修改请联系管理员）。",zht:"修改立即生效。電郵和資格證號在此不可修改（如需修改請聯絡管理員）。",es:"Los cambios se aplican de inmediato. El correo y el número de licencia no se pueden cambiar aquí (contacta al administrador)."}))+'</div>'
+    +'<label class="iglb">'+esc(L({ko:"이름 *",en:"Name *",ja:"お名前 *",zhs:"姓名 *",zht:"姓名 *",es:"Nombre *"}))+'</label><input class="igin" id="geNm" maxlength="40" value="'+esc(g.name||"")+'">'
+    +'<label class="iglb">'+esc(L({ko:"가능 언어 * (여러 개)",en:"Languages spoken * (multiple)",ja:"対応言語 *（複数可）",zhs:"可用语言 *（可多选）",zht:"可用語言 *（可多選）",es:"Idiomas * (varios)"}))+'</label>'+langsH
+    +'<label class="iglb">'+esc(L({ko:"경력 (년)",en:"Years of experience",ja:"経験年数",zhs:"从业年数",zht:"從業年數",es:"Años de experiencia"}))+'</label><input class="igin" id="geYr" inputmode="numeric" maxlength="2" value="'+esc(String(g.years||""))+'">'
+    +'<label class="iglb">'+esc(L({ko:"활동 지역 *",en:"Region *",ja:"活動地域 *",zhs:"活动地区 *",zht:"活動地區 *",es:"Región *"}))+'</label><input class="igin" id="geRg" maxlength="40" value="'+esc(g.region||"")+'">'
+    +'<label class="iglb">'+esc(L({ko:"자기소개 (짧게)",en:"Short self-introduction",ja:"自己紹介（短く）",zhs:"简短自我介绍",zht:"簡短自我介紹",es:"Breve presentación"}))+'</label><textarea class="igin" id="geIn" maxlength="500" style="min-height:72px">'+esc(g.intro||"")+'</textarea>'
+    +'<label class="iglb">'+esc(L({ko:"전화 (선택)",en:"Phone (optional)",ja:"電話（任意）",zhs:"电话（可选）",zht:"電話（可選）",es:"Teléfono (opcional)"}))+'</label><input class="igin" id="geTel" inputmode="tel" maxlength="30" value="'+esc(g.phone||"")+'">'
+    +'<label class="iglb">'+esc(L({ko:"사진 (바꾸려면 선택)",en:"Photo (choose to replace)",ja:"写真（変更する場合）",zhs:"照片（如需更换）",zht:"照片（如需更換）",es:"Foto (elige para reemplazar)"}))+'</label><div style="display:flex;align-items:center;gap:10px;margin:4px 0">'+(g.photo?'<img src="'+HUB+'/guide/photo?id='+encodeURIComponent(IG.geId||"")+'" style="'+pvS+'" alt="" onerror="this.style.display=\'none\'">':'')+'<img id="gePv" style="'+pvS+';display:none" alt=""><input type="file" accept="image/*" id="gePh"></div>'
+    +'<label class="iglb">'+esc(L({ko:"자격증 사본 (바꾸려면 선택)",en:"License photo (choose to replace)",ja:"資格証の写し（変更する場合）",zhs:"资格证照片（如需更换）",zht:"資格證照片（如需更換）",es:"Foto de licencia (elige para reemplazar)"}))+'</label><div style="display:flex;align-items:center;gap:10px;margin:4px 0"><img id="geLv" style="'+pvS+';display:none" alt=""><input type="file" accept="image/*" id="geLp"></div>'
+    +'<button type="button" class="nrsel" id="geSave" style="background:#0c8599;color:#fff;border-color:#0c8599;margin-top:12px">'+esc(L({ko:"저장",en:"Save",ja:"保存",zhs:"保存",zht:"儲存",es:"Guardar"}))+'</button>'
+    +'<div class="ignt" id="geM"></div>'; }
+function igEditAgain(){ return '<button type="button" class="nrsel" data-igedit="1" style="margin-top:10px">'+esc(LG6({ko:"수정 링크 다시 받기",en:"Request a new edit link",ja:"編集リンクを再取得",zhs:"重新获取修改链接",zht:"重新取得修改連結",es:"Pedir un nuevo enlace"}))+'</button>'; }
+function igEditSave(){ if(IG.busy) return; var L=LG6, g=function(i){ var e=document.getElementById(i); return e?String(e.value||"").trim():""; };
+  var M=document.getElementById("geM"), set=function(t){ if(M) M.textContent=t; };
+  var langs=[].map.call(document.querySelectorAll(".geLchk:checked"),function(c){ return c.value; });
+  var nm=g("geNm"), rg=g("geRg");
+  if(!nm||!langs.length||!rg){ set(L({ko:"이름·언어·지역을 채워 주세요.",en:"Please fill name, languages and region.",ja:"氏名・言語・地域を入力してください。",zhs:"请填写姓名·语言·地区。",zht:"請填寫姓名·語言·地區。",es:"Completa nombre, idiomas y región."})); return; }
+  IG.busy=true; set("…"); var go=document.getElementById("geSave"); if(go) go.disabled=true;
+  var body={token:IG.geToken,name:nm,langs:langs,years:g("geYr"),region:rg,intro:g("geIn"),phone:g("geTel")};
+  if(GE.photo) body.photo=GE.photo; if(GE.lic) body.licPhoto=GE.lic;
+  fetch(HUB+"/guide/selfedit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ IG.busy=false; if(go) go.disabled=false;
+    if(j&&j.ok){ IG.geDone=true; GE={photo:null,lic:null}; paint(); return; }
+    if(j&&(j.err==="used"||j.err==="expired"||j.err==="invalid")){ IG.geErr=j.err; IG.geGuide=null; paint(); return; }
+    set(j&&j.err==="rate"?L({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてからもう一度。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):j&&(j.err==="photo"||j.err==="licphoto")?L({ko:"사진을 다시 올려 주세요 (JPEG).",en:"Please re-upload the photo (JPEG).",ja:"写真を再アップロードしてください（JPEG）。",zhs:"请重新上传照片（JPEG）。",zht:"請重新上傳照片（JPEG）。",es:"Vuelve a subir la foto (JPEG)."}):L({ko:"저장하지 못했습니다.",en:"Could not save.",ja:"保存できませんでした。",zhs:"保存失败。",zht:"儲存失敗。",es:"No se pudo guardar."})); })
+  .catch(function(){ IG.busy=false; if(go) go.disabled=false; set(L({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
+function geBind(inp,prev,key){ var e=document.getElementById(inp); if(!e) return; e.onchange=function(){ var f=e.files&&e.files[0]; if(!f){ GE[key]=null; return; } gShrink(f,function(d){ GE[key]=d; var p=document.getElementById(prev); if(d&&p){ p.src=d; p.style.display="inline-block"; } }); }; }
+function openGedit(token){ open("ig"); IG.view="edit"; IG.geToken=String(token||"").replace(/[^a-f0-9]/gi,"").slice(0,40); IG.geId=""; IG.geGuide=null; IG.geErr=""; IG.geDone=false; IG.busy=false; GE={photo:null,lic:null};
+  var tv=IG.geToken; fetch(HUB+"/guide/editlink/check?token="+encodeURIComponent(tv)).then(function(r){ return r.json(); }).then(function(j){ if(IG.geToken!==tv||IG.view!=="edit") return;
+    if(j&&j.ok){ IG.geGuide=j.guide||{}; IG.geId=j.guideId||""; IG.geErr=""; if(j.lang&&window.setLang&&j.lang!==window.LANG){ try{ window.setLang(j.lang); }catch(e){} } paint(); }
+    else { IG.geErr=(j&&j.err)||"invalid"; IG.geGuide=null; paint(); } }).catch(function(){ if(IG.geToken===tv&&IG.view==="edit"){ IG.geErr="net"; IG.geGuide=null; paint(); } });
+  paint(); }
 function tourBand(){ var c="South Korea", best=1e9, b=S.base;
   if(b) TB_CITY.forEach(function(x){ var d=kmLL(b,[x[1],x[2]]); if(d<=x[3]&&d<best){ best=d; c=x[0]; } });
   var q=encodeURIComponent(c+" day tour"), kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en-US", gl={ja:"ja-jp/",zhs:"zh-cn/",es:"es-es/"}[LANG]||"";
@@ -499,6 +563,6 @@ function gRegSend(){ var L=LG6, M=document.getElementById("gMsg"), set=function(
     set(j&&j.err==="photo"||j&&j.err==="licphoto"?L({ko:"사진을 다시 올려 주세요 (JPEG).",en:"Please re-upload the photo (JPEG).",ja:"写真を再アップロードしてください（JPEG）。",zhs:"请重新上传照片（JPEG）。",zht:"請重新上傳照片（JPEG）。",es:"Vuelve a subir la foto (JPEG)."}):j&&j.err==="rate"?L({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてから。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):L({ko:"보내지 못했습니다. 칸을 확인해 주세요.",en:"Could not send. Please check the fields.",ja:"送信できませんでした。入力をご確認ください。",zhs:"发送失败，请检查填写。",zht:"發送失敗，請檢查填寫。",es:"No se pudo enviar. Revisa los campos."})); })
   .catch(function(){ if(go) go.disabled=false; set(L({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
 window.GUIDEREG=gReg;
-window.NEAR={open:open,close:close,review:openReview,state:function(){ return S; }};
+window.NEAR={open:open,close:close,review:openReview,gedit:openGedit,state:function(){ return S; }};
 var qm=location.search.match(/[?&]near=(am|em)/); if(qm) setTimeout(function(){ open(qm[1]); },300);
 })();
