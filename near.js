@@ -414,7 +414,7 @@ function gReg(){ css(); var o=document.getElementById("gregBox"); if(o) o.remove
   var L=LG6, langsH=GLANG6.map(function(l){ return '<label><input type="checkbox" value="'+l[1]+'" class="gLchk"> '+esc(l[0])+'</label>'; }).join("");
   o=document.createElement("div"); o.id="gregBox";
   o.innerHTML='<div class="gin"><button type="button" class="gx" id="gX">✕</button>'
-    +'<h3>🧭 '+esc(L({ko:"관광 가이드 등록",en:"Register as a tour guide",ja:"観光ガイド登録",zhs:"导游登记",zht:"導遊登記",es:"Regístrate como guía turístico"}))+'</h3>'
+    +'<h3><img src="img/menu/mi_guideperson.png" alt="" style="height:24px;width:auto;vertical-align:-5px;margin-right:7px">'+esc(L({ko:"관광 가이드 등록",en:"Register as a tour guide",ja:"観光ガイド登録",zhs:"导游登记",zht:"導遊登記",es:"Regístrate como guía turístico"}))+'</h3>'
     +'<div class="gsub">'+esc(L({ko:"관광통역안내사 등 실제로 통역·길안내를 해 주실 분을 등록합니다. 담당자가 자격증을 확인한 뒤 승인합니다. (무료)",en:"Register if you are a real (licensed) interpreter-guide. We approve after verifying your license. (free)",ja:"通訳案内士など、実際に通訳・道案内をされる方の登録です。資格を確認後に承認します。（無料）",zhs:"面向真正的持证口译·向导。核验资格证后审核通过。（免费）",zht:"面向真正的持證口譯·嚮導。核驗資格證後審核通過。（免費）",es:"Regístrate si eres un intérprete-guía real (con licencia). Aprobamos tras verificar tu licencia. (gratis)"}))+'</div>'
     +'<label class="iglb">'+esc(L({ko:"이름 *",en:"Name *",ja:"お名前 *",zhs:"姓名 *",zht:"姓名 *",es:"Nombre *"}))+'</label><input class="igin" id="gNm" maxlength="40">'
     +'<label class="iglb">'+esc(L({ko:"사진 *",en:"Photo *",ja:"写真 *",zhs:"照片 *",zht:"照片 *",es:"Foto *"}))+'</label><div class="gph"><img class="gpv" id="gPv" alt="" style="display:none"><input type="file" accept="image/*" id="gPh"></div>'
