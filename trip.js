@@ -653,7 +653,13 @@ var css=document.createElement("style"); css.textContent=
 +".gdcard{display:flex;gap:11px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin:9px 0;cursor:pointer}.gdav{width:56px;height:56px;border-radius:12px;object-fit:cover;flex:0 0 auto;background:#e3fafc}.gdav.gdavx{display:flex;align-items:center;justify-content:center}.gdavx .trgdic2{height:32px;width:auto}.gdb{flex:1;min-width:0}.gdb b{font-size:15.5px}.gdm{color:var(--sub);font-size:12.5px;margin-top:2px}.gdi{color:var(--ink);font-size:13px;margin-top:4px;line-height:1.45}.gdpk{display:inline-block;margin-top:6px;color:#0c8599;font-weight:800;font-size:13px}.gdrb{display:inline-block;font-size:12.5px;font-weight:800;color:#e8590c;white-space:nowrap}"
 +".gdlb{display:block;font-size:13px;color:var(--sub);font-weight:700;margin:10px 2px 3px}.gdin{width:100%;box-sizing:border-box;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 11px}.gdchk{display:flex;gap:7px;align-items:flex-start;font-size:13px;color:var(--ink);margin:12px 2px 0;line-height:1.5}.gdchk input{width:18px;height:18px;margin-top:1px;flex:0 0 auto}";
 document.head.appendChild(css);
-window.TRIP={open:openPanel,report:openReport,close:sheetClose,closeGuide:function(){ sheetClose("trGd"); },guide:gdOpen,state:function(){ return TR; },hasPass:hasPass};
+window.TRIP={open:openPanel,report:openReport,close:sheetClose,closeGuide:function(){ sheetClose("trGd"); },guide:gdOpen,state:function(){ return TR; },hasPass:hasPass,
+  debug:function(){ var pl=TR.plan; if(!pl) return null; var H=REPH||pl.H||null, tot=0, tr=0, rl=0;   // 읽기 전용 — 날짜별 묶음·이동시간·실제구간 수 (시험·비교용)
+    var days=pl.days.map(function(d){ var arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), p=H, tv=0, legs=0, real=0;
+      arr.forEach(function(x){ if(p){ var lg=leg(p,x); if(lg.mode!=="walk"){ legs++; if(lg.real) real++; } tv+=lg.min; } p=x; });
+      if(H&&arr.length){ var lb=leg(p,H); if(lb.mode!=="walk"){ legs++; if(lb.real) real++; } tv+=lb.min; }
+      tot+=tv; tr+=legs; rl+=real; return {stops:arr.map(function(x){ return x.ko; }),travel:Math.round(tv),legs:legs,real:real}; });
+    return {old:OLD(),days:days,total:Math.round(tot),legs:tr,real:rl}; }};
 refresh();
 if(/[?&]trip=1/.test(location.search)){ var hz=/#tp=([A-Za-z0-9_-]+)/.exec(location.hash);
   var startRep=function(){ if(TR.plan) openReport(); else openPanel(); };
