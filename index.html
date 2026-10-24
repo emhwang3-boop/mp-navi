@@ -391,12 +391,12 @@ function footBuild(){ var e=document.getElementById("foot"); if(!e) return;
   var em='<a href="mailto:emhwang3@moneypuzzle.co.kr" style="color:inherit;text-decoration:underline">emhwang3@moneypuzzle.co.kr</a>';
   var ADDR_EN='707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea';
   var F={
-    ko:["주식회사 부만 | 사업자등록번호 : 297-81-03712","대표 : 전현진 | 개인정보관리책임자 : 황의만","고객센터 : 010-6358-7522 | 이메일 : "+em,"경기도 남양주시 진접읍 해밀예당1로 220, 엠타워 707호"],
-    en:["Booman Inc. | Business Reg. No. 297-81-03712","CEO : Jeon Hyeonjin | Privacy Officer : Hwang Euiman","Support : +82-10-6358-7522 | Email : "+em,ADDR_EN],
-    ja:["株式会社 부만（Booman Inc.） | 事業者登録番号 : 297-81-03712","代表 : 全賢珍（Jeon Hyeonjin） | 個人情報管理責任者 : 黄義晩","カスタマーセンター : +82-10-6358-7522 | メール : "+em,ADDR_EN],
-    zhs:["Booman Inc.（株式会社 부만） | 营业执照号 : 297-81-03712","代表 : Jeon Hyeonjin | 个人信息管理负责人 : Hwang Euiman","客服 : +82-10-6358-7522 | 邮箱 : "+em,ADDR_EN],
-    zht:["Booman Inc.（株式會社 부만） | 營業執照號 : 297-81-03712","代表 : Jeon Hyeonjin | 個人資料管理負責人 : Hwang Euiman","客服 : +82-10-6358-7522 | 電郵 : "+em,ADDR_EN],
-    es:["Booman Inc. | N.º de registro mercantil : 297-81-03712","Representante : Jeon Hyeonjin | Resp. de privacidad : Hwang Euiman","Atención : +82-10-6358-7522 | Correo : "+em,ADDR_EN]
+    ko:["주식회사 부만 | 사업자등록번호 : 297-81-03712","대표 : 전현진 | 개인정보관리책임자 : 황의만","고객센터 : 1599-7065 | 이메일 : "+em,"경기도 남양주시 진접읍 해밀예당1로 220, 엠타워 707호"],
+    en:["Booman Inc. | Business Reg. No. 297-81-03712","CEO : Jeon Hyeonjin | Privacy Officer : Hwang Euiman","Support : +82-1599-7065 | Email : "+em,ADDR_EN],
+    ja:["株式会社 부만（Booman Inc.） | 事業者登録番号 : 297-81-03712","代表 : 全賢珍（Jeon Hyeonjin） | 個人情報管理責任者 : 黄義晩","カスタマーセンター : 1599-7065 | メール : "+em,ADDR_EN],
+    zhs:["Booman Inc.（株式会社 부만） | 营业执照号 : 297-81-03712","代表 : Jeon Hyeonjin | 个人信息管理负责人 : Hwang Euiman","客服 : 1599-7065 | 邮箱 : "+em,ADDR_EN],
+    zht:["Booman Inc.（株式會社 부만） | 營業執照號 : 297-81-03712","代表 : Jeon Hyeonjin | 個人資料管理負責人 : Hwang Euiman","客服 : 1599-7065 | 電郵 : "+em,ADDR_EN],
+    es:["Booman Inc. | N.º de registro mercantil : 297-81-03712","Representante : Jeon Hyeonjin | Resp. de privacidad : Hwang Euiman","Atención : 1599-7065 | Correo : "+em,ADDR_EN]
   };
   var lg=F[window.LANG]?window.LANG:"en"; e.innerHTML=F[lg].map(function(x){ return '<div>'+x+'</div>'; }).join(""); }
 function kpL(){ return LANG==="ko"?"":"&lang=en"+(LANG==="en"?"":"&ul="+LANG); }   // /kplace·/neat — ul 이 있으면 허브가 name_en·cat_en 칸에 그 언어(일·简·繁)로 넣어 준다 (10-18)
