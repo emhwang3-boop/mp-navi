@@ -672,7 +672,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025kpopmenu", NAVI_ROOT="kr";
+var NAVI_V="1025jypyg", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -792,7 +792,7 @@ function perfShow(k){ var cf=AREAPERF[k]; if(!cf) return; var p=PLACES[k]; if(!p
     if(!items||!items.length){ e.innerHTML='<div class="t">'+hd+'</div><div class="phmsg d">'+esc(LP(PH_NONE))+'</div>'; return; }
     e.innerHTML='<div class="t">'+hd+'</div>'+items.map(phItem).join('')+'<div class="d phNote" style="margin:7px 0 0">'+esc(LP(PH_NOTE))+'</div>'; };
   var ck=k+"|"+LANG; if(_phC[ck]) return paint(_phC[ck]);
-  fetch(HUB+"/gperf?key="+encodeURIComponent(k)+"&lang="+encodeURIComponent(LANG))
+  fetch(HUB+"/gperf?key="+encodeURIComponent(k)+"&lang="+encodeURIComponent(LANG)+"&d="+new Date(Date.now()+324e5).toISOString().slice(0,10))   // &d=오늘(KST): 날짜 바뀌면 새 URL → 옛 브라우저/CDN 캐시(번역 전 한글판) 무시 (사장님 10-25)
     .then(function(r){ return r.json(); }).then(function(j){ var a=(j&&j.ok&&j.items)||[]; _phC[ck]=a; paint(a); })
     .catch(function(){ if(window._cardK===k){ var e=res.querySelector(".phExp .phmsg"); if(e) e.textContent=LP(PH_NONE); } }); }
 function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } if(p.app){ appGo(p.app); return; } var nm=LN(p), ll=p.lat+","+p.lng;
