@@ -211,7 +211,7 @@ function sos(){ return '<div class="nrsos"><a class="s119" href="tel:119">'+PH+T
 function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=KS(en?x.name_en:x.name), ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
   var tel=""; if(x.tel){ var shown=L()?(/^0/.test(x.tel)?"+82 "+x.tel.slice(1):"+82 "+x.tel):x.tel;
     tel=em?'<a class="nrcall" href="tel:'+esc(telIntl(x.tel))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>':'<a class="nrcall am" href="tel:'+esc(telIntl(x.tel))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>'; }   // 편의점·마트도 같은 흰 전화기 단추 (파랑)
-  return '<div class="nrit" data-nr="pick" data-i="'+i+'"><div class="h"><span class="nrrank">'+(i+1)+'</span><b>'+esc(nm)+(x.kto?'<span class="nrkto" title="'+T("한국관광공사 관광정보에 실린 숙소","Listed by the Korea Tourism Organization")+'">'+T("관광공사","KTO")+'</span>':'')+(x.dt?'<span class="nrdt">'+T("🎟 당일 투어","🎟 Day tour")+'</span>':'')+'</b><i>'+km(x.dist)+'</i></div>'
+  return '<div class="nrit" data-nr="pick" data-i="'+i+'"><div class="h"><span class="nrrank">'+(i+1)+'</span><b>'+esc(nm)+(x.kto?'<span class="nrkto" title="'+T("한국관광공사 관광정보에 실린 숙소","Listed by the Korea Tourism Organization")+'">'+T("관광공사","KTO")+'</span>':'')+(x.dt?'<span class="nrdt">'+MPICO("mi_ticket",T("🎟 당일 투어","🎟 Day tour"),MIS)+'</span>':'')+'</b><i>'+km(x.dist)+'</i></div>'
     +(en&&x.name_en!==x.name?'<div class="ko">'+esc(x.name)+'</div>':'')+(x.rating?'<div class="d"><b style="color:#e8590c">★ '+x.rating.toFixed(1)+'</b> ('+x.n+')</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div>'
     +'<div class="row">'+tel+'<span class="go">'+T("지도에 핀","Pin on map")+' ›</span></div></div>'; }
 // 「📱 내일 투어를 바로 예약」 띠 (사장님 10-22) — 기준 위치(내 위치·지도 가운데)에서 가까운 도시의 당일 투어 검색. 제휴 코드 없음 · 새 창
@@ -357,18 +357,18 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
   if(S.k==="ig"){ b.className="nrin"; igRender(b); return; }   // 통역·길안내 판 (10-24) — 가이드 등록·매칭
   var k=KINDS[S.k], em=S.k==="em";
   b.className="nrin"+(em?" nrem":"")+(S.k==="st"?" nrst":"");
-  var h='<div class="nrtop"><b>'+(S.k==="tg"?"🧭 "+esc(LG6(TOURS6)):T(k.t[0],k.t[1]))+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
+  var h='<div class="nrtop"><b>'+MPICO(MENU_ICON[S.k],S.k==="tg"?LG6(TOURS6):T(k.t[0],k.t[1]),MIS)+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
   if(em) h+=sos();
   if(S.k==="am") h+='<select class="nrsel" id="nrSel" aria-label="'+T("종류","Type")+'">'+k.tabs.map(function(t,i){ return '<option value="'+i+'"'+(i===S.tab?' selected':'')+'>'+esc(T(t.ko,t.en))+'</option>'; }).join("")+'</select>';   // 편의시설 = 풀다운 (사장님 10-16, 이모지 없이)
   else if(S.k==="tg"){ b.innerHTML=h+tgHtml(); return; }   // 투어 가이드 — Klook·GetYourGuide 두 칸, 그 아래 설명 세 줄 (사장님 10-23)
-  else h+='<div class="nrtabs">'+k.tabs.map(function(t,i){ return '<button type="button" class="nrtab'+(i===S.tab?' on':'')+'" data-nr="tab" data-i="'+i+'">'+t.i+' '+esc(T(t.ko,t.en))+'</button>'; }).join("")+'</div>';
-  if(S.err==="loc") h+='<div class="msg">'+T("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요. 또는 지도를 보고 싶은 동네로 옮긴 뒤 다시 눌러 주세요.","Could not get your location — please allow location access, or move the map to the area you want and try again.")+'</div><div class="nrbase"><button type="button" class="nrme" data-nr="me">📍 '+T("내 위치 다시 받기","Try my location again")+'</button></div>';
+  else h+='<div class="nrtabs">'+k.tabs.map(function(t,i){ return '<button type="button" class="nrtab'+(i===S.tab?' on':'')+'" data-nr="tab" data-i="'+i+'">'+MPICO(({"🏥":"mi_emergency","💊":"mi_pharmacy","🏨":"mi_stay","🛏":"mi_stay","🎒":"mi_stay","🏯":"mi_stay"})[t.i]||"",T(t.ko,t.en),MIS)+'</button>'; }).join("")+'</div>';
+  if(S.err==="loc") h+='<div class="msg">'+T("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요. 또는 지도를 보고 싶은 동네로 옮긴 뒤 다시 눌러 주세요.","Could not get your location — please allow location access, or move the map to the area you want and try again.")+'</div><div class="nrbase"><button type="button" class="nrme" data-nr="me">'+MPICO("mi_pin",T("내 위치 다시 받기","Try my location again"),MIS)+'</button></div>';
   else if(S.err) h+='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>';
   else if(k.tabs[S.tab].fixed&&S.items) h+='<div class="nrbase">'+(embL()?TE("Sorted by country name (local order)"):T("나라 영문 이름 순","Sorted by country name (A–Z)"))+'</div>'+S.items.map(embHtml).join("");
   else { var tg=k.tabs[S.tab].g, rr=tg&&S.ord==="r";
     if(tg&&S.items&&S.items.length) h+='<div class="nrord"><button type="button" data-nr="ord" data-o="d" class="'+(rr?'':'on')+'">'+T("거리순","Nearest")+'</button><button type="button" data-nr="ord" data-o="r" class="'+(rr?'on':'')+'">'+T("별점순 (구글)","Top rated (Google)")+'</button></div>';   // 구글 자료(음식점·여행사)만 거리순·별점순 (사장님 10-21)
-    if(S.base) h+='<div class="nrbase">'+(rr?(function(){ var g=((S.gr||k.tabs[S.tab].r)/1000).toFixed(1).replace(/\.0$/,""); return T("⭐ "+g+"km 안 구글 별점 높은 순","⭐ Highest Google rating within "+g+" km"); })():(S.src==="me"?(tg?T("📍 내 위치에서 가까운 순 (비슷한 거리는 별점순)","📍 Nearest to you (similar distance: higher rating first)"):(S.k==="st"&&!S.far)?T("⭐ 구글 별점 높은 순 (같으면 가까운 순)","⭐ Highest Google rating first (then nearest)"):T("📍 내 위치에서 가까운 순","📍 Nearest to you")):T("🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map")))
-      +(S.src!=="me"?' <button type="button" class="nrme" data-nr="me">📍 '+T("내 위치로","Use my location")+'</button>':'')+'</div>';
+    if(S.base) h+='<div class="nrbase">'+(rr?(function(){ var g=((S.gr||k.tabs[S.tab].r)/1000).toFixed(1).replace(/\.0$/,""); return MPICO("mi_star",T("⭐ "+g+"km 안 구글 별점 높은 순","⭐ Highest Google rating within "+g+" km"),MIS); })():(S.src==="me"?(tg?MPICO("mi_pin",T("📍 내 위치에서 가까운 순 (비슷한 거리는 별점순)","📍 Nearest to you (similar distance: higher rating first)"),MIS):(S.k==="st"&&!S.far)?MPICO("mi_star",T("⭐ 구글 별점 높은 순 (같으면 가까운 순)","⭐ Highest Google rating first (then nearest)"),MIS):MPICO("mi_pin",T("📍 내 위치에서 가까운 순","📍 Nearest to you"),MIS)):MPICO("mi_map",T("🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map"),MIS)))
+      +(S.src!=="me"?' <button type="button" class="nrme" data-nr="me">'+MPICO("mi_pin",T("내 위치로","Use my location"),MIS)+'</button>':'')+'</div>';
     if(k.tabs[S.tab].gt==="travel_agency"&&S.k!=="tg") h+=tourBand();   // 여행사 맨 위 띠 — Klook·GetYourGuide 당일 투어 검색 (10-22)
     if(!S.items) h+='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
     else if(!S.items.length) h+='<div class="msg">'+T("가까운 곳에 없습니다.","None found nearby.")+'</div>';
@@ -399,11 +399,11 @@ function bookUrls(nm,lat,lng){ nm=String(nm||"").split(" · ").pop(); var q=enco
 var BK=null;   // 지금 카드의 숙소 {nm, lat, lng, key}
 function isHotelKey(k){ var p=PLACES[k]; return !!p&&(/^h_/.test(k)||k==="shilla"||/호텔/.test(p.ko||"")); }
 function bookBtn(info){ var it=document.querySelector("#res .item"); if(!it||it.querySelector(".nrbook")) return; css(); BK=info;
-  var a='<a class="nrbook" href="#" data-nrbk="1">🛏 '+T("예약하기","Book")+'</a>', t=it.querySelector(".nrbig")||it.querySelector(".t");
+  var a='<a class="nrbook" href="#" data-nrbk="1">'+MPICO("mi_stay",T("예약하기","Book"),MIS)+'</a>', t=it.querySelector(".nrbig")||it.querySelector(".t");
   if(t) t.insertAdjacentHTML("afterend",'<div>'+a+'</div>'); else it.insertAdjacentHTML("afterbegin",a); }
 function bookOpen(){ if(!BK) return; var u=bookUrls(BK.nm,BK.lat,BK.lng), o=document.getElementById("nrBk"); if(o) o.remove();
   o=document.createElement("div"); o.id="nrBk";
-  o.innerHTML='<div class="in"><div class="h">🛏 '+T("예약하기","Book")+' · '+esc(BK.nm)+'</div><div class="s">'+T("예약 사이트에서 이 숙소 이름으로 찾아 드려요 (새 창)","Opens a search for this place on the booking site (new tab)")+'</div>'
+  o.innerHTML='<div class="in"><div class="h">'+MPICO("mi_stay",T("예약하기","Book"),MIS)+' · '+esc(BK.nm)+'</div><div class="s">'+T("예약 사이트에서 이 숙소 이름으로 찾아 드려요 (새 창)","Opens a search for this place on the booking site (new tab)")+'</div>'
     +'<a href="'+esc(u.agoda)+'" target="_blank" rel="noopener" data-site="agoda">Agoda</a><a href="'+esc(u.booking)+'" target="_blank" rel="noopener" data-site="booking">Booking.com</a><a href="'+esc(u.trip)+'" target="_blank" rel="noopener" data-site="trip">Trip.com</a>'
     +'<button type="button">'+T("닫기","Close")+'</button></div>';
   o.addEventListener("click",function(e){ var a=e.target.closest("a[data-site]");
