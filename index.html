@@ -707,8 +707,11 @@ function areaExpShow(k){ var cat=AREAEXP[k]; if(!cat) return; var p=PLACES[k]; i
     .catch(function(){ if(window._cardK===k){ var e=res.querySelector(".gaExp .gamsg"); if(e) e.textContent=LP(GA_NONE); } }); }
 // ── 공연장 명소 「공연 프로그램」 (사장님 2026-10-24) — 공연장 명소를 누르면 설명·가는 길 아래에 지금·다가올 공연. 자료는 허브 /gperf (KOPIS 공연예술통합전산망) ──
 //  AREAPERF 에 적힌 명소만 공연 목록이 붙는다. AREAEXP(구글 가게)와 같은 모양·6개 언어·맞춤 아이콘(mi_ticket). 읽기 전용. 키 없으면 "공연 정보 준비 중"
-var AREAPERF={ smartium:1 };   // 코엑스 아티움 (SM타운)
-var PH_H=["🎭 공연 프로그램","🎭 What’s on","🎭 公演プログラム","🎭 演出节目","🎭 演出節目","🎭 Programación"];
+// 명소키 → 공연 섹션 설정(헤더·아이콘). 데이터로 두어 공연장마다 쉽게 붙인다. 자료는 허브 /gperf 가 명소키로 KOPIS 질의를 고른다
+var AREAPERF={
+  smartium:{ ic:"mi_ticket", h:["서울 K-pop·콘서트","K-pop & concerts in Seoul","ソウルの K-POP・コンサート","首尔 K-pop·演唱会","首爾 K-pop·演唱會","Conciertos y K-pop en Seúl"] }   // 코엑스 아티움 (SM타운) = 서울 대중음악·K-pop 콘서트
+};
+var PH_H=["공연 프로그램","What’s on","公演プログラム","演出节目","演出節目","Programación"];   // 기본 헤더 (명소 설정에 h 없을 때)
 var PH_NOTE=["출처: 공연예술통합전산망(KOPIS, www.kopis.or.kr) · 일정은 바뀔 수 있어요","Source: KOPIS, Performing Arts Box Office (www.kopis.or.kr) · schedule may change","出典: 公演芸術統合電算網(KOPIS, www.kopis.or.kr) · 日程は変わることがあります","来源: 演出艺术综合电算网(KOPIS, www.kopis.or.kr) · 日程可能变动","來源: 表演藝術綜合電算網(KOPIS, www.kopis.or.kr) · 日程可能變動","Fuente: KOPIS (www.kopis.or.kr) · el calendario puede cambiar"];
 var PH_LOAD=["공연 프로그램을 불러오는 중…","Loading what’s on…","公演プログラムを読み込み中…","正在加载演出节目…","正在載入演出節目…","Cargando la programación…"];
 var PH_NONE=["공연 정보 준비 중","Performance info coming soon","公演情報は準備中です","演出信息准备中","演出資訊準備中","Información de espectáculos próximamente"];
@@ -733,8 +736,8 @@ function phItem(x){ var tt=esc(x.title||"");
     +(x.id?'<div class="d"><a href="https://www.kopis.or.kr/por/db/pblprfr/pblprfrView.do?mt20id='+encodeURIComponent(x.id)+'" target="_blank" rel="noopener">'+T("자세히·예매 정보","Details & tickets")+' ↗</a></div>':'')
     +'</div></div>'; }
 var _phC={};   // 세션 캐시 (명소키|언어)
-function perfShow(k){ if(!AREAPERF[k]) return; var p=PLACES[k]; if(!p) return;
-  var hd=MPICO("mi_ticket",LP(PH_H),MIS), res=document.getElementById("res"); if(!res) return;
+function perfShow(k){ var cf=AREAPERF[k]; if(!cf) return; var p=PLACES[k]; if(!p) return;
+  var hd=MPICO(cf.ic||"mi_ticket",LP(cf.h||PH_H),MIS), res=document.getElementById("res"); if(!res) return;
   var box=document.createElement("div"); box.className="item phExp";
   box.innerHTML='<div class="t">'+hd+'</div><div class="phmsg d">'+esc(LP(PH_LOAD))+'</div>'; res.appendChild(box);
   var paint=function(items){ if(window._cardK!==k) return; var e=res.querySelector(".phExp"); if(!e) return;
