@@ -87,22 +87,24 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권·결제 내역","장부 · 엑셀 받기"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권 (무료)","무료 확정 · 결제 미연결"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+// 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
+function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
 function usd(n){ return "$"+(Math.round((n||0)*100)/100).toLocaleString(); }
 function tile(v,l){ return '<div class="tile"><b>'+v+'</b><span>'+l+'</span></div>'; }
 // ── 계기판 — 건물에 들어오면 바로 보이는 장부 ──
-function homeLoad(){ var P=$("pane"), td=kday(0), ms=td.slice(0,8)+"01";
-  P.innerHTML='<div class="card"><b>오늘 '+td+'</b><div id="hsum"><div class="msg">불러오는 중…</div></div></div><div class="card"><b>새 고객의 소리</b><div id="hvc"></div></div><div class="card"><b>최근 7일</b><div class="tw"><table id="h7"></table></div></div>';
-  Promise.all([api("/ntapstats?from="+kday(-6)+"&to="+td),api("/nledger?from="+td+"&to="+td),api("/nledger?from="+ms+"&to="+td),api("/nvoice").catch(function(){ return {ok:false}; }),api("/ninq/admin").catch(function(){ return {ok:false}; })]).then(function(a){
-    var w=a[0], tdy=(w.days||[]).filter(function(d){ return d.d===td; })[0]||{}, L0=a[1].total, LM=a[2].total, V=a[3], IQ=a[4];
+function homeLoad(){ var P=$("pane"), td=kday(0);
+  P.innerHTML='<div class="card"><b>오늘 '+td+'</b><div id="hsum"><div class="msg">불러오는 중…</div></div></div><div class="card"><b>새 고객의 소리</b><div id="hvc"></div></div><div class="card"><b>최근 7일 (투어앱)</b><div class="tw"><table id="h7"></table></div></div>';
+  Promise.all([api("/ntapstats?from="+kday(-6)+"&to="+td),api("/nvoice").catch(function(){ return {ok:false}; }),api("/ninq/admin").catch(function(){ return {ok:false}; }),hc("?sum=1").catch(function(){ return null; })]).then(function(a){
+    var w=a[0], tdy=(w.days||[]).filter(function(d){ return d.d===td; })[0]||{}, V=a[1], IQ=a[2], H=a[3];
     $("hsum").innerHTML='<div class="tiles">'
-      +tile((tdy.vis||0).toLocaleString(),"오늘 방문 (열림)")+tile((tdy.visU||0).toLocaleString(),"오늘 방문 기기 수")
+      +tile((tdy.vis||0).toLocaleString(),"오늘 앱 방문")+tile((tdy.visU||0).toLocaleString(),"오늘 앱 기기 수")
+      +tile(H?(H.today||0).toLocaleString():"-","오늘 홈피 방문")
       +tile((tdy.t||0).toLocaleString(),"오늘 그림 누름")+tile((tdy.u||0).toLocaleString(),"오늘 사람 수")
-      +tile(L0.KRW.n+L0.USD.n+"건","오늘 결제")+tile(won(L0.KRW.amt)+(L0.USD.amt?" · "+usd(L0.USD.amt):""),"오늘 결제금액")
-      +tile(won(LM.KRW.amt)+(LM.USD.amt?" · "+usd(LM.USD.amt):""),"이번 달 매출 ("+ms.slice(5,7)+"월)")
       +tile(V.ok?V.unread+"건":"-","새 고객의 소리")+tile(IQ.ok?IQ.unread+"건":"-","새 입점 문의")+'</div>'
-      +(a[1].pg===false?'<div class="msg">결제 연결 전 — 0원 (결제를 붙이면 자동으로 쌓입니다)</div>':'');
+      +'<div class="msg">앱 = 투어앱(navi.moneypuzzle.co.kr) · 홈피 = moneypuzzle.co.kr (서로 다른 방문). 자세히는 「방문 통계」</div>'
+      +'<div class="msg">이용권은 <b>무료</b>(결제 미연결) — 수익모델: 가이드 수수료 · 식당 광고 · 제휴 커미션</div>';
     var it=V.ok?V.items.filter(function(x){ return !x.read; }).slice(0,3):[];
     $("hvc").innerHTML=it.length?it.map(function(x){ return '<div class="inv"><div class="sub">'+esc(x.at)+(x.lang?' · '+esc(x.lang):'')+'</div>'+esc(x.text)+'</div>'; }).join("")+'<div class="row" style="margin-top:8px"><button class="g" onclick="show(\'voice\')">모두 보기</button></div>':'<div class="msg">새 글 없음</div>';
     var h='<tr><th class="l">날짜</th><th>방문</th><th>기기</th><th>누름</th><th>사람 수</th><th>길찾기</th></tr>';
@@ -110,13 +112,21 @@ function homeLoad(){ var P=$("pane"), td=kday(0), ms=td.slice(0,8)+"01";
     $("h7").innerHTML=h;
   }).catch(function(e){ $("hsum").innerHTML='<div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div>'; }); }
 // ── 방문 — 내비 숫자는 토큰 경로(/ntapstats)에서, 허브 공개 화면은 단추로 ──
-function visitLoad(){ var P=$("pane");
-  P.innerHTML='<div class="card"><b>내비 방문 (최근 30일)</b><div class="msg">앱이 열릴 때 1번 셉니다. 기기 수 = 그날 처음 연 기기 (사장님 기기 제외)</div><div class="tw"><table id="vt"></table></div></div>'
-    +'<div class="card"><b>허브 방문 통계 화면</b><div class="row" style="margin-top:8px"><a href="'+HUB+'/stats" target="_blank" rel="noopener"><button class="g">앱 방문 통계 (/stats)</button></a><a href="'+HUB+'/hstats" target="_blank" rel="noopener"><button class="g">홈페이지 방문 (/hstats)</button></a></div></div>';
-  api("/ntapstats?from="+kday(-29)+"&to="+kday(0)).then(function(j){ var h='<tr><th class="l">날짜</th><th>방문</th><th>기기 수</th><th>누른 기기</th></tr>';
+function visitLoad(){ var P=$("pane"), td=kday(0);
+  P.innerHTML='<div class="card"><b>방문 요약 — 앱 vs 홈피</b><div class="msg">앱 = 투어앱(navi.moneypuzzle.co.kr), 열릴 때 1번 · 홈피 = moneypuzzle.co.kr. 서로 다른 방문입니다 (로봇·사장님 기기 뺌).</div><div id="vsplit"><div class="msg">불러오는 중…</div></div></div>'
+    +'<div class="card"><b>투어앱 방문 (최근 30일)</b><div class="msg">앱이 열릴 때 1번 셉니다. 기기 수 = 그날 처음 연 기기 (사장님 기기 제외)</div><div class="tw"><table id="vt"></table></div></div>'
+    +'<div class="card"><b>허브 방문 통계 화면 (자세히)</b><div class="row" style="margin-top:8px"><a href="'+HUB+'/hstats" target="_blank" rel="noopener"><button class="g">홈페이지 방문 (/hstats)</button></a><a href="'+HUB+'/stats" target="_blank" rel="noopener"><button class="g">투자앱 방문 (/stats)</button></a></div><div class="msg">※ /stats 는 투자앱(브리핑·주식·코인) 통계 — 투어앱과 다른 서비스입니다.</div></div>';
+  Promise.all([api("/ntapstats?from="+kday(-29)+"&to="+td),hc("?sum=1").catch(function(){ return null; })]).then(function(a){
+    var j=a[0], H=a[1], appTd=(j.days.filter(function(d){ return d.d===td; })[0]||{}).vis||0;
+    $("vsplit").innerHTML='<div class="tiles">'
+      +tile(appTd.toLocaleString(),"앱 방문 · 오늘")+tile((j.total.vis||0).toLocaleString(),"앱 방문 · 최근 30일")
+      +tile(H?(H.today||0).toLocaleString():"-","홈피 방문 · 오늘")+tile(H?(H.d30||0).toLocaleString():"-","홈피 방문 · 최근 30일")
+      +tile(H?(H.total||0).toLocaleString():"-","홈피 누적")+tile(H?(H.uniq||0).toLocaleString():"-","홈피 순 방문자")+'</div>'
+      +(H?'':'<div class="msg err">홈피 방문 수를 불러오지 못했습니다 (허브 /hc).</div>');
+    var h='<tr><th class="l">날짜</th><th>방문</th><th>기기 수</th><th>누른 기기</th></tr>';
     j.days.slice().reverse().forEach(function(d){ h+='<tr><td class="l">'+d.d+'</td><td>'+(d.vis||0)+'</td><td>'+(d.visU||0)+'</td><td>'+(d.dev||0)+'</td></tr>'; });
     h+='<tr><td class="l"><b>합계</b></td><td><b>'+j.total.vis+'</b></td><td><b>'+j.total.visU+'</b></td><td><b>'+j.total.dev+'</b></td></tr>'; $("vt").innerHTML=h; })
-  .catch(function(e){ $("vt").innerHTML='<tr><td class="l err">불러오지 못했습니다</td></tr>'; }); }
+  .catch(function(e){ $("vsplit").innerHTML='<div class="msg err">불러오지 못했습니다</div>'; $("vt").innerHTML='<tr><td class="l err">불러오지 못했습니다</td></tr>'; }); }
 // ── 고객의 소리 — 허브에 저장된 내비 글. 연락처는 가려 두고 단추로 하나씩 ──
 function voiceLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>고객의 소리 (내비)</b><div class="msg">메일로도 갑니다. 연락처는 「연락처 보기」를 눌러야 보입니다.</div><div id="vl"><div class="msg">불러오는 중…</div></div></div>';
   api("/nvoice").then(function(j){ if(!j.items.length){ $("vl").innerHTML='<div class="msg">아직 글이 없습니다.</div>'; return; }
@@ -174,11 +184,12 @@ function xlsInq(){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀�
   .catch(function(){ alert("불러오지 못했습니다"); }); }
 // ── 이용권·결제 장부 ──
 var LG=null, PRN={"7d":"7일권","15d":"15일권","30d":"30일권"};
-function payLoad(){ var P=$("pane"), td=kday(0);
-  P.innerHTML='<div class="card"><b>이용권·결제 장부</b><div class="row" style="margin-top:8px"><input type="date" id="lf" value="'+td.slice(0,8)+'01"> ~ <input type="date" id="lt" value="'+td+'"><button onclick="ledLoad()">보기</button><button class="g" onclick="xlsLed()">엑셀 받기</button></div><div id="lsum"></div><div class="tw"><table id="ltab"></table></div><div class="tw" style="margin-top:12px"><table id="lrec"></table></div></div>'
-    +'<div class="card"><b>이용권 손 발급</b><div class="msg">결제 연결 전·환불 대신 등에 씁니다. 이메일을 넣으면 손님에게 이용권 링크 메일이 갑니다(이메일은 저장 안 하고 해시만). 메일이 안 나가면 링크가 여기 나옵니다.</div>'
-    +'<div class="row" style="margin-top:8px"><select id="psD"><option value="7">7일</option><option value="15">15일</option><option value="30">30일</option></select><input id="psE" type="email" placeholder="손님 이메일 (선택)" style="min-width:220px"><select id="psL"><option value="en">영어 메일</option><option value="ko">한글 메일</option></select><label><input type="checkbox" id="psT"> 시험</label><button onclick="passIssue()">발급</button></div><div id="psOut"></div></div>';
-  ledLoad(); }
+function payLoad(){ var P=$("pane");
+  // 이용권은 무료로 확정(2026-10-24). 이용권 판매·매출 없음 → 장부·손발급 화면 감춤. 허브 /nledger·/npass 코드는 그대로 둠(가이드 결제 붙을 때 재활용).
+  P.innerHTML='<div class="card"><b>이용권 — 무료</b>'
+    +'<div class="msg">이용권(구독)은 <b>무료로 확정</b>되었습니다 (2026-10-24). 7·15·30일권 판매와 이용권 매출은 없습니다.</div>'
+    +'<div class="msg">투어앱 수익모델: <b>가이드 중개 수수료</b> · <b>식당 광고</b>(제휴 식당 슬롯) · <b>제휴 커미션</b>(Klook·GetYourGuide 등).</div>'
+    +'<div class="msg">가이드 수수료 <b>결제(PG)가 붙으면</b> 그 장부는 <b>「가이드 장부(MIS)」</b> 메뉴에 쌓입니다. 지금은 손수 입력으로 봅니다.</div></div>'; }
 // 이용권 손 발급 (2026-10-16) — 허브 /npass/admin
 function passIssue(){ var o=$("psOut"); o.innerHTML='<div class="msg">발급 중…</div>';
   api("/npass/admin",{method:"POST",body:JSON.stringify({days:+$("psD").value,email:$("psE").value.trim(),lang:$("psL").value,test:$("psT").checked})}).then(function(j){
@@ -415,7 +426,9 @@ function misSetMode(mode){ MIS.mode=mode;
   ["this","last","custom"].forEach(function(k){ var b=$("misP_"+k); if(b) b.classList.toggle("on",k===mode); });
   misFetch(); }
 function misLoad(){ var P=$("pane"); var r=misMonth(0); MIS.from=r.from; MIS.to=kday(0); MIS.mode="this";
-  P.innerHTML='<div class="card"><div class="row"><b style="flex:1">가이드 예약·결제 장부 (MIS)</b></div>'
+  P.innerHTML='<div class="card" style="border-color:var(--bar2);background:rgba(245,159,0,.10)"><b>⚠ 아래 요금은 가정값입니다 — 실제 요금 미확정 (결제 전)</b>'
+    +'<div class="msg">요금표(허브 GUIDE_PRICES: 영어 반일 20만·종일 35만 등)는 <b>시장조사 전 가정값</b>입니다. 결제금액·수수료·지급액은 모두 참고용이며 실제 시장요금이 아닙니다.</div></div>'
+    +'<div class="card"><div class="row"><b style="flex:1">가이드 예약·결제 장부 (MIS)</b></div>'
     +'<div class="msg">통역·길안내 가이드가 날짜별로 얼마나 일했고 결제·수수료·지급액이 얼마인지 보는 장부입니다. '
     +'<b>요금은 가정값</b>이며 시장조사 후 바뀝니다. 지금은 손수 입력, 나중에 결제(PG)가 붙으면 자동으로 쌓입니다.</div>'
     +'<div class="row" style="margin-top:8px"><button class="g" id="misP_this" onclick="misSetMode(\'this\')">이번 달</button>'
