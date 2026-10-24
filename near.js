@@ -228,12 +228,12 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
 //   가이드 등록은 「입점 문의」 빌딩 → 「관광 가이드 등록」(window.GUIDEREG) · 승인은 통계청(관리자)
 var GLANG6=[["한국어","ko"],["English","en"],["日本語","ja"],["中文(简)","zhs"],["中文(繁)","zht"],["Español","es"]];
 var IG={view:"pick",lang:"",guides:null,gid:null,gobj:null,err:"",busy:false,done:false};
-function igNote(){ return LG6({ko:"실제 통역·길안내를 해 주는 사람(관광통역안내사)을 연결해 드립니다. (소개이며 중개가 아닙니다)",
-  en:"We connect you with a real licensed interpreter-guide. (introduction only, not a broker)",
-  ja:"実際に通訳・道案内をしてくれる人（通訳案内士）をおつなぎします。（紹介であり仲介ではありません）",
-  zhs:"为您联系真人口译·向导（持证导游）。（仅为介绍，并非中介）",
-  zht:"為您聯繫真人口譯·嚮導（持證導遊）。（僅為介紹，並非仲介）",
-  es:"Te ponemos en contacto con un intérprete-guía con licencia real. (solo presentación, no intermediación)"}); }
+function igNote(){ return LG6({ko:"실제 통역·길안내를 해 주는 사람(관광통역안내사)을 연결해 드립니다. 「체험·입장권」에서 연결되는 Klook·GetYourGuide·Creatrip의 투어 가이드와는 별개이며, 여기서 소개해 드리는 가이드만이 머니퍼즐 투어앱과 제휴를 맺은 가이드입니다.",
+  en:"We connect you with a real licensed interpreter-guide (Korea Tour Guide license). These are separate from the tour guides on Klook, GetYourGuide and Creatrip linked under “Experiences & tickets” — only the guides introduced here are partnered with the Money Puzzle tour app.",
+  ja:"実際に通訳・道案内をしてくれる人（通訳案内士）をおつなぎします。「体験・入場券」からつながるKlook・GetYourGuide・Creatripのツアーガイドとは別で、ここでご紹介するガイドのみがMoney Puzzleツアーアプリと提携したガイドです。",
+  zhs:"为您联系真人口译·向导（持证导游）。与「体验·门票」中链接的 Klook、GetYourGuide、Creatrip 的旅游向导不同，只有在这里为您介绍的向导，才是与 Money Puzzle 旅游App 合作的向导。",
+  zht:"為您聯繫真人口譯·嚮導（持證導遊）。與「體驗·門票」中連結的 Klook、GetYourGuide、Creatrip 的旅遊嚮導不同，只有在這裡為您介紹的嚮導，才是與 Money Puzzle 旅遊App 合作的嚮導。",
+  es:"Te ponemos en contacto con un intérprete-guía con licencia real. Son distintos de los guías turísticos de Klook, GetYourGuide y Creatrip que aparecen en «Experiencias y entradas»: solo los guías que presentamos aquí están asociados con la app Money Puzzle Tour."}); }
 function igDates(){ var out=[]; for(var i=1;i<=2;i++){ var d=new Date(Date.now()+9*3600e3+i*864e5), s=d.toISOString().slice(0,10);
     out.push([s, (i===1?LG6({ko:"내일",en:"Tomorrow",ja:"明日",zhs:"明天",zht:"明天",es:"Mañana"}):LG6({ko:"모레",en:"Day after tomorrow",ja:"明後日",zhs:"后天",zht:"後天",es:"Pasado mañana"}))+" ("+s+")"]); } return out; }
 function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) return GLANG6[i][0]; return c; }
