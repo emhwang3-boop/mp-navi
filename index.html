@@ -780,7 +780,8 @@ function phItem(x){ var tt=esc(x.title||"");
     +'<div class="d" style="margin:2px 0 1px">'+MPIMG("mi_calendar",MIS)+phDate(x.from)+(x.to&&x.to!==x.from?' ~ '+phDate(x.to):'')+'</div>'
     +(x.place?'<div class="d" style="margin:0 0 1px">'+MPIMG("mi_pin",MIS)+esc(x.place)+'</div>':'')
     +(x.genre?'<div class="d" style="margin:0 0 3px;color:var(--sub)">'+phG(x.genre)+'</div>':'')
-    +(x.book?'<div class="d"><a href="'+esc(x.book)+'" target="_blank" rel="noopener">'+T("예매하기","Book tickets")+(x.bookNm?' · '+esc(x.bookNm):'')+' ↗</a></div>'
+    +(x.book?'<div class="d"><a href="'+esc(x.book)+'" target="_blank" rel="noopener">'+T("예매하기","Book tickets")+(x.bookNm?' · '+esc(x.bookNm):'')+' ↗</a>'+(x.bookKo?' <span style="color:var(--sub)">'+esc(LP(["(한국어 사이트)","(Korean site)","(韓国語サイト)","(韩文网站)","(韓文網站)","(en coreano)"]))+'</span>':'')+'</div>'
+      +(x.bookAlt?'<div class="d"><a href="'+esc(x.bookAlt)+'" target="_blank" rel="noopener">'+esc(LP(["Klook에서 찾기","Also search on Klook","Klookで探す","在Klook上搜索","在Klook上搜尋","Buscar en Klook"]))+' ↗</a></div>':'')
       :(x.id?'<div class="d"><a href="https://www.google.com/search?q='+encodeURIComponent((x.tko||x.title||'')+' 공연 예매')+'" target="_blank" rel="noopener">'+T("예매 정보 찾기","Find tickets")+' ↗</a></div>':''))
     +'</div></div>'; }
 var _phC={};   // 세션 캐시 (명소키|언어)
