@@ -186,6 +186,9 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
 .item .t{font-weight:800;font-size:16px}
 .item .d{color:var(--sub);font-size:13.5px;margin:3px 0 8px}
 .item a{display:inline-block;margin-right:6px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700;color:var(--ink);background:#f8fafc}
+.gaExp .gaNote{font-size:12.5px;color:var(--sub)}
+.gavit{border-top:1px solid var(--line);padding:9px 0 3px}.gavit:last-child{padding-bottom:0}
+.gavh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.gavh b{font-weight:800;font-size:14.5px;color:var(--ink)}.gavh i{font-style:normal;font-size:12.5px;color:var(--sub);white-space:nowrap}
 .msg{color:var(--sub);text-align:center;padding:14px 0}
 .desc{color:var(--sub);font-size:14px;margin:-2px 4px 0;text-align:center;line-height:1.5}
 .foot{color:var(--sub);font-size:12px;line-height:1.85;text-align:center;margin:28px 0 22px;padding:0 12px}.foot>div{word-break:keep-all}
@@ -648,6 +651,56 @@ var APPGO={netflix:{pkg:"com.netflix.mediaclient",web:"https://www.netflix.com"}
 function appGo(a){ var o=APPGO[a]; if(!o) return; var ua=navigator.userAgent||"";
   if(/Android/i.test(ua)){ location.href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package="+o.pkg+";S.browser_fallback_url="+encodeURIComponent(o.web)+";end"; return; }
   var w=null; try{ w=window.open(o.web,"_blank"); if(w) w.opener=null; }catch(e){} if(!w) location.href=o.web; }
+// ── 구역형 명소 「이 안의 추천」 (사장님 2026-10-24) — 거리·시장·산성 같은 명소를 누르면 설명·가는 길 아래에 그 안의 가게(구글 별점순→거리순) ──
+//  AREAEXP: 명소 키 → 분류. 분류별 헤더·아이콘은 GA_H / GA_IC. 가게 자료·검색어·반경은 허브 /garea (분류 허용 목록 GA_TYPES)
+//  일반 점 명소(궁·타워 등)는 AREAEXP 에 없으니 카드가 그대로 — 켜진 명소만 가게 목록이 붙는다
+var AREAEXP={
+  hdstreet:"nightlife", hdclub:"nightlife",                 // 홍대 걷고싶은거리·클럽거리 — 클럽·라이브 바
+  gwangjang:"food", mangwon:"food",                         // 광장시장·망원시장 — 먹거리
+  noryangjin:"seafood",                                     // 노량진수산시장 — 해산물
+  namhansanseong:"restcafe", gyeongnidan:"restcafe", haebangchon:"restcafe",  // 남한산성·경리단길·해방촌 — 맛집·카페
+  mdstreet:"shopping",                                      // 명동 거리 — 쇼핑·화장품
+  itaewon:"bars", eulji:"bars",                             // 이태원·을지로 노가리골목 — 바·세계 음식
+  insastreet:"tea",                                         // 인사동 거리 — 찻집·공예·갤러리
+  seongsu:"cafe", ikseon:"cafe",                            // 성수동·익선동 — 카페
+  namdaemunmkt:"market", ddmmarket:"market",                // 남대문시장·동대문시장 — 쇼핑몰·시장·먹거리
+  hwanghak:"antique"                                        // 황학동 거리 — 골동품·빈티지
+};
+var GA_IC={nightlife:"mi_star",food:"mi_food",seafood:"mi_food",restcafe:"mi_food",shopping:"mi_cart",bars:"mi_star",tea:"mi_gift",cafe:"mi_food",market:"mi_cart",antique:"mi_gift"};
+var GA_H={   // [한, 영, 일, 简, 繁, es]
+  nightlife:["근처 클럽·라이브 바","Clubs & live bars","近くのクラブ・ライブバー","附近的夜店和现场酒吧","附近的夜店與 live bar","Discotecas y bares con música en vivo"],
+  food:["시장 맛집·길거리 음식","Street food & local eats","市場グルメ・屋台","市场美食·街头小吃","市場美食·街頭小吃","Comida callejera y locales"],
+  seafood:["수산시장 횟집·해산물","Seafood restaurants","海鮮・刺身の店","海鲜餐厅","海鮮餐廳","Restaurantes de marisco"],
+  restcafe:["맛집·카페","Restaurants & cafés","グルメ・カフェ","餐厅和咖啡馆","餐廳與咖啡館","Restaurantes y cafeterías"],
+  shopping:["쇼핑·화장품","Shopping & cosmetics","ショッピング・コスメ","购物·化妆品","購物·化妝品","Compras y cosmética"],
+  bars:["바·세계 음식","Bars & world cuisine","バー・各国料理","酒吧·各国料理","酒吧·各國料理","Bares y cocina internacional"],
+  tea:["전통찻집·공예·갤러리","Tea houses, crafts & galleries","伝統茶屋・工芸・ギャラリー","传统茶馆·工艺·画廊","傳統茶館·工藝·畫廊","Casas de té, artesanía y galerías"],
+  cafe:["카페·디저트","Cafés & desserts","カフェ・デザート","咖啡馆·甜点","咖啡館·甜點","Cafeterías y postres"],
+  market:["쇼핑몰·시장·먹거리","Malls, markets & food","ショッピングモール・市場・グルメ","购物中心·市场·美食","購物中心·市場·美食","Centros comerciales, mercados y comida"],
+  antique:["골동품·빈티지","Antiques & vintage","骨董・ビンテージ","古董·复古","古董·復古","Antigüedades y vintage"]
+};
+var GA_NOTE=["⭐ 구글 평점 기준 · 평점·영업시간은 바뀔 수 있어요","⭐ Based on Google ratings · ratings and hours may change","⭐ Googleの評価に基づく · 評価・営業時間は変わることがあります","⭐ 基于谷歌评分 · 评分和营业时间可能变动","⭐ 依據 Google 評分 · 評分與營業時間可能變動","⭐ Según las valoraciones de Google · pueden cambiar"];
+var GA_LOAD=["이 안의 추천을 불러오는 중…","Loading what’s inside…","この中のおすすめを読み込み中…","正在加载这里的推荐…","正在載入這裡的推薦…","Cargando lo que hay dentro…"];
+var GA_NONE=["표시할 가게를 찾지 못했어요.","Nothing to show here right now.","表示できるお店が見つかりませんでした。","暂时没有可显示的店铺。","暫時沒有可顯示的店家。","No hay lugares que mostrar ahora."];
+var _gaC={};   // 세션 캐시 (명소키|언어) — 같은 명소를 다시 눌러도 구글·허브에 다시 안 묻는다
+function gaDistTxt(m){ return m<1000?Math.round(m)+" m":(m/1000).toFixed(1)+" km"; }
+function areaExpVenue(x){ var nm=esc(x.name), ad=esc(x.addr||""), ct=esc(x.cat||"");
+  return '<div class="gavit">'+'<div class="gavh"><b>'+nm+'</b><i>'+gaDistTxt(x.dist)+'</i></div>'
+    +(x.rating?'<div class="d" style="margin:2px 0 4px"><b style="color:#e8590c">★ '+x.rating.toFixed(1)+'</b> ('+(x.n||0)+')'+(ct?' · '+ct:'')+'</div>':(ct?'<div class="d" style="margin:2px 0 4px">'+ct+'</div>':''))
+    +(ad?'<div class="d" style="margin:0 0 5px">'+ad+'</div>':'')
+    +linksTo(x.name,x.y,x.x,x.name,x.addr)+telLine(x.tel)+'</div>'; }
+function areaExpShow(k){ var cat=AREAEXP[k]; if(!cat) return; var p=PLACES[k]; if(!p||!(+p.lat)) return;
+  var cc=p.lat.toFixed(5)+","+p.lng.toFixed(5), hd=MPICO(GA_IC[cat]||"mi_star",LP(GA_H[cat]||["이 안의 추천","What’s inside","この中のおすすめ","这里的推荐","這裡的推薦","Lo que hay dentro"]),MIS);
+  var res=document.getElementById("res"); if(!res) return;
+  var box=document.createElement("div"); box.className="item gaExp";
+  box.innerHTML='<div class="t">'+hd+'</div><div class="gamsg d">'+esc(LP(GA_LOAD))+'</div>'; res.appendChild(box);
+  var paint=function(items){ if(window._cardK!==k) return; var e=res.querySelector(".gaExp"); if(!e) return;
+    if(!items||!items.length){ e.querySelector(".gamsg").textContent=LP(GA_NONE); return; }
+    e.innerHTML='<div class="t">'+hd+'</div><div class="d gaNote" style="margin:3px 0 6px">'+esc(LP(GA_NOTE))+'</div>'+items.map(areaExpVenue).join(''); };
+  var ck=k+"|"+LANG; if(_gaC[ck]) return paint(_gaC[ck]);
+  fetch(HUB+"/garea?key="+encodeURIComponent(k)+"&type="+cat+"&lat="+p.lat.toFixed(5)+"&lng="+p.lng.toFixed(5)+"&lang="+encodeURIComponent(LANG))
+    .then(function(r){ return r.json(); }).then(function(j){ var a=(j&&j.ok&&j.items)||[]; _gaC[ck]=a; paint(a); })
+    .catch(function(){ if(window._cardK===k){ var e=res.querySelector(".gaExp .gamsg"); if(e) e.textContent=LP(GA_NONE); } }); }
 function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } if(p.app){ appGo(p.app); return; } var nm=LN(p), ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
   window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
@@ -658,6 +711,7 @@ function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); 
   ntMark(k);
   try{ mePose("photo"); }catch(e){}
   if(p.route&&p.route.map===VIEW) routeShow(p); else rtClear();
+  try{ areaExpShow(k); }catch(e){}   // 구역형 명소면 설명·가는 길 아래에 「이 안의 추천」 (사장님 10-24)
   clearTimeout(window._scT); window._scT=setTimeout(function(){ window.scrollTo({top:0,behavior:"smooth"}); },460); }
 // 노선 — 장소 자료의 route{map, stops:[[x,y,한글,영어],...], info:[한,영]} 를 그 약도 위에 점선과 번호로 (시티투어, 사장님 10-15)
 function rtClear(){ var g=document.getElementById("rt"); if(g) g.remove(); }
