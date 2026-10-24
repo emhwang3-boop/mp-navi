@@ -71,7 +71,7 @@ var S={k:"",tab:0,base:null,src:"",items:null,err:""}, CACHE={}, PICK=null;
 function L(){ return window.LANG!=="ko"; }   // 외국어 화면(영·일·중) — 10-18
 function LG6(o){ return o[window.LANG]||o.en; }   // 통역·길안내 새 문구는 6개 언어를 바로 넣는다(i18n.js 안 건드림, 10-24)
 // 「투어·입장권 / Tours & tickets」 (사장님 10-24) — 옛 「투어 가이드」. 내용(Klook·GetYourGuide·Creatrip)은 그대로, 이름만 6개 언어로
-var TOURS6={ko:"체험·입장권",en:"Experiences & tickets",ja:"体験・入場券",zhs:"体验·门票",zht:"體驗·門票",es:"Experiencias y entradas"};
+var TOURS6={ko:"체험·입장권",en:"Try & tickets",ja:"体験・入場券",zhs:"体验·门票",zht:"體驗·門票",es:"Prueba y entradas"};
 // 「투어 가이드」 칩 글자 (사장님 10-24) — 맨 앞 칩. 누르면 통역·길안내(ig) 가이드 매칭 판이 열린다
 var IG_CHIP6={ko:"투어 가이드",en:"Tour guide",ja:"ツアーガイド",zhs:"旅游向导",zht:"旅遊嚮導",es:"Guía turístico"};
 // 빨간·파란 단추 안 전화기 — 흰 선 그림(글자색 그대로, 사장님 10-16: 이모지는 분홍빛이라)
@@ -231,11 +231,11 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
 var GLANG6=[["한국어","ko"],["English","en"],["日本語","ja"],["中文(简)","zhs"],["中文(繁)","zht"],["Español","es"]];
 var IG={view:"pick",lang:"",guides:null,gid:null,gobj:null,err:"",busy:false,done:false};
 function igNote(){ return LG6({ko:"실제 통역·길안내를 해 주는 사람(관광통역안내사)을 연결해 드립니다. 「체험·입장권」에서 연결되는 Klook·GetYourGuide·Creatrip의 투어 가이드와는 별개이며, 여기서 소개해 드리는 가이드만이 머니퍼즐 투어앱과 제휴를 맺은 가이드입니다. 우리 앱에서 선정된 가이드가 Klook·GetYourGuide·Creatrip의 여행 상품을 안내해 드릴 수는 없습니다. 가이드를 중복으로 선정하지 않도록 주의해 주세요.",
-  en:"We connect you with a real licensed interpreter-guide (Korea Tour Guide license). These are separate from the tour guides on Klook, GetYourGuide and Creatrip linked under “Experiences & tickets” — only the guides introduced here are partnered with the Money Puzzle tour app. A guide selected in our app cannot guide travel products booked on Klook, GetYourGuide or Creatrip. Please take care not to book duplicate guides.",
+  en:"We connect you with a real licensed interpreter-guide (Korea Tour Guide license). These are separate from the tour guides on Klook, GetYourGuide and Creatrip linked under “Try & tickets” — only the guides introduced here are partnered with the Money Puzzle tour app. A guide selected in our app cannot guide travel products booked on Klook, GetYourGuide or Creatrip. Please take care not to book duplicate guides.",
   ja:"実際に通訳・道案内をしてくれる人（通訳案内士）をおつなぎします。「体験・入場券」からつながるKlook・GetYourGuide・Creatripのツアーガイドとは別で、ここでご紹介するガイドのみがMoney Puzzleツアーアプリと提携したガイドです。当アプリで選んだガイドが、Klook・GetYourGuide・Creatripの旅行商品をご案内することはできません。ガイドを重複して選ばないようご注意ください。",
   zhs:"为您联系真人口译·向导（持证导游）。与「体验·门票」中链接的 Klook、GetYourGuide、Creatrip 的旅游向导不同，只有在这里为您介绍的向导，才是与 Money Puzzle 旅游App 合作的向导。在本App选定的向导，无法为 Klook、GetYourGuide、Creatrip 的旅游产品提供导览。请注意不要重复选定向导。",
   zht:"為您聯繫真人口譯·嚮導（持證導遊）。與「體驗·門票」中連結的 Klook、GetYourGuide、Creatrip 的旅遊嚮導不同，只有在這裡為您介紹的嚮導，才是與 Money Puzzle 旅遊App 合作的嚮導。在本App選定的嚮導，無法為 Klook、GetYourGuide、Creatrip 的旅遊產品提供導覽。請注意不要重複選定嚮導。",
-  es:"Te ponemos en contacto con un intérprete-guía con licencia real. Son distintos de los guías turísticos de Klook, GetYourGuide y Creatrip que aparecen en «Experiencias y entradas»: solo los guías que presentamos aquí están asociados con la app Money Puzzle Tour. Un guía seleccionado en nuestra app no puede acompañar los productos de viaje comprados en Klook, GetYourGuide o Creatrip. Tenga cuidado de no seleccionar guías por duplicado."}); }
+  es:"Te ponemos en contacto con un intérprete-guía con licencia real. Son distintos de los guías turísticos de Klook, GetYourGuide y Creatrip que aparecen en «Prueba y entradas»: solo los guías que presentamos aquí están asociados con la app Money Puzzle Tour. Un guía seleccionado en nuestra app no puede acompañar los productos de viaje comprados en Klook, GetYourGuide o Creatrip. Tenga cuidado de no seleccionar guías por duplicado."}); }
 function igDates(){ var out=[]; for(var i=1;i<=2;i++){ var d=new Date(Date.now()+9*3600e3+i*864e5), s=d.toISOString().slice(0,10);
     out.push([s, (i===1?LG6({ko:"내일",en:"Tomorrow",ja:"明日",zhs:"明天",zht:"明天",es:"Mañana"}):LG6({ko:"모레",en:"Day after tomorrow",ja:"明後日",zhs:"后天",zht:"後天",es:"Pasado mañana"}))+" ("+s+")"]); } return out; }
 function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) return GLANG6[i][0]; return c; }
