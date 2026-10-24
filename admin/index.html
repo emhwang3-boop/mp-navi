@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권·결제 내역","장부 · 엑셀 받기"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권·결제 내역","장부 · 엑셀 받기"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
 function usd(n){ return "$"+(Math.round((n||0)*100)/100).toLocaleString(); }
 function tile(v,l){ return '<div class="tile"><b>'+v+'</b><span>'+l+'</span></div>'; }
@@ -212,6 +212,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="voice"){ voiceLoad(); return; }
   if(id==="inq"){ inqLoad(); return; }
   if(id==="guide"){ guideLoad(); return; }   // 통역·길안내 가이드 승인 (2026-10-24)
+  if(id==="mis"){ misLoad(); return; }   // 가이드 예약·결제 장부 MIS (2026-10-24)
   if(id==="ptn"){ ptnLoad(); return; }   // 제휴 가게 — partner.js (2026-10-16)
   if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
   if(id==="pay"){ payLoad(); return; }
@@ -336,6 +337,95 @@ function gLic(id){ var box=$("glic_"+id); if(!box) return; if(box.innerHTML){ bo
   api("/guide/admin/lic?id="+encodeURIComponent(id)).then(function(j){ box.innerHTML=j&&j.ok&&j.data?'<img src="'+j.data+'" style="max-width:100%;border-radius:10px;margin-top:6px">':'<div class="msg">사본을 불러오지 못했습니다.</div>'; }).catch(function(){ box.innerHTML='<div class="msg err">불러오지 못했습니다.</div>'; }); }
 function gAct(a,id){ if(a==='delete'&&!confirm('이 가이드를 지울까요?')) return; if(a==='reject'&&!confirm('이 신청을 거절할까요?')) return;
   api("/guide/admin/"+a,{method:"POST",body:JSON.stringify({id:id})}).then(function(j){ if(j&&j.ok) guideLoad(); else alert('처리하지 못했습니다.'); }).catch(function(){ alert('처리하지 못했습니다.'); }); }
+
+// ── 가이드 예약·결제 장부 MIS (통역·길안내, 2026-10-24) — 허브 /guide/admin/bookings · /guide/booking ──
+//   🔴 요금은 가정값(요금표). 시장조사 후 허브 worker.js 의 GUIDE_PRICES 한 곳만 고치면 됩니다.
+//   지금은 관리자가 「＋ 예약·결제 기록 추가」로 손수 넣습니다. 나중에 PG(토스)가 붙으면 자동으로 쌓입니다.
+var BKT={half:"반일",full:"종일"}, BKH={half:4,full:8}, BKS={requested:"요청",paid:"결제완료",completed:"완료",cancelled:"취소"};
+var MIS={from:"",to:"",mode:"this",items:[],guides:[],prices:null};
+function misPaid(x){ return x.status==="paid"||x.status==="completed"; }   // 금액 합계에 넣는 건 = 결제완료·완료
+function misMonth(back){ var d=new Date(Date.now()+9*3600e3); d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth()-(back||0));
+  var y=d.getUTCFullYear(), m=d.getUTCMonth(), f=y+"-"+String(m+1).padStart(2,"0")+"-01", l=new Date(Date.UTC(y,m+1,0));
+  return {from:f,to:l.getUTCFullYear()+"-"+String(l.getUTCMonth()+1).padStart(2,"0")+"-"+String(l.getUTCDate()).padStart(2,"0")}; }
+function misSetMode(mode){ MIS.mode=mode;
+  if(mode==="this"){ var r=misMonth(0); MIS.from=r.from; MIS.to=kday(0); }
+  else if(mode==="last"){ var r2=misMonth(1); MIS.from=r2.from; MIS.to=r2.to; }
+  else { MIS.from=$("misF").value||MIS.from; MIS.to=$("misT").value||MIS.to; }
+  if($("misF")) $("misF").value=MIS.from; if($("misT")) $("misT").value=MIS.to;
+  ["this","last","custom"].forEach(function(k){ var b=$("misP_"+k); if(b) b.classList.toggle("on",k===mode); });
+  misFetch(); }
+function misLoad(){ var P=$("pane"); var r=misMonth(0); MIS.from=r.from; MIS.to=kday(0); MIS.mode="this";
+  P.innerHTML='<div class="card"><div class="row"><b style="flex:1">가이드 예약·결제 장부 (MIS)</b></div>'
+    +'<div class="msg">통역·길안내 가이드가 날짜별로 얼마나 일했고 결제·수수료·지급액이 얼마인지 보는 장부입니다. '
+    +'<b>요금은 가정값</b>이며 시장조사 후 바뀝니다. 지금은 손수 입력, 나중에 결제(PG)가 붙으면 자동으로 쌓입니다.</div>'
+    +'<div class="row" style="margin-top:8px"><button class="g" id="misP_this" onclick="misSetMode(\'this\')">이번 달</button>'
+    +'<button class="g" id="misP_last" onclick="misSetMode(\'last\')">지난 달</button>'
+    +'<button class="g" id="misP_custom" onclick="misSetMode(\'custom\')">직접 범위</button>'
+    +'<input type="date" id="misF" value="'+MIS.from+'" onchange="MIS.mode=\'custom\';MIS.from=this.value;misFetch()"> ~ '
+    +'<input type="date" id="misT" value="'+MIS.to+'" onchange="MIS.mode=\'custom\';MIS.to=this.value;misFetch()">'
+    +'<button onclick="misFetch()">보기</button><button class="g" onclick="xlsMis()">엑셀 받기</button>'
+    +'<button class="g" onclick="misClearTest()">데모 데이터 지우기</button></div>'
+    +'<div id="misSum"></div></div>'
+    +'<div class="card"><b>＋ 예약·결제 기록 추가</b><div class="msg">결제 연결 전, 끝난 투어를 손수 적어 둘 때 씁니다. 금액은 요금표에서 자동으로 채워지며 고칠 수 있습니다.</div><div id="misAdd"></div></div>'
+    +'<div class="card"><div class="row"><b style="flex:1">날짜별</b></div><div class="tw"><table id="misTab"></table></div></div>'
+    +'<div class="card"><b>가이드별 합계 (고른 기간 · 결제완료·완료 건)</b><div class="tw"><table id="misG"></table></div></div>';
+  $("misP_this").classList.add("on");
+  misAddForm(); misFetch(); }
+function misFetch(){ var S=$("misSum"); if(S) S.innerHTML='<div class="msg">불러오는 중…</div>';
+  api("/guide/admin/bookings?from="+MIS.from+"&to="+MIS.to).then(function(j){ if(!j.ok) throw new Error("x");
+    MIS.items=j.items||[]; MIS.prices=j.prices||null; misDraw();
+  }).catch(function(e){ if(S) S.innerHTML='<div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div>'; }); }
+function misDraw(){ var it=MIS.items, paid=it.filter(misPaid);
+  var sum={n:paid.length,amount:0,fee:0,payout:0,hours:0}; paid.forEach(function(x){ sum.amount+=x.amount||0; sum.fee+=x.fee||0; sum.payout+=x.payout||0; sum.hours+=x.hours||0; });
+  $("misSum").innerHTML='<div class="tiles">'+tile(sum.n.toLocaleString()+"건","총 건수 (결제완료·완료)")+tile(won(sum.amount),"총 결제금액")+tile(won(sum.fee),"우리 수수료 합계 (20%)")+tile(won(sum.payout),"가이드 지급 합계 (80%)")+'</div>'
+    +'<div class="msg">'+esc(MIS.from)+' ~ '+esc(MIS.to)+' · 날짜는 한국 시간 · 요청·취소 건은 금액 합계에서 뺍니다'+(it.some(function(x){return x.test;})?' · <b>시험(데모) 건 포함</b>':'')+'</div>';
+  // 날짜별 표
+  var h='<tr><th class="l">날짜</th><th class="l">가이드</th><th class="l">언어</th><th>반일/종일</th><th>근무시간</th><th>결제금액</th><th>수수료(20%)</th><th>가이드 지급액</th><th class="l">상태</th><th></th></tr>';
+  it.forEach(function(x){ h+='<tr'+(x.test?' style="opacity:.7"':'')+'><td class="l">'+esc(x.date)+'</td><td class="l">'+esc(x.gname||'')+(x.test?' <span class="sub">[시험]</span>':'')+'</td><td class="l">'+esc(gLangNm(x.lang))+'</td><td>'+esc(BKT[x.type]||x.type)+'</td><td>'+(x.hours||BKH[x.type]||0)+'시간</td><td>'+won(x.amount)+'</td><td>'+won(x.fee)+'</td><td>'+won(x.payout)+'</td><td class="l">'+esc(BKS[x.status]||x.status)+'</td><td><button class="g" data-id="'+esc(x.id)+'" onclick="misDel(this.dataset.id)" title="이 기록 지우기">✕</button></td></tr>'; });
+  if(!it.length) h+='<tr><td class="l" colspan="10">이 기간에 예약·결제 기록이 없습니다.</td></tr>';
+  $("misTab").innerHTML=h;
+  // 가이드별 합계 (결제완료·완료 건)
+  var byG={}; paid.forEach(function(x){ var k=x.gid||('nm:'+x.gname); var g=byG[k]||(byG[k]={name:x.gname||'(이름없음)',langs:{},n:0,hours:0,amount:0,fee:0,payout:0}); g.langs[x.lang]=1; g.n++; g.hours+=x.hours||0; g.amount+=x.amount||0; g.fee+=x.fee||0; g.payout+=x.payout||0; });
+  var gs=Object.keys(byG).map(function(k){ return byG[k]; }).sort(function(a,b){ return b.amount-a.amount; });
+  var gh='<tr><th class="l">가이드</th><th class="l">언어</th><th>건수</th><th>총 근무시간</th><th>총 결제금액</th><th>총 수수료(우리)</th><th>총 지급액(가이드)</th></tr>';
+  gs.forEach(function(g){ gh+='<tr><td class="l">'+esc(g.name)+'</td><td class="l">'+esc(Object.keys(g.langs).map(gLangNm).join(", "))+'</td><td>'+g.n+'</td><td>'+g.hours+'시간</td><td>'+won(g.amount)+'</td><td>'+won(g.fee)+'</td><td>'+won(g.payout)+'</td></tr>'; });
+  if(gs.length) gh+='<tr><td class="l"><b>합계</b></td><td></td><td><b>'+paid.length+'</b></td><td><b>'+gs.reduce(function(s,g){return s+g.hours;},0)+'시간</b></td><td><b>'+won(sum.amount)+'</b></td><td><b>'+won(sum.fee)+'</b></td><td><b>'+won(sum.payout)+'</b></td></tr>';
+  else gh+='<tr><td class="l" colspan="7">없음</td></tr>';
+  $("misG").innerHTML=gh; }
+// ── 예약·결제 기록 추가 폼 — 가이드 선택·날짜·반일/종일·언어·상태·금액(요금표 자동, 수정 가능) ──
+function misAddForm(){ api("/guide/admin/all").then(function(j){ MIS.guides=(j&&j.approved)||[]; misAddDraw(); }).catch(function(){ MIS.guides=[]; misAddDraw(); }); }
+function misAddDraw(){ var gopt=MIS.guides.length?MIS.guides.map(function(g){ return '<option value="'+esc(g.id)+'" data-langs="'+esc((g.langs||[]).join(","))+'">'+esc(g.name)+' ('+(g.langs||[]).map(gLangNm).join(",")+')</option>'; }).join(""):'<option value="">승인된 가이드가 없습니다</option>';
+  $("misAdd").innerHTML='<div class="row" style="margin-top:8px;align-items:flex-end">'
+    +'<label>가이드<br><select id="maG" onchange="maLangs();maAmt()">'+gopt+'</select></label>'
+    +'<label>언어<br><select id="maL" onchange="maAmt()"></select></label>'
+    +'<label>날짜<br><input type="date" id="maD" value="'+kday(0)+'"></label>'
+    +'<label>종류<br><select id="maT" onchange="maAmt()"><option value="half">반일 (4시간)</option><option value="full">종일 (8시간)</option></select></label>'
+    +'<label>상태<br><select id="maS"><option value="completed">완료</option><option value="paid">결제완료</option><option value="requested">요청</option><option value="cancelled">취소</option></select></label>'
+    +'<label>결제금액(원)<br><input type="text" id="maA" style="width:110px" inputmode="numeric"></label>'
+    +'<button onclick="misAdd()">넣기</button></div><div id="maMsg" class="msg"></div>';
+  maLangs(); maAmt(); }
+function maLangs(){ var sel=$("maG"), o=sel&&sel.selectedOptions[0], ls=(o&&o.dataset.langs||"").split(",").filter(Boolean);
+  $("maL").innerHTML=(ls.length?ls:["en"]).map(function(l){ return '<option value="'+esc(l)+'">'+esc(gLangNm(l))+'</option>'; }).join(""); }
+function maAmt(){ var l=$("maL").value, t=$("maT").value, p=MIS.prices&&MIS.prices[l]; if(p&&p[t]!=null) $("maA").value=p[t]; }
+function misAdd(){ var m=$("maMsg"), gid=$("maG").value, lang=$("maL").value, date=$("maD").value, type=$("maT").value, status=$("maS").value, amount=$("maA").value.replace(/[^0-9]/g,"");
+  if(!gid){ m.innerHTML='<span class="err">가이드를 고르세요 (승인된 가이드가 있어야 합니다).</span>'; return; }
+  if(!date){ m.innerHTML='<span class="err">날짜를 넣으세요.</span>'; return; }
+  m.textContent="넣는 중…";
+  api("/guide/booking",{method:"POST",body:JSON.stringify({guideId:gid,lang:lang,date:date,type:type,status:status,amount:amount})}).then(function(j){
+    if(!j.ok){ m.innerHTML='<span class="err">넣지 못했습니다 ('+esc(j.err||"")+').</span>'; return; }
+    m.innerHTML='<b>넣었습니다.</b> '+esc(j.booking.date)+' · '+esc(j.booking.gname)+' · '+won(j.booking.amount)+' (수수료 '+won(j.booking.fee)+' · 지급 '+won(j.booking.payout)+')'; misFetch();
+  }).catch(function(e){ m.innerHTML='<span class="err">넣지 못했습니다 ('+esc(e.message)+').</span>'; }); }
+function misDel(id){ if(!confirm("이 기록을 지울까요?")) return; api("/guide/admin/booking/del",{method:"POST",body:JSON.stringify({id:id})}).then(function(j){ if(j&&j.ok) misFetch(); else alert("지우지 못했습니다."); }).catch(function(){ alert("지우지 못했습니다."); }); }
+function misClearTest(){ if(!confirm("시험(데모)으로 넣은 예약 기록을 모두 지울까요?")) return; api("/guide/admin/booking/cleartest",{method:"POST",body:JSON.stringify({})}).then(function(j){ if(j&&j.ok){ alert((j.removed||0)+"건을 지웠습니다."); misFetch(); } else alert("지우지 못했습니다."); }).catch(function(){ alert("지우지 못했습니다."); }); }
+// ── 엑셀: 요약 · 날짜별 · 가이드별 합계 ──
+function xlsMis(){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀습니다."); return; } var it=MIS.items, paid=it.filter(misPaid);
+  var sum={amount:0,fee:0,payout:0,hours:0}; paid.forEach(function(x){ sum.amount+=x.amount||0; sum.fee+=x.fee||0; sum.payout+=x.payout||0; sum.hours+=x.hours||0; });
+  var s1=[[CO],["가이드 예약·결제 장부 (MIS)"],["기간",MIS.from+" ~ "+MIS.to+" (한국 시간)"],["만든 날",kday(0)],[],["총 건수(결제완료·완료)",paid.length],["총 결제금액(원)",sum.amount],["우리 수수료 합계(20%)",sum.fee],["가이드 지급 합계(80%)",sum.payout],["총 근무시간",sum.hours+"시간"],[],["※ 요금은 가정값(시장조사 후 교체) · 요청·취소 건은 금액 합계에서 제외"]];
+  var s2=[["날짜","가이드","언어","반일/종일","근무시간","결제금액(원)","수수료(20%)","가이드 지급액(80%)","상태","시험"]].concat(it.map(function(x){ return [x.date,x.gname||"",gLangNm(x.lang),BKT[x.type]||x.type,(x.hours||0)+"시간",x.amount||0,x.fee||0,x.payout||0,BKS[x.status]||x.status,x.test?"시험":""]; }));
+  var byG={}; paid.forEach(function(x){ var k=x.gid||('nm:'+x.gname); var g=byG[k]||(byG[k]={name:x.gname||'(이름없음)',langs:{},n:0,hours:0,amount:0,fee:0,payout:0}); g.langs[x.lang]=1; g.n++; g.hours+=x.hours||0; g.amount+=x.amount||0; g.fee+=x.fee||0; g.payout+=x.payout||0; });
+  var s3=[["가이드","언어","건수","총 근무시간","총 결제금액(원)","총 수수료(우리)","총 지급액(가이드)"]].concat(Object.keys(byG).map(function(k){ return byG[k]; }).sort(function(a,b){ return b.amount-a.amount; }).map(function(g){ return [g.name,Object.keys(g.langs).map(gLangNm).join(", "),g.n,g.hours+"시간",g.amount,g.fee,g.payout]; }));
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(s1,[26,22]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[12,14,12,10,9,14,13,15,9,6]),"날짜별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[14,14,7,12,15,15,15]),"가이드별 합계");
+  save(wb,"머니퍼즐_가이드장부_"+MIS.from+"_"+MIS.to+".xlsx"); }
 
 if(TOK) login();
 </script>
