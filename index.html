@@ -655,7 +655,7 @@ function appGo(a){ var o=APPGO[a]; if(!o) return; var ua=navigator.userAgent||""
 //  AREAEXP: 명소 키 → 분류. 분류별 헤더·아이콘은 GA_H / GA_IC. 가게 자료·검색어·반경은 허브 /garea (분류 허용 목록 GA_TYPES)
 //  일반 점 명소(궁·타워 등)는 AREAEXP 에 없으니 카드가 그대로 — 켜진 명소만 가게 목록이 붙는다
 var AREAEXP={
-  hdstreet:"nightlife", hdclub:"nightlife",                 // 홍대 걷고싶은거리·클럽거리 — 클럽·라이브 바
+  hdstreet:"restcafe", hdclub:"nightlife",                 // 홍대 걷고싶은거리·클럽거리 — 클럽·라이브 바
   gwangjang:"food", mangwon:"food",                         // 광장시장·망원시장 — 먹거리
   noryangjin:"seafood",                                     // 노량진수산시장 — 해산물
   namhansanseong:"restcafe", gyeongnidan:"restcafe", haebangchon:"restcafe",  // 남한산성·경리단길·해방촌 — 맛집·카페
