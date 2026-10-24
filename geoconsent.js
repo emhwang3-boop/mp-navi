@@ -70,7 +70,7 @@ function css(){ if(document.getElementById("gcCss")) return; var s=document.crea
 function ask(cb){   // cb(true)=동의, cb(false)=거부
   css(); var X=t(); var old=document.getElementById("gcBox"); if(old) old.remove();
   var b=document.createElement("div"); b.id="gcBox";
-  b.innerHTML='<div class="in"><h3>📍 '+esc(X.t)+'</h3><ul>'+X.b.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")
+  b.innerHTML='<div class="in"><h3><img class="miic" src="img/menu/mi_pin.png" alt="" style="height:1.15em;width:auto">'+esc(X.t)+'</h3><ul>'+X.b.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")
    +'</ul><label><input type="checkbox" id="gcChk"> <span>'+esc(X.c)+'</span></label>'
    +'<div class="row"><button type="button" class="no" id="gcNo">'+esc(X.no)+'</button><button type="button" class="ok" id="gcOk" disabled>'+esc(X.ok)+'</button></div></div>';
   document.body.appendChild(b);
