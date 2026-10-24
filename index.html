@@ -215,11 +215,11 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
 /* ★ 스타워즈 오프닝 크롤 인트로 (영어 고정) — 자족적, 실패해도 앱은 그대로 (10-24) */
 #mpcrawl{position:fixed;inset:0;z-index:2147483600;background:#02030a;overflow:hidden;opacity:1;transition:opacity .8s ease;color:#ffd54a;font-family:inherit}
 #mpcrawl .mpc-stars{position:absolute;inset:0;background-color:#02030a;background-image:radial-gradient(1px 1px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 62%,#fff,transparent),radial-gradient(1px 1px at 40% 82%,#cdd6ff,transparent),radial-gradient(2px 2px at 85% 24%,#fff,transparent),radial-gradient(1px 1px at 55% 14%,#fff,transparent),radial-gradient(1px 1px at 12% 70%,#eef,transparent),radial-gradient(1px 1px at 90% 86%,#fff,transparent),radial-gradient(1.5px 1.5px at 33% 48%,#fff,transparent),radial-gradient(1px 1px at 64% 38%,#dde,transparent)}
-#mpcrawl .mpc-fade{position:absolute;left:0;right:0;top:0;height:40%;z-index:3;pointer-events:none;background:linear-gradient(to bottom,#02030a 0%,rgba(2,3,10,.75) 34%,transparent 100%)}
-#mpcrawl .mpc-persp{position:absolute;inset:0;z-index:2;perspective:340px;perspective-origin:50% 42%;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 28%,#000 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 28%,#000 100%)}
-#mpcrawl .mpc-text{position:absolute;left:50%;top:100%;width:92%;max-width:720px;transform:translateX(-50%) rotateX(32deg);transform-origin:50% 100%;text-align:center;font-weight:800;font-size:clamp(23px,7vw,40px);line-height:1.5;letter-spacing:.3px;text-shadow:0 0 12px rgba(255,180,0,.35);animation:mpc-scroll 34s linear forwards}
+#mpcrawl .mpc-fade{position:absolute;left:0;right:0;top:0;height:48%;z-index:3;pointer-events:none;background:linear-gradient(to bottom,#02030a 0%,rgba(2,3,10,.82) 40%,transparent 100%)}
+#mpcrawl .mpc-persp{position:absolute;inset:0;z-index:2;perspective:340px;perspective-origin:50% 40%;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 18%,#000 44%,#000 100%);mask-image:linear-gradient(to bottom,transparent 0,transparent 18%,#000 44%,#000 100%)}
+#mpcrawl .mpc-text{position:absolute;left:50%;top:100%;width:92%;max-width:720px;transform:translateX(-50%) rotateX(32deg);transform-origin:50% 100%;text-align:center;font-weight:800;font-size:clamp(27px,8.2vw,46px);line-height:1.5;letter-spacing:.3px;text-shadow:0 0 12px rgba(255,180,0,.35);animation:mpc-scroll 34s linear forwards}
 #mpcrawl .mpc-text p{margin:0 0 1.5em}
-#mpcrawl .mpc-title{font-size:clamp(19px,5vw,28px);letter-spacing:4px;font-weight:900;margin-bottom:1.6em !important}
+#mpcrawl .mpc-title{font-size:clamp(22px,6vw,34px);letter-spacing:4px;font-weight:900;margin-bottom:1.6em !important}
 /* ★ 한 줄씩 찍히며 나타나기 — 각 줄 opacity 0→1 + 살짝 떠오름, animation-delay 로 순서대로 (10-24) */
 #mpcrawl .mpc-line{display:block;opacity:0;animation:mpc-reveal .6s ease both}
 #mpcrawl .mpc-end{margin-bottom:1.5em}
@@ -1664,7 +1664,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
       {t:'find their own treasure,'},
       {t:'and carry it home.'}
     ];
-    var CRAWL=(function(){ var h='', base=0.6, stag=1.5; for(var i=0;i<LINES.length;i++){ var L=LINES[i], d=(base+i*stag).toFixed(2); h+='<span class="mpc-line'+(L.title?' mpc-title':'')+(L.end?' mpc-end':'')+'" style="animation-delay:'+d+'s">'+L.t+'</span>'; } return h; })();
+    var CRAWL=(function(){ var h='', base=0.4, stag=1.0; for(var i=0;i<LINES.length;i++){ var L=LINES[i], d=(base+i*stag).toFixed(2); h+='<span class="mpc-line'+(L.title?' mpc-title':'')+(L.end?' mpc-end':'')+'" style="animation-delay:'+d+'s">'+L.t+'</span>'; } return h; })();
     var ov=null, done=true, tmr=null, count=false;
     function onKey(){ finish(); }
     function finish(){
