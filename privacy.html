@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy · Money Puzzle Tour for Korea</title>
+<meta name="robots" content="index,follow">
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#111827;--sub:#5b6474;--line:#e6e9ef;--green:#2f9e44;--blue:#3d5af1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;-webkit-text-size-adjust:100%;line-height:1.7}
+html:lang(ja) body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Hiragino Sans','Yu Gothic UI','Noto Sans JP',sans-serif}
+html:lang(zh-Hans) body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif}
+html:lang(zh-Hant) body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 60px}
+.langbar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px 0 22px}
+.langbar button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;font-size:13px;font-weight:700;padding:6px 13px;cursor:pointer;font-family:inherit}
+.langbar button.on{background:var(--green);border-color:var(--green);color:#fff}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.3px}
+.eff{color:var(--sub);font-size:13px;margin:0 0 20px}
+h2{font-size:16.5px;margin:26px 0 8px;padding-top:14px;border-top:1px solid var(--line);letter-spacing:-.2px}
+p{margin:8px 0}
+ul{margin:8px 0;padding-left:20px}
+li{margin:4px 0}
+a{color:var(--blue)}
+.note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin:10px 0}
+.op{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:30px 0 0;font-size:14px;color:var(--sub)}
+.op b{color:var(--ink)}
+.op div{margin:3px 0}
+.back{display:inline-block;margin-top:24px;font-size:14px;font-weight:700}
+.ph{color:#b02a37;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="langbar" id="langbar"></div>
+  <div id="doc"></div>
+  <a class="back" id="back" href="https://navi.moneypuzzle.co.kr/">← <span id="backt">앱으로 돌아가기</span></a>
+</div>
+<script>
+"use strict";
+var LANGS=["ko","en","ja","zhs","zht","es"];
+var HLANG={ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant",es:"es"};
+var LBL={ko:"한국어",en:"English",ja:"日本語",zhs:"简体",zht:"繁體",es:"Español"};
+var PH='<span class="ph">【신고번호 / Reg. No. ___ 】</span>';
+
+/* operator block labels per language */
+var OP={
+ ko:{t:"사업자 정보",co:"상호",cn:"주식회사 부만 (Booman Inc.)",rn:"사업자등록번호",rv:"297-81-03712",ceo:"대표",cev:"전현진",po:"개인정보 보호책임자",pov:"황의만",cs:"고객센터",csv:"1599-7065",em:"이메일",ad:"주소",adv:"경기도 남양주시 진접읍 해밀예당1로 220, 엠타워 707호"},
+ en:{t:"Operator information",co:"Company",cn:"Booman Inc.",rn:"Business Reg. No.",rv:"297-81-03712",ceo:"CEO",cev:"Jeon Hyeonjin",po:"Privacy Officer",pov:"Hwang Euiman",cs:"Support",csv:"+82-1599-7065",em:"Email",ad:"Address",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"},
+ ja:{t:"事業者情報",co:"商号",cn:"株式会社 부만 (Booman Inc.)",rn:"事業者登録番号",rv:"297-81-03712",ceo:"代表",cev:"全賢珍 (Jeon Hyeonjin)",po:"個人情報保護責任者",pov:"黄義晩 (Hwang Euiman)",cs:"カスタマーセンター",csv:"+82-1599-7065",em:"メール",ad:"住所",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"},
+ zhs:{t:"经营者信息",co:"名称",cn:"Booman Inc.（株式会社 부만）",rn:"营业执照号",rv:"297-81-03712",ceo:"代表",cev:"Jeon Hyeonjin",po:"个人信息保护负责人",pov:"Hwang Euiman",cs:"客服",csv:"+82-1599-7065",em:"邮箱",ad:"地址",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"},
+ zht:{t:"經營者資訊",co:"名稱",cn:"Booman Inc.（株式會社 부만）",rn:"營業執照號",rv:"297-81-03712",ceo:"代表",cev:"Jeon Hyeonjin",po:"個人資料保護負責人",pov:"Hwang Euiman",cs:"客服",csv:"+82-1599-7065",em:"電郵",ad:"地址",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"},
+ es:{t:"Información del operador",co:"Empresa",cn:"Booman Inc.",rn:"N.º de registro mercantil",rv:"297-81-03712",ceo:"Representante",cev:"Jeon Hyeonjin",po:"Responsable de privacidad",pov:"Hwang Euiman",cs:"Atención",csv:"+82-1599-7065",em:"Correo",ad:"Dirección",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"}
+};
+var BACK={ko:"앱으로 돌아가기",en:"Back to the app",ja:"アプリに戻る",zhs:"返回应用",zht:"返回應用",es:"Volver a la app"};
+
+/* Each language: title, effective-date line, and sections [{h, b:[ "para" | ["li",...] ]}] */
+var D={};
+D.ko={title:"개인정보 처리방침", eff:"시행일 2026-10-24", app:"Money Puzzle Tour for Korea",
+ sec:[
+ {h:"", b:["주식회사 부만(이하 '회사')은 「개인정보 보호법」 및 「위치정보의 보호 및 이용 등에 관한 법률」 등 관련 법령을 준수하며, 이용자의 개인정보를 소중히 보호합니다. 본 방침은 외국인 관광 안내 앱 'Money Puzzle Tour for Korea'(https://navi.moneypuzzle.co.kr, 이하 '서비스')에 적용됩니다."]},
+ {h:"1. 수집하는 개인정보 항목 및 수집 방법", b:[
+   "서비스는 회원가입 없이 이용할 수 있으며, 아래의 경우에만 개인정보를 수집합니다.",
+   ["위치정보 — 이용자가 동의한 경우 현재 위치(위도·경도)",
+    "가이드 등록 시 — 이름, 사진, 구사 언어, 관광통역안내사 자격증 번호 및 자격증 사진, 경력, 활동 지역, 자기소개, 연락처(이메일·전화번호)",
+    "가이드 연결 요청 시 — 신청자 이름, 연락처, 희망 날짜, 요청 메시지",
+    "고객의 소리 이용 시 — 이용자가 입력한 연락처 및 문의 내용"],
+   "수집 방법: 앱 화면에서 이용자가 직접 입력하거나, 위치 이용에 동의한 경우 기기의 위치 기능을 통해 수집합니다."]},
+ {h:"2. 개인정보의 수집·이용 목적", b:[
+   ["위치정보: 주변 관광지·맛집·숙소·편의시설 추천 및 길 안내 제공",
+    "가이드 등록 정보: 가이드 자격 확인, 등록 심사·승인, 이용자에게 가이드 소개",
+    "가이드 연결 요청 정보: 선택한 가이드에게 요청 전달 및 연결",
+    "고객의 소리: 문의·의견에 대한 답변 및 서비스 개선"]]},
+ {h:"3. 위치정보의 처리 (위치기반서비스)", b:[
+   "회사는 「위치정보의 보호 및 이용 등에 관한 법률」에 따라 위치기반서비스사업 신고를 하였습니다. "+PH,
+   "서비스는 이용자가 앱 내 동의 화면에서 동의한 경우에 한하여, 앱을 사용하는 동안(전경·foreground)에만 현재 위치를 이용합니다. 백그라운드에서는 위치를 수집하지 않습니다.",
+   "위치정보는 추천 결과를 보여 주거나 길을 안내할 때 실시간으로만 이용하며, 회사 서버에 저장하지 않습니다.",
+   "현재 위치 측정은 Google Geolocation Services API를 통해 제공되며, 이 과정에서 기기의 위치 신호가 Google에 전달될 수 있습니다.",
+   "이용자는 휴대폰 설정 또는 앱 내에서 언제든지 위치 이용 동의를 철회하거나 권한을 끌 수 있으며, 이 경우에도 검색과 지도 보기는 그대로 이용할 수 있습니다."]},
+ {h:"4. 개인정보의 보유 및 이용 기간", b:[
+   "위치정보: 실시간으로만 이용하며 저장하지 않습니다.",
+   "가이드 등록 정보 및 가이드 연결 요청 정보: 등록·요청일로부터 1년이 지나면 자동으로 삭제합니다. 다만 관련 법령에서 보존을 요구하는 경우 해당 기간 동안 보관합니다.",
+   "이용자가 삭제를 요청한 경우 지체 없이 파기합니다."]},
+ {h:"5. 개인정보의 제3자 제공 및 처리 위탁", b:[
+   "회사는 이용자의 개인정보를 판매하지 않으며, 아래의 경우를 제외하고 제3자에게 제공하지 않습니다.",
+   ["Google: 현재 위치 측정(Geolocation Services) 및 장소 정보 제공(Google Places)",
+    "한국관광공사(TourAPI)·카카오(Kakao): 관광지·장소 정보 제공",
+    "선택한 가이드: 가이드 연결 요청 시, 신청자의 이름·연락처·희망 날짜·메시지를 해당 가이드에게 전달"],
+   "위 Google 및 해외 API 호출 과정에서 일부 정보가 국외(해외 서버)로 전송될 수 있습니다. 이는 서비스 제공에 꼭 필요한 범위로 한정됩니다.",
+   "그 밖에 법령에 근거가 있거나 수사기관의 적법한 요청이 있는 경우를 제외하고는 제3자에게 제공하지 않습니다."]},
+ {h:"6. 이용자의 권리와 행사 방법", b:[
+   "이용자는 언제든지 자신의 개인정보에 대한 열람·정정·삭제를 요청하고 동의를 철회할 수 있습니다.",
+   "요청은 고객센터(1599-7065) 또는 이메일(emhwang3@moneypuzzle.co.kr)로 할 수 있으며, 회사는 지체 없이 처리합니다."]},
+ {h:"7. 개인정보의 안전성 확보 조치", b:[
+   "회사는 가이드 등록 정보 등 개인정보를 AES-GCM 방식으로 암호화하여 저장하고, 관리자 승인 절차 및 접근 권한 통제를 통해 안전하게 관리합니다."]},
+ {h:"8. 개인정보 보호책임자", b:[
+   "개인정보 처리에 관한 문의·불만·피해 구제는 아래 보호책임자에게 연락하실 수 있습니다.",
+   ["개인정보 보호책임자: 황의만",
+    "고객센터: 1599-7065",
+    "이메일: emhwang3@moneypuzzle.co.kr"]]},
+ {h:"9. 아동의 개인정보", b:[
+   "서비스는 아동을 대상으로 하지 않으며, 아동의 개인정보를 의도적으로 수집하지 않습니다."]},
+ {h:"10. 방침의 변경", b:[
+   "본 방침이 변경되는 경우 시행일과 변경 내용을 앱 또는 본 페이지를 통해 공지합니다."]}
+ ]};
+
+D.en={title:"Privacy Policy", eff:"Effective date: 2026-10-24", app:"Money Puzzle Tour for Korea",
+ sec:[
+ {h:"", b:["Booman Inc. (\"the Company\") respects your privacy and complies with the Personal Information Protection Act, the Act on the Protection and Use of Location Information, and other applicable laws of the Republic of Korea. This policy applies to the tourist guide app \"Money Puzzle Tour for Korea\" (https://navi.moneypuzzle.co.kr, \"the Service\")."]},
+ {h:"1. Information we collect and how", b:[
+   "The Service can be used without creating an account. We collect personal information only in the following cases:",
+   ["Location — your current location (latitude/longitude), when you consent",
+    "Guide registration — name, photo, languages spoken, tour-guide (Tourist Interpreter Guide) license number and license photo, experience, region, self-introduction, contact (email/phone)",
+    "Guide request — the requester's name, contact, desired date and message",
+    "Customer Voice — the contact details and message you enter"],
+   "Collection method: entered directly by you in the app, or, if you consent to location use, read from your device's location function."]},
+ {h:"2. Purpose of collection and use", b:[
+   ["Location: to recommend nearby attractions, restaurants, stays and amenities, and to give directions",
+    "Guide registration: to verify guide credentials, review and approve registrations, and introduce guides to travelers",
+    "Guide request: to forward your request to the guide you chose and connect you",
+    "Customer Voice: to respond to your inquiries and improve the Service"]]},
+ {h:"3. Location information (location-based service)", b:[
+   "The Company has filed a location-based service business report under the Act on the Protection and Use of Location Information. "+PH,
+   "The Service uses your current location only when you consent via the in-app consent dialog, and only while you are using the app (foreground). We do not collect location in the background.",
+   "Location is used in real time only, to show recommendations or give directions, and is not stored on the Company's servers.",
+   "Your current location is determined via the Google Geolocation Services API; in this process your device's location signals may be sent to Google.",
+   "You may withdraw your consent or turn off the location permission at any time in your phone settings or in the app. Search and map viewing remain available without location."]},
+ {h:"4. Retention and use period", b:[
+   "Location: used in real time only and not stored.",
+   "Guide registration data and guide-request data: automatically deleted one (1) year after registration/request. Where a law requires retention, we keep it for the required period.",
+   "If you request deletion, we destroy the data without delay."]},
+ {h:"5. Third-party provision and processing", b:[
+   "The Company does not sell personal information and does not provide it to third parties except as follows:",
+   ["Google: current-location determination (Geolocation Services) and place information (Google Places)",
+    "Korea Tourism Organization (TourAPI) and Kakao: attraction and place information",
+    "The chosen guide: for a guide request, the requester's name, contact, desired date and message are forwarded to that guide"],
+   "In the course of the Google and overseas API calls above, some information may be transferred outside Korea (to overseas servers). This is limited to what is necessary to provide the Service.",
+   "We do not otherwise provide information to third parties, except where required by law or upon a lawful request from an investigative authority."]},
+ {h:"6. Your rights", b:[
+   "You may at any time request access to, correction or deletion of your personal information, and withdraw consent.",
+   "Requests can be made to Support (+82-1599-7065) or by email (emhwang3@moneypuzzle.co.kr), and we will act without delay."]},
+ {h:"7. Security measures", b:[
+   "The Company encrypts personal information such as guide registration data using AES-GCM, and manages it securely through an administrator-approval process and access controls."]},
+ {h:"8. Privacy Officer", b:[
+   "For questions, complaints or remedies regarding personal information, please contact:",
+   ["Privacy Officer: Hwang Euiman",
+    "Support: +82-1599-7065",
+    "Email: emhwang3@moneypuzzle.co.kr"]]},
+ {h:"9. Children", b:[
+   "The Service is not directed to children and does not knowingly collect children's personal information."]},
+ {h:"10. Changes to this policy", b:[
+   "If this policy changes, we will announce the effective date and the changes through the app or this page."]}
+ ]};
+
+D.ja={title:"個人情報処理方針", eff:"施行日 2026-10-24", app:"Money Puzzle Tour for Korea",
+ sec:[
+ {h:"", b:["株式会社 부만（Booman Inc.、以下「当社」）は、韓国の「個人情報保護法」および「位置情報の保護及び利用等に関する法律」等の関連法令を遵守し、利用者の個人情報を大切に保護します。本方針は、外国人観光案内アプリ「Money Puzzle Tour for Korea」（https://navi.moneypuzzle.co.kr、以下「本サービス」）に適用されます。"]},
+ {h:"1. 収集する個人情報の項目および方法", b:[
+   "本サービスは会員登録なしで利用でき、次の場合にのみ個人情報を収集します。",
+   ["位置情報 — 利用者が同意した場合の現在地（緯度・経度）",
+    "ガイド登録時 — 氏名、写真、使用言語、観光通訳案内士の資格番号および資格証の写真、経歴、活動地域、自己紹介、連絡先（メール・電話番号）",
+    "ガイド依頼時 — 依頼者の氏名、連絡先、希望日、依頼メッセージ",
+    "お客様の声 — 利用者が入力した連絡先および問い合わせ内容"],
+   "収集方法：アプリ画面で利用者が直接入力するか、位置情報の利用に同意した場合に端末の位置機能を通じて収集します。"]},
+ {h:"2. 収集・利用の目的", b:[
+   ["位置情報：周辺の観光地・グルメ・宿泊・施設のおすすめおよび道案内",
+    "ガイド登録情報：ガイド資格の確認、登録審査・承認、利用者へのガイド紹介",
+    "ガイド依頼情報：選択したガイドへの依頼の転送および連絡",
+    "お客様の声：問い合わせ・ご意見への対応およびサービス改善"]]},
+ {h:"3. 位置情報の取り扱い（位置基盤サービス）", b:[
+   "当社は「位置情報の保護及び利用等に関する法律」に基づき、位置基盤サービス事業の届出を行いました。"+PH,
+   "本サービスは、利用者がアプリ内の同意画面で同意した場合に限り、アプリの利用中（フォアグラウンド）にのみ現在地を利用します。バックグラウンドでは位置情報を収集しません。",
+   "位置情報は、おすすめ結果の表示や道案内の際にリアルタイムでのみ利用し、当社サーバーには保存しません。",
+   "現在地の測定は Google Geolocation Services API を通じて提供され、その過程で端末の位置信号が Google に送信される場合があります。",
+   "利用者は端末の設定やアプリ内でいつでも位置利用の同意を撤回し、権限をオフにできます。その場合でも検索と地図の閲覧は引き続き利用できます。"]},
+ {h:"4. 保有および利用期間", b:[
+   "位置情報：リアルタイムでのみ利用し、保存しません。",
+   "ガイド登録情報およびガイド依頼情報：登録・依頼日から1年を経過すると自動的に削除します。ただし法令が保存を求める場合は当該期間保管します。",
+   "利用者が削除を求めた場合は遅滞なく破棄します。"]},
+ {h:"5. 第三者提供および処理委託", b:[
+   "当社は利用者の個人情報を販売せず、次の場合を除き第三者に提供しません。",
+   ["Google：現在地の測定（Geolocation Services）および場所情報の提供（Google Places）",
+    "韓国観光公社（TourAPI）・Kakao：観光地・場所情報の提供",
+    "選択したガイド：ガイド依頼時、依頼者の氏名・連絡先・希望日・メッセージを当該ガイドへ転送"],
+   "上記の Google および海外 API 呼び出しの過程で、一部の情報が韓国国外（海外サーバー）へ転送される場合があります。これはサービス提供に必要な範囲に限られます。",
+   "そのほか、法令に根拠がある場合や捜査機関の適法な要請がある場合を除き、第三者には提供しません。"]},
+ {h:"6. 利用者の権利", b:[
+   "利用者はいつでも自身の個人情報の閲覧・訂正・削除を求め、同意を撤回できます。",
+   "ご請求はカスタマーセンター（+82-1599-7065）またはメール（emhwang3@moneypuzzle.co.kr）で行え、当社は遅滞なく対応します。"]},
+ {h:"7. 安全性確保の措置", b:[
+   "当社はガイド登録情報などの個人情報を AES-GCM 方式で暗号化して保存し、管理者の承認手続きおよびアクセス権限の統制により安全に管理します。"]},
+ {h:"8. 個人情報保護責任者", b:[
+   "個人情報の取り扱いに関する問い合わせ・苦情・救済は、下記の保護責任者にご連絡ください。",
+   ["個人情報保護責任者：黄義晩（Hwang Euiman）",
+    "カスタマーセンター：+82-1599-7065",
+    "メール：emhwang3@moneypuzzle.co.kr"]]},
+ {h:"9. 児童の個人情報", b:[
+   "本サービスは児童を対象とせず、児童の個人情報を意図的に収集しません。"]},
+ {h:"10. 方針の変更", b:[
+   "本方針が変更される場合、施行日および変更内容をアプリまたは本ページで告知します。"]}
+ ]};
+
+D.zhs={title:"隐私政策", eff:"施行日期 2026-10-24", app:"Money Puzzle Tour for Korea",
+ sec:[
+ {h:"", b:["Booman Inc.（株式会社 부만，以下称\"本公司\"）遵守韩国《个人信息保护法》《位置信息的保护及利用等相关法律》等相关法律，珍视并保护用户的个人信息。本政策适用于面向外国游客的旅游向导应用\"Money Puzzle Tour for Korea\"（https://navi.moneypuzzle.co.kr，以下称\"本服务\"）。"]},
+ {h:"1. 收集的个人信息项目及方式", b:[
+   "本服务无需注册即可使用，仅在以下情况收集个人信息：",
+   ["位置信息 — 用户同意时的当前位置（经纬度）",
+    "向导注册时 — 姓名、照片、可用语言、观光翻译向导资格证号及资格证照片、经历、活动地区、自我介绍、联系方式（邮箱·电话）",
+    "向导预约时 — 申请人姓名、联系方式、期望日期、留言",
+    "客户之声 — 用户填写的联系方式及咨询内容"],
+   "收集方式：由用户在应用中直接填写，或在同意使用位置时通过设备的定位功能收集。"]},
+ {h:"2. 收集与使用目的", b:[
+   ["位置信息：推荐周边景点·美食·住宿·便利设施并提供路线指引",
+    "向导注册信息：核实向导资格、注册审核与批准、向用户介绍向导",
+    "向导预约信息：将请求转交给所选向导并进行连接",
+    "客户之声：回复咨询·意见并改善服务"]]},
+ {h:"3. 位置信息的处理（位置信息服务）", b:[
+   "本公司已依据《位置信息的保护及利用等相关法律》办理位置信息服务业务申报。"+PH,
+   "本服务仅在用户通过应用内同意界面同意后，且仅在使用应用期间（前台）使用当前位置，不在后台收集位置信息。",
+   "位置信息仅在显示推荐结果或提供路线指引时实时使用，不存储于本公司服务器。",
+   "当前位置通过 Google Geolocation Services API 测定，此过程中设备的位置信号可能发送至 Google。",
+   "用户可随时在手机设置或应用内撤回位置使用同意或关闭权限，届时搜索与地图浏览仍可正常使用。"]},
+ {h:"4. 保存及使用期限", b:[
+   "位置信息：仅实时使用，不予存储。",
+   "向导注册信息及向导预约信息：自注册·请求之日起满1年自动删除。法律要求保存的，按相应期限保管。",
+   "用户请求删除时，立即予以销毁。"]},
+ {h:"5. 向第三方提供及处理委托", b:[
+   "本公司不出售用户个人信息，除以下情形外不向第三方提供：",
+   ["Google：当前位置测定（Geolocation Services）及场所信息提供（Google Places）",
+    "韩国观光公社（TourAPI）·Kakao：景点·场所信息提供",
+    "所选向导：向导预约时，将申请人的姓名·联系方式·期望日期·留言转交给该向导"],
+   "在上述 Google 及海外 API 调用过程中，部分信息可能传输至韩国境外（海外服务器）。此仅限于提供服务所必需的范围。",
+   "除法律有依据或侦查机关提出合法请求外，不向第三方提供。"]},
+ {h:"6. 用户的权利", b:[
+   "用户可随时请求查阅·更正·删除本人个人信息，并撤回同意。",
+   "可通过客服（+82-1599-7065）或邮箱（emhwang3@moneypuzzle.co.kr）提出，本公司将及时处理。"]},
+ {h:"7. 安全保障措施", b:[
+   "本公司以 AES-GCM 方式加密存储向导注册信息等个人信息，并通过管理员审批流程及访问权限控制进行安全管理。"]},
+ {h:"8. 个人信息保护负责人", b:[
+   "有关个人信息处理的咨询·投诉·救济，请联系下列负责人：",
+   ["个人信息保护负责人：Hwang Euiman",
+    "客服：+82-1599-7065",
+    "邮箱：emhwang3@moneypuzzle.co.kr"]]},
+ {h:"9. 儿童个人信息", b:[
+   "本服务不以儿童为对象，不会有意收集儿童的个人信息。"]},
+ {h:"10. 政策变更", b:[
+   "本政策如有变更，将通过应用或本页面公告施行日期及变更内容。"]}
+ ]};
+
+D.zht={title:"隱私政策", eff:"施行日期 2026-10-24", app:"Money Puzzle Tour for Korea",
+ sec:[
+ {h:"", b:["Booman Inc.（株式會社 부만，以下稱「本公司」）遵守韓國《個人資料保護法》《位置資訊之保護及利用等相關法律》等相關法律，珍視並保護使用者的個人資料。本政策適用於面向外國旅客的旅遊嚮導應用程式「Money Puzzle Tour for Korea」（https://navi.moneypuzzle.co.kr，以下稱「本服務」）。"]},
+ {h:"1. 蒐集的個人資料項目及方式", b:[
+   "本服務無需註冊即可使用，僅於以下情形蒐集個人資料：",
+   ["位置資訊 — 使用者同意時的目前位置（經緯度）",
+    "嚮導註冊時 — 姓名、照片、可用語言、觀光翻譯嚮導資格證號及資格證照片、經歷、活動地區、自我介紹、聯絡方式（電郵·電話）",
+    "嚮導預約時 — 申請人姓名、聯絡方式、期望日期、留言",
+    "顧客之聲 — 使用者填寫的聯絡方式及諮詢內容"],
+   "蒐集方式：由使用者於應用程式中直接填寫，或在同意使用位置時透過裝置的定位功能蒐集。"]},
+ {h:"2. 蒐集與使用目的", b:[
+   ["位置資訊：推薦周邊景點·美食·住宿·便利設施並提供路線指引",
+    "嚮導註冊資料：核實嚮導資格、註冊審核與核准、向使用者介紹嚮導",
+    "嚮導預約資料：將請求轉交給所選嚮導並進行媒合",
+    "顧客之聲：回覆諮詢·意見並改善服務"]]},
+ {h:"3. 位置資訊的處理（位置資訊服務）", b:[
+   "本公司已依據《位置資訊之保護及利用等相關法律》辦理位置資訊服務業務申報。"+PH,
+   "本服務僅在使用者透過應用程式內同意畫面同意後，且僅於使用應用程式期間（前景）使用目前位置，不於背景蒐集位置資訊。",
+   "位置資訊僅於顯示推薦結果或提供路線指引時即時使用，不儲存於本公司伺服器。",
+   "目前位置透過 Google Geolocation Services API 測定，此過程中裝置的位置訊號可能傳送至 Google。",
+   "使用者可隨時於手機設定或應用程式內撤回位置使用同意或關閉權限，屆時搜尋與地圖瀏覽仍可正常使用。"]},
+ {h:"4. 保存及使用期限", b:[
+   "位置資訊：僅即時使用，不予儲存。",
+   "嚮導註冊資料及嚮導預約資料：自註冊·請求之日起滿1年自動刪除。法律要求保存者，依相應期限保管。",
+   "使用者請求刪除時，立即予以銷毀。"]},
+ {h:"5. 向第三方提供及處理委託", b:[
+   "本公司不出售使用者個人資料，除以下情形外不向第三方提供：",
+   ["Google：目前位置測定（Geolocation Services）及場所資訊提供（Google Places）",
+    "韓國觀光公社（TourAPI）·Kakao：景點·場所資訊提供",
+    "所選嚮導：嚮導預約時，將申請人的姓名·聯絡方式·期望日期·留言轉交給該嚮導"],
+   "於上述 Google 及海外 API 呼叫過程中，部分資訊可能傳輸至韓國境外（海外伺服器）。此僅限於提供服務所必需的範圍。",
+   "除法律有依據或偵查機關提出合法請求外，不向第三方提供。"]},
+ {h:"6. 使用者的權利", b:[
+   "使用者可隨時請求查閱·更正·刪除本人個人資料，並撤回同意。",
+   "可透過客服（+82-1599-7065）或電郵（emhwang3@moneypuzzle.co.kr）提出，本公司將及時處理。"]},
+ {h:"7. 安全保障措施", b:[
+   "本公司以 AES-GCM 方式加密儲存嚮導註冊資料等個人資料，並透過管理員審批流程及存取權限控制進行安全管理。"]},
+ {h:"8. 個人資料保護負責人", b:[
+   "有關個人資料處理的諮詢·投訴·救濟，請聯絡下列負責人：",
+   ["個人資料保護負責人：Hwang Euiman",
+    "客服：+82-1599-7065",
+    "電郵：emhwang3@moneypuzzle.co.kr"]]},
+ {h:"9. 兒童個人資料", b:[
+   "本服務不以兒童為對象，不會有意蒐集兒童的個人資料。"]},
+ {h:"10. 政策變更", b:[
+   "本政策如有變更，將透過應用程式或本頁面公告施行日期及變更內容。"]}
+ ]};
+
+D.es={title:"Política de Privacidad", eff:"Fecha de entrada en vigor: 2026-10-24", app:"Money Puzzle Tour for Korea",
+ sec:[
+ {h:"", b:["Booman Inc. (\"la Empresa\") respeta su privacidad y cumple con la Ley de Protección de Información Personal, la Ley sobre la Protección y el Uso de la Información de Ubicación y demás leyes aplicables de la República de Corea. Esta política se aplica a la app de guía turística \"Money Puzzle Tour for Korea\" (https://navi.moneypuzzle.co.kr, \"el Servicio\")."]},
+ {h:"1. Información que recopilamos y cómo", b:[
+   "El Servicio puede usarse sin crear una cuenta. Solo recopilamos datos personales en los siguientes casos:",
+   ["Ubicación — su ubicación actual (latitud/longitud), cuando usted da su consentimiento",
+    "Registro de guía — nombre, foto, idiomas, número de licencia de guía-intérprete turístico y foto de la licencia, experiencia, región, presentación y contacto (correo/teléfono)",
+    "Solicitud de guía — nombre, contacto, fecha deseada y mensaje del solicitante",
+    "Voz del Cliente — el contacto y el mensaje que usted introduce"],
+   "Método de recopilación: introducido directamente por usted en la app o, si consiente el uso de la ubicación, leído de la función de ubicación de su dispositivo."]},
+ {h:"2. Finalidad de la recopilación y el uso", b:[
+   ["Ubicación: recomendar atracciones, restaurantes, alojamientos y servicios cercanos, y dar indicaciones",
+    "Registro de guía: verificar credenciales, revisar y aprobar registros, y presentar guías a los viajeros",
+    "Solicitud de guía: reenviar su solicitud al guía elegido y ponerlos en contacto",
+    "Voz del Cliente: responder a sus consultas y mejorar el Servicio"]]},
+ {h:"3. Información de ubicación (servicio basado en ubicación)", b:[
+   "La Empresa ha presentado la declaración de actividad de servicio basado en ubicación conforme a la Ley sobre la Protección y el Uso de la Información de Ubicación. "+PH,
+   "El Servicio usa su ubicación actual solo cuando usted consiente mediante el diálogo de consentimiento de la app, y únicamente mientras usa la app (primer plano). No recopilamos la ubicación en segundo plano.",
+   "La ubicación se usa solo en tiempo real para mostrar recomendaciones o indicaciones, y no se almacena en los servidores de la Empresa.",
+   "Su ubicación actual se determina mediante la API de Google Geolocation Services; en este proceso las señales de ubicación de su dispositivo pueden enviarse a Google.",
+   "Puede retirar su consentimiento o desactivar el permiso de ubicación en cualquier momento en los ajustes de su teléfono o en la app. La búsqueda y el mapa siguen disponibles sin la ubicación."]},
+ {h:"4. Plazo de conservación y uso", b:[
+   "Ubicación: se usa solo en tiempo real y no se almacena.",
+   "Datos de registro de guía y de solicitud de guía: se eliminan automáticamente un (1) año después del registro/solicitud. Cuando la ley exija conservación, los guardamos por el plazo requerido.",
+   "Si usted solicita la eliminación, destruimos los datos sin demora."]},
+ {h:"5. Cesión a terceros y encargo del tratamiento", b:[
+   "La Empresa no vende datos personales y no los cede a terceros salvo en los siguientes casos:",
+   ["Google: determinación de la ubicación actual (Geolocation Services) e información de lugares (Google Places)",
+    "Organización de Turismo de Corea (TourAPI) y Kakao: información de atracciones y lugares",
+    "El guía elegido: en una solicitud de guía, se reenvían a ese guía el nombre, el contacto, la fecha deseada y el mensaje del solicitante"],
+   "Durante las llamadas a Google y a las API en el extranjero antes mencionadas, parte de la información puede transferirse fuera de Corea (a servidores en el extranjero). Esto se limita a lo necesario para prestar el Servicio.",
+   "Por lo demás, no cedemos información a terceros, salvo cuando lo exija la ley o ante una solicitud legítima de una autoridad investigadora."]},
+ {h:"6. Sus derechos", b:[
+   "Puede en cualquier momento solicitar el acceso, la rectificación o la eliminación de sus datos personales y retirar su consentimiento.",
+   "Las solicitudes pueden hacerse a Atención (+82-1599-7065) o por correo (emhwang3@moneypuzzle.co.kr), y actuaremos sin demora."]},
+ {h:"7. Medidas de seguridad", b:[
+   "La Empresa cifra los datos personales, como los del registro de guías, mediante AES-GCM y los gestiona de forma segura con un proceso de aprobación por administrador y controles de acceso."]},
+ {h:"8. Responsable de privacidad", b:[
+   "Para consultas, reclamaciones o reparación relativas a los datos personales, puede contactar con:",
+   ["Responsable de privacidad: Hwang Euiman",
+    "Atención: +82-1599-7065",
+    "Correo: emhwang3@moneypuzzle.co.kr"]]},
+ {h:"9. Menores", b:[
+   "El Servicio no está dirigido a menores y no recopila conscientemente datos personales de menores."]},
+ {h:"10. Cambios en esta política", b:[
+   "Si esta política cambia, anunciaremos la fecha de entrada en vigor y los cambios a través de la app o de esta página."]}
+ ]};
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
+/* keep our own placeholder/email/anchor HTML, escape the rest */
+function inline(s){ return esc(s).replace(/emhwang3@moneypuzzle\.co\.kr/g,'<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a>').replace(/&lt;span class="ph"&gt;([^&]*)&lt;\/span&gt;/g,'<span class="ph">$1</span>'); }
+
+function opBlock(lang){ var o=OP[lang]; var L=[
+  ['', '<b>'+esc(o.cn)+'</b>'],
+  [o.rn, o.rv],[o.ceo, o.cev],[o.po, o.pov],
+  [o.cs, o.csv],[o.em, '<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a>'],
+  [o.ad, o.adv]];
+  var h='<div class="op"><div><b>'+esc(o.t)+'</b></div>';
+  for(var i=0;i<L.length;i++){ h+='<div>'+(L[i][0]?esc(L[i][0])+' : ':'')+L[i][1]+'</div>'; }
+  return h+'</div>';
+}
+
+function render(lang){
+  if(LANGS.indexOf(lang)<0) lang="ko";
+  document.documentElement.lang=HLANG[lang];
+  var d=D[lang], h='';
+  h+='<h1>'+esc(d.title)+'</h1>';
+  h+='<p class="eff">'+esc(d.app)+' · '+esc(d.eff)+'</p>';
+  for(var i=0;i<d.sec.length;i++){ var s=d.sec[i];
+    if(s.h) h+='<h2>'+esc(s.h)+'</h2>';
+    for(var j=0;j<s.b.length;j++){ var b=s.b[j];
+      if(Object.prototype.toString.call(b)==="[object Array]"){ h+='<ul>'; for(var k=0;k<b.length;k++) h+='<li>'+inline(b[k])+'</li>'; h+='</ul>'; }
+      else h+='<p>'+inline(b)+'</p>';
+    }
+  }
+  h+=opBlock(lang);
+  document.getElementById("doc").innerHTML=h;
+  document.getElementById("backt").textContent=BACK[lang];
+  document.getElementById("back").href="https://navi.moneypuzzle.co.kr/?lang="+lang;
+  document.title=d.title+" · Money Puzzle Tour for Korea";
+  var bs=document.getElementById("langbar").children;
+  for(var m=0;m<bs.length;m++) bs[m].className=(bs[m].getAttribute("data-l")===lang)?"on":"";
+  try{ localStorage.setItem("mpv_lang",lang); }catch(e){}
+  try{ history.replaceState(null,"","?lang="+lang); }catch(e){}
+}
+
+function pick(){
+  var q=(location.search.match(/[?&]lang=([a-z]+)/)||[])[1];
+  if(q&&LANGS.indexOf(q)>=0) return q;
+  var st; try{ st=localStorage.getItem("mpv_lang"); }catch(e){}
+  if(st&&LANGS.indexOf(st)>=0) return st;
+  var n=(navigator.language||"en").toLowerCase();
+  if(n.indexOf("ko")===0) return "ko";
+  if(n.indexOf("ja")===0) return "ja";
+  if(n.indexOf("es")===0) return "es";
+  if(n.indexOf("zh")===0) return (n.indexOf("tw")>=0||n.indexOf("hant")>=0||n.indexOf("hk")>=0)?"zht":"zhs";
+  return "en";
+}
+
+(function(){
+  var bar=document.getElementById("langbar"),h="";
+  for(var i=0;i<LANGS.length;i++) h+='<button data-l="'+LANGS[i]+'">'+LBL[LANGS[i]]+'</button>';
+  bar.innerHTML=h;
+  var btns=bar.children;
+  for(var j=0;j<btns.length;j++) btns[j].addEventListener("click",function(){ render(this.getAttribute("data-l")); });
+  render(pick());
+})();
+</script>
+</body>
+</html>
