@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권·결제 내역","장부 · 엑셀 받기"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권·결제 내역","장부 · 엑셀 받기"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
 function usd(n){ return "$"+(Math.round((n||0)*100)/100).toLocaleString(); }
 function tile(v,l){ return '<div class="tile"><b>'+v+'</b><span>'+l+'</span></div>'; }
@@ -212,6 +212,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="voice"){ voiceLoad(); return; }
   if(id==="inq"){ inqLoad(); return; }
   if(id==="guide"){ guideLoad(); return; }   // 통역·길안내 가이드 승인 (2026-10-24)
+  if(id==="greview"){ grevLoad(); return; }   // 가이드 후기 관리 (2026-10-24)
   if(id==="mis"){ misLoad(); return; }   // 가이드 예약·결제 장부 MIS (2026-10-24)
   if(id==="ptn"){ ptnLoad(); return; }   // 제휴 가게 — partner.js (2026-10-16)
   if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
@@ -332,7 +333,28 @@ function gCard(g){ var langs=(g.langs||[]).map(gLangNm).join(", ");
     +(g.status==='new'?'<button class="g" data-id="'+esc(g.id)+'" onclick="gAct(\'reject\',this.dataset.id)">거절</button>':'')
     +'<button class="g" data-id="'+esc(g.id)+'" onclick="gAct(\'delete\',this.dataset.id)">지우기</button></div>'
     +'<div id="glic_'+esc(g.id)+'"></div></div></div></div>'; }
-function gLead(x){ return '<div class="inv"><div class="sub">'+esc(x.at||'')+' · 가이드 '+esc(x.gname||x.gid||'')+(x.lang?' · '+esc(x.lang):'')+'</div><div style="margin:4px 0"><b>'+esc(x.name||'')+'</b> · '+esc(x.contact||'')+(x.date?' · 희망 날짜 '+esc(x.date):'')+'</div>'+(x.msg?'<div style="white-space:pre-wrap">'+esc(x.msg)+'</div>':'')+'</div>'; }
+function gLead(x){ var rl=x.reviewLink||'';
+  return '<div class="inv"><div class="sub">'+esc(x.at||'')+' · 가이드 '+esc(x.gname||x.gid||'')+(x.lang?' · '+esc(x.lang):'')+(x.completed?' · <b style="color:#2b8a3e">완료 '+esc(x.completed)+'</b>':'')+(x.reviewed?' · <b style="color:#e8590c">후기 받음</b>':'')+'</div>'
+    +'<div style="margin:4px 0"><b>'+esc(x.name||'')+'</b> · '+esc(x.contact||'')+(x.date?' · 희망 날짜 '+esc(x.date):'')+'</div>'
+    +(x.msg?'<div style="white-space:pre-wrap">'+esc(x.msg)+'</div>':'')
+    +'<div class="row" style="margin-top:6px">'+(x.completed?'':'<button data-id="'+esc(x.id)+'" onclick="gLeadDone(this.dataset.id)">완료 처리 (후기 요청)</button>')+'</div>'
+    +(rl?'<div class="sub" style="margin-top:6px;word-break:break-all">후기 링크: <a href="'+esc(rl)+'" target="_blank">'+esc(rl)+'</a> <button class="g" data-l="'+esc(rl)+'" onclick="gCopy(this.dataset.l)">복사</button>'+(x.reviewed?'':' <span>(손님 연락처가 이메일이면 자동 발송됨 · 전화면 이 링크를 직접 전달)</span>')+'</div>':'')
+    +'</div>'; }
+function gLeadDone(id){ if(!confirm('이 요청을 완료 처리하고 손님에게 후기 링크를 보낼까요?\n(손님 연락처가 이메일이면 자동 발송, 전화면 나오는 링크를 직접 전달)')) return;
+  api("/guide/admin/lead/complete",{method:"POST",body:JSON.stringify({id:id})}).then(function(j){ if(j&&j.ok){ alert('완료 처리했습니다.\n'+(j.isEmail?(j.mailed?'손님 이메일로 후기 링크를 보냈습니다.':'이메일 발송에 실패했습니다. 아래 링크를 직접 전달하세요.'):'전화 연락처라 자동 발송이 안 됩니다. 아래 링크를 직접 전달하세요.')+'\n\n후기 링크:\n'+(j.link||'')); guideLoad(); } else alert('처리하지 못했습니다.'); }).catch(function(){ alert('처리하지 못했습니다.'); }); }
+function gCopy(t){ try{ navigator.clipboard.writeText(t).then(function(){ alert('복사했습니다.'); },function(){ prompt('복사하세요:',t); }); }catch(e){ prompt('복사하세요:',t); } }
+// ── 가이드 후기 관리 (2026-10-24) — 허브 /guide/admin/reviews · /guide/admin/review (숨기기·삭제). 숨기면 손님 화면·평균에서 빠진다 ──
+function grevStars(n){ n=Math.max(0,Math.min(5,Math.round(n||0))); var s=""; for(var i=0;i<5;i++) s+=(i<n?"★":"☆"); return s; }
+function grevLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>가이드 후기 관리</b><div class="msg">불러오는 중…</div></div>';
+  api("/guide/admin/reviews").then(function(j){ if(!j.ok) throw new Error("x"); var it=j.items||[];
+    P.innerHTML='<div class="card"><b>후기 ('+it.length+')</b><div class="msg">악성·부적절한 후기를 숨기거나 지울 수 있습니다. 숨기면 손님 화면에서 사라지고 평균 별점에서도 빠집니다.</div>'+(it.length?it.map(grevCard).join(""):'<div class="msg">아직 후기가 없습니다.</div>')+'</div>';
+  }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+').</div></div>'; }); }
+function grevCard(r){ return '<div class="inv"'+(r.hidden?' style="opacity:.55"':'')+'><div class="sub">'+esc(r.date||'')+' · 가이드 '+esc(r.gname||r.guideId||'')+(r.hidden?' · <b style="color:#e03131">숨김</b>':'')+'</div>'
+  +'<div style="margin:4px 0"><span style="color:#e8590c;font-weight:800">'+grevStars(r.stars)+'</span> <b>'+esc(r.name||'익명')+'</b></div>'
+  +(r.text?'<div style="white-space:pre-wrap">'+esc(r.text)+'</div>':'')
+  +'<div class="row" style="margin-top:6px"><button class="g" data-id="'+esc(r.id)+'" data-h="'+(r.hidden?0:1)+'" onclick="grevHide(this.dataset.id,this.dataset.h)">'+(r.hidden?'다시 보이기':'숨기기')+'</button><button class="g" data-id="'+esc(r.id)+'" onclick="grevDel(this.dataset.id)">삭제</button></div></div>'; }
+function grevHide(id,h){ api("/guide/admin/review",{method:"POST",body:JSON.stringify({id:id,hide:h==="1"})}).then(function(j){ if(j&&j.ok) grevLoad(); else alert('처리하지 못했습니다.'); }).catch(function(){ alert('처리하지 못했습니다.'); }); }
+function grevDel(id){ if(!confirm('이 후기를 삭제할까요? (되돌릴 수 없습니다)')) return; api("/guide/admin/review",{method:"POST",body:JSON.stringify({id:id,del:true})}).then(function(j){ if(j&&j.ok) grevLoad(); else alert('지우지 못했습니다.'); }).catch(function(){ alert('지우지 못했습니다.'); }); }
 function gLic(id){ var box=$("glic_"+id); if(!box) return; if(box.innerHTML){ box.innerHTML=''; return; } box.innerHTML='<div class="msg">불러오는 중…</div>';
   api("/guide/admin/lic?id="+encodeURIComponent(id)).then(function(j){ box.innerHTML=j&&j.ok&&j.data?'<img src="'+j.data+'" style="max-width:100%;border-radius:10px;margin-top:6px">':'<div class="msg">사본을 불러오지 못했습니다.</div>'; }).catch(function(){ box.innerHTML='<div class="msg err">불러오지 못했습니다.</div>'; }); }
 function gAct(a,id){ if(a==='delete'&&!confirm('이 가이드를 지울까요?')) return; if(a==='reject'&&!confirm('이 신청을 거절할까요?')) return;
