@@ -247,7 +247,11 @@ function tgRow(k,o){ return '<div class="tgli" data-nr="tgp" data-k="'+esc(k)+'"
 // 한 곳 고르기 → 패널 닫고 그 장소 카드 (지도 자료 없으면 먼저 받고) · legDraw.legOpen 과 같은 경로
 function tgPick(k){ close();
   if(k==="smartium"){ try{ if(window.kpopJump) kpopJump(); }catch(e){} return; }
-  var go=function(){ try{ if(window.PLACES&&PLACES[k]&&window.placeShow){ placeShow(k); return true; } }catch(e){} return false; };
+  // 빅3(hybe/jyp/yg)·공연장 = 그 장소가 든 가장 자세한 약도로 가서(spinGo) 카드 — kpopJump() 와 같은 길 (10-25)
+  var go=function(){ try{ var p=window.PLACES&&PLACES[k]; if(!p||!window.placeShow) return false;
+      try{ spinClear(); }catch(e){}
+      try{ var la=+p.lat, lo=+p.lng; if(la&&lo&&window.spinGo){ var id=(window.meBest&&meBest(la,lo))||window.NAVI_ROOT; spinGo(id===window.NAVI_ROOT?"kr":id,la,lo,null); } }catch(e){}
+      placeShow(k); return true; }catch(e){} return false; };
   if(go()) return;
   try{ var C=window.CITY||{}; Promise.all(Object.keys(C).map(function(id){ return window.mapLoad(id).catch(function(){}); })).then(go,go); }catch(e){ go(); } }
 // 투어 가이드 창 (사장님 10-23) — 폰 그림·노란 띠 없이 Klook·GetYourGuide 링크(첫 화면, 그 언어)와 설명 세 줄씩. 손님이 그 사이트 검색칸에 도시를 넣는다
