@@ -571,13 +571,16 @@ function gsLast(){ try{ var o=JSON.parse(localStorage.getItem("mpv_lastguide")||
 function gsOpen(){ GS={view:"lang",lang:"",guides:null,err:"",g:null,busy:false,msg:""}; gsPaint(); try{ ntap("_trip","guide_send_open"); }catch(e){} }
 function gsStars(n){ n=Math.max(0,Math.min(5,Math.round(n||0))); var s=""; for(var i=0;i<5;i++) s+=(i<n?"★":"☆"); return s; }
 function gsFace(g){ return g.photo?'<img class="gsav" src="'+HUB+'/guide/photo?id='+encodeURIComponent(g.id)+'" alt="" loading="lazy">':'<span class="gsav gsavx">🧭</span>'; }
+// 지역 이름을 화면 언어로 (가이드가 한글로 적은 지역을 외국어 화면에서 현지 표기로, 10-24) · 표에 없으면 원래대로
+var GRGN6={"서울":{en:"Seoul",ja:"ソウル",zhs:"首尔",zht:"首爾",es:"Seúl"},"부산":{en:"Busan",ja:"釜山",zhs:"釜山",zht:"釜山",es:"Busan"},"제주":{en:"Jeju",ja:"済州",zhs:"济州",zht:"濟州",es:"Jeju"},"경주":{en:"Gyeongju",ja:"慶州",zhs:"庆州",zht:"慶州",es:"Gyeongju"},"인천":{en:"Incheon",ja:"仁川",zhs:"仁川",zht:"仁川",es:"Incheon"},"전주":{en:"Jeonju",ja:"全州",zhs:"全州",zht:"全州",es:"Jeonju"},"경기":{en:"Gyeonggi",ja:"京畿",zhs:"京畿",zht:"京畿",es:"Gyeonggi"},"강원":{en:"Gangwon",ja:"江原",zhs:"江原",zht:"江原",es:"Gangwon"},"대구":{en:"Daegu",ja:"大邱",zhs:"大邱",zht:"大邱",es:"Daegu"},"대전":{en:"Daejeon",ja:"大田",zhs:"大田",zht:"大田",es:"Daejeon"},"광주":{en:"Gwangju",ja:"光州",zhs:"光州",zht:"光州",es:"Gwangju"},"울산":{en:"Ulsan",ja:"蔚山",zhs:"蔚山",zht:"蔚山",es:"Ulsan"},"강릉":{en:"Gangneung",ja:"江陵",zhs:"江陵",zht:"江陵",es:"Gangneung"},"여수":{en:"Yeosu",ja:"麗水",zhs:"丽水",zht:"麗水",es:"Yeosu"},"속초":{en:"Sokcho",ja:"束草",zhs:"束草",zht:"束草",es:"Sokcho"}};
+function gsRegion(r){ if(!r||!L()) return r||""; var k=String(r).replace(/\s/g,"").replace(/(특별자치시|특별자치도|특별시|광역시|시|도)$/,""); var m=GRGN6[k]||GRGN6[String(r).trim()]; return m?(m[LANG]||m.en):r; }
 function gsPaint(){ var box=document.getElementById("trNextBox"); if(!box) return; var h='';
   var back='<button type="button" class="trbtn gsback" id="gsBack" style="margin:0 0 6px">‹ '+esc(T5({ko:"뒤로",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Atrás"}))+'</button>';
   if(GS.view==="done"){ box.innerHTML='<div class="item"><div class="gsdone">✓ '+esc(T5({ko:"가이드에게 일정을 보냈어요 (이메일 + 문자).",en:"Sent to the guide (email + SMS).",ja:"ガイドに旅程を送りました（メール＋SMS）。",zhs:"已把行程发给向导（邮件＋短信）。",zht:"已把行程傳給嚮導（郵件＋簡訊）。",es:"Enviado al guía (correo + SMS)."}))+'</div>'
       +(GS.g?'<div class="gsm">'+esc(GS.g.name)+'</div>':'')+'</div>'; return; }
   if(GS.view==="confirm"&&GS.g){ var g=GS.g;
     box.innerHTML='<div class="item">'+back
-      +'<div class="gscard" style="cursor:default">'+gsFace(g)+'<div class="gsb"><b>'+esc(g.name)+'</b><div class="gsm">'+(g.langs||[]).map(gsLangName).map(esc).join(" · ")+(g.region?" · "+esc(g.region):"")+'</div></div></div>'
+      +'<div class="gscard" style="cursor:default">'+gsFace(g)+'<div class="gsb"><b>'+esc(g.name)+'</b><div class="gsm">'+(g.langs||[]).map(gsLangName).map(esc).join(" · ")+(g.region?" · "+esc(gsRegion(g.region)):"")+'</div></div></div>'
       +'<label class="gslb">'+esc(T5({ko:"손님 이름 (선택)",en:"Your name (optional)",ja:"お名前（任意）",zhs:"您的姓名（可选）",zht:"您的姓名（可選）",es:"Tu nombre (opcional)"}))+'</label><input class="gsin" id="gsName" maxlength="30">'
       +'<label class="gschk"><input type="checkbox" id="gsAg"> '+esc(T5({ko:"내 여행 일정을 이 가이드에게 전달하는 데 동의합니다",en:"I agree to share my trip itinerary with this guide",ja:"私の旅程をこのガイドに伝えることに同意します",zhs:"我同意将我的行程转交给该向导",zht:"我同意將我的行程轉交給該嚮導",es:"Acepto compartir mi itinerario con este guía"}))+'</label>'
       +'<button type="button" class="trbtn big gsgo" id="gsGo" style="margin-top:10px">'+esc(T5({ko:"보내기",en:"Send",ja:"送る",zhs:"发送",zht:"發送",es:"Enviar"}))+'</button>'
@@ -587,7 +590,7 @@ function gsPaint(){ var box=document.getElementById("trNextBox"); if(!box) retur
     if(GS.err) h+='<div class="gsnote">'+esc(T5({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again shortly.",ja:"しばらくしてからもう一度お試しください。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo de nuevo en un momento."}))+'</div>';
     else if(!GS.guides) h+='<div class="gsnote">'+esc(T5({ko:"찾는 중…",en:"Searching…",ja:"検索中…",zhs:"搜索中…",zht:"搜尋中…",es:"Buscando…"}))+'</div>';
     else if(!GS.guides.length) h+='<div class="gsnote">'+esc(T5({ko:"아직 등록된 가이드가 없습니다.",en:"No guides registered yet.",ja:"まだ登録されたガイドがいません。",zhs:"暂无已登记的向导。",zht:"暫無已登記的嚮導。",es:"Aún no hay guías registrados."}))+'</div>';
-    else h+=GS.guides.map(function(g,i){ return '<div class="gscard" data-gspick="'+i+'">'+gsFace(g)+'<div class="gsb"><b>'+esc(g.name)+'</b> '+(g.count>0?'<span class="gsrb">★'+(g.avg!=null?g.avg:0)+' ('+g.count+')</span>':'<span class="gsrb gsrb0">'+esc(T5({ko:"후기 없음",en:"No reviews",ja:"レビューなし",zhs:"暂无评价",zht:"暫無評價",es:"Sin reseñas"}))+'</span>')+'<div class="gsm">'+(g.langs||[]).map(gsLangName).map(esc).join(" · ")+(g.region?" · "+esc(g.region):"")+'</div></div><span class="gspk">'+esc(T5({ko:"고르기 ›",en:"Pick ›",ja:"選ぶ ›",zhs:"选择 ›",zht:"選擇 ›",es:"Elegir ›"}))+'</span></div>'; }).join("");
+    else h+=GS.guides.map(function(g,i){ return '<div class="gscard" data-gspick="'+i+'">'+gsFace(g)+'<div class="gsb"><b>'+esc(g.name)+'</b> '+(g.count>0?'<span class="gsrb">★'+(g.avg!=null?g.avg:0)+' ('+g.count+')</span>':'<span class="gsrb gsrb0">'+esc(T5({ko:"후기 없음",en:"No reviews",ja:"レビューなし",zhs:"暂无评价",zht:"暫無評價",es:"Sin reseñas"}))+'</span>')+'<div class="gsm">'+(g.langs||[]).map(gsLangName).map(esc).join(" · ")+(g.region?" · "+esc(gsRegion(g.region)):"")+'</div></div><span class="gspk">'+esc(T5({ko:"고르기 ›",en:"Pick ›",ja:"選ぶ ›",zhs:"选择 ›",zht:"選擇 ›",es:"Elegir ›"}))+'</span></div>'; }).join("");
     h+='</div>'; box.innerHTML=h; gsWire(); return; }
   // lang
   var last=gsLast();
@@ -609,7 +612,7 @@ function gsSend(){ if(GS.busy||!GS.g) return; var nmEl=document.getElementById("
   if(!ag||!ag.checked){ set(T5({ko:"전달 동의에 체크해 주세요.",en:"Please check the consent box.",ja:"同意にチェックしてください。",zhs:"请勾选同意。",zht:"請勾選同意。",es:"Marca la casilla de consentimiento."})); return; }
   GS.busy=true; var go=document.getElementById("gsGo"); if(go){ go.disabled=true; } set(T5({ko:"PDF 만드는 중…",en:"Making PDF…",ja:"PDF作成中…",zhs:"正在生成PDF…",zht:"正在產生PDF…",es:"Creando PDF…"}));
   Promise.all([pdfBuild(),tripUrl()]).then(function(r){ var o=r[0], url=r[1], pdf=""; try{ pdf=o.doc.output("datauristring"); }catch(e){}
-    if(!/^data:application\/pdf;base64,/.test(pdf)){ pdf=pdf.replace(/^data:[^;]*;base64,/,"data:application/pdf;base64,"); }
+    var bi=pdf.indexOf("base64,"); pdf=bi>=0?("data:application/pdf;base64,"+pdf.slice(bi+7)):"";   // jsPDF 가 붙이는 ;filename= 등을 떼고 깨끗이 다시 만든다 (서버 검사 통과, 10-24)
     set(T5({ko:"가이드에게 보내는 중…",en:"Sending to the guide…",ja:"ガイドに送信中…",zhs:"正在发送给向导…",zht:"正在傳送給嚮導…",es:"Enviando al guía…"}));
     return fetch(HUB+"/guide/sendplan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({guideId:GS.g.id,lang:GS.lang,pdfBase64:pdf,tripUrl:url,name:name}),cache:"no-store"}).then(function(x){ return x.json(); }); })
   .then(function(j){ GS.busy=false; if(go) go.disabled=false;
