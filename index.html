@@ -672,7 +672,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025b4r", NAVI_ROOT="kr";
+var NAVI_V="1025b4s", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -840,6 +840,24 @@ function b4RouteShow(){ try{ inBlur(); }catch(e){} try{ spinClear(); }catch(e){}
   if(!(CITY.b4route&&CITY.b4route.geo)) return; viewSet("b4route"); setTimeout(function(){ try{ b4Draw(); }catch(e){} },50);
   clearTimeout(window._scT); window._scT=setTimeout(function(){ var m=document.getElementById("map"); window.scrollTo({top:m.getBoundingClientRect().top+scrollY-60,behavior:"smooth"}); },150); }
 window.b4RouteShow=b4RouteShow;
+// ── 서울 전체 지도(seoulall)에 빅4 사옥 작은 아이콘 상시 표시 (사장님 10-25) — 실제 좌표(해당 구)에 작게, 지도와 함께 스케일. 탭하면 해당 약도/카드 ──
+var B4SEOUL={ smartium:[37.5098,127.0617], smksu:[37.5443,127.0557], hybe:[37.5298,126.9648], jyp:[37.5304,127.1253], yg:[37.5503,126.9145] };
+var B4IMG={ smartium:"img/b4/smartium.png", smksu:"img/b4/smksu.png", hybe:"img/b4/hybe.png", jyp:"img/b4/jyp.png", yg:"img/b4/yg.png" };
+function b4Jump(k){ var open=function(){ var p=PLACES[k]; if(!p) return false; try{ spinClear(); }catch(e){}
+    var la=+p.lat, lo=+p.lng, id=meBest(la,lo)||NAVI_ROOT;
+    if(id&&id!=="seoulall"&&id!==NAVI_ROOT&&CITY[id]) spinGo(id,la,lo,null);   // 전용 약도가 있으면 그리로(없는 HYBE 는 seoulall 에서 카드만)
+    placeShow(k); return true; };
+  if(open()) return;
+  Promise.all(Object.keys(CITY).map(function(id){ return mapLoad(id).catch(function(){}); })).then(open,open); }
+function kpopMarks(){ var z=document.getElementById("mz"); if(z) [].forEach.call(z.querySelectorAll(".kpm"),function(e){ e.remove(); });
+  if(VIEW!=="seoulall"||!z) return; var w=document.getElementById("map").clientWidth, iw=Math.max(12,w*0.055);
+  Object.keys(B4SEOUL).forEach(function(k){ var ll=B4SEOUL[k], f=meGeoFrac("seoulall",ll[0],ll[1]); if(!f) return;
+    var e=document.createElement("div"); e.className="kpm"; e.dataset.k=k; e.title=b4Name(k);
+    e.style.cssText="position:absolute;left:"+(f[0]*100)+"%;top:"+(f[1]*100)+"%;transform:translate(-50%,-100%);z-index:5;cursor:pointer;width:"+iw+"px;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.4))";
+    var im=document.createElement("img"); im.src=B4IMG[k]; im.alt=""; im.style.cssText="display:block;width:100%;height:auto;pointer-events:none"; e.appendChild(im);
+    e.addEventListener("click",function(ev){ ev.stopPropagation(); try{ ntap(k,"kpop_seoulall"); }catch(x){} b4Jump(k); });
+    z.appendChild(e); }); }
+window.b4Jump=b4Jump;
 var HIT={keys:[],rle:""};
 var HG=new Uint8Array(65536);
 // 그림 근처만 눌러도 된다 — 바로 그 자리가 비면 손가락 한 마디(화면 24px) 안의 가장 가까운 그림 (사장님 10-15)
@@ -881,7 +899,7 @@ var ROOT_IMG=document.getElementById("mapimg").getAttribute("src");
 function viewSet(v){ clearTimeout(window._scT); try{ spinClear(); }catch(e){} VIEW=v; document.getElementById("map").classList.toggle("onkr",!CITY[v]); if(CITY[v]) mapLoad(v).catch(function(){}); detSet(false); document.getElementById("vdet").hidden=!CITY[v]; document.getElementById("vbar").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:ROOT_IMG;
   document.getElementById("vback").hidden=!c; var tt=document.getElementById("vttl"); tt.hidden=!c; if(c) tt.textContent=LN(c);
   var vb=document.getElementById("vback"); vb.textContent="←"; vb.title=vb.ariaLabel=c&&c.parent!=="kr"?T(CITY[c.parent].ko+"로",LN(CITY[c.parent])):T("전국 지도로","Korea map");
-  try{ dlDraw(null); }catch(e){} try{ lblDraw(); }catch(e){} var w0=document.getElementById("map").clientWidth, s0=ZB(); ZM={s:s0,tx:w0/2-((c&&c.fx)||0.5)*w0*((c&&c.aspect)||1)*s0,ty:0}; zApply(); LOD.s0=ZM.s; try{ b4Draw(); }catch(e){} }
+  try{ dlDraw(null); }catch(e){} try{ lblDraw(); }catch(e){} var w0=document.getElementById("map").clientWidth, s0=ZB(); ZM={s:s0,tx:w0/2-((c&&c.fx)||0.5)*w0*((c&&c.aspect)||1)*s0,ty:0}; zApply(); LOD.s0=ZM.s; try{ b4Draw(); }catch(e){} try{ kpopMarks(); }catch(e){} }
 var _lastTap={k:null,t:0}, _lastArea={a:null,t:0};
 function areaTap(cx,cy){ var c=CITY[VIEW]; if(!c||!c.areas) return; var r=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-r.left)/r.width, fy=(cy-r.top)/r.height, now=Date.now();
   var a=null, bd=9; for(var k in c.areas){ var b=c.areas[k]; if(fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]){ var dd=Math.max(Math.abs(fx-(b[0]+b[2])/2)/(b[2]-b[0]),Math.abs(fy-(b[1]+b[3])/2)/(b[3]-b[1])); if(dd<bd){ bd=dd; a=k; } } }   // 겹친 네모는 가운데에 가까운 쪽
