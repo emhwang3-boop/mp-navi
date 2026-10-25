@@ -32,6 +32,14 @@
   window.mpInvMint=function(cb){ var c=window.__mpInvC; if(c&&Date.now()-c.t<216e5){ cb(c.v); return; }
     fetch(IH+"/invmint?app="+IA+"&me=EM2410",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
       if(j&&j.ok&&/^\d{8}\.[0-9a-f]{10}$/.test(j.inv||"")){ window.__mpInvC={t:Date.now(),v:j.inv}; cb(j.inv); } else cb(null); }).catch(function(){ cb(null); }); };
+  /* 「앱 설치」 단추로 온 사람 (?install=1, 사장님 10-25) — 카톡·라인·인스타·페북 안 브라우저는 설치가 안 되니 바로 바깥 브라우저로 → 거기서 설치 창 */
+  if(/[?&]install=1(?![0-9a-z])/i.test(location.search)){ var iua=navigator.userAgent||"", ifull=location.href;
+    var iext=function(u){ window.__mpExt=u; window.addEventListener("load",function(){ setTimeout(function(){ location.href=u; },150); }); };   /* 다 그린 뒤에 — 그리는 중에 바꾸면 이 창이 하얗게 멈춘다 */
+    if(/KAKAOTALK/i.test(iua)){ iext("kakaotalk://web/openExternal?url="+encodeURIComponent(ifull)); }
+    if(/ Line\//i.test(iua)&&!/openExternalBrowser=1/.test(ifull)){ location.href=ifull+"&openExternalBrowser=1"; }
+    if(/Android/i.test(iua)&&/FBAN|FBAV|FB_IAB|Instagram|NAVER\(inapp|DaumApps/i.test(iua)){ iext("intent://"+location.host+location.pathname+location.search+"#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url="+encodeURIComponent(ifull)+";end"); }
+    try{ sessionStorage.setItem("mpv_wantinst","1"); }catch(x){}
+    try{ var qsi=location.search.slice(1).split("&").filter(function(x){ return !/^(install|openExternalBrowser)=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qsi?"?"+qsi:"")+location.hash); }catch(x){} }
   var mt=/[?&]inv=(\d{8}\.[0-9a-f]{10})(?![0-9a-z])/i.exec(location.search);
   if(/[?&]inv=/i.test(location.search)){ try{ var qs=location.search.slice(1).split("&").filter(function(x){ return !/^inv=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qs?"?"+qs:"")+location.hash); }catch(x){} }
   if(!ok&&mt){ var de=document.documentElement; de.style.setProperty("visibility","hidden","important");
@@ -631,22 +639,23 @@ function shOwnerFix(p, appName){   /* 7일짜리 초대 표를 허브에서 받�
 }
 function shHas(l,k,e){ return l.indexOf(k)>=0||l.indexOf(e)>=0||l.indexOf(TE(e))>=0; }   // 단추 글자(한·영·일·중)로 어느 단추인지
 function shOwnerFix0(p, appName, tok){
-  var url=location.origin+location.pathname.replace(/index\.html$/,"")+"?inv="+tok, txt=appName+" — Money Puzzle";   /* 지금 연 주소 그대로 (2026-10-14) */
+  var url=location.origin+location.pathname.replace(/index\.html$/,"")+"?inv="+tok, txt=appName+" — Money Puzzle";
+  var iurl=url+"&install=1", ilab={ko:"앱 설치",en:"Install app",ja:"アプリを入れる",zhs:"安装应用",zht:"安裝應用",es:"Instalar app"}[LANG]||"Install app", itx="\n"+ilab+": "+iurl;   /* 「앱 설치」 링크 = 같은 초대 주소 + &install=1 (사장님 10-25) */   /* 지금 연 주소 그대로 (2026-10-14) */
   [].forEach.call(p.querySelectorAll(".sht"),function(b){
     var lab=b.textContent.trim(), href="";
-    if(/^X$/.test(lab)) href="https://twitter.com/intent/tweet?text="+encodeURIComponent(txt)+"&url="+encodeURIComponent(url);
-    else if(shHas(lab,"문자","Message")) href="sms:?&body="+encodeURIComponent(txt+" "+url);
-    else if(shHas(lab,"텔레그램","Telegram")) href="https://t.me/share/url?url="+encodeURIComponent(url)+"&text="+encodeURIComponent(txt);
+    if(/^X$/.test(lab)) href="https://twitter.com/intent/tweet?text="+encodeURIComponent(txt+itx)+"&url="+encodeURIComponent(url);
+    else if(shHas(lab,"문자","Message")) href="sms:?&body="+encodeURIComponent(txt+" "+url+itx);
+    else if(shHas(lab,"텔레그램","Telegram")) href="https://t.me/share/url?url="+encodeURIComponent(url)+"&text="+encodeURIComponent(txt+itx);
     else if(/LINE/.test(lab)) href="https://social-plugins.line.me/lineit/share?url="+encodeURIComponent(url);
     else if(shHas(lab,"페이스북","Facebook")) href="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(url);
-    else if(shHas(lab,"밴드","BAND")) href="https://band.us/plugin/share?body="+encodeURIComponent(txt+"\n"+url)+"&route="+encodeURIComponent(url);
-    else if(/WhatsApp/.test(lab)) href="https://api.whatsapp.com/send?text="+encodeURIComponent(txt+" "+url);
-    else if(shHas(lab,"메일","Email")) href="mailto:?subject="+encodeURIComponent(txt)+"&body="+encodeURIComponent(url);
+    else if(shHas(lab,"밴드","BAND")) href="https://band.us/plugin/share?body="+encodeURIComponent(txt+"\n"+url+itx)+"&route="+encodeURIComponent(url);
+    else if(/WhatsApp/.test(lab)) href="https://api.whatsapp.com/send?text="+encodeURIComponent(txt+" "+url+itx);
+    else if(shHas(lab,"메일","Email")) href="mailto:?subject="+encodeURIComponent(txt)+"&body="+encodeURIComponent(url+itx);
     if(shHas(lab,"카카오톡","KakaoTalk")&&window.Kakao){   // 카카오 SDK — PC 에서도 카카오톡 「친구에게 보내기」 (2026-10-13)
       b.classList.remove("sht");
       b.onclick=function(){ var m=p.querySelector(".shmsg"), ku=url;
         try{ if(!window.Kakao.isInitialized()) window.Kakao.init("90a47ca48c2a967dd4d14b3b48de2e3b"); if(m) m.textContent=T("Connecting to KakaoTalk… please wait","Connecting to KakaoTalk… please wait");
-          window.Kakao.Share.sendDefault({objectType:"text",text:txt+"\n"+url,link:{webUrl:ku,mobileWebUrl:ku},buttonTitle:"Open"}); }
+          window.Kakao.Share.sendDefault({objectType:"text",text:txt+"\n"+url,link:{webUrl:ku,mobileWebUrl:ku},buttons:[{title:"Open",link:{webUrl:ku,mobileWebUrl:ku}},{title:ilab,link:{webUrl:iurl,mobileWebUrl:iurl}}]}); }
         catch(e){ try{ navigator.clipboard.writeText(url); }catch(x){} if(m) m.textContent=T("KakaoTalk is not available — link copied: ","KakaoTalk is not available — link copied: ")+url; } };
       return;
     }
@@ -654,7 +663,7 @@ function shOwnerFix0(p, appName, tok){
     if(href){ var a=document.createElement("a"); a.href=href; a.target="_blank"; a.rel="noopener"; a.innerHTML=b.innerHTML; b.replaceWith(a); return; }
     b.onclick=function(){   // 카카오톡·링크 복사·다른 앱으로 — 폰 공유창, 안 되면 링크 복사
       var m=p.querySelector(".shmsg");
-      if(!shHas(lab,"링크 복사","Copy link")&&navigator.share){ navigator.share({title:txt,text:txt,url:url}).catch(function(){}); return; }
+      if(!shHas(lab,"링크 복사","Copy link")&&navigator.share){ navigator.share({title:txt,text:txt+itx,url:url}).catch(function(){}); return; }
       try{ navigator.clipboard.writeText(url).then(function(){ if(m) m.textContent=T("Link copied: ","Link copied: ")+url; }); }catch(e){ if(m) m.textContent=url; }
     };
   });
@@ -668,6 +677,21 @@ function isInv(){ try{ return !!localStorage.getItem("mpv_inv")&&!localStorage.g
 var instEv=null;
 window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); instEv=e; if(!isApp()&&((isOwner()&&!/Android|iPhone|iPad/i.test(navigator.userAgent))||isInv())){ document.getElementById("inst").hidden=false; } });
 function instGo(){ if(instEv){ instEv.prompt(); instEv.userChoice.then(function(){ instEv=null; document.getElementById("inst").hidden=true; }); } }
+/* 「앱 설치」 단추로 온 손님 (사장님 10-25) — 안드로이드: 설치 창을 가운데 크게(브라우저 규칙상 손님이 한 번은 눌러야 한다) · 아이폰: 홈 화면에 추가 안내. 설치된 앱·사장님 기기는 안 띄운다 */
+(function(){ var want=false; try{ want=sessionStorage.getItem("mpv_wantinst")==="1"; }catch(e){} if(!want||isApp()||isOwner()) return;
+  var L6=function(o){ return o[LANG]||o.en; }, done=function(){ try{ sessionStorage.removeItem("mpv_wantinst"); }catch(e){} };
+  var box=function(inner){ var o=document.getElementById("instBox"); if(o) o.remove(); o=document.createElement("div"); o.id="instBox";
+    o.style.cssText="position:fixed;inset:0;z-index:2147483003;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:18px";
+    o.innerHTML='<div style="background:var(--card,#fff);color:var(--ink,#111);width:100%;max-width:380px;border-radius:18px;padding:22px 20px;text-align:center;box-shadow:0 12px 34px rgba(0,0,0,.35);font-family:inherit"><img src="logo.png" alt="" style="width:64px;height:64px;border-radius:14px"><div style="font-size:19px;font-weight:800;margin:10px 0 6px">Money Puzzle · Tour for Korea</div>'+inner
+      +'<button type="button" id="instNo" style="margin-top:12px;border:0;background:none;color:inherit;opacity:.65;font-weight:700;font-size:14px;cursor:pointer">'+L6({ko:"나중에",en:"Not now",ja:"あとで",zhs:"以后再说",zht:"以後再說",es:"Ahora no"})+'</button></div>';
+    document.body.appendChild(o); o.querySelector("#instNo").onclick=function(){ o.remove(); done(); }; return o; };
+  if(/iPhone|iPad|iPod/i.test(navigator.userAgent)){ window.addEventListener("load",function(){ setTimeout(function(){
+    box('<div style="font-size:15px;line-height:1.7;text-align:left;margin-top:8px">'+L6({ko:"1. 화면 아래(또는 위)의 「공유」 단추(네모에 위 화살표)를 누르세요.<br>2. 「홈 화면에 추가」를 누르세요.<br>3. 오른쪽 위 「추가」를 누르면 홈 화면에 앱이 생깁니다.",en:"1. Tap the Share button (a square with an up arrow) at the bottom (or top) of the screen.<br>2. Tap “Add to Home Screen”.<br>3. Tap “Add” at the top right — the app appears on your home screen.",ja:"1. 画面の下（または上）の「共有」ボタン（四角に上向き矢印）をタップ。<br>2.「ホーム画面に追加」をタップ。<br>3. 右上の「追加」をタップすると、ホーム画面にアプリができます。",zhs:"1. 点屏幕下方（或上方）的“分享”按钮（方框加向上箭头）。<br>2. 点“添加到主屏幕”。<br>3. 点右上角“添加”，主屏幕上就会出现应用。",zht:"1. 點螢幕下方（或上方）的「分享」按鈕（方框加向上箭頭）。<br>2. 點「加入主畫面」。<br>3. 點右上角「新增」，主畫面上就會出現應用程式。",es:"1. Toca el botón Compartir (un cuadrado con una flecha hacia arriba) abajo (o arriba) de la pantalla.<br>2. Toca «Añadir a pantalla de inicio».<br>3. Toca «Añadir» arriba a la derecha: la app aparecerá en tu pantalla de inicio."})+'</div>'); done(); },1200); }); return; }
+  var shown=false, show=function(){ if(shown||!instEv) return; shown=true;
+    var o=box('<div style="font-size:14.5px;line-height:1.6;opacity:.85">'+L6({ko:"한 번만 누르면 홈 화면에 앱이 깔립니다.",en:"One tap installs the app on your home screen.",ja:"ワンタップでホーム画面にアプリが入ります。",zhs:"点一下即可把应用安装到主屏幕。",zht:"點一下即可把應用程式安裝到主畫面。",es:"Un toque y la app se instala en tu pantalla de inicio."})+'</div>'
+      +'<button type="button" id="instYes" style="display:block;width:100%;margin-top:16px;border:0;border-radius:14px;padding:15px;background:#2f9e44;color:#fff;font-weight:800;font-size:18px;cursor:pointer">'+L6({ko:"앱 설치",en:"Install app",ja:"アプリを入れる",zhs:"安装应用",zht:"安裝應用",es:"Instalar app"})+'</button>');
+    o.querySelector("#instYes").onclick=function(){ o.remove(); done(); instGo(); }; };
+  window.addEventListener("beforeinstallprompt",function(){ setTimeout(show,300); }); if(instEv) setTimeout(show,300); })();
 function mbTog(e){ e.stopPropagation(); var m=document.getElementById("mm"); m.hidden=!m.hidden; }
 document.addEventListener("click",function(e){ var m=document.getElementById("mm"); if(m&&!m.hidden&&!e.target.closest("#mm")) m.hidden=true; });
 function mbCopy(){ document.getElementById("mm").hidden=true; var u=location.origin+location.pathname.replace(/index\.html$/,"");
@@ -677,7 +701,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025e1", NAVI_ROOT="kr";
+var NAVI_V="1025e2", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
