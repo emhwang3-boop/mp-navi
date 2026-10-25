@@ -672,7 +672,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025b4j", NAVI_ROOT="kr";
+var NAVI_V="1025b4k", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -1565,7 +1565,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}</script>
 <script src="reco.js?v=1024icons"></script>
-<script src="gu.js?v=d31a80d73c"></script>
+<script src="gu.js?v=a2538217b6"></script>
 <script src="citytour.js?v=1024icons"></script>
 <script src="pass.js?v=1024gmatch"></script>
 <script>
@@ -1736,23 +1736,21 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
     var LANGSEQ=['en','ja','zhs','zht','es','ko'];
     function crawlHtml(lg,b0){ var LINES=[{t:TITLE,title:true}].concat(STORY[lg]||STORY.en), h='', base=(b0==null?0.4:b0), stag=1.0;
       for(var i=0;i<LINES.length;i++){ var L=LINES[i], d=(base+i*stag).toFixed(2); h+='<span class="mpc-line'+(L.title?' mpc-title':'')+(L.end?' mpc-end':'')+'" style="animation-delay:'+d+'s">'+L.t+'</span>'; } return h; }
-    var ov=null, done=true, tmr=null, wtc=null, count=false, seqIdx=0;
+    var ov=null, done=true, tmr=null, wtc=null, TM=[], count=false, seqIdx=0;
     function onKey(){ endAll(); }
     function removeOv(){ var o=ov; ov=null; if(o){ try{ o.style.opacity="0"; }catch(e){} setTimeout(function(){ try{ if(o.parentNode) o.parentNode.removeChild(o); }catch(e){} },850); } }
     function endAll(){
       if(done) return; done=true;
       if(count){ try{ var n=parseInt(localStorage.getItem("mpv_crawl_n")||"0",10)||0; localStorage.setItem("mpv_crawl_n",String(n+1)); }catch(e){} }
-      try{ clearTimeout(tmr); }catch(e){} try{ clearInterval(wtc); }catch(e){}
+      try{ clearTimeout(tmr); }catch(e){} try{ clearInterval(wtc); }catch(e){} TM.forEach(function(t){ try{ clearTimeout(t); clearInterval(t); }catch(e){} }); TM=[];
       try{ document.removeEventListener("keydown",onKey,true); }catch(e){}
       try{ document.documentElement.classList.remove("mpc-lock"); }catch(e){}
       removeOv();
     }
-    function advance(){   // 한 언어 끝 → 다음 언어, 마지막이면 종료
-      if(done) return; try{ clearTimeout(tmr); }catch(e){} try{ clearInterval(wtc); }catch(e){}
-      var next=seqIdx+1;
-      if(next>=LANGSEQ.length){ endAll(); return; }
-      playOne(next);   // 같은 화면(별 배경)에서 글만 바꿔 곧바로 이어 올린다 — 사이 빈 시간 없음 (10-25)
-    }
+    // 이어 올리기 (사장님 10-25) — 앞 언어 글 맨 아랫줄이 화면 위쪽(원근으로 작아지며 흐려지는 구간, 높이 50%)에 닿으면 = 「사라지기 직전」
+    //   다음 언어 글을 화면 아래에서 바로 들여보낸다 → 두 글이 겹쳐 이어지고 검정 빈 화면 0. 앞 글은 다 올라가면(가림 18% 위) 지운다. 마지막 언어가 다 올라가면 끝
+    var HAND=0.50, GONE=0.18;
+    function advance(){ if(done) return; var next=seqIdx+1; if(next>=LANGSEQ.length) return; playOne(next); }
     function playOne(idx){
       if(done) return; seqIdx=idx;
       var reduce=false; try{ reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){}
@@ -1763,15 +1761,18 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
         try{ ov.querySelector(".mpc-skip").textContent=(SKIP[lang()]||SKIP.en)+" ⏭"; }catch(e){}
         ov.addEventListener("click",endAll,false);
       }
-      var persp=ov.querySelector(".mpc-persp"), my=idx;
-      persp.innerHTML='<div class="mpc-text'+(reduce?" mpc-static":"")+'" data-lg="'+LANGSEQ[idx]+'">'+crawlHtml(LANGSEQ[idx],idx?0:null)+'</div>';   // 2번째 언어부터 첫 줄 바로 (빈 틈 없이)
-      var txt=persp.querySelector(".mpc-text");
-      if(reduce){ tmr=setTimeout(advance,6000); return; }
-      try{ txt.addEventListener("animationend",function(e){ if(seqIdx===my&&(!e||e.animationName==="mpc-scroll")) advance(); },false); }catch(e){}
-      // 글 맨 아랫줄이 위쪽 가림(마스크 18%) 위로 다 올라가면 = 화면 밖 → 바로 다음 언어
-      wtc=setInterval(function(){ try{ if(done||seqIdx!==my) return; var pr=persp.getBoundingClientRect(), tr=txt.getBoundingClientRect();
-        if(tr.height>0&&tr.bottom<=pr.top+pr.height*0.18) advance(); }catch(e){} },100);
-      tmr=setTimeout(advance,35000);
+      var persp=ov.querySelector(".mpc-persp"), last=(idx===LANGSEQ.length-1), handed=false, gone=false;
+      if(reduce){ persp.innerHTML=''; }
+      persp.insertAdjacentHTML("beforeend",'<div class="mpc-text'+(reduce?" mpc-static":"")+'" data-lg="'+LANGSEQ[idx]+'">'+crawlHtml(LANGSEQ[idx],idx?0:null)+'</div>');   // 2번째 언어부터 첫 줄 바로
+      var txt=persp.lastElementChild;
+      if(reduce){ tmr=setTimeout(function(){ if(last) endAll(); else advance(); },6000); return; }
+      function hand(){ if(handed) return; handed=true; if(!last) advance(); }
+      function fin(){ if(gone) return; gone=true; hand(); try{ clearInterval(iv); }catch(e){} try{ if(txt.parentNode) txt.parentNode.removeChild(txt); }catch(e){} if(last) endAll(); }
+      try{ txt.addEventListener("animationend",function(e){ if(!e||e.animationName==="mpc-scroll") fin(); },false); }catch(e){}
+      var iv=setInterval(function(){ try{ if(done){ clearInterval(iv); return; } var pr=persp.getBoundingClientRect(), tr=txt.getBoundingClientRect(); if(!(tr.height>0)) return;
+        if(tr.bottom<=pr.top+pr.height*HAND) hand();
+        if(tr.bottom<=pr.top+pr.height*GONE) fin(); }catch(e){} },100);
+      TM.push(iv); TM.push(setTimeout(fin,35000));
     }
     function build(doCount){
       if(!done) return; done=false; count=!!doCount; seqIdx=0;
