@@ -226,7 +226,7 @@ function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=KS(en?x.name_en:x.name), ad
 var TB_CITY=[["Seoul",37.5665,126.978,40],["Incheon",37.456,126.705,20],["Busan",35.1796,129.0756,35],["Jeju",33.38,126.55,70],["Gyeongju",35.856,129.225,25],["Jeonju",35.82,127.148,20],["Gangneung",37.752,128.876,25],["Sokcho",38.207,128.592,20],["Daegu",35.871,128.601,25],["Yeosu",34.76,127.662,25]];
 // ── 체험·입장권 맨 위 우리 메뉴 2개 (사장님 2026-10-25) — 공연관람(공연장5)·K-POP BIG4 사옥견학(4). 펼치면 목록, 고르면 그 장소 카드(공연장은 KOPIS 공연 프로그램도) ──
 //   여는 길은 index.html legDraw 의 open 경로 재사용: 공연장·빅3(hybe/jyp/yg)=placeShow(키)(placeShow 안에서 perfShow 로 KOPIS), smartium=kpopJump(). 지도 자료가 아직이면 먼저 받아 둔다(spinShow·kpopJump 와 같은 방식)
-var TGX={perf:false,kpop:false};
+var TGX={perf:false,kpop:false,pkg:false};
 var PERF6={ko:"공연관람",en:"Performance viewing",ja:"公演鑑賞",zhs:"演出观赏",zht:"演出觀賞",es:"Ver espectáculos"};
 var KPOP6={ko:"K-POP BIG4 사옥 견학",en:"K-pop Big4 agency buildings",ja:"K-POP BIG4 社屋見学",zhs:"K-POP四大社参观",zht:"K-POP四大社參觀",es:"Edificios de las Big4 del K-pop"};
 var KPOPNOTE6={ko:"사옥 외관만 보고 사진 찍는 곳입니다 — 공연 관람이 아니며, 사무실이라 내부 입장은 안 됩니다.",en:"Exterior photo spots only — not performances; offices, no public entry inside.",ja:"社屋の外観を見て写真を撮る場所です — 公演鑑賞ではなく、オフィスのため館内への入場はできません。",zhs:"只是观看大楼外观、拍照的地方——并非观看演出，且为办公楼，内部不对外开放。",zht:"只是觀看大樓外觀、拍照的地方——並非觀看演出，且為辦公大樓，內部不對外開放。",es:"Solo puntos para fotos del exterior — no son espectáculos; son oficinas, sin acceso al público."};
@@ -257,7 +257,7 @@ function tgPick(k){ close();
   try{ var C=window.CITY||{}; Promise.all(Object.keys(C).map(function(id){ return window.mapLoad(id).catch(function(){}); })).then(go,go); }catch(e){ go(); } }
 // B4 사옥 투어 패키지 (사장님 2026-10-25) — 가이드 포함 유료 반일. 예약은 통역·길안내(가이드 신청) 흐름으로 연결. 요금은 GetYourGuide HYBE투어 $55·K-pop 워킹투어 ₩4~7만 참고 → ₩89,000(2인+ ₩79,000). 빅4는 외관·굿즈샵(입장 무료)이라 값은 가이드·동선
 var B4PKG={ t:{ko:"K-POP 빅4 사옥 투어",en:"K-pop Big4 Agency Tour",ja:"K-POP BIG4 社屋ツアー",zhs:"K-POP四大社参观团",zht:"K-POP四大社參觀團",es:"Tour de las Big4 del K-pop"},
-  g:{ko:"가이드 동행 · 반일",en:"With a guide · half day",ja:"ガイド同行・半日",zhs:"向导同行·半天",zht:"嚮導同行·半天",es:"Con guía · medio día"},
+  g:{ko:"가이드 동행 · 약 8시간",en:"With a guide · about 8 hours",ja:"ガイド同行・約8時間",zhs:"向导同行·约8小时",zht:"嚮導同行·約8小時",es:"Con guía · unas 8 horas"},
   c:{ko:"HYBE·SM·JYP·YG 사옥 외관(삼성동 코엑스 아티움 포함)과 SM KWANGYA(성수) 굿즈샵을 가이드와 함께 돕니다 (외관 관람·사진).",en:"Tour the HYBE, SM, JYP and YG building exteriors (incl. COEX Artium in Samseong) and the SM KWANGYA goods shop in Seongsu, with a guide (exterior & photos).",ja:"HYBE・SM・JYP・YGの社屋外観（三成洞COEXアティウム含む）とSM KWANGYA（聖水）のグッズショップをガイドと巡ります（外観・写真）。",zhs:"在向导带领下游览HYBE·SM·JYP·YG大楼外观（含三成洞COEX Artium）和SM KWANGYA（圣水）周边店（外观·拍照）。",zht:"在嚮導帶領下遊覽HYBE·SM·JYP·YG大樓外觀（含三成洞COEX Artium）和SM KWANGYA（聖水）周邊店（外觀·拍照）。",es:"Recorre con guía los exteriores de HYBE, SM, JYP y YG (incl. COEX Artium en Samseong) y la tienda SM KWANGYA en Seongsu (exterior y fotos)."},
   p:{ko:"1인 89,000원/인 · 2인 이상 79,000원/인",en:"1 person ₩89,000/person · 2+ ₩79,000/person",ja:"1名 ₩89,000/名 · 2名以上 ₩79,000/名",zhs:"1人 ₩89,000/人 · 2人以上 ₩79,000/人",zht:"1人 ₩89,000/人 · 2人以上 ₩79,000/人",es:"1 persona ₩89,000/persona · 2+ ₩79,000/persona"},
   b:{ko:"예약·문의",en:"Book / inquire",ja:"予約・問い合わせ",zhs:"预约·咨询",zht:"預約·諮詢",es:"Reservar / consultar"},
@@ -277,13 +277,13 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
     +'<a href="https://www.trazy.com/" target="_blank" rel="noopener">Trazy ›</a></div>';
   var mKpop='<div class="tgm"><div class="tgh" data-nr="tgx" data-g="kpop"><img src="img/kpop_marker.png" alt=""><span>'+esc(LG6(KPOP6))+'</span><span class="tgar">'+(TGX.kpop?"▾":"▸")+'</span></div>'
     +(TGX.kpop?('<div class="tgsub">'+esc(LG6(KPOPNOTE6))+'</div>'+TG_KPOP.map(function(r){ return tgRow(r[0],r[1]); }).join("")+kBook):"")+'</div>';
-  var pkg='<div class="tgbook b4pkg"><div class="tgbh"><img src="img/kpop_marker.png" alt="">'+esc(LG6(B4PKG.t))+'</div>'
-    +'<div class="d" style="font-weight:700;color:var(--ink)">'+esc(LG6(B4PKG.g))+'</div>'
+  var pkg='<div class="tgbook b4pkg"><div class="tgbh" data-nr="tgx" data-g="pkg" style="cursor:pointer"><img src="img/kpop_marker.png" alt="">'+esc(LG6(B4PKG.t))+'<span class="tgar" style="margin-left:auto">'+(TGX.pkg?"▾":"▸")+'</span></div>'
+    +(TGX.pkg?('<div class="d" style="font-weight:700;color:var(--ink)">'+esc(LG6(B4PKG.g))+'</div>'
     +'<div class="d">'+esc(LG6(B4PKG.c))+'</div>'
     +'<div class="d" style="font-weight:800;color:var(--ink);margin-top:2px">'+esc(LG6(B4PKG.p))+'</div>'
     +'<button type="button" class="nrsel" data-nr="b4map" style="margin-top:7px;background:#fff;color:#d9480f;border-color:#ff7a00">'+MPICO("mi_bus",LG6({ko:"투어 노선도 보기",en:"View tour route",ja:"ツアー路線図を見る",zhs:"查看游览路线图",zht:"查看遊覽路線圖",es:"Ver la ruta del tour"}),MIS)+' ›</button>'
     +'<button type="button" class="nrsel" data-nr="ig" style="margin-top:7px;background:#7c3aed;color:#fff;border-color:#7c3aed">'+esc(LG6(B4PKG.b))+' ›</button>'
-    +'<div class="d" style="color:var(--sub);margin-top:4px">'+esc(LG6(B4PKG.n))+'</div></div>';
+    +'<div class="d" style="color:var(--sub);margin-top:4px">'+esc(LG6(B4PKG.n))+'</div>'):'')+'</div>';
   var part='<div class="tgpart">'+esc(LG6(PARTNER6))+'</div>';
   return pkg+mPerf+mKpop+part
     +one("https://www.klook.com/"+kl+"/","Klook")+one("https://www.getyourguide.com/"+gl,"GetYourGuide")+one("https://creatrip.com/"+cl,"Creatrip")+one("https://www.trazy.com/","Trazy",tzd); }
