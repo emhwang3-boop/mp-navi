@@ -673,7 +673,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025b4z", NAVI_ROOT="kr";
+var NAVI_V="1025c1", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -799,9 +799,12 @@ function perfShow(k){ var pk=AREAPERF[k]?k:(PERF_ALIAS[k]||k), cf=AREAPERF[pk]; 
   fetch(HUB+"/gperf?key="+encodeURIComponent(pk)+"&lang="+encodeURIComponent(LANG)+"&d="+new Date(Date.now()+324e5).toISOString().slice(0,10))   // &d=오늘(KST): 날짜 바뀌면 새 URL → 옛 브라우저/CDN 캐시(번역 전 한글판) 무시 (사장님 10-25)
     .then(function(r){ return r.json(); }).then(function(j){ var a=(j&&j.ok&&j.items)||[]; _phC[ck]=a; paint(a); })
     .catch(function(){ if(window._cardK===k){ var e=res.querySelector(".phExp .phmsg"); if(e) e.textContent=LP(PH_NONE); } }); }
+// 장소 「추천 시간」 등 한 줄 배지 (사장님 10-25) — 자료 칸 tip:{ko,en,ja,zhs,zht,es}. 카드 이름 바로 아래 주황 배지, 이모지 대신 시계 아이콘
+function tipTag(p){ var t=p&&p.tip; if(!t) return ""; var s=typeof t==="string"?t:(t[LANG]||t.en||t.ko||""); if(!s) return "";
+  return '<div class="tiptag" style="display:inline-flex;align-items:center;gap:5px;margin:4px 0 3px;padding:5px 10px;border-radius:12px;background:#fff4e6;border:1px solid #ffa94d;color:#d9480f;font-size:12.5px;font-weight:800;line-height:1.35">'+MPIMG("mi_clock","width:15px;height:15px;flex:0 0 auto")+'<span>'+esc(s)+'</span></div>'; }
 function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } if(p.app){ appGo(p.app); return; } var nm=LN(p), ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
-  window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
+  window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+tipTag(p)+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
     +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng,null,p.addr))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
   if(k!=="mpstat") try{ cphLoad(k,p.ko,p.lat,p.lng); }catch(e){}   // 카드 빈자리에 구글 사진 (사장님 10-23)
   /*nolink*/   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 · 출발지는 내 위치(있으면)
