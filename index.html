@@ -673,7 +673,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025b4q", NAVI_ROOT="kr";
+var NAVI_V="1025b4r", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -1333,11 +1333,14 @@ function meKrSpot(f,Wf,Hf){ var as=ASP(), lb=[], k=f[0].toFixed(4)+","+f[1].toFi
   c.unshift([0,f[0],f[1]]); c.sort(function(p,q){ return p[0]-q[0]; });
   var a=null; for(var i=0;i<c.length;i++){ var bx=c[i][1], by=c[i][2]; if(ctFree(bx-Wf/2,by-Hf,bx+Wf/2,by,lb)){ a=[bx,by]; break; } }
   MEKR={k:k,a:a||f}; return MEKR.a; }
-var ME_W=0.06;   // 「나」 그림 폭 = 화면에서 지도 폭의 6% — 전국·약도·구 화면·확대 배율 어디서나 같게 (사장님 10-21)
+var ME_W=0.06;
+// 「나」·리본 크기 기준 폭 (사장님 10-25 PC 웹) — 지도 칸 폭 그대로 쓰면 넓은 PC 화면에서 지도 그림 대비 너무 커진다.
+//   지도 그림 표시 크기(높이 맞춤 기준 MH×비율)의 0.64배(폰 세로 화면 비율)를 넘지 않게 → 폰(세로 화면)은 지금과 같고, PC 도 지도 대비 같은 비율
+function meRefW(){ var w=document.getElementById("map").clientWidth; return Math.min(w,MH()*ASP()*0.64); }   // 「나」 그림 폭 = 화면에서 지도 폭의 6% — 전국·약도·구 화면·확대 배율 어디서나 같게 (사장님 10-21)
 function meDraw(){ try{ nmMe(); }catch(x){} try{ meEdge(); }catch(x){} var e=meEl(); if(!ME.pos){ e.hidden=true; meKrHide(); ME.sel=false; try{ meTipSync(); }catch(x){} return; } var f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]);
   if(!f||f[0]<0||f[0]>1||f[1]<0||f[1]>1){ e.hidden=true; meKrHide(); return; } e.hidden=false;
-  var w=document.getElementById("map").clientWidth, iw=Math.round(w*ME_W), kr=!CITY[VIEW]; e.classList.toggle("kr",kr);
-  if(kr){ var as=ASP(), im0=e.querySelector("img"), nw=(im0.complete&&im0.naturalWidth)||93, nh=(im0.complete&&im0.naturalHeight)||160, zq=Math.round(Math.log(ZM.s)/Math.log(1.08)), zs=Math.pow(1.08,zq), Wf=ME_W/(as*zs), Hf=Wf*as*nh/nw, a=meKrSpot(f,Wf,Hf), q=meKrEls(), s=ZM.s;   // 화면에서 늘 지도 폭의 ME_W (확대해도 그대로, 사장님 10-21) — 비킬 자리는 배율 8% 단위로만 다시 찾는다
+  var w=document.getElementById("map").clientWidth, iw=Math.round(meRefW()*ME_W), kr=!CITY[VIEW]; e.classList.toggle("kr",kr);
+  if(kr){ var as=ASP(), im0=e.querySelector("img"), nw=(im0.complete&&im0.naturalWidth)||93, nh=(im0.complete&&im0.naturalHeight)||160, zq=Math.round(Math.log(ZM.s)/Math.log(1.08)), zs=Math.pow(1.08,zq), Wf=ME_W*(meRefW()/w)/(as*zs), Hf=Wf*as*nh/nw, a=meKrSpot(f,Wf,Hf), q=meKrEls(), s=ZM.s;   // 화면에서 늘 지도 폭의 ME_W (확대해도 그대로, 사장님 10-21) — 비킬 자리는 배율 8% 단위로만 다시 찾는다
     e.style.left=(a[0]*100)+"%"; e.style.top=(a[1]*100)+"%"; e.style.width=(Wf*w*as)+"px"; e.style.transform="translate(-50%,-100%)";
     var d=q[0], l=q[1], x1=f[0]*w*as, y1=f[1]*w, x2=a[0]*w*as, y2=a[1]*w, len=Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
     d.hidden=false; d.style.left=(f[0]*100)+"%"; d.style.top=(f[1]*100)+"%"; d.style.transform="translate(-50%,-50%) scale("+(1/s)+")";
@@ -1714,7 +1717,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
     if(document.getElementById("mpcrawl")){ setTimeout(function(){ if(typeof VIEW==="string"&&VIEW==="kr") show(); },600); return; }   // 크롤 끝난 뒤
     var go=function(){ if(typeof VIEW!=="string"||VIEW!=="kr") return;
       var MW=m.clientWidth, MHh=m.clientHeight, dpr=Math.min(2,window.devicePixelRatio||1);
-      var rw=Math.round(MW*0.92), rh=Math.round(rw*IMG.naturalHeight/IMG.naturalWidth), rx=Math.round((MW-rw)/2), ry=8;
+      var rw=Math.round(Math.min(MW,MHh*0.64)*0.92), rh=Math.round(rw*IMG.naturalHeight/IMG.naturalWidth), rx=Math.round((MW-rw)/2), ry=8;
       var cv=document.createElement("canvas"); cv.id="krRibbon"; cv.width=Math.round(MW*dpr); cv.height=Math.round(MHh*dpr);   // 지도 전체를 덮는 판 (모래가 지도 위를 쓸고 내려간다)
       cv.style.cssText="position:absolute;left:0;top:0;width:"+MW+"px;height:"+MHh+"px;z-index:6;pointer-events:none;transition:opacity .6s ease;opacity:0";
       m.appendChild(cv); var cx=cv.getContext("2d"), st={el:cv,stop:0}; cur=st;
