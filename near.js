@@ -285,7 +285,7 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
     +'<button type="button" class="nrsel" data-nr="ig" style="margin-top:7px;background:#7c3aed;color:#fff;border-color:#7c3aed">'+esc(LG6(B4PKG.b))+' ›</button>'
     +'<div class="d" style="color:var(--sub);margin-top:4px">'+esc(LG6(B4PKG.n))+'</div>'):'')+'</div>';
   var part='<div class="tgpart">'+esc(LG6(PARTNER6))+'</div>';
-  return pkg+mPerf+mKpop+part
+  return pkg+mPerf+part   /* 「빅4 사옥 견학」 메뉴(mKpop) 제거 — 사옥이 지도 해당 구에 올라가 손님이 직접 찾아감, 투어는 가이드판(B4PKG)만 (사장님 10-25) */
     +one("https://www.klook.com/"+kl+"/","Klook")+one("https://www.getyourguide.com/"+gl,"GetYourGuide")+one("https://creatrip.com/"+cl,"Creatrip")+one("https://www.trazy.com/","Trazy",tzd); }
 // 통역·길안내 (사장님 10-24) — 우리 가이드(관광통역안내사) 등록·매칭. 무료. GoWithGuide 외부 링크 대신 우리 목록.
 //   손님: 언어 고르기 → 승인된 가이드 목록(사진·이름·언어·경력·지역·소개) → 한 명 골라 요청(이름·연락처·날짜·메모) → 가이드 이메일 + 우리 텔레그램
