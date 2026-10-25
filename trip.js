@@ -621,7 +621,7 @@ function gsPaint(){ var box=document.getElementById("trNextBox"); if(!box) retur
       +(GS.g?'<div class="gsm">'+esc(GS.g.name)+'</div>':'')+'</div>'; return; }
   if(GS.view==="confirm"&&GS.g){ var g=GS.g;
     box.innerHTML='<div class="item">'+back
-      +'<div class="gscard" style="cursor:default">'+gsFace(g)+'<div class="gsb"><b>'+esc(g.name)+'</b><div class="gsm">'+(g.langs||[]).map(gsLangName).map(esc).join(" · ")+(g.region?" · "+esc(gsRegion(g.region)):"")+'</div></div></div>'
+      +'<div class="gscard" style="cursor:default">'+gsFace(g)+'<div class="gsb"><b>'+(window.igName?igName(g):esc(g.name))+'</b><div class="gsm">'+(g.langs||[]).map(gsLangName).map(esc).join(" · ")+(g.region?" · "+esc(gsRegion(g.region)):"")+'</div></div></div>'
       +'<label class="gslb">'+esc(T5({ko:"손님 이름 (선택)",en:"Your name (optional)",ja:"お名前（任意）",zhs:"您的姓名（可选）",zht:"您的姓名（可選）",es:"Tu nombre (opcional)"}))+'</label><input class="gsin" id="gsName" maxlength="30">'
       +'<label class="gschk"><input type="checkbox" id="gsAg"> '+esc(T5({ko:"내 여행 일정을 이 가이드에게 전달하는 데 동의합니다",en:"I agree to share my trip itinerary with this guide",ja:"私の旅程をこのガイドに伝えることに同意します",zhs:"我同意将我的行程转交给该向导",zht:"我同意將我的行程轉交給該嚮導",es:"Acepto compartir mi itinerario con este guía"}))+'</label>'
       +'<button type="button" class="trbtn big gsgo" id="gsGo" style="margin-top:10px">'+esc(T5({ko:"보내기",en:"Send",ja:"送る",zhs:"发送",zht:"發送",es:"Enviar"}))+'</button>'
@@ -631,7 +631,7 @@ function gsPaint(){ var box=document.getElementById("trNextBox"); if(!box) retur
     if(GS.err) h+='<div class="gsnote">'+esc(T5({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again shortly.",ja:"しばらくしてからもう一度お試しください。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo de nuevo en un momento."}))+'</div>';
     else if(!GS.guides) h+='<div class="gsnote">'+esc(T5({ko:"찾는 중…",en:"Searching…",ja:"検索中…",zhs:"搜索中…",zht:"搜尋中…",es:"Buscando…"}))+'</div>';
     else if(!GS.guides.length) h+='<div class="gsnote">'+esc(T5({ko:"아직 등록된 가이드가 없습니다.",en:"No guides registered yet.",ja:"まだ登録されたガイドがいません。",zhs:"暂无已登记的向导。",zht:"暫無已登記的嚮導。",es:"Aún no hay guías registrados."}))+'</div>';
-    else h+=GS.guides.map(function(g,i){ return '<div class="gscard" data-gspick="'+i+'">'+gsFace(g)+'<div class="gsb"><b>'+esc(g.name)+'</b> '+(g.count>0?'<span class="gsrb">★'+(g.avg!=null?g.avg:0)+' ('+g.count+')</span>':'<span class="gsrb gsrb0">'+esc(T5({ko:"후기 없음",en:"No reviews",ja:"レビューなし",zhs:"暂无评价",zht:"暫無評價",es:"Sin reseñas"}))+'</span>')+'<div class="gsm">'+(g.langs||[]).map(gsLangName).map(esc).join(" · ")+(g.region?" · "+esc(gsRegion(g.region)):"")+'</div></div><span class="gspk">'+esc(T5({ko:"고르기 ›",en:"Pick ›",ja:"選ぶ ›",zhs:"选择 ›",zht:"選擇 ›",es:"Elegir ›"}))+'</span></div>'; }).join("");
+    else h+=GS.guides.map(function(g,i){ return '<div class="gscard" data-gspick="'+i+'">'+gsFace(g)+'<div class="gsb"><b>'+(window.igName?igName(g):esc(g.name))+'</b> '+(g.count>0?'<span class="gsrb">★'+(g.avg!=null?g.avg:0)+' ('+g.count+')</span>':'<span class="gsrb gsrb0">'+esc(T5({ko:"후기 없음",en:"No reviews",ja:"レビューなし",zhs:"暂无评价",zht:"暫無評價",es:"Sin reseñas"}))+'</span>')+'<div class="gsm">'+(g.langs||[]).map(gsLangName).map(esc).join(" · ")+(g.region?" · "+esc(gsRegion(g.region)):"")+'</div></div><span class="gspk">'+esc(T5({ko:"고르기 ›",en:"Pick ›",ja:"選ぶ ›",zhs:"选择 ›",zht:"選擇 ›",es:"Elegir ›"}))+'</span></div>'; }).join("");
     h+='</div>'; box.innerHTML=h; gsWire(); return; }
   // lang
   var last=gsLast();
