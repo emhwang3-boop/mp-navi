@@ -520,7 +520,7 @@ function shotDays(){ return lib(LIBS.h2c).then(function(){ var ds=[].slice.call(
   var bg=getComputedStyle(document.body).backgroundColor||"#fff", out=[];
   return ds.reduce(function(p,d){ return p.then(function(){ var c=d.cloneNode(true); [].forEach.call(c.querySelectorAll(".tods,.tlgo,.tebtn,.teact"),function(e){ e.remove(); }); host.innerHTML=""; host.appendChild(c);
     return html2canvas(c,{scale:2,backgroundColor:bg,useCORS:true,logging:false}).then(function(cv){ out.push(cv); }); }); },Promise.resolve()).then(function(){ host.remove(); return out; },function(e){ host.remove(); throw e; }); }); }
-function busy(id,on,txt){ var b=document.getElementById(id); if(!b) return; if(on){ b.dataset.t=b.textContent; b.textContent=txt; b.disabled=true; } else { b.textContent=b.dataset.t||b.textContent; b.disabled=false; } }
+function busy(id,on,txt){ var b=document.getElementById(id); if(!b) return; if(on){ if(!b.disabled) b._h=b.innerHTML; b.textContent=txt; b.disabled=true; } else { if(b._h!=null) b.innerHTML=b._h; b.disabled=false; } }   // 끝나면 아이콘까지 원래대로 (10-25)
 // A4 PDF 문서를 만든다 (받기·보내기 공용) — {doc,n,name}
 function pdfBuild(){ return Promise.all([shotDays(),lib(LIBS.pdf)]).then(function(r){ var cvs=r[0], J=window.jspdf.jsPDF, doc=new J({orientation:"p",unit:"mm",format:"a4"}), PW=210, PH=297, M=10;
   cvs.forEach(function(cv,i){ if(i) doc.addPage(); var w=PW-2*M, h=cv.height*w/cv.width; if(h>PH-2*M){ h=PH-2*M; w=cv.width*h/cv.height; }
@@ -531,11 +531,18 @@ var SAVE6={ko:"폰에 저장",en:"Save to phone",ja:"スマホに保存",zhs:"�
 var MAIL6={ko:"내 이메일로 받기",en:"Email it to me",ja:"自分のメールで受け取る",zhs:"发送到我的邮箱",zht:"寄到我的信箱",es:"Recibir por email"};
 function isIOS(){ var u=navigator.userAgent||""; return /iPad|iPhone|iPod/.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1); }
 function isStandalone(){ try{ return (window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true; }catch(e){ return false; } }
+// 안드로이드는 홈 화면 앱이어도 공유 시트를 쓰지 않고 바로 파일 저장 (사장님 실기기 10-25 — 공유 시트가 떠서 저장이 안 됐다). 공유 시트는 아이폰만
+var SAVED6={ko:"다운로드 폴더에 저장했어요.",en:"Saved to your Downloads folder.",ja:"ダウンロードフォルダに保存しました。",zhs:"已保存到下载文件夹。",zht:"已儲存到下載資料夾。",es:"Guardado en tu carpeta de Descargas."};
+function isAndroid(){ return /Android/i.test(navigator.userAgent||""); }
+function saveBlob(blob,name){ var u=URL.createObjectURL(blob), a=document.createElement("a"); a.href=u; a.download=name; a.rel="noopener"; a.style.display="none"; document.body.appendChild(a); a.click(); setTimeout(function(){ try{ a.remove(); URL.revokeObjectURL(u); }catch(e){} },60000); }
+function savedNote(){ try{ var n=document.getElementById("trSaved"); if(!n){ n=document.createElement("div"); n.id="trSaved"; n.className="d"; n.setAttribute("data-html2canvas-ignore",""); n.style.cssText="margin:6px 2px;font-weight:700;color:var(--green)"; var bar=document.querySelector("#trRep .trbar"); if(bar&&bar.parentNode) bar.parentNode.insertBefore(n,bar.nextSibling); else return; } n.textContent=T5(SAVED6); clearTimeout(window._trSvT); window._trSvT=setTimeout(function(){ try{ n.remove(); }catch(e){} },6000); }catch(e){} }
 function pdfGo(){ busy("trPdf",1,T5({ko:"만드는 중…",en:"Making…",ja:"作成中…",zhs:"正在生成…",zht:"正在產生…",es:"Creando…"}));
   var done=function(mode,n){ window.__trSaveMode=mode; window.__trPdfOk=n; try{ ntap("_trip","trip_pdf_"+mode); }catch(e){} busy("trPdf",0); };
-  pdfBuild().then(function(o){
-    if(!(isIOS()||isStandalone())){ o.doc.save(o.name); done("download",o.n); return; }
-    var blob=o.doc.output("blob"), f=null; try{ f=new File([blob],o.name,{type:"application/pdf"}); }catch(e){}
+  pdfBuild().then(function(o){ var blob=o.doc.output("blob");
+    if(isAndroid()||!isIOS()){   // 안드로이드·PC: 바로 다운로드
+      try{ saveBlob(blob,o.name); done("download",o.n); }catch(e){ o.doc.save(o.name); done("download-save",o.n); }
+      savedNote(); return; }
+    var f=null; try{ f=new File([blob],o.name,{type:"application/pdf"}); }catch(e){}
     var openIt=function(){ var u=URL.createObjectURL(blob), w=window.open(u,"_blank"); if(!w) location.href=u; setTimeout(function(){ try{ URL.revokeObjectURL(u); }catch(e){} },60000); done("open",o.n); };
     if(f&&navigator.canShare&&navigator.share&&navigator.canShare({files:[f]})){
       navigator.share({files:[f],title:o.name}).then(function(){ done("share",o.n); },function(e){ if(e&&e.name==="AbortError") done("share-cancel",o.n); else openIt(); });
