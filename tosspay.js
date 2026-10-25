@@ -14,7 +14,7 @@ function won(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,",")+(window.L
 // 켜기·끄기 (주소 ?paytest=1 / 0) — 손님에게 남지 않게 주소에서 지운다
 (function(){ var m=/[?&]paytest=([01])/.exec(location.search); if(!m) return; ls("mpv_ptest",m[1]==="1"?"1":null);
   try{ var q=location.search.slice(1).split("&").filter(function(x){ return !/^paytest=/.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(q?"?"+q:"")+location.hash); }catch(e){} })();
-function on(){ return ls("mpv_ptest")==="1"; }
+function on(){ return true; }   // 10-25 사장님: 모든 손님에게 결제 흐름 (숨김 없앰). 단추는 near.js 빅4 카드의 「예약·결제」
 var T={
   btn:{ko:"예약·결제",en:"Book & pay",ja:"予約・決済",zhs:"预订·付款",zht:"預訂·付款",es:"Reservar y pagar"},
   title:{ko:"K-POP 빅4 사옥 투어 주문",en:"Order: K-pop Big4 Agency Tour",ja:"ご注文：K-POP BIG4 社屋ツアー",zhs:"订单：K-POP四大社参观团",zht:"訂單：K-POP四大社參觀團",es:"Pedido: Tour de las Big4 del K-pop"},
@@ -53,7 +53,7 @@ var W=null;
 function price(n){ return n>=2?79000:89000; }
 function openOrder(){ css(); var b=document.getElementById("tpBox"); if(b) b.remove(); b=document.createElement("div"); b.id="tpBox";
   var d=new Date(Date.now()+9*3600e3+86400e3).toISOString().slice(0,10);
-  b.innerHTML='<div class="in"><button type="button" class="x" id="tpX" aria-label="close">✕</button><h3>'+E(L6(T.title))+'</h3><span class="tst">'+E(L6(T.test))+'</span>'
+  b.innerHTML='<div class="in"><button type="button" class="x" id="tpX" aria-label="close">✕</button><h3>'+E(L6(T.title))+'</h3><span class="tst">'+E(window.PAYTEST6?L6(window.PAYTEST6):L6(T.test))+'</span>'
     +'<div class="row"><label for="tpD">'+E(L6(T.date))+'</label><input id="tpD" type="date" min="'+d+'" value="'+d+'"></div>'
     +'<div class="row"><label>'+E(L6(T.ppl))+'</label><div class="step"><button type="button" id="tpM">−</button><b id="tpN" style="min-width:24px;text-align:center;font-size:17px">1</b><button type="button" id="tpP">+</button></div></div>'
     +'<div class="row"><label>'+E(L6(T.unit))+'</label><span id="tpU"></span></div><div class="d">'+E(L6(T.rule))+'</div>'
@@ -62,7 +62,7 @@ function openOrder(){ css(); var b=document.getElementById("tpBox"); if(b) b.rem
     +'<div class="guest" id="tpG">'+E(L6(T.guest))+'</div>'
     +'<div class="row"><label for="tpName">'+E(L6(T.name))+'</label><input id="tpName" type="text" autocomplete="name" style="flex:1;min-width:0"></div>'
     +'<div id="tpMethods"><div class="d">'+E(L6(T.load))+'</div></div><div id="tpAgree"></div>'
-    +'<button type="button" class="go" id="tpGo" disabled>'+E(L6(T.pay))+'</button><div class="d" id="tpMsg" style="margin-top:8px;min-height:18px"></div></div>';
+    +'<button type="button" class="go" id="tpGo" disabled>'+E(L6(T.pay))+'</button><div class="d" style="margin-top:6px;text-align:center">'+E(window.PAYTEST6?L6(window.PAYTEST6):L6(T.test))+'</div><div class="d" id="tpMsg" style="margin-top:8px;min-height:18px"></div></div>';
   b.onclick=function(e){ if(e.target===b) b.remove(); }; document.body.appendChild(b);
   var n=1, q=function(i){ return b.querySelector(i); };
   var paint=function(){ q("#tpN").textContent=n; q("#tpU").textContent=won(price(n)); q("#tpT").textContent=won(price(n)*n); if(W) W.setAmount({currency:"KRW",value:price(n)*n}).catch(function(){}); };
@@ -80,7 +80,7 @@ function openOrder(){ css(); var b=document.getElementById("tpBox"); if(b) b.rem
 function addBtn(){ if(!on()) return; var c=document.querySelector(".b4pkg"); if(!c||c.querySelector("#tpOpen")) return; var ig=c.querySelector('[data-nr="ig"]'); if(!ig) return;
   var bt=document.createElement("button"); bt.type="button"; bt.id="tpOpen"; bt.className=ig.className; bt.style.cssText="margin-top:7px;background:#3182f6;color:#fff;border-color:#3182f6"; bt.textContent=L6(T.btn)+" ›";
   bt.addEventListener("click",function(e){ e.stopPropagation(); openOrder(); }); ig.parentNode.insertBefore(bt,ig); }
-if(on()){ new MutationObserver(function(){ try{ addBtn(); }catch(e){} }).observe(document.documentElement,{childList:true,subtree:true}); }
+/* 단추는 이제 near.js 가 직접 그린다 (addBtn 안 씀, 10-25) */
 // 결제창에서 돌아왔을 때 — 시험 결제 완료 / 실패 (승인 서버 호출 없음)
 (function(){ var sp=new URLSearchParams(location.search), r=sp.get("ptres"); if(!r) return;
   var show=function(){ css(); var b=document.createElement("div"); b.id="tpBox"; var ok=r==="ok";
