@@ -673,7 +673,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025b4y", NAVI_ROOT="kr";
+var NAVI_V="1025b4z", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -757,7 +757,8 @@ var AREAPERF={
   sac:{ ic:"mi_ticket", h:["예술의전당 공연","At the Seoul Arts Center","芸術の殿堂の公演","艺术殿堂演出","藝術殿堂演出","En el Seoul Arts Center"] },
   bluesq:{ ic:"mi_ticket", h:["블루스퀘어 공연","At Blue Square","ブルースクエアの公演","Blue Square 演出","Blue Square 演出","En Blue Square"] },
   lgart:{ ic:"mi_ticket", h:["LG아트센터 서울 공연","At the LG Arts Center Seoul","LGアートセンター ソウルの公演","LG艺术中心首尔演出","LG藝術中心首爾演出","En el LG Arts Center Seoul"] },
-  olympichall:{ ic:"mi_ticket", h:["올림픽홀 공연","At the Olympic Hall","オリンピックホールの公演","奥林匹克大厅演出","奧林匹克大廳演出","En el Olympic Hall"] }
+  olympichall:{ ic:"mi_ticket", h:["올림픽홀 공연","At the Olympic Hall","オリンピックホールの公演","奥林匹克大厅演出","奧林匹克大廳演出","En el Olympic Hall"] },
+  ntheater:{ ic:"mi_ticket", h:["국립극장 공연","At the National Theater of Korea","国立劇場の公演","国立剧场演出","國立劇場演出","En el Teatro Nacional de Corea"] },   // 남산 국립극장 — 해오름·달오름·하늘극장 등 (KOPIS FC000003, 10-25)
 };
 var PH_H=["공연 프로그램","What’s on","公演プログラム","演出节目","演出節目","Programación"];   // 기본 헤더 (명소 설정에 h 없을 때)
 var PH_NOTE=["출처: 공연예술통합전산망(KOPIS, www.kopis.or.kr) · 일정은 바뀔 수 있어요","Source: KOPIS, Performing Arts Box Office (www.kopis.or.kr) · schedule may change","出典: 公演芸術統合電算網(KOPIS, www.kopis.or.kr) · 日程は変わることがあります","来源: 演出艺术综合电算网(KOPIS, www.kopis.or.kr) · 日程可能变动","來源: 表演藝術綜合電算網(KOPIS, www.kopis.or.kr) · 日程可能變動","Fuente: KOPIS (www.kopis.or.kr) · el calendario puede cambiar"];
@@ -786,15 +787,16 @@ function phItem(x){ var tt=esc(x.title||"");
       :(x.id?'<div class="d"><a href="https://www.google.com/search?q='+encodeURIComponent((x.tko||x.title||'')+' 공연 예매')+'" target="_blank" rel="noopener">'+T("예매 정보 찾기","Find tickets")+' ↗</a></div>':''))
     +'</div></div>'; }
 var _phC={};   // 세션 캐시 (명소키|언어)
-function perfShow(k){ var cf=AREAPERF[k]; if(!cf) return; var p=PLACES[k]; if(!p) return;
+var PERF_ALIAS={sejong:"sejongctr"};   // 서울 약도·구 화면의 세종문화회관 그림(sejong)도 공연관람(sejongctr) 일정을 붙인다 (사장님 10-25)
+function perfShow(k){ var pk=AREAPERF[k]?k:(PERF_ALIAS[k]||k), cf=AREAPERF[pk]; if(!cf) return; var p=PLACES[k]; if(!p) return;
   var hd=MPICO(cf.ic||"mi_ticket",LP(cf.h||PH_H),MIS), res=document.getElementById("res"); if(!res) return;
   var box=document.createElement("div"); box.className="item phExp";
   box.innerHTML='<div class="t">'+hd+'</div><div class="phmsg d">'+esc(LP(PH_LOAD))+'</div>'; res.appendChild(box);
   var paint=function(items){ if(window._cardK!==k) return; var e=res.querySelector(".phExp"); if(!e) return;
     if(!items||!items.length){ e.innerHTML='<div class="t">'+hd+'</div><div class="phmsg d">'+esc(LP(PH_NONE))+'</div>'; return; }
     e.innerHTML='<div class="t">'+hd+'</div>'+items.map(phItem).join('')+'<div class="d phNote" style="margin:7px 0 0">'+esc(LP(PH_NOTE))+'</div>'; };
-  var ck=k+"|"+LANG; if(_phC[ck]) return paint(_phC[ck]);
-  fetch(HUB+"/gperf?key="+encodeURIComponent(k)+"&lang="+encodeURIComponent(LANG)+"&d="+new Date(Date.now()+324e5).toISOString().slice(0,10))   // &d=오늘(KST): 날짜 바뀌면 새 URL → 옛 브라우저/CDN 캐시(번역 전 한글판) 무시 (사장님 10-25)
+  var ck=pk+"|"+LANG; if(_phC[ck]) return paint(_phC[ck]);
+  fetch(HUB+"/gperf?key="+encodeURIComponent(pk)+"&lang="+encodeURIComponent(LANG)+"&d="+new Date(Date.now()+324e5).toISOString().slice(0,10))   // &d=오늘(KST): 날짜 바뀌면 새 URL → 옛 브라우저/CDN 캐시(번역 전 한글판) 무시 (사장님 10-25)
     .then(function(r){ return r.json(); }).then(function(j){ var a=(j&&j.ok&&j.items)||[]; _phC[ck]=a; paint(a); })
     .catch(function(){ if(window._cardK===k){ var e=res.querySelector(".phExp .phmsg"); if(e) e.textContent=LP(PH_NONE); } }); }
 function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } if(p.app){ appGo(p.app); return; } var nm=LN(p), ll=p.lat+","+p.lng;
@@ -1565,7 +1567,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1025save2"></script>
 <script src="gift.js?v=1024icons"></script>
-<script src="near.js?v=1025menu6"></script>
+<script src="near.js?v=1025ntheater"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}</script>
 <script src="reco.js?v=1024icons"></script>
