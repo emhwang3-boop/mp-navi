@@ -1567,7 +1567,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1024sendfix"></script>
 <script src="gift.js?v=1024icons"></script>
-<script src="near.js?v=1025nokbook"></script>
+<script src="near.js?v=1025menu6"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}</script>
 <script src="reco.js?v=1024icons"></script>
@@ -1729,58 +1729,64 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
   try{
     var SKIP={ko:"건너뛰기",en:"Skip",es:"Saltar",ja:"スキップ",zhs:"跳过",zht:"跳過"};
     function lang(){ try{ if(typeof LANG!=="undefined"&&LANG) return LANG; return localStorage.getItem("mpv_lang")||"en"; }catch(e){ return "en"; } }
-    /* 줄 단위 — 영어 문구는 그대로. title=제목줄, end=문단 끝(아래 여백). 각 줄은 순서대로 찍히며 나타난다(animation-delay). */
-    var LINES=[
-      {t:'MONEY PUZZLE TOUR', title:true},
-      {t:'A long, long time ago,'},
-      {t:'when I was ten years old,'},
-      {t:'I read a book called TREASURE ISLAND.', end:true},
-      {t:'The treasure map inside it'},
-      {t:'stayed in my heart ever since.', end:true},
-      {t:'So I drew the map of Korea'},
-      {t:'as a treasure map of its own &mdash;'},
-      {t:'every place a mark,'},
-      {t:'every journey a hunt.', end:true},
-      {t:'May every traveler who visits Korea'},
-      {t:'find their own treasure,'},
-      {t:'and carry it home.'}
-    ];
-    var CRAWL=(function(){ var h='', base=0.4, stag=1.0; for(var i=0;i<LINES.length;i++){ var L=LINES[i], d=(base+i*stag).toFixed(2); h+='<span class="mpc-line'+(L.title?' mpc-title':'')+(L.end?' mpc-end':'')+'" style="animation-delay:'+d+'s">'+L.t+'</span>'; } return h; })();
-    var ov=null, done=true, tmr=null, count=false;
-    function onKey(){ finish(); }
-    function finish(){
+    /* 6개 언어 순서대로 — 한→영→일→중간→중번→스. 각 언어 크롤이 끝나면 다음 언어 (사장님 10-25). 보물섬 유래 스토리 번역. title=제목줄, end=문단 끝 여백. */
+    var TITLE='MONEY PUZZLE TOUR';
+    var STORY={
+      ko:[{t:'아주 먼 옛날, 내가 열 살이던 시절,'},{t:'나는 《보물섬》이라는 책을 읽었다.',end:true},{t:'그 안의 보물 지도는'},{t:'그때부터 내 마음에 남았다.',end:true},{t:'그래서 나는 한국의 지도를'},{t:'하나의 보물 지도로 그렸다 &mdash;'},{t:'모든 장소가 표식이고,'},{t:'모든 여정이 보물찾기.',end:true},{t:'한국을 찾는 모든 여행자가'},{t:'저마다의 보물을 찾아,'},{t:'집으로 가져가기를.'}],
+      en:[{t:'A long, long time ago,'},{t:'when I was ten years old,'},{t:'I read a book called TREASURE ISLAND.',end:true},{t:'The treasure map inside it'},{t:'stayed in my heart ever since.',end:true},{t:'So I drew the map of Korea'},{t:'as a treasure map of its own &mdash;'},{t:'every place a mark,'},{t:'every journey a hunt.',end:true},{t:'May every traveler who visits Korea'},{t:'find their own treasure,'},{t:'and carry it home.'}],
+      ja:[{t:'遠い遠い昔、私が十歳だった頃、'},{t:'『宝島』という本を読んだ。',end:true},{t:'その中の宝の地図は'},{t:'それ以来ずっと心に残っている。',end:true},{t:'だから私は韓国の地図を'},{t:'ひとつの宝の地図として描いた &mdash;'},{t:'すべての場所が印、'},{t:'すべての旅が宝探し。',end:true},{t:'韓国を訪れるすべての旅人が'},{t:'自分だけの宝を見つけ、'},{t:'家へ持ち帰れますように。'}],
+      zhs:[{t:'很久很久以前，在我十岁那年，'},{t:'我读了一本叫《金银岛》的书。',end:true},{t:'书中的藏宝图'},{t:'从此留在我心中。',end:true},{t:'于是我把韩国的地图'},{t:'画成了一张藏宝图 &mdash;'},{t:'每个地方都是记号，'},{t:'每段旅程都是寻宝。',end:true},{t:'愿每位来到韩国的旅人，'},{t:'都能找到属于自己的宝藏，'},{t:'并带回家。'}],
+      zht:[{t:'很久很久以前，在我十歲那年，'},{t:'我讀了一本叫《金銀島》的書。',end:true},{t:'書中的藏寶圖'},{t:'從此留在我心中。',end:true},{t:'於是我把韓國的地圖'},{t:'畫成了一張藏寶圖 &mdash;'},{t:'每個地方都是記號，'},{t:'每段旅程都是尋寶。',end:true},{t:'願每位來到韓國的旅人，'},{t:'都能找到屬於自己的寶藏，'},{t:'並帶回家。'}],
+      es:[{t:'Hace mucho, mucho tiempo,'},{t:'cuando tenía diez años,'},{t:'leí un libro llamado LA ISLA DEL TESORO.',end:true},{t:'El mapa del tesoro que guardaba'},{t:'quedó en mi corazón desde entonces.',end:true},{t:'Por eso dibujé el mapa de Corea'},{t:'como su propio mapa del tesoro &mdash;'},{t:'cada lugar, una marca;'},{t:'cada viaje, una búsqueda.',end:true},{t:'Que cada viajero que visite Corea'},{t:'encuentre su propio tesoro'},{t:'y lo lleve a casa.'}]
+    };
+    var LANGSEQ=['ko','en','ja','zhs','zht','es'];
+    function crawlHtml(lg){ var LINES=[{t:TITLE,title:true}].concat(STORY[lg]||STORY.en), h='', base=0.4, stag=1.0;
+      for(var i=0;i<LINES.length;i++){ var L=LINES[i], d=(base+i*stag).toFixed(2); h+='<span class="mpc-line'+(L.title?' mpc-title':'')+(L.end?' mpc-end':'')+'" style="animation-delay:'+d+'s">'+L.t+'</span>'; } return h; }
+    var ov=null, done=true, tmr=null, count=false, seqIdx=0;
+    function onKey(){ endAll(); }
+    function removeOv(){ var o=ov; ov=null; if(o){ try{ o.style.opacity="0"; }catch(e){} setTimeout(function(){ try{ if(o.parentNode) o.parentNode.removeChild(o); }catch(e){} },850); } }
+    function endAll(){
       if(done) return; done=true;
       if(count){ try{ var n=parseInt(localStorage.getItem("mpv_crawl_n")||"0",10)||0; localStorage.setItem("mpv_crawl_n",String(n+1)); }catch(e){} }
       try{ clearTimeout(tmr); }catch(e){}
       try{ document.removeEventListener("keydown",onKey,true); }catch(e){}
       try{ document.documentElement.classList.remove("mpc-lock"); }catch(e){}
-      var o=ov; ov=null;
-      if(o){ try{ o.style.opacity="0"; }catch(e){} setTimeout(function(){ try{ if(o.parentNode) o.parentNode.removeChild(o); }catch(e){} },850); }
+      removeOv();
     }
-    function build(doCount){
-      if(ov) return; done=false; count=!!doCount;
+    function advance(){   // 한 언어 끝 → 다음 언어, 마지막이면 종료
+      if(done) return; try{ clearTimeout(tmr); }catch(e){}
+      var next=seqIdx+1;
+      if(next>=LANGSEQ.length){ endAll(); return; }
+      removeOv(); setTimeout(function(){ if(!done) playOne(next); },240);
+    }
+    function playOne(idx){
+      if(done) return; seqIdx=idx;
       var reduce=false; try{ reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){}
       ov=document.createElement("div"); ov.id="mpcrawl"; ov.setAttribute("role","dialog"); ov.setAttribute("aria-label","Intro");
-      ov.innerHTML='<div class="mpc-stars"></div><div class="mpc-fade"></div><div class="mpc-persp"><div class="mpc-text'+(reduce?" mpc-static":"")+'">'+CRAWL+'</div></div><button type="button" class="mpc-skip"></button>';
+      ov.innerHTML='<div class="mpc-stars"></div><div class="mpc-fade"></div><div class="mpc-persp"><div class="mpc-text'+(reduce?" mpc-static":"")+'">'+crawlHtml(LANGSEQ[idx])+'</div></div><button type="button" class="mpc-skip"></button>';
       document.body.appendChild(ov);
       try{ ov.querySelector(".mpc-skip").textContent=(SKIP[lang()]||SKIP.en)+" ⏭"; }catch(e){}
-      try{ document.documentElement.classList.add("mpc-lock"); }catch(e){}
-      ov.addEventListener("click",finish,false);
-      document.addEventListener("keydown",onKey,true);
+      ov.addEventListener("click",endAll,false);
       var txt=ov.querySelector(".mpc-text");
-      if(reduce){ tmr=setTimeout(finish,30000); }
-      else { try{ txt.addEventListener("animationend",function(e){ if(!e||e.animationName==="mpc-scroll") finish(); },false); }catch(e){} tmr=setTimeout(finish,35000); }
+      if(reduce){ tmr=setTimeout(advance,6000); }
+      else { try{ txt.addEventListener("animationend",function(e){ if(!e||e.animationName==="mpc-scroll") advance(); },false); }catch(e){} tmr=setTimeout(advance,35000); }
     }
-    window.mpCrawlReplay=function(){ try{ build(false); }catch(e){ finish(); } };   // 메뉴 「인트로 다시 보기」 — 카운터 안 바꿈
+    function build(doCount){
+      if(!done) return; done=false; count=!!doCount; seqIdx=0;
+      try{ document.documentElement.classList.add("mpc-lock"); }catch(e){}
+      document.addEventListener("keydown",onKey,true);
+      playOne(0);
+    }
+    window.mpCrawlReplay=function(){ try{ build(false); }catch(e){ endAll(); } };   // 메뉴 「인트로 다시 보기」 — 카운터 안 바꿈
     function shouldShow(){
       try{
         var n=parseInt(localStorage.getItem("mpv_crawl_n")||"0",10)||0;
         if(n===0) return true;
-        if(n===1 && localStorage.getItem("mpv_lang_changed")==="1" && lang()!=="en") return true;
+        if(n===1 && localStorage.getItem("mpv_lang_changed")==="1") return true;
         return false;
       }catch(e){ return true; }   // 저장소 막히면 한 번만 보여주되 에러 없이
     }
-    function go(){ try{ if(shouldShow()) build(true); }catch(e){ try{ finish(); }catch(x){} } }
+    function go(){ try{ if(shouldShow()) build(true); }catch(e){ try{ endAll(); }catch(x){} } }
     if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",go); else go();
   }catch(e){ try{ var o=document.getElementById("mpcrawl"); if(o&&o.parentNode) o.parentNode.removeChild(o); document.documentElement.classList.remove("mpc-lock"); }catch(x){} }
 })();
