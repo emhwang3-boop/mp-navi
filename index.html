@@ -290,7 +290,7 @@ html.mpc-lock #treasIsle{visibility:hidden}
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
 <script src="geoconsent.js?v=1024icons"></script>
-<script src="i18n.js?v=1023pay"></script>
+<script src="i18n.js?v=1025nopay"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
 // 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
@@ -672,7 +672,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025b4i", NAVI_ROOT="kr";
+var NAVI_V="1025b4j", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -826,7 +826,7 @@ var B4LAB={ yg:{ko:"YG",en:"YG",ja:"YG",zhs:"YG",zht:"YG",es:"YG"},
   smartium:{ko:"코엑스 아티움 (SM타운)",en:"COEX Artium (SMTOWN)",ja:"COEXアティウム（SMTOWN）",zhs:"COEX Artium（SMTOWN）",zht:"COEX Artium (SMTOWN)",es:"COEX Artium (SMTOWN)"},
   smksu:{ko:"SM 성수 (KWANGYA)",en:"SM Seongsu (KWANGYA)",ja:"SM 聖水（KWANGYA）",zhs:"SM圣水（KWANGYA）",zht:"SM 聖水（KWANGYA）",es:"SM Seongsu (KWANGYA)"},
   jyp:{ko:"JYP",en:"JYP",ja:"JYP",zhs:"JYP",zht:"JYP",es:"JYP"} };
-var B4LL={ yg:[37.5505,126.9115], hybe:[37.5298,126.9648], smartium:[37.509808,127.061653], smksu:[37.5443,127.0557], jyp:[37.5304,127.1253] };
+var B4LL={ yg:[37.54885,126.90765], hybe:[37.52455,126.9642], smartium:[37.509808,127.061653], smksu:[37.54434,127.04424], jyp:[37.52403,127.12912] };   // 10-25 카카오·구글 지오코딩 재검증 (YG 희우정로1길 7 · HYBE 한강대로 42 · SM D타워 · JYP 강동대로 205)
 function b4Name(k){ var o=B4LAB[k]; return o?(o[LANG]||o.en):k; }
 function b4Clear(){ var e=document.getElementById("b4lab"); if(e) e.remove(); }
 function b4Draw(){ b4Clear(); if(VIEW!=="b4route"||!CITY.b4route) return; var mz=document.getElementById("mz"); if(!mz) return;
@@ -834,29 +834,23 @@ function b4Draw(){ b4Clear(); if(VIEW!=="b4route"||!CITY.b4route) return; var mz
   B4ORDER.forEach(function(k){ var ll=B4LL[k], f=meGeoFrac("b4route",ll[0],ll[1]); if(!f) return;
     var d=document.createElement("div");
     d.style.cssText="position:absolute;left:"+(f[0]*100)+"%;top:"+((f[1]+0.072)*100)+"%;transform:translateX(-50%);white-space:nowrap;background:#fff;color:#d9480f;border:"+Math.max(0.7,fs*0.1)+"px solid #ff7a00;border-radius:999px;padding:"+(fs*0.14)+"px "+(fs*0.55)+"px;font-size:"+fs+"px;font-weight:900;line-height:1.25;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.18)";
-    d.textContent=b4Name(k); box.appendChild(d); });
+    d.textContent=b4Name(k); box.appendChild(d);
+    // 노선도의 사옥 그림·명찰을 누르면 그 구 약도(홍대·용산·성수·올림픽공원·삼성)로 들어가 카드 (seoulall 아이콘 제거 뒤 들어가는 길, 10-25)
+    var hb=document.createElement("div"); hb.style.cssText="position:absolute;left:"+((f[0]-0.035)*100)+"%;top:"+((f[1]-0.07)*100)+"%;width:7%;height:"+(0.17*100)+"%;cursor:pointer";
+    [hb,d].forEach(function(el){ el.style.pointerEvents="auto"; el.style.cursor="pointer"; el.addEventListener("click",function(ev){ ev.stopPropagation(); try{ ntap(k,"kpop_b4route"); }catch(x){} b4Jump(k); }); });
+    box.appendChild(hb); });
   mz.appendChild(box); }
 function b4RouteShow(){ try{ inBlur(); }catch(e){} try{ spinClear(); }catch(e){}
   if(!(CITY.b4route&&CITY.b4route.geo)) return; viewSet("b4route"); setTimeout(function(){ try{ b4Draw(); }catch(e){} },50);
   clearTimeout(window._scT); window._scT=setTimeout(function(){ var m=document.getElementById("map"); window.scrollTo({top:m.getBoundingClientRect().top+scrollY-60,behavior:"smooth"}); },150); }
 window.b4RouteShow=b4RouteShow;
-// ── 서울 전체 지도(seoulall)에 빅4 사옥 작은 아이콘 상시 표시 (사장님 10-25) — 실제 좌표(해당 구)에 작게, 지도와 함께 스케일. 탭하면 해당 약도/카드 ──
-var B4SEOUL={ smartium:[37.5098,127.0617], smksu:[37.5443,127.0557], hybe:[37.5298,126.9648], jyp:[37.5304,127.1253], yg:[37.5503,126.9145] };
-var B4IMG={ smartium:"img/b4/smartium.png", smksu:"img/b4/smksu.png", hybe:"img/b4/hybe.png", jyp:"img/b4/jyp.png", yg:"img/b4/yg.png" };
+// (10-25 사장님) 서울 전체 지도(seoulall)엔 빅4 사옥 아이콘을 두지 않는다 — 사옥 그림은 구 약도(홍대·용산·성수·올림픽공원)에만 구워 넣는다
 function b4Jump(k){ var open=function(){ var p=PLACES[k]; if(!p) return false; try{ spinClear(); }catch(e){}
     var la=+p.lat, lo=+p.lng, id=meBest(la,lo)||NAVI_ROOT;
-    if(id&&id!=="seoulall"&&id!==NAVI_ROOT&&CITY[id]) spinGo(id,la,lo,null);   // 전용 약도가 있으면 그리로(없는 HYBE 는 seoulall 에서 카드만)
+    if(id&&id!=="seoulall"&&id!==NAVI_ROOT&&CITY[id]) spinGo(id,la,lo,null);   // 전용 약도로 (HYBE=용산 약도 10-25 신설)
     placeShow(k); return true; };
   if(open()) return;
   Promise.all(Object.keys(CITY).map(function(id){ return mapLoad(id).catch(function(){}); })).then(open,open); }
-function kpopMarks(){ var z=document.getElementById("mz"); if(z) [].forEach.call(z.querySelectorAll(".kpm"),function(e){ e.remove(); });
-  if(VIEW!=="seoulall"||!z) return; var w=document.getElementById("map").clientWidth, ih=Math.max(16,w*0.072);
-  Object.keys(B4SEOUL).forEach(function(k){ var ll=B4SEOUL[k], f=meGeoFrac("seoulall",ll[0],ll[1]); if(!f) return;
-    var e=document.createElement("div"); e.className="kpm"; e.dataset.k=k; e.title=b4Name(k);
-    e.style.cssText="position:absolute;left:"+(f[0]*100)+"%;top:"+(f[1]*100)+"%;transform:translate(-50%,-100%);z-index:5;cursor:pointer;height:"+ih+"px;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.4))";
-    var im=document.createElement("img"); im.src=B4IMG[k]; im.alt=""; im.style.cssText="display:block;height:100%;width:auto;pointer-events:none"; e.appendChild(im);
-    e.addEventListener("click",function(ev){ ev.stopPropagation(); try{ ntap(k,"kpop_seoulall"); }catch(x){} b4Jump(k); });
-    z.appendChild(e); }); }
 window.b4Jump=b4Jump;
 var HIT={keys:[],rle:""};
 var HG=new Uint8Array(65536);
@@ -899,7 +893,7 @@ var ROOT_IMG=document.getElementById("mapimg").getAttribute("src");
 function viewSet(v){ clearTimeout(window._scT); try{ spinClear(); }catch(e){} VIEW=v; document.getElementById("map").classList.toggle("onkr",!CITY[v]); if(CITY[v]) mapLoad(v).catch(function(){}); detSet(false); document.getElementById("vdet").hidden=!CITY[v]; document.getElementById("vbar").hidden=!CITY[v]; var c=CITY[v]; document.getElementById("mapimg").src=c?c.img:ROOT_IMG;
   document.getElementById("vback").hidden=!c; var tt=document.getElementById("vttl"); tt.hidden=!c; if(c) tt.textContent=LN(c);
   var vb=document.getElementById("vback"); vb.textContent="←"; vb.title=vb.ariaLabel=c&&c.parent!=="kr"?T(CITY[c.parent].ko+"로",LN(CITY[c.parent])):T("전국 지도로","Korea map");
-  try{ dlDraw(null); }catch(e){} try{ lblDraw(); }catch(e){} var w0=document.getElementById("map").clientWidth, s0=ZB(); ZM={s:s0,tx:w0/2-((c&&c.fx)||0.5)*w0*((c&&c.aspect)||1)*s0,ty:0}; zApply(); LOD.s0=ZM.s; try{ b4Draw(); }catch(e){} try{ kpopMarks(); }catch(e){} }
+  try{ dlDraw(null); }catch(e){} try{ lblDraw(); }catch(e){} var w0=document.getElementById("map").clientWidth, s0=ZB(); ZM={s:s0,tx:w0/2-((c&&c.fx)||0.5)*w0*((c&&c.aspect)||1)*s0,ty:0}; zApply(); LOD.s0=ZM.s; try{ b4Draw(); }catch(e){} }
 var _lastTap={k:null,t:0}, _lastArea={a:null,t:0};
 function areaTap(cx,cy){ var c=CITY[VIEW]; if(!c||!c.areas) return; var r=document.getElementById("mapimg").getBoundingClientRect(), fx=(cx-r.left)/r.width, fy=(cy-r.top)/r.height, now=Date.now();
   var a=null, bd=9; for(var k in c.areas){ var b=c.areas[k]; if(fx>=b[0]&&fx<=b[2]&&fy>=b[1]&&fy<=b[3]){ var dd=Math.max(Math.abs(fx-(b[0]+b[2])/2)/(b[2]-b[0]),Math.abs(fy-(b[1]+b[3])/2)/(b[3]-b[1])); if(dd<bd){ bd=dd; a=k; } } }   // 겹친 네모는 가운데에 가까운 쪽
@@ -1571,7 +1565,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}</script>
 <script src="reco.js?v=1024icons"></script>
-<script src="gu.js?v=f29da37807"></script>
+<script src="gu.js?v=d31a80d73c"></script>
 <script src="citytour.js?v=1024icons"></script>
 <script src="pass.js?v=1024gmatch"></script>
 <script>
@@ -1729,7 +1723,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
   try{
     var SKIP={ko:"건너뛰기",en:"Skip",es:"Saltar",ja:"スキップ",zhs:"跳过",zht:"跳過"};
     function lang(){ try{ if(typeof LANG!=="undefined"&&LANG) return LANG; return localStorage.getItem("mpv_lang")||"en"; }catch(e){ return "en"; } }
-    /* 6개 언어 순서대로 — 한→영→일→중간→중번→스. 각 언어 크롤이 끝나면 다음 언어 (사장님 10-25). 보물섬 유래 스토리 번역. title=제목줄, end=문단 끝 여백. */
+    /* 6개 언어 순서대로 — 영→일→중간→중번→스→한(한국어 맨 뒤). 한 언어 글이 화면 밖으로 다 올라가면 곧바로 다음 언어가 아래에서 이어 올라온다(빈 시간 없음, 같은 별 배경 유지) (사장님 10-25). 보물섬 유래 스토리 번역. title=제목줄, end=문단 끝 여백. */
     var TITLE='MONEY PUZZLE TOUR';
     var STORY={
       ko:[{t:'아주 먼 옛날, 내가 열 살이던 시절,'},{t:'나는 《보물섬》이라는 책을 읽었다.',end:true},{t:'그 안의 보물 지도는'},{t:'그때부터 내 마음에 남았다.',end:true},{t:'그래서 나는 한국의 지도를'},{t:'하나의 보물 지도로 그렸다 &mdash;'},{t:'모든 장소가 표식이고,'},{t:'모든 여정이 보물찾기.',end:true},{t:'한국을 찾는 모든 여행자가'},{t:'저마다의 보물을 찾아,'},{t:'집으로 가져가기를.'}],
@@ -1739,37 +1733,45 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
       zht:[{t:'很久很久以前，在我十歲那年，'},{t:'我讀了一本叫《金銀島》的書。',end:true},{t:'書中的藏寶圖'},{t:'從此留在我心中。',end:true},{t:'於是我把韓國的地圖'},{t:'畫成了一張藏寶圖 &mdash;'},{t:'每個地方都是記號，'},{t:'每段旅程都是尋寶。',end:true},{t:'願每位來到韓國的旅人，'},{t:'都能找到屬於自己的寶藏，'},{t:'並帶回家。'}],
       es:[{t:'Hace mucho, mucho tiempo,'},{t:'cuando tenía diez años,'},{t:'leí un libro llamado LA ISLA DEL TESORO.',end:true},{t:'El mapa del tesoro que guardaba'},{t:'quedó en mi corazón desde entonces.',end:true},{t:'Por eso dibujé el mapa de Corea'},{t:'como su propio mapa del tesoro &mdash;'},{t:'cada lugar, una marca;'},{t:'cada viaje, una búsqueda.',end:true},{t:'Que cada viajero que visite Corea'},{t:'encuentre su propio tesoro'},{t:'y lo lleve a casa.'}]
     };
-    var LANGSEQ=['ko','en','ja','zhs','zht','es'];
-    function crawlHtml(lg){ var LINES=[{t:TITLE,title:true}].concat(STORY[lg]||STORY.en), h='', base=0.4, stag=1.0;
+    var LANGSEQ=['en','ja','zhs','zht','es','ko'];
+    function crawlHtml(lg,b0){ var LINES=[{t:TITLE,title:true}].concat(STORY[lg]||STORY.en), h='', base=(b0==null?0.4:b0), stag=1.0;
       for(var i=0;i<LINES.length;i++){ var L=LINES[i], d=(base+i*stag).toFixed(2); h+='<span class="mpc-line'+(L.title?' mpc-title':'')+(L.end?' mpc-end':'')+'" style="animation-delay:'+d+'s">'+L.t+'</span>'; } return h; }
-    var ov=null, done=true, tmr=null, count=false, seqIdx=0;
+    var ov=null, done=true, tmr=null, wtc=null, count=false, seqIdx=0;
     function onKey(){ endAll(); }
     function removeOv(){ var o=ov; ov=null; if(o){ try{ o.style.opacity="0"; }catch(e){} setTimeout(function(){ try{ if(o.parentNode) o.parentNode.removeChild(o); }catch(e){} },850); } }
     function endAll(){
       if(done) return; done=true;
       if(count){ try{ var n=parseInt(localStorage.getItem("mpv_crawl_n")||"0",10)||0; localStorage.setItem("mpv_crawl_n",String(n+1)); }catch(e){} }
-      try{ clearTimeout(tmr); }catch(e){}
+      try{ clearTimeout(tmr); }catch(e){} try{ clearInterval(wtc); }catch(e){}
       try{ document.removeEventListener("keydown",onKey,true); }catch(e){}
       try{ document.documentElement.classList.remove("mpc-lock"); }catch(e){}
       removeOv();
     }
     function advance(){   // 한 언어 끝 → 다음 언어, 마지막이면 종료
-      if(done) return; try{ clearTimeout(tmr); }catch(e){}
+      if(done) return; try{ clearTimeout(tmr); }catch(e){} try{ clearInterval(wtc); }catch(e){}
       var next=seqIdx+1;
       if(next>=LANGSEQ.length){ endAll(); return; }
-      removeOv(); setTimeout(function(){ if(!done) playOne(next); },240);
+      playOne(next);   // 같은 화면(별 배경)에서 글만 바꿔 곧바로 이어 올린다 — 사이 빈 시간 없음 (10-25)
     }
     function playOne(idx){
       if(done) return; seqIdx=idx;
       var reduce=false; try{ reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){}
-      ov=document.createElement("div"); ov.id="mpcrawl"; ov.setAttribute("role","dialog"); ov.setAttribute("aria-label","Intro");
-      ov.innerHTML='<div class="mpc-stars"></div><div class="mpc-fade"></div><div class="mpc-persp"><div class="mpc-text'+(reduce?" mpc-static":"")+'">'+crawlHtml(LANGSEQ[idx])+'</div></div><button type="button" class="mpc-skip"></button>';
-      document.body.appendChild(ov);
-      try{ ov.querySelector(".mpc-skip").textContent=(SKIP[lang()]||SKIP.en)+" ⏭"; }catch(e){}
-      ov.addEventListener("click",endAll,false);
-      var txt=ov.querySelector(".mpc-text");
-      if(reduce){ tmr=setTimeout(advance,6000); }
-      else { try{ txt.addEventListener("animationend",function(e){ if(!e||e.animationName==="mpc-scroll") advance(); },false); }catch(e){} tmr=setTimeout(advance,35000); }
+      if(!ov){
+        ov=document.createElement("div"); ov.id="mpcrawl"; ov.setAttribute("role","dialog"); ov.setAttribute("aria-label","Intro");
+        ov.innerHTML='<div class="mpc-stars"></div><div class="mpc-fade"></div><div class="mpc-persp"></div><button type="button" class="mpc-skip"></button>';
+        document.body.appendChild(ov);
+        try{ ov.querySelector(".mpc-skip").textContent=(SKIP[lang()]||SKIP.en)+" ⏭"; }catch(e){}
+        ov.addEventListener("click",endAll,false);
+      }
+      var persp=ov.querySelector(".mpc-persp"), my=idx;
+      persp.innerHTML='<div class="mpc-text'+(reduce?" mpc-static":"")+'" data-lg="'+LANGSEQ[idx]+'">'+crawlHtml(LANGSEQ[idx],idx?0:null)+'</div>';   // 2번째 언어부터 첫 줄 바로 (빈 틈 없이)
+      var txt=persp.querySelector(".mpc-text");
+      if(reduce){ tmr=setTimeout(advance,6000); return; }
+      try{ txt.addEventListener("animationend",function(e){ if(seqIdx===my&&(!e||e.animationName==="mpc-scroll")) advance(); },false); }catch(e){}
+      // 글 맨 아랫줄이 위쪽 가림(마스크 18%) 위로 다 올라가면 = 화면 밖 → 바로 다음 언어
+      wtc=setInterval(function(){ try{ if(done||seqIdx!==my) return; var pr=persp.getBoundingClientRect(), tr=txt.getBoundingClientRect();
+        if(tr.height>0&&tr.bottom<=pr.top+pr.height*0.18) advance(); }catch(e){} },100);
+      tmr=setTimeout(advance,35000);
     }
     function build(doCount){
       if(!done) return; done=false; count=!!doCount; seqIdx=0;
