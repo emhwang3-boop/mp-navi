@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Refund Policy · Money Puzzle Tour for Korea</title>
+<meta name="robots" content="index,follow">
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#111827;--sub:#5b6474;--line:#e6e9ef;--green:#2f9e44;--blue:#3d5af1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;-webkit-text-size-adjust:100%;line-height:1.7}
+html:lang(ja) body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Hiragino Sans','Yu Gothic UI','Noto Sans JP',sans-serif}
+html:lang(zh-Hans) body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif}
+html:lang(zh-Hant) body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 60px}
+.langbar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px 0 22px}
+.langbar button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;font-size:13px;font-weight:700;padding:6px 13px;cursor:pointer;font-family:inherit}
+.langbar button.on{background:var(--green);border-color:var(--green);color:#fff}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.3px}
+.eff{color:var(--sub);font-size:13px;margin:0 0 20px}
+h2{font-size:16.5px;margin:26px 0 8px;padding-top:14px;border-top:1px solid var(--line);letter-spacing:-.2px}
+p{margin:8px 0}
+ul{margin:8px 0;padding-left:20px}
+li{margin:4px 0}
+a{color:var(--blue)}
+.op{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:30px 0 0;font-size:14px;color:var(--sub)}
+.op b{color:var(--ink)}
+.op div{margin:3px 0}
+.back{display:inline-block;margin-top:24px;font-size:14px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="langbar" id="langbar"></div>
+  <div id="doc"></div>
+  <a class="back" id="back" href="https://navi.moneypuzzle.co.kr/">← <span id="backt">앱으로 돌아가기</span></a>
+</div>
+<script>
+"use strict";
+var LANGS=["ko","en","ja","zhs","zht","es"];
+var HLANG={ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant",es:"es"};
+var LBL={ko:"한국어",en:"English",ja:"日本語",zhs:"简体",zht:"繁體",es:"Español"};
+
+var OP={
+ ko:{t:"사업자 정보",cn:"주식회사 부만 (Booman Inc.)",rn:"사업자등록번호",rv:"297-81-03712",ceo:"대표",cev:"전현진",po:"개인정보 보호책임자",pov:"황의만",cs:"고객센터",csv:"1599-7065",em:"이메일",ad:"주소",adv:"경기도 남양주시 진접읍 해밀예당1로 220, 엠타워 707호"},
+ en:{t:"Operator information",cn:"Booman Inc.",rn:"Business Reg. No.",rv:"297-81-03712",ceo:"CEO",cev:"Jeon Hyeonjin",po:"Privacy Officer",pov:"Hwang Euiman",cs:"Support",csv:"+82-1599-7065",em:"Email",ad:"Address",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"},
+ ja:{t:"事業者情報",cn:"株式会社 부만 (Booman Inc.)",rn:"事業者登録番号",rv:"297-81-03712",ceo:"代表",cev:"全賢珍 (Jeon Hyeonjin)",po:"個人情報保護責任者",pov:"黄義晩 (Hwang Euiman)",cs:"カスタマーセンター",csv:"+82-1599-7065",em:"メール",ad:"住所",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"},
+ zhs:{t:"经营者信息",cn:"Booman Inc.（株式会社 부만）",rn:"营业执照号",rv:"297-81-03712",ceo:"代表",cev:"Jeon Hyeonjin",po:"个人信息保护负责人",pov:"Hwang Euiman",cs:"客服",csv:"+82-1599-7065",em:"邮箱",ad:"地址",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"},
+ zht:{t:"經營者資訊",cn:"Booman Inc.（株式會社 부만）",rn:"營業執照號",rv:"297-81-03712",ceo:"代表",cev:"Jeon Hyeonjin",po:"個人資料保護負責人",pov:"Hwang Euiman",cs:"客服",csv:"+82-1599-7065",em:"電郵",ad:"地址",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"},
+ es:{t:"Información del operador",cn:"Booman Inc.",rn:"N.º de registro mercantil",rv:"297-81-03712",ceo:"Representante",cev:"Jeon Hyeonjin",po:"Responsable de privacidad",pov:"Hwang Euiman",cs:"Atención",csv:"+82-1599-7065",em:"Correo",ad:"Dirección",adv:"707 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea"}
+};
+var BACK={ko:"앱으로 돌아가기",en:"Back to the app",ja:"アプリに戻る",zhs:"返回应用",zht:"返回應用",es:"Volver a la app"};
+
+var D={"ko": {"title": "환불 규정", "eff": "시행일 2026-10-25", "app": "Money Puzzle Tour for Korea", "sec": [{"h": "1. 투어·가이드 상품", "b": ["공정거래위원회 「소비자분쟁해결기준」(국내여행)을 따릅니다. 취소 시점에 따라 아래와 같이 환불합니다.", ["여행 시작 5일 전까지 취소: 전액 환불", "여행 시작 2일 전까지 취소: 요금의 10% 공제 후 환불", "여행 시작 1일 전 취소: 요금의 20% 공제 후 환불", "여행 당일 취소 또는 불참: 요금의 30% 공제 후 환불"]]}, {"h": "2. 회사·가이드 사정으로 취소되는 경우", "b": ["날씨·안전 문제를 포함해 회사 또는 가이드의 사정으로 투어가 취소되면 전액 환불합니다."]}, {"h": "3. 디지털 서비스 (AI 여행 일정 등)", "b": ["결제 후 서비스가 제공되기 전(일정이 만들어지기 전)에는 전액 환불합니다.", "서비스가 제공된 뒤(일정 생성 후)에는 디지털 콘텐츠 특성상 환불되지 않습니다."]}, {"h": "4. 환불 방법과 문의", "b": ["환불은 결제한 수단으로 영업일 기준 3~7일 안에 처리됩니다.", "문의: 앱 안의 문의 메뉴 또는 이메일 emhwang3@moneypuzzle.co.kr"]}]}, "en": {"title": "Refund Policy", "eff": "Effective date: 2026-10-25", "app": "Money Puzzle Tour for Korea", "sec": [{"h": "1. Tours and guide services", "b": ["We follow the Korea Fair Trade Commission's Consumer Dispute Resolution Standards (domestic travel). Refunds depend on when you cancel:", ["Cancel up to 5 days before the tour: full refund", "Cancel up to 2 days before: 10% of the fee deducted", "Cancel 1 day before: 20% of the fee deducted", "Cancel on the day or no-show: 30% of the fee deducted"]]}, {"h": "2. Cancellation by us or the guide", "b": ["If the tour is cancelled for reasons on our or the guide's side, including weather or safety, you get a full refund."]}, {"h": "3. Digital services (AI trip plans, etc.)", "b": ["Full refund if cancelled after payment but before the service is delivered (before the plan is created).", "No refund after the service has been delivered (after the plan is created), due to the nature of digital content."]}, {"h": "4. How refunds are paid and contact", "b": ["Refunds are made to your original payment method within 3–7 business days.", "Contact: the inquiry menu in the app, or email emhwang3@moneypuzzle.co.kr"]}]}, "ja": {"title": "返金規定", "eff": "施行日 2026-10-25", "app": "Money Puzzle Tour for Korea", "sec": [{"h": "1. ツアー・ガイド商品", "b": ["公正取引委員会「消費者紛争解決基準」（国内旅行）に従い、取消時期に応じて次のとおり返金します。", ["旅行開始の5日前までの取消：全額返金", "2日前までの取消：料金の10%を差し引いて返金", "1日前の取消：料金の20%を差し引いて返金", "当日取消・不参加：料金の30%を差し引いて返金"]]}, {"h": "2. 会社・ガイドの都合による取消", "b": ["天候・安全上の理由を含め、会社またはガイドの都合でツアーが中止になった場合は全額返金します。"]}, {"h": "3. デジタルサービス（AI旅行日程など）", "b": ["決済後、サービス提供前（日程作成前）は全額返金します。", "サービス提供後（日程作成後）は、デジタルコンテンツの性質上返金できません。"]}, {"h": "4. 返金方法・お問い合わせ", "b": ["返金は決済した手段で、営業日3～7日以内に行います。", "お問い合わせ：アプリ内のお問い合わせメニュー、またはメール emhwang3@moneypuzzle.co.kr"]}]}, "zhs": {"title": "退款规定", "eff": "施行日期 2026-10-25", "app": "Money Puzzle Tour for Korea", "sec": [{"h": "1. 旅游·向导产品", "b": ["依据韩国公平交易委员会《消费者纠纷解决标准》（国内旅行），按取消时间退款如下：", ["出发前5天及以前取消：全额退款", "出发前2天及以前取消：扣除费用的10%后退款", "出发前1天取消：扣除费用的20%后退款", "当天取消或未参加：扣除费用的30%后退款"]]}, {"h": "2. 因公司或向导原因取消", "b": ["因公司或向导原因（包括天气、安全问题）取消行程时，全额退款。"]}, {"h": "3. 数字服务（AI旅行行程等）", "b": ["付款后、服务提供前（行程生成前）可全额退款。", "服务提供后（行程生成后），因数字内容的特性不予退款。"]}, {"h": "4. 退款方式与咨询", "b": ["退款将通过原支付方式在3～7个工作日内办理。", "咨询：应用内咨询菜单，或邮箱 emhwang3@moneypuzzle.co.kr"]}]}, "zht": {"title": "退款規定", "eff": "施行日期 2026-10-25", "app": "Money Puzzle Tour for Korea", "sec": [{"h": "1. 旅遊·嚮導產品", "b": ["依據韓國公平交易委員會《消費者紛爭解決標準》（國內旅行），按取消時間退款如下：", ["出發前5天及以前取消：全額退款", "出發前2天及以前取消：扣除費用的10%後退款", "出發前1天取消：扣除費用的20%後退款", "當天取消或未參加：扣除費用的30%後退款"]]}, {"h": "2. 因公司或嚮導原因取消", "b": ["因公司或嚮導原因（包括天氣、安全問題）取消行程時，全額退款。"]}, {"h": "3. 數位服務（AI旅行行程等）", "b": ["付款後、服務提供前（行程產生前）可全額退款。", "服務提供後（行程產生後），因數位內容的特性不予退款。"]}, {"h": "4. 退款方式與諮詢", "b": ["退款將透過原付款方式於3～7個工作天內辦理。", "諮詢：應用程式內的諮詢選單，或電郵 emhwang3@moneypuzzle.co.kr"]}]}, "es": {"title": "Política de reembolso", "eff": "Fecha de entrada en vigor: 2026-10-25", "app": "Money Puzzle Tour for Korea", "sec": [{"h": "1. Tours y servicios de guía", "b": ["Seguimos los Estándares de Resolución de Disputas de Consumo de la Comisión de Comercio Justo de Corea (viajes nacionales). El reembolso depende de cuándo canceles:", ["Hasta 5 días antes del tour: reembolso total", "Hasta 2 días antes: se descuenta el 10% del precio", "1 día antes: se descuenta el 20% del precio", "El mismo día o si no te presentas: se descuenta el 30% del precio"]]}, {"h": "2. Cancelación por nuestra parte o del guía", "b": ["Si el tour se cancela por motivos nuestros o del guía, incluidos el clima o la seguridad, el reembolso es total."]}, {"h": "3. Servicios digitales (planes de viaje con IA, etc.)", "b": ["Reembolso total si se cancela tras el pago y antes de prestar el servicio (antes de crear el plan).", "Sin reembolso una vez prestado el servicio (plan creado), por la naturaleza del contenido digital."]}, {"h": "4. Forma de reembolso y contacto", "b": ["El reembolso se hace al medio de pago original en 3–7 días hábiles.", "Contacto: menú de consultas de la app o correo emhwang3@moneypuzzle.co.kr"]}]}};
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
+function inline(s){ return esc(s).replace(/emhwang3@moneypuzzle\.co\.kr/g,'<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a>'); }
+
+function opBlock(lang){ var o=OP[lang]; var L=[
+  ['', '<b>'+esc(o.cn)+'</b>'],
+  [o.rn, o.rv],[o.ceo, o.cev],[o.po, o.pov],
+  [o.cs, o.csv],[o.em, '<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a>'],
+  [o.ad, o.adv]];
+  var h='<div class="op"><div><b>'+esc(o.t)+'</b></div>';
+  for(var i=0;i<L.length;i++){ h+='<div>'+(L[i][0]?esc(L[i][0])+' : ':'')+L[i][1]+'</div>'; }
+  return h+'</div>';
+}
+
+function render(lang){
+  if(LANGS.indexOf(lang)<0) lang="ko";
+  document.documentElement.lang=HLANG[lang];
+  var d=D[lang], h='';
+  h+='<h1>'+esc(d.title)+'</h1>';
+  h+='<p class="eff">'+esc(d.app)+' · '+esc(d.eff)+'</p>';
+  for(var i=0;i<d.sec.length;i++){ var s=d.sec[i];
+    if(s.h) h+='<h2>'+esc(s.h)+'</h2>';
+    for(var j=0;j<s.b.length;j++){ var b=s.b[j];
+      if(Object.prototype.toString.call(b)==="[object Array]"){ h+='<ul>'; for(var k=0;k<b.length;k++) h+='<li>'+inline(b[k])+'</li>'; h+='</ul>'; }
+      else h+='<p>'+inline(b)+'</p>';
+    }
+  }
+  h+=opBlock(lang);
+  document.getElementById("doc").innerHTML=h;
+  document.getElementById("backt").textContent=BACK[lang];
+  document.getElementById("back").href="https://navi.moneypuzzle.co.kr/?lang="+lang;
+  document.title=d.title+" · Money Puzzle Tour for Korea";
+  var bs=document.getElementById("langbar").children;
+  for(var m=0;m<bs.length;m++) bs[m].className=(bs[m].getAttribute("data-l")===lang)?"on":"";
+  try{ localStorage.setItem("mpv_lang",lang); }catch(e){}
+  try{ history.replaceState(null,"","?lang="+lang); }catch(e){}
+}
+
+function pick(){
+  var q=(location.search.match(/[?&]lang=([a-z]+)/)||[])[1];
+  if(q&&LANGS.indexOf(q)>=0) return q;
+  var st; try{ st=localStorage.getItem("mpv_lang"); }catch(e){}
+  if(st&&LANGS.indexOf(st)>=0) return st;
+  var n=(navigator.language||"en").toLowerCase();
+  if(n.indexOf("ko")===0) return "ko";
+  if(n.indexOf("ja")===0) return "ja";
+  if(n.indexOf("es")===0) return "es";
+  if(n.indexOf("zh")===0) return (n.indexOf("tw")>=0||n.indexOf("hant")>=0||n.indexOf("hk")>=0)?"zht":"zhs";
+  return "en";
+}
+
+(function(){
+  var bar=document.getElementById("langbar"),h="";
+  for(var i=0;i<LANGS.length;i++) h+='<button data-l="'+LANGS[i]+'">'+LBL[LANGS[i]]+'</button>';
+  bar.innerHTML=h;
+  var btns=bar.children;
+  for(var j=0;j<btns.length;j++) btns[j].addEventListener("click",function(){ render(this.getAttribute("data-l")); });
+  render(pick());
+})();
+</script>
+</body>
+</html>
