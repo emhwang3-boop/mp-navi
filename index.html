@@ -673,7 +673,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025b4n", NAVI_ROOT="kr";
+var NAVI_V="1025b4o", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -1702,6 +1702,43 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script src="lang.js?v=1022es"></script>
 <script src="interp.js?v=1025jm"></script>
 <script src="billboard.js?v=1021pl"></script>
+<script>
+/* ★ 전국 지도(kr) 맨 위 「Treasure Map of Korea」 고지도 리본 (사장님 10-25) — 지도 그림·자료는 그대로, 위에 얹기만.
+   kr 화면에 들어올 때마다(크롤이 떠 있으면 끝난 뒤) 뜨고, 3초 뒤 모래알로 부서져 바람에 실려 지도 전체를 위→아래로 쓸고 내려가며 흐려진다(약 2.8초) → 요소 제거.
+   누름은 처음부터 통과(pointer-events:none). 알갱이 수는 화면 크기·기기 성능에 맞춰 줄인다. 움직임 줄이기 설정이면 그냥 흐려진다. */
+(function(){ try{
+  var SRC="img/kr_ribbon.png?v=1", IMG=null, cur=null;
+  function reduce(){ try{ return window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){ return false; } }
+  function kill(){ if(cur){ try{ cur.stop=1; if(cur.el.parentNode) cur.el.parentNode.removeChild(cur.el); }catch(e){} cur=null; } }
+  function show(){ kill(); var m=document.getElementById("map"); if(!m) return;
+    if(document.getElementById("mpcrawl")){ setTimeout(function(){ if(typeof VIEW==="string"&&VIEW==="kr") show(); },600); return; }   // 크롤 끝난 뒤
+    var go=function(){ if(typeof VIEW!=="string"||VIEW!=="kr") return;
+      var MW=m.clientWidth, MHh=m.clientHeight, dpr=Math.min(2,window.devicePixelRatio||1);
+      var rw=Math.round(MW*0.92), rh=Math.round(rw*IMG.naturalHeight/IMG.naturalWidth), rx=Math.round((MW-rw)/2), ry=8;
+      var cv=document.createElement("canvas"); cv.id="krRibbon"; cv.width=Math.round(MW*dpr); cv.height=Math.round(MHh*dpr);   // 지도 전체를 덮는 판 (모래가 지도 위를 쓸고 내려간다)
+      cv.style.cssText="position:absolute;left:0;top:0;width:"+MW+"px;height:"+MHh+"px;z-index:6;pointer-events:none;transition:opacity .6s ease;opacity:0";
+      m.appendChild(cv); var cx=cv.getContext("2d"), st={el:cv,stop:0}; cur=st;
+      var R=[rx*dpr,ry*dpr,rw*dpr,rh*dpr]; cx.drawImage(IMG,R[0],R[1],R[2],R[3]); requestAnimationFrame(function(){ cv.style.opacity="1"; });
+      setTimeout(function(){ if(st.stop) return; if(reduce()){ cv.style.transition="opacity 1.2s ease"; cv.style.opacity="0"; setTimeout(function(){ if(cur===st) kill(); },1300); return; } dust(st,cx,cv,R); },3000); };
+    if(!IMG){ IMG=new Image(); IMG.onload=go; IMG.src=SRC; } else if(IMG.complete) go(); else IMG.onload=go; }
+  function dust(st,cx,cv,R){ var W=cv.width, H=cv.height, X0=Math.round(R[0]), Y0=Math.round(R[1]), RW=Math.round(R[2]), RH=Math.round(R[3]), d;
+    try{ d=cx.getImageData(X0,Y0,RW,RH).data; }catch(e){ cv.style.opacity="0"; setTimeout(function(){ if(cur===st) kill(); },700); return; }
+    var lite=(navigator.hardwareConcurrency||4)<=4, max=lite?1600:3000, step=Math.max(2,Math.ceil(Math.sqrt(RW*RH*0.55/max))), P=[];
+    for(var y=0;y<RH;y+=step) for(var x=0;x<RW;x+=step){ var i=(y*RW+x)*4; if(d[i+3]<60) continue;
+      var fall=H*(0.75+Math.random()*0.45)-(Y0+y);   // 지도 아래 끝까지(또는 조금 넘게) 내려간다
+      P.push({x:X0+x,y:Y0+y,c:"rgb("+d[i]+","+d[i+1]+","+d[i+2]+")",dl:(y/RH)*0.12+(x/RW)*0.18+Math.random()*0.15,
+        fx:(Math.random()-0.5)*W*0.55+W*0.06, fy:fall, sw:(Math.random()*2-1)*W*0.05, ph:Math.random()*6.28, s:step}); }
+    var T0=performance.now(), DUR=2800;
+    function fr(t){ if(st.stop) return; var k=(t-T0)/DUR; cx.clearRect(0,0,W,H);
+      for(var j=0;j<P.length;j++){ var q=P[j], u=(k-q.dl)/(1-q.dl); if(u<=0){ cx.globalAlpha=1; cx.fillStyle=q.c; cx.fillRect(q.x,q.y,q.s,q.s); continue; } if(u>=1) continue;
+        var e=u*u*(3-2*u), wob=Math.sin(q.ph+u*7)*q.sw*u;   // 바람에 실려 넓게 퍼지며 내려가고, 좌우로 일렁이며 흐려진다
+        cx.globalAlpha=Math.max(0,1-u*u); cx.fillStyle=q.c; var sz=q.s*(1-u*0.55); cx.fillRect(q.x+q.fx*e+wob,q.y+q.fy*e,sz,sz); }
+      cx.globalAlpha=1; if(k<1.02) requestAnimationFrame(fr); else if(cur===st) kill(); }
+    requestAnimationFrame(fr); }
+  var _vs=window.viewSet; if(typeof _vs==="function") window.viewSet=function(v){ var pv=window.VIEW, r=_vs.apply(this,arguments); try{ if(v==="kr"){ if(pv!=="kr"||!cur) show(); } else kill(); }catch(e){} return r; };
+  if(typeof VIEW==="string"&&VIEW==="kr") show();
+}catch(e){} })();
+</script>
 <script>
 /* ★ 동해 보물섬(+롱 존 실버·앵무새) = 인트로 크롤 다시보기 (사장님 10-24) — ⋮ 메뉴 항목 대신 이 섬 하나로. 자족적, 실패해도 앱은 그대로 */
 (function(){ try{
