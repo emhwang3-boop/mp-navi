@@ -76,7 +76,26 @@
         +'<button class="x" type="button">✕ '+esc(L5({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}))+'</button>';
       bg.querySelector(".x").onclick=function(e){ e.stopPropagation(); bg.remove(); }; o.appendChild(bg); }; });
   }
-  b.onclick=open; if(hb){ hb.onclick=function(e){ e.preventDefault(); e.stopPropagation(); open(); }; setInterval(function(){ var t=L5({ko:"통역",en:"Interpreter",ja:"通訳",zhs:"翻译",zht:"翻譯",es:"Intérprete"}); if(hb.title!==t){ hb.title=t; hb.setAttribute("aria-label",t); } },600); }
+  b.onclick=open; if(hb){ hb.onclick=function(e){ e.preventDefault(); e.stopPropagation(); var q=document.getElementById("q"), t=q?String(q.value||"").trim():""; if(t) qSay(t); else open(); }; setInterval(function(){ var t=L5({ko:"통역",en:"Interpreter",ja:"通訳",zhs:"翻译",zht:"翻譯",es:"Intérprete"}); if(hb.title!==t){ hb.title=t; hb.setAttribute("aria-label",t); } },600); }
   /* 판이 열려 있으면 지금 장소로 다시 그린다 — 일정에서 장소를 고를 때 trip.js 가 부른다 (10-20) */
-  window.ITP={open:open,refresh:function(){ if(document.getElementById("itB")) open(); }};
+  /* 검색창 문장 → 말풍선 (사장님 2026-10-25): 손님 언어 → 한국어(한국어 화면이면 영어)로 크게 + 그 언어 음성. 허브 /ntr */
+  function speak(t,to){ try{ var ss=window.speechSynthesis; if(!ss) return; ss.cancel(); var u=new SpeechSynthesisUtterance(t); u.lang=to==="ko"?"ko-KR":"en-US"; u.rate=0.95;
+    var vs=ss.getVoices()||[], v=vs.filter(function(x){ return String(x.lang||"").toLowerCase().indexOf(to==="ko"?"ko":"en")===0; })[0]; if(v) u.voice=v; ss.speak(u); }catch(e){} }
+  function qSay(t){ var to=window.LANG==="ko"?"en":"ko", o=document.getElementById("itB"); if(o) o.remove();
+    try{ var u0=new SpeechSynthesisUtterance(" "); u0.volume=0; speechSynthesis.speak(u0); }catch(e){}   /* 누른 순간 음성 잠금 풀기 (아이폰은 손으로 누른 때만 소리) */
+    o=document.createElement("div"); o.id="itB"; o.onclick=function(e){ if(e.target===o) o.remove(); }; document.body.appendChild(o);
+    var bg=document.createElement("div"); bg.className="big"; o.appendChild(bg);
+    var X='<button class="x" type="button">✕ '+esc(L5({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}))+'</button>';
+    bg.innerHTML='<div class="m">'+esc(t)+'</div><div class="k" style="margin-top:14px;font-size:28px;color:#6b7280">'+esc(L5({ko:"번역하는 중…",en:"Translating…",ja:"翻訳中…",zhs:"正在翻译…",zht:"正在翻譯…",es:"Traduciendo…"}))+'</div>'+X;
+    var wx=function(){ var x=bg.querySelector(".x"); if(x) x.onclick=function(e){ e.stopPropagation(); try{ speechSynthesis.cancel(); }catch(er){} o.remove(); }; }; wx();
+    try{ ntap("_interp","q_say"); }catch(e){}
+    fetch(HUB+"/ntr",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({t:t,to:to})}).then(function(r){ return r.json(); }).then(function(j){
+      if(!o.isConnected) return; if(!j||!j.ok||!j.v) throw new Error("tr");
+      bg.innerHTML='<div class="k">'+esc(j.v)+'</div><div class="m">'+esc(t)+'</div>'
+        +'<button type="button" class="gt sp" style="margin:22px 0 0;padding:12px 22px;border:0;cursor:pointer">'+MPIMG("mi_speaker",MIS)+esc(L5({ko:"다시 듣기",en:"Play again",ja:"もう一度聞く",zhs:"再听一遍",zht:"再聽一遍",es:"Escuchar otra vez"}))+'</button>'
+        +'<a class="gt" style="margin:10px 0 0;padding:10px 18px;background:#fff;color:#1a73e8;border:1px solid #1a73e8;font-size:14px" href="'+esc(gtUrl(t))+'" target="_blank" rel="noopener">'+esc(L5({ko:"구글 번역으로 열기",en:"Open in Google Translate",ja:"Google翻訳で開く",zhs:"在Google翻译中打开",zht:"在Google翻譯中開啟",es:"Abrir en Google Traductor"}))+'</a>'+X;
+      bg.querySelector(".sp").onclick=function(e){ e.stopPropagation(); speak(j.v,to); }; wx(); speak(j.v,to);
+    }).catch(function(){ if(!o.isConnected) return; bg.innerHTML='<div class="m">'+esc(t)+'</div><div class="m" style="color:#d0021b">'+esc(L5({ko:"번역하지 못했어요. 구글 번역으로 열어 보세요.",en:"Could not translate. Try Google Translate.",ja:"翻訳できませんでした。Google翻訳をお試しください。",zhs:"无法翻译，请试试Google翻译。",zht:"無法翻譯，請試試Google翻譯。",es:"No se pudo traducir. Prueba Google Traductor."}))+'</div>'
+      +'<a class="gt" style="margin:16px 0 0;padding:12px 22px" href="'+esc(gtUrl(t))+'" target="_blank" rel="noopener">Google Translate</a>'+X; wx(); }); }
+  window.ITP={say:qSay,open:open,refresh:function(){ if(document.getElementById("itB")) open(); }};
 })();
