@@ -261,8 +261,11 @@ var RF6={ko:"5일 전까지 전액 환불 · 당일 30% 공제",en:"Full refund 
 var RFL6={ko:"환불 규정 보기",en:"Refund policy",ja:"返金規定を見る",zhs:"查看退款规定",zht:"查看退款規定",es:"Ver política de reembolso"};
 // 상품 카드 환불 한 줄 공통 부품 (사장님 10-25) — 우리가 직접 결제받는 가격 있는 상품(o.p)에만. 상품 자료에 o.refund(6개 언어)가 있으면 그 조건, 없으면 기본(RF6).
 //   외부 예매처로 넘기는 것(o.external — 공연 티켓 KOPIS 예매처 등)이나 가격 없는 것엔 붙이지 않는다
-function refundLine(o){ if(!o||!o.p||o.external) return ""; return '<div class="d" style="margin-top:3px;color:var(--ink)">'+esc(LG6(o.refund||RF6))+' · <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener" style="color:inherit;font-weight:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px">'+esc(LG6(RFL6))+'</a></div>'; }   // 카드 다른 설명 글자와 같은 크기·굵기, 본문색, 얇은 밑줄 (사장님 10-25)
+function refundLine(o){ if(!o||!o.p||o.external) return ""; return '<div class="d" style="margin-top:3px;color:var(--ink)">'+esc(LG6(o.refund||RF6))+' · <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener" style="all:unset;display:inline;cursor:pointer;font:inherit;color:inherit;line-height:inherit;letter-spacing:inherit;text-decoration:none">'+esc(LG6(RFL6))+'</a></div>'; }   // 앞 문장과 겉모습 100% 같게 — .tgbook a(14.5px·900) 기본값을 all:unset 으로 지우고 상속, 밑줄 없음, 누르면 링크로만 (사장님 10-25)
 window.refundLine=refundLine;
+var PAYB6={ko:"예약·결제",en:"Book & pay",ja:"予約・決済",zhs:"预订·付款",zht:"預訂·付款",es:"Reservar y pagar"};
+var PAYTEST6={ko:"지금은 시험 운영 중이라 실제로 결제되지 않습니다",en:"We are in a test run — no real payment will be made",ja:"現在は試験運用中のため、実際の決済は行われません",zhs:"目前为试运营，不会实际扣款",zht:"目前為試營運，不會實際扣款",es:"Estamos en fase de prueba: no se realizará ningún cobro real"};
+window.PAYTEST6=PAYTEST6;
 var B4PKG={ t:{ko:"K-POP 빅4 사옥 투어",en:"K-pop Big4 Agency Tour",ja:"K-POP BIG4 社屋ツアー",zhs:"K-POP四大社参观团",zht:"K-POP四大社參觀團",es:"Tour de las Big4 del K-pop"},
   g:{ko:"가이드 동행 · 약 8시간",en:"With a guide · about 8 hours",ja:"ガイド同行・約8時間",zhs:"向导同行·约8小时",zht:"嚮導同行·約8小時",es:"Con guía · unas 8 horas"},
   c:{ko:"HYBE·SM·JYP·YG 사옥 외관(삼성동 코엑스 아티움 포함)과 SM KWANGYA(성수) 굿즈샵을 가이드와 함께 돕니다 (외관 관람·사진).",en:"Tour the HYBE, SM, JYP and YG building exteriors (incl. COEX Artium in Samseong) and the SM KWANGYA goods shop in Seongsu, with a guide (exterior & photos).",ja:"HYBE・SM・JYP・YGの社屋外観（三成洞COEXアティウム含む）とSM KWANGYA（聖水）のグッズショップをガイドと巡ります（外観・写真）。",zhs:"在向导带领下游览HYBE·SM·JYP·YG大楼外观（含三成洞COEX Artium）和SM KWANGYA（圣水）周边店（外观·拍照）。",zht:"在嚮導帶領下遊覽HYBE·SM·JYP·YG大樓外觀（含三成洞COEX Artium）和SM KWANGYA（聖水）周邊店（外觀·拍照）。",es:"Recorre con guía los exteriores de HYBE, SM, JYP y YG (incl. COEX Artium en Samseong) y la tienda SM KWANGYA en Seongsu (exterior y fotos)."},
@@ -290,8 +293,8 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
     +'<div class="d" style="font-weight:800;color:var(--ink);margin-top:2px">'+esc(LG6(B4PKG.p))+'</div>'
     +refundLine(B4PKG)   // 환불 규정 요약 + 링크 — 공통 부품 (토스 PG, 10-25)
     +'<button type="button" class="nrsel" data-nr="b4map" style="margin-top:7px;background:#fff;color:#d9480f;border-color:#ff7a00">'+MPICO("mi_bus",LG6({ko:"투어 노선도 보기",en:"View tour route",ja:"ツアー路線図を見る",zhs:"查看游览路线图",zht:"查看遊覽路線圖",es:"Ver la ruta del tour"}),MIS)+' ›</button>'
-    +'<button type="button" class="nrsel" data-nr="ig" style="margin-top:7px;background:#7c3aed;color:#fff;border-color:#7c3aed">'+esc(LG6(B4PKG.b))+' ›</button>'
-    +'<div class="d" style="color:var(--sub);margin-top:4px">'+esc(LG6(B4PKG.n))+'</div>'):'')+'</div>';
+    +'<button type="button" class="nrsel" data-nr="b4pay" style="margin-top:7px;background:#3182f6;color:#fff;border-color:#3182f6">'+esc(LG6(PAYB6))+' ›</button>'   // 「예약·결제」 하나만 — 모든 손님 (사장님 10-25)
+    +'<div class="d" style="color:var(--sub);margin-top:4px">'+esc(LG6(PAYTEST6))+'</div>'):'')+'</div>';
   var part='<div class="tgpart">'+esc(LG6(PARTNER6))+'</div>';
   return pkg+mPerf+part   /* 「빅4 사옥 견학」 메뉴(mKpop) 제거 — 사옥이 지도 해당 구에 올라가 손님이 직접 찾아감, 투어는 가이드판(B4PKG)만 (사장님 10-25) */
     +one("https://www.klook.com/"+kl+"/","Klook")+one("https://www.getyourguide.com/"+gl,"GetYourGuide")+one("https://creatrip.com/"+cl,"Creatrip")+one("https://www.trazy.com/","Trazy",tzd); }
@@ -576,6 +579,7 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   if(g==="me"){ S.items=null; S.err=""; paint(); myPos().then(function(p){ if(p){ try{ meSet(p); }catch(z){} } load(); }); return; }
   if(g==="tgx"){ TGX[t.dataset.g]=!TGX[t.dataset.g]; paint(); return; }   // 체험·입장권 우리 메뉴 펼침/접기 (10-25)
   if(g==="tgp"){ tgPick(t.dataset.k); return; }   // 그 장소 열기 (공연장=카드+KOPIS, 빅4=카드)
+  if(g==="b4pay"){ try{ if(window.TPAY) TPAY.open(); }catch(z){} return; }   // 빅4 투어 주문·결제 (tosspay.js)
   if(g==="b4map"){ close(); try{ if(window.b4RouteShow) b4RouteShow(); }catch(z){} return; }   // 빅4 투어 노선도 보기 (10-25)
   if(g==="pick"){ var x=S.items&&S.items[+t.dataset.i]; if(x) pick(x); } });
 
