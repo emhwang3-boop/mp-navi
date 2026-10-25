@@ -261,7 +261,7 @@ var RF6={ko:"5일 전까지 전액 환불 · 당일 30% 공제",en:"Full refund 
 var RFL6={ko:"환불 규정 보기",en:"Refund policy",ja:"返金規定を見る",zhs:"查看退款规定",zht:"查看退款規定",es:"Ver política de reembolso"};
 // 상품 카드 환불 한 줄 공통 부품 (사장님 10-25) — 우리가 직접 결제받는 가격 있는 상품(o.p)에만. 상품 자료에 o.refund(6개 언어)가 있으면 그 조건, 없으면 기본(RF6).
 //   외부 예매처로 넘기는 것(o.external — 공연 티켓 KOPIS 예매처 등)이나 가격 없는 것엔 붙이지 않는다
-function refundLine(o){ if(!o||!o.p||o.external) return ""; return '<div class="d" style="margin-top:3px">'+esc(LG6(o.refund||RF6))+' · <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener" style="color:var(--blue);font-weight:700">'+esc(LG6(RFL6))+'</a></div>'; }
+function refundLine(o){ if(!o||!o.p||o.external) return ""; return '<div class="d" style="margin-top:3px;color:var(--ink)">'+esc(LG6(o.refund||RF6))+' · <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener" style="color:inherit;font-weight:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px">'+esc(LG6(RFL6))+'</a></div>'; }   // 카드 다른 설명 글자와 같은 크기·굵기, 본문색, 얇은 밑줄 (사장님 10-25)
 window.refundLine=refundLine;
 var B4PKG={ t:{ko:"K-POP 빅4 사옥 투어",en:"K-pop Big4 Agency Tour",ja:"K-POP BIG4 社屋ツアー",zhs:"K-POP四大社参观团",zht:"K-POP四大社參觀團",es:"Tour de las Big4 del K-pop"},
   g:{ko:"가이드 동행 · 약 8시간",en:"With a guide · about 8 hours",ja:"ガイド同行・約8時間",zhs:"向导同行·约8小时",zht:"嚮導同行·約8小時",es:"Con guía · unas 8 horas"},
