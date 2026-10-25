@@ -673,7 +673,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025b4p", NAVI_ROOT="kr";
+var NAVI_V="1025b4q", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -1721,40 +1721,25 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
       var R=[rx*dpr,ry*dpr,rw*dpr,rh*dpr]; cx.drawImage(IMG,R[0],R[1],R[2],R[3]); requestAnimationFrame(function(){ cv.style.opacity="1"; });
       setTimeout(function(){ if(st.stop) return; if(reduce()){ cv.style.transition="opacity 1.2s ease"; cv.style.opacity="0"; setTimeout(function(){ if(cur===st) kill(); },1300); return; } dust(st,cx,cv,R); },3000); };
     if(!IMG){ IMG=new Image(); IMG.onload=go; IMG.src=SRC; } else if(IMG.complete) go(); else IMG.onload=go; }
+  var SAND=new Image(); SAND.src="img/sand_grains.png?v=1";   // 나노바나나로 뽑은 진짜 모래알·금빛 낟알 10개 (16px 칸) — 알갱이는 이 그림으로만 그린다
+  var SG=[0,2,3,5,6,8], GD=[1,4,7,9];   // 모래알 칸 · 금빛 낟알 칸
   function dust(st,cx,cv,R){ var W=cv.width, H=cv.height, X0=Math.round(R[0]), Y0=Math.round(R[1]), RW=Math.round(R[2]), RH=Math.round(R[3]), d, dpr=W/cv.clientWidth||1;
+    if(!(SAND.complete&&SAND.naturalWidth)){ cv.style.transition="opacity 1.2s ease"; cv.style.opacity="0"; setTimeout(function(){ if(cur===st) kill(); },1300); return; }
     try{ d=cx.getImageData(X0,Y0,RW,RH).data; }catch(e){ cv.style.opacity="0"; setTimeout(function(){ if(cur===st) kill(); },700); return; }
-    // 1~2px 동그란 모래알 — 많이(성능 따라). 색은 리본 색, 일부는 금빛 반짝임
-    var lite=(navigator.hardwareConcurrency||4)<=4, max=lite?4500:9000, step=Math.max(1,Math.sqrt(RW*RH*0.6/max)), P=[], NB=20, BK=[];
-    for(var b=0;b<NB;b++) BK.push([]);
+    var lite=(navigator.hardwareConcurrency||4)<=4, max=lite?2600:5200, step=Math.max(1,Math.sqrt(RW*RH*0.6/max)), P=[];
     for(var y=0;y<RH;y+=step) for(var x=0;x<RW;x+=step){ var xi=Math.floor(x+Math.random()*step), yi=Math.floor(y+Math.random()*step); if(xi>=RW||yi>=RH) continue; var i=(yi*RW+xi)*4; if(d[i+3]<80) continue;
-      var lum=(d[i]*0.3+d[i+1]*0.59+d[i+2]*0.11)/255, bi=Math.min(NB-1,Math.floor(lum*NB));
-      P.push({x:X0+xi,y:Y0+yi,b:bi,dl:(xi/RW)*0.42+Math.random()*0.06,   // 왼쪽부터 바람에 깎여 나간다
+      var gl=Math.random()<0.2;
+      P.push({x:X0+xi,y:Y0+yi,dl:(xi/RW)*0.42+Math.random()*0.06,   // 왼쪽부터 바람에 깎여 나간다
         sp:(Math.random()-0.5)*H*0.28, wa:(18+Math.random()*46)*dpr, wf:1+Math.random()*1.6, ph:Math.random()*6.28, vx:0.9+Math.random()*0.5,
-        r:(0.5+Math.random()*0.5)*dpr, gl:Math.random()<0.18}); }
-    // 밝기 칸별 대표 색 (리본 색 그대로) — 칸마다 한 번에 그린다
-    var COL=[]; for(var b2=0;b2<NB;b2++){ var s=0,rr=0,gg=0,bb=0; }
-    var acc=[]; for(var b3=0;b3<NB;b3++) acc.push([0,0,0,0]);
-    for(var y2=0;y2<RH;y2+=Math.max(2,step*2)) for(var x2=0;x2<RW;x2+=Math.max(2,step*2)){ var i2=(Math.floor(y2)*RW+Math.floor(x2))*4; if(d[i2+3]<80) continue; var l2=(d[i2]*0.3+d[i2+1]*0.59+d[i2+2]*0.11)/255, k2=Math.min(NB-1,Math.floor(l2*NB)); acc[k2][0]+=d[i2]; acc[k2][1]+=d[i2+1]; acc[k2][2]+=d[i2+2]; acc[k2][3]++; }
-    for(var b4=0;b4<NB;b4++){ var a=acc[b4]; COL.push(a[3]?"rgb("+Math.round(a[0]/a[3])+","+Math.round(a[1]/a[3])+","+Math.round(a[2]/a[3])+")":"rgb(210,180,130)"); }
+        si:gl?GD[(Math.random()*GD.length)|0]:SG[(Math.random()*SG.length)|0], sz:(1.4+Math.random()*1.6)*dpr, gl:gl}); }
     var T0=performance.now(), DUR=3000, FR=0.42;
     function fr(t){ if(st.stop) return; var k=(t-T0)/DUR; cx.clearRect(0,0,W,H);
-      // 아직 안 깎인 리본 (바람 앞머리 오른쪽만)
-      var front=X0+RW*Math.min(1,k/FR); if(front<X0+RW){ cx.save(); cx.beginPath(); cx.rect(front,0,W-front,H); cx.clip(); cx.globalAlpha=1; cx.drawImage(IMG,X0,Y0,RW,RH); cx.restore(); }
-      var paths=[]; for(var b=0;b<NB;b++) paths.push(null); var gold=new Path2D(), ng=0;
-      cx.globalAlpha=1;
-      for(var al=0;al<4;al++){   // 흐려짐 4단계로 나눠 그린다
-        for(var bq=0;bq<NB;bq++) paths[bq]=new Path2D();
-        var any=false;
-        for(var j=0;j<P.length;j++){ var q=P[j], u=(k-q.dl)/(1-q.dl*0.5); if(u<=0||u>=1) continue; var lv=Math.min(3,Math.floor(u*u*4)); if(lv!==al) continue;
-          // 바람 한 줄기: 오른쪽으로 휙 — 한반도 위를 크게 휘감는 곡선(아래로 둥글게 내려갔다 다시 올라가며 반대편 밖으로) + 알갱이마다 파도처럼 일렁임
-          var e=Math.pow(u,1.15), px=q.x+(W*1.25)*e*q.vx, py=q.y+Math.sin(Math.PI*e)*H*0.5+q.sp*e+Math.sin(q.ph+e*Math.PI*2*q.wf)*q.wa*e;
-          var rr=q.r*(1-u*0.4);
-          if(q.gl&&Math.sin(t*0.03+q.ph*9)>0.3){ gold.moveTo(px+rr,py); gold.arc(px,py,rr*1.25,0,6.283); ng++; }
-          else { paths[q.b].moveTo(px+rr,py); paths[q.b].arc(px,py,rr,0,6.283); } any=true; }
-        if(!any) continue; cx.globalAlpha=[1,0.75,0.45,0.2][al];
-        for(var bz=0;bz<NB;bz++){ cx.fillStyle=COL[bz]; cx.fill(paths[bz]); }
-      }
-      if(ng){ cx.globalAlpha=0.9; cx.fillStyle="#ffe08a"; cx.fill(gold); }   // 금빛 반짝임
+      var front=X0+RW*Math.min(1,k/FR); if(front<X0+RW){ cx.save(); cx.beginPath(); cx.rect(front,0,W-front,H); cx.clip(); cx.globalAlpha=1; cx.drawImage(IMG,X0,Y0,RW,RH); cx.restore(); }   // 아직 안 깎인 리본
+      for(var j=0;j<P.length;j++){ var q=P[j], u=(k-q.dl)/(1-q.dl*0.5); if(u<=0||u>=1) continue;
+        // 바람 한 줄기: 오른쪽으로 휙 — 한반도 위를 크게 휘감는 곡선 + 알갱이마다 파도처럼 일렁임 (수직 낙하 아님)
+        var e=Math.pow(u,1.15), px=q.x+(W*1.25)*e*q.vx, py=q.y+Math.sin(Math.PI*e)*H*0.5+q.sp*e+Math.sin(q.ph+e*Math.PI*2*q.wf)*q.wa*e;
+        var s=q.sz*(1-u*0.35)*(q.gl?1+0.35*Math.max(0,Math.sin(t*0.03+q.ph*9)):1);   // 금빛 낟알은 반짝
+        cx.globalAlpha=Math.max(0,1-u*u); cx.drawImage(SAND,q.si*16,0,16,16,px-s/2,py-s/2,s,s); }
       cx.globalAlpha=1; if(k<1.02) requestAnimationFrame(fr); else if(cur===st) kill(); }
     requestAnimationFrame(fr); }
   var _vs=window.viewSet; if(typeof _vs==="function") window.viewSet=function(v){ var pv=window.VIEW, r=_vs.apply(this,arguments); try{ if(v==="kr"){ if(pv!=="kr"||!cur) show(); } else kill(); }catch(e){} return r; };
