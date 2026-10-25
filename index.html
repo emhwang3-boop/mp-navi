@@ -79,6 +79,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
 html:lang(ja) body,html:lang(ja) :is(button,input,select,textarea){font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic UI','Yu Gothic',Meiryo,'Noto Sans JP',sans-serif}
 html:lang(zh-Hans) body,html:lang(zh-Hans) :is(button,input,select,textarea){font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC',sans-serif}
 html:lang(zh-Hant) body,html:lang(zh-Hant) :is(button,input,select,textarea){font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif}
+.hic{border:0;background:none;padding:2px;line-height:0;cursor:pointer;flex:0 0 auto}.hic img.miic{height:24px!important;width:24px!important;margin:0!important;vertical-align:0!important}   /* 머리줄 지구본·말풍선 (10-25) */
+#lang[hidden]{display:none!important}
 #lang{appearance:auto;padding:6px 4px 6px 8px;max-width:104px}
 .wrap{max-width:720px;margin:0 auto;padding:16px}
 .top{display:flex;align-items:center;gap:10px;margin:6px 0 18px;position:relative;flex-wrap:wrap;row-gap:8px}
@@ -250,7 +252,9 @@ html.mpc-lock #treasIsle{visibility:hidden}
     <div class="tbs">
     <button id="inst" onclick="instGo()" hidden style="white-space:nowrap;margin-left:auto;border:0;border-radius:999px;padding:8px 14px;background:var(--blue);color:#fff;font-weight:700;font-size:13px;cursor:pointer"><img class="miic" src="img/menu/mi_install.png" alt="" style="height:1.1em;width:auto;vertical-align:-0.18em;margin-right:4px">앱 설치</button>
     <button id="rs" onclick="resetAll()" class="tb">처음으로</button>
-    <select id="lang" class="tb" onchange="setLang(this.value)" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="es">Español</option><option value="ja">日本語</option><option value="zhs">简体中文</option><option value="zht">繁體中文</option></select>
+    <select id="lang" class="tb" hidden onchange="setLang(this.value)" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="es">Español</option><option value="ja">日本語</option><option value="zhs">简体中文</option><option value="zht">繁體中文</option></select>
+    <button id="hlg" type="button" aria-label="Language" title="Language" class="hic"><img class="miic" src="img/menu/mi_globe.png" alt=""></button>
+    <button id="hit" type="button" aria-label="Interpreter" title="Interpreter" class="hic"><img class="miic" src="img/menu/mi_interpreter.png" alt=""></button>
     <button id="sh" onclick="shOpen()" aria-label="share" class="tb">공유</button>
     <button id="th" onclick="thTog()" aria-label="theme" style="border:0;background:none;font-size:20px;line-height:1;padding:4px 4px;cursor:pointer"><img class="miic" src="img/menu/mi_moon.png" alt="theme" style="height:20px;width:20px;vertical-align:-3px;margin:0"></button>
     <button id="mb" onclick="mbTog(event)" aria-label="menu" style="border:0;background:none;font-size:24px;line-height:1;padding:4px 6px;cursor:pointer;color:var(--ink)">⋮</button>
@@ -673,7 +677,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025d6", NAVI_ROOT="kr";
+var NAVI_V="1025d7", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -1708,8 +1712,8 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
     if(_spm&&_spm.getElement){ var r2=_spm.getElement().getBoundingClientRect(); if(r2.width&&Math.hypot(x-(r2.left+r2.width/2),y-(r2.top+r2.height*0.4))<28){ spinCard(); return; } }
   }catch(z){} },true);
 </script>
-<script src="lang.js?v=1022es"></script>
-<script src="interp.js?v=1025jm"></script>
+<script src="lang.js?v=1025hd"></script>
+<script src="interp.js?v=1025hd"></script>
 <script src="billboard.js?v=1021pl"></script>
 <script>
 /* ★ 전국 지도(kr) 맨 위 「Treasure Map of Korea」 고지도 리본 (사장님 10-25) — 지도 그림·자료는 그대로, 위에 얹기만.
