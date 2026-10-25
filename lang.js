@@ -56,19 +56,25 @@ function css(){ if(document.getElementById("lgCss")) return; var s=document.crea
   document.head.appendChild(s); }
 var P=null;
 function label(){ if(!P) return; var t=document.getElementById("lgT"), l=window.LANG, f=fg();
+  if(!t){ var nm=T("언어 고르기","Language")+" · "+(NM[l]||NM.ko); P.title=nm; P.setAttribute("aria-label",nm); return; }   // 머리줄 지구본 (10-25)
   t.textContent="🌐 "+(NM[l]||NM.ko);   // 지구본엔 지금 고른 언어를 쓴다 — 위쪽 고르기 칸과 같게 (사장님 10-18). 누르면 외국어↔한국어
   if(l!=="ko") t.title=TE("Show this screen in Korean"); else if(f) t.title="← "+NM[f]; else t.title="Language";
   t.setAttribute("aria-label",t.title); document.getElementById("lgM").setAttribute("aria-label",T("언어 고르기","Choose language")); }
 function busy(d){ KL.busy=Math.max(0,KL.busy+d); if(P) P.classList.toggle("busy",KL.busy>0); }
 function listOpen(){ listClose(); var r=P.getBoundingClientRect(), b=document.createElement("div"); b.id="lgL";
   b.innerHTML=ORD.map(function(l){ return '<button type="button" data-l="'+l+'"'+(l===window.LANG?' class="on"':'')+' lang="'+({ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant",es:"es"}[l])+'">'+NM[l]+'</button>'; }).join("");
-  document.body.appendChild(b); var h=b.offsetHeight, top=r.top-h-6; if(top<6) top=Math.min(window.innerHeight-h-6,r.bottom+6); b.style.top=Math.max(6,top)+"px";
+  document.body.appendChild(b); if(P.id==="hlg"){ b.style.top=Math.round(r.bottom+6)+"px"; b.style.right=Math.max(6,Math.round(document.documentElement.clientWidth-r.right))+"px"; } else { var h=b.offsetHeight, top=r.top-h-6; if(top<6) top=Math.min(window.innerHeight-h-6,r.bottom+6); b.style.top=Math.max(6,top)+"px"; }
   b.addEventListener("click",function(e){ e.stopPropagation(); var x=e.target.closest("button[data-l]"); if(!x) return; listClose(); to(x.dataset.l,false); });
   setTimeout(function(){ document.addEventListener("pointerdown",outside,true); },0); }
 function outside(e){ var b=document.getElementById("lgL"); if(!b) return document.removeEventListener("pointerdown",outside,true); if(b.contains(e.target)||(P&&P.contains(e.target))) return; e.stopPropagation(); e.preventDefault(); listClose(); }
 function listClose(){ var b=document.getElementById("lgL"); if(b) b.remove(); document.removeEventListener("pointerdown",outside,true); }
 function quick(){ var l=window.LANG, f=fg(); if(l!=="ko") return to("ko",true); if(f) return to(f,false); listOpen(); }
-function make(){ css(); if(document.getElementById("lgP")) return; P=document.createElement("div"); P.id="lgP"; P.setAttribute("translate","no"); P.className="notranslate";
+function make(){ css(); if(document.getElementById("lgP")) return;
+  /* 머리줄 지구본 아이콘(#hlg)이 있으면 그것이 언어 단추 — 지도 위 떠 있는 알약은 안 만든다 (사장님 2026-10-25). 누르면 언어 목록 */
+  var hb=document.getElementById("hlg"); if(hb){ P=hb; P.setAttribute("translate","no"); P.classList.add("notranslate");
+    P.addEventListener("click",function(e){ e.preventDefault(); e.stopPropagation(); if(document.getElementById("lgL")) listClose(); else listOpen(); });
+    label(); return; }
+  P=document.createElement("div"); P.id="lgP"; P.setAttribute("translate","no"); P.className="notranslate";
   P.innerHTML='<button type="button" id="lgT"></button><button type="button" id="lgM">▾</button>'; document.body.appendChild(P);
   var t=document.getElementById("lgT"), lp=null, longed=false, dr=null, dragged=false;
   ["click","pointerup","pointerdown","touchstart","touchend","mousedown","mouseup"].forEach(function(ev){ P.addEventListener(ev,function(e){ e.stopPropagation(); },false); });   // 밑의 지도·창 닫기로 새지 않게
@@ -91,7 +97,7 @@ function hit(top){ var vw=document.documentElement.clientWidth, w=P.offsetWidth,
     var c=e.closest&&e.closest("button,a,input,select,textarea,[role=button],.trx,.tebtn,.tradd,.nrcall,label"); if(!c||c.closest("#lgP,#lgL,#nmap")) continue;
     var r=c.getBoundingClientRect(); if(r.width>vw*0.8) continue; bad++; } return bad; }
 var _pt=null, _base=null;
-function place(){ if(!P||P.style.transition==="none"||document.getElementById("lgL")) return; var vh=window.innerHeight, h=P.offsetHeight||34, f=parseFloat(ls("mpv_lgy")), base=Math.round((f>0&&f<1?f:0.58)*vh);
+function place(){ if(!P||P.id==="hlg"||P.style.transition==="none"||document.getElementById("lgL")) return; var vh=window.innerHeight, h=P.offsetHeight||34, f=parseFloat(ls("mpv_lgy")), base=Math.round((f>0&&f<1?f:0.58)*vh);
   base=Math.max(8,Math.min(vh-h-8,base)); P.style.pointerEvents="none"; P.style.visibility="hidden";
   var cur=parseFloat(P.style.top)||base, best=null, cand=[cur,base], i; for(i=1;i<=12;i++){ cand.push(base-i*36,base+i*36); }
   try{ for(i=0;i<cand.length;i++){ var y=cand[i]; if(y<8||y>vh-h-8) continue; if(!hit(y)){ best=y; break; } } }catch(e){}
