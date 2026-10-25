@@ -276,7 +276,7 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
     +'<a href="https://www.klook.com/'+kl+'/search/result/?query=k-pop" target="_blank" rel="noopener">Klook ›</a>'
     +'<a href="https://www.trazy.com/" target="_blank" rel="noopener">Trazy ›</a></div>';
   var mKpop='<div class="tgm"><div class="tgh" data-nr="tgx" data-g="kpop"><img src="img/kpop_marker.png" alt=""><span>'+esc(LG6(KPOP6))+'</span><span class="tgar">'+(TGX.kpop?"▾":"▸")+'</span></div>'
-    +(TGX.kpop?('<div class="tgsub">'+esc(LG6(KPOPNOTE6))+'</div>'+TG_KPOP.map(function(r){ return tgRow(r[0],r[1]); }).join("")+kBook):"")+'</div>';
+    +(TGX.kpop?('<div class="tgsub">'+esc(LG6(KPOPNOTE6))+'</div>'+TG_KPOP.map(function(r){ return tgRow(r[0],r[1]); }).join("")):"")+'</div>';   // K-pop 투어 예약(kBook) 블록 삭제 (사장님 10-25)
   var pkg='<div class="tgbook b4pkg"><div class="tgbh" data-nr="tgx" data-g="pkg" style="cursor:pointer"><img src="img/kpop_marker.png" alt="">'+esc(LG6(B4PKG.t))+'<span class="tgar" style="margin-left:auto">'+(TGX.pkg?"▾":"▸")+'</span></div>'
     +(TGX.pkg?('<div class="d" style="font-weight:700;color:var(--ink)">'+esc(LG6(B4PKG.g))+'</div>'
     +'<div class="d">'+esc(LG6(B4PKG.c))+'</div>'
