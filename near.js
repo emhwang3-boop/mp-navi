@@ -237,7 +237,8 @@ var TG_PERF=[["sejongctr",{ko:"세종문화회관",en:"Sejong Center for the Per
   ["sac",{ko:"예술의전당",en:"Seoul Arts Center",ja:"芸術の殿堂",zhs:"艺术殿堂",zht:"藝術殿堂",es:"Seoul Arts Center"}],
   ["bluesq",{ko:"블루스퀘어",en:"Blue Square",ja:"ブルースクエア",zhs:"Blue Square（蓝色广场）",zht:"Blue Square（藍色廣場）",es:"Blue Square"}],
   ["lgart",{ko:"LG아트센터 서울",en:"LG Arts Center Seoul",ja:"LGアートセンター ソウル",zhs:"LG艺术中心首尔",zht:"LG藝術中心首爾",es:"LG Arts Center Seoul"}],
-  ["olympichall",{ko:"올림픽홀 (올림픽공원)",en:"Olympic Hall (Olympic Park)",ja:"オリンピックホール（オリンピック公園）",zhs:"奥林匹克大厅（奥林匹克公园）",zht:"奧林匹克大廳（奧林匹克公園）",es:"Olympic Hall (Parque Olímpico)"}]];
+  ["olympichall",{ko:"올림픽홀 (올림픽공원)",en:"Olympic Hall (Olympic Park)",ja:"オリンピックホール（オリンピック公園）",zhs:"奥林匹克大厅（奥林匹克公园）",zht:"奧林匹克大廳（奧林匹克公園）",es:"Olympic Hall (Parque Olímpico)"}],
+  ["ntheater",{ko:"국립극장 (남산)",en:"National Theater of Korea (Namsan)",ja:"国立劇場（南山）",zhs:"国立剧场（南山）",zht:"國立劇場（南山）",es:"Teatro Nacional de Corea (Namsan)"}]];
 var TG_KPOP=[["smartium",{ko:"코엑스 아티움 (SM타운)",en:"COEX Artium (SMTOWN)",ja:"COEXアティウム（SMTOWN）",zhs:"COEX Artium（SMTOWN）",zht:"COEX Artium (SMTOWN)",es:"COEX Artium (SMTOWN)"}],
   ["smksu",{ko:"SM 성수 (KWANGYA@SEOUL)",en:"SM Seongsu (KWANGYA@SEOUL)",ja:"SM 聖水（KWANGYA@SEOUL）",zhs:"SM圣水（KWANGYA@SEOUL）",zht:"SM 聖水（KWANGYA@SEOUL）",es:"SM Seongsu (KWANGYA@SEOUL)"}],
   ["hybe",{ko:"하이브 HYBE",en:"HYBE",ja:"HYBE",zhs:"HYBE",zht:"HYBE",es:"HYBE"}],
