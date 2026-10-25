@@ -445,9 +445,9 @@ function footBuild(){ var e=document.getElementById("foot"); if(!e) return;
     es:["Booman Inc. | N.º de registro mercantil : 297-81-03712 | N.º de venta a distancia : (     )","Representante : Jeon Hyeonjin | Resp. de privacidad : Hwang Euiman","Atención : 1599-7065 | Correo : "+em,ADDR_EN]
   };
   var lg=F[window.LANG]?window.LANG:"en";
-  var PL={ko:["이용약관","개인정보처리방침"],en:["Terms","Privacy"],ja:["利用規約","プライバシー"],zhs:["使用条款","隐私政策"],zht:["使用條款","隱私政策"],es:["Términos","Privacidad"]};
+  var PL={ko:["이용약관","개인정보처리방침","환불 규정"],en:["Terms","Privacy","Refund policy"],ja:["利用規約","プライバシー","返金規定"],zhs:["使用条款","隐私政策","退款规定"],zht:["使用條款","隱私政策","退款規定"],es:["Términos","Privacidad","Reembolsos"]};
   var pl=PL[lg]||PL.en, qs="?lang="+lg;
-  var links='<div style="margin-top:6px"><a href="terms.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[0]+'</a> · <a href="privacy.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[1]+'</a></div>';
+  var links='<div style="margin-top:6px"><a href="terms.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[0]+'</a> · <a href="privacy.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[1]+'</a> · <a href="refund.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[2]+'</a></div>';
   e.innerHTML=F[lg].map(function(x){ return '<div>'+x+'</div>'; }).join("")+links; }
 function kpL(){ return LANG==="ko"?"":"&lang=en"+(LANG==="en"?"":"&ul="+LANG); }   // /kplace·/neat — ul 이 있으면 허브가 name_en·cat_en 칸에 그 언어(일·简·繁)로 넣어 준다 (10-18)
 function hlG(){ return {ko:"",en:"&hl=en",ja:"&hl=ja",zhs:"&hl=zh-CN",zht:"&hl=zh-TW",es:"&hl=es"}[LANG]||""; }
@@ -673,7 +673,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 if(isOwner()) document.getElementById("mcopy").hidden=false;
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1025c8", NAVI_ROOT="kr";
+var NAVI_V="1025c9", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
