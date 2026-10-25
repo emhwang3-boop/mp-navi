@@ -259,7 +259,7 @@ function tgPick(k){ close();
 var B4PKG={ t:{ko:"K-POP 빅4 사옥 투어",en:"K-pop Big4 Agency Tour",ja:"K-POP BIG4 社屋ツアー",zhs:"K-POP四大社参观团",zht:"K-POP四大社參觀團",es:"Tour de las Big4 del K-pop"},
   g:{ko:"가이드 동행 · 반일",en:"With a guide · half day",ja:"ガイド同行・半日",zhs:"向导同行·半天",zht:"嚮導同行·半天",es:"Con guía · medio día"},
   c:{ko:"HYBE·SM·JYP·YG 사옥 외관(삼성동 코엑스 아티움 포함)과 SM KWANGYA(성수) 굿즈샵을 가이드와 함께 돕니다 (외관 관람·사진).",en:"Tour the HYBE, SM, JYP and YG building exteriors (incl. COEX Artium in Samseong) and the SM KWANGYA goods shop in Seongsu, with a guide (exterior & photos).",ja:"HYBE・SM・JYP・YGの社屋外観（三成洞COEXアティウム含む）とSM KWANGYA（聖水）のグッズショップをガイドと巡ります（外観・写真）。",zhs:"在向导带领下游览HYBE·SM·JYP·YG大楼外观（含三成洞COEX Artium）和SM KWANGYA（圣水）周边店（外观·拍照）。",zht:"在嚮導帶領下遊覽HYBE·SM·JYP·YG大樓外觀（含三成洞COEX Artium）和SM KWANGYA（聖水）周邊店（外觀·拍照）。",es:"Recorre con guía los exteriores de HYBE, SM, JYP y YG (incl. COEX Artium en Samseong) y la tienda SM KWANGYA en Seongsu (exterior y fotos)."},
-  p:{ko:"₩79,000 × 2인 이상",en:"₩79,000 × 2+ people",ja:"₩79,000 × 2名以上",zhs:"₩79,000 × 2人以上",zht:"₩79,000 × 2人以上",es:"₩79,000 × 2+ personas"},
+  p:{ko:"1인 ₩89,000 · 2인 이상 1인 ₩79,000",en:"1 person ₩89,000 · 2+ ₩79,000/person",ja:"1名 ₩89,000 · 2名以上 1名₩79,000",zhs:"1人 ₩89,000 · 2人以上 每人₩79,000",zht:"1人 ₩89,000 · 2人以上 每人₩79,000",es:"1 persona ₩89,000 · 2+ ₩79,000/persona"},
   b:{ko:"예약·문의",en:"Book / inquire",ja:"予約・問い合わせ",zhs:"预约·咨询",zht:"預約·諮詢",es:"Reservar / consultar"},
   n:{ko:"예약은 가이드 신청으로 연결됩니다.",en:"Booking goes through our guide request.",ja:"予約はガイド申請につながります。",zhs:"预约将通过向导申请办理。",zht:"預約將透過嚮導申請辦理。",es:"La reserva se realiza mediante la solicitud de guía."} };
 // 투어 가이드 창 (사장님 10-23) — 폰 그림·노란 띠 없이 Klook·GetYourGuide 링크(첫 화면, 그 언어)와 설명 세 줄씩. 손님이 그 사이트 검색칸에 도시를 넣는다
