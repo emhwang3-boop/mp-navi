@@ -21,7 +21,7 @@
     +"#itB .gt{display:block;text-align:center;margin:14px 0 6px;background:#1a73e8;color:#fff;text-decoration:none;font-weight:800;border-radius:12px;padding:13px 10px;font-size:16px}"
     +"#itB .nt{font-size:12.5px;color:#6b7280;text-align:center;line-height:1.5}";
   document.head.appendChild(st);
-  var b=document.createElement("button"); b.id="itP"; b.type="button"; document.body.appendChild(b);
+  var hb=document.getElementById("hit"), b=document.createElement("button"); b.id="itP"; b.type="button"; if(!hb) document.body.appendChild(b);   /* 머리줄 말풍선 아이콘(#hit)이 있으면 떠 있는 알약은 안 붙인다 (사장님 2026-10-25) */
   function paintBtn(){ var _il=L5({ko:"통역",en:"Interpreter",ja:"通訳",zhs:"翻译",zht:"翻譯",es:"Intérprete"}); b.innerHTML=MPIMG("mi_interpreter",MIS)+esc(_il); b.setAttribute("aria-label",_il);
     var g=document.getElementById("lgP"), y=g?g.getBoundingClientRect().bottom+8:Math.round(innerHeight*0.58)+52; b.style.top=Math.min(y,innerHeight-60)+"px"; }
   paintBtn(); setInterval(paintBtn,600);   /* 🌐 단추를 끌어 옮기면 따라간다 · 언어가 바뀌면 글자도 */
@@ -76,7 +76,7 @@
         +'<button class="x" type="button">✕ '+esc(L5({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}))+'</button>';
       bg.querySelector(".x").onclick=function(e){ e.stopPropagation(); bg.remove(); }; o.appendChild(bg); }; });
   }
-  b.onclick=open;
+  b.onclick=open; if(hb){ hb.onclick=function(e){ e.preventDefault(); e.stopPropagation(); open(); }; setInterval(function(){ var t=L5({ko:"통역",en:"Interpreter",ja:"通訳",zhs:"翻译",zht:"翻譯",es:"Intérprete"}); if(hb.title!==t){ hb.title=t; hb.setAttribute("aria-label",t); } },600); }
   /* 판이 열려 있으면 지금 장소로 다시 그린다 — 일정에서 장소를 고를 때 trip.js 가 부른다 (10-20) */
   window.ITP={open:open,refresh:function(){ if(document.getElementById("itB")) open(); }};
 })();
