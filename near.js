@@ -257,6 +257,8 @@ function tgPick(k){ close();
   if(go()) return;
   try{ var C=window.CITY||{}; Promise.all(Object.keys(C).map(function(id){ return window.mapLoad(id).catch(function(){}); })).then(go,go); }catch(e){ go(); } }
 // B4 사옥 투어 패키지 (사장님 2026-10-25) — 가이드 포함 유료 반일. 예약은 통역·길안내(가이드 신청) 흐름으로 연결. 요금은 GetYourGuide HYBE투어 $55·K-pop 워킹투어 ₩4~7만 참고 → ₩89,000(2인+ ₩79,000). 빅4는 외관·굿즈샵(입장 무료)이라 값은 가이드·동선
+var RF6={ko:"5일 전까지 전액 환불 · 당일 30% 공제",en:"Full refund up to 5 days before · 30% fee on the day",ja:"5日前まで全額返金・当日は30%差し引き",zhs:"提前5天全额退款·当天扣30%",zht:"提前5天全額退款·當天扣30%",es:"Reembolso total hasta 5 días antes · 30% el mismo día"};
+var RFL6={ko:"환불 규정 보기",en:"Refund policy",ja:"返金規定を見る",zhs:"查看退款规定",zht:"查看退款規定",es:"Ver política de reembolso"};
 var B4PKG={ t:{ko:"K-POP 빅4 사옥 투어",en:"K-pop Big4 Agency Tour",ja:"K-POP BIG4 社屋ツアー",zhs:"K-POP四大社参观团",zht:"K-POP四大社參觀團",es:"Tour de las Big4 del K-pop"},
   g:{ko:"가이드 동행 · 약 8시간",en:"With a guide · about 8 hours",ja:"ガイド同行・約8時間",zhs:"向导同行·约8小时",zht:"嚮導同行·約8小時",es:"Con guía · unas 8 horas"},
   c:{ko:"HYBE·SM·JYP·YG 사옥 외관(삼성동 코엑스 아티움 포함)과 SM KWANGYA(성수) 굿즈샵을 가이드와 함께 돕니다 (외관 관람·사진).",en:"Tour the HYBE, SM, JYP and YG building exteriors (incl. COEX Artium in Samseong) and the SM KWANGYA goods shop in Seongsu, with a guide (exterior & photos).",ja:"HYBE・SM・JYP・YGの社屋外観（三成洞COEXアティウム含む）とSM KWANGYA（聖水）のグッズショップをガイドと巡ります（外観・写真）。",zhs:"在向导带领下游览HYBE·SM·JYP·YG大楼外观（含三成洞COEX Artium）和SM KWANGYA（圣水）周边店（外观·拍照）。",zht:"在嚮導帶領下遊覽HYBE·SM·JYP·YG大樓外觀（含三成洞COEX Artium）和SM KWANGYA（聖水）周邊店（外觀·拍照）。",es:"Recorre con guía los exteriores de HYBE, SM, JYP y YG (incl. COEX Artium en Samseong) y la tienda SM KWANGYA en Seongsu (exterior y fotos)."},
@@ -282,6 +284,7 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
     +(TGX.pkg?('<div class="d" style="font-weight:700;color:var(--ink)">'+esc(LG6(B4PKG.g))+'</div>'
     +'<div class="d">'+esc(LG6(B4PKG.c))+'</div>'
     +'<div class="d" style="font-weight:800;color:var(--ink);margin-top:2px">'+esc(LG6(B4PKG.p))+'</div>'
+    +'<div class="d" style="margin-top:3px">'+esc(LG6(RF6))+' · <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener" style="color:var(--blue);font-weight:700">'+esc(LG6(RFL6))+'</a></div>'   // 환불 규정 요약 + 링크 (토스 PG, 10-25)
     +'<button type="button" class="nrsel" data-nr="b4map" style="margin-top:7px;background:#fff;color:#d9480f;border-color:#ff7a00">'+MPICO("mi_bus",LG6({ko:"투어 노선도 보기",en:"View tour route",ja:"ツアー路線図を見る",zhs:"查看游览路线图",zht:"查看遊覽路線圖",es:"Ver la ruta del tour"}),MIS)+' ›</button>'
     +'<button type="button" class="nrsel" data-nr="ig" style="margin-top:7px;background:#7c3aed;color:#fff;border-color:#7c3aed">'+esc(LG6(B4PKG.b))+' ›</button>'
     +'<div class="d" style="color:var(--sub);margin-top:4px">'+esc(LG6(B4PKG.n))+'</div>'):'')+'</div>';
