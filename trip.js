@@ -352,7 +352,7 @@ function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan;
   if(!mp&&!GEOST&&typeof myPos==="function"){ GEOST="ask"; myPos().then(function(q){ GEOST=q?"ok":"fail"; GEO=q||null; if(q&&document.getElementById("trRep")) repPaint(); else { [].forEach.call(document.querySelectorAll("#trRep .tnost"),function(e){ e.hidden=false; }); } }); }   // 폰 안에서만 한 번 묻는다
   var hn=pl.hotel?(pl.hotel.type==="here"?T("현재 위치","Current location"):nm(pl.hotel)):"";
   var h='<div class="trtop" data-html2canvas-ignore><b>'+MPICO("mi_cart",T("🛒 내 여행 일정","🛒 My trip plan"),MIS)+'</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trRep\')">✕</button></div>'
-    +'<div class="trbar" data-html2canvas-ignore><button type="button" class="trbtn" id="trNext">'+T("➡ 다음 갈 곳","➡ Next stop")+'</button><button type="button" class="trbtn" id="trPdf">'+MPICO("mi_doc",T("📄 PDF 받기","📄 Get PDF"),MIS)+'</button><button type="button" class="trbtn" id="trShare">'+T("🔗 공유","🔗 Share")+'</button><button type="button" class="trbtn" id="trEdit">'+T("✏ 고치기","✏ Edit")+'</button><button type="button" class="trbtn ib" id="trInfo" aria-label="info">ⓘ</button></div>'
+    +'<div class="trbar" data-html2canvas-ignore><button type="button" class="trbtn" id="trNext">'+T("➡ 다음 갈 곳","➡ Next stop")+'</button><button type="button" class="trbtn" id="trPdf">'+MPICO("mi_device",T5(SAVE6),MIS)+'</button><button type="button" class="trbtn" id="trMail">'+MPICO("mi_doc",T5(MAIL6),MIS)+'</button><button type="button" class="trbtn" id="trShare">'+T("🔗 공유","🔗 Share")+'</button><button type="button" class="trbtn" id="trEdit">'+T("✏ 고치기","✏ Edit")+'</button><button type="button" class="trbtn ib" id="trInfo" aria-label="info">ⓘ</button></div>'
     +'<div id="trNextBox" data-html2canvas-ignore></div>'
     +'<div class="d" id="trAiS" data-html2canvas-ignore'+(pl.ai?" hidden":"")+'>'+T("설명을 쓰는 중… (없어도 일정은 그대로 쓸 수 있어요)","Writing notes… (the plan works without them)")+'</div>'
     +(pl.skip&&pl.skip.length?'<div class="d">'+T("일정에서 뺀 곳(숙소·교통시설): ","Skipped (lodging/transport): ")+esc(pl.skip.map(function(k){ var it=TR.items.filter(function(x){ return x.k===k; })[0]; return it?nm(it):k; }).join(", "))+'</div>':"");
@@ -393,7 +393,7 @@ function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan;
           es:"Los tiempos usan transporte público real cuando es posible; algunos tramos son estimaciones en línea recta. Toca “Ver rutas reales” para más detalles."})
     : T("이동 시간은 직선거리 어림입니다. 「실제 경로 보기」를 누르면 그 구간만 대중교통을 찾아요.","Travel times are straight-line estimates. Tap “See real routes” to look up transit for that leg."))+'</div>';
   box.innerHTML=h; var g=function(id){ return document.getElementById(id); };
-  g("trNext").onclick=nextStop; g("trPdf").onclick=pdfGo; g("trShare").onclick=shareGo; g("trEdit").onclick=function(){ sheetClose("trRep"); openPanel(); };
+  g("trNext").onclick=nextStop; g("trPdf").onclick=pdfGo; g("trMail").onclick=mailOpen; g("trShare").onclick=shareGo; g("trEdit").onclick=function(){ sheetClose("trRep"); openPanel(); };
   g("trInfo").onclick=function(){ tPop(function(){ return '<b>ⓘ</b><div style="margin-top:6px;line-height:1.6">'+T("· PDF는 휴대폰 「다운로드」에 저장돼요 — 안드로이드는 파일 앱에서 PDF를 길게 눌러 「홈 화면에 추가」하면 바로 열 수 있어요.<br>· 궁궐 휴무(월: 창덕궁·창경궁·덕수궁·숭례문 / 화: 경복궁·종묘)는 궁능유적본부 안내 기준 — 휴무일이 공휴일이면 열고 다음 평일에 쉽니다.<br>· 다른 곳의 운영 시간은 현장·공식 안내를 확인하세요.","· The PDF is saved to Downloads — on Android, long-press it in the Files app and choose “Add to Home screen”.<br>· Palace closures (Mon: Changdeokgung, Changgyeonggung, Deoksugung, Sungnyemun / Tue: Gyeongbokgung, Jongmyo) follow the official Royal Palaces notice — if the closing day is a public holiday they open and close the next weekday.<br>· Check other opening hours on site or official pages.")+'</div>'; }); };
   pl.days.forEach(function(d,di){ var el=g("tmap"+di); if(!el) return; var s=sched(H,d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean),new Date(d.date+"T00:00:00Z"),pl.from,mealsOf(di));
     dayMap(el,H,s.rows.filter(function(r){ return r.x||r.r; }).map(function(r){ return r.x?r.x:Object.assign({eat:1},r.r); })); });
@@ -526,9 +526,43 @@ function pdfBuild(){ return Promise.all([shotDays(),lib(LIBS.pdf)]).then(functio
   cvs.forEach(function(cv,i){ if(i) doc.addPage(); var w=PW-2*M, h=cv.height*w/cv.width; if(h>PH-2*M){ h=PH-2*M; w=cv.width*h/cv.height; }
     doc.addImage(cv.toDataURL("image/jpeg",0.9),"JPEG",(PW-w)/2,M,w,h); });
   return {doc:doc,n:cvs.length,name:"my-trip-"+(TR.plan.days[0]&&TR.plan.days[0].date||"plan")+".pdf"}; }); }
-function pdfGo(){ busy("trPdf",1,T("만드는 중…","Making…"));
-  pdfBuild().then(function(o){ o.doc.save(o.name); window.__trPdfOk=o.n; try{ ntap("_trip","trip_pdf"); }catch(e){} busy("trPdf",0); })
-    .catch(function(e){ window.__trPdfErr=String(e); busy("trPdf",0); alert(T("PDF를 만들지 못했어요. 잠시 뒤 다시 해 주세요.","Could not make the PDF. Please try again.")); }); }
+// 「폰에 저장」 (사장님 10-25) — 안드로이드·PC = 다운로드 저장 · 아이폰·홈 화면 앱 = 공유 시트(「파일에 저장」) · 공유를 못 쓰면 새 창으로 PDF 열기
+var SAVE6={ko:"폰에 저장",en:"Save to phone",ja:"スマホに保存",zhs:"保存到手机",zht:"儲存到手機",es:"Guardar en el móvil"};
+var MAIL6={ko:"내 이메일로 받기",en:"Email it to me",ja:"自分のメールで受け取る",zhs:"发送到我的邮箱",zht:"寄到我的信箱",es:"Recibir por email"};
+function isIOS(){ var u=navigator.userAgent||""; return /iPad|iPhone|iPod/.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1); }
+function isStandalone(){ try{ return (window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true; }catch(e){ return false; } }
+function pdfGo(){ busy("trPdf",1,T5({ko:"만드는 중…",en:"Making…",ja:"作成中…",zhs:"正在生成…",zht:"正在產生…",es:"Creando…"}));
+  var done=function(mode,n){ window.__trSaveMode=mode; window.__trPdfOk=n; try{ ntap("_trip","trip_pdf_"+mode); }catch(e){} busy("trPdf",0); };
+  pdfBuild().then(function(o){
+    if(!(isIOS()||isStandalone())){ o.doc.save(o.name); done("download",o.n); return; }
+    var blob=o.doc.output("blob"), f=null; try{ f=new File([blob],o.name,{type:"application/pdf"}); }catch(e){}
+    var openIt=function(){ var u=URL.createObjectURL(blob), w=window.open(u,"_blank"); if(!w) location.href=u; setTimeout(function(){ try{ URL.revokeObjectURL(u); }catch(e){} },60000); done("open",o.n); };
+    if(f&&navigator.canShare&&navigator.share&&navigator.canShare({files:[f]})){
+      navigator.share({files:[f],title:o.name}).then(function(){ done("share",o.n); },function(e){ if(e&&e.name==="AbortError") done("share-cancel",o.n); else openIt(); });
+    } else openIt(); })
+    .catch(function(e){ window.__trPdfErr=String(e); busy("trPdf",0); alert(T5({ko:"PDF를 만들지 못했어요. 잠시 뒤 다시 해 주세요.",en:"Could not make the PDF. Please try again.",ja:"PDFを作成できませんでした。しばらくしてからもう一度お試しください。",zhs:"无法生成PDF，请稍后再试。",zht:"無法產生PDF，請稍後再試。",es:"No se pudo crear el PDF. Inténtalo de nuevo."})); }); }
+// 「내 이메일로 받기」 (사장님 10-25) — 손님이 넣은 주소로 PDF 첨부 메일 (허브 POST /guide/sendme). 주소는 이 기기·서버 어디에도 저장하지 않는다
+var ML6={ t:MAIL6,
+  d:{ko:"이메일 주소를 넣으면 일정 PDF를 첨부해 보내 드려요. 주소는 저장하지 않아요.",en:"Enter your email and we will send the trip PDF as an attachment. We don’t keep your address.",ja:"メールアドレスを入力すると日程PDFを添付してお送りします。アドレスは保存しません。",zhs:"输入邮箱地址，我们会把行程PDF作为附件发送给您。我们不会保存您的地址。",zht:"輸入電子郵件地址，我們會把行程PDF作為附件寄給您。我們不會保存您的地址。",es:"Escribe tu email y te enviaremos el PDF del plan como adjunto. No guardamos tu dirección."},
+  go:{ko:"보내기",en:"Send",ja:"送信",zhs:"发送",zht:"寄出",es:"Enviar"},
+  bad:{ko:"이메일 주소를 확인해 주세요.",en:"Please check the email address.",ja:"メールアドレスをご確認ください。",zhs:"请检查邮箱地址。",zht:"請檢查電子郵件地址。",es:"Revisa la dirección de email."},
+  mk:{ko:"PDF 만드는 중…",en:"Making PDF…",ja:"PDF作成中…",zhs:"正在生成PDF…",zht:"正在產生PDF…",es:"Creando el PDF…"},
+  sd:{ko:"보내는 중…",en:"Sending…",ja:"送信中…",zhs:"正在发送…",zht:"正在寄送…",es:"Enviando…"},
+  ok:{ko:"보냈어요. 메일함을 확인하세요 (스팸함도).",en:"Sent! Check your inbox (and spam folder).",ja:"送信しました。受信トレイ（迷惑メールも）をご確認ください。",zhs:"已发送！请查看收件箱（及垃圾邮件）。",zht:"已寄出！請查看收件匣（及垃圾郵件）。",es:"¡Enviado! Revisa tu bandeja de entrada (y spam)."},
+  rate:{ko:"잠시 뒤 다시 해 주세요 (보내기 횟수 제한).",en:"Please try again later (sending limit).",ja:"しばらくしてから再度お試しください（送信回数の制限）。",zhs:"请稍后再试（发送次数限制）。",zht:"請稍後再試（寄送次數限制）。",es:"Inténtalo más tarde (límite de envíos)."},
+  fail:{ko:"보내지 못했어요. 잠시 뒤 다시 해 주세요.",en:"Could not send. Please try again.",ja:"送信できませんでした。しばらくしてからもう一度お試しください。",zhs:"发送失败，请稍后再试。",zht:"寄送失敗，請稍後再試。",es:"No se pudo enviar. Inténtalo de nuevo."} };
+function mailOpen(){ var b=tPop(function(){ return '<b>'+MPICO("mi_doc",T5(ML6.t),MIS)+'</b><div class="d" style="margin:6px 0 8px;line-height:1.5">'+esc(T5(ML6.d))+'</div>'
+    +'<input id="trMlE" type="email" autocomplete="email" inputmode="email" placeholder="email@example.com" style="width:100%;box-sizing:border-box;font-size:16px;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)">'
+    +'<button type="button" class="trbtn big" id="trMlGo" style="margin-top:10px;width:100%">'+esc(T5(ML6.go))+'</button><div class="d" id="trMlM" style="margin-top:8px;min-height:18px"></div>'; });
+  var go=b.querySelector("#trMlGo"), M=function(t){ var m=b.querySelector("#trMlM"); if(m) m.textContent=t; };
+  go.onclick=function(){ var em=(b.querySelector("#trMlE").value||"").trim();
+    if(!/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/.test(em)){ M(T5(ML6.bad)); return; }
+    go.disabled=true; M(T5(ML6.mk));
+    Promise.all([pdfBuild(),tripUrl().catch(function(){ return ""; })]).then(function(r){ var o=r[0], url=r[1], pdf=""; try{ pdf=o.doc.output("datauristring"); }catch(e){}
+      var bi=pdf.indexOf("base64,"); pdf=bi>=0?("data:application/pdf;base64,"+pdf.slice(bi+7)):""; M(T5(ML6.sd));
+      return fetch(HUB+"/guide/sendme",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em,lang:window.LANG||"en",pdfBase64:pdf,tripUrl:url}),cache:"no-store"}).then(function(x){ return x.json(); }); })
+    .then(function(j){ window.__trSendMe=j; go.disabled=false; M(j&&j.ok?T5(ML6.ok):(j&&j.err==="rate"?T5(ML6.rate):j&&j.err==="email"?T5(ML6.bad):T5(ML6.fail))); if(j&&j.ok){ try{ ntap("_trip","trip_sendme"); }catch(e){} } })
+    .catch(function(e){ window.__trSendMeErr=String(e); go.disabled=false; M(T5(ML6.fail)); }); }; }
 // 📄 PDF 보내기 — PDF를 폰 공유 시트(카톡·메일·드라이브…)로 보낸다. 공유 시트를 못 쓰면 「다운로드」에 저장 (사장님 10-24)
 function pdfShareGo(){ var m=document.getElementById("trShM"); if(m) m.textContent=T("PDF 만드는 중…","Making PDF…"); busy("trShP",1,T("만드는 중…","Making…"));
   pdfBuild().then(function(o){ var f=null; try{ f=new File([o.doc.output("blob")],o.name,{type:"application/pdf"}); }catch(e){}
