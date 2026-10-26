@@ -283,8 +283,8 @@ var bbcss=document.createElement("style");
 bbcss.textContent="#evBB{display:none;pointer-events:auto;cursor:pointer;z-index:4}.map.onkr #evBB{display:block}html.mpc-lock #evBB{visibility:hidden}#evBB *{pointer-events:none}"
  +"#evBB .ebg{position:absolute;inset:-4%;background:url(img/kr_extra/event_bb.jpg?v=1026) center/cover no-repeat;animation:ebKen 14s ease-in-out infinite alternate}"
  +"@keyframes ebKen{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.08) translate(2%,-1.5%)}}"
- +"#evBB .ebt{position:absolute;left:14%;top:24%;width:50%;height:56%;container-type:size;display:flex;align-items:center;justify-content:center;text-align:center}"
- +"#evBB .ebt b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Arial Black','Segoe UI',Impact,sans-serif;font-weight:900;line-height:1.05;white-space:pre-line;color:#fff;letter-spacing:.02em;"
+ +"#evBB .ebt{position:absolute;left:4%;top:8%;width:92%;height:84%;container-type:size;display:flex;align-items:center;justify-content:center;text-align:center}"
+ +"#evBB .ebt b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Arial Black','Segoe UI',Impact,sans-serif;font-weight:900;line-height:1.05;white-space:pre-line;color:#fff;letter-spacing:.02em;-webkit-text-stroke:.05em rgba(30,0,50,.9);paint-order:stroke fill;"
  +"text-shadow:0 0 .06em #fff,0 0 .18em #ff4fd8,0 0 .4em #ff4fd8,0 0 .7em #39d5ff;opacity:0;transform:scale(.85);transition:opacity .45s,transform .45s}"
  +"#evBB .ebt b.on{opacity:1;transform:scale(1)}#evBB .ebt b.g{color:#ffe28a;text-shadow:0 0 .06em #fff,0 0 .2em #ffb000,0 0 .5em #ff7a1a}"
  +"#evBB .ebsh{position:absolute;top:-20%;bottom:-20%;width:16%;left:-30%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-18deg);animation:xwShine 5s ease-in-out infinite}"
@@ -304,7 +304,7 @@ function bbMk(){ var mz=document.getElementById("mz"); if(!mz||document.getEleme
   ["pointerdown","mousedown","touchstart"].forEach(function(ev){ bb.addEventListener(ev,function(e){ e.stopPropagation(); },false); });
   bbPaint(); }
 function bbPaint(){ if(!bb) return; var L2=OPEN?[["EVENT OPEN",""],[BBK[KIND]||"EVENT",""],["Win Puzzle Gold\n100 · 50 · 20","g"]]:BBT_CLOSE, t=bb.querySelector(".ebt");
-  t.innerHTML=L2.map(function(x,i){ var n=x[0].replace(/\n/g," ").length, fs=n>18?8.5:n>14?10:n>10?13:16; return '<b class="'+x[1]+'" style="font-size:'+fs+'cqw">'+esc(x[0])+'</b>'; }).join("");
+  t.innerHTML=L2.map(function(x,i){ var ls=x[0].split("\n"), w=Math.max.apply(null,ls.map(function(q){ return q.length; })), fs="min("+(92/(w*0.68)).toFixed(1)+"cqw,"+(86/(ls.length*1.08)).toFixed(1)+"cqh)"; return '<b class="'+x[1]+'" style="font-size:'+fs+'">'+esc(x[0])+'</b>'; }).join("");
   bbI=0; bbStep(); }
 function bbStep(){ if(!bb) return; var bs=bb.querySelectorAll(".ebt b"); [].forEach.call(bs,function(b,i){ b.classList.toggle("on",i===bbI%bs.length); }); bbI++; }
 setInterval(function(){ try{ if(bb&&typeof VIEW==="string"&&VIEW==="kr"&&!document.hidden) bbStep(); }catch(e){} },2300);
