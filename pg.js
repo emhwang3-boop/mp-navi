@@ -82,7 +82,7 @@ function paintLogin(msg){ var I=document.getElementById("pgIn");
     if(!c||!c.cid){ g.innerHTML='<button type="button" class="pgbtn" id="pgPrep" disabled><img src="img/menu/mi_globe.png" alt="" style="height:16px;width:16px;vertical-align:-3px;margin-right:6px">'+esc(t("prep"))+'</button><div class="pgp">'+esc(t("prepNote"))+'</div>'; return; }
     gisLoad().then(function(){ var g2=document.getElementById("pgGbtn"); if(!g2) return; g2.innerHTML="";
       google.accounts.id.initialize({client_id:c.cid,callback:onCred,auto_select:false,cancel_on_tap_outside:true,ux_mode:"popup"});
-      google.accounts.id.renderButton(g2,{type:"standard",theme:document.documentElement.getAttribute("data-theme")==="dark"?"filled_black":"outline",size:"large",text:"signin_with",shape:"pill",locale:GLOC[lg()]||"en"});
+      google.accounts.id.renderButton(g2,{type:"standard",theme:document.documentElement.getAttribute("data-theme")==="dark"?"filled_black":"outline",size:"large",width:240,text:"signin_with",shape:"pill",locale:GLOC[lg()]||"en"});
     }).catch(function(){ var g3=document.getElementById("pgGbtn"); if(g3) g3.innerHTML='<div class="pgp" style="color:#c92a2a">'+esc(t("err"))+'</div>'; }); }); }
 // ── Apple로 로그인 (사장님 2026-10-26) — Sign in with Apple JS 공식 스크립트(판 1)·공식 검정 단추·팝업 · state·nonce 는 창 열 때마다 새로 ──
 //   Services ID kr.co.moneypuzzle.navi.web · Return URL https://navi.moneypuzzle.co.kr/ · 허브 /npg/login {prov:"apple"} 가 애플 JWKS 로 검사
