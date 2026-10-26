@@ -67,6 +67,137 @@ var RANKHOW={
  bingo:{ko:"빙고 줄 수가 많은 순, 같으면 마지막 줄을 먼저 완성한 순",en:"Most bingo lines first; on a tie, whoever completed their last line first",ja:"ビンゴの列数が多い順、同じなら最後の列を先に完成させた順",zhs:"宾果线数多者优先，相同则最后一条线先完成者优先",zht:"賓果線數多者優先，相同則最後一條線先完成者優先",es:"Más líneas de bingo primero; en empate, quien completó antes su última línea"}
 };
 var RKL={ko:"이번 주 순위 방법",en:"This week’s ranking",ja:"今週の順位の決め方",zhs:"本周排名方式",zht:"本週排名方式",es:"Clasificación de esta semana"};
+// ── 이벤트 종류 (사장님 10-26) — 닫혀 있으면 종류를 드러내지 않는다 「뭐가 나올지 몰라야지」. 열린 주에만 그 종류 제목·순위 방법·화면 ──
+var KIND="";   // 지금 열린 종류 (/npg/event)
+var EVT={ko:"이벤트",en:"Event",ja:"イベント",zhs:"活动",zht:"活動",es:"Evento"};
+var NEXT={ko:"이벤트 준비 중 — 다음 이벤트를 기다려 주세요",en:"Next event coming soon",ja:"イベント準備中 — 次のイベントをお待ちください",zhs:"活动准备中 — 敬请期待下一场活动",zht:"活動準備中 — 敬請期待下一場活動",es:"Próximo evento muy pronto"};
+var KT={
+ bingo:T.title,
+ treasure:{ko:"지도 속 보물상자",en:"Treasure on the Map",ja:"地図の中の宝箱",zhs:"地图里的宝箱",zht:"地圖裡的寶箱",es:"El tesoro del mapa"},
+ spot:{ko:"명소 맞히기",en:"Spot the Sight",ja:"名所当てクイズ",zhs:"猜景点",zht:"猜景點",es:"Adivina el lugar"},
+ photo:{ko:"이번 주 사진",en:"Photo of the Week",ja:"今週の写真",zhs:"本周照片",zht:"本週照片",es:"Foto de la semana"}
+};
+var BBK={bingo:"KOREA\nBINGO",treasure:"TREASURE\nON THE MAP",spot:"SPOT THE\nSIGHT",photo:"PHOTO OF\nTHE WEEK"};
+RANKHOW.treasure={ko:"보물상자를 먼저 연 순서 (1·2·3등)",en:"First to open the treasure box wins (1st, 2nd, 3rd)",ja:"宝箱を先に開けた順（1・2・3位）",zhs:"按最先打开宝箱的顺序（第1·2·3名）",zht:"按最先打開寶箱的順序（第1·2·3名）",es:"Gana quien abre antes el cofre (1.º, 2.º, 3.º)"};
+RANKHOW.spot={ko:"맞힌 개수가 많은 순, 같으면 걸린 시간이 짧은 순",en:"Most correct answers first; on a tie, the shortest total time",ja:"正解数が多い順、同じならかかった時間が短い順",zhs:"答对数多者优先，相同则用时短者优先",zht:"答對數多者優先，相同則用時短者優先",es:"Más aciertos primero; en empate, el menor tiempo total"};
+RANKHOW.photo={ko:"회사가 주제에 가장 잘 맞는 사진 1·2·3등을 고릅니다",en:"The company picks the three photos that best fit the theme",ja:"会社がテーマに最も合う写真1・2・3位を選びます",zhs:"由公司评选最符合主题的照片第1·2·3名",zht:"由公司評選最符合主題的照片第1·2·3名",es:"La empresa elige las tres fotos que mejor encajan con el tema"};
+var KRULES={
+ bingo:[],
+ treasure:[
+  {ko:"앱 지도(서울) 어딘가에 보물상자가 하나 숨어 있습니다. 매일 12시(한국 시간)에 힌트가 하나씩 공개되며, 처음엔 넓게 시작해 점점 좁아집니다.",en:"One treasure box is hidden somewhere on the app’s Seoul map. A new hint is revealed every day at 12:00 (Korea time), starting broad and getting narrower.",ja:"アプリの地図（ソウル）のどこかに宝箱が1つ隠れています。毎日12時（韓国時間）にヒントが1つずつ公開され、最初は広く、だんだん絞られていきます。",zhs:"应用的首尔地图上藏着一个宝箱。每天12点（韩国时间）公开一条提示，从大范围开始逐渐缩小。",zht:"應用程式的首爾地圖上藏著一個寶箱。每天12點（韓國時間）公開一條提示，從大範圍開始逐漸縮小。",es:"Hay un cofre escondido en algún lugar del mapa de Seúl de la app. Cada día a las 12:00 (hora de Corea) se revela una pista, de más general a más precisa."},
+  {ko:"지도에서 상자가 있을 것 같은 곳을 누르면 열립니다. 틀리게 누르면 1분 동안 기다려야 다시 누를 수 있습니다.",en:"Tap the spot on the map where you think the box is. After a wrong tap you must wait 1 minute before trying again.",ja:"宝箱がありそうな場所を地図でタップすると開きます。外れたら1分待ってから再挑戦できます。",zhs:"在地图上点击你认为宝箱所在的位置即可打开。点错后需等待1分钟才能再试。",zht:"在地圖上點擊你認為寶箱所在的位置即可打開。點錯後需等待1分鐘才能再試。",es:"Toca en el mapa el lugar donde crees que está el cofre. Tras un toque equivocado, espera 1 minuto para volver a intentarlo."},
+  {ko:"먼저 연 순서대로 1·2·3등이며, 3등이 나오면 상자 위치와 힌트를 모두 공개합니다.",en:"The first three to open it are 1st, 2nd and 3rd. Once the 3rd winner is found, the location and all hints are revealed.",ja:"先に開けた順に1・2・3位で、3位が出たら宝箱の位置とヒントをすべて公開します。",zhs:"按打开先后决定第1·2·3名，第3名产生后公开宝箱位置和全部提示。",zht:"按打開先後決定第1·2·3名，第3名產生後公開寶箱位置和全部提示。",es:"Los tres primeros en abrirlo son 1.º, 2.º y 3.º. Cuando aparece el 3.º, se revelan la ubicación y todas las pistas."}],
+ spot:[
+  {ko:"우리 앱 지도에 그림이 있는 서울 명소만 나옵니다. 명소 사진 10장이 차례로 나오고, 지도에서 그 명소 그림을 누르면 정답입니다.",en:"Only Seoul sights that have a picture on our app’s map are used. 10 photos are shown one by one; tap that sight’s picture on the map to answer.",ja:"アプリの地図に絵があるソウルの名所だけが出題されます。名所の写真が10枚順番に出て、地図でその名所の絵をタップすれば正解です。",zhs:"只出现在本应用地图上有图画的首尔景点。依次出现10张景点照片，在地图上点击该景点的图画即为答对。",zht:"只出現在本應用程式地圖上有圖畫的首爾景點。依次出現10張景點照片，在地圖上點擊該景點的圖畫即為答對。",es:"Solo salen lugares de Seúl que tienen dibujo en el mapa de la app. Se muestran 10 fotos una a una; toca el dibujo de ese lugar en el mapa para responder."},
+  {ko:"문제당 60초입니다. 주중 아무 때나 한 번만 도전할 수 있으며, 시작하면 끝까지 이어집니다.",en:"60 seconds per photo. You can play once, any time during the week; once you start, it runs to the end.",ja:"1問60秒です。週の間いつでも1回だけ挑戦でき、始めたら最後まで続きます。",zhs:"每题60秒。本周内任何时间可挑战一次，一旦开始须一直进行到结束。",zht:"每題60秒。本週內任何時間可挑戰一次，一旦開始須一直進行到結束。",es:"60 segundos por foto. Puedes jugar una vez, cuando quieras durante la semana; al empezar, sigue hasta el final."}],
+ photo:[
+  {ko:"이번 주 주제에 맞는 사진을 1인 1장 올립니다. 자기 나라에서 찍은 사진도 됩니다. 본인 얼굴은 나와도 안 나와도 됩니다.",en:"Upload one photo per person that fits this week’s theme. Photos taken in your own country are fine. Your own face may or may not appear.",ja:"今週のテーマに合う写真を1人1枚投稿します。自分の国で撮った写真でもOKです。本人の顔は写っていても写っていなくても構いません。",zhs:"每人上传一张符合本周主题的照片，在自己国家拍的也可以。本人的脸出现与否均可。",zht:"每人上傳一張符合本週主題的照片，在自己國家拍的也可以。本人的臉出現與否均可。",es:"Sube una foto por persona que encaje con el tema de la semana. Vale una foto hecha en tu país. Tu cara puede salir o no."},
+  {ko:"직접 찍은 사진만 됩니다. 남의 사진·AI로 만든 사진·다른 사람 얼굴이 크게 나온 사진은 제외하며, 부적절한 사진은 지웁니다.",en:"Only photos you took yourself. Other people’s photos, AI-made images and photos with other people’s faces shown large are excluded; inappropriate photos are deleted.",ja:"自分で撮った写真のみです。他人の写真・AIで作った画像・他人の顔が大きく写った写真は対象外で、不適切な写真は削除します。",zhs:"仅限本人拍摄的照片。他人照片、AI生成图片、他人脸部明显的照片不在评选范围内，不当照片将被删除。",zht:"僅限本人拍攝的照片。他人照片、AI生成圖片、他人臉部明顯的照片不在評選範圍內，不當照片將被刪除。",es:"Solo fotos hechas por ti. Se excluyen fotos de otros, imágenes hechas con IA y fotos con caras de otras personas en primer plano; las inadecuadas se eliminan."},
+  {ko:"올리면 회사가 SNS에서 사진을 소개할 수 있다는 데 동의하는 것입니다. 1·2·3등은 회사가 고릅니다.",en:"By uploading you agree that the company may feature your photo on social media. The company picks 1st, 2nd and 3rd.",ja:"投稿すると、会社がSNSで写真を紹介することに同意したものとみなします。1・2・3位は会社が選びます。",zhs:"上传即表示同意公司在社交媒体上介绍你的照片。第1·2·3名由公司评选。",zht:"上傳即表示同意公司在社群媒體上介紹你的照片。第1·2·3名由公司評選。",es:"Al subirla aceptas que la empresa pueda mostrar tu foto en redes sociales. La empresa elige 1.º, 2.º y 3.º."}]
+};
+var TX3={
+ hint:{ko:"힌트",en:"Hint",ja:"ヒント",zhs:"提示",zht:"提示",es:"Pista"},
+ day:{ko:"일째",en:"Day",ja:"日目",zhs:"第几天",zht:"第幾天",es:"Día"},
+ nextHint:{ko:"다음 힌트는 매일 12시(한국 시간)",en:"Next hint every day at 12:00 (Korea time)",ja:"次のヒントは毎日12時（韓国時間）",zhs:"每天12点（韩国时间）公开下一条提示",zht:"每天12點（韓國時間）公開下一條提示",es:"Nueva pista cada día a las 12:00 (hora de Corea)"},
+ find:{ko:"지도에서 찾기",en:"Search on the map",ja:"地図で探す",zhs:"在地图上寻找",zht:"在地圖上尋找",es:"Buscar en el mapa"},
+ tmode:{ko:"보물상자가 있을 것 같은 곳을 서울 지도(구 화면)에서 누르세요",en:"Tap where you think the treasure box is on the Seoul map (district view)",ja:"宝箱がありそうな場所をソウルの地図（区の画面）でタップしてください",zhs:"在首尔地图（区画面）上点击你认为宝箱所在的位置",zht:"在首爾地圖（區畫面）上點擊你認為寶箱所在的位置",es:"Toca en el mapa de Seúl (vista de distrito) donde crees que está el cofre"},
+ seoul:{ko:"서울 지도에서 눌러 주세요",en:"Please tap on the Seoul map",ja:"ソウルの地図でタップしてください",zhs:"请在首尔地图上点击",zht:"請在首爾地圖上點擊",es:"Toca en el mapa de Seúl"},
+ miss:{ko:"여기는 아니에요. 1분 뒤에 다시 눌러 보세요",en:"Not here. Try again in 1 minute",ja:"ここではありません。1分後にもう一度",zhs:"不在这里，1分钟后再试",zht:"不在這裡，1分鐘後再試",es:"Aquí no. Vuelve a intentarlo en 1 minuto"},
+ near:{ko:"가까워요!",en:"Getting close!",ja:"近いです！",zhs:"很接近了！",zht:"很接近了！",es:"¡Te acercas!"},
+ got:{ko:"보물상자를 찾았어요!",en:"You found the treasure box!",ja:"宝箱を見つけました！",zhs:"你找到宝箱了！",zht:"你找到寶箱了！",es:"¡Encontraste el cofre!"},
+ rank:{ko:"등",en:"place",ja:"位",zhs:"名",zht:"名",es:"puesto"},
+ wait:{ko:"다시 누를 수 있을 때까지",en:"You can tap again in",ja:"再挑戦まで",zhs:"可再次点击还需",zht:"可再次點擊還需",es:"Podrás tocar de nuevo en"},
+ foundN:{ko:"지금까지 찾은 사람",en:"People who found it so far",ja:"これまでに見つけた人",zhs:"目前找到的人数",zht:"目前找到的人數",es:"Personas que lo han encontrado"},
+ answer:{ko:"보물상자 위치",en:"Treasure location",ja:"宝箱の位置",zhs:"宝箱位置",zht:"寶箱位置",es:"Ubicación del cofre"},
+ quit:{ko:"그만하기",en:"Stop",ja:"やめる",zhs:"停止",zht:"停止",es:"Salir"},
+ sstart:{ko:"도전 시작 (10문제 · 문제당 60초)",en:"Start (10 photos · 60 s each)",ja:"挑戦スタート（10問・1問60秒）",zhs:"开始挑战（10题·每题60秒）",zht:"開始挑戰（10題·每題60秒）",es:"Empezar (10 fotos · 60 s cada una)"},
+ sonce:{ko:"한 번만 도전할 수 있어요. 시작하면 끝까지 이어집니다.",en:"You can play only once. Once you start, it runs to the end.",ja:"挑戦は1回だけ。始めたら最後まで続きます。",zhs:"只能挑战一次，一旦开始须进行到结束。",zht:"只能挑戰一次，一旦開始須進行到結束。",es:"Solo puedes jugar una vez; al empezar, sigue hasta el final."},
+ smode:{ko:"이 명소의 그림을 지도에서 누르세요",en:"Tap this sight’s picture on the map",ja:"この名所の絵を地図でタップ",zhs:"在地图上点击这个景点的图画",zht:"在地圖上點擊這個景點的圖畫",es:"Toca el dibujo de este lugar en el mapa"},
+ skip:{ko:"넘기기",en:"Skip",ja:"スキップ",zhs:"跳过",zht:"跳過",es:"Saltar"},
+ sdone:{ko:"도전 끝",en:"Finished",ja:"挑戦終了",zhs:"挑战结束",zht:"挑戰結束",es:"Terminado"},
+ sres:{ko:"맞힌 수",en:"Correct",ja:"正解数",zhs:"答对",zht:"答對",es:"Aciertos"},
+ stime:{ko:"걸린 시간",en:"Time",ja:"かかった時間",zhs:"用时",zht:"用時",es:"Tiempo"},
+ topic:{ko:"이번 주 주제",en:"This week’s theme",ja:"今週のテーマ",zhs:"本周主题",zht:"本週主題",es:"Tema de la semana"},
+ pick:{ko:"사진 고르기",en:"Choose a photo",ja:"写真を選ぶ",zhs:"选择照片",zht:"選擇照片",es:"Elegir foto"},
+ sns:{ko:"회사가 이 사진을 SNS에서 소개하는 데 동의합니다 (직접 찍은 사진입니다)",en:"I agree the company may feature this photo on social media (I took this photo myself)",ja:"会社がこの写真をSNSで紹介することに同意します（自分で撮った写真です）",zhs:"我同意公司在社交媒体上介绍这张照片（照片为本人拍摄）",zht:"我同意公司在社群媒體上介紹這張照片（照片為本人拍攝）",es:"Acepto que la empresa muestre esta foto en redes sociales (la hice yo)"},
+ send:{ko:"사진 올리기",en:"Upload photo",ja:"写真を投稿",zhs:"上传照片",zht:"上傳照片",es:"Subir foto"},
+ sent:{ko:"올린 사진 (다시 올리면 바뀝니다)",en:"Your photo (uploading again replaces it)",ja:"投稿した写真（再投稿で差し替え）",zhs:"已上传的照片（再次上传会替换）",zht:"已上傳的照片（再次上傳會替換）",es:"Tu foto (si subes otra, se reemplaza)"},
+ needsns:{ko:"SNS 소개 동의에 체크해 주세요",en:"Please tick the social media consent",ja:"SNS紹介への同意にチェックしてください",zhs:"请勾选社交媒体介绍同意",zht:"請勾選社群媒體介紹同意",es:"Marca el consentimiento para redes sociales"},
+ lastEv:{ko:"지난 이벤트 결과",en:"Last event’s results",ja:"前回イベントの結果",zhs:"上次活动结果",zht:"上次活動結果",es:"Resultados del último evento"}
+};
+var E=null;   // 3종 화면 자료
+function evTitle(k){ return L(k?(KT[k]||EVT):EVT); }
+function setHead(k){ var h=document.querySelector("#evBox .ehd h1"), s=document.getElementById("evWk"); if(h) h.textContent=evTitle(k); if(s) s.textContent=k?L(T.sub):""; }
+function evClosed(last){ var e=document.getElementById("evBody"); if(!e) return; setHead("");
+  var h='<div class="ecard" style="font-weight:800;color:#555">'+esc(L(NEXT))+'</div><div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
+  if(last&&last.res&&last.res.length){ var C=["#e0a100","#9aa4b0","#c47a3c"];
+    h+='<div class="ecard"><b>'+esc(L(TX3.lastEv))+'</b> <span style="color:#888;font-size:12px">'+esc(last.wk||"")+'</span>'+last.res.slice(0,3).map(function(r,i){ return '<div class="erk"><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div><b>'+esc(r.nm)+'</b></div><div class="pg">'+(r.pg?r.pg+' PG':'')+'</div></div>'; }).join("")+'</div>'; }
+  e.innerHTML=h; wire(e); }
+function wire(e){ [].forEach.call(e.querySelectorAll("[data-ev]"),function(x){ x.onclick=function(){ var a=x.dataset.ev;
+  if(a==="pg"||a==="signin") signIn(); else if(a==="rules") showRules(!!(cur()&&cur().open&&cur().me&&!cur().me.agreed));
+  else if(a==="find") treasureMode(); else if(a==="sstart") spotStart(); else if(a==="ppick") document.getElementById("evPf").click(); else if(a==="psend") photoSend(); }; }); }
+function cur(){ return E&&E.open?E:B; }
+function needIn(o){ if(!o.me) return '<div class="ecard"><button type="button" class="ebtn" data-ev="signin">'+esc(L(T.signin))+'</button></div>'; if(o.me.grad) return '<div class="ecard" style="color:#7a3cff;font-weight:700">'+esc(L(T.grad))+'</div>'; if(!o.me.agreed) return '<div class="ecard"><button type="button" class="ebtn" data-ev="rules">'+esc(L(T.agree))+'</button></div>'; return ""; }
+function evPaint(){ var e=document.getElementById("evBody"); if(!e||!E) return; var k=E.kind, me=E.me; setHead(k);
+  var h='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKL))+'</b> · '+esc(L(RANKHOW[k]||{en:""}))+'</div><div class="ecard ewk"><span>'+esc(L(T.ends))+'</span><span>'+leftTxt(E.end)+'</span></div>'+needIn(E);
+  var ok=me&&me.agreed;
+  if(k==="treasure"){
+    h+='<div class="ecard"><b>'+esc(L(TX3.hint))+'</b>'+(E.hints||[]).map(function(x){ return '<div style="margin-top:6px"><b style="color:#ff7a1a">'+(lg()==="en"||lg()==="es"?esc(L(TX3.day))+' '+(x.d+1):(x.d+1)+esc(L(TX3.day)))+'</b> · '+esc(x.t)+'</div>'; }).join("")+'<div style="color:#888;font-size:12px;margin-top:6px">'+esc(L(TX3.nextHint))+'</div></div>';
+    if(E.reveal) h+='<div class="ecard"><b>'+esc(L(TX3.answer))+'</b>: '+esc(E.reveal.place||"")+'</div>';
+    if(ok){ if(me.ft) h+='<div class="ecard" style="font-weight:800;color:#27a745">'+esc(L(TX3.got))+(me.rank?' · '+(lg()==="en"?"#"+me.rank+" "+L(TX3.rank):me.rank+L(TX3.rank)):'')+'</div>';
+      else h+='<div class="ecard">'+(me.lock?'<div style="color:#e8322f;font-weight:700">'+esc(L(TX3.wait))+' '+Math.max(0,Math.ceil((me.lock-Date.now())/1000))+'s</div>':'')+'<button type="button" class="ebtn" data-ev="find">'+esc(L(TX3.find))+'</button></div>'; }
+    h+='<div class="ecard" style="font-size:13px">'+esc(L(TX3.foundN))+': <b>'+(E.found||0)+'</b></div>';
+  }
+  if(k==="spot"){
+    if(ok){ if(me.done) h+='<div class="ecard"><b>'+esc(L(TX3.sdone))+'</b><div class="est" style="margin:8px 0 0"><div><b>'+me.ok+' / '+(E.total||10)+'</b>'+esc(L(TX3.sres))+'</div><div><b>'+me.t+'s</b>'+esc(L(TX3.stime))+'</div></div></div>';
+      else h+='<div class="ecard">'+esc(L(TX3.sonce))+'<button type="button" class="ebtn" data-ev="sstart">'+esc(L(TX3.sstart))+'</button></div>'; }
+  }
+  if(k==="photo"){
+    h+='<div class="ecard"><b>'+esc(L(TX3.topic))+'</b><div style="font-size:18px;font-weight:800;margin-top:4px">'+esc(E.topic||"")+'</div></div>';
+    if(ok){ h+='<div class="ecard">'+(me.photo?'<div style="font-size:12px;color:#888">'+esc(L(TX3.sent))+'</div><img src="'+me.photo.img+'" alt="" style="width:100%;border-radius:10px;margin:6px 0">':'')
+      +'<input type="file" id="evPf" accept="image/*" style="display:none"><div id="evPv"></div><label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;margin-top:8px"><input type="checkbox" id="evSns" style="margin-top:3px">'+esc(L(TX3.sns))+'</label>'
+      +'<button type="button" class="ebtn g" data-ev="ppick">'+esc(L(TX3.pick))+'</button><button type="button" class="ebtn" data-ev="psend" id="evPs" disabled>'+esc(L(TX3.send))+'</button><div id="evPm" style="font-size:13px;color:#e8322f;margin-top:6px"></div></div>'; }
+  }
+  h+='<div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
+  e.innerHTML=h; wire(e);
+  var pf=document.getElementById("evPf"); if(pf) pf.onchange=function(){ photoPrep(pf.files&&pf.files[0]); };
+  if(k==="treasure"&&me&&me.lock&&me.lock>Date.now()) setTimeout(function(){ if(box()&&E&&E.kind==="treasure") evPaint(); },1000); }
+// 보물상자 — 지도 누르기
+var MODE=null;
+function modeBar(html){ var o=document.getElementById("evMode"); if(!html){ if(o) o.remove(); return null; } if(!o){ o=document.createElement("div"); o.id="evMode"; o.style.cssText="position:fixed;left:50%;top:8px;transform:translateX(-50%);z-index:2147483002;width:min(94vw,480px);background:#fff8f0;color:#2b2b2b;border:2px solid #ff7a1a;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);padding:10px 12px;font:600 14px/1.45 'Segoe UI','Malgun Gothic',system-ui,sans-serif"; document.body.appendChild(o); } o.innerHTML=html; return o; }
+function modeEnd(){ MODE=null; modeBar(null); }
+function treasureMode(){ close(); MODE="treasure"; try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){}
+  var m=document.getElementById("map"); if(m) try{ m.scrollIntoView({behavior:"smooth",block:"center"}); }catch(e){}
+  var o=modeBar('<div>'+esc(L(TX3.tmode))+'</div><div id="evMm" style="color:#e8322f;font-weight:700"></div><button type="button" id="evMq" style="margin-top:6px;border:1px solid #ddd;background:#fff;border-radius:999px;padding:5px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.quit))+'</button>');
+  o.querySelector("#evMq").onclick=function(){ modeEnd(); open(); }; }
+document.addEventListener("click",function(ev){ if(MODE!=="treasure") return; var m=document.getElementById("map"); if(!m||!m.contains(ev.target)) return; ev.preventDefault(); ev.stopPropagation();
+  var mm=document.getElementById("evMm");
+  if(window.VIEW!=="seoulall"){ if(mm) mm.textContent=L(TX3.seoul); return; }
+  var im=document.getElementById("mapimg"), r=im.getBoundingClientRect(), fx=(ev.clientX-r.left)/r.width, fy=(ev.clientY-r.top)/r.height, G=(window.CITY&&CITY.seoulall&&CITY.seoulall.geo)||null;
+  if(!Array.isArray(G)) return; var lat=G[0]-(fy-.5)*2*G[2], lng=G[1]+(fx-.5)*2*G[2]*G[4]/G[3];
+  post("/npg/ev/treasure/try",{sess:sess(),lat:lat,lng:lng,l:lg()}).then(function(j){ if(!j) return;
+    if(j.found){ modeEnd(); toast(L(TX3.got),"#27a745"); setTimeout(open,1200); return; }
+    if(j.err==="lock"||j.lock){ if(mm) mm.textContent=(j.far==="near"?L(TX3.near)+" ":"")+L(TX3.miss); var t=setInterval(function(){ var s=Math.ceil((j.lock-Date.now())/1000); if(!document.getElementById("evMm")){ clearInterval(t); return; } if(s<=0){ clearInterval(t); document.getElementById("evMm").textContent=""; return; } document.getElementById("evMm").textContent=(j.far==="near"?L(TX3.near)+" ":"")+L(TX3.wait)+" "+s+"s"; },1000); }
+  }).catch(function(){ if(mm) mm.textContent=L(T.err); }); },true);
+// 명소 맞히기 — 사진 보며 지도 그림 누르기
+var SQ=null, ST=null;
+function spotStart(){ post("/npg/ev/spot/start",{sess:sess(),l:lg()}).then(function(j){ if(!j||!j.ok){ alert(L(T.err)); return; } if(j.done){ load(); return; } close(); MODE="spot"; spotShow(j.q); try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){} }).catch(function(){ alert(L(T.err)); }); }
+function spotShow(q){ SQ=q; if(!q){ modeEnd(); open(); return; } clearInterval(ST);
+  var o=modeBar('<div style="display:flex;gap:10px;align-items:center"><img src="'+q.img+'" alt="" style="width:110px;height:84px;object-fit:contain;background:#fff;border-radius:8px;flex:0 0 auto"><div style="flex:1"><b>'+(q.i+1)+' / '+q.total+'</b> · <span id="evSt" style="color:#e8322f;font-weight:900"></span><div style="font-size:13px">'+esc(L(TX3.smode))+(q.gu?' · '+esc(L({ko:q.gu.ko||"",en:q.gu.en||"",ja:q.gu.ja||"",zhs:q.gu.zhs||"",zht:q.gu.zht||"",es:q.gu.en||""})):'')+'</div><button type="button" id="evSk" style="margin-top:4px;border:1px solid #ddd;background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.skip))+'</button></div></div>');
+  var end=Date.now()+q.left; var tick=function(){ var s=Math.max(0,Math.ceil((end-Date.now())/1000)), el=document.getElementById("evSt"); if(el) el.textContent=s+"s"; if(s<=0){ clearInterval(ST); spotAns("",1); } }; tick(); ST=setInterval(tick,500);
+  o.querySelector("#evSk").onclick=function(){ spotAns("",1); }; }
+function spotAns(k,skip){ if(MODE!=="spot") return; clearInterval(ST); post("/npg/ev/spot/ans",{sess:sess(),k:k,skip:skip?1:0,l:lg()}).then(function(j){ if(!j||!j.ok){ modeEnd(); open(); return; }
+  if(!skip) toast(j.right?L(T.right):L(T.wrong).split(" — ")[0],j.right?"#27a745":"#e8322f");
+  if(j.done){ modeEnd(); setTimeout(open,900); return; } setTimeout(function(){ spotShow(j.q); },400); }).catch(function(){ modeEnd(); open(); }); }
+var _hc3=window.hitClick; window.hitClick=function(k){ if(MODE==="spot"&&k&&String(k).indexOf("__")!==0){ spotAns(String(k),0); return; } if(MODE==="treasure") return; return _hc3.apply(this,arguments); };
+// 이번 주 사진 — 줄여서 올리기
+var PIMG="";
+function photoPrep(f){ var m=document.getElementById("evPm"); if(!f) return; var rd=new FileReader(); rd.onload=function(){ var im=new Image(); im.onload=function(){ var W0=im.naturalWidth, H0=im.naturalHeight, k=Math.min(1,1280/Math.max(W0,H0)), c=document.createElement("canvas"); c.width=Math.round(W0*k); c.height=Math.round(H0*k); c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+    var q=.82, d=c.toDataURL("image/jpeg",q); while(d.length>1300000&&q>.4){ q-=.1; d=c.toDataURL("image/jpeg",q); } PIMG=d;   /* 위치 등 사진 속 정보(EXIF)는 다시 그리면서 빠진다 */
+    var pv=document.getElementById("evPv"); if(pv) pv.innerHTML='<img src="'+d+'" alt="" style="width:100%;border-radius:10px;margin-top:6px">'; var b=document.getElementById("evPs"); if(b) b.disabled=false; if(m) m.textContent=""; }; im.src=rd.result; }; rd.readAsDataURL(f); }
+function photoSend(){ var m=document.getElementById("evPm"), sns=document.getElementById("evSns"); if(!PIMG) return; if(!sns||!sns.checked){ if(m) m.textContent=L(TX3.needsns); return; }
+  var b=document.getElementById("evPs"); if(b) b.disabled=true; post("/npg/ev/photo/up",{sess:sess(),img:PIMG,sns:1,l:lg()}).then(function(j){ if(j&&j.ok){ PIMG=""; toast(L({ko:"올렸어요",en:"Uploaded",ja:"投稿しました",zhs:"已上传",zht:"已上傳",es:"Subida"}),"#27a745"); load(); } else { if(m) m.textContent=L(T.err); if(b) b.disabled=false; } }).catch(function(){ if(m) m.textContent=L(T.err); if(b) b.disabled=false; }); }
+
 var css=document.createElement("style");
 css.textContent="#evIsle{position:absolute;z-index:4;width:7.2%;left:58.6%;top:97.2%;transform:translate(-50%,-100%);cursor:pointer;display:none;pointer-events:auto;-webkit-tap-highlight-color:transparent}.map.onkr #evIsle{display:block}html.mpc-lock #evIsle{visibility:hidden}"
  +"#evIsle img{display:block;width:100%;height:auto;pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}"
@@ -104,7 +235,7 @@ var BBT_OPEN=[["EVENT OPEN",""],["KOREA\nBINGO",""],["Win Puzzle Gold\n100 · 50
 var bb=null, bbI=0;
 function bbCurve(k){ var t,i,n=20,p=[]; for(i=0;i<=n;i++){ t=i/n; p.push((t*100).toFixed(2)+"% "+(k*(1-Math.pow(2*t-1,2))).toFixed(2)+"%"); } for(i=n;i>=0;i--){ t=i/n; p.push((t*100).toFixed(2)+"% "+(100-k*(1-Math.pow(2*t-1,2))).toFixed(2)+"%"); } return "polygon("+p.join(",")+")"; }
 function bbMk(){ var mz=document.getElementById("mz"); if(!mz||document.getElementById("evBB")) return;
-  bb=document.createElement("div"); bb.id="evBB"; bb.className="xbb"; bb.setAttribute("role","button"); bb.setAttribute("aria-label","Korea Bingo event"); bb.tabIndex=0;
+  bb=document.createElement("div"); bb.id="evBB"; bb.className="xbb"; bb.setAttribute("role","button"); bb.setAttribute("aria-label","Event"); bb.tabIndex=0;
   bb.style.cssText="left:63.6%;top:83.6%;width:18%";   /* 남해 이벤트 섬 오른쪽 빈 바다 — 서해 전광판(폭 18%)과 같은 크기 */
   bb.innerHTML='<i class="xp" style="left:24%"></i><i class="xp" style="left:70.5%"></i><i class="xb" style="left:20.2%"></i><i class="xb" style="left:66.7%"></i>'
     +'<div class="xf" style="clip-path:'+bbCurve(9)+'"><div class="xs" style="clip-path:'+bbCurve(8)+'"><div class="ebg"></div><div class="ebt"></div><i class="ebsh"></i><div class="xg"></div></div></div>';
@@ -113,7 +244,7 @@ function bbMk(){ var mz=document.getElementById("mz"); if(!mz||document.getEleme
   bb.addEventListener("click",go,false); bb.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" ") go(e); },false);
   ["pointerdown","mousedown","touchstart"].forEach(function(ev){ bb.addEventListener(ev,function(e){ e.stopPropagation(); },false); });
   bbPaint(); }
-function bbPaint(){ if(!bb) return; var L2=OPEN?BBT_OPEN:BBT_CLOSE, t=bb.querySelector(".ebt");
+function bbPaint(){ if(!bb) return; var L2=OPEN?[["EVENT OPEN",""],[BBK[KIND]||"EVENT",""],["Win Puzzle Gold\n100 · 50 · 20","g"]]:BBT_CLOSE, t=bb.querySelector(".ebt");
   t.innerHTML=L2.map(function(x,i){ var n=x[0].replace(/\n/g," ").length, fs=n>18?8.5:n>14?10:n>10?13:16; return '<b class="'+x[1]+'" style="font-size:'+fs+'cqw">'+esc(x[0])+'</b>'; }).join("");
   bbI=0; bbStep(); }
 function bbStep(){ if(!bb) return; var bs=bb.querySelectorAll(".ebt b"); [].forEach.call(bs,function(b,i){ b.classList.toggle("on",i===bbI%bs.length); }); bbI++; }
@@ -130,7 +261,7 @@ function mk(){ var mz=document.getElementById("mz"); if(!mz||document.getElement
   ["pointerdown","mousedown","touchstart"].forEach(function(ev){ isle.addEventListener(ev,function(e){ e.stopPropagation(); },false); });
   try{ new ResizeObserver(fit).observe(isle); }catch(e){ window.addEventListener("resize",fit); }
   sign(); status(); }
-function status(){ fetch(H+"/npg/event",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ OPEN=!!(j&&j.open); sign(); }).catch(function(){}); }
+function status(){ fetch(H+"/npg/event",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ OPEN=!!(j&&j.open); KIND=OPEN?(j.kind||"bingo"):""; sign(); }).catch(function(){}); }
 setInterval(status,10*60000);
 // ── 이벤트(빙고) 화면 ──
 var B=null;   // 판 자료
@@ -139,27 +270,31 @@ function box(){ return document.getElementById("evBox"); }
 function close(){ var b=box(); if(b) b.remove(); var s=document.getElementById("evSheet"); if(s) s.remove(); document.documentElement.style.overflow=""; try{ window.mpPaid&&mpPaid.end(); }catch(e){} }
 function kst(ms){ var d=new Date(ms+9*3600e3); return d.toISOString().slice(5,10).replace("-","/")+" "+d.toISOString().slice(11,16); }
 function leftTxt(end){ var s=Math.max(0,end-Date.now()), d=Math.floor(s/864e5), h=Math.floor(s%864e5/36e5); return d+"d "+h+"h"; }
-function open(){ close(); var b=document.createElement("div"); b.id="evBox"; b.innerHTML='<div class="ein"><div class="ehd"><div class="elogo">KB</div><div><h1>'+esc(L(T.title))+'</h1><small id="evWk"></small></div><button type="button" class="ex">✕ '+esc(L(T.x))+'</button></div><div id="evBody"><div class="ecard">'+esc(L(T.load))+'</div></div></div>';
+function open(){ close(); var b=document.createElement("div"); b.id="evBox"; b.innerHTML='<div class="ein"><div class="ehd"><div class="elogo">EV</div><div><h1>'+esc(L(EVT))+'</h1><small id="evWk"></small></div><button type="button" class="ex">✕ '+esc(L(T.x))+'</button></div><div id="evBody"><div class="ecard">'+esc(L(T.load))+'</div></div></div>';
   document.body.appendChild(b); document.documentElement.style.overflow="hidden"; b.querySelector(".ex").onclick=close;
   try{ ntap("_event","open_area"); }catch(e){}
   load(); }
-function load(){ post("/npg/bingo/board",{sess:sess(),l:lg()}).then(function(j){ if(!j||!j.ok) throw 0; B=j; paint(); }).catch(function(){ var e=document.getElementById("evBody"); if(e) e.innerHTML='<div class="ecard">'+esc(L(T.err))+'</div>'; }); }
-function rulesHtml(){ return '<ol>'+RULES.map(function(r){ return '<li'+(r.b?' style="font-weight:800"':'')+'>'+esc(L(r))+'</li>'; }).join("")+'</ol>'; }
+function load(){ post("/npg/ev/board",{sess:sess(),l:lg()}).then(function(j){ if(!j||!j.ok) throw 0;
+    if(j.open){ E=j; B=null; evPaint(); return; } E=null;
+    return post("/npg/bingo/board",{sess:sess(),l:lg()}).then(function(k){ if(!k||!k.ok) throw 0; B=k; if(B.open&&B.cells) paint(); else evClosed(j.last||null); }); }).catch(function(){ var e=document.getElementById("evBody"); if(e) e.innerHTML='<div class="ecard">'+esc(L(T.err))+'</div>'; }); }
+function rulesHtml(){ var c=cur(), kr=c&&c.open?(KRULES[c.kind||"bingo"]||[]):[]; return '<ol>'+RULES.concat(kr).map(function(r){ return '<li'+(r.b?' style="font-weight:800"':'')+'>'+esc(L(r))+'</li>'; }).join("")+'</ol>'; }
 function sheet(html){ var s=document.getElementById("evSheet"); if(s) s.remove(); s=document.createElement("div"); s.id="evSheet"; s.innerHTML='<div>'+html+'</div>'; s.onclick=function(e){ if(e.target===s) s.remove(); }; document.body.appendChild(s); return s; }
 function showRules(withAgree){ var s=sheet('<h3>'+esc(L(T.rules))+'</h3>'+rulesHtml()+(withAgree?'<button type="button" class="ebtn" id="evAg" style="background:#ff7a1a;color:#fff;border:0;border-radius:12px;padding:12px;width:100%;font-weight:900;font-size:15px">'+esc(L(T.agree))+'</button>':'')+'<button type="button" class="ebtn g" id="evRx" style="margin-top:8px;width:100%;border-radius:12px;padding:11px;background:#fff;border:1.5px solid #e0d6cc;font-weight:800">'+esc(L(T.x))+'</button>');
   s.querySelector("#evRx").onclick=function(){ s.remove(); };
-  var a=s.querySelector("#evAg"); if(a) a.onclick=function(){ a.disabled=true; post("/npg/bingo/agree",{sess:sess(),l:lg()}).then(function(j){ if(j&&j.ok){ s.remove(); if(B&&B.me) B.me.agreed=true; paint(); } else { a.disabled=false; alert(L(T.err)); } }).catch(function(){ a.disabled=false; alert(L(T.err)); }); }; }
+  var a=s.querySelector("#evAg"); if(a) a.onclick=function(){ a.disabled=true; post("/npg/bingo/agree",{sess:sess(),l:lg()}).then(function(j){ if(j&&j.ok){ s.remove(); load(); } else { a.disabled=false; alert(L(T.err)); } }).catch(function(){ a.disabled=false; alert(L(T.err)); }); }; }
 function signIn(){   // 퍼즐골드 로그인 창(구글·Apple)을 빙고 화면 위로 — 원래 창(z 1040)이 빙고 화면(z 최상) 뒤에 열려 안 보였다 (10-26 고침)
   var had=sess(); try{ window.mpPG&&mpPG.open(); }catch(e){}
   var pb=document.getElementById("pgBox"); if(pb) pb.style.zIndex="2147483006";
   var t=setInterval(function(){ var p2=document.getElementById("pgBox"), now=sess();
-    if(now&&now!==had){ clearInterval(t); try{ window.mpPG&&mpPG.close(); }catch(e){} if(p2) p2.style.zIndex=""; if(box()) post("/npg/bingo/board",{sess:now,l:lg()}).then(function(j){ if(j&&j.ok){ B=j; paint(); if(B.me&&!B.me.agreed&&B.open) showRules(true); } }).catch(function(){ load(); }); return; }   // 로그인되면 바로 빙고로 → 규칙 동의
+    if(now&&now!==had){ clearInterval(t); try{ window.mpPG&&mpPG.close(); }catch(e){} if(p2) p2.style.zIndex=""; if(box()){ load(); setTimeout(function(){ var c=cur(); if(c&&c.open&&c.me&&!c.me.agreed) showRules(true); },1500); } return; }   // 로그인되면 바로 빙고로 → 규칙 동의
     if(!p2||p2.hidden){ clearInterval(t); if(p2) p2.style.zIndex=""; if(box()) load(); } },500); }
 function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return; var wk=document.getElementById("evWk");
   var st=B.wk?B.wk.slice(5).replace("-","/"):""; if(wk) wk.textContent=L(T.sub);
   var h='', me=B.me, rh=RANKHOW[B.kind||"bingo"];
+  if(!B.cells||!B.open){ evClosed(null); return; }
+  setHead("bingo");
   if(rh) h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKL))+'</b> · '+esc(L(rh))+'</div>';
-  if(!B.cells||!B.open){ h+='<div class="ecard" style="font-weight:800;color:#555">'+esc(L(T.closed))+'</div><div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>'; }
+  if(false){ h+='<div class="ecard" style="font-weight:800;color:#555">'+esc(L(T.closed))+'</div><div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>'; }
   else {
     h+='<div class="ecard ewk"><span>'+esc(L(T.ends))+'</span><span>'+esc(L(T.same))+'</span></div>';
     if(!me) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="signin">'+esc(L(T.signin))+'</button></div>';
