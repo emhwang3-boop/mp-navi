@@ -442,9 +442,9 @@ function L2(){ return LANG==="ko"?"ko":"en"; }   // 허브가 ko/en 만 받는 �
 // 하단 사업자 정보 배너 (사장님 2026-10-24) — 사업자등록증 기준, 6개 언어, 화면 맨 아래. 통신판매업·위치기반 신고번호는 나오면 추가
 function footBuild(){ var e=document.getElementById("foot"); if(!e) return;
   var em='<a href="mailto:emhwang3@moneypuzzle.co.kr" style="color:inherit;text-decoration:underline">emhwang3@moneypuzzle.co.kr</a>';
-  var ADDR_EN='707 C64 Emtower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea';
+  var ADDR_EN='220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Rm 707 C64 (M Tower), Korea';
   var F={
-    ko:["주식회사 부만 | 사업자등록번호 : 297-81-03712 | 통신판매업 신고번호 : (     )","대표 : 전현진 | 개인정보관리책임자 : 황의만","고객센터 : 010-4221-7066 | 이메일 : "+em,"경기도 남양주시 진접읍 해밀예당1로 220, 엠타워 707호 C64호"],
+    ko:["주식회사 부만 | 사업자등록번호 : 297-81-03712 | 통신판매업 신고번호 : (     )","대표 : 전현진 | 개인정보관리책임자 : 황의만","고객센터 : 010-4221-7066 | 이메일 : "+em,"경기도 남양주시 진접읍 해밀예당1로 220, 707호 씨64호(엠타워)"],
     en:["Booman Inc. | Business Reg. No. 297-81-03712 | Mail-order Sales Reg. No. : (     )","CEO : Jeon Hyeonjin | Privacy Officer : Hwang Euiman","Support : +82-10-4221-7066 | Email : "+em,ADDR_EN],
     ja:["株式会社 부만（Booman Inc.） | 事業者登録番号 : 297-81-03712 | 通信販売業申告番号 : (     )","代表 : 全賢珍（Jeon Hyeonjin） | 個人情報管理責任者 : 黄義晩","カスタマーセンター : +82-10-4221-7066 | メール : "+em,ADDR_EN],
     zhs:["Booman Inc.（株式会社 부만） | 营业执照号 : 297-81-03712 | 通信销售业申告号 : (     )","代表 : Jeon Hyeonjin | 个人信息管理负责人 : Hwang Euiman","客服 : +82-10-4221-7066 | 邮箱 : "+em,ADDR_EN],
@@ -699,7 +699,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 document.getElementById("mcopy").hidden=false;   /* 2026-10-26 모든 방문자 */
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1026c6", NAVI_ROOT="kr";
+var NAVI_V="1026c7", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
