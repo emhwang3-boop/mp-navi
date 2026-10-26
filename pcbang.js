@@ -49,8 +49,8 @@ function card(code){ var D=window.GU&&GU.d, o=D&&D.pcb&&D.pcb[code]; if(!o) retu
     +'<div class="pcgh">'+esc(L(TX.g))+'</div>';
   GAMES.forEach(function(g,i){ h+='<a class="pcg" data-pcx="g'+i+'" href="'+esc(g.u[l]||g.u.en)+'" target="_blank" rel="noopener"><b>'+esc(g.n)+'</b><i>'+esc(g.by)+'</i><div>'+esc(L(g.d))+'</div></a>'; });
   res.innerHTML=h+'</div>';
-  [].forEach.call(res.querySelectorAll("[data-pcx]"),function(a){ a.addEventListener("click",function(){ try{ ntap("pcb_"+code,"out_"+a.dataset.pcx); }catch(e){} try{ window.mpOut&&mpOut("pcb_"+code); }catch(e){} }); });
-  try{ ntap("pcb_"+code,"open_card"); }catch(e){}
+  try{ ntap("pcb_"+code,"tap"); }catch(e){}   // 그림별 누름 통계 (기존 칸)
+  try{ window.mpPaid&&mpPaid.start("pcb_"+code); }catch(e){}   // 유료 콘텐츠 통계 — 단추로 나가는 것은 karaoke.js 가 #res 링크 누름으로 센다
   try{ areaExpShow(k); }catch(e){}
   try{ res.scrollIntoView({behavior:"smooth",block:"start"}); }catch(e){} }
 window.pcbCard=card;
