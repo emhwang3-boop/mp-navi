@@ -126,7 +126,10 @@
           var ok=true; for(var i=0;i<occ.length;i++){ var q=occ[i]; if(x0-g<q[2]&&x0+tw+g>q[0]&&y0-g<q[3]&&y0+th+g>q[1]){ ok=false; break; } } if(ok){ bd=d; best=[x0,y0,tw,th]; } }
         if(best) done=best; }
       if(!done){ var tw2=e.offsetWidth, th2=e.offsetHeight; done=[cx-tw2/2,cy-th2/2,tw2,th2]; }
-      e.style.left=done[0]+"px"; e.style.top=done[1]+"px"; e.style.visibility=""; occ.push([done[0],done[1],done[0]+done[2],done[1]+done[3]]); }); }
+      e.style.left=done[0]+"px"; e.style.top=done[1]+"px"; e.style.visibility=""; occ.push([done[0],done[1],done[0]+done[2],done[1]+done[3]]);
+      var n=(o.keys||[]).length; if(n>0){ var fb=Math.max(4,w*0.019), t=document.createElement("div"); t.className="gb"; t.dataset.g=o.g; t.textContent="+"+n; t.title=LP(o.n);   /* 대표 그림 없는 구도 그림 수 배지 (사장님 10-26) */
+        t.style.fontSize=fb+"px"; t.style.height=(fb*1.55)+"px"; t.style.padding="0 "+(fb*0.45)+"px"; t.style.borderWidth=Math.max(0.5,fb*0.12)+"px"; L.appendChild(t);
+        var bw2=t.offsetWidth||fb*2.4; t.style.left=(done[0]+done[2]-bw2*0.2)+"px"; t.style.top=(done[1]-fb*1.35)+"px"; t.style.zIndex="3"; occ.push([done[0]+done[2]-bw2*0.2,done[1]-fb*1.35,done[0]+done[2]+bw2*0.8,done[1]+fb*0.2]); } }); }
   // 「나」 누르기로 내 자리 가기 (10-20) — 서울이면 내가 있는 구 화면으로 들어가 나를 가운데
   function underSeoul(v){ var x=v, d=0; while(x&&CITY[x]&&d<20){ if(x==="seoulall") return true; x=CITY[x].parent; d++; } return false; }
   var _mg=window.meGo; if(_mg) window.meGo=function(){ var r=_mg.apply(this,arguments); try{ if(r&&window.ME&&ME.pos&&VIEW!=="seoulall"&&underSeoul(VIEW)){ viewSet("seoulall"); load().then(function(){ apply(); window.meGo2(); }).catch(function(){}); return r; } }catch(e){} window.meGo2(); return r; };   /* 서울 안 옛 하위 약도(명동 등) 대신 구 화면으로 */
