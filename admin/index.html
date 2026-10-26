@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권 (무료)","무료 확정 · 결제 미연결"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권 (무료)","무료 확정 · 결제 미연결"],["pg","퍼즐골드","지갑·상 지급·사용 내역 · 엑셀"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -214,6 +214,60 @@ function xlsLed(){ if(!LG||!window.XLSX){ alert("자료나 엑셀 도구를 아�
   var s3=[["시각","상품","통화","금액","상태","주문번호"]].concat(LG.items.map(function(x){ return [x.at,PRN[x.product]||x.product,x.cur,x.amount,x.status==="refund"?"환불":"결제",x.oid||""]; }));
   var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(s1,[20,24]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[12,8,12,10,8,8,8]),"날짜별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[18,10,6,12,6,24]),"기록");
   save(wb,"머니퍼즐내비_장부_"+LG.from+"_"+LG.to+".xlsx"); }
+// ── 퍼즐골드 (2026-10-26) — 허브 /npg/admin/* (x-admin). 상 지급은 사람 고르고 이벤트명·등수 → 금액 자동(1등 100·2등 50·3등 20) · 3번이면 졸업(거절)
+//   합계 칸은 사장님 기기 계정(own) 뺀 값 · 「같은 기기」 경고 = 같은 기기 번호에서 다른 구글 계정도 상을 받음(차단 아님) · IP 없음
+var PGD=null, PGF="";
+function pgDay(ms){ return ms?new Date(ms+9*3600e3).toISOString().slice(0,16).replace("T"," "):""; }
+function pgLoad(){ var P=$("pane");
+  P.innerHTML='<div class="card"><b>퍼즐골드 (Puzzle Gold)</b><div class="msg">매주 이벤트 상금 · 1등 100 PG · 2등 50 PG · 3등 20 PG · 3번 받으면 졸업 · 유효기간 1년(지나면 자동 소멸) · 앱 결제에만 · 현금 환불 없음 · 판매 안 함</div><div id="pgSum"><div class="msg">불러오는 중…</div></div></div>'
+    +'<div class="card"><b>상 지급</b><div class="row" style="margin-top:8px"><select id="pgU" style="min-width:220px"></select><input type="text" id="pgE" placeholder="이벤트명 (예: 10월 4주 빙고)" maxlength="60" style="flex:1;min-width:180px"><select id="pgR"><option value="1">1등 · 100 PG</option><option value="2">2등 · 50 PG</option><option value="3">3등 · 20 PG</option></select><button onclick="pgGrant()">지급</button></div><div class="msg" id="pgGm"></div></div>'
+    +'<div class="card"><div class="row" style="justify-content:space-between"><b>사람 목록</b><span class="row"><input type="text" id="pgQ" placeholder="이름·이메일 찾기" oninput="PGF=this.value;pgPaint()"><button class="g" onclick="pgLoad()">새로고침</button><button class="g" onclick="xlsPg()">엑셀 받기</button></span></div><div class="tw"><table id="pgT"></table></div></div>'
+    +'<div class="card"><b>받은 내역 (지급)</b><div class="tw"><table id="pgGT"></table></div></div>'
+    +'<div class="card"><b>사용 내역</b><div class="msg">결제 연결 전 — 허브 「PG 차감」 경로(/npg/spend)만 만들어 둠</div><div class="tw"><table id="pgST"></table></div></div>';
+  api("/npg/admin/list").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); PGD=j; pgPaint(); })
+    .catch(function(e){ $("pgSum").innerHTML='<div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div>'; }); }
+function pgName(u){ return (u.name||"(이름 없음)")+(u.own?" [사장님 기기]":""); }
+function pgPaint(){ var j=PGD; if(!j) return; var T=j.tot, by={}; j.users.forEach(function(u){ by[u.uid]=u; });
+  $("pgSum").innerHTML='<div class="tiles">'+tile(T.users+"명","로그인한 사람")+tile(T.bal.toLocaleString()+" PG","남은 잔액 합계")+tile(T.granted.toLocaleString()+" PG","지급 합계")+tile(T.spent.toLocaleString()+" PG","사용 합계")+tile(T.lost.toLocaleString()+" PG","1년 지나 소멸")+tile(T.grad+"명","졸업 (3회)")+'</div><div class="msg">합계는 사장님 기기 계정을 뺀 값입니다.</div>';
+  var sel=$("pgU"), sv=sel.value; sel.innerHTML='<option value="">— 받을 사람 고르기 —</option>'+j.users.map(function(u){ return '<option value="'+u.uid+'"'+(u.grad?' disabled':'')+'>'+esc(pgName(u)+" · "+(u.email||"")+" · 수상 "+u.aw+"회"+(u.grad?" (졸업)":""))+'</option>'; }).join(""); sel.value=sv;
+  var q=(PGF||"").trim().toLowerCase(), us=j.users.filter(function(u){ return !q||(u.name+" "+u.email).toLowerCase().indexOf(q)>=0; });
+  var h='<tr><th class="l">이름</th><th class="l">이메일</th><th>잔액</th><th>수상</th><th class="l">졸업</th><th class="l">경고</th><th>기기</th><th class="l">처음</th><th class="l">마지막 이용</th></tr>';
+  us.forEach(function(u){ h+='<tr><td class="l">'+esc(pgName(u))+'</td><td class="l">'+esc(u.email)+'</td><td>'+u.bal.toLocaleString()+' PG</td><td>'+u.aw+' / '+j.max+'</td><td class="l">'+(u.grad?'졸업':'')+'</td><td class="l">'+(u.warn.length?'<span class="err">같은 기기 · '+esc(u.warn.map(function(x){ return by[x]?(by[x].name||by[x].email):x.slice(0,6); }).join(", "))+'</span>':'')+'</td><td>'+u.dev+'</td><td class="l">'+esc(pgDay(u.c))+'</td><td class="l">'+esc(pgDay(u.la))+'</td></tr>'; });
+  if(!us.length) h+='<tr><td class="l" colspan="9">아직 로그인한 사람이 없습니다.</td></tr>';
+  $("pgT").innerHTML=h;
+  var G=[], S=[]; j.users.forEach(function(u){ (u.g||[]).forEach(function(g){ G.push([u,g]); }); (u.s||[]).forEach(function(s){ S.push([u,s]); }); });
+  G.sort(function(a,b){ return b[1].at-a[1].at; }); S.sort(function(a,b){ return b[1].at-a[1].at; });
+  var ST={ok:"유효",exp:"소멸(1년)",void:"취소됨"};
+  var g='<tr><th class="l">지급 시각</th><th class="l">이름</th><th class="l">이벤트</th><th>등수</th><th>금액</th><th>남음</th><th class="l">만료일</th><th class="l">상태</th><th></th></tr>';
+  G.forEach(function(x){ var u=x[0], r=x[1]; g+='<tr><td class="l">'+esc(pgDay(r.at))+'</td><td class="l">'+esc(pgName(u))+'</td><td class="l">'+esc(r.ev)+'</td><td>'+r.rk+'등</td><td>'+r.amt+'</td><td>'+r.left+'</td><td class="l">'+esc(pgDay(r.exp).slice(0,10))+'</td><td class="l">'+(ST[r.st]||r.st)+'</td><td>'+(r.st==="ok"&&r.left===r.amt?'<button class="g" onclick="pgVoid(\''+u.uid+'\',\''+r.id+'\')">지급 취소</button>':'')+'</td></tr>'; });
+  if(!G.length) g+='<tr><td class="l" colspan="9">아직 지급한 상이 없습니다.</td></tr>';
+  $("pgGT").innerHTML=g;
+  var s='<tr><th class="l">사용 시각</th><th class="l">이름</th><th>PG 사용</th><th>결제 금액</th><th class="l">주문번호</th><th class="l">메모</th><th class="l">상태</th><th></th></tr>';
+  S.forEach(function(x){ var u=x[0], r=x[1]; s+='<tr><td class="l">'+esc(pgDay(r.at))+'</td><td class="l">'+esc(pgName(u))+'</td><td>'+r.amt+'</td><td>'+r.total+'</td><td class="l">'+esc(r.oid)+'</td><td class="l">'+esc(r.memo||"")+'</td><td class="l">'+(r.st==="void"?"취소됨":"사용")+'</td><td>'+(r.st==="ok"?'<button class="g" onclick="pgUnspend(\''+u.uid+'\',\''+r.id+'\')">사용 취소</button>':'')+'</td></tr>'; });
+  if(!S.length) s+='<tr><td class="l" colspan="8">아직 사용 내역이 없습니다.</td></tr>';
+  $("pgST").innerHTML=s; }
+function pgPost(path,b){ var o={method:"POST",body:JSON.stringify(b)}; return api(path,o); }
+function pgGrant(){ var uid=$("pgU").value, ev=$("pgE").value.trim(), rk=+$("pgR").value, m=$("pgGm");
+  if(!uid){ m.textContent="받을 사람을 고르세요."; return; } if(!ev){ m.textContent="이벤트명을 넣으세요."; return; }
+  var u=(PGD.users.filter(function(x){ return x.uid===uid; })[0])||{}, amt=(PGD.amt||{})[rk];
+  if(!confirm(pgName(u)+" ("+(u.email||"")+")\n「"+ev+"」 "+rk+"등 → "+amt+" PG 지급할까요?")) return;
+  m.textContent="지급 중…";
+  pgPost("/npg/admin/grant",{uid:uid,ev:ev,rk:rk}).then(function(j){
+    if(!j.ok){ m.innerHTML='<span class="err">'+(j.err==="grad"?"이미 3번 받아 졸업한 사람입니다 — 지급 거절.":"실패: "+esc(j.err||""))+'</span>'; return; }
+    m.innerHTML='지급됨 · '+j.grant.amt+' PG · 수상 '+j.aw+'회'+(j.grad?' (이제 졸업)':'')+(j.warn&&j.warn.length?' · <span class="err">같은 기기에서 다른 계정도 상을 받았습니다 (차단 아님)</span>':'');
+    $("pgE").value=""; api("/npg/admin/list").then(function(k){ if(k.ok){ PGD=k; pgPaint(); } });
+  }).catch(function(e){ m.innerHTML='<span class="err">실패: '+esc(e.message)+'</span>'; }); }
+function pgVoid(uid,gid){ if(!confirm("이 상 지급을 취소할까요? (수상 횟수도 1 줄어듭니다)")) return;
+  pgPost("/npg/admin/void",{uid:uid,gid:gid}).then(function(j){ if(!j.ok){ alert(j.err==="used"?"이미 일부를 쓴 상이라 취소할 수 없습니다.":"실패: "+(j.err||"")); return; } pgLoad(); }).catch(function(e){ alert("실패: "+e.message); }); }
+function pgUnspend(uid,sid){ if(!confirm("이 사용을 취소하고 PG 를 돌려줄까요? (1년 지난 상의 몫은 소멸)")) return;
+  pgPost("/npg/admin/unspend",{uid:uid,sid:sid}).then(function(j){ if(!j.ok){ alert("실패: "+(j.err||"")); return; } pgLoad(); }).catch(function(e){ alert("실패: "+e.message); }); }
+function xlsPg(){ if(!PGD||!window.XLSX){ alert("자료나 엑셀 도구를 아직 못 불렀습니다."); return; } var j=PGD, T=j.tot, ST={ok:"유효",exp:"소멸(1년)",void:"취소됨"};
+  var s1=[[CO],["퍼즐골드 (Puzzle Gold) 장부"],["만든 날",kday(0)],["규칙","1등 100 · 2등 50 · 3등 20 PG · 3회 졸업 · 유효 1년 · 앱 결제 전용 · 현금 환불 없음"],[],["로그인한 사람(사장님 기기 제외)",T.users],["남은 잔액 합계",T.bal],["지급 합계",T.granted],["사용 합계",T.spent],["소멸 합계",T.lost],["졸업",T.grad]];
+  var s2=[["이름","이메일","사장님 기기","잔액","수상","졸업","같은 기기 경고","기기 수","처음","마지막 이용"]].concat(j.users.map(function(u){ return [u.name,u.email,u.own?"예":"",u.bal,u.aw,u.grad?"졸업":"",u.warn.length?"같은 기기 "+u.warn.length+"명":"",u.dev,pgDay(u.c),pgDay(u.la)]; }));
+  var s3=[["지급 시각","이름","이메일","이벤트","등수","금액","남음","소멸","만료일","상태"]], s4=[["사용 시각","이름","이메일","PG 사용","결제 금액","주문번호","메모","상태"]];
+  j.users.forEach(function(u){ (u.g||[]).forEach(function(r){ s3.push([pgDay(r.at),u.name,u.email,r.ev,r.rk,r.amt,r.left,r.lost||0,pgDay(r.exp).slice(0,10),ST[r.st]||r.st]); }); (u.s||[]).forEach(function(r){ s4.push([pgDay(r.at),u.name,u.email,r.amt,r.total,r.oid,r.memo||"",r.st==="void"?"취소됨":"사용"]); }); });
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(s1,[30,60]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[14,26,8,8,6,6,14,6,16,16]),"사람"); XLSX.utils.book_append_sheet(wb,sheet(s3,[16,14,26,22,6,6,6,6,12,8]),"지급"); XLSX.utils.book_append_sheet(wb,sheet(s4,[16,14,26,8,10,20,16,8]),"사용");
+  save(wb,"머니퍼즐투어_퍼즐골드_"+kday(0)+".xlsx"); }
 function menu(){ $("menu").innerHTML=MENU.map(function(m){ return '<button id="m_'+m[0]+'" onclick="show(\''+m[0]+'\')">'+esc(m[1])+'<small>'+esc(m[2])+'</small></button>'; }).join(""); }
 function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",m[0]===id); });
   var P=$("pane");
@@ -229,6 +283,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="ptn"){ ptnLoad(); return; }   // 제휴 가게 — partner.js (2026-10-16)
   if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
   if(id==="pay"){ payLoad(); return; }
+  if(id==="pg"){ pgLoad(); return; }   // 퍼즐골드 (2026-10-26)
   if(id==="pw"){ P.innerHTML='<div class="card"><b>비밀번호 변경</b><div class="msg">새 비밀번호는 10자 이상 (한글·숫자·영문 섞어도 됩니다). 바꾸면 옛 비밀번호는 바로 안 통합니다.</div>'
     +'<div style="display:grid;gap:8px;margin-top:10px;max-width:420px"><input type="password" id="pw0" placeholder="지금 비밀번호" autocomplete="current-password"><input type="password" id="pw1" placeholder="새 비밀번호 (10자 이상)" autocomplete="new-password"><input type="password" id="pw2" placeholder="새 비밀번호 확인" autocomplete="new-password"><button id="pwb" onclick="pwChange()">바꾸기</button></div><div class="msg" id="pwm"></div></div>'; return; }
 }
