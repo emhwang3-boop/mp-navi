@@ -261,6 +261,8 @@ var RF6={ko:"5일 전까지 전액 환불 · 당일 30% 공제",en:"Full refund 
 var RFL6={ko:"환불 규정 보기",en:"Refund policy",ja:"返金規定を見る",zhs:"查看退款规定",zht:"查看退款規定",es:"Ver política de reembolso"};
 // 상품 카드 환불 한 줄 공통 부품 (사장님 10-25) — 우리가 직접 결제받는 가격 있는 상품(o.p)에만. 상품 자료에 o.refund(6개 언어)가 있으면 그 조건, 없으면 기본(RF6).
 //   외부 예매처로 넘기는 것(o.external — 공연 티켓 KOPIS 예매처 등)이나 가격 없는 것엔 붙이지 않는다
+var B4SV6={ko:"제공기간: 결제 후 1개월 이내 예약일 당일 1회 제공 · 한 주문 최대 10명",en:"Service period: provided once on your booked date, within 1 month of payment · up to 10 people per order",ja:"提供期間：決済後1か月以内の予約日当日に1回提供・1回の注文で最大10名",zhs:"提供期间：付款后1个月内、于预约当天提供1次 · 每笔订单最多10人",zht:"提供期間：付款後1個月內、於預約當天提供1次 · 每筆訂單最多10人",es:"Periodo del servicio: se presta una vez en la fecha reservada, dentro de 1 mes desde el pago · máximo 10 personas por pedido"};
+window.B4SV6=B4SV6;   // 주문 화면(tosspay.js)도 같은 문장
 function refundLine(o){ if(!o||!o.p||o.external) return ""; return '<div class="d" style="margin-top:3px;color:var(--ink)">'+esc(LG6(o.refund||RF6))+' · <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener" style="all:unset;display:inline;cursor:pointer;font:inherit;color:inherit;line-height:inherit;letter-spacing:inherit;text-decoration:none">'+esc(LG6(RFL6))+'</a></div>'; }   // 앞 문장과 겉모습 100% 같게 — .tgbook a(14.5px·900) 기본값을 all:unset 으로 지우고 상속, 밑줄 없음, 누르면 링크로만 (사장님 10-25)
 window.refundLine=refundLine;
 var PAYB6={ko:"예약·결제",en:"Book & pay",ja:"予約・決済",zhs:"预订·付款",zht:"預訂·付款",es:"Reservar y pagar"};
@@ -291,6 +293,7 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
     +(TGX.pkg?('<div class="d" style="font-weight:700;color:var(--ink)">'+esc(LG6(B4PKG.g))+'</div>'
     +'<div class="d">'+esc(LG6(B4PKG.c))+'</div>'
     +'<div class="d" style="font-weight:800;color:var(--ink);margin-top:2px">'+esc(LG6(B4PKG.p))+'</div>'
+    +'<div class="d" style="color:var(--ink);margin-top:3px">'+esc(LG6(B4SV6))+'</div>'   // 제공기간·인원 (사장님 10-26, 토스 심사)
     +refundLine(B4PKG)   // 환불 규정 요약 + 링크 — 공통 부품 (토스 PG, 10-25)
     +'<button type="button" class="nrsel" data-nr="b4map" style="margin-top:7px;background:#fff;color:#d9480f;border-color:#ff7a00">'+MPICO("mi_bus",LG6({ko:"투어 노선도 보기",en:"View tour route",ja:"ツアー路線図を見る",zhs:"查看游览路线图",zht:"查看遊覽路線圖",es:"Ver la ruta del tour"}),MIS)+' ›</button>'
     +'<button type="button" class="nrsel" data-nr="b4pay" style="margin-top:7px;background:#3182f6;color:#fff;border-color:#3182f6">'+esc(LG6(PAYB6))+' ›</button>'   // 「예약·결제」 하나만 — 모든 손님 (사장님 10-25)
