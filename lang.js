@@ -166,7 +166,7 @@ var SKIP={lgP:1,lgL:1,nrBox:1,gfBox:1,trBox:1,trRep:1,shBox:1};
 function overlaysAgain(){ var a=[].slice.call(document.querySelectorAll("body > *")).filter(function(e){ if(e.hidden||SKIP[e.id]||e.classList.contains("trsheet")||/^(SCRIPT|STYLE)$/.test(e.tagName)) return false; return typeof e._rb==="function"||getComputedStyle(e).position==="fixed"; });
   a.forEach(function(e){ try{ retext(e); }catch(x){} if(typeof e._rb==="function") try{ e._rb(); }catch(x){} });
   try{ retext(document.getElementById("mm")); }catch(e){}
-  var sh=document.getElementById("shBox"); if(sh&&!sh.hidden){ try{ shBuild(); if(ls("mp_owner")||ls("mpv_inv")) shOwnerFix(document.getElementById("shIn"),"Money Puzzle Tour for Korea"); }catch(e){} } }
+  var sh=document.getElementById("shBox"); if(sh&&!sh.hidden){ try{ shBuild(); shOwnerFix(document.getElementById("shIn"),"Money Puzzle Tour for Korea"); }catch(e){} } }
 function mapAgain(){ try{ var c=window.CITY&&CITY[VIEW], tt=document.getElementById("vttl"); if(c&&tt) tt.textContent=LN(c);
     var vb=document.getElementById("vback"); if(c&&vb){ vb.title=vb.ariaLabel=c.parent!=="kr"&&CITY[c.parent]?T(CITY[c.parent].ko+"로",LN(CITY[c.parent])):T("전국 지도로","Korea map"); }
     var vd=document.getElementById("vdet"); if(vd) vd.textContent=window.DET?T("약도","Sketch"):T("자세히","Detailed");
