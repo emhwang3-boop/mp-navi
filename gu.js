@@ -135,13 +135,17 @@
   // 옛 도심 약도 4개(광화문·인사동·경복궁·명동)로 가는 이동은 서울 지도 → 그 좌표가 든 구 화면으로 (사장님 10-25)
   //   공연관람 고르기·검색·☆·추천 등 spinGo 를 쓰는 모든 길. 다른 약도(홍대·용산·성수·올림픽공원 등)는 그대로. 카드는 구 화면에 들어간 뒤 다시 띄운다
   var OLD4={seoul:1,insadong:1,gyeongbok:1,myeongdong:1};
-  var _sg=window.spinGo; if(_sg) window.spinGo=function(id,lat,lng,sc){ if(!OLD4[id]||lat==null||lng==null||window.DET) return _sg.apply(this,arguments);
+  var _sg=window.spinGo; if(_sg) window.spinGo=function(id,lat,lng,sc){ if(!(OLD4[id]||id==="seoulall")||lat==null||lng==null||window.DET) return _sg.apply(this,arguments);
     var run=function(re){ try{ if(VIEW!=="seoulall") viewSet("seoulall"); if(!on()) return false; var f=meGeoFrac("seoulall",+lat,+lng); if(!f) return false;
         var g=null; GU.d.gus.forEach(function(o){ if(!g&&inPoly(f[0],f[1],o.poly||[])) g=o.g; }); if(!g) return false;
-        var k=window._cardK; enter(g); var m=document.getElementById("map"), w=m.clientWidth, as=ASP(), z=ZM.s; ZM={s:z,tx:w/2-f[0]*w*as*z,ty:MH()/2-f[1]*w*z}; zApply(); try{ LOD.s0=ZM.s; }catch(e){}
+        var k=window._cardK, sp=document.getElementById("spin"), spP=sp&&sp.parentNode, pin=window.PLACES&&PLACES.__pin; enter(g); if(sp&&spP&&!sp.isConnected){ spP.appendChild(sp); if(pin) PLACES.__pin=pin; }   /* 구에 들어가도 빨간 핀은 그대로 (10-26) */ var m=document.getElementById("map"), w=m.clientWidth, as=ASP(), z=ZM.s; ZM={s:z,tx:w/2-f[0]*w*as*z,ty:MH()/2-f[1]*w*z}; zApply(); try{ LOD.s0=ZM.s; }catch(e){}
+        pinFit();
         if(re&&k){ if(k==="__pin"){ try{ window.spinCard(); }catch(e){} } else { try{ placeShow(k); }catch(e){} } } return true; }catch(e){ return false; } };
     if(GU.d){ if(!run(false)) _sg(id,lat,lng,sc); return; }   // 자료가 있으면 바로 — 부른 쪽이 곧이어 카드를 띄운다
     viewSet("seoulall"); load().then(function(){ if(!run(true)) _sg(id,lat,lng,sc); },function(){ _sg(id,lat,lng,sc); }); };
+  // 구 화면의 빨간 핀 크기 — 핀은 서울 전체 지도 배율에 맞춰 만들어지니, 구 화면 배율만큼 줄인다 (핀 끝 = 정확한 자리, 10-26)
+  function pinFit(){ try{ var e=document.getElementById("spin"); if(!e||!on()||!GU.g) return; var s0=(ASP()>1?1.5:2)*ZB(), k=Math.min(1,s0/ZM.s); e.style.transformOrigin="50% 100%"; e.style.transform="translate(-50%,-100%) scale("+k+")"; }catch(x){} }
+  var _ss0=window.spinShow0; if(_ss0) window.spinShow0=function(){ var r=_ss0.apply(this,arguments); pinFit(); return r; };
   // 「나」가 움직이면 묶음 이름표 자리를 다시 (나와 겹치지 않게)
   var _md=window.meDraw; if(_md) window.meDraw=function(){ var r=_md.apply(this,arguments); try{ if(on()&&!GU.g&&GU.d&&GU.key){ var me=meBox(), k=me?me.map(Math.round).join(","):""; if(k!==(GU.meK||"")){ GU.key=null; draw(); } } }catch(e){} return r; };
   // 들어갈 때 배율 — 대표 명소가 있는 하위 약도를 그 약도 화면과 같은 크기로(없으면 구 약도를 「광화문 일대」 약도와 같은 크기로), 대표를 가운데
