@@ -170,7 +170,7 @@ function overlaysAgain(){ var a=[].slice.call(document.querySelectorAll("body > 
 function mapAgain(){ try{ var c=window.CITY&&CITY[VIEW], tt=document.getElementById("vttl"); if(c&&tt) tt.textContent=LN(c);
     var vb=document.getElementById("vback"); if(c&&vb){ vb.title=vb.ariaLabel=c.parent!=="kr"&&CITY[c.parent]?T(CITY[c.parent].ko+"로",LN(CITY[c.parent])):T("전국 지도로","Korea map"); }
     var vd=document.getElementById("vdet"); if(vd) vd.textContent=window.DET?T("약도","Sketch"):T("자세히","Detailed");
-    var sl=document.querySelector("#spin .spl"), p=PLACES.__pin; if(sl&&p) sl.textContent=FG()?KS(p.en||p.ko):p.ko;
+    var sl=document.querySelector("#spin .spl"), p=PLACES.__pin, sk=document.getElementById("spin"); if(sl&&p) sl.textContent=FG()?KS(p.en||p.ko):p.ko; else if(sl&&sk&&sk.dataset.k&&PLACES[sk.dataset.k]) sl.textContent=LN(PLACES[sk.dataset.k]);
     var hk=document.querySelector("#herek .hk-b"); if(hk) hk.textContent=T("여기!","Here");
     var r=document.querySelector("#res > .xbtn"); if(r) r.setAttribute("aria-label",T("닫기","Close")); }catch(e){}
   try{ nmRelang(); }catch(e){} }
