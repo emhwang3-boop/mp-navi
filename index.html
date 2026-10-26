@@ -699,7 +699,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 document.getElementById("mcopy").hidden=false;   /* 2026-10-26 모든 방문자 */
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1026d3", NAVI_ROOT="kr";
+var NAVI_V="1026d4", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -862,7 +862,7 @@ var B4LL={ yg:[37.54885,126.90765], hybe:[37.52455,126.9642], smartium:[37.50980
 function b4Name(k){ var o=B4LAB[k]; return o?(o[LANG]||o.en):k; }
 function b4Clear(){ var e=document.getElementById("b4lab"); if(e) e.remove(); }
 function b4Draw(){ b4Clear(); if(VIEW!=="b4route"||!CITY.b4route) return; var mz=document.getElementById("mz"); if(!mz) return;
-  var w=document.getElementById("map").clientWidth, fs=Math.max(6,w*0.0135), box=document.createElement("div"); box.id="b4lab";
+  var w=document.getElementById("map").clientWidth, fs=Math.max(6,w*0.0135,10/Math.max(0.05,ZM.s)), box=document.createElement("div"); box.id="b4lab";   /* 화면에서 10px 아래로는 안 작아지게 (폰 전체 보기, 10-26) */
   B4ORDER.forEach(function(k){ var ll=B4LL[k], f=meGeoFrac("b4route",ll[0],ll[1]); if(!f) return;
     var d=document.createElement("div");
     d.style.cssText="position:absolute;left:"+(f[0]*100)+"%;top:"+((f[1]+0.072)*100)+"%;transform:translateX(-50%);white-space:nowrap;background:#fff;color:#d9480f;border:"+Math.max(0.7,fs*0.1)+"px solid #ff7a00;border-radius:999px;padding:"+(fs*0.14)+"px "+(fs*0.55)+"px;font-size:"+fs+"px;font-weight:900;line-height:1.25;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.18)";
@@ -872,8 +872,14 @@ function b4Draw(){ b4Clear(); if(VIEW!=="b4route"||!CITY.b4route) return; var mz
     [hb,d].forEach(function(el){ el.style.pointerEvents="auto"; el.style.cursor="pointer"; el.addEventListener("click",function(ev){ ev.stopPropagation(); try{ ntap(k,"kpop_b4route"); }catch(x){} b4Jump(k); }); });
     box.appendChild(hb); });
   mz.appendChild(box); }
+// 처음 화면에 5곳·노선·명찰이 폰·PC 모두 다 들어오게 (사장님 10-26) — 그림·좌표는 그대로, 처음 보이는 범위만
+function b4Fit(){ var m=document.getElementById("map"); if(!m) return; var w=m.clientWidth, h=MH(), as=ASP(), x0=9,y0=9,x1=-9,y1=-9;
+  B4ORDER.forEach(function(k){ var ll=B4LL[k], f=meGeoFrac("b4route",ll[0],ll[1]); if(!f) return; x0=Math.min(x0,f[0]-0.045); x1=Math.max(x1,f[0]+0.045); y0=Math.min(y0,f[1]-0.08); y1=Math.max(y1,f[1]+0.115); });   // 사옥 그림(위)·명찰(아래) 여유
+  if(x1<x0) return; var pad=0.03; x0-=pad/as; x1+=pad/as; y0-=pad; y1+=pad;
+  var sc=Math.min(w/((x1-x0)*w*as), h/((y1-y0)*w)); var cx=(x0+x1)/2, cy=(y0+y1)/2;
+  ZM={s:sc,tx:w/2-cx*w*as*sc,ty:h/2-cy*w*sc}; zApply(); try{ LOD.s0=ZM.s; }catch(e){} }
 function b4RouteShow(){ try{ inBlur(); }catch(e){} try{ spinClear(); }catch(e){}
-  if(!(CITY.b4route&&CITY.b4route.geo)) return; viewSet("b4route"); setTimeout(function(){ try{ b4Draw(); }catch(e){} },50);
+  if(!(CITY.b4route&&CITY.b4route.geo)) return; viewSet("b4route"); try{ b4Fit(); }catch(e){} setTimeout(function(){ try{ b4Fit(); b4Draw(); }catch(e){} },50); setTimeout(function(){ try{ if(VIEW==="b4route") b4Fit(); }catch(e){} },450);
   clearTimeout(window._scT); window._scT=setTimeout(function(){ var m=document.getElementById("map"); window.scrollTo({top:m.getBoundingClientRect().top+scrollY-60,behavior:"smooth"}); },150); }
 window.b4RouteShow=b4RouteShow;
 // (10-25 사장님) 서울 전체 지도(seoulall)엔 빅4 사옥 아이콘을 두지 않는다 — 사옥 그림은 구 약도(홍대·용산·성수·올림픽공원)에만 구워 넣는다
