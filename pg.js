@@ -19,10 +19,11 @@ var W={
   zhs:"Puzzle Gold（PG）是每周活动奖品发放的应用专用积分：第1名 100 PG · 第2名 50 PG · 第3名 20 PG。自获得之日起1年内仅可用于本应用的付费服务，不可兑换现金或退款。每人最多可获奖3次（满3次即毕业）。",
   zht:"Puzzle Gold（PG）是每週活動獎品發放的應用程式專用點數：第1名 100 PG · 第2名 50 PG · 第3名 20 PG。自取得之日起1年內僅可用於本應用程式的付費服務，不可兌換現金或退款。每人最多可得獎3次（滿3次即畢業）。",
   es:"Puzzle Gold (PG) es un punto de la app que se entrega como premio de los eventos semanales: 1.º 100 PG · 2.º 50 PG · 3.º 20 PG. Solo se puede usar para pagos dentro de esta app durante 1 año desde que lo recibe, y no se puede canjear por dinero ni reembolsar. Cada persona puede ganar hasta 3 veces (con 3 premios se gradúa)."},
- ask:{ko:"구글 계정으로 로그인하면 받은 퍼즐골드를 확인할 수 있습니다.",en:"Sign in with your Google account to see the Puzzle Gold you have won.",ja:"Googleアカウントでログインすると、受け取ったパズルゴールドを確認できます。",zhs:"使用Google账号登录即可查看您获得的 Puzzle Gold。",zht:"使用Google帳號登入即可查看您獲得的 Puzzle Gold。",es:"Inicie sesión con su cuenta de Google para ver el Puzzle Gold que ha ganado."},
+ ask:{ko:"구글 또는 애플 계정으로 로그인하면 받은 퍼즐골드를 확인할 수 있습니다.",en:"Sign in with your Google or Apple account to see the Puzzle Gold you have won.",ja:"GoogleまたはAppleアカウントでログインすると、受け取ったパズルゴールドを確認できます。",zhs:"使用Google或Apple账号登录即可查看您获得的 Puzzle Gold。",zht:"使用Google或Apple帳號登入即可查看您獲得的 Puzzle Gold。",es:"Inicie sesión con su cuenta de Google o Apple para ver el Puzzle Gold que ha ganado."},
  prep:{ko:"Google로 로그인 (준비 중)",en:"Sign in with Google (coming soon)",ja:"Googleでログイン（準備中）",zhs:"使用Google登录（准备中）",zht:"使用Google登入（準備中）",es:"Iniciar sesión con Google (próximamente)"},
  prepNote:{ko:"로그인 기능을 준비하고 있습니다. 곧 열립니다.",en:"Sign-in is being prepared and will open soon.",ja:"ログイン機能を準備中です。まもなく開始します。",zhs:"登录功能正在准备中，即将开放。",zht:"登入功能正在準備中，即將開放。",es:"El inicio de sesión se está preparando y abrirá pronto."},
- priv:{ko:"로그인하면 이름·이메일·구글 계정 식별값을 퍼즐골드 관리·부정 참여 방지 목적으로 보관하며, 마지막 이용 후 1년 뒤 삭제합니다.",en:"When you sign in, we keep your name, email and Google account identifier to manage Puzzle Gold and prevent fraudulent participation, and delete them 1 year after your last use.",ja:"ログインすると、氏名・メールアドレス・Googleアカウント識別子をパズルゴールドの管理・不正参加防止のために保管し、最終利用から1年後に削除します。",zhs:"登录后，我们会为管理 Puzzle Gold 及防止违规参与保存您的姓名、电子邮箱和Google账号标识，并在最后一次使用1年后删除。",zht:"登入後，我們會為管理 Puzzle Gold 及防止不當參與保存您的姓名、電子郵件和Google帳號識別碼，並在最後一次使用1年後刪除。",es:"Al iniciar sesión guardamos su nombre, correo e identificador de Google para gestionar Puzzle Gold y prevenir la participación fraudulenta, y los eliminamos 1 año después de su último uso."},
+ priv:{ko:"로그인하면 이름·이메일·구글 또는 애플 계정 식별값을 퍼즐골드 관리·부정 참여 방지 목적으로 보관하며, 마지막 이용 후 1년 뒤 삭제합니다.",en:"When you sign in, we keep your name, email and Google or Apple account identifier to manage Puzzle Gold and prevent fraudulent participation, and delete them 1 year after your last use.",ja:"ログインすると、氏名・メールアドレス・GoogleまたはAppleアカウント識別子をパズルゴールドの管理・不正参加防止のために保管し、最終利用から1年後に削除します。",zhs:"登录后，我们会为管理 Puzzle Gold 及防止违规参与保存您的姓名、电子邮箱和Google或Apple账号标识，并在最后一次使用1年后删除。",zht:"登入後，我們會為管理 Puzzle Gold 及防止不當參與保存您的姓名、電子郵件和Google或Apple帳號識別碼，並在最後一次使用1年後刪除。",es:"Al iniciar sesión guardamos su nombre, correo e identificador de Google o Apple para gestionar Puzzle Gold y prevenir la participación fraudulenta, y los eliminamos 1 año después de su último uso."},
+ nocash:{ko:"퍼즐골드는 이 앱 안에서만 쓰는 가상 포인트입니다. 어떠한 경우에도 현금이나 실제 돈으로 바꾸거나 환불·지급하지 않으며, 다른 사람에게 넘기거나 팔 수 없습니다.",en:"Puzzle Gold is a virtual point used only inside this app. Under no circumstances can it be exchanged for cash or real money, refunded or paid out, and it cannot be transferred or sold to anyone.",ja:"パズルゴールドはこのアプリ内でのみ使う仮想ポイントです。いかなる場合も現金や実際のお金への交換・払い戻し・支払いは行わず、他人への譲渡や販売もできません。",zhs:"Puzzle Gold 是仅限本应用内使用的虚拟积分。在任何情况下都不能兑换成现金或真实货币、不予退款或支付，也不能转让或出售给他人。",zht:"Puzzle Gold 是僅限本應用程式內使用的虛擬點數。在任何情況下都不能兌換成現金或真實貨幣、不予退款或支付，也不能轉讓或出售給他人。",es:"Puzzle Gold es un punto virtual que solo se usa dentro de esta app. En ningún caso se puede canjear por efectivo o dinero real, reembolsar ni pagar, y no se puede transferir ni vender a nadie."},
  privLink:{ko:"개인정보 처리방침",en:"Privacy Policy",ja:"個人情報処理方針",zhs:"隐私政策",zht:"隱私政策",es:"Política de Privacidad"},
  bal:{ko:"잔액",en:"Balance",ja:"残高",zhs:"余额",zht:"餘額",es:"Saldo"},
  soon:{ko:"만료 예정",en:"Expiring",ja:"有効期限",zhs:"即将到期",zht:"即將到期",es:"Vencimientos"},
@@ -61,13 +62,13 @@ function css(){ if(document.getElementById("pgCss")) return; var s=document.crea
   +"#pgIn .pgbal b{display:block;font-size:30px;line-height:1.1}#pgIn .pgbal span{font-size:13px}#pgIn .pgrow{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}"
   +"#pgIn .pgrow small{color:var(--sub)}#pgIn .pgsec{font-weight:700;margin:14px 0 4px;font-size:14px}#pgIn .pggrad{background:#e7f5ff;color:#1c4f7a;border-radius:10px;padding:10px;font-size:13px;margin:8px 0}"
   +":root[data-theme=dark] #pgIn .pggrad{background:#1b2b3d;color:#a5d8ff}#pgIn .pgbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 16px;font-size:14px;cursor:pointer}"
-  +"#pgIn .pgbtn[disabled]{opacity:.6;cursor:default}#pgIn .pgplus{color:#2b8a3e;font-weight:700}#pgIn .pgminus{color:#c92a2a;font-weight:700}#pgIn .pgdim{color:var(--sub)}#pgGbtn{margin:12px 0;min-height:44px}";
+  +"#pgIn .pgbtn[disabled]{opacity:.6;cursor:default}#pgIn .pgplus{color:#2b8a3e;font-weight:700}#pgIn .pgminus{color:#c92a2a;font-weight:700}#pgIn .pgdim{color:var(--sub)}#pgGbtn{margin:12px 0 6px;min-height:44px}#pgAbtn{margin:0 0 12px;min-height:44px}#appleid-signin{width:240px;height:40px;cursor:pointer}";
   document.head.appendChild(s); }
 function box(){ var b=document.getElementById("pgBox"); if(b) return b; css(); b=document.createElement("div"); b.id="pgBox"; b.hidden=true; b.innerHTML='<div id="pgIn"></div>';
   b.addEventListener("click",function(e){ if(e.target===b) close(); var a=e.target.closest&&e.target.closest("[data-pg]"); if(!a) return; var k=a.dataset.pg; if(k==="x") close(); else if(k==="out") logout(); });
   document.body.appendChild(b); return b; }
 function head(){ return '<h3><img src="img/menu/mi_star.png" alt="">'+esc(t("title"))+'<button type="button" class="pgx" data-pg="x">'+esc(t("close"))+' ✕</button></h3>'; }
-function privHtml(){ return '<div class="pgp">'+esc(t("priv"))+' <a href="privacy.html?lang='+esc(lg())+'" target="_blank" rel="noopener">'+esc(t("privLink"))+'</a></div>'; }
+function privHtml(){ return '<div class="pgp">'+esc(t("priv"))+' <a href="privacy.html?lang='+esc(lg())+'" target="_blank" rel="noopener">'+esc(t("privLink"))+'</a></div><div class="pgp" style="font-weight:700">'+esc(t("nocash"))+'</div>'; }   /* 이벤트 규칙 5번 — 창 맨 아래 (사장님 10-26) */
 function close(){ var b=document.getElementById("pgBox"); if(b) b.hidden=true; }
 var GIS=null;
 function gisLoad(){ if(window.google&&google.accounts&&google.accounts.id) return Promise.resolve(); if(GIS) return GIS;
@@ -75,17 +76,36 @@ function gisLoad(){ if(window.google&&google.accounts&&google.accounts.id) retur
 var GLOC={ko:"ko",en:"en",ja:"ja",zhs:"zh_CN",zht:"zh_TW",es:"es"};
 function paintLogin(msg){ var I=document.getElementById("pgIn");
   I.innerHTML=head()+'<div class="pgp">'+esc(t("intro"))+'</div><div class="pgp" style="color:var(--ink)">'+esc(t("ask"))+'</div>'+(msg?'<div class="pgp" style="color:#c92a2a">'+esc(msg)+'</div>':'')
-    +'<div id="pgGbtn"><button type="button" class="pgbtn" disabled>'+esc(t("load"))+'</button></div>'+privHtml();
+    +'<div id="pgGbtn"><button type="button" class="pgbtn" disabled>'+esc(t("load"))+'</button></div><div id="pgAbtn"></div>'+privHtml();
+  appleBtn();
   cfg().then(function(c){ var g=document.getElementById("pgGbtn"); if(!g) return; c={cid:(c&&c.cid)||PG_CID};
     if(!c||!c.cid){ g.innerHTML='<button type="button" class="pgbtn" id="pgPrep" disabled><img src="img/menu/mi_globe.png" alt="" style="height:16px;width:16px;vertical-align:-3px;margin-right:6px">'+esc(t("prep"))+'</button><div class="pgp">'+esc(t("prepNote"))+'</div>'; return; }
     gisLoad().then(function(){ var g2=document.getElementById("pgGbtn"); if(!g2) return; g2.innerHTML="";
       google.accounts.id.initialize({client_id:c.cid,callback:onCred,auto_select:false,cancel_on_tap_outside:true,ux_mode:"popup"});
       google.accounts.id.renderButton(g2,{type:"standard",theme:document.documentElement.getAttribute("data-theme")==="dark"?"filled_black":"outline",size:"large",text:"signin_with",shape:"pill",locale:GLOC[lg()]||"en"});
     }).catch(function(){ var g3=document.getElementById("pgGbtn"); if(g3) g3.innerHTML='<div class="pgp" style="color:#c92a2a">'+esc(t("err"))+'</div>'; }); }); }
-function onCred(r){ var I=document.getElementById("pgIn"); if(I) I.innerHTML=head()+'<div class="pgp">'+esc(t("load"))+'</div>';
-  var own=0; try{ own=localStorage.getItem("mp_owner")?1:0; }catch(e){}
-  post("/npg/login",{cred:r&&r.credential,dev:dev(),own:own}).then(function(j){ if(!j||!j.ok||!j.sess){ paintLogin(t("lerr")); return; } ls("mpv_pg_sess",j.sess); paintMe(j.me); menuPaint(); })
+// ── Apple로 로그인 (사장님 2026-10-26) — Sign in with Apple JS 공식 스크립트(판 1)·공식 검정 단추·팝업 · state·nonce 는 창 열 때마다 새로 ──
+//   Services ID kr.co.moneypuzzle.navi.web · Return URL https://navi.moneypuzzle.co.kr/ · 허브 /npg/login {prov:"apple"} 가 애플 JWKS 로 검사
+var ACID="kr.co.moneypuzzle.navi.web", AREDIR="https://navi.moneypuzzle.co.kr/", ALOC={ko:"ko_KR",en:"en_US",ja:"ja_JP",zhs:"zh_CN",zht:"zh_TW",es:"es_ES"}, AS=null, AJS=null;
+function rnd(n){ return Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(n)),function(v){ return ("0"+v.toString(16)).slice(-2); }).join(""); }
+function appleLoad(){ if(window.AppleID&&AppleID.auth) return Promise.resolve(); if(AJS) return AJS;
+  AJS=new Promise(function(ok,no){ var s=document.createElement("script"); s.src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/"+(ALOC[lg()]||"en_US")+"/appleid.auth.js"; s.async=true; s.onload=ok; s.onerror=function(){ AJS=null; no(); }; document.head.appendChild(s); });
+  document.addEventListener("AppleIDSignInOnSuccess",function(e){ onApple(e.detail); });
+  document.addEventListener("AppleIDSignInOnFailure",function(e){ var er=e&&e.detail&&e.detail.error; if(er!=="popup_closed_by_user"&&er!=="user_cancelled_authorize") paintLogin(t("lerr")); });
+  return AJS; }
+function appleBtn(){ var a=document.getElementById("pgAbtn"); if(!a) return;
+  a.innerHTML='<div id="appleid-signin" data-mode="center-align" data-type="sign-in" data-color="black" data-border="false" data-border-radius="50" data-width="240" data-height="40"></div>';
+  appleLoad().then(function(){ AS={state:rnd(16),nonce:rnd(16)};
+    AppleID.auth.init({clientId:ACID,scope:"name email",redirectURI:AREDIR,state:AS.state,nonce:AS.nonce,usePopup:true});
+    try{ if(AppleID.auth.renderButton) AppleID.auth.renderButton(); }catch(e){} }).catch(function(){ var b=document.getElementById("pgAbtn"); if(b) b.innerHTML=""; }); }
+function onApple(d){ var au=d&&d.authorization; if(!au||!au.id_token||!AS||au.state!==AS.state){ paintLogin(t("lerr")); return; }
+  var nm=""; try{ var n=d.user&&d.user.name; if(n) nm=[n.firstName,n.lastName].filter(Boolean).join(" "); }catch(e){}   // 이름은 첫 로그인 때만 온다
+  login({prov:"apple",cred:au.id_token,nonce:AS.nonce,name:nm}); }
+function login(b){ var I=document.getElementById("pgIn"); if(I) I.innerHTML=head()+'<div class="pgp">'+esc(t("load"))+'</div>';
+  var own=0; try{ own=localStorage.getItem("mp_owner")?1:0; }catch(e){} b.dev=dev(); b.own=own;
+  post("/npg/login",b).then(function(j){ if(!j||!j.ok||!j.sess){ paintLogin(t("lerr")); return; } ls("mpv_pg_sess",j.sess); paintMe(j.me); menuPaint(); })
     .catch(function(){ paintLogin(t("lerr")); }); }
+function onCred(r){ login({cred:r&&r.credential}); }
 function logout(){ ls("mpv_pg_sess",null); try{ if(window.google&&google.accounts&&google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){} menuPaint(); paintLogin(); }
 function paintMe(m){ var I=document.getElementById("pgIn"); if(!I||!m) return;
   var h=head()+'<div class="pgp" style="color:var(--ink)">'+esc(m.name||"")+(m.email?' <span class="pgdim">· '+esc(m.email)+'</span>':'')+'</div>'
