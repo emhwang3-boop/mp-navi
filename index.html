@@ -292,6 +292,20 @@ html.mpc-lock #treasIsle{visibility:hidden}
 </form>
 <div id="credit"></div>
 <div class="foot" id="foot"></div>
+<p id="vcnt" style="color:var(--sub);opacity:.75;font-size:12px;text-align:center;margin:-12px 0 22px"></p>
+<script>
+// 방문자 수 (사장님 10-27, 홈페이지와 같은 방식) — 세션마다 한 번 센다 · 사장님 기기(mp_owner)는 안 센다 · 허브 /hc?s=navi (홈페이지와 따로)
+(function(){ var J=null;
+  function vPaint(){ var e=document.getElementById("vcnt"); if(!e||!J) return; var f=function(x){ return Number(x||0).toLocaleString(); }, L=window.LANG||"en";
+    var T={ko:["방문 ","회 · 방문자 ","명 · 오늘 ","회"],en:["Visits "," · Visitors "," · Today ",""],ja:["訪問 ","回 · 訪問者 ","人 · 今日 ","回"],zhs:["访问 ","次 · 访客 ","人 · 今日 ","次"],zht:["造訪 ","次 · 訪客 ","人 · 今日 ","次"],es:["Visitas "," · Visitantes "," · Hoy ",""]}[L]||null;
+    if(!T) T=["Visits "," · Visitors "," · Today ",""]; e.textContent=T[0]+f(J.total)+T[1]+f(J.uniq)+T[2]+f(J.today)+T[3]; }
+  try{ var v=""; try{ v=localStorage.getItem("navi_vid")||""; if(!v){ v=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem("navi_vid",v); } }catch(x){}
+    var n="1"; try{ if(sessionStorage.getItem("navi_hit")) n="0"; else sessionStorage.setItem("navi_hit","1"); if(localStorage.getItem("mp_owner")) n="0"; }catch(x){}
+    fetch("https://brief-live-hub.emhwang3.workers.dev/hc?s=navi&n="+n+"&vid="+encodeURIComponent(v),{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ J=j; vPaint(); }).catch(function(){});
+  }catch(x){}
+  document.addEventListener("DOMContentLoaded",function(){ var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ vPaint(); }catch(e){} return r; }; vPaint(); });   // setLang 은 아래쪽 스크립트에 있어 다 읽은 뒤 잇는다
+})();
+</script>
 </div>
 <div id="shBox" hidden style="position:fixed;inset:0;z-index:1030;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.hidden=true">
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
