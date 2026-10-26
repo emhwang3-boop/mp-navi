@@ -53,8 +53,10 @@ var W=null;
 function price(n){ return n>=2?79000:89000; }
 function openOrder(){ css(); var b=document.getElementById("tpBox"); if(b) b.remove(); b=document.createElement("div"); b.id="tpBox";
   var d=new Date(Date.now()+9*3600e3+86400e3).toISOString().slice(0,10);
+  var k0=new Date(Date.now()+9*3600e3), dmax=new Date(Date.UTC(k0.getUTCFullYear(),k0.getUTCMonth()+1,k0.getUTCDate())).toISOString().slice(0,10);   /* 예약일 = 내일 ~ 결제일 기준 1개월 이내 (사장님 10-26) */
+  var SV=window.B4SV6||{ko:"제공기간: 결제 후 1개월 이내 예약일 당일 1회 제공 · 한 주문 최대 10명",en:"Service period: provided once on your booked date, within 1 month of payment · up to 10 people per order"};
   b.innerHTML='<div class="in"><button type="button" class="x" id="tpX" aria-label="close">✕</button><h3>'+E(L6(T.title))+'</h3><span class="tst">'+E(window.PAYTEST6?L6(window.PAYTEST6):L6(T.test))+'</span>'
-    +'<div class="row"><label for="tpD">'+E(L6(T.date))+'</label><input id="tpD" type="date" min="'+d+'" value="'+d+'"></div>'
+    +'<div class="row"><label for="tpD">'+E(L6(T.date))+'</label><input id="tpD" type="date" min="'+d+'" max="'+dmax+'" value="'+d+'"></div><div class="d" style="color:var(--ink)">'+E(L6(SV))+'</div>'
     +'<div class="row"><label>'+E(L6(T.ppl))+'</label><div class="step"><button type="button" id="tpM">−</button><b id="tpN" style="min-width:24px;text-align:center;font-size:17px">1</b><button type="button" id="tpP">+</button></div></div>'
     +'<div class="row"><label>'+E(L6(T.unit))+'</label><span id="tpU"></span></div><div class="d">'+E(L6(T.rule))+'</div>'
     +'<div class="row"><label>'+E(L6(T.total))+'</label><span class="tot" id="tpT"></span></div>'
@@ -66,13 +68,13 @@ function openOrder(){ css(); var b=document.getElementById("tpBox"); if(b) b.rem
   b.onclick=function(e){ if(e.target===b) b.remove(); }; document.body.appendChild(b);
   var n=1, q=function(i){ return b.querySelector(i); };
   var paint=function(){ q("#tpN").textContent=n; q("#tpU").textContent=won(price(n)); q("#tpT").textContent=won(price(n)*n); if(W) W.setAmount({currency:"KRW",value:price(n)*n}).catch(function(){}); };
-  q("#tpX").onclick=function(){ b.remove(); }; q("#tpM").onclick=function(){ if(n>1){ n--; paint(); } }; q("#tpP").onclick=function(){ if(n<20){ n++; paint(); } };
+  q("#tpX").onclick=function(){ b.remove(); }; q("#tpM").onclick=function(){ if(n>1){ n--; paint(); } }; q("#tpP").onclick=function(){ if(n<10){ n++; paint(); } };   /* 한 주문 최대 10명 (10-26) */
   paint();
   sdk().then(function(){ var tp=window.TossPayments(CK); W=tp.widgets({customerKey:window.TossPayments.ANONYMOUS});
     return W.setAmount({currency:"KRW",value:price(n)*n}).then(function(){ q("#tpMethods").innerHTML=""; return Promise.all([W.renderPaymentMethods({selector:"#tpMethods",variantKey:"DEFAULT"}),W.renderAgreement({selector:"#tpAgree",variantKey:"AGREEMENT"})]); }); })
     .then(function(){ q("#tpGo").disabled=false; window.__tpReady=true; })
     .catch(function(e){ window.__tpErr=String(e&&e.message||e); q("#tpMsg").textContent=window.__tpErr; });
-  q("#tpGo").onclick=function(){ var dt=q("#tpD").value, nm=q("#tpName").value.trim(); if(!dt){ q("#tpMsg").textContent=L6(T.needd); return; } if(!nm){ q("#tpMsg").textContent=L6(T.needn); return; }
+  q("#tpGo").onclick=function(){ var dt=q("#tpD").value, nm=q("#tpName").value.trim(); if(!dt||dt<d||dt>dmax){ q("#tpMsg").textContent=L6(T.needd)+" ("+d+" ~ "+dmax+")"; return; } if(!nm){ q("#tpMsg").textContent=L6(T.needn); return; }
     var oid="B4"+dt.replace(/-/g,"")+"_"+Date.now().toString(36)+Math.random().toString(36).slice(2,6), base=location.origin+location.pathname;
     W.requestPayment({orderId:oid,orderName:"K-POP Big4 Agency Tour ("+dt+", "+n+")",successUrl:base+"?ptres=ok",failUrl:base+"?ptres=fail",customerName:nm.slice(0,40)})
       .catch(function(e){ window.__tpReqErr=String(e&&e.message||e); q("#tpMsg").textContent=(e&&e.message)||""; }); }; }
