@@ -145,6 +145,7 @@
     viewSet("seoulall"); load().then(function(){ if(!run(true)) _sg(id,lat,lng,sc); },function(){ _sg(id,lat,lng,sc); }); };
   // 구 화면의 빨간 핀 크기 — 핀은 서울 전체 지도 배율에 맞춰 만들어지니, 구 화면 배율만큼 줄인다 (핀 끝 = 정확한 자리, 10-26)
   function pinFit(){ try{ var e=document.getElementById("spin"); if(!e||!on()||!GU.g) return; var s0=(ASP()>1?1.5:2)*ZB(), k=Math.min(1,s0/ZM.s); e.style.transformOrigin="50% 100%"; e.style.transform="translate(-50%,-100%) scale("+k+")"; }catch(x){} }
+  window.guPinFit=pinFit;
   var _ss0=window.spinShow0; if(_ss0) window.spinShow0=function(){ var r=_ss0.apply(this,arguments); pinFit(); return r; };
   // 「나」가 움직이면 묶음 이름표 자리를 다시 (나와 겹치지 않게)
   var _md=window.meDraw; if(_md) window.meDraw=function(){ var r=_md.apply(this,arguments); try{ if(on()&&!GU.g&&GU.d&&GU.key){ var me=meBox(), k=me?me.map(Math.round).join(","):""; if(k!==(GU.meK||"")){ GU.key=null; draw(); } } }catch(e){} return r; };
