@@ -22,7 +22,7 @@ var T={
  mypg:{ko:"내 퍼즐골드",en:"My Puzzle Gold",ja:"マイパズルゴールド",zhs:"我的 Puzzle Gold",zht:"我的 Puzzle Gold",es:"Mi Puzzle Gold"},
  rules:{ko:"이벤트 규칙",en:"Event rules",ja:"イベント規約",zhs:"活动规则",zht:"活動規則",es:"Reglas del evento"},
  agree:{ko:"동의하고 참가",en:"Agree and join",ja:"同意して参加",zhs:"同意并参加",zht:"同意並參加",es:"Aceptar y participar"},
- signin:{ko:"구글로 로그인하고 참가",en:"Sign in with Google to play",ja:"Googleでログインして参加",zhs:"用Google登录后参加",zht:"用Google登入後參加",es:"Inicia sesión con Google para jugar"},
+ signin:{ko:"로그인하고 참가",en:"Sign in to play",ja:"ログインして参加",zhs:"登录后参加",zht:"登入後參加",es:"Inicia sesión para jugar"},
  signed:{ko:"로그인됨",en:"Signed in",ja:"ログイン中",zhs:"已登录",zht:"已登入",es:"Sesión iniciada"},
  stamps:{ko:"도장",en:"Stamps",ja:"スタンプ",zhs:"印章",zht:"印章",es:"Sellos"},
  lines:{ko:"빙고 줄",en:"Bingo lines",ja:"ビンゴ列",zhs:"宾果线",zht:"賓果線",es:"Líneas"},
@@ -88,9 +88,39 @@ css.textContent="#evIsle{position:absolute;z-index:4;width:7.2%;left:58.6%;top:9
  +"#evSheet .op.ok{background:#e7f8ec;border-color:#27a745;color:#1d7a35}#evSheet .op.bad{background:#fdeaea;border-color:#e8322f;color:#b0201e}#evSheet .msg{font-size:13px;color:#888}#evSheet ol{padding-left:20px;font-size:13.5px;line-height:1.6}#evSheet ol li{margin:4px 0}#evSheet h3{margin:0 0 8px;font-size:18px}"
  +"#evToast{position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:2147483005;border-radius:20px;padding:16px 22px;font-size:26px;font-weight:900;color:#fff;text-align:center;max-width:90vw;pointer-events:none}#evToast.big{font-size:56px;color:#e8322f;background:rgba(255,248,240,.95);box-shadow:0 6px 24px rgba(0,0,0,.15)}";
 document.head.appendChild(css);
+// ── 이벤트 광고 전광판 (사장님 10-26) — 서해 「비행기 착륙」 전광판과 같은 틀(billboard.js 의 .xbb 모양)을 남해 바다에. 바탕 = 나노바나나(_eventbb_src), 글씨 = 코드 ──
+var bbcss=document.createElement("style");
+bbcss.textContent="#evBB{display:none;pointer-events:auto;cursor:pointer;z-index:4}.map.onkr #evBB{display:block}html.mpc-lock #evBB{visibility:hidden}#evBB *{pointer-events:none}"
+ +"#evBB .ebg{position:absolute;inset:-4%;background:url(img/kr_extra/event_bb.jpg?v=1026) center/cover no-repeat;animation:ebKen 14s ease-in-out infinite alternate}"
+ +"@keyframes ebKen{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.08) translate(2%,-1.5%)}}"
+ +"#evBB .ebt{position:absolute;left:14%;top:24%;width:50%;height:56%;container-type:size;display:flex;align-items:center;justify-content:center;text-align:center}"
+ +"#evBB .ebt b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Arial Black','Segoe UI',Impact,sans-serif;font-weight:900;line-height:1.05;white-space:pre-line;color:#fff;letter-spacing:.02em;"
+ +"text-shadow:0 0 .06em #fff,0 0 .18em #ff4fd8,0 0 .4em #ff4fd8,0 0 .7em #39d5ff;opacity:0;transform:scale(.85);transition:opacity .45s,transform .45s}"
+ +"#evBB .ebt b.on{opacity:1;transform:scale(1)}#evBB .ebt b.g{color:#ffe28a;text-shadow:0 0 .06em #fff,0 0 .2em #ffb000,0 0 .5em #ff7a1a}"
+ +"#evBB .ebsh{position:absolute;top:-20%;bottom:-20%;width:16%;left:-30%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-18deg);animation:xwShine 5s ease-in-out infinite}"
+ +"@media (prefers-reduced-motion:reduce){#evBB .ebg,#evBB .ebsh{animation:none}}";
+document.head.appendChild(bbcss);
+var BBT_OPEN=[["EVENT OPEN",""],["KOREA\nBINGO",""],["Win Puzzle Gold\n100 · 50 · 20","g"],["Every week",""]], BBT_CLOSE=[["Next event\ncoming soon",""]];
+var bb=null, bbI=0;
+function bbCurve(k){ var t,i,n=20,p=[]; for(i=0;i<=n;i++){ t=i/n; p.push((t*100).toFixed(2)+"% "+(k*(1-Math.pow(2*t-1,2))).toFixed(2)+"%"); } for(i=n;i>=0;i--){ t=i/n; p.push((t*100).toFixed(2)+"% "+(100-k*(1-Math.pow(2*t-1,2))).toFixed(2)+"%"); } return "polygon("+p.join(",")+")"; }
+function bbMk(){ var mz=document.getElementById("mz"); if(!mz||document.getElementById("evBB")) return;
+  bb=document.createElement("div"); bb.id="evBB"; bb.className="xbb"; bb.setAttribute("role","button"); bb.setAttribute("aria-label","Korea Bingo event"); bb.tabIndex=0;
+  bb.style.cssText="left:63.6%;top:83.6%;width:18%";   /* 남해 이벤트 섬 오른쪽 빈 바다 — 서해 전광판(폭 18%)과 같은 크기 */
+  bb.innerHTML='<i class="xp" style="left:24%"></i><i class="xp" style="left:70.5%"></i><i class="xb" style="left:20.2%"></i><i class="xb" style="left:66.7%"></i>'
+    +'<div class="xf" style="clip-path:'+bbCurve(9)+'"><div class="xs" style="clip-path:'+bbCurve(8)+'"><div class="ebg"></div><div class="ebt"></div><i class="ebsh"></i><div class="xg"></div></div></div>';
+  mz.appendChild(bb); bb.style.display="";
+  var go=function(e){ if(e){ e.preventDefault(); e.stopPropagation(); } open(); };
+  bb.addEventListener("click",go,false); bb.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" ") go(e); },false);
+  ["pointerdown","mousedown","touchstart"].forEach(function(ev){ bb.addEventListener(ev,function(e){ e.stopPropagation(); },false); });
+  bbPaint(); }
+function bbPaint(){ if(!bb) return; var L2=OPEN?BBT_OPEN:BBT_CLOSE, t=bb.querySelector(".ebt");
+  t.innerHTML=L2.map(function(x,i){ var n=x[0].replace(/\n/g," ").length, fs=n>18?8.5:n>14?10:n>10?13:16; return '<b class="'+x[1]+'" style="font-size:'+fs+'cqw">'+esc(x[0])+'</b>'; }).join("");
+  bbI=0; bbStep(); }
+function bbStep(){ if(!bb) return; var bs=bb.querySelectorAll(".ebt b"); [].forEach.call(bs,function(b,i){ b.classList.toggle("on",i===bbI%bs.length); }); bbI++; }
+setInterval(function(){ try{ if(bb&&typeof VIEW==="string"&&VIEW==="kr"&&!document.hidden) bbStep(); }catch(e){} },2300);
 // ── 섬 ──
 var isle=null, OPEN=false;
-function sign(){ if(!isle) return; var s=isle.querySelector(".evS"); s.className="evS "+(OPEN?"on":"off"); s.textContent=OPEN?"Event Open":"Event Close"; fit(); }
+function sign(){ try{ bbPaint(); }catch(e){} if(!isle) return; var s=isle.querySelector(".evS"); s.className="evS "+(OPEN?"on":"off"); s.textContent=OPEN?"Event Open":"Event Close"; fit(); }
 function fit(){ if(!isle) return; var s=isle.querySelector(".evS"), w=isle.clientWidth; if(w) s.style.fontSize=(w*0.037)+"px";   /* 간판 폭(섬의 21.5%)에 맞춤 — 지도를 키우면 같이 커진다 */ }
 function mk(){ var mz=document.getElementById("mz"); if(!mz||document.getElementById("evIsle")) return;
   isle=document.createElement("div"); isle.id="evIsle"; isle.setAttribute("role","button"); isle.tabIndex=0; isle.setAttribute("aria-label","Event");
@@ -119,7 +149,12 @@ function sheet(html){ var s=document.getElementById("evSheet"); if(s) s.remove()
 function showRules(withAgree){ var s=sheet('<h3>'+esc(L(T.rules))+'</h3>'+rulesHtml()+(withAgree?'<button type="button" class="ebtn" id="evAg" style="background:#ff7a1a;color:#fff;border:0;border-radius:12px;padding:12px;width:100%;font-weight:900;font-size:15px">'+esc(L(T.agree))+'</button>':'')+'<button type="button" class="ebtn g" id="evRx" style="margin-top:8px;width:100%;border-radius:12px;padding:11px;background:#fff;border:1.5px solid #e0d6cc;font-weight:800">'+esc(L(T.x))+'</button>');
   s.querySelector("#evRx").onclick=function(){ s.remove(); };
   var a=s.querySelector("#evAg"); if(a) a.onclick=function(){ a.disabled=true; post("/npg/bingo/agree",{sess:sess(),l:lg()}).then(function(j){ if(j&&j.ok){ s.remove(); if(B&&B.me) B.me.agreed=true; paint(); } else { a.disabled=false; alert(L(T.err)); } }).catch(function(){ a.disabled=false; alert(L(T.err)); }); }; }
-function signIn(){ try{ window.mpPG&&mpPG.open(); }catch(e){} var t=setInterval(function(){ var pb=document.getElementById("pgBox"); if(!pb||pb.hidden){ clearInterval(t); if(box()) load(); } },800); }
+function signIn(){   // 퍼즐골드 로그인 창(구글·Apple)을 빙고 화면 위로 — 원래 창(z 1040)이 빙고 화면(z 최상) 뒤에 열려 안 보였다 (10-26 고침)
+  var had=sess(); try{ window.mpPG&&mpPG.open(); }catch(e){}
+  var pb=document.getElementById("pgBox"); if(pb) pb.style.zIndex="2147483006";
+  var t=setInterval(function(){ var p2=document.getElementById("pgBox"), now=sess();
+    if(now&&now!==had){ clearInterval(t); try{ window.mpPG&&mpPG.close(); }catch(e){} if(p2) p2.style.zIndex=""; if(box()) post("/npg/bingo/board",{sess:now,l:lg()}).then(function(j){ if(j&&j.ok){ B=j; paint(); if(B.me&&!B.me.agreed&&B.open) showRules(true); } }).catch(function(){ load(); }); return; }   // 로그인되면 바로 빙고로 → 규칙 동의
+    if(!p2||p2.hidden){ clearInterval(t); if(p2) p2.style.zIndex=""; if(box()) load(); } },500); }
 function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return; var wk=document.getElementById("evWk");
   var st=B.wk?B.wk.slice(5).replace("-","/"):""; if(wk) wk.textContent=L(T.sub);
   var h='', me=B.me, rh=RANKHOW[B.kind||"bingo"];
@@ -156,7 +191,7 @@ function tap(i){ if(!B||!B.open) return; var me=B.me; if(!me){ signIn(); return;
     }).catch(function(){ s.querySelector(".msg").textContent=L(T.err); }); }; }); }
 function toast(t,bg,big){ var o=document.getElementById("evToast"); if(o) o.remove(); o=document.createElement("div"); o.id="evToast"; if(big) o.className="big"; else o.style.background=bg; o.textContent=t; document.body.appendChild(o); setTimeout(function(){ o.remove(); },big?2200:1100); }
 window.evOpen=open;
-if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",mk); else mk();
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",function(){ bbMk(); mk(); }); else { bbMk(); mk(); }
 var _gb=window.guBack; window.guBack=function(){ if(box()){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };
 var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ if(box()) load(); }catch(e){} return r; };
 })();
