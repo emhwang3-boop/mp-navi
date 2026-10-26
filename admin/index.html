@@ -224,8 +224,10 @@ function bgLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>한국 빙
   api("/npg/admin/bingo").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); BG=j; bgPaint(); }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div></div>'; }); }
 function bgPaint(){ var P=$("pane"), w=BG[BGW], h='<div class="card"><div class="row"><b style="flex:1">한국 빙고</b>'
   +'<button class="'+(BGW==="cur"?"":"g")+'" onclick="BGW=\'cur\';bgPaint()">이번 주'+(BG.cur?" ("+esc(BG.cur.wk)+")":"")+'</button><button class="'+(BGW==="next"?"":"g")+'" onclick="BGW=\'next\';bgPaint()">다음 주'+(BG.next?" ("+esc(BG.next.wk)+")":"")+'</button>'
-  +'<button class="g" onclick="bgGen()">다음 주 다시 만들기(AI)</button></div>'
-  +'<div class="msg">정답 = 초록. 고친 뒤 「저장」. 다음 주 판은 「승인」 안 해도 월요일 0시에 그대로 씁니다.'+(BG.last&&BG.last.res?' · 지난주('+esc(BG.last.wk)+') 참가 '+(BG.last.n||0)+'명, 1등 '+esc((BG.last.res[0]||{}).nm||"-"):'')+'</div></div>';
+  +'<button class="g" onclick="bgGen()">다음 판 다시 만들기(AI)</button></div>'
+  +'<div class="row" style="margin-top:8px"><b>이번 주 상태: '+(BG.cur&&BG.cur.st==="open"?'<span style="color:#2f9e44">진행 중</span> (일요일 24:00 마감)':'닫힘')+'</b>'
+  +'<button onclick="bgStart()"'+(BG.cur&&BG.cur.st==="open"?' disabled':'')+'>이번 주 빙고 시작</button><button class="g" onclick="bgStop()"'+(BG.cur&&BG.cur.st==="open"?'':' disabled')+'>지금 닫기</button></div>'
+  +'<div class="msg">빙고는 자동으로 열리지 않습니다 — 「이번 주 빙고 시작」을 누른 때부터 그 주 일요일 24:00까지 열리고, 마감 후 1·2·3등 퍼즐골드가 자동 지급됩니다. 「지금 닫기」는 순위·지급 없이 닫습니다(기록 보관). 시작하면 이번 주에 만들어 둔 판(있으면) 또는 미리 만든 「다음 판」 문제를 씁니다. 정답 = 초록. 고친 뒤 「저장」.'+(BG.last&&BG.last.res?' · 지난주('+esc(BG.last.wk)+') 참가 '+(BG.last.n||0)+'명, 1등 '+esc((BG.last.res[0]||{}).nm||"-"):'')+'</div></div>';
   if(BG.last&&BG.last.res&&BG.last.res.length) h+='<div class="card"><b>지난주 결과 ('+esc(BG.last.wk)+')</b>'+BG.last.res.map(function(r){ return '<div class="msg">'+r.rk+'등 · '+esc(r.nm)+' · '+r.lines+'줄'+(r.pg?' · '+r.pg+' PG · 당첨 메일 '+({sent:"보냄",fail:"실패",none:"이메일 없음"}[r.mail]||"-"):'')+'</div>'; }).join("")+'</div>';
   if(!w){ P.innerHTML=h+'<div class="card"><div class="msg">아직 판이 없습니다.</div></div>'; return; }
   h+='<div class="card"><div class="row"><b style="flex:1">'+esc(w.wk)+' · '+(w.st||"")+(w.appr?' · 승인됨':'')+'</b><button onclick="bgSave()">저장</button>'+(BGW==="next"?'<button class="g" onclick="bgAppr()">승인</button>':'')+'</div>';
@@ -237,6 +239,8 @@ function bgPaint(){ var P=$("pane"), w=BG[BGW], h='<div class="card"><div class=
 function bgSave(){ var w=BG[BGW]; if(!w) return; var cells=w.cells.map(function(c,i){ if(c.free) return {free:1}; var q={},o={}; BGL.forEach(function(l){ q[l]=$("bq_"+l+"_"+i).value; o[l]=[0,1,2].map(function(k){ return $("bo_"+l+"_"+i+"_"+k).value; }); });
     return {w:{en:$("bw_en_"+i).value,ko:$("bw_ko_"+i).value},q:q,o:o,a:+$("ba_"+i).value}; });
   api("/npg/admin/bingo/save",{method:"POST",body:JSON.stringify({which:BGW,cells:cells})}).then(function(j){ alert(j.ok?"저장했습니다":"저장 못 함 ("+(j.err||"")+")"); bgLoad(); }); }
+function bgStart(){ if(!confirm("이번 주 빙고를 지금 시작할까요? 일요일 24:00(한국 시간)에 마감되고 1·2·3등에게 퍼즐골드가 자동 지급됩니다.")) return; api("/npg/admin/bingo/start",{method:"POST"}).then(function(j){ alert(j.ok?(j.already?"이미 진행 중입니다":"시작했습니다"):"시작 못 함 ("+(j.err||"")+")"); bgLoad(); }); }
+function bgStop(){ if(!confirm("이번 주 빙고를 지금 닫을까요? 순위·상금 지급 없이 닫힙니다(참가 기록은 보관).")) return; api("/npg/admin/bingo/stop",{method:"POST"}).then(function(j){ alert(j.ok?"닫았습니다":"닫지 못함 ("+(j.err||"")+")"); bgLoad(); }); }
 function bgAppr(){ api("/npg/admin/bingo/approve",{method:"POST"}).then(function(j){ alert(j.ok?"승인했습니다":"승인 못 함"); bgLoad(); }); }
 function bgGen(){ if(!confirm("다음 주 문제를 AI 로 새로 만들까요? (지금 다음 주 판은 지워집니다)")) return; api("/npg/admin/bingo/gen",{method:"POST"}).then(function(j){ alert(j.ok?"만들었습니다":"못 만들었습니다 ("+(j.err||"")+")"); bgLoad(); }); }
 function pgLoad(){ var P=$("pane");
