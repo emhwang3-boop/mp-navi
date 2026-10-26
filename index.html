@@ -6,13 +6,20 @@
 <meta name="robots" content="noindex">
 <meta name="google" content="notranslate">
 <title>Money Puzzle Tour for Korea</title>
-<link rel="mp-manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Money Puzzle Tour for Korea">
+<meta property="og:title" content="Money Puzzle Tour for Korea — Korea travel map in 6 languages">
+<meta property="og:description" content="An illustrated treasure map of Korea: sights, food, stays, K-pop tours, AI trip plans, interpreter phrases and free karaoke — in English, 한국어, 日本語, 简体中文, 繁體中文 and Español.">
+<meta property="og:image" content="https://navi.moneypuzzle.co.kr/icon-512.png">
+<meta property="og:url" content="https://navi.moneypuzzle.co.kr/">
+<meta name="description" content="An illustrated treasure map of Korea: sights, food, stays, K-pop tours, AI trip plans, interpreter phrases and free karaoke — in 6 languages.">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="theme-color" content="#2f9e44">
 <script>/* 남의 사이트 액자(iframe) 안에서는 안 돈다 (사장님 10-17 퍼가기 막기) */try{ if(window.top!==window.self){ document.documentElement.style.display="none"; try{ window.top.location.replace(window.self.location.href); }catch(e){} throw 0; } }catch(e){ if(window.top!==window.self) throw e; }</script>
 <script>
-/* 머니퍼즐 내비 첫 화면 (사장님 2026-10-14) — 다른 앱과 같은 출입: 사장님 기기·초대 링크·홈페이지에서 온 사람만 */
+/* 머니퍼즐 내비 첫 화면 — 2026-10-26 초대 제한 없앰(사장님 「가」): 누구나 바로 열린다. ?inv= 는 확인만 하고(실패해도 그대로) 홈페이지로 보내지 않는다 */
 (function(){ try{
   /* 🧪 결제 테스트 모드(?paytest)는 2026-10-24 제거됨 — 앱은 무료(제휴·광고). 혹시 남은 표시는 지운다. */
   try{ localStorage.removeItem("mpv_paytest"); }catch(z){}
@@ -42,34 +49,22 @@
     try{ var qsi=location.search.slice(1).split("&").filter(function(x){ return !/^(install|openExternalBrowser)=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qsi?"?"+qsi:"")+location.hash); }catch(x){} }
   var mt=/[?&]inv=(\d{8}\.[0-9a-f]{10})(?![0-9a-z])/i.exec(location.search);
   if(/[?&]inv=/i.test(location.search)){ try{ var qs=location.search.slice(1).split("&").filter(function(x){ return !/^inv=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qs?"?"+qs:"")+location.hash); }catch(x){} }
-  if(!ok&&mt){ var de=document.documentElement; de.style.setProperty("visibility","hidden","important");
-    var bye=function(exp){ var go=function(){ location.replace("https://moneypuzzle.co.kr/"); }; if(!exp){ go(); return; }
-      var sh=function(){ document.body.innerHTML='<div style="font:600 16px/1.7 sans-serif;padding:48px 20px;text-align:center;color:#333;background:#fff">초대 링크가 만료되었습니다<br>This invite link has expired</div>'; de.style.removeProperty("visibility"); setTimeout(go,2500); };
-      if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",sh); else sh(); };
-    fetch(IH+"/invchk?app="+IA+"&inv="+mt[1],{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
-      if(!j||!j.ok){ bye(j&&j.err==="expired"); return; }
-      localStorage.setItem("mpv_inv","1"); localStorage.setItem("mpv_ok","1"); localStorage.setItem("mpv_inv_t",mt[1]);
-      var mf=function(){ var l=document.querySelector('link[rel="mp-manifest"]'); if(l) l.rel="manifest"; var h=document.getElementById("mpInstHide"); if(h) h.parentNode.removeChild(h); var hs=document.getElementById("shHide"); if(hs) hs.parentNode.removeChild(hs); };   /* 초대 확인되면 공유 단추도 (10-25) */
-      if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",mf); else mf();
-      de.style.removeProperty("visibility");
-    }).catch(function(){ bye(false); });
-    return; }
+  if(mt){ fetch(IH+"/invchk?app="+IA+"&inv="+mt[1],{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ if(j&&j.ok){ localStorage.setItem("mpv_inv","1"); localStorage.setItem("mpv_inv_t",mt[1]); } }).catch(function(){}); }   /* 옛 초대 링크 — 확인만 (10-26) */
   /* 이용권 링크 (2026-10-16, pass.js 와 짝) — 메일의 ?pass= 를 허브에 등록(기기 3대)하고 이 브라우저에 저장. 손님 정보 없음 */
   var pt=/[?&]pass=(p1\.\d{8}\.[0-9a-f]{16}\.[0-9a-f]{16})(?![0-9a-z])/i.exec(location.search);
   if(/[?&]pass=/i.test(location.search)){ try{ var qs2=location.search.slice(1).split("&").filter(function(x){ return !/^pass=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qs2?"?"+qs2:"")+location.hash); }catch(x){} }
-  if(pt){ var de2=document.documentElement; if(!ok) de2.style.setProperty("visibility","hidden","important");
+  if(pt){ var de2=document.documentElement;
     var dv=localStorage.getItem("mpv_dev"); if(!/^[0-9a-f]{16,32}$/.test(dv||"")){ dv=Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(12)),function(v){ return ("0"+v.toString(16)).slice(-2); }).join(""); localStorage.setItem("mpv_dev",dv); }
     fetch(IH+"/npass/claim",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({t:pt[1],pd:dv}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
       if(j&&j.ok){ localStorage.setItem("mpv_pass",pt[1]); localStorage.setItem("mpv_ok","1"); try{ sessionStorage.setItem("mpv_pass_msg",j.exp||"1"); }catch(x){} de2.style.removeProperty("visibility"); return; }
       try{ sessionStorage.setItem("mpv_pass_msg",j&&j.err==="expired"?"x":"bad"); }catch(x){}
-      if(ok) return; location.replace("https://moneypuzzle.co.kr/"); }).catch(function(){ if(!ok) location.replace("https://moneypuzzle.co.kr/"); });
-    if(ok) localStorage.setItem("mpv_ok","1"); return; }
-  if(ok){ localStorage.setItem("mpv_ok","1"); return; }
-  location.replace("https://moneypuzzle.co.kr/");
+      }).catch(function(){});
+    localStorage.setItem("mpv_ok","1"); return; }
+  localStorage.setItem("mpv_ok","1");
 }catch(e){} })();
 </script>
 <script>try{ if(localStorage.getItem("mpv_theme")==="dark") document.documentElement.setAttribute("data-theme","dark"); }catch(e){}</script>
-<script>/* 공유 단추는 사장님 기기·초대 링크로 들어온 손님만 (사장님 10-17 · 10-25 초대 손님 추가) — 그 밖의 손님 화면엔 숨김 */try{ if(!localStorage.getItem("mp_owner")&&!localStorage.getItem("mpv_inv")){ var _ss=document.createElement("style"); _ss.id="shHide"; _ss.textContent="#sh{display:none!important}"; document.head.appendChild(_ss); } }catch(e){}</script>
+<!-- 공유 단추: 2026-10-26 부터 모든 방문자에게 (초대 제한 없앰) -->
 <style>
 :root{--bg:#f4f6fa;--card:#fff;--ink:#111827;--sub:#5b6474;--line:#e6e9ef;--green:#2f9e44;--blue:#3d5af1}
 :root[data-theme="dark"]{--bg:#0f1420;--card:#171d2b;--ink:#e8ecf2;--sub:#9aa4b2;--line:#263044}
@@ -639,18 +634,11 @@ function shBuild(){
   p.innerHTML=h;
 }
 // 사장님 기기면 진짜 공유 — 받은 사람은 홈페이지에서 앱을 눌러 들어온다 (앱 주소는 홈페이지를 거쳐야 열린다)
-function shOwnerFix(p, appName){   /* 7일짜리 초대 표를 허브에서 받아 붙인다 — 못 받으면 고정 코드 대신 안내만 (2026-10-15) */
-  var m=p.querySelector(".shmsg"); if(m) m.textContent="…";
-  if(!window.mpInvMint){ if(m) m.textContent=T("초대 링크를 만들지 못했습니다 / Could not create the invite link","Could not create the invite link"); return; }
-  window.mpInvMint(function(t){ if(!t&&!localStorage.getItem("mp_owner")){ var own=localStorage.getItem("mpv_inv_t")||"", kd=new Date(Date.now()+324e5).toISOString().slice(0,10).replace(/-/g,"");   /* 초대 손님: 새 초대를 못 받으면 자기가 받은 초대를 만료 전까지 그대로 (10-25) */
-      if(/^\d{8}\.[0-9a-f]{10}$/.test(own)&&own.slice(0,8)>=kd) t=own; }
-    if(!t){ if(m) m.textContent=T("초대 링크를 만들지 못했습니다. 잠시 뒤 다시 열어 주세요 / Could not create the invite link — try again shortly","Could not create the invite link — try again shortly"); return; }
-    if(m) m.textContent=""; shOwnerFix0(p, appName, t); });
-}
+function shOwnerFix(p, appName){ shOwnerFix0(p, appName, ""); }   /* 2026-10-26: 초대 코드 없이 앱 주소 그대로 (누구나 열림) */
 function shHas(l,k,e){ return l.indexOf(k)>=0||l.indexOf(e)>=0||l.indexOf(TE(e))>=0; }   // 단추 글자(한·영·일·중)로 어느 단추인지
 function shOwnerFix0(p, appName, tok){
-  var url=location.origin+location.pathname.replace(/index\.html$/,"")+"?inv="+tok, txt=appName+" — Money Puzzle";
-  var iurl=url+"&install=1", ilab={ko:"앱 설치",en:"Install app",ja:"アプリを入れる",zhs:"安装应用",zht:"安裝應用",es:"Instalar app"}[LANG]||"Install app", itx="\n"+ilab+": "+iurl;   /* 「앱 설치」 링크 = 같은 초대 주소 + &install=1 (사장님 10-25) */   /* 지금 연 주소 그대로 (2026-10-14) */
+  var url="https://navi.moneypuzzle.co.kr/", txt=appName+" — Money Puzzle";
+  var iurl=url+"?install=1", ilab={ko:"앱 설치",en:"Install app",ja:"アプリを入れる",zhs:"安装应用",zht:"安裝應用",es:"Instalar app"}[LANG]||"Install app", itx="\n"+ilab+": "+iurl;   /* 「앱 설치」 링크 = 같은 초대 주소 + &install=1 (사장님 10-25) */   /* 지금 연 주소 그대로 (2026-10-14) */
   [].forEach.call(p.querySelectorAll(".sht"),function(b){
     var lab=b.textContent.trim(), href="";
     if(/^X$/.test(lab)) href="https://twitter.com/intent/tweet?text="+encodeURIComponent(txt+itx)+"&url="+encodeURIComponent(url);
@@ -678,14 +666,14 @@ function shOwnerFix0(p, appName, tok){
     };
   });
 }
-function shOpen(){ ntap("_app","share"); shBuild(); try{ if(localStorage.getItem("mp_owner")||localStorage.getItem("mpv_inv")) shOwnerFix(document.getElementById("shIn"),"Money Puzzle Tour for Korea"); }catch(e){} document.getElementById("shBox").hidden=false; }
+function shOpen(){ ntap("_app","share"); shBuild(); try{ shOwnerFix(document.getElementById("shIn"),"Money Puzzle Tour for Korea"); }catch(e){} document.getElementById("shBox").hidden=false; }
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest(".sht"); if(!t) return; e.preventDefault(); document.getElementById("shMsg").textContent=T("체험판에서는 공유가 되지 않습니다.","Sharing is turned off in this demo."); });
 function resetAll(){ try{ dlDraw(null); viewSet("kr"); }catch(e){} document.getElementById("q").value=""; qxSync(); document.getElementById("res").innerHTML=""; document.getElementById("mm").hidden=true; window.scrollTo(0,0); }
 function isApp(){ return matchMedia("(display-mode: standalone)").matches||matchMedia("(display-mode: minimal-ui)").matches||navigator.standalone===true; }
 function isOwner(){ try{ return !!localStorage.getItem("mp_owner"); }catch(e){ return false; } }
 function isInv(){ try{ return !!localStorage.getItem("mpv_inv")&&!localStorage.getItem("mp_owner"); }catch(e){ return false; } }
 var instEv=null;
-window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); instEv=e; if(!isApp()&&((isOwner()&&!/Android|iPhone|iPad/i.test(navigator.userAgent))||isInv())){ document.getElementById("inst").hidden=false; } });
+window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); instEv=e; if(!isApp()){ document.getElementById("inst").hidden=false; }   /* 2026-10-26 모든 방문자 */ });
 function instGo(){ if(instEv){ instEv.prompt(); instEv.userChoice.then(function(){ instEv=null; document.getElementById("inst").hidden=true; }); } }
 /* 「앱 설치」 단추로 온 손님 (사장님 10-25) — 안드로이드: 설치 창을 가운데 크게(브라우저 규칙상 손님이 한 번은 눌러야 한다) · 아이폰: 홈 화면에 추가 안내. 설치된 앱·사장님 기기는 안 띄운다 */
 (function(){ var want=false; try{ want=sessionStorage.getItem("mpv_wantinst")==="1"; }catch(e){} if(!want||isApp()||isOwner()) return;
@@ -704,14 +692,14 @@ function instGo(){ if(instEv){ instEv.prompt(); instEv.userChoice.then(function(
   window.addEventListener("beforeinstallprompt",function(){ setTimeout(show,300); }); if(instEv) setTimeout(show,300); })();
 function mbTog(e){ e.stopPropagation(); var m=document.getElementById("mm"); m.hidden=!m.hidden; }
 document.addEventListener("click",function(e){ var m=document.getElementById("mm"); if(m&&!m.hidden&&!e.target.closest("#mm")) m.hidden=true; });
-function mbCopy(){ document.getElementById("mm").hidden=true; var u=location.origin+location.pathname.replace(/index\.html$/,"");
+function mbCopy(){ document.getElementById("mm").hidden=true; var u="https://navi.moneypuzzle.co.kr/";
   try{ navigator.clipboard.writeText(u).then(function(){ alert(T("링크를 복사했습니다","Link copied")); }); }catch(e){ prompt("Link:",u); } }
 function thDark(){ return document.documentElement.getAttribute("data-theme")==="dark"; }
 function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_sun":"mi_moon","height:20px;width:20px;vertical-align:-3px;margin:0"); }
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
-if(isOwner()) document.getElementById("mcopy").hidden=false;
+document.getElementById("mcopy").hidden=false;   /* 2026-10-26 모든 방문자 */
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1026b2", NAVI_ROOT="kr";
+var NAVI_V="1026b3", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -1746,7 +1734,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
     if(_spm&&_spm.getElement){ var r2=_spm.getElement().getBoundingClientRect(); if(r2.width&&Math.hypot(x-(r2.left+r2.width/2),y-(r2.top+r2.height*0.4))<28){ spinCard(); return; } }
   }catch(z){} },true);
 </script>
-<script src="lang.js?v=1026pm"></script>
+<script src="lang.js?v=1026op"></script>
 <script src="interp.js?v=1025qs"></script>
 <script src="manual.js?v=1026b4"></script>
 <script src="karaoke.js?v=1026kr"></script>
