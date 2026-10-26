@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권 (무료)","무료 확정 · 결제 미연결"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권 (무료)","무료 확정 · 결제 미연결"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -218,6 +218,7 @@ function menu(){ $("menu").innerHTML=MENU.map(function(m){ return '<button id="m
 function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",m[0]===id); });
   var P=$("pane");
   if(id==="tap"){ P.innerHTML=TAP_HTML; tapInit(); return; }
+  if(id==="paid"){ P.innerHTML=PAID_HTML; paidInit(); return; }   // 유료 콘텐츠 (2026-10-26)
   if(id==="home"){ homeLoad(); return; }
   if(id==="visit"){ visitLoad(); return; }
   if(id==="voice"){ voiceLoad(); return; }
@@ -238,6 +239,43 @@ function invMint(){ var o=$("invOut"); o.innerHTML='<div class="msg">만드는 �
     o.innerHTML='<div class="inv">'+esc(u)+'</div><div class="msg">만료 '+esc(e.slice(0,4)+"-"+e.slice(4,6)+"-"+e.slice(6))+' (UTC)</div><div class="row" style="margin-top:6px"><button class="g" id="invCp">복사</button></div>';
     $("invCp").onclick=function(){ try{ navigator.clipboard.writeText(u).then(function(){ $("invCp").textContent="복사됨"; }); }catch(x){} };
   }).catch(function(e){ o.innerHTML='<div class="msg err">만들지 못했습니다 ('+esc(e.message)+')</div>'; }); }
+
+// ── 유료 콘텐츠 (사장님 2026-10-26) — PC방·노래방·넷플릭스/유튜브 상영관 그림의 누름·나감·사용 시간. 허브 /ntapstats?pc=1 · 숫자만, 사장님 기기 제외 ──
+//  사용 시간 = 노래방 화면·카드가 열려 있던 시간 + 바깥 사이트(Steam·게임·넷플릭스·유튜브)로 나갔다가 앱으로 돌아올 때까지
+var PAID_HTML='<div class="card"><div class="row">'
+ +'<select id="pper" onchange="paidPer()"><option value="0">오늘</option><option value="6" selected>최근 7일</option><option value="29">최근 30일</option><option value="89">최근 90일</option><option value="c">직접 고르기</option></select>'
+ +'<input type="date" id="pfr"> ~ <input type="date" id="pto"> <button onclick="paidLoad()">보기</button>'
+ +'<label class="sub"><input type="checkbox" id="ptst" onchange="paidLoad()"> 시험 자료</label><button onclick="xlsPaid()">엑셀 받기</button></div>'
+ +'<div class="msg">누름 = 그림을 눌러 카드·노래방을 연 수 · 나감 = Steam·게임·넷플릭스·유튜브 사이트로 나간 수 · 사용 시간 = 열려 있던 시간 + 나갔다 돌아올 때까지</div>'
+ +'<div id="psum"></div></div><div class="card"><b>구별</b><div class="tw"><table id="pgu"></table></div></div><div class="card"><b>날짜별</b><div class="tw"><table id="pday"></table></div></div>';
+var PD=null, PGU=null;
+function paidPer(){ var v=$("pper").value; if(v==="c") return; $("pto").value=kday(0); $("pfr").value=kday(-(+v)); paidLoad(); }
+function paidInit(){ $("pto").value=kday(0); $("pfr").value=kday(-6); paidLoad(); }
+function paidGu(){ if(PGU) return Promise.resolve(PGU); return fetch("../data/gu_seoul.json",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(d){ PGU={}; ["pcb","kara"].forEach(function(t){ var o=d[t]||{}; for(var c in o) PGU[c]=o[c].g; }); return PGU; }).catch(function(){ PGU={}; return PGU; }); }
+var PKIND={pcb:"PC방",kara:"노래방",netflixth:"넷플릭스 상영관",youtubeth:"유튜브 상영관"};
+function pkOf(k){ var m=/^(pcb|kara)_([a-z]+)$/.exec(k); if(m) return {t:m[1],g:(PGU&&PGU[m[2]])||m[2]}; if(PKIND[k]) return {t:k,g:"중구"}; return {t:"기타",g:""}; }
+function hms(s){ s=Math.round(s||0); var h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+"시간 ":"")+(h||m?m+"분 ":"")+x+"초"; }
+function paidAgg(){ var byK={}, byG={}, byD=[], tot={o:0,x:0,s:0};
+  PD.days.forEach(function(d){ var row={d:d.d}; Object.keys(PKIND).forEach(function(t){ row[t]=[0,0,0]; });
+    for(var k in d.items){ var v=d.items[k], q=pkOf(k); if(!row[q.t]) row[q.t]=[0,0,0];
+      [0,1,2].forEach(function(i){ row[q.t][i]+=v[i]; }); var a=byK[q.t]||(byK[q.t]=[0,0,0]); [0,1,2].forEach(function(i){ a[i]+=v[i]; });
+      var gk=q.g+"|"+q.t, b=byG[gk]||(byG[gk]={g:q.g,t:q.t,v:[0,0,0]}); [0,1,2].forEach(function(i){ b.v[i]+=v[i]; }); tot.o+=v[0]; tot.x+=v[1]; tot.s+=v[2]; }
+    byD.push(row); });
+  return {byK:byK,byG:Object.values(byG).sort(function(a,b){ return b.v[0]-a.v[0]||(a.g<b.g?-1:1); }),byD:byD,tot:tot}; }
+function paidLoad(){ var t=$("ptst").checked; $("psum").innerHTML='<div class="msg">부르는 중…</div>';
+  Promise.all([paidGu(),api("/ntapstats?pc=1&from="+$("pfr").value+"&to="+$("pto").value+(t?"&test=1":""))]).then(function(a){ PD=a[1]; if(!PD.ok) throw new Error(PD.err||"x"); var A=paidAgg();
+    $("psum").innerHTML='<div class="tiles">'+tile(A.tot.o,"전체 누름")+tile(A.tot.x,"바깥 사이트로 나감")+tile(hms(A.tot.s),"전체 사용 시간")+'</div>'
+      +'<div class="tw"><table><tr><th>종류</th><th>누름</th><th>나감</th><th>사용 시간</th><th>1회 평균</th></tr>'+Object.keys(PKIND).map(function(k){ var v=A.byK[k]||[0,0,0]; return '<tr><td>'+PKIND[k]+'</td><td>'+v[0]+'</td><td>'+v[1]+'</td><td>'+hms(v[2])+'</td><td>'+(v[0]?hms(v[2]/v[0]):"-")+'</td></tr>'; }).join("")+'</table></div>';
+    $("pgu").innerHTML='<tr><th>구</th><th>종류</th><th>누름</th><th>나감</th><th>사용 시간</th></tr>'+(A.byG.length?A.byG.map(function(r){ return '<tr><td>'+esc(r.g)+'</td><td>'+esc(PKIND[r.t]||r.t)+'</td><td>'+r.v[0]+'</td><td>'+r.v[1]+'</td><td>'+hms(r.v[2])+'</td></tr>'; }).join(""):'<tr><td colspan="5">아직 자료가 없습니다.</td></tr>');
+    $("pday").innerHTML='<tr><th>날짜</th>'+Object.keys(PKIND).map(function(k){ return '<th>'+PKIND[k]+'<br><small>누름 · 나감 · 시간</small></th>'; }).join("")+'</tr>'+A.byD.slice().reverse().map(function(r){ return '<tr><td>'+r.d+'</td>'+Object.keys(PKIND).map(function(k){ var v=r[k]||[0,0,0]; return '<td>'+v[0]+' · '+v[1]+' · '+hms(v[2])+'</td>'; }).join("")+'</tr>'; }).join("");
+  }).catch(function(e){ $("psum").innerHTML='<div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div>'; }); }
+function xlsPaid(){ if(!PD||!window.XLSX){ alert("자료나 엑셀 도구를 아직 못 불렀습니다."); return; } var A=paidAgg();
+  var s1=[[CO],["유료 콘텐츠 사용 보고서"],["기간",PD.from+" ~ "+PD.to+" (한국 시간)"],["만든 날",kday(0)],[],["종류","누름","나감","사용 시간(초)","사용 시간"]];
+  Object.keys(PKIND).forEach(function(k){ var v=A.byK[k]||[0,0,0]; s1.push([PKIND[k],v[0],v[1],v[2],hms(v[2])]); }); s1.push(["합계",A.tot.o,A.tot.x,A.tot.s,hms(A.tot.s)]);
+  var s2=[["구","종류","누름","나감","사용 시간(초)"]]; A.byG.forEach(function(r){ s2.push([r.g,PKIND[r.t]||r.t,r.v[0],r.v[1],r.v[2]]); });
+  var s3=[["날짜","종류","누름","나감","사용 시간(초)"]]; A.byD.forEach(function(r){ Object.keys(PKIND).forEach(function(k){ var v=r[k]||[0,0,0]; s3.push([r.d,PKIND[k],v[0],v[1],v[2]]); }); });
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(s1,[18,10,10,14,18]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[12,16,8,8,14]),"구별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[12,16,8,8,14]),"날짜별");
+  save(wb,"머니퍼즐내비_유료콘텐츠_"+PD.from+"_"+PD.to+(PD.test?"_시험":"")+".xlsx"); }
 
 // ── 그림별 누름 통계 ──
 var TAP_HTML='<div class="card"><div class="row">'
