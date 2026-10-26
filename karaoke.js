@@ -40,7 +40,10 @@ var TX={
  ld:{ko:"노래를 불러오는 중…",en:"Loading songs…",ja:"曲を読み込み中…",zhs:"正在加载歌曲…",zht:"正在載入歌曲…",es:"Cargando canciones…"},
  no:{ko:"노래를 찾지 못했어요.",en:"No songs found.",ja:"曲が見つかりませんでした。",zhs:"没有找到歌曲。",zht:"沒有找到歌曲。",es:"No se encontraron canciones."},
  pick:{ko:"아래에서 노래를 고르세요",en:"Pick a song below",ja:"下から曲を選んでください",zhs:"请在下面选歌",zht:"請在下面選歌",es:"Elige una canción abajo"},
- skip:{ko:"이 영상은 앱 안에서 재생할 수 없어 다음 곡으로 넘어갑니다",en:"This video can’t play here — skipping to the next song",ja:"この動画はここでは再生できないため次の曲へ",zhs:"该视频无法在此播放，跳到下一首",zht:"該影片無法在此播放，跳到下一首",es:"Este vídeo no se puede reproducir aquí; pasamos a la siguiente"},
+ yt:{ko:"이 곡은 유튜브에서만 재생돼요",en:"This song plays only on YouTube",ja:"この曲はYouTubeでのみ再生できます",zhs:"这首歌只能在YouTube上播放",zht:"這首歌只能在YouTube上播放",es:"Esta canción solo se reproduce en YouTube"},
+ ytb:{ko:"유튜브에서 열기",en:"Open on YouTube",ja:"YouTubeで開く",zhs:"在YouTube打开",zht:"在YouTube開啟",es:"Abrir en YouTube"},
+ ytt:{ko:"유튜브에서",en:"on YouTube",ja:"YouTubeで",zhs:"在YouTube",zht:"在YouTube",es:"en YouTube"},
+ lo:{ko:"불러오는 중…",en:"Loading…",ja:"読み込み中…",zhs:"加载中…",zht:"載入中…",es:"Cargando…"},
  x:{ko:"나가기",en:"Leave",ja:"出る",zhs:"离开",zht:"離開",es:"Salir"}
 };
 var st=document.createElement("style");
@@ -53,7 +56,7 @@ st.textContent="#karBox{position:fixed;inset:0;z-index:2147483004;background:rad
  +"#karBox .ktb{display:flex;gap:6px;margin:10px 0 6px}#karBox .ktb button{flex:1;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;border-radius:999px;padding:8px 4px;font-weight:900;cursor:pointer}#karBox .ktb button.on{background:linear-gradient(90deg,#ff4fd8,#7a5cff);border-color:transparent}"
  +"#karBox .ksr{display:flex;gap:6px}#karBox .ksr input{flex:1;min-width:0;border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.35);color:#fff;padding:9px 10px;font-size:15px}#karBox .ksr button{border:0;border-radius:10px;background:#ff4fd8;color:#fff;font-weight:900;padding:0 14px;cursor:pointer}"
  +"#karBox .kls{flex:1;overflow:auto;margin-top:8px;padding-bottom:16px;-webkit-overflow-scrolling:touch}#karBox .kit{display:flex;align-items:center;gap:8px;padding:9px 6px;border-bottom:1px solid rgba(255,255,255,.08);cursor:pointer}#karBox .kit.on{background:rgba(255,79,216,.16);border-radius:10px}#karBox .kit img{width:24px;height:24px;border-radius:50%;flex:0 0 auto}#karBox .kit span{flex:1;font-size:14.5px;font-weight:700;line-height:1.3}#karBox .kit i{font-style:normal;font-size:12px;opacity:.6}"
- +"#karBox .kst{font-size:13px;opacity:.75;padding:10px 4px}";
+ +"#karBox .kit b.kyt{font-weight:800;color:#ff8080;margin-right:4px}#karBox .kov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:16px;background:rgba(0,0,0,.82);font-weight:800;z-index:2}#karBox .kov a{background:#ff0033;color:#fff;text-decoration:none;border-radius:999px;padding:10px 18px;font-weight:900}#karBox .kst{font-size:13px;opacity:.75;padding:10px 4px}";
 document.head.appendChild(st);
 var K={code:"",tab:"kpop",items:[],idx:-1,pl:null,q:""};
 function ytApi(cb){ if(window.YT&&YT.Player) return cb(); var prev=window.onYouTubeIframeAPIReady; window.onYouTubeIframeAPIReady=function(){ try{ prev&&prev(); }catch(e){} cb(); };
@@ -62,19 +65,27 @@ function box(){ return document.getElementById("karBox"); }
 function paintList(){ var b=box(); if(!b) return; var el=b.querySelector(".kls");
   if(K.items===null){ el.innerHTML='<div class="kst">'+esc(L(TX.ld))+'</div>'; return; }
   if(!K.items.length){ el.innerHTML='<div class="kst">'+esc(L(TX.no))+'</div>'; return; }
-  el.innerHTML=K.items.map(function(x,i){ return '<div class="kit'+(i===K.idx?' on':'')+'" data-i="'+i+'"><img src="'+CH[x.ch].i+'" alt=""><span>'+esc(x.t)+'</span><i>'+esc(x.ln||"")+'</i></div>'; }).join("");
+  el.innerHTML=K.items.map(function(x,i){ return '<div class="kit'+(i===K.idx?' on':'')+'" data-i="'+i+'"><img src="'+CH[x.ch].i+'" alt=""><span>'+esc(x.t)+'</span><i>'+(x.e===0?'<b class="kyt">▶ '+esc(L(TX.ytt))+'</b> ':'')+esc(x.ln||"")+'</i></div>'; }).join("");
   [].forEach.call(el.querySelectorAll(".kit"),function(d){ d.onclick=function(){ play(+d.dataset.i); }; }); }
 function load(){ K.items=null; paintList(); var u=HUB+"/kara?"+(K.q?"q="+encodeURIComponent(K.q):"tab="+K.tab);
   fetch(u).then(function(r){ return r.json(); }).then(function(j){ K.items=(j&&j.ok&&j.items)||[]; K.idx=-1; paintList(); }).catch(function(){ K.items=[]; paintList(); }); }
+function ov(html,t){ var b=box(); if(!b) return; var pl=b.querySelector(".kpl"), o=pl.querySelector(".kov"); if(!html){ if(o&&(!t||o.dataset.t===t)) o.remove(); return; } if(!o){ o=document.createElement("div"); o.className="kov"; pl.appendChild(o); } o.dataset.t=t||""; o.innerHTML=html; }
+function blocked(x){ try{ K.pl&&K.pl.pauseVideo&&K.pl.pauseVideo(); }catch(e){}
+  ov('<div>'+esc(L(TX.yt))+'</div><a href="https://www.youtube.com/watch?v='+encodeURIComponent(x.id)+'" target="_blank" rel="noopener" data-kyt="1">▶ '+esc(L(TX.ytb))+'</a>');
+  var a=box()&&box().querySelector("[data-kyt]"); if(a) a.addEventListener("click",function(){ mpPaid.out(); }); }
 function play(i){ var x=K.items&&K.items[i]; if(!x) return; K.idx=i; paintList(); var b=box(); if(!b) return; var pl=b.querySelector(".kpl");
   try{ ntap("kara_"+K.code,"tap"); }catch(e){}
+  var m0=pl.querySelector(".kmsg"); if(m0) m0.remove();
+  if(x.e===0){ blocked(x); return; }   // 퍼가기 막힌 곡 — 앱 안에서 안 틀고 유튜브로 (허브가 oEmbed 로 미리 확인)
+  ov('<div>'+esc(L(TX.lo))+'</div>',"lo"); K.want=x.id;
   ytApi(function(){ if(!box()) return;
-    if(K.pl&&K.pl.loadVideoById){ K.pl.loadVideoById(x.id); return; }
-    pl.innerHTML='<div id="karYt"></div>';
+    if(K.pl){ if(K.ready) K.pl.loadVideoById(x.id); return; }   // 플레이어는 하나만 — 곡마다 새로 만들지 않는다
+    var d=document.createElement("div"); d.id="karYt"; pl.insertBefore(d,pl.firstChild);
     K.pl=new YT.Player("karYt",{videoId:x.id,playerVars:{autoplay:1,playsinline:1,rel:0},events:{
-      onError:function(ev){ if(ev&&(ev.data===101||ev.data===150||ev.data===100||ev.data===5)){ var m=document.createElement("div"); m.className="kmsg"; m.style.pointerEvents="none"; m.textContent=L(TX.skip); try{ pl.appendChild(m); setTimeout(function(){ m.remove(); },2500); }catch(e){} setTimeout(function(){ play(K.idx+1); },1200); } },
-      onStateChange:function(ev){ if(ev&&ev.data===0) play(K.idx+1); } }}); }); }
-function open(code){ var D=window.GU&&GU.d, o=D&&D.kara&&D.kara[code]; K.code=code; K.q=""; K.idx=-1; K.pl=null; var old=box(); if(old) old.remove();
+      onReady:function(){ K.ready=true; if(K.want&&K.pl.getVideoData&&K.pl.getVideoData().video_id!==K.want) K.pl.loadVideoById(K.want); },
+      onError:function(){ var c=K.items&&K.items[K.idx]; if(c){ c.e=0; paintList(); blocked(c); } },   // 미리 못 잡은 막힌 곡도 그 자리에서 안내 (다음 곡으로 안 넘김)
+      onStateChange:function(ev){ if(ev&&ev.data===1) ov("","lo"); } }}); }); }
+function open(code){ var D=window.GU&&GU.d, o=D&&D.kara&&D.kara[code]; K.code=code; K.q=""; K.idx=-1; K.pl=null; K.ready=false; K.want=""; var old=box(); if(old) old.remove();
   var gn=o&&window.LP?LP(o.n):(o?o.g:""), b=document.createElement("div"); b.id="karBox";
   b.innerHTML='<div class="kin"><div class="khd"><div><b>'+esc(L(TX.t))+(gn?' · '+esc(gn):'')+'</b><small>'+esc(L(TX.s))+'</small></div><button type="button" class="kx">✕ '+esc(L(TX.x))+'</button></div>'
     +'<div class="kch">'+["tj","ky"].map(function(c){ return '<a href="'+CH[c].u+'" target="_blank" rel="noopener" data-kch="'+c+'"><img src="'+CH[c].i+'" alt="">'+esc(L(CH[c].n))+' ›</a>'; }).join("")+'</div>'
@@ -88,8 +99,8 @@ function open(code){ var D=window.GU&&GU.d, o=D&&D.kara&&D.kara[code]; K.code=co
   [].forEach.call(b.querySelectorAll(".ktb button"),function(t){ t.onclick=function(){ K.tab=t.dataset.t; K.q=""; b.querySelector(".ksr input").value=""; [].forEach.call(b.querySelectorAll(".ktb button"),function(x){ x.classList.toggle("on",x===t); }); load(); }; });
   b.querySelector(".ksr").onsubmit=function(e){ e.preventDefault(); K.q=String(b.querySelector(".ksr input").value||"").trim(); [].forEach.call(b.querySelectorAll(".ktb button"),function(x){ x.classList.toggle("on",!K.q&&x.dataset.t===K.tab); }); load(); };
   mpPaid.start("kara_"+code); load(); }
-function close(){ var b=box(); if(b){ try{ K.pl&&K.pl.destroy&&K.pl.destroy(); }catch(e){} b.remove(); } K.pl=null; document.documentElement.style.overflow=""; mpPaid.end(); }
-window.karOpen=open; window.karClose=close;
+function close(){ var b=box(); if(b){ try{ K.pl&&K.pl.destroy&&K.pl.destroy(); }catch(e){} b.remove(); } K.pl=null; K.ready=false; document.documentElement.style.overflow=""; mpPaid.end(); }
+window.karOpen=open; window.karClose=close; window.karState=K;
 var _hc=window.hitClick; window.hitClick=function(k){ var m=/^__kara_([a-z]+)$/.exec(k||""); if(m){ open(m[1]); return; } return _hc.apply(this,arguments); };
 var _gb=window.guBack; window.guBack=function(){ if(box()){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };   // 뒤로가기 = 노래방 나가기
 })();
