@@ -7,6 +7,7 @@
 "use strict";
 var CK="test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";   // 토스 공식 문서 공개 시험 키 (결제위젯)
 var SDK="https://js.tosspayments.com/v2/standard";
+var CK_API="test_ck_5OWRapdA8dzyq72vW4gRVo1zEqZK";   // 우리 상점 시험 키 (API 개별 연동 = 결제창) — 휴대폰 결제만 결제창으로 (사장님 10-26). 원본 _secrets	oss_test_ck.txt
 function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){ return null; } }
 function L6(o){ var l=window.LANG||"en"; return o[l]||o.en; }
 function E(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
@@ -35,6 +36,7 @@ var T={
   okD:{ko:"시험 모드라 실제 결제·승인은 하지 않았어요.",en:"Test mode — no real charge or approval was made.",ja:"テストモードのため、実際の決済・承認は行っていません。",zhs:"测试模式，未进行实际付款或授权。",zht:"測試模式，未進行實際付款或授權。",es:"Modo de prueba: no se hizo ningún cobro ni autorización real."},
   failT:{ko:"결제가 완료되지 않았어요",en:"Payment was not completed",ja:"決済が完了しませんでした",zhs:"付款未完成",zht:"付款未完成",es:"El pago no se completó"},
   oid:{ko:"주문번호",en:"Order no.",ja:"注文番号",zhs:"订单号",zht:"訂單號",es:"N.º de pedido"},
+  phone:{ko:"휴대폰 결제",en:"Pay by mobile phone",ja:"携帯電話決済",zhs:"手机支付",zht:"手機支付",es:"Pagar con el móvil"},
   amt:{ko:"금액",en:"Amount",ja:"金額",zhs:"金额",zht:"金額",es:"Importe"}
 };
 function css(){ if(document.getElementById("tpCss")) return; var s=document.createElement("style"); s.id="tpCss";
@@ -64,7 +66,7 @@ function openOrder(){ css(); var b=document.getElementById("tpBox"); if(b) b.rem
     +'<div class="guest" id="tpG">'+E(L6(T.guest))+'</div>'
     +'<div class="row"><label for="tpName">'+E(L6(T.name))+'</label><input id="tpName" type="text" autocomplete="name" style="flex:1;min-width:0"></div>'
     +'<div id="tpMethods"><div class="d">'+E(L6(T.load))+'</div></div><div id="tpAgree"></div>'
-    +'<button type="button" class="go" id="tpGo" disabled>'+E(L6(T.pay))+'</button><div class="d" style="margin-top:6px;text-align:center">'+E(window.PAYTEST6?L6(window.PAYTEST6):L6(T.test))+'</div><div class="d" id="tpMsg" style="margin-top:8px;min-height:18px"></div></div>';
+    +'<button type="button" class="go" id="tpGo" disabled>'+E(L6(T.pay))+'</button><button type="button" class="go" id="tpPh" style="background:#fff;color:#3182f6;border:1.5px solid #3182f6">'+E(L6(T.phone))+'</button><div class="d" style="margin-top:6px;text-align:center">'+E(window.PAYTEST6?L6(window.PAYTEST6):L6(T.test))+'</div><div class="d" id="tpMsg" style="margin-top:8px;min-height:18px"></div></div>';
   b.onclick=function(e){ if(e.target===b) b.remove(); }; document.body.appendChild(b);
   var n=1, q=function(i){ return b.querySelector(i); };
   var paint=function(){ q("#tpN").textContent=n; q("#tpU").textContent=won(price(n)); q("#tpT").textContent=won(price(n)*n); if(W) W.setAmount({currency:"KRW",value:price(n)*n}).catch(function(){}); };
@@ -77,7 +79,11 @@ function openOrder(){ css(); var b=document.getElementById("tpBox"); if(b) b.rem
   q("#tpGo").onclick=function(){ var dt=q("#tpD").value, nm=q("#tpName").value.trim(); if(!dt||dt<d||dt>dmax){ q("#tpMsg").textContent=L6(T.needd)+" ("+d+" ~ "+dmax+")"; return; } if(!nm){ q("#tpMsg").textContent=L6(T.needn); return; }
     var oid="B4"+dt.replace(/-/g,"")+"_"+Date.now().toString(36)+Math.random().toString(36).slice(2,6), base=location.origin+location.pathname;
     W.requestPayment({orderId:oid,orderName:"K-POP Big4 Agency Tour ("+dt+", "+n+")",successUrl:base+"?ptres=ok",failUrl:base+"?ptres=fail",customerName:nm.slice(0,40)})
-      .catch(function(e){ window.__tpReqErr=String(e&&e.message||e); q("#tpMsg").textContent=(e&&e.message)||""; }); }; }
+      .catch(function(e){ window.__tpReqErr=String(e&&e.message||e); q("#tpMsg").textContent=(e&&e.message)||""; }); };
+  q("#tpPh").onclick=function(){ var dt=q("#tpD").value, nm=q("#tpName").value.trim(); if(!dt||dt<d||dt>dmax){ q("#tpMsg").textContent=L6(T.needd)+" ("+d+" ~ "+dmax+")"; return; } if(!nm){ q("#tpMsg").textContent=L6(T.needn); return; }   // 휴대폰 결제 — 결제창(통신사 선택·인증), 돌아오면 같은 「시험 결제 완료」
+    var oid="B4"+dt.replace(/-/g,"")+"_"+Date.now().toString(36)+Math.random().toString(36).slice(2,6), base=location.origin+location.pathname;
+    sdk().then(function(){ return window.TossPayments(CK_API).payment({customerKey:window.TossPayments.ANONYMOUS}).requestPayment({method:"MOBILE_PHONE",amount:{currency:"KRW",value:price(n)*n},orderId:oid,orderName:"K-POP Big4 Agency Tour ("+dt+", "+n+")",successUrl:base+"?ptres=ok",failUrl:base+"?ptres=fail",customerName:nm.slice(0,40)}); })
+      .catch(function(e){ window.__tpPhErr=String(e&&e.message||e); q("#tpMsg").textContent=(e&&e.message)||""; }); }; }
 // 빅4 카드에 「예약·결제」 단추 (켜져 있을 때만) — 「예약·문의」 바로 위
 function addBtn(){ if(!on()) return; var c=document.querySelector(".b4pkg"); if(!c||c.querySelector("#tpOpen")) return; var ig=c.querySelector('[data-nr="ig"]'); if(!ig) return;
   var bt=document.createElement("button"); bt.type="button"; bt.id="tpOpen"; bt.className=ig.className; bt.style.cssText="margin-top:7px;background:#3182f6;color:#fff;border-color:#3182f6"; bt.textContent=L6(T.btn)+" ›";
