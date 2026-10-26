@@ -167,7 +167,7 @@ document.addEventListener("click",function(e){ var t=e.target;
   if(t.closest&&(t.closest("a")||t.closest(".tradd"))) return;
   var c=t.closest&&t.closest("#res .rcit"); if(c){ var k=c.dataset.rk, P=PLACES[k]; if(!P) return; R.back=true;
     var id0=meBest(+P.lat,+P.lng)||NAVI_ROOT; if(DET){ try{ _nm.setCenter(new naver.maps.LatLng(+P.lat,+P.lng)); }catch(x){} } else spinGo(id0===NAVI_ROOT?"kr":id0,+P.lat,+P.lng,null);
-    placeShow(k); return; }
+    placeShow(k); try{ pinMark(k); }catch(x){} return; }
   if(t.closest&&t.closest("#res .rck")) R.back=true;   // 카카오 장소 — 기존 검색 핀(spinShow)이 연다
 },true);
 // 장소 카드를 연 뒤 「← AI 추천으로」
