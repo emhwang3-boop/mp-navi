@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권 (무료)","무료 확정 · 결제 미연결"],["pg","퍼즐골드","지갑·상 지급·사용 내역 · 엑셀"],["bingo","빙고","이번 주·다음 주 문제 · 고치기·승인"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권 (무료)","무료 확정 · 결제 미연결"],["pg","퍼즐골드","지갑·상 지급·사용 내역 · 엑셀"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -219,14 +219,75 @@ function xlsLed(){ if(!LG||!window.XLSX){ alert("자료나 엑셀 도구를 아�
 var PGD=null, PGF="";
 function pgDay(ms){ return ms?new Date(ms+9*3600e3).toISOString().slice(0,16).replace("T"," "):""; }
 // ── 한국 빙고 (2026-10-26) — 허브 /npg/admin/bingo. 다음 주 문제는 허브가 AI 로 미리 만든다. 승인 안 해도 월요일엔 그대로 쓴다 ──
-var BG=null, BGW="next", BGL=["ko","en","ja","zhs","zht","es"];
-function bgLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>한국 빙고</b><div class="msg">부르는 중…</div></div>';
+var BGINTO="", BG=null, BGW="next", BGL=["ko","en","ja","zhs","zht","es"];
+// ── 이벤트 (2026-10-26) — 한 주에 하나만. 종류 고르고 「시작」(그 주 일 24:00까지) · 「지금 닫기」(지급 없음). 빙고 문제 편집은 아래 「빙고 문제」 ──
+var EVK=[["bingo","한국 빙고"],["treasure","지도 속 보물상자"],["spot","명소 맞히기"],["photo","이번 주 사진"]], EVL=["ko","en","ja","zhs","zht","es"], EV=null, EVTAB="";
+function evLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>이벤트</b><div class="msg">부르는 중…</div></div>';
+  api("/npg/admin/ev").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); EV=j; evPaintA(); }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div></div>'; }); }
+function evOpenKind(){ if(EV.ew&&EV.ew.st==="open") return EV.ew.kind; if(EV.bingo&&EV.bingo.st==="open") return "bingo"; return ""; }
+function evNm(k){ for(var i=0;i<EVK.length;i++) if(EVK[i][0]===k) return EVK[i][1]; return k||"-"; }
+function evPaintA(){ var P=$("pane"), ok=evOpenKind(), ew=EV.ew;
+  var h='<div class="card"><div class="row"><b style="flex:1">이벤트 · 이번 주('+esc(EV.wk)+')</b></div>'
+   +'<div class="row" style="margin-top:6px"><span>지금: '+(ok?'<b style="color:#2f9e44">'+esc(evNm(ok))+' 진행 중</b> (일요일 24:00 마감)':(ew&&ew.st==="judge"?'<b style="color:#c47a3c">'+esc(evNm(ew.kind))+' 마감 — 1·2·3등 고르기 대기</b>':'<b>닫힘</b>'))+'</span></div>'
+   +'<div class="row" style="margin-top:8px"><select id="evKind">'+EVK.map(function(k){ return '<option value="'+k[0]+'">'+k[1]+'</option>'; }).join("")+'</select>'
+   +'<button onclick="evStart()"'+(ok?' disabled':'')+'>이번 주 이벤트 시작</button><button class="g" onclick="evStop()"'+(ok?'':' disabled')+'>지금 닫기</button></div>'
+   +'<div class="msg">자동으로 열리지 않습니다. 시작한 때부터 그 주 일요일 24:00(한국 시간)까지 열리고, 빙고·보물상자·명소 맞히기는 마감 뒤 1·2·3등에게 100/50/20 PG를 자동 지급(당첨 메일)합니다. 사진은 마감 뒤 아래에서 1·2·3등을 고르면 지급됩니다. 「지금 닫기」는 지급 없이 닫습니다. 사장님 기기·졸업자(3회)는 순위에서 빠집니다.</div></div>';
+  h+='<div class="card"><div class="row">'+EVK.map(function(k){ return '<button class="'+(EVTAB===k[0]?"":"g")+'" onclick="EVTAB=\''+k[0]+'\';evPaintA()">'+k[1]+' 설정</button>'; }).join("")+'</div></div>';
+  P.innerHTML=h+'<div id="evTab"></div>';
+  if(EVTAB==="bingo"){ $("evTab").innerHTML='<div class="msg">빙고 문제를 불러오는 중…</div>'; api("/npg/admin/bingo").then(function(j){ if(!j.ok) throw 0; BG=j; bgPaint("evTab"); }).catch(function(){ $("evTab").innerHTML='<div class="card"><div class="msg err">빙고 문제를 못 불렀습니다</div></div>'; }); }
+  if(EVTAB==="treasure") evTre(); if(EVTAB==="spot") evSpot(); if(EVTAB==="photo") evPho(); }
+function evStart(){ var k=$("evKind").value; if(!confirm("「"+evNm(k)+"」을(를) 지금 시작할까요? 일요일 24:00(한국 시간)에 마감됩니다.")) return;
+  api("/npg/admin/ev/start",{method:"POST",body:JSON.stringify({kind:k})}).then(function(j){ alert(j.ok?(j.already?"이미 진행 중입니다":"시작했습니다"):(j.err==="cfg"?"먼저 아래 「"+evNm(k)+" 설정」을 채워 저장해 주세요":j.err==="already-open"?"이미 「"+evNm(j.kind)+"」이(가) 열려 있습니다":"시작 못 함 ("+(j.err||"")+")")); evLoad(); }); }
+function evStop(){ if(!confirm("지금 열린 이벤트를 닫을까요? 순위·상금 지급 없이 닫힙니다(기록 보관).")) return; api("/npg/admin/ev/stop",{method:"POST"}).then(function(j){ alert(j.ok?"닫았습니다":"닫지 못함 ("+(j.err||"")+")"); evLoad(); }); }
+function evSave(kind,cfg){ return api("/npg/admin/ev/cfg",{method:"POST",body:JSON.stringify({kind:kind,cfg:cfg})}).then(function(j){ alert(j.ok?"저장했습니다":"저장 못 함 ("+(j.err||"")+")"); if(j.ok) evLoad(); }); }
+function ml(id,o){ return EVL.map(function(l){ return '<div class="row" style="margin-top:3px"><span class="sub" style="width:34px">'+l+'</span><input id="'+id+'_'+l+'" value="'+esc((o&&o[l])||"")+'" style="flex:1;min-width:200px"></div>'; }).join(""); }
+function mlGet(id){ var o={}; EVL.forEach(function(l){ var e=$(id+"_"+l); o[l]=e?e.value.trim():""; }); return o; }
+function evTre(){ var c=EV.cfg.treasure||{hints:[]}, h='<div class="card"><b>지도 속 보물상자 설정</b><div class="msg">상자 자리 = 서울 안 위도·경도(구글 지도에서 그 자리를 길게 눌러 복사) + 정답 반경(m). 손님은 서울 지도(구 화면)를 눌러 엽니다. 힌트 7개는 월~일 매일 12시에 하나씩 공개(주중에 시작하면 지난 날 힌트는 바로).</div>'
+  +'<div class="row"><input id="trLat" placeholder="위도 37.xxxx" value="'+esc(c.lat||"")+'" style="width:140px"><input id="trLng" placeholder="경도 126.xxxx" value="'+esc(c.lng||"")+'" style="width:140px"><input id="trR" placeholder="반경 m" value="'+esc(c.r||150)+'" style="width:90px"></div>'
+  +'<div class="msg" style="margin-top:8px">장소 이름 (3등이 나오면 손님에게 공개)</div>'+ml("trP",c.place)
+  +'<div class="row" style="margin-top:8px"><b style="flex:1">힌트 7개</b><button class="g" onclick="evHintAi()">AI 초안 만들기</button></div>';
+  for(var i=0;i<7;i++){ h+='<div style="border-top:1px solid #eee;margin-top:6px;padding-top:4px"><b>'+(i+1)+'일째 (월요일+'+i+'일 12시)</b>'+ml("trH"+i,(c.hints||[])[i])+'</div>'; }
+  $("evTab").innerHTML=h+'<button onclick="evTreSave()" style="margin-top:10px">저장</button></div>'; }
+function evTreGet(){ var hs=[]; for(var i=0;i<7;i++){ var o=mlGet("trH"+i); if(o.ko||o.en) hs.push(o); } return {lat:+$("trLat").value,lng:+$("trLng").value,r:+$("trR").value||150,place:mlGet("trP"),hints:hs}; }
+function evTreSave(){ var c=evTreGet(); if(!(c.lat>37&&c.lat<38&&c.lng>126&&c.lng<128)){ alert("서울 안 위도·경도를 넣어 주세요"); return; } if(!c.hints.length){ alert("힌트를 넣어 주세요"); return; } evSave("treasure",c); }
+function evHintAi(){ var c=evTreGet(); if(!c.lat){ alert("위도·경도·장소 이름을 먼저 넣어 주세요"); return; } $("evTab").insertAdjacentHTML("afterbegin",'<div class="msg" id="aiMsg">AI가 힌트를 쓰는 중… (1분쯤)</div>');
+  api("/npg/admin/ev/hints-ai",{method:"POST",body:JSON.stringify({lat:c.lat,lng:c.lng,place:(c.place.ko||"")+" / "+(c.place.en||"")})}).then(function(j){ var m=$("aiMsg"); if(m) m.remove(); if(!j.hints){ alert("못 만들었습니다 ("+(j.err||"")+")"); return; }
+    j.hints.forEach(function(hh,i){ EVL.forEach(function(l){ var e=$("trH"+i+"_"+l); if(e&&hh[l]) e.value=hh[l]; }); }); alert("초안을 넣었습니다. 고친 뒤 「저장」을 누르세요."); }); }
+var SPN=null;
+function spotNames(){ if(SPN) return Promise.resolve(SPN); SPN={P:{},nm:{},gu:{}};
+  return fetch("../data/gu_seoul.json",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(d){ for(var k in d.P){ if(/@/.test(k)) continue; SPN.P[k]=d.P[k].i.split("?")[0]; } (d.gus||[]).forEach(function(o){ (o.keys||[]).forEach(function(k){ SPN.gu[k]={ko:o.n[0],en:o.n[1],ja:o.n[2],zhs:o.n[3],zht:o.n[4]}; }); });
+    return fetch("../data/maps/seoulall.json",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(m){ for(var k in m.places) SPN.nm[k]=m.places[k].ko; }).catch(function(){}); }).then(function(){ var ids=["insadong","myeongdong","seoul","gyeongbok","hongdae","itaewon","samsung","seongsu","yongsan","jongno","dongdaemun","gangnamstn","olympicpark","sinsa","gwanak","seongbuk","dongdaemungu"];
+    return Promise.all(ids.map(function(i){ return fetch("../data/maps/"+i+".json",{cache:"no-store"}).then(function(r){ return r.ok?r.json():null; }).then(function(m){ if(m) for(var k in m.places) if(!SPN.nm[k]) SPN.nm[k]=m.places[k].ko; }).catch(function(){}); })); }).then(function(){ return SPN; }); }
+function evSpot(){ $("evTab").innerHTML='<div class="card"><div class="msg">명소 목록을 불러오는 중…</div></div>';
+  spotNames().then(function(N){ var cur=((EV.cfg.spot||{}).items||[]).map(function(x){ return x.k; }), keys=Object.keys(N.P).filter(function(k){ return N.gu[k]; }).sort(function(a,b){ return (N.nm[a]||a)<(N.nm[b]||b)?-1:1; });
+    var h='<div class="card"><b>명소 맞히기 설정</b><div class="msg">서울 구 화면에 그림이 있는 명소 중 10개를 고르세요(앱에 있는 명소 그림을 문제 사진으로 씁니다). 고른 수: <b id="spN">'+cur.length+'</b> / 10 <button class="g" onclick="spRand()">무작위 10개</button></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:8px">';
+    keys.forEach(function(k){ h+='<label style="display:flex;gap:6px;align-items:center;border:1px solid #eee;border-radius:8px;padding:4px;font-size:12.5px"><input type="checkbox" class="spk" value="'+k+'"'+(cur.indexOf(k)>=0?' checked':'')+' onchange="spCount()"><img src="../'+N.P[k]+'" alt="" style="width:40px;height:30px;object-fit:contain">'+esc(N.nm[k]||k)+'<span class="sub">'+esc((N.gu[k]||{}).ko||"")+'</span></label>'; });
+    $("evTab").innerHTML=h+'</div><button onclick="spSave()" style="margin-top:10px">저장</button></div>'; }); }
+function spCount(){ $("spN").textContent=document.querySelectorAll(".spk:checked").length; }
+function spRand(){ var a=[].slice.call(document.querySelectorAll(".spk")); a.forEach(function(x){ x.checked=false; }); for(var i=0;i<10&&a.length;i++){ var k=Math.floor(Math.random()*a.length); a.splice(k,1)[0].checked=true; } spCount(); }
+function spSave(){ var ks=[].map.call(document.querySelectorAll(".spk:checked"),function(x){ return x.value; }); if(ks.length<3||ks.length>10){ alert("3~10개를 고르세요 (보통 10개)"); return; }
+  for(var i=ks.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), t=ks[i]; ks[i]=ks[j]; ks[j]=t; }
+  evSave("spot",{items:ks.map(function(k){ return {k:k,img:SPN.P[k],gu:SPN.gu[k]}; })}); }
+function evPho(){ var c=EV.cfg.photo||{}, h='<div class="card"><b>이번 주 사진 설정</b><div class="msg">주제 (6개 언어)</div>'+ml("phT",c.topic)+'<button onclick="phSave()" style="margin-top:8px">저장</button></div>';
+  h+='<div class="card"><div class="row"><b style="flex:1">올라온 사진 ('+esc(EV.pwk)+' 주)</b><input id="phWk" value="'+esc(EV.pwk)+'" style="width:120px"><button class="g" onclick="phWk()">다른 주 보기</button></div>';
+  if(!EV.photos.length) h+='<div class="msg">아직 사진이 없습니다.</div>';
+  EV.photos.forEach(function(x){ h+='<div style="border-top:1px solid #eee;padding:8px 0"><div class="row"><b>'+esc(x.nm)+'</b><span class="sub">'+new Date(x.at+9*3600e3).toISOString().slice(5,16).replace("T"," ")+' · SNS 동의 '+(x.sns?"예":"아니오")+(x.own?' · 사장님 기기':'')+(x.grad?' · 졸업자':'')+'</span>'
+    +'<button class="g" onclick="phView(\''+x.uid+'\')">보기</button><select id="phR_'+x.uid+'"><option value="">순위 없음</option><option value="1">1등</option><option value="2">2등</option><option value="3">3등</option></select><button class="g" onclick="phDel(\''+x.uid+'\')">삭제</button></div><div id="phI_'+x.uid+'"></div></div>'; });
+  h+='<button onclick="phAward()" style="margin-top:8px">고른 1·2·3등에게 지급 (마감 뒤)</button></div>';
+  $("evTab").innerHTML=h; }
+function phSave(){ var t=mlGet("phT"); if(!t.ko&&!t.en){ alert("주제를 넣어 주세요"); return; } evSave("photo",{topic:t}); }
+function phWk(){ api("/npg/admin/ev?wk="+encodeURIComponent($("phWk").value)).then(function(j){ if(j.ok){ EV.photos=j.photos; EV.pwk=j.pwk; evPho(); } }); }
+function phView(u){ api("/npg/admin/ev/photo",{method:"POST",body:JSON.stringify({wk:EV.pwk,uid:u})}).then(function(j){ if(j.ok) $("phI_"+u).innerHTML='<img src="'+j.img+'" style="max-width:100%;max-height:420px;border-radius:8px">'; }); }
+function phDel(u){ if(!confirm("이 사진을 지울까요? (부적절한 사진)")) return; api("/npg/admin/ev/photo/del",{method:"POST",body:JSON.stringify({wk:EV.pwk,uid:u})}).then(function(){ phWk(); }); }
+function phAward(){ var pick=["","",""]; EV.photos.forEach(function(x){ var v=$("phR_"+x.uid).value; if(v) pick[+v-1]=x.uid; }); var uids=pick.filter(Boolean); if(!uids.length){ alert("1·2·3등을 고르세요"); return; }
+  if(!confirm(uids.length+"명에게 퍼즐골드를 지급하고 당첨 메일을 보낼까요?")) return; api("/npg/admin/ev/photo/award",{method:"POST",body:JSON.stringify({wk:EV.pwk,uids:pick.filter(Boolean)})}).then(function(j){ alert(j.ok?"지급했습니다":(j.err==="done"?"이미 지급했습니다":"지급 못 함 ("+(j.err||"")+")")); evLoad(); }); }
+function bgLoad(){ if(BGINTO==="evTab"){ evLoad(); return; } var P=$("pane"); P.innerHTML='<div class="card"><b>한국 빙고</b><div class="msg">부르는 중…</div></div>';
   api("/npg/admin/bingo").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); BG=j; bgPaint(); }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div></div>'; }); }
-function bgPaint(){ var P=$("pane"), w=BG[BGW], h='<div class="card"><div class="row"><b style="flex:1">한국 빙고</b>'
+function bgPaint(into){ var P=$(into||BGINTO||"pane"); BGINTO=into||BGINTO; var w=BG[BGW], h='<div class="card"><div class="row"><b style="flex:1">한국 빙고</b>'
   +'<button class="'+(BGW==="cur"?"":"g")+'" onclick="BGW=\'cur\';bgPaint()">이번 주'+(BG.cur?" ("+esc(BG.cur.wk)+")":"")+'</button><button class="'+(BGW==="next"?"":"g")+'" onclick="BGW=\'next\';bgPaint()">다음 주'+(BG.next?" ("+esc(BG.next.wk)+")":"")+'</button>'
   +'<button class="g" onclick="bgGen()">다음 판 다시 만들기(AI)</button></div>'
-  +'<div class="row" style="margin-top:8px"><b>이번 주 상태: '+(BG.cur&&BG.cur.st==="open"?'<span style="color:#2f9e44">진행 중</span> (일요일 24:00 마감)':'닫힘')+'</b>'
-  +'<button onclick="bgStart()"'+(BG.cur&&BG.cur.st==="open"?' disabled':'')+'>이번 주 빙고 시작</button><button class="g" onclick="bgStop()"'+(BG.cur&&BG.cur.st==="open"?'':' disabled')+'>지금 닫기</button></div>'
+  +(BGINTO==="evTab"?'':'<div class="row" style="margin-top:8px"><b>이번 주 상태: '+(BG.cur&&BG.cur.st==="open"?'<span style="color:#2f9e44">진행 중</span> (일요일 24:00 마감)':'닫힘')+'</b>'
+  +'<button onclick="bgStart()"'+(BG.cur&&BG.cur.st==="open"?' disabled':'')+'>이번 주 빙고 시작</button><button class="g" onclick="bgStop()"'+(BG.cur&&BG.cur.st==="open"?'':' disabled')+'>지금 닫기</button></div>')
   +'<div class="msg">빙고는 자동으로 열리지 않습니다 — 「이번 주 빙고 시작」을 누른 때부터 그 주 일요일 24:00까지 열리고, 마감 후 1·2·3등 퍼즐골드가 자동 지급됩니다. 「지금 닫기」는 순위·지급 없이 닫습니다(기록 보관). 시작하면 이번 주에 만들어 둔 판(있으면) 또는 미리 만든 「다음 판」 문제를 씁니다. 정답 = 초록. 고친 뒤 「저장」.'+(BG.last&&BG.last.res?' · 지난주('+esc(BG.last.wk)+') 참가 '+(BG.last.n||0)+'명, 1등 '+esc((BG.last.res[0]||{}).nm||"-"):'')+'</div></div>';
   if(BG.last&&BG.last.res&&BG.last.res.length) h+='<div class="card"><b>지난주 결과 ('+esc(BG.last.wk)+')</b>'+BG.last.res.map(function(r){ return '<div class="msg">'+r.rk+'등 · '+esc(r.nm)+' · '+r.lines+'줄'+(r.pg?' · '+r.pg+' PG · 당첨 메일 '+({sent:"보냄",fail:"실패",none:"이메일 없음"}[r.mail]||"-"):'')+'</div>'; }).join("")+'</div>';
   if(!w){ P.innerHTML=h+'<div class="card"><div class="msg">아직 판이 없습니다.</div></div>'; return; }
@@ -308,7 +369,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="ptn"){ ptnLoad(); return; }   // 제휴 가게 — partner.js (2026-10-16)
   if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
   if(id==="pay"){ payLoad(); return; }
-  if(id==="bingo"){ bgLoad(); return; }   // 한국 빙고 (2026-10-26)
+  if(id==="bingo"){ evLoad(); return; }   // 한국 빙고 (2026-10-26)
   if(id==="pg"){ pgLoad(); return; }   // 퍼즐골드 (2026-10-26)
   if(id==="pw"){ P.innerHTML='<div class="card"><b>비밀번호 변경</b><div class="msg">새 비밀번호는 10자 이상 (한글·숫자·영문 섞어도 됩니다). 바꾸면 옛 비밀번호는 바로 안 통합니다.</div>'
     +'<div style="display:grid;gap:8px;margin-top:10px;max-width:420px"><input type="password" id="pw0" placeholder="지금 비밀번호" autocomplete="current-password"><input type="password" id="pw1" placeholder="새 비밀번호 (10자 이상)" autocomplete="new-password"><input type="password" id="pw2" placeholder="새 비밀번호 확인" autocomplete="new-password"><button id="pwb" onclick="pwChange()">바꾸기</button></div><div class="msg" id="pwm"></div></div>'; return; }
