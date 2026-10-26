@@ -261,6 +261,25 @@ var RF6={ko:"5일 전까지 전액 환불 · 당일 30% 공제",en:"Full refund 
 var RFL6={ko:"환불 규정 보기",en:"Refund policy",ja:"返金規定を見る",zhs:"查看退款规定",zht:"查看退款規定",es:"Ver política de reembolso"};
 // 상품 카드 환불 한 줄 공통 부품 (사장님 10-25) — 우리가 직접 결제받는 가격 있는 상품(o.p)에만. 상품 자료에 o.refund(6개 언어)가 있으면 그 조건, 없으면 기본(RF6).
 //   외부 예매처로 넘기는 것(o.external — 공연 티켓 KOPIS 예매처 등)이나 가격 없는 것엔 붙이지 않는다
+// 퍼즐골드 사용 가능 배지 — 공통 부품: 상품 자료에 pg:true 면 가격 줄 옆에 (사장님 10-26). 누르면 작은 창
+var PGB6={ko:"PG 사용 가능",en:"PG available",ja:"PG利用可",zhs:"可用PG",zht:"可用PG",es:"PG disponible"}, PGB50={ko:"최대 결제액의 50%까지",en:"up to 50% of the payment",ja:"お支払いの最大50%まで",zhs:"最多可抵付款的50%",zht:"最多可抵付款的50%",es:"hasta el 50% del pago"};
+var PGBT={ko:"퍼즐골드(PG)로 결제",en:"Pay with Puzzle Gold (PG)",ja:"パズルゴールド（PG）で支払う",zhs:"用 Puzzle Gold（PG）付款",zht:"用 Puzzle Gold（PG）付款",es:"Pagar con Puzzle Gold (PG)"},
+ PGBR={ko:"1 PG = 1달러어치로, 결제 시점 환율로 원화 금액에서 빼 드립니다. 한 번 결제액의 50%까지 쓸 수 있습니다.",en:"1 PG is worth 1 US dollar and is deducted from the KRW price at the exchange rate at the time of payment. You can use it for up to 50% of a single payment.",ja:"1 PG＝1米ドル相当で、決済時点の為替レートでウォン金額から差し引きます。1回のお支払いの50%まで使えます。",zhs:"1 PG 按1美元计算，按付款时汇率从韩元金额中扣除。每次最多可抵付款金额的50%。",zht:"1 PG 按1美元計算，按付款時匯率從韓元金額中扣除。每次最多可抵付款金額的50%。",es:"1 PG equivale a 1 dólar estadounidense y se descuenta del precio en wones al tipo de cambio del momento del pago. Puedes usarlo hasta el 50% de un pago."},
+ PGBB={ko:"내 PG 잔액",en:"My PG balance",ja:"マイPG残高",zhs:"我的PG余额",zht:"我的PG餘額",es:"Mi saldo de PG"},
+ PGBL={ko:"로그인하면 잔액이 보입니다",en:"Sign in to see your balance",ja:"ログインすると残高が表示されます",zhs:"登录后可查看余额",zht:"登入後可查看餘額",es:"Inicia sesión para ver tu saldo"};
+function pgBadge(o){ if(!o||!o.pg) return ""; return ' <button type="button" class="pgbdg" data-nr="pgb" style="display:inline-flex;align-items:baseline;gap:4px;margin-left:6px;vertical-align:1px;border:1px solid #d4a017;background:#fff6d6;color:#8a6200;border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:800;cursor:pointer;font-family:inherit">'+esc(LG6(PGB6))+'<span style="font-weight:600;font-size:10.5px;color:#a07a10">'+esc(LG6(PGB50))+'</span></button>'; }
+function pgBadgeOpen(){ var o=document.getElementById("pgbBox"); if(o) o.remove(); o=document.createElement("div"); o.id="pgbBox"; o.style.cssText="position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;padding:18px";
+  o.innerHTML='<div style="background:var(--card);color:var(--ink);max-width:380px;width:100%;border-radius:16px;padding:16px 18px;font-size:14px;line-height:1.55;box-shadow:0 10px 30px rgba(0,0,0,.3)"><b style="font-size:16px">'+esc(LG6(PGBT))+'</b>'
+    +'<div style="margin:8px 0;padding:8px 10px;border-radius:10px;background:#fff6d6;color:#6b4d00"><b>'+esc(LG6(PGBB))+'</b>: <span id="pgbBal">…</span></div><div>'+esc(LG6(PGBR))+'</div>'
+    +'<button type="button" id="pgbMy" style="display:block;width:100%;margin-top:12px;border:0;border-radius:12px;padding:11px;background:#d4a017;color:#fff;font-weight:900;font-size:15px;cursor:pointer;font-family:inherit">'+esc(LG6({ko:"내 퍼즐골드",en:"My Puzzle Gold",ja:"マイパズルゴールド",zhs:"我的 Puzzle Gold",zht:"我的 Puzzle Gold",es:"Mi Puzzle Gold"}))+'</button>'
+    +'<button type="button" id="pgbX" style="display:block;width:100%;margin-top:6px;border:0;background:none;color:var(--sub);font-weight:700;cursor:pointer;font-family:inherit">'+esc(LG6({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}))+'</button></div>';
+  document.body.appendChild(o); o.onclick=function(e){ if(e.target===o) o.remove(); }; o.querySelector("#pgbX").onclick=function(){ o.remove(); };
+  o.querySelector("#pgbMy").onclick=function(){ o.remove(); try{ window.mpPG&&mpPG.open(); }catch(e){} };
+  var bl=o.querySelector("#pgbBal"), ss=null; try{ ss=localStorage.getItem("mpv_pg_sess"); }catch(e){}
+  if(!ss){ bl.textContent=LG6(PGBL); return; }
+  fetch((window.HUB||"https://brief-live-hub.emhwang3.workers.dev")+"/npg/me",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sess:ss})}).then(function(r){ return r.json(); }).then(function(j){ bl.textContent=j&&j.ok&&j.me?(j.me.bal+" PG"):LG6(PGBL); }).catch(function(){ bl.textContent="-"; }); }
+window.pgBadge=pgBadge; window.pgBadgeOpen=pgBadgeOpen;
+document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest('[data-nr="pgb"]'); if(!b) return; e.preventDefault(); e.stopPropagation(); pgBadgeOpen(); },true);
 var B4SV6={ko:"제공기간: 결제 후 1개월 이내 예약일 당일 1회 제공 · 한 주문 최대 10명",en:"Service period: provided once on your booked date, within 1 month of payment · up to 10 people per order",ja:"提供期間：決済後1か月以内の予約日当日に1回提供・1回の注文で最大10名",zhs:"提供期间：付款后1个月内、于预约当天提供1次 · 每笔订单最多10人",zht:"提供期間：付款後1個月內、於預約當天提供1次 · 每筆訂單最多10人",es:"Periodo del servicio: se presta una vez en la fecha reservada, dentro de 1 mes desde el pago · máximo 10 personas por pedido"};
 window.B4SV6=B4SV6;   // 주문 화면(tosspay.js)도 같은 문장
 function refundLine(o){ if(!o||!o.p||o.external) return ""; return '<div class="d" style="margin-top:3px;color:var(--ink)">'+esc(LG6(o.refund||RF6))+' · <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener" style="all:unset;display:inline;cursor:pointer;font:inherit;color:inherit;line-height:inherit;letter-spacing:inherit;text-decoration:none">'+esc(LG6(RFL6))+'</a></div>'; }   // 앞 문장과 겉모습 100% 같게 — .tgbook a(14.5px·900) 기본값을 all:unset 으로 지우고 상속, 밑줄 없음, 누르면 링크로만 (사장님 10-25)
@@ -268,7 +287,7 @@ window.refundLine=refundLine;
 var PAYB6={ko:"예약·결제",en:"Book & pay",ja:"予約・決済",zhs:"预订·付款",zht:"預訂·付款",es:"Reservar y pagar"};
 var PAYTEST6={ko:"지금은 시험 운영 중이라 실제로 결제되지 않습니다",en:"We are in a test run — no real payment will be made",ja:"現在は試験運用中のため、実際の決済は行われません",zhs:"目前为试运营，不会实际扣款",zht:"目前為試營運，不會實際扣款",es:"Estamos en fase de prueba: no se realizará ningún cobro real"};
 window.PAYTEST6=PAYTEST6;
-var B4PKG={ t:{ko:"K-POP 빅4 사옥 투어",en:"K-pop Big4 Agency Tour",ja:"K-POP BIG4 社屋ツアー",zhs:"K-POP四大社参观团",zht:"K-POP四大社參觀團",es:"Tour de las Big4 del K-pop"},
+var B4PKG={ pg:true, t:{ko:"K-POP 빅4 사옥 투어",en:"K-pop Big4 Agency Tour",ja:"K-POP BIG4 社屋ツアー",zhs:"K-POP四大社参观团",zht:"K-POP四大社參觀團",es:"Tour de las Big4 del K-pop"},
   g:{ko:"가이드 동행 · 약 8시간",en:"With a guide · about 8 hours",ja:"ガイド同行・約8時間",zhs:"向导同行·约8小时",zht:"嚮導同行·約8小時",es:"Con guía · unas 8 horas"},
   c:{ko:"HYBE·SM·JYP·YG 사옥 외관(삼성동 코엑스 아티움 포함)과 SM KWANGYA(성수) 굿즈샵을 가이드와 함께 돕니다 (외관 관람·사진).",en:"Tour the HYBE, SM, JYP and YG building exteriors (incl. COEX Artium in Samseong) and the SM KWANGYA goods shop in Seongsu, with a guide (exterior & photos).",ja:"HYBE・SM・JYP・YGの社屋外観（三成洞COEXアティウム含む）とSM KWANGYA（聖水）のグッズショップをガイドと巡ります（外観・写真）。",zhs:"在向导带领下游览HYBE·SM·JYP·YG大楼外观（含三成洞COEX Artium）和SM KWANGYA（圣水）周边店（外观·拍照）。",zht:"在嚮導帶領下遊覽HYBE·SM·JYP·YG大樓外觀（含三成洞COEX Artium）和SM KWANGYA（聖水）周邊店（外觀·拍照）。",es:"Recorre con guía los exteriores de HYBE, SM, JYP y YG (incl. COEX Artium en Samseong) y la tienda SM KWANGYA en Seongsu (exterior y fotos)."},
   p:{ko:"1인 89,000원/인 · 2인 이상 79,000원/인",en:"1 person ₩89,000/person · 2+ ₩79,000/person",ja:"1名 ₩89,000/名 · 2名以上 ₩79,000/名",zhs:"1人 ₩89,000/人 · 2人以上 ₩79,000/人",zht:"1人 ₩89,000/人 · 2人以上 ₩79,000/人",es:"1 persona ₩89,000/persona · 2+ ₩79,000/persona"},
@@ -292,7 +311,7 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
   var pkg='<div class="tgbook b4pkg"><div class="tgbh" data-nr="tgx" data-g="pkg" style="cursor:pointer"><img src="img/kpop_marker.png" alt="">'+esc(LG6(B4PKG.t))+'<span class="tgar" style="margin-left:auto">'+(TGX.pkg?"▾":"▸")+'</span></div>'
     +(TGX.pkg?('<div class="d" style="font-weight:700;color:var(--ink)">'+esc(LG6(B4PKG.g))+'</div>'
     +'<div class="d">'+esc(LG6(B4PKG.c))+'</div>'
-    +'<div class="d" style="font-weight:800;color:var(--ink);margin-top:2px">'+esc(LG6(B4PKG.p))+'</div>'
+    +'<div class="d" style="font-weight:800;color:var(--ink);margin-top:2px">'+esc(LG6(B4PKG.p))+pgBadge(B4PKG)+'</div>'
     +'<div class="d" style="color:var(--ink);margin-top:3px">'+esc(LG6(B4SV6))+'</div>'   // 제공기간·인원 (사장님 10-26, 토스 심사)
     +refundLine(B4PKG)   // 환불 규정 요약 + 링크 — 공통 부품 (토스 PG, 10-25)
     +'<button type="button" class="nrsel" data-nr="b4map" style="margin-top:7px;background:#fff;color:#d9480f;border-color:#ff7a00">'+MPICO("mi_bus",LG6({ko:"투어 노선도 보기",en:"View tour route",ja:"ツアー路線図を見る",zhs:"查看游览路线图",zht:"查看遊覽路線圖",es:"Ver la ruta del tour"}),MIS)+' ›</button>'
