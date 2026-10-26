@@ -598,6 +598,11 @@ function spinShow0(x){ var lat=+x.y, lng=+x.x, nb=spinNorm(x.name);
 // 안내 카드 사진 (사장님 10-23) — 허브 /gphoto 가 그 자리 1.5km 안 구글 장소의 첫 사진을 준다. PC 는 카드 오른쪽 빈자리, 폰은 카드 맨 위. 못 찾으면 자리를 접는다
 //  구글 약관: 찍은 사람 이름과 「Google」 표시를 사진 아래에 붙인다 · 사진은 기기에 오래 남기지 않는다(허브가 1시간)
 var _cphC={};
+// 코엑스 아티움 카드 사진 자리 = 호랑이 영상 (사장님 10-26) — 소리 없이 자동 반복, 못 틀면 포스터 그림
+var CPHV={ko:"이미지 영상 (AI)",en:"Illustrative video (AI)",ja:"イメージ映像（AI）",zhs:"示意视频（AI）",zht:"示意影片（AI）",es:"Vídeo ilustrativo (IA)"};
+function cphVideo(){ var e=document.querySelector("#res .cph"); if(!e) return;
+  e.innerHTML='<video autoplay muted loop playsinline webkit-playsinline preload="auto" poster="img/coex/tiger_poster.jpg?v=1026" style="display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;background:#e9edf3"><source src="img/coex/tiger.webm?v=1026" type="video/webm"><source src="img/coex/tiger.mp4?v=1026" type="video/mp4"><img src="img/coex/tiger_poster.jpg?v=1026" alt=""></video><div class="cpa">'+esc(LP([CPHV.ko,CPHV.en,CPHV.ja,CPHV.zhs,CPHV.zht,CPHV.es]))+'</div>';
+  var v=e.querySelector("video"); v.muted=true; try{ var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){}); }catch(x){} e.hidden=false; }
 function cphSlot(){ return '<div class="cph" hidden></div>'; }
 function cphLoad(k,ko,lat,lng){ if(!ko||!(+lat)) return; var ck=ko+"|"+(+lat).toFixed(4)+","+(+lng).toFixed(4);
   var put=function(j){ if(window._cardK!==k) return; var e=document.querySelector("#res .cph"); if(!e||!j||!j.ok) return;
@@ -699,7 +704,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 document.getElementById("mcopy").hidden=false;   /* 2026-10-26 모든 방문자 */
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1026d5", NAVI_ROOT="kr";
+var NAVI_V="1026d6", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -832,7 +837,8 @@ function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); 
   document.getElementById("q").value=nm; qxSync();
   window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+tipTag(p)+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
     +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng,null,p.addr))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
-  if(k!=="mpstat") try{ cphLoad(k,p.ko,p.lat,p.lng); }catch(e){}   // 카드 빈자리에 구글 사진 (사장님 10-23)
+  if(k==="smartium") try{ cphVideo(); }catch(e){}   // 코엑스 아티움 = 호랑이 영상 (사장님 10-26)
+  else if(k!=="mpstat") try{ cphLoad(k,p.ko,p.lat,p.lng); }catch(e){}   // 카드 빈자리에 구글 사진 (사장님 10-23)
   /*nolink*/   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 · 출발지는 내 위치(있으면)
   if(k==="mpstat") document.getElementById("res").firstElementChild.insertAdjacentHTML("beforeend",'<div class="d" style="margin-top:6px">'+T("머니퍼즐 통계청 — 주식회사 부만","Money Puzzle Data Center — Booman Inc.")+'<br>'+T("사업자등록번호 297-81-03712 · 연락처 ","Business Reg. No. 297-81-03712 · Contact ")+'<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a></div>');   // 회사 카드 (10-15)
   ntMark(k);
