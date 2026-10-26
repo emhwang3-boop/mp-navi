@@ -135,7 +135,7 @@ function evClosed(last){ var e=document.getElementById("evBody"); if(!e) return;
   e.innerHTML=h; wire(e); }
 function wire(e){ [].forEach.call(e.querySelectorAll("[data-ev]"),function(x){ x.onclick=function(){ var a=x.dataset.ev;
   if(a==="pg"||a==="signin") signIn(); else if(a==="rules") showRules(!!(cur()&&cur().open&&cur().me&&!cur().me.agreed));
-  else if(a==="find") treasureMode(); else if(a==="sstart") spotStart(); else if(a==="ppick") document.getElementById("evPf").click(); else if(a==="psend") photoSend(); }; }); }
+  else if(a==="find") treasureMode(); else if(a==="sstart") spotStart(); else if(a==="ppick") document.getElementById("evPf").click(); else if(a==="psend") photoSend(); else if(a==="share") shareResult(); }; }); }
 function cur(){ return E&&E.open?E:B; }
 function needIn(o){ if(!o.me) return '<div class="ecard"><button type="button" class="ebtn" data-ev="signin">'+esc(L(T.signin))+'</button></div>'; if(o.me.grad) return '<div class="ecard" style="color:#7a3cff;font-weight:700">'+esc(L(T.grad))+'</div>'; if(!o.me.agreed) return '<div class="ecard"><button type="button" class="ebtn" data-ev="rules">'+esc(L(T.agree))+'</button></div>'; return ""; }
 function evPaint(){ var e=document.getElementById("evBody"); if(!e||!E) return; var k=E.kind, me=E.me; setHead(k);
@@ -158,6 +158,7 @@ function evPaint(){ var e=document.getElementById("evBody"); if(!e||!E) return; 
       +'<input type="file" id="evPf" accept="image/*" style="display:none"><div id="evPv"></div><label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;margin-top:8px"><input type="checkbox" id="evSns" style="margin-top:3px">'+esc(L(TX3.sns))+'</label>'
       +'<button type="button" class="ebtn g" data-ev="ppick">'+esc(L(TX3.pick))+'</button><button type="button" class="ebtn" data-ev="psend" id="evPs" disabled>'+esc(L(TX3.send))+'</button><div id="evPm" style="font-size:13px;color:#e8322f;margin-top:6px"></div></div>'; }
   }
+  if(ok) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>';
   h+='<div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   e.innerHTML=h; wire(e);
   var pf=document.getElementById("evPf"); if(pf) pf.onchange=function(){ photoPrep(pf.files&&pf.files[0]); };
@@ -197,6 +198,62 @@ function photoPrep(f){ var m=document.getElementById("evPm"); if(!f) return; var
     var pv=document.getElementById("evPv"); if(pv) pv.innerHTML='<img src="'+d+'" alt="" style="width:100%;border-radius:10px;margin-top:6px">'; var b=document.getElementById("evPs"); if(b) b.disabled=false; if(m) m.textContent=""; }; im.src=rd.result; }; rd.readAsDataURL(f); }
 function photoSend(){ var m=document.getElementById("evPm"), sns=document.getElementById("evSns"); if(!PIMG) return; if(!sns||!sns.checked){ if(m) m.textContent=L(TX3.needsns); return; }
   var b=document.getElementById("evPs"); if(b) b.disabled=true; post("/npg/ev/photo/up",{sess:sess(),img:PIMG,sns:1,l:lg()}).then(function(j){ if(j&&j.ok){ PIMG=""; toast(L({ko:"올렸어요",en:"Uploaded",ja:"投稿しました",zhs:"已上传",zht:"已上傳",es:"Subida"}),"#27a745"); load(); } else { if(m) m.textContent=L(T.err); if(b) b.disabled=false; } }).catch(function(){ if(m) m.textContent=L(T.err); if(b) b.disabled=false; }); }
+
+// ── 이벤트 결과 공유 카드 (사장님 10-26) — 1080×1080 그림을 코드로 그려 폰 공유창·카카오톡 카드로. 그림 = 이벤트 전광판 바탕·이벤트 섬(새로 안 그림), 글자 = 코드
+//   개인정보 없음: 이름은 가린 표시(M***a)만, 이메일 등은 안 넣는다
+var SHX={
+ btn:{ko:"결과 공유",en:"Share my result",ja:"結果をシェア",zhs:"分享结果",zht:"分享結果",es:"Compartir resultado"},
+ beat:{ko:"나를 이길 수 있어요?",en:"Can you beat me?",ja:"私に勝てる？",zhs:"你能赢我吗？",zht:"你能贏我嗎？",es:"¿Puedes superarme?"},
+ lines:{ko:"줄 빙고!",en:"lines!",ja:"列ビンゴ！",zhs:"条宾果线！",zht:"條賓果線！",es:"líneas!"},
+ found:{ko:"보물상자를 찾았어요!",en:"I found the treasure!",ja:"宝箱を見つけた！",zhs:"我找到宝箱了！",zht:"我找到寶箱了！",es:"¡Encontré el tesoro!"},
+ hunt:{ko:"보물상자를 찾는 중",en:"Hunting the treasure",ja:"宝箱を探し中",zhs:"正在寻找宝箱",zht:"正在尋找寶箱",es:"Buscando el tesoro"},
+ spot:{ko:"명소를 맞혔어요",en:"sights spotted",ja:"名所を正解",zhs:"个景点答对",zht:"個景點答對",es:"lugares acertados"},
+ photo:{ko:"사진을 냈어요!",en:"I entered my photo!",ja:"写真を投稿したよ！",zhs:"我投稿了照片！",zht:"我投稿了照片！",es:"¡Ya envié mi foto!"},
+ kakao:{ko:"카카오톡으로",en:"KakaoTalk",ja:"カカオトークで",zhs:"KakaoTalk",zht:"KakaoTalk",es:"KakaoTalk"},
+ other:{ko:"다른 앱으로 공유",en:"Share to other apps",ja:"他のアプリでシェア",zhs:"分享到其他应用",zht:"分享到其他應用程式",es:"Compartir en otras apps"},
+ save:{ko:"그림 저장",en:"Save image",ja:"画像を保存",zhs:"保存图片",zht:"儲存圖片",es:"Guardar imagen"},
+ install:{ko:"앱 설치",en:"Install app",ja:"アプリを入れる",zhs:"安装应用",zht:"安裝應用",es:"Instalar app"}
+};
+function shLine(){ var c=cur(); if(!c||!c.open||!c.me) return null; var me=c.me, k=c.kind||"bingo", t=L(KT[k]||EVT), n=me.lines||0, l=lg();
+  if(k==="bingo") return [t, (l==="ko"||l==="ja"||l==="zhs"||l==="zht")?n+L(SHX.lines):n+" "+L(SHX.lines)];
+  if(k==="treasure") return [t, me.ft?L(SHX.found)+(me.rank?"  #"+me.rank:""):L(SHX.hunt)];
+  if(k==="spot") return [t, (me.ok||0)+"/"+(c.total||10)+" "+L(SHX.spot)];
+  if(k==="photo") return [t, L(SHX.photo)];
+  return null; }
+function shImg(src){ return new Promise(function(ok){ var i=new Image(); i.onload=function(){ ok(i); }; i.onerror=function(){ ok(null); }; i.src=src; }); }
+function shName(){ var s=sess(); if(!s) return Promise.resolve(""); return post("/npg/me",{sess:s}).then(function(j){ var nm=j&&j.ok&&j.me?String(j.me.name||"").trim():""; if(!nm) return ""; var a=Array.from(nm); return a.length<=1?a[0]+"***":a[0]+"***"+a[a.length-1]; }).catch(function(){ return ""; }); }
+function shDraw(){ var ln=shLine(); if(!ln) return Promise.resolve(null);
+  return Promise.all([shImg("img/kr_extra/event_bb.jpg?v=1026"),shImg("img/kr_extra/event_isle.webp?v=1026"),shName()]).then(function(a){ var bg=a[0], isle=a[1], nm=a[2], S=1080, c=document.createElement("canvas"); c.width=S; c.height=S; var x=c.getContext("2d");
+    if(bg){ var k=Math.max(S/bg.width,S/bg.height), w=bg.width*k, h=bg.height*k; x.drawImage(bg,(S-w)/2,(S-h)/2,w,h); } else { x.fillStyle="#1b1030"; x.fillRect(0,0,S,S); }
+    var g=x.createLinearGradient(0,0,0,S); g.addColorStop(0,"rgba(10,6,24,.82)"); g.addColorStop(.55,"rgba(10,6,24,.55)"); g.addColorStop(1,"rgba(10,6,24,.88)"); x.fillStyle=g; x.fillRect(0,0,S,S);
+    if(isle){ var iw=330, ih=isle.height*iw/isle.width; x.drawImage(isle,S-iw-40,S-ih-110,iw,ih); }
+    var F="'Arial Black','Segoe UI','Malgun Gothic','Hiragino Sans','PingFang SC','Microsoft YaHei',sans-serif";
+    var fit=function(t,max,size){ x.font="900 "+size+"px "+F; while(x.measureText(t).width>max&&size>30){ size-=4; x.font="900 "+size+"px "+F; } return size; };
+    x.textAlign="left"; x.textBaseline="alphabetic";
+    x.fillStyle="#ffd6f4"; x.font="800 40px "+F; x.fillText("Money Puzzle · Tour for Korea",70,120);
+    x.shadowColor="#ff4fd8"; x.shadowBlur=30; x.fillStyle="#ffffff"; fit(ln[0],940,86); x.fillText(ln[0],70,300);
+    x.shadowColor="#ffb000"; x.shadowBlur=26; x.fillStyle="#ffe28a"; fit(ln[1],940,104); x.fillText(ln[1],70,450);
+    x.shadowBlur=0; x.fillStyle="#ffffff"; fit(L(SHX.beat),900,70); x.fillText(L(SHX.beat),70,600);
+    if(nm){ x.fillStyle="#c9c2e6"; x.font="700 44px "+F; x.fillText("— "+nm,70,680); }
+    x.fillStyle="#39d5ff"; x.font="800 44px "+F; x.fillText("navi.moneypuzzle.co.kr",70,S-70);
+    return c; }); }
+function shareResult(){ shDraw().then(function(c){ if(!c){ alert(L(T.err)); return; }
+  var url="https://navi.moneypuzzle.co.kr/", iurl=url+"?install=1", ln=shLine(), txt=ln[0]+" · "+ln[1]+" "+L(SHX.beat);
+  c.toBlob(function(blob){ var file=new File([blob],"money-puzzle-event.png",{type:"image/png"}), d=c.toDataURL("image/png");
+    var s=sheet('<h3>'+esc(L(SHX.btn))+'</h3><img src="'+d+'" alt="" style="width:100%;border-radius:12px;margin:6px 0 10px">'
+      +'<button type="button" class="ebtn" id="shK" style="width:100%;border:0;border-radius:12px;padding:12px;background:#FEE500;color:#3C1E1E;font-weight:900;font-size:15px">'+esc(L(SHX.kakao))+'</button>'
+      +'<button type="button" class="ebtn" id="shO" style="width:100%;margin-top:8px;border:0;border-radius:12px;padding:12px;background:#ff7a1a;color:#fff;font-weight:900;font-size:15px">'+esc(L(SHX.other))+'</button>'
+      +'<a id="shS" download="money-puzzle-event.png" href="'+d+'" style="display:block;text-align:center;margin-top:8px;border:1.5px solid #e0d6cc;border-radius:12px;padding:11px;font-weight:800;color:#2b2b2b;text-decoration:none">'+esc(L(SHX.save))+'</a>'
+      +'<button type="button" id="shX" style="display:block;width:100%;margin-top:8px;border:0;background:none;font-weight:700;color:#888">'+esc(L(T.x))+'</button>');
+    s.querySelector("#shX").onclick=function(){ s.remove(); };
+    s.querySelector("#shO").onclick=function(){ var data={title:"Money Puzzle · Tour for Korea",text:txt+"\n"+url+"\n"+L(SHX.install)+": "+iurl};
+      if(navigator.canShare&&navigator.canShare({files:[file]})) navigator.share(Object.assign({files:[file]},data)).catch(function(){}); else if(navigator.share) navigator.share(Object.assign({url:url},data)).catch(function(){}); else { try{ navigator.clipboard.writeText(data.text); }catch(e){} alert(data.text); } };
+    s.querySelector("#shK").onclick=function(){ try{ var K=window.Kakao; if(!K) throw 0; if(!K.isInitialized()) K.init("90a47ca48c2a967dd4d14b3b48de2e3b");
+        K.Share.uploadImage({file:[file]}).then(function(r){ var im=r&&r.infos&&r.infos.original&&r.infos.original.url;
+          K.Share.sendDefault({objectType:"feed",content:{title:ln[0]+" · "+ln[1],description:L(SHX.beat),imageUrl:im,link:{webUrl:url,mobileWebUrl:url}},buttons:[{title:"Open",link:{webUrl:url,mobileWebUrl:url}},{title:L(SHX.install),link:{webUrl:iurl,mobileWebUrl:iurl}}]}); })
+        .catch(function(){ s.querySelector("#shO").click(); }); }catch(e){ s.querySelector("#shO").click(); } };
+  },"image/png"); }); }
+window.evShareCard=shDraw;
 
 var css=document.createElement("style");
 css.textContent="#evIsle{position:absolute;z-index:4;width:7.2%;left:58.6%;top:97.2%;transform:translate(-50%,-100%);cursor:pointer;display:none;pointer-events:auto;-webkit-tap-highlight-color:transparent}.map.onkr #evIsle{display:block}html.mpc-lock #evIsle{visibility:hidden}"
@@ -304,12 +361,13 @@ function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return; va
       var done=S.indexOf(c.i)>=0, rt=!done&&X.indexOf(c.i)>=0;
       return '<div class="ec'+(done?' done':'')+(rt?' retry':'')+'" data-i="'+c.i+'"><div>'+esc(c.w.en)+(c.w.ko?'<span class="ko">'+esc(c.w.ko)+'</span>':'')+'</div>'+(done?'<div class="stp">OK</div>':'')+(rt?'<div class="rt">'+esc(L(T.retry))+'</div>':'')+'</div>'; }).join("")+'</div>';
     h+='<div class="est"><div><b>'+(S.length+1)+'</b>'+esc(L(T.stamps))+'</div><div><b>'+(me?me.lines:0)+'</b>'+esc(L(T.lines))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(T.left))+'</div></div>';
+    if(me&&me.agreed) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>';
     h+='<div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   }
   if(B.last&&B.last.res&&B.last.res.length){ var C=["#e0a100","#9aa4b0","#c47a3c"];
     h+='<div class="ecard"><b>'+esc(L(T.last))+'</b> <span style="color:#888;font-size:12px">'+esc(B.last.wk)+'</span>'+B.last.res.map(function(r,i){ return '<div class="erk"><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div><b>'+esc(r.nm)+'</b><div style="font-size:12px;color:#888">'+r.lines+' '+esc(L(T.lnN))+' · '+kst(r.lt)+'</div></div><div class="pg">'+(r.pg?r.pg+' PG':'')+'</div></div>'; }).join("")+'</div>'; }
   e.innerHTML=h;
-  [].forEach.call(e.querySelectorAll("[data-ev]"),function(x){ x.onclick=function(){ var a=x.dataset.ev; if(a==="pg") signIn(); else if(a==="rules") showRules(!!(B.me&&!B.me.agreed)); else if(a==="signin") signIn(); }; });
+  [].forEach.call(e.querySelectorAll("[data-ev]"),function(x){ x.onclick=function(){ var a=x.dataset.ev; if(a==="pg") signIn(); else if(a==="rules") showRules(!!(B.me&&!B.me.agreed)); else if(a==="signin") signIn(); else if(a==="share") shareResult(); }; });
   [].forEach.call(e.querySelectorAll(".ec[data-i]"),function(x){ x.onclick=function(){ tap(+x.dataset.i); }; }); }
 function tap(i){ if(!B||!B.open) return; var me=B.me; if(!me){ signIn(); return; } if(!me.agreed){ showRules(true); return; }
   if(me.s.indexOf(i)>=0) return; var c=B.cells.filter(function(x){ return x.i===i; })[0]; if(!c) return;
