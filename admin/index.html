@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권 (무료)","무료 확정 · 결제 미연결"],["pg","퍼즐골드","지갑·상 지급·사용 내역 · 엑셀"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권 (무료)","무료 확정 · 결제 미연결"],["pg","퍼즐골드","지갑·상 지급·사용 내역 · 엑셀"],["bingo","빙고","이번 주·다음 주 문제 · 고치기·승인"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -218,6 +218,27 @@ function xlsLed(){ if(!LG||!window.XLSX){ alert("자료나 엑셀 도구를 아�
 //   합계 칸은 사장님 기기 계정(own) 뺀 값 · 「같은 기기」 경고 = 같은 기기 번호에서 다른 구글 계정도 상을 받음(차단 아님) · IP 없음
 var PGD=null, PGF="";
 function pgDay(ms){ return ms?new Date(ms+9*3600e3).toISOString().slice(0,16).replace("T"," "):""; }
+// ── 한국 빙고 (2026-10-26) — 허브 /npg/admin/bingo. 다음 주 문제는 허브가 AI 로 미리 만든다. 승인 안 해도 월요일엔 그대로 쓴다 ──
+var BG=null, BGW="next", BGL=["ko","en","ja","zhs","zht","es"];
+function bgLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>한국 빙고</b><div class="msg">부르는 중…</div></div>';
+  api("/npg/admin/bingo").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); BG=j; bgPaint(); }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div></div>'; }); }
+function bgPaint(){ var P=$("pane"), w=BG[BGW], h='<div class="card"><div class="row"><b style="flex:1">한국 빙고</b>'
+  +'<button class="'+(BGW==="cur"?"":"g")+'" onclick="BGW=\'cur\';bgPaint()">이번 주'+(BG.cur?" ("+esc(BG.cur.wk)+")":"")+'</button><button class="'+(BGW==="next"?"":"g")+'" onclick="BGW=\'next\';bgPaint()">다음 주'+(BG.next?" ("+esc(BG.next.wk)+")":"")+'</button>'
+  +'<button class="g" onclick="bgGen()">다음 주 다시 만들기(AI)</button></div>'
+  +'<div class="msg">정답 = 초록. 고친 뒤 「저장」. 다음 주 판은 「승인」 안 해도 월요일 0시에 그대로 씁니다.'+(BG.last&&BG.last.res?' · 지난주('+esc(BG.last.wk)+') 참가 '+(BG.last.n||0)+'명, 1등 '+esc((BG.last.res[0]||{}).nm||"-"):'')+'</div></div>';
+  if(BG.last&&BG.last.res&&BG.last.res.length) h+='<div class="card"><b>지난주 결과 ('+esc(BG.last.wk)+')</b>'+BG.last.res.map(function(r){ return '<div class="msg">'+r.rk+'등 · '+esc(r.nm)+' · '+r.lines+'줄'+(r.pg?' · '+r.pg+' PG · 당첨 메일 '+({sent:"보냄",fail:"실패",none:"이메일 없음"}[r.mail]||"-"):'')+'</div>'; }).join("")+'</div>';
+  if(!w){ P.innerHTML=h+'<div class="card"><div class="msg">아직 판이 없습니다.</div></div>'; return; }
+  h+='<div class="card"><div class="row"><b style="flex:1">'+esc(w.wk)+' · '+(w.st||"")+(w.appr?' · 승인됨':'')+'</b><button onclick="bgSave()">저장</button>'+(BGW==="next"?'<button class="g" onclick="bgAppr()">승인</button>':'')+'</div>';
+  w.cells.forEach(function(c,i){ if(c.free){ h+='<div class="msg">'+(i+1)+'. FREE</div>'; return; }
+    h+='<div style="border-top:1px solid #eee;padding:8px 0"><div class="row"><b>'+(i+1)+'.</b><input id="bw_en_'+i+'" value="'+esc(c.w.en)+'" style="width:130px"><input id="bw_ko_'+i+'" value="'+esc(c.w.ko)+'" style="width:110px"><select id="ba_'+i+'">'+[0,1,2].map(function(k){ return '<option value="'+k+'"'+(c.a===k?' selected':'')+'>정답 '+(k+1)+'</option>'; }).join("")+'</select></div>';
+    BGL.forEach(function(l){ h+='<div class="row" style="margin-top:4px"><span class="sub" style="width:30px">'+l+'</span><input id="bq_'+l+'_'+i+'" value="'+esc(c.q[l]||"")+'" style="flex:1;min-width:200px">'+[0,1,2].map(function(k){ return '<input id="bo_'+l+'_'+i+'_'+k+'" value="'+esc((c.o[l]||[])[k]||"")+'" style="width:120px'+(c.a===k?';border-color:#2f9e44;background:#ebfbee':'')+'">'; }).join("")+'</div>'; });
+    h+='</div>'; });
+  P.innerHTML=h+'</div>'; }
+function bgSave(){ var w=BG[BGW]; if(!w) return; var cells=w.cells.map(function(c,i){ if(c.free) return {free:1}; var q={},o={}; BGL.forEach(function(l){ q[l]=$("bq_"+l+"_"+i).value; o[l]=[0,1,2].map(function(k){ return $("bo_"+l+"_"+i+"_"+k).value; }); });
+    return {w:{en:$("bw_en_"+i).value,ko:$("bw_ko_"+i).value},q:q,o:o,a:+$("ba_"+i).value}; });
+  api("/npg/admin/bingo/save",{method:"POST",body:JSON.stringify({which:BGW,cells:cells})}).then(function(j){ alert(j.ok?"저장했습니다":"저장 못 함 ("+(j.err||"")+")"); bgLoad(); }); }
+function bgAppr(){ api("/npg/admin/bingo/approve",{method:"POST"}).then(function(j){ alert(j.ok?"승인했습니다":"승인 못 함"); bgLoad(); }); }
+function bgGen(){ if(!confirm("다음 주 문제를 AI 로 새로 만들까요? (지금 다음 주 판은 지워집니다)")) return; api("/npg/admin/bingo/gen",{method:"POST"}).then(function(j){ alert(j.ok?"만들었습니다":"못 만들었습니다 ("+(j.err||"")+")"); bgLoad(); }); }
 function pgLoad(){ var P=$("pane");
   P.innerHTML='<div class="card"><b>퍼즐골드 (Puzzle Gold)</b><div class="msg">매주 이벤트 상금 · 1등 100 PG · 2등 50 PG · 3등 20 PG · 3번 받으면 졸업 · 유효기간 1년(지나면 자동 소멸) · 앱 결제에만 · 현금 환불 없음 · 판매 안 함</div><div id="pgSum"><div class="msg">불러오는 중…</div></div></div>'
     +'<div class="card"><b>상 지급</b><div class="row" style="margin-top:8px"><select id="pgU" style="min-width:220px"></select><input type="text" id="pgE" placeholder="이벤트명 (예: 10월 4주 빙고)" maxlength="60" style="flex:1;min-width:180px"><select id="pgR"><option value="1">1등 · 100 PG</option><option value="2">2등 · 50 PG</option><option value="3">3등 · 20 PG</option></select><button onclick="pgGrant()">지급</button></div><div class="msg" id="pgGm"></div></div>'
@@ -283,6 +304,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="ptn"){ ptnLoad(); return; }   // 제휴 가게 — partner.js (2026-10-16)
   if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
   if(id==="pay"){ payLoad(); return; }
+  if(id==="bingo"){ bgLoad(); return; }   // 한국 빙고 (2026-10-26)
   if(id==="pg"){ pgLoad(); return; }   // 퍼즐골드 (2026-10-26)
   if(id==="pw"){ P.innerHTML='<div class="card"><b>비밀번호 변경</b><div class="msg">새 비밀번호는 10자 이상 (한글·숫자·영문 섞어도 됩니다). 바꾸면 옛 비밀번호는 바로 안 통합니다.</div>'
     +'<div style="display:grid;gap:8px;margin-top:10px;max-width:420px"><input type="password" id="pw0" placeholder="지금 비밀번호" autocomplete="current-password"><input type="password" id="pw1" placeholder="새 비밀번호 (10자 이상)" autocomplete="new-password"><input type="password" id="pw2" placeholder="새 비밀번호 확인" autocomplete="new-password"><button id="pwb" onclick="pwChange()">바꾸기</button></div><div class="msg" id="pwm"></div></div>'; return; }
