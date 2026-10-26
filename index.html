@@ -699,7 +699,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 document.getElementById("mcopy").hidden=false;   /* 2026-10-26 모든 방문자 */
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1026d1", NAVI_ROOT="kr";
+var NAVI_V="1026d2", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -1740,7 +1740,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script src="karaoke.js?v=1026kr3"></script>
 <script src="pcbang.js?v=1026pc5"></script>
 <script src="pg.js?v=1026pg4"></script>
-<script src="event.js?v=1026ev4"></script>
+<script src="event.js?v=1026ev5"></script>
 <script src="billboard.js?v=1021pl"></script>
 <script>
 /* ★ 전국 지도(kr) 맨 위 「Treasure Map of Korea」 고지도 리본 (사장님 10-25) — 지도 그림·자료는 그대로, 위에 얹기만.
