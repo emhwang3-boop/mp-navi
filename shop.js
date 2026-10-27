@@ -34,6 +34,16 @@ var TX={
  soon:T6("준비 중인 상품이라 아직 예약할 수 없어요.","This product is coming soon and can’t be booked yet.","準備中の商品のため、まだ予約できません。","该商品正在筹备中，暂时无法预约。","該商品正在籌備中，暫時無法預約。","Este producto llega pronto y aún no se puede reservar."),
  sel:T6("선택한 상품","Selected product","選んだ商品","已选商品","已選商品","Producto elegido"),
  seln:T6("오른쪽에서 상품을 고르세요.","Pick a product on the right.","右から商品を選んでください。","请在右侧选择商品。","請在右側選擇商品。","Elige un producto a la derecha."),
+ soon2:T6("예시 상품이라 실제로 판매하지 않아요. 결제 화면만 미리 볼 수 있어요.","This is a sample product and isn’t on sale. You can preview the payment screen.","サンプル商品のため販売していません。決済画面だけ確認できます。","这是示例商品，暂不出售。可以预览付款页面。","這是範例商品，暫不販售。可以預覽付款頁面。","Producto de ejemplo, no está a la venta. Puedes ver la pantalla de pago."),
+ pt:T6("결제","Payment","お支払い","付款","付款","Pago"),
+ ord:T6("주문 내용","Order summary","ご注文内容","订单内容","訂單內容","Resumen del pedido"),
+ pm:T6("결제 수단","Payment method","お支払い方法","付款方式","付款方式","Método de pago"),
+ card:T6("신용·체크카드 (해외 카드 포함)","Credit/debit card (incl. overseas cards)","クレジット・デビットカード（海外カード可）","信用卡/借记卡（含境外卡）","信用卡/簽帳卡（含境外卡）","Tarjeta de crédito/débito (incl. extranjeras)"),
+ pgp:T6("퍼즐골드 함께 쓰기 (결제액의 50%까지)","Use Puzzle Gold too (up to 50%)","パズルゴールド併用（50%まで）","同时使用 Puzzle Gold（最多50%）","同時使用 Puzzle Gold（最多50%）","Usar Puzzle Gold (hasta 50%)"),
+ agr:T6("주문 내용과 환불 정책을 확인했으며 결제에 동의합니다","I have checked the order and refund policy and agree to pay","注文内容と返金ポリシーを確認し、支払いに同意します","我已确认订单和退款政策并同意付款","我已確認訂單和退款政策並同意付款","He revisado el pedido y la política de reembolso y acepto pagar"),
+ payb:T6("결제하기","Pay","支払う","付款","付款","Pagar"),
+ test:T6("UNDER TESTING — 시험 화면이라 실제로 결제되지 않았어요.","UNDER TESTING — this is a test screen; no payment was made.","UNDER TESTING — テスト画面のため、実際の決済は行われていません。","UNDER TESTING — 测试页面，未实际扣款。","UNDER TESTING — 測試頁面，未實際扣款。","UNDER TESTING — pantalla de prueba; no se realizó ningún cobro."),
+ back:T6("돌아가기","Back","戻る","返回","返回","Volver"),
  perf:T6("공연장 5곳의 공연 일정 보기","See shows at 5 theaters","劇場5か所の公演日程を見る","查看5家剧场的演出日程","查看5家劇場的演出日程","Ver funciones en 5 teatros"),
  b4p:T6("1인 ₩89,000 · 2인 이상 1인 ₩79,000","1 person ₩89,000 · 2+ ₩79,000 each","1名 ₩89,000 · 2名以上 1名 ₩79,000","1人 ₩89,000 · 2人以上每人 ₩79,000","1人 ₩89,000 · 2人以上每人 ₩79,000","1 persona ₩89,000 · 2+ ₩79,000 c/u")
 };
@@ -109,6 +119,9 @@ css.textContent="#shopBox{position:fixed;inset:0;z-index:2147483003;background:#
 css.textContent+="#shopBox .sgrid{display:flex;flex-direction:column;gap:14px}#shopBox .sside{display:flex;flex-direction:column;gap:14px;order:2}#shopBox .smain{display:flex;flex-direction:column;gap:14px;order:1;min-width:0}"
  +"@media (min-width:900px){#shopBox .sgrid{display:grid;grid-template-columns:340px minmax(0,1fr);align-items:start;gap:20px}#shopBox .sside{grid-column:1;grid-row:1;position:sticky;top:70px}#shopBox .smain{grid-column:2;grid-row:1}}"
  +"#shopBox .ssel{display:flex;flex-direction:column;gap:8px}#shopBox .ssel img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px}#shopBox .ssel b{font-size:15px}#shopBox .ssel .spr{font-size:15px}";   // 넓은 화면 = 왼쪽 기둥 (사장님 10-27 「왼쪽 칸도 채워줘」)
+css.textContent+="#shopBox .spm{position:fixed;inset:0;z-index:6;background:rgba(10,14,24,.6);display:flex;align-items:center;justify-content:center;padding:16px}#shopBox .spm>div{width:min(440px,100%);max-height:100%;overflow:auto;background:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px}"
+ +"#shopBox .spm h3{margin:0;font-size:18px}#shopBox .spm .sut{font-size:11px;font-weight:900;color:#d62828;border:1.5px solid #d62828;border-radius:6px;padding:2px 6px;margin-left:6px}#shopBox .spm .sl{display:flex;justify-content:space-between;gap:10px;font-size:14px}#shopBox .spm .sl span:first-child{color:#667085}"
+ +"#shopBox .spm label.sr{display:flex;gap:8px;align-items:center;border:1.5px solid #e4e0d6;border-radius:10px;padding:9px 10px;font-size:14px;cursor:pointer}#shopBox .spm .sdone{background:#fff4d6;border:2px dashed #e0a100;color:#8a5a00;font-weight:800;border-radius:12px;padding:10px;text-align:center}";
 document.head.appendChild(css);
 function won(x){ return "₩"+Number(x).toLocaleString("ko-KR"); }
 function box(){ return document.getElementById("shopBox"); }
@@ -128,7 +141,7 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
       +(p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':'')+'</div></button>'; }).join("")+'</div>';
   h+='</div><aside class="sside">';
   var p0=prod();   // 선택한 상품
-  h+='<section class="sbox"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel"><img src="img/shop/'+p0.img+'.webp" alt=""><b>'+esc(L(p0.t))+'</b><div class="sft">'+p0.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>';
+  h+='<section class="sbox" id="shopSel"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel"><img src="img/shop/'+p0.img+'.webp" alt=""><b>'+esc(L(p0.t))+'</b><div class="sft">'+p0.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>';
   // 가이드
   h+='<section class="sbox"><h2><span class="sstep">1</span>'+esc(L(TX.g1))+'</h2><p class="snote">'+esc(L(TX.gl))+'</p><div class="sgl">'+GLANGS.map(function(l){ return '<button type="button" data-gl="'+l[0]+'" class="'+(S.glang===l[0]?"on":"")+'">'+esc(l[1])+'</button>'; }).join("")+'</div>';
   if(S.glang){ if(S.guides===null) h+='<p class="snote">'+esc(L(TX.gld))+'</p>'; else if(!S.guides.length) h+='<p class="snote">'+esc(L(TX.gn))+'</p>';
@@ -144,10 +157,25 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
        +'<div class="srow"><label>'+esc(L(TX.ppl))+'</label><div class="sstp"><button type="button" data-n="-1" aria-label="-">−</button><b>'+S.n+'</b><button type="button" data-n="1" aria-label="+">+</button></div></div>'
        +'<div class="srow"><label>'+esc(L(TX.gd))+'</label><b>'+(gg?esc(gName(gg)):esc(L(TX.none)))+'</b></div>'
        +'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(unit*S.n)+'</span></div>'
-       +(p.real==="b4"?'<button type="button" class="spay" data-s="pay">'+esc(L(TX.pay))+' ›</button><p class="snote">'+esc(L(TX.payn))+'</p>'
-         :'<button type="button" class="spay" disabled>'+esc(L(TX.pay))+'</button><p class="snote">'+esc(L(TX.soon))+'</p>'); } }
+       +'<button type="button" class="spay" data-s="mock">'+esc(L(TX.pay))+' ›</button><p class="snote">'+esc(L(p.real?TX.payn:TX.soon2))+'</p>'; } }   // 시험 결제창 (사장님 10-27 「결제화면도 띄워줘, 어차피 결제는 안 돼」)
   h+='</section></aside></div></div>';
   b.innerHTML=h; b.scrollTop=y; }
+// 시험 결제창 — 이 화면 안에서 뜨고, 「결제하기」를 눌러도 실제 결제는 하지 않는다
+function mockPay(){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelector(".spm"); if(o) o.remove();
+  var unit=p.real==="b4"?b4Price(S.n):p.price, tot=unit*S.n, gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0];
+  o=document.createElement("div"); o.className="spm"; b.appendChild(o);
+  var draw=function(done){ o.innerHTML='<div><h3>'+esc(L(TX.pt))+'<span class="sut">UNDER TESTING</span></h3>'
+    +'<b>'+esc(L(TX.ord))+'</b><div class="spick"><img src="img/shop/'+p.img+'.webp" alt=""><b>'+esc(L(p.t))+'</b></div>'
+    +'<div class="sl"><span>'+esc(L(TX.date))+'</span><span>'+esc(S.date||"-")+'</span></div><div class="sl"><span>'+esc(L(TX.ppl))+'</span><span>'+S.n+'</span></div><div class="sl"><span>'+esc(L(TX.gd))+'</span><span>'+(gg?esc(gName(gg)):esc(L(TX.none)))+'</span></div>'
+    +'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(tot)+'</span></div>'
+    +'<b>'+esc(L(TX.pm))+'</b><label class="sr"><input type="radio" name="spmm" checked> '+esc(L(TX.card))+'</label><label class="sr"><input type="radio" name="spmm"> PayPal</label><label class="sr"><input type="checkbox" id="spmPg"> '+esc(L(TX.pgp))+'</label>'
+    +'<label class="sr"><input type="checkbox" id="spmAg"> '+esc(L(TX.agr))+'</label>'
+    +(done?'<div class="sdone">'+esc(L(TX.test))+'</div>':'<button type="button" class="spay" id="spmGo" disabled>'+won(tot)+' '+esc(L(TX.payb))+'</button>')
+    +'<button type="button" class="spay" id="spmX" style="background:#efece4;color:#1d2433">'+esc(L(TX.back))+'</button></div>';
+    var ag=o.querySelector("#spmAg"), go=o.querySelector("#spmGo"); if(ag&&go) ag.onchange=function(){ go.disabled=!ag.checked; };
+    if(go) go.onclick=function(){ try{ ntap("shop","mockpay_"+p.id); }catch(z){} draw(true); };
+    o.querySelector("#spmX").onclick=function(){ o.remove(); }; };
+  draw(false); }
 function loadGuides(){ var l=S.glang; S.guides=null; paint();
   fetch(HUBU+"/guide/guides?lang="+encodeURIComponent(l)).then(function(r){ return r.json(); }).then(function(j){ if(S.glang!==l) return; S.guides=(j&&j.ok&&j.items)||[]; paint(); }).catch(function(){ if(S.glang===l){ S.guides=[]; paint(); } }); }
 function open(){ if(box()) return; var b=document.createElement("div"); b.id="shopBox"; document.body.appendChild(b); document.documentElement.style.overflow="hidden";
@@ -156,11 +184,12 @@ function open(){ if(box()) return; var b=document.createElement("div"); b.id="sh
 function close(){ var b=box(); if(b) b.remove(); document.documentElement.style.overflow=""; }
 document.addEventListener("click",function(e){ var b=box(); if(!b||!b.contains(e.target)) return; var t=e.target.closest("[data-s],[data-cat],[data-p],[data-gl],[data-g],[data-n]"); if(!t) return;
   if(t.dataset.cat){ S.cat=t.dataset.cat; paint(); }
-  else if(t.dataset.p){ S.prod=t.dataset.p; paint(); try{ ntap("shop","p_"+S.prod); }catch(z){} var c=document.getElementById("shopCo"); if(c&&window.innerWidth<900) c.scrollIntoView({behavior:"smooth",block:"start"}); }
+  else if(t.dataset.p){ S.prod=t.dataset.p; paint(); try{ ntap("shop","p_"+S.prod); }catch(z){} var c=document.getElementById("shopSel"); if(c&&window.innerWidth<900) c.scrollIntoView({behavior:"smooth",block:"start"}); }
   else if(t.dataset.gl){ S.glang=t.dataset.gl; S.gid=null; loadGuides(); }
   else if(t.dataset.g){ S.gid=t.dataset.g; paint(); }
   else if(t.dataset.n){ S.n=Math.max(1,Math.min(20,S.n+(+t.dataset.n))); paint(); }
   else if(t.dataset.s==="x") close();
+  else if(t.dataset.s==="mock") mockPay();
   else if(t.dataset.s==="pay"){ close(); try{ if(window.TPAY) TPAY.open(); }catch(z){} }   // 빅4 — 기존 결제(tosspay.js) 그대로
   else if(t.dataset.s==="perf"){ close(); var a=document.querySelector('[data-nr="tgx"][data-g="perf"]'); if(a&&!/▾/.test(a.textContent)) a.click(); }   // 옛 판의 공연관람 펼치기
 });
