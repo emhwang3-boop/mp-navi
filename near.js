@@ -79,8 +79,7 @@ var PH='<svg class="nrph" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16
 function km(m){ return m<1000?Math.round(m)+" m":(m/1000).toFixed(1)+" km"; }
 
 function css(){ if(document.getElementById("nrCss")) return; var s=document.createElement("style"); s.id="nrCss";
-  s.textContent="#gfchips .nrchip.tg{border:0!important;background:linear-gradient(135deg,#ff6a1a,#ff2d87)!important;color:#fff!important;box-shadow:0 3px 12px rgba(255,60,110,.45)!important;animation:tgPulse 2.2s ease-in-out infinite}"   /* 체험·입장권 칩 = 눈에 띄게 (사장님 10-27) */
-  +"@keyframes tgPulse{0%,100%{transform:scale(1);box-shadow:0 3px 12px rgba(255,60,110,.45)}50%{transform:scale(1.05);box-shadow:0 4px 20px rgba(255,60,110,.75)}}@media (prefers-reduced-motion:reduce){#gfchips .nrchip.tg{animation:none}}"
+  s.textContent="#gfchips .nrchip.tg{border:0!important;background:linear-gradient(135deg,#ff6a1a,#ff2d87)!important;color:#fff!important;box-shadow:0 3px 12px rgba(255,60,110,.45)!important}"   /* 체험·입장권 칩 = 눈에 띄는 색만 (움직임 없앰, 사장님 10-27) */
   +"#gfchips .nrchip{display:inline-block;width:auto;margin:0;border:1.5px solid #1971c2;background:#e7f5ff;color:#1864ab;border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:800;cursor:pointer;box-shadow:none}"
   +"#gfchips .nrchip.em{border-color:#e03131;background:#fff5f5;color:#c92a2a}"
   +".nrlock,.nrlock body{overflow:hidden}#nrBox{position:fixed;inset:0;z-index:1036;background:rgba(0,0,0,.45);overflow:auto;-webkit-overflow-scrolling:touch}"
