@@ -458,12 +458,12 @@ function footBuild(){ var e=document.getElementById("foot"); if(!e) return;
   var em='<a href="mailto:emhwang3@moneypuzzle.co.kr" style="color:inherit;text-decoration:underline">emhwang3@moneypuzzle.co.kr</a>';
   var ADDR_EN='220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Rm 707 C64 (M Tower), Korea';
   var F={
-    ko:["주식회사 부만 | 사업자등록번호 : 297-81-03712 | 통신판매업 신고번호 : (     )","대표 : 전현진 | 개인정보관리책임자 : 황의만","고객센터 : 010-4221-7066 | 이메일 : "+em,"경기도 남양주시 진접읍 해밀예당1로 220, 707호 씨64호(엠타워)"],
-    en:["Booman Inc. | Business Reg. No. 297-81-03712 | Mail-order Sales Reg. No. : (     )","CEO : Jeon Hyeonjin | Compliance Officer : Hwang Euiman","Support : +82-10-4221-7066 | Email : "+em,ADDR_EN],
-    ja:["株式会社 부만（Booman Inc.） | 事業者登録番号 : 297-81-03712 | 通信販売業申告番号 : (     )","代表 : 全賢珍（Jeon Hyeonjin） | 個人情報管理責任者 : 黄義晩","カスタマーセンター : +82-10-4221-7066 | メール : "+em,ADDR_EN],
-    zhs:["Booman Inc.（株式会社 부만） | 营业执照号 : 297-81-03712 | 通信销售业申告号 : (     )","代表 : Jeon Hyeonjin | 个人信息管理负责人 : Hwang Euiman","客服 : +82-10-4221-7066 | 邮箱 : "+em,ADDR_EN],
-    zht:["Booman Inc.（株式會社 부만） | 營業執照號 : 297-81-03712 | 通信銷售業申告號 : (     )","代表 : Jeon Hyeonjin | 個人資料管理負責人 : Hwang Euiman","客服 : +82-10-4221-7066 | 電郵 : "+em,ADDR_EN],
-    es:["Booman Inc. | N.º de registro mercantil : 297-81-03712 | N.º de venta a distancia : (     )","Representante : Jeon Hyeonjin | Resp. de privacidad : Hwang Euiman","Atención : +82-10-4221-7066 | Correo : "+em,ADDR_EN]
+    ko:["주식회사 부만 | 사업자등록번호 : 297-81-03712 | 통신판매업 신고번호 : (     ) | 위치기반서비스사업 신고 : 제1866호","대표 : 전현진 | 개인정보관리책임자 : 황의만","고객센터 : 010-4221-7066 | 이메일 : "+em,"경기도 남양주시 진접읍 해밀예당1로 220, 707호 씨64호(엠타워)"],
+    en:["Booman Inc. | Business Reg. No. 297-81-03712 | Mail-order Sales Reg. No. : (     ) | Location-Based Service Reg. No. 1866","CEO : Jeon Hyeonjin | Compliance Officer : Hwang Euiman","Support : +82-10-4221-7066 | Email : "+em,ADDR_EN],
+    ja:["株式会社 부만（Booman Inc.） | 事業者登録番号 : 297-81-03712 | 通信販売業申告番号 : (     ) | 位置情報サービス事業申告 : 第1866号","代表 : 全賢珍（Jeon Hyeonjin） | 個人情報管理責任者 : 黄義晩","カスタマーセンター : +82-10-4221-7066 | メール : "+em,ADDR_EN],
+    zhs:["Booman Inc.（株式会社 부만） | 营业执照号 : 297-81-03712 | 通信销售业申告号 : (     ) | 位置服务业务申报号 : 第1866号","代表 : Jeon Hyeonjin | 个人信息管理负责人 : Hwang Euiman","客服 : +82-10-4221-7066 | 邮箱 : "+em,ADDR_EN],
+    zht:["Booman Inc.（株式會社 부만） | 營業執照號 : 297-81-03712 | 通信銷售業申告號 : (     ) | 位置服務業務申報號 : 第1866號","代表 : Jeon Hyeonjin | 個人資料管理負責人 : Hwang Euiman","客服 : +82-10-4221-7066 | 電郵 : "+em,ADDR_EN],
+    es:["Booman Inc. | N.º de registro mercantil : 297-81-03712 | N.º de venta a distancia : (     ) | N.º de servicio de localización : 1866","Representante : Jeon Hyeonjin | Resp. de privacidad : Hwang Euiman","Atención : +82-10-4221-7066 | Correo : "+em,ADDR_EN]
   };
   var lg=F[window.LANG]?window.LANG:"en";
   var PL={ko:["이용약관","개인정보처리방침","환불 규정"],en:["Terms","Privacy","Refund policy"],ja:["利用規約","プライバシー","返金規定"],zhs:["使用条款","隐私政策","退款规定"],zht:["使用條款","隱私政策","退款規定"],es:["Términos","Privacidad","Reembolsos"]};
@@ -1620,7 +1620,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
-<script src="trip.js?v=1027end6"></script>
+<script src="trip.js?v=1027gap"></script>
 <script src="gift.js?v=1024icons"></script>
 <script src="near.js?v=1027np"></script>
 <script src="shop.js?v=1027c"></script>
