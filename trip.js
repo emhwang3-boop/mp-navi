@@ -52,7 +52,8 @@ function catOf(it){ var k=it.k||"", s=(it.ko||"")+" "+(it.en||"")+" "+(it.d||"")
   return "street"; }
 var STAY={palace:120,museum:120,market:90,tower:60,show:60,shop:90,temple:60,park:60,cruise:90,village:90,street:60,hq:20,theme:300,mount:300};
 function stayOf(it){ return STAY[catOf(it)]||60; }
-function isNight(it){ return /밤 추천|night/i.test((it.d||"")+" "+(it.den||"")); }
+var PERFK={sejongctr:1,sac:1,bluesq:1,lgart:1,olympichall:1};   // 공연장 5곳 — 공연은 저녁이라 그날 마지막 장소로 (사장님 10-27 「예술의전당 9시에 끝」)
+function isNight(it){ return !!PERFK[it.k]||/밤 추천|night/i.test((it.d||"")+" "+(it.den||"")); }
 
 // ── 공식 확인된 운영 정보만 (궁능유적본부 관람안내 royal.khs.go.kr/ROYAL/contents/R702000000.do, 2026-10-15 확인) ──
 //   cl=정기휴일 요일(0=일) · last=월별 입장마감 · ev=정해진 행사 시각(덕수궁 수문장 교대식 — 장소 자료 문구, 2024년 기준)
@@ -262,12 +263,16 @@ function sched(H,arr,date,from,mo){ var t=from, p=H, rows=[], lunch=false, dinne
     else if(mo&&!dinner&&t>=17*60+30&&i<arr.length-1){ meal("dinner",x,arr[i+1]); dinner=true; } });
   if(mo&&!dinner&&arr.length){ var dt=Math.max(t,18*60); if(dt+60<=mo.to){ t=dt; meal("dinner",arr[arr.length-1],null); dinner=true; } }   // 저녁 칸이 없으면 하루 끝 전에
   // 하루 끝 시각에 맞춰 숙소로 (사장님 10-27 「끝나는 시간에 맞춰 호텔로 돌아오게 — 지금은 멋대로 7시에 돌아온다」)
-  //   남는 시간은 마지막 장소에 더 머무는 시간으로 (예: 예술의전당 21:00 까지) → 이동 → 하루 끝에 숙소 도착. 저녁 칸이 마지막 장소 뒤에 붙어 있으면 마지막 장소 앞으로 옮긴다
-  if(mo&&mo.to&&arr.length){ var bk0=H?leg(p,H):null, ex=mo.to-(bk0?bk0.min:0)-t, li=-1; rows.forEach(function(r,i){ if(r.x) li=i; });
-    if(ex>=15&&li>=0){ var lr=rows[li], tail=rows.slice(li+1);
-      if(tail.length&&tail[0].meal==="dinner"){ var dn=tail[0]; dn.t=lr.t; lr.t=dn.t+60+(dn.leg?dn.leg.min:0); rows.splice(li,2,dn,lr); lr.st=lr.x.stay+ex-(dn.leg?dn.leg.min:0); p=lr.x; }   // 저녁 먹고 마지막 장소
-      else { lr.st=lr.x.stay+ex; tail.forEach(function(r){ r.t+=ex; }); }
-      lr.ext=1; t=mo.to-(bk0?bk0.min:0); } }
+  //   남는 시간 = 마지막 장소에 더 머묾(예: 예술의전당 21:00 까지) → 이동 → 하루 끝에 숙소 도착
+  //   마지막 장소 뒤에 붙은 식사: 점심은 그 장소 앞으로 · 저녁은 마지막 장소가 17시 뒤에 시작하면 앞으로(먹고 공연), 아니면 숙소 가기 직전으로
+  if(mo&&mo.to&&arr.length){ var bk0=H?leg(p,H):null, tg=mo.to-(bk0?bk0.min:0), li=-1; rows.forEach(function(r,i){ if(r.x) li=i; });
+    if(li>=0&&tg-t>=15){ var lr=rows[li], tail=rows.slice(li+1), ln=null, dn=null; tail.forEach(function(r){ if(r.meal==="lunch") ln=r; else if(r.meal==="dinner") dn=r; });
+      rows.length=li; var tt=lr.t-(lr.leg?0:0);
+      if(ln){ ln.t=tt; rows.push(ln); tt+=60; }
+      var dnBefore=dn&&tt>=17*60; if(dnBefore){ dn.t=tt; rows.push(dn); tt+=60; }
+      lr.t=tt; var endAt=dn&&!dnBefore?tg-60:tg; lr.st=Math.max(lr.x.stay,endAt-tt); lr.ext=1; rows.push(lr); tt+=lr.st;
+      if(dn&&!dnBefore){ dn.t=tt; rows.push(dn); tt+=60; }
+      p=dn&&!dnBefore&&dn.r?dn.r:lr.x; t=tt; } }
   var back=(H&&arr.length)?leg(p,H):null; if(back) t+=back.min;
   return {rows:rows,back:back,end:t,viol:viol,wait:wait,miss:miss}; }
 function sc(s){ return s.viol*1000+s.miss*120+s.end+s.wait*0.5; }
