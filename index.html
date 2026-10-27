@@ -466,9 +466,9 @@ function footBuild(){ var e=document.getElementById("foot"); if(!e) return;
     es:["Booman Inc. | N.º de registro mercantil : 297-81-03712 | N.º de venta a distancia : (     ) | N.º de servicio de localización : 1866","Representante : Jeon Hyeonjin | Resp. de privacidad : Hwang Euiman","Atención : +82-10-4221-7066 | Correo : "+em,ADDR_EN]
   };
   var lg=F[window.LANG]?window.LANG:"en";
-  var PL={ko:["이용약관","개인정보처리방침","환불 규정"],en:["Terms","Privacy","Refund policy"],ja:["利用規約","プライバシー","返金規定"],zhs:["使用条款","隐私政策","退款规定"],zht:["使用條款","隱私政策","退款規定"],es:["Términos","Privacidad","Reembolsos"]};
+  var PL={ko:["이용약관","개인정보처리방침","환불 규정","위치기반서비스 약관"],en:["Terms","Privacy","Refund policy","Location terms"],ja:["利用規約","プライバシー","返金規定","位置情報サービス規約"],zhs:["使用条款","隐私政策","退款规定","位置服务条款"],zht:["使用條款","隱私政策","退款規定","位置服務條款"],es:["Términos","Privacidad","Reembolsos","Términos de ubicación"]};   // 위치기반 약관 lbs.html (10-27)
   var pl=PL[lg]||PL.en, qs="?lang="+lg;
-  var links='<div style="margin-top:6px"><a href="terms.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[0]+'</a> · <a href="privacy.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[1]+'</a> · <a href="refund.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[2]+'</a></div>';
+  var links='<div style="margin-top:6px"><a href="terms.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[0]+'</a> · <a href="privacy.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[1]+'</a> · <a href="refund.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[2]+'</a> · <a href="lbs.html'+qs+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+pl[3]+'</a></div>';
   e.innerHTML=F[lg].map(function(x){ return '<div>'+x+'</div>'; }).join("")+links; }
 function kpL(){ return LANG==="ko"?"":"&lang=en"+(LANG==="en"?"":"&ul="+LANG); }   // /kplace·/neat — ul 이 있으면 허브가 name_en·cat_en 칸에 그 언어(일·简·繁)로 넣어 준다 (10-18)
 function hlG(){ return {ko:"",en:"&hl=en",ja:"&hl=ja",zhs:"&hl=zh-CN",zht:"&hl=zh-TW",es:"&hl=es"}[LANG]||""; }
@@ -1623,7 +1623,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script src="trip.js?v=1027gap2"></script>
 <script src="gift.js?v=1024icons"></script>
 <script src="near.js?v=1027np"></script>
-<script src="shop.js?v=1027c"></script>
+<script src="shop.js?v=1027d"></script>
 <script src="tosspay.js?v=1026ph"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}</script>
