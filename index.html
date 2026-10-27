@@ -692,7 +692,7 @@ function shOwnerFix0(p, appName, tok){
       return;
     }
     b.classList.remove("sht");
-    if(href){ var a=document.createElement("a"); a.href=href; a.target="_blank"; a.rel="noopener"; a.innerHTML=b.innerHTML; b.replaceWith(a); return; }
+    if(href){ var a=document.createElement("a"); a.href=href; if(!/^(sms|mailto):/.test(href)){ a.target="_blank"; a.rel="noopener"; } a.innerHTML=b.innerHTML; b.replaceWith(a); return; }   // 문자·메일은 새 창(_blank)이면 폰·설치 앱에서 안 열린다 — 같은 창으로 (10-27)
     b.onclick=function(){   // 카카오톡·링크 복사·다른 앱으로 — 폰 공유창, 안 되면 링크 복사
       var m=p.querySelector(".shmsg");
       if(!shHas(lab,"링크 복사","Copy link")&&navigator.share){ navigator.share({title:txt,text:txt+itx,url:url}).catch(function(){}); return; }
