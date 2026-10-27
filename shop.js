@@ -46,6 +46,19 @@ var TX={
  test:T6("UNDER TESTING — 시험 화면이라 실제로 결제되지 않았어요.","UNDER TESTING — this is a test screen; no payment was made.","UNDER TESTING — テスト画面のため、実際の決済は行われていません。","UNDER TESTING — 测试页面，未实际扣款。","UNDER TESTING — 測試頁面，未實際扣款。","UNDER TESTING — pantalla de prueba; no se realizó ningún cobro."),
  back:T6("돌아가기","Back","戻る","返回","返回","Volver"),
  perf:T6("공연장 5곳의 공연 일정 보기","See shows at 5 theaters","劇場5か所の公演日程を見る","查看5家剧场的演出日程","查看5家劇場的演出日程","Ver funciones en 5 teatros"),
+ cu:T6("예약자 정보","Your details","ご予約者情報","预约人信息","預約人資訊","Tus datos"),
+ cn:T6("이름 (필수)","Name (required)","お名前（必須）","姓名（必填）","姓名（必填）","Nombre (obligatorio)"),
+ ce:T6("이메일 (필수)","Email (required)","メール（必須）","邮箱（必填）","電子郵件（必填）","Correo electrónico (obligatorio)"),
+ cp:T6("전화 (선택)","Phone (optional)","電話（任意）","电话（选填）","電話（選填）","Teléfono (opcional)"),
+ cpn:T6("입력한 이름·이메일·전화는 예약 안내와 가이드 연결에만 씁니다. 결제가 끝나면 고른 가이드에게 상품·날짜·시간·인원·연락처가 전달됩니다.","Your name, email and phone are used only for booking notices and to connect you with your guide. After payment, the guide you chose receives the product, date, time, people and your contact.","入力したお名前・メール・電話は予約のご案内とガイドとの連絡にのみ使います。お支払い後、選んだガイドに商品・日時・人数・連絡先が伝わります。","您填写的姓名、邮箱和电话仅用于预约通知和联系向导。付款后，所选向导会收到商品、日期、时间、人数和您的联系方式。","您填寫的姓名、電子郵件和電話僅用於預約通知和聯絡嚮導。付款後，所選嚮導會收到商品、日期、時間、人數和您的聯絡方式。","Tu nombre, correo y teléfono solo se usan para avisos de la reserva y para contactar con tu guía. Tras el pago, el guía elegido recibe el producto, la fecha, la hora, las personas y tu contacto."),
+ enm:T6("이름을 넣어 주세요.","Please enter your name.","お名前を入力してください。","请填写姓名。","請填寫姓名。","Escribe tu nombre."),
+ eem:T6("이메일 주소를 확인해 주세요.","Please check your email address.","メールアドレスをご確認ください。","请检查邮箱地址。","請檢查電子郵件地址。","Revisa tu correo electrónico."),
+ eph:T6("전화번호를 확인해 주세요.","Please check your phone number.","電話番号をご確認ください。","请检查电话号码。","請檢查電話號碼。","Revisa tu número de teléfono."),
+ edt:T6("날짜·시간을 확인해 주세요 (오늘 이후).","Please check the date and time (from today).","日時をご確認ください（本日以降）。","请检查日期和时间（今天起）。","請檢查日期和時間（今天起）。","Revisa la fecha y la hora (desde hoy)."),
+ efail:T6("저장하지 못했어요. 잠시 뒤 다시 눌러 주세요.","Could not save. Please try again shortly.","保存できませんでした。しばらくしてからもう一度お試しください。","保存失败，请稍后再试。","儲存失敗，請稍後再試。","No se pudo guardar. Inténtalo de nuevo en un momento."),
+ sav:T6("저장 중…","Saving…","保存中…","保存中…","儲存中…","Guardando…"),
+ oid:T6("주문번호","Order no.","注文番号","订单号","訂單號","N.º de pedido"),
+ tsv:T6("시험 주문으로 저장했어요. 가이드·예약자에게는 아무것도 보내지 않았어요.","Saved as a test order. Nothing was sent to the guide or to you.","テスト注文として保存しました。ガイドやご予約者には何も送っていません。","已保存为测试订单，未向向导或您发送任何内容。","已儲存為測試訂單，未向嚮導或您傳送任何內容。","Guardado como pedido de prueba. No se envió nada al guía ni a ti."),
  b4p:T6("1인 ₩89,000 · 2인 이상 1인 ₩79,000","1 person ₩89,000 · 2+ ₩79,000 each","1名 ₩89,000 · 2名以上 1名 ₩79,000","1人 ₩89,000 · 2人以上每人 ₩79,000","1人 ₩89,000 · 2人以上每人 ₩79,000","1 persona ₩89,000 · 2+ ₩79,000 c/u")
 };
 var CATS=[["all",T6("전체","All","すべて","全部","全部","Todo")],["kpop",T6("K-POP","K-POP","K-POP","K-POP","K-POP","K-POP")],["tour",T6("관광","Sightseeing","観光","观光","觀光","Turismo")],["beauty",T6("미용","Beauty","美容","美容","美容","Belleza")],["hair",T6("헤어","Hair","ヘア","美发","美髮","Peluquería")],["food",T6("음식","Food","グルメ","美食","美食","Comida")],["show",T6("공연","Shows","公演","演出","演出","Espectáculos")],["well",T6("웰니스","Wellness","ウェルネス","养生","養生","Bienestar")]];
@@ -84,7 +97,7 @@ var P=[
   d:T6("한국 사람들의 휴식 공간. 여러 온도의 방과 사우나, 간식까지 한 번에 즐깁니다.","Where Koreans relax: rooms at different temperatures, saunas and snacks in one place.","韓国人の憩いの場。温度の違う部屋やサウナ、おやつまで一度に楽しめます。","韩国人的休闲场所，各种温度的房间、桑拿和小吃一次享受。","韓國人的休閒場所，各種溫度的房間、桑拿和小吃一次享受。","Donde se relajan los coreanos: salas a distintas temperaturas, saunas y tentempiés.")}
 ];
 var GLANGS=[["en","English"],["ja","日本語"],["zhs","中文(简)"],["zht","中文(繁)"],["es","Español"],["ko","한국어"]];
-var S={cat:"all",prod:null,glang:"",guides:null,gid:null,date:"",n:2};
+var S={cat:"all",prod:null,glang:"",guides:null,gid:null,date:"",n:2,cn:"",ce:"",cp:""};   // cn·ce·cp = 예약자 이름·이메일·전화 (10-28 주문 저장)
 var css=document.createElement("style");
 css.textContent="#shopBox{position:fixed;inset:0;z-index:2147483003;background:#f6f4ef;color:#1d2433;overflow:auto;-webkit-overflow-scrolling:touch;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif}"
  +"#shopBox .sstamp{position:fixed;inset:0;pointer-events:none;z-index:3;display:flex;align-items:center;justify-content:center;overflow:hidden}"
@@ -122,7 +135,7 @@ css.textContent+="#shopBox .sgrid{display:flex;flex-direction:column;gap:14px}#s
  +"#shopBox .ssel{display:flex;flex-direction:column;gap:8px}#shopBox .ssel img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px}#shopBox .ssel b{font-size:15px}#shopBox .ssel .spr{font-size:15px}";   // 넓은 화면 = 왼쪽 기둥 (사장님 10-27 「왼쪽 칸도 채워줘」)
 css.textContent+="#shopBox .spm{position:fixed;inset:0;z-index:6;background:rgba(10,14,24,.6);display:flex;align-items:center;justify-content:center;padding:16px}#shopBox .spm>div{width:min(440px,100%);max-height:100%;overflow:auto;background:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px}"
  +"#shopBox .spm h3{margin:0;font-size:18px}#shopBox .spm .sut{font-size:11px;font-weight:900;color:#d62828;border:1.5px solid #d62828;border-radius:6px;padding:2px 6px;margin-left:6px}#shopBox .spm .sl{display:flex;justify-content:space-between;gap:10px;font-size:14px}#shopBox .spm .sl span:first-child{color:#667085}"
- +"#shopBox .spm label.sr{display:flex;gap:8px;align-items:center;border:1.5px solid #e4e0d6;border-radius:10px;padding:9px 10px;font-size:14px;cursor:pointer}#shopBox .spm .sdone{background:#fff4d6;border:2px dashed #e0a100;color:#8a5a00;font-weight:800;border-radius:12px;padding:10px;text-align:center}";
+ +"#shopBox .spm label.sr{display:flex;gap:8px;align-items:center;border:1.5px solid #e4e0d6;border-radius:10px;padding:9px 10px;font-size:14px;cursor:pointer}#shopBox .spm label.scl{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#667085}#shopBox .spm label.scl input{font:inherit;font-size:15px;color:#1d2433;border:1.5px solid #e4e0d6;border-radius:10px;padding:9px 10px}#shopBox .spm .serr{background:#fdecec;color:#b42318;border-radius:10px;padding:8px 10px;font-size:13.5px;font-weight:700}#shopBox .spm .sdone{background:#fff4d6;border:2px dashed #e0a100;color:#8a5a00;font-weight:800;border-radius:12px;padding:10px;text-align:center}";
 document.head.appendChild(css);
 function won(x){ return "₩"+Number(x).toLocaleString("ko-KR"); }
 function box(){ return document.getElementById("shopBox"); }
@@ -162,22 +175,42 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
        +'<button type="button" class="spay" data-s="mock">'+esc(L(TX.pay))+' ›</button><p class="snote">'+esc(L(p.real?TX.payn:TX.soon2))+'</p>'; } }   // 시험 결제창 (사장님 10-27 「결제화면도 띄워줘, 어차피 결제는 안 돼」)
   h+='</section></aside></div></div>';
   b.innerHTML=h; b.scrollTop=y; }
-// 시험 결제창 — 이 화면 안에서 뜨고, 「결제하기」를 눌러도 실제 결제는 하지 않는다
+// 시험 결제창 — 「결제하기」(시험)를 누르면 허브 /shop/order 에 시험 주문(status test)으로 저장하고 주문번호를 보여 준다 (10-28). 실제 결제는 하지 않는다
+//   🔴 결제 붙일 때: 아래 fetch 본문의 test:true 를 false 로 → 돌려받은 orderId·amount 로 토스 requestPayment → 허브 /shop/toss/confirm (worker.js shopRoute 주석)
 function mockPay(){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelector(".spm"); if(o) o.remove();
   var unit=p.real==="b4"?b4Price(S.n):p.price, tot=unit*S.n, gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0];
-  o=document.createElement("div"); o.className="spm"; b.appendChild(o);
-  var draw=function(done){ o.innerHTML='<div><h3>'+esc(L(TX.pt))+'<span class="sut">UNDER TESTING</span></h3>'
+  o=document.createElement("div"); o.className="spm"; b.appendChild(o); var agd=false;
+  var draw=function(oid,err,busy){ o.innerHTML='<div><h3>'+esc(L(TX.pt))+'<span class="sut">UNDER TESTING</span></h3>'
     +'<b>'+esc(L(TX.ord))+'</b><div class="spick"><img src="img/shop/'+p.img+'.webp" alt=""><b>'+esc(L(p.t))+'</b></div>'
     +'<div class="sl"><span>'+esc(L(TX.dtm))+'</span><span>'+esc((S.date||"-")+" "+(S.time||""))+'</span></div><div class="sl"><span>'+esc(L(TX.ppl))+'</span><span>'+S.n+'</span></div><div class="sl"><span>'+esc(L(TX.gd))+'</span><span>'+(gg?esc(gName(gg)):esc(L(TX.none)))+'</span></div>'
     +'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(tot)+'</span></div>'
-    +'<b>'+esc(L(TX.pm))+'</b><label class="sr"><input type="radio" name="spmm" checked> '+esc(L(TX.card))+'</label><label class="sr"><input type="radio" name="spmm"> PayPal</label>'
-    +'<label class="sr"><input type="checkbox" id="spmAg"> '+esc(L(TX.agr))+'</label>'
-    +(done?'<div class="sdone">'+esc(L(TX.test))+'</div>':'<button type="button" class="spay" id="spmGo" disabled>'+won(tot)+' '+esc(L(TX.payb))+'</button>')
+    +(oid?'<div class="sl"><span>'+esc(L(TX.oid))+'</span><b>'+esc(oid)+'</b></div><div class="sdone">'+esc(L(TX.test))+'<br>'+esc(L(TX.tsv))+'</div>'
+     :'<b>'+esc(L(TX.cu))+'</b>'
+     +'<label class="scl">'+esc(L(TX.cn))+'<input type="text" id="spmN" maxlength="40" autocomplete="name" value="'+esc(S.cn)+'"></label>'
+     +'<label class="scl">'+esc(L(TX.ce))+'<input type="email" id="spmE" maxlength="100" autocomplete="email" value="'+esc(S.ce)+'"></label>'
+     +'<label class="scl">'+esc(L(TX.cp))+'<input type="tel" id="spmP" maxlength="30" autocomplete="tel" value="'+esc(S.cp)+'"></label>'
+     +'<p class="snote">'+esc(L(TX.cpn))+'</p>'
+     +'<b>'+esc(L(TX.pm))+'</b><label class="sr"><input type="radio" name="spmm" checked> '+esc(L(TX.card))+'</label><label class="sr"><input type="radio" name="spmm"> PayPal</label>'
+     +'<label class="sr"><input type="checkbox" id="spmAg"> '+esc(L(TX.agr))+'</label>'
+     +(err?'<div class="serr">'+esc(err)+'</div>':'')
+     +'<button type="button" class="spay" id="spmGo" disabled>'+(busy?esc(L(TX.sav)):won(tot)+' '+esc(L(TX.payb)))+'</button>')
     +'<button type="button" class="spay" id="spmX" style="background:#efece4;color:#1d2433">'+esc(L(TX.back))+'</button></div>';
-    var ag=o.querySelector("#spmAg"), go=o.querySelector("#spmGo"); if(ag&&go) ag.onchange=function(){ go.disabled=!ag.checked; };
-    if(go) go.onclick=function(){ try{ ntap("shop","mockpay_"+p.id); }catch(z){} draw(true); };
+    var ag=o.querySelector("#spmAg"), go=o.querySelector("#spmGo");
+    ["spmN","spmE","spmP"].forEach(function(id,k){ var el=o.querySelector("#"+id); if(el) el.oninput=function(){ S[["cn","ce","cp"][k]]=el.value; }; });
+    if(ag&&go){ if(busy){ ag.checked=true; ag.disabled=true; } else { ag.checked=agd; go.disabled=!agd; ag.onchange=function(){ agd=ag.checked; go.disabled=!agd; }; } }
+    if(go) go.onclick=function(){ if(busy) return; var nm=S.cn.trim(), em=S.ce.trim(), ph=S.cp.trim(), today=new Date(Date.now()+9*36e5).toISOString().slice(0,10);
+      if(!nm){ draw(null,L(TX.enm)); return; }
+      if(!/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/.test(em)){ draw(null,L(TX.eem)); return; }
+      if(ph&&!/^[\d\s+()-]{7,30}$/.test(ph)){ draw(null,L(TX.eph)); return; }
+      if(!S.date||S.date<today||!/^\d{2}:\d{2}$/.test(S.time||"")){ draw(null,L(TX.edt)); return; }
+      draw(null,"",true);
+      fetch(HUBU+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:p.id,pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,glang:S.glang||"",lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,test:true})})
+       .then(function(r){ return r.json(); }).then(function(j){
+         if(j&&j.ok&&j.orderId){ try{ ntap("shop","order_"+p.id); }catch(z){} draw(j.orderId); return; }
+         var e=j&&j.err; draw(null,e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(TX.edt):L(TX.efail)); })
+       .catch(function(){ draw(null,L(TX.efail)); }); };
     o.querySelector("#spmX").onclick=function(){ o.remove(); }; };
-  draw(false); }
+  draw(null); }
 function loadGuides(){ var l=S.glang; S.guides=null; paint();
   fetch(HUBU+"/guide/guides?lang="+encodeURIComponent(l)).then(function(r){ return r.json(); }).then(function(j){ if(S.glang!==l) return; S.guides=(j&&j.ok&&j.items)||[]; paint(); }).catch(function(){ if(S.glang===l){ S.guides=[]; paint(); } }); }
 function open(){ if(box()) return; var b=document.createElement("div"); b.id="shopBox"; document.body.appendChild(b); document.documentElement.style.overflow="hidden";
