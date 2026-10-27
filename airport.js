@@ -56,12 +56,12 @@ var FIG={ icn_t1_arr:{ img:"img/airport/icn_t1_arr.webp?v=1027",
   floors:[[330,"3층 출국장",1],[478,"2층 입국심사"],[648,"1층 짐 찾기·입국장"],[828,"지하1층 공항철도"]],
   path:["M330,468 L690,498","M690,498 L845,522 L862,632","M862,660 L705,688","M705,688 L1068,732","M1068,732 L880,748 L1010,872 L1170,900","M1068,732 L1395,742 L1590,700","M1395,742 L1520,790 L1770,810","M1068,732 L1120,560 L1180,420 L1320,392"],
   badge:[[690,440,"1-1","입국심사"],[905,590,"1-2","짐 찾기"],[630,632,"1-3","세관"],[1060,688,"2","입국장"],[1160,592,"2-1","",1],[1214,592,"2-2","",1],[1268,592,"2-3","",1],[1322,592,"2-4","",1],[965,850,"3","공항철도"],[1600,662,"4","공항버스\n(서울행\n3~7번 출구)",0,[1745,505]],[1770,758,"5","택시 (일반 5C·6C)"],[1350,350,"6","셔틀버스 (3층 8번 출구) → T2"]],
-  legend:[1150,555,"2-1 안내 · 2-2 환전 · 2-3 유심 · 2-4 편의점"] },
+  legend:[1150,522,"2-1 안내 · 2-2 환전\n2-3 유심 · 2-4 편의점"] },
  icn_t2_arr:{ img:"img/airport/icn_t2_arr.webp?v=1027",
   floors:[[360,"3층 출국장"],[505,"2층 입국심사"],[655,"1층 짐 찾기·입국장"],[850,"지하1층 공항철도·버스"]],
   path:["M380,505 L880,500","M880,500 L1015,540 L965,662","M940,690 L790,668","M790,668 L1170,728","M1170,728 L1165,800 L1110,905 L830,860","M1110,905 L1300,915 L1510,940","M1170,728 L1560,762 L1700,775","M1170,728 L1300,560 L1520,412 L1720,392"],
   badge:[[880,452,"1-1","입국심사"],[1060,600,"1-2","짐 찾기"],[760,628,"1-3","세관"],[1150,686,"2","입국장"],[1335,650,"2-1","",1],[1388,650,"2-2","",1],[1441,650,"2-3","",1],[1494,650,"2-4","",1],[960,820,"3","공항철도"],[1420,870,"4","공항버스 (서울 11~35번)"],[1690,712,"5","택시 (서울 7C)"],[1600,330,"6","셔틀버스 (3층 4·5번 출구) → T1"]],
-  legend:[1290,605,"2-1 안내 · 2-2 환전 · 2-3 유심 · 2-4 편의점"] } };
+  legend:[1300,572,"2-1 안내 · 2-2 환전\n2-3 유심 · 2-4 편의점"] } };
 function fig(k){ var F=FIG[k]; if(!F) return ""; var s='<svg viewBox="0 0 2000 1116" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="apAr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ff5a0a"/></marker></defs>';
  F.floors.forEach(function(f){ s+='<g opacity="'+(f[2]?.45:1)+'"><rect x="24" y="'+(f[0]-34)+'" width="'+(f[1].length*34+40)+'" height="56" rx="12" fill="#fff" fill-opacity=".92"/><text x="44" y="'+(f[0]+6)+'" font-size="34" font-weight="800" fill="#17324d">'+esc(f[1])+'</text></g>'; });
  F.path.forEach(function(d){ s+='<path d="'+d+'" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><path d="'+d+'" fill="none" stroke="#ff5a0a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#apAr)"/>'; });
@@ -69,7 +69,7 @@ function fig(k){ var F=FIG[k]; if(!F) return ""; var s='<svg viewBox="0 0 2000 1
   var ln=String(b[3]||"").split("\n"), w=Math.max.apply(null,ln.map(function(q){ return q.length; })), lf=!b[5]&&b[3]&&b[0]+r+10+w*31>1990;   /* 오른쪽 끝을 넘으면 이름을 동그라미 왼쪽에 · b[5]=[x,y] 이름 자리 따로(여러 줄은 \n) */
   var lx=b[5]?b[5][0]:(lf?b[0]-r-10:b[0]+r+10), ly=b[5]?b[5][1]:b[1]+12;
   if(b[3]) s+='<text x="'+lx+'" y="'+ly+'"'+(lf?' text-anchor="end"':'')+' font-size="34" font-weight="900" fill="#17324d" stroke="#fff" stroke-width="9" paint-order="stroke" stroke-linejoin="round">'+ln.map(function(q,i){ return '<tspan x="'+lx+'" dy="'+(i?40:0)+'">'+esc(q)+'</tspan>'; }).join("")+'</text>'; });
- if(F.legend) s+='<text x="'+F.legend[0]+'" y="'+F.legend[1]+'" font-size="26" font-weight="800" fill="#17324d" stroke="#fff" stroke-width="7" paint-order="stroke">'+esc(F.legend[2])+'</text>';
+ if(F.legend) s+='<text x="'+F.legend[0]+'" y="'+F.legend[1]+'" font-size="26" font-weight="800" fill="#17324d" stroke="#fff" stroke-width="7" paint-order="stroke">'+String(F.legend[2]).split("\n").map(function(q,i){ return '<tspan x="'+F.legend[0]+'" dy="'+(i?32:0)+'">'+esc(q)+'</tspan>'; }).join("")+'</text>';
  s+='</svg>'; return '<div class="apfig"><div class="apfw"><img src="'+F.img+'" alt="" loading="lazy">'+s+'</div></div><p class="apnote">그림을 옆으로 밀어 보세요. 실제 층 배치는 공식 안내도가 정확해요.</p>'; }
 var S={ap:null,dir:null,t:null};
 function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
