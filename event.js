@@ -74,6 +74,7 @@ RANKHOW.photo={ko:"회사가 주제에 가장 잘 맞는 사진 1·2·3등을 �
 var KRULES={
  bingo:[   // 매일 빙고 — 매일 새 판·그날 점수·주간 점수 1·2·3등 (사장님 10-27) + 24칸 완성 규칙
   {ko:"매일 빙고는 매일 한국 시간 밤 12시에 새 판으로 바뀝니다. 그날 판을 24칸 모두 맞힌 사람을 걸린 시간이 짧은 순으로 줄 세웁니다.",en:"Daily Bingo switches to a new board every day at midnight Korea time. Everyone who answers all 24 squares of that day’s board is ranked by the shortest time.",ja:"毎日ビンゴは毎日韓国時間の夜12時に新しいボードに変わります。その日のボードの24マスをすべて正解した人を、かかった時間が短い順に並べます。",zhs:"每日宾果每天韩国时间午夜12点换新卡。答对当天全部24格的玩家按用时从短到长排名。",zht:"每日賓果每天韓國時間午夜12點換新卡。答對當天全部24格的玩家按用時從短到長排名。",es:"El Bingo diario cambia a un cartón nuevo cada día a medianoche, hora de Corea. Quienes aciertan las 24 casillas del cartón del día se clasifican por el menor tiempo."},
+  {ko:"매일 빙고는 하루에 판이 여러 개입니다. 「다시하기」를 누르면 지금 판을 그 자리에서 끝내고 새 문제 판을 바로 시작합니다. 3판을 이어서 하면 5분 쉰 뒤에 다음 판을 할 수 있습니다. 순위는 그날 24칸을 다 맞힌 판들 중 가장 빠른 기록 하나로 정해집니다.",en:"There are several boards each day. Tap “New board” to end your current board where it stands and start a fresh board with new questions right away. After 3 boards in a row, there is a 5-minute break before the next board. Your ranking uses your single fastest time among the boards on which you got all 24 squares that day.",ja:"毎日ビンゴは1日に複数の盤があります。「新しい盤」を押すと、今の盤をその場で終えて、新しい問題の盤をすぐに始めます。3盤続けて遊ぶと、5分休んだ後に次の盤ができます。順位は、その日に24マスをすべて正解した盤のうち最も速い記録1つで決まります。",zhs:"每日宾果每天有多盘。按「换新盘」会就地结束当前这盘，并立即开始一盘新题目。连续玩3盘后，需休息5分钟才能玩下一盘。排名以当天答对全部24格的各盘中最快的一次用时为准。",zht:"每日賓果每天有多盤。按「換新盤」會就地結束目前這盤，並立即開始一盤新題目。連續玩3盤後，需休息5分鐘才能玩下一盤。排名以當天答對全部24格的各盤中最快的一次用時為準。",es:"Cada día hay varios tableros. Pulsa «Nuevo tablero» para terminar el tablero actual tal como está y empezar enseguida uno nuevo con otras preguntas. Tras 3 tableros seguidos hay una pausa de 5 minutos antes del siguiente. Tu clasificación usa tu mejor tiempo del día entre los tableros en los que aciertas las 24 casillas."},
   {ko:"그날 순위 점수: 1등 10점 · 2등 8점 · 3등 6점 · 4등 5점 · 5등 4점 · 6~10등 3점 · 그 밖에 판을 완성한 사람 1점. 그날 1등은 별 하나를 받습니다.",en:"Daily points: 1st 10 · 2nd 8 · 3rd 6 · 4th 5 · 5th 4 · 6th–10th 3 · anyone else who finishes the board 1. The day’s winner gets a star.",ja:"その日のポイント：1位10点・2位8点・3位6点・4位5点・5位4点・6〜10位3点・その他ボードを完成した人1点。その日の1位は星を1つもらえます。",zhs:"当日积分：第1名10分 · 第2名8分 · 第3名6分 · 第4名5分 · 第5名4分 · 第6~10名3分 · 其他完成者1分。当日第1名获得一颗星。",zht:"當日積分：第1名10分 · 第2名8分 · 第3名6分 · 第4名5分 · 第5名4分 · 第6~10名3分 · 其他完成者1分。當日第1名獲得一顆星。",es:"Puntos del día: 1.º 10 · 2.º 8 · 3.º 6 · 4.º 5 · 5.º 4 · 6.º–10.º 3 · cualquier otra persona que complete el cartón 1. El ganador del día recibe una estrella."},
   {b:1,ko:"한 주(월~일, 한국 시간) 점수를 더해 월요일 0시에 마감하며, 주간 점수 순위로 1·2·3등이 정해집니다.",en:"Points are added up over the week (Mon–Sun, Korea time) and closed on Monday at 00:00; the weekly points ranking decides 1st, 2nd and 3rd.",ja:"1週間（月〜日、韓国時間）のポイントを合計して月曜0時に締め切り、週間ポイント順位で1・2・3位が決まります。",zhs:"一周（周一至周日，韩国时间）的积分累计后于周一0点截止，按周积分排名决定第1·2·3名。",zht:"一週（週一至週日，韓國時間）的積分累計後於週一0點截止，按週積分排名決定第1·2·3名。",es:"Los puntos se suman durante la semana (lun–dom, hora de Corea) y se cierran el lunes a las 00:00; la clasificación semanal de puntos decide 1.º, 2.º y 3.º."},
   {ko:"시험(TEST) 기간의 순위·점수·별은 따로 기록됩니다.",en:"During the TEST period, rankings, points and stars are recorded separately.",ja:"テスト（TEST）期間中の順位・ポイント・星は別に記録されます。",zhs:"测试（TEST）期间的排名、积分和星星单独记录。",zht:"測試（TEST）期間的排名、積分和星星單獨記錄。",es:"Durante el periodo de PRUEBA (TEST), la clasificación, los puntos y las estrellas se registran por separado."},
@@ -153,7 +154,7 @@ function evClosed(last){ var e=document.getElementById("evBody"); if(!e) return;
   e.innerHTML=h; wire(e); }
 function wire(e){ [].forEach.call(e.querySelectorAll("[data-ev]"),function(x){ x.onclick=function(){ var a=x.dataset.ev;
   if(a==="pg"||a==="signin") signIn(); else if(a==="rules") showRules(!!(cur()&&cur().open&&cur().me&&!cur().me.agreed));
-  else if(a==="find") treasureMode(); else if(a==="sstart") spotStart(); else if(a==="ppick") document.getElementById("evPf").click(); else if(a==="psend") photoSend(); else if(a==="share") shareResult(); }; });
+  else if(a==="find") treasureMode(); else if(a==="sstart") spotStart(); else if(a==="ppick") document.getElementById("evPf").click(); else if(a==="psend") photoSend(); else if(a==="share") shareResult(); else if(a==="replay") replay(); }; });
   [].forEach.call(e.querySelectorAll("[data-tab]"),function(x){ x.onclick=function(){ TAB=x.dataset.tab; ls("mpv_ev_tab",TAB); render(); var b=box(); if(b) b.scrollTop=0; }; }); }
 function cur(){ if(E&&B) return TAB==="ev"?E:B; return E||B; }   // 두 칸이 다 열려 있으면 고른 탭
 function needIn(o){ if(!o.me) return '<div class="ecard"><button type="button" class="ebtn" data-ev="signin">'+esc(L(T.signin))+'</button></div>'; var gh=o.me.grad?'<div class="ecard" style="color:#7a3cff;font-weight:700">'+esc(L(T.grad))+'</div>':''; if(!o.me.agreed) return gh+'<div class="ecard"><button type="button" class="ebtn" data-ev="rules">'+esc(L(T.agree))+'</button></div>'; return gh; }   /* 졸업자도 순위에 든다 — 졸업 안내 + 동의 단추 (10-27) */
@@ -242,7 +243,7 @@ var SHX={
 };
 function shLine(){ var c=cur(); if(!c||!c.open||!c.me) return null; var me=c.me, k=c.kind||"bingo", t=L(KT[k]||EVT), l=lg(), rk=c.myRank?"  #"+c.myRank:"";
   if(k==="bingo"&&c.daily&&c.day) t+=" "+c.day.slice(5).replace("-","/");   // 매일 빙고 = 그날 날짜
-  if(k==="bingo"&&me.done) return [t, L(RNK.all)+" · "+elTxt(me.done-(me.f0||me.done))+rk];   // 판 완성 + 걸린 시간 (10-27)
+  if(k==="bingo"&&(me.best!=null||me.done)) return [t, L(RNK.all)+" · "+elTxt(me.best!=null?me.best:me.done-(me.f0||me.done))+rk];   // 그날 가장 빠른 기록 (하루 여러 판, 10-27 밤)   // 판 완성 + 걸린 시간 (10-27)
   if(k==="bingo") return [t, (me.s||[]).length+"/24 · "+L(T.stamps)];
   if(k==="treasure") return [t, me.ft?L(SHX.found)+(me.rank?"  #"+me.rank:""):L(SHX.hunt)];
   if(k==="spot") return [t, (me.ok||0)+"/"+(c.total||10)+" "+L(SHX.spot)+rk];
@@ -446,6 +447,28 @@ function signIn(){   // 퍼즐골드 로그인 창(구글·Apple)을 빙고 화�
     if(!p2||p2.hidden){ clearInterval(t); if(p2) p2.style.zIndex=""; if(box()) load(); } },500); }
 var TST={ko:"테스트 중입니다. 문제는 매일 한국 시간 밤 12시에 새로 바뀝니다.",en:"This is a test. New questions every day at midnight Korea time.",ja:"テスト中です。問題は毎日、韓国時間の夜12時に新しくなります。",zhs:"目前为测试。题目每天韩国时间午夜12点更新。",zht:"目前為測試。題目每天韓國時間午夜12點更新。",es:"Es una prueba. Preguntas nuevas cada día a medianoche, hora de Corea."},
     TNX={ko:"새 문제까지",en:"New questions in",ja:"新しい問題まで",zhs:"距新题目",zht:"距新題目",es:"Nuevas preguntas en"};   // 시험 빙고 (10-27)
+// 다시하기 (사장님 10-27 밤) — 지금 판을 그 자리에서 끝내고 새 판 · 3판 뒤 5분 쉼 · 하루 12판 (규칙은 허브 bdNext)
+var RPL={ko:"다시하기 (새 판)",en:"New board",ja:"新しい盤",zhs:"换新盘",zht:"換新盤",es:"Nuevo tablero"},
+    RPN={ko:"남은 판 {n}",en:"{n} left",ja:"残り{n}",zhs:"剩余{n}",zht:"剩餘{n}",es:"quedan {n}"},
+    RPW={ko:"{n}분 뒤 새 판",en:"New board in {n} min",ja:"{n}分後に新しい盤",zhs:"{n}分钟后换新盘",zht:"{n}分鐘後換新盤",es:"Nuevo tablero en {n} min"},
+    RPA={ko:"오늘 판을 다 썼어요 — 밤 12시에 새 판",en:"You’ve used all of today’s boards — new ones at midnight",ja:"今日の盤はすべて使いました — 夜12時に新しい盤",zhs:"今天的盘已全部用完 — 午夜12点换新盘",zht:"今天的盤已全部用完 — 午夜12點換新盤",es:"Ya usaste todos los tableros de hoy — nuevos a medianoche"},
+    RPR={ko:"잠시 뒤 다시 눌러 주세요",en:"Please tap again in a moment",ja:"少し後でもう一度押してください",zhs:"请稍后再按一次",zht:"請稍後再按一次",es:"Vuelve a pulsar en un momento"},
+    RPB={ko:"{n}번째 판",en:"Board {n}",ja:"{n}盤目",zhs:"第{n}盘",zht:"第{n}盤",es:"Tablero {n}"};
+var RPT=0;
+function rpCard(me){ var nx=me&&me.nx; if(!nx) return ""; var bn=me.bn||1, lb='<div style="font-size:12px;color:#888;margin-bottom:6px">'+esc(L(RPB).replace("{n}",bn))+' / '+(nx.max||12)+'</div>';
+  if(nx.all) return '<div class="ecard">'+lb+'<button type="button" class="ebtn" disabled style="background:#bbb">'+esc(L(RPA))+'</button></div>';
+  if(nx.wait>0){ if(!nx._at) nx._at=Date.now()+nx.wait; var w=nx._at-Date.now();
+    if(w>0){ clearTimeout(RPT); RPT=setTimeout(function(){ if(B&&B.me===me) paint(); },Math.min(w,30000)+200);
+      return '<div class="ecard">'+lb+'<button type="button" class="ebtn" disabled style="background:#bbb">'+esc(L(RPW).replace("{n}",Math.ceil(w/60000)))+'</button></div>'; }
+    nx.can=1; nx.left=3; }
+  if(!nx.st||!nx.can) return "";
+  return '<div class="ecard">'+lb+'<button type="button" class="ebtn" data-ev="replay" style="background:#ff7a1a">'+esc(L(RPL))+' · '+esc(L(RPN).replace("{n}",nx.left))+'</button></div>'; }
+function replay(){ var b=document.querySelector('#evBody [data-ev="replay"]'); if(b) b.disabled=true;
+  post("/npg/bingo/next",{sess:sess(),l:lg()}).then(function(j){
+    if(j&&j.ok){ toast(L(RPL),"#ff7a1a"); load(); return; }
+    if(j&&j.err==="notready"){ alert(L(RPR)); if(b) b.disabled=false; return; }
+    if(j&&(j.err==="wait"||j.err==="all"||j.err==="nostart")){ load(); return; }
+    alert(L(T.err)); if(b) b.disabled=false; }).catch(function(){ alert(L(T.err)); if(b) b.disabled=false; }); }
 function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return;
   var h=tabsH(), me=B.me, rh=RANKHOW[B.kind||"bingo"], dl=B.daily||B.ko;
   if(!B.cells||!B.open){ evClosed(null); return; }
@@ -462,6 +485,7 @@ function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return;
     var done=S.indexOf(c.i)>=0, rt=!done&&X.indexOf(c.i)>=0;
     return '<div class="ec'+(done?' done':'')+(rt?' retry':'')+'" data-i="'+c.i+'"><div>'+esc(c.w.en)+(c.w.ko?'<span class="ko">'+esc(c.w.ko)+'</span>':'')+'</div>'+(done?'<div class="stp">OK</div>':'')+(rt?'<div class="rt">'+esc(L(T.retry))+'</div>':'')+'</div>'; }).join("")+'</div>';
   h+='<div class="est"><div><b>'+S.length+'/24</b>'+esc(L(T.stamps))+'</div><div><b>'+(me&&me.f0?elTxt((me.done||Date.now())-me.f0):"0:00")+'</b>'+esc(L(TMX))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(dl||B.test?TNX:T.left))+'</div></div>';
+  if(me&&me.agreed&&dl) h+=rpCard(me);   // 다시하기 (10-27 밤)
   if(me&&me.agreed) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>';
   h+=rankCard(B);
   h+=wpCard(B);   // 이번 주 점수 (매일 빙고)
