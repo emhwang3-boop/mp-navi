@@ -210,7 +210,7 @@ function payLoad(){ var P=$("pane");
   // 이용권은 무료로 확정(2026-10-24). 이용권 판매·매출 없음 → 장부·손발급 화면 감춤. 허브 /nledger·/npass 코드는 그대로 둠(가이드 결제 붙을 때 재활용).
   P.innerHTML='<div class="card"><b>이용권 — 무료</b>'
     +'<div class="msg">이용권(구독)은 <b>무료로 확정</b>되었습니다 (2026-10-24). 7·15·30일권 판매와 이용권 매출은 없습니다.</div>'
-    +'<div class="msg">투어앱 수익모델: <b>가이드 중개 수수료</b> · <b>식당 광고</b>(제휴 식당 슬롯) · <b>제휴 커미션</b>(Klook·GetYourGuide 등).</div>'
+    +'<div class="msg">투어앱 수익모델: <b>가이드 중개 수수료</b> · <b>식당 광고</b>(제휴 식당 슬롯).</div>'
     +'<div class="msg">가이드 수수료 <b>결제(PG)가 붙으면</b> 그 장부는 <b>「가이드 장부(MIS)」</b> 메뉴에 쌓입니다. 지금은 손수 입력으로 봅니다.</div></div>'; }
 // 이용권 손 발급 (2026-10-16) — 허브 /npass/admin
 function passIssue(){ var o=$("psOut"); o.innerHTML='<div class="msg">발급 중…</div>';
