@@ -107,11 +107,12 @@
         for(var i=0;i<occ.length;i++){ var o=occ[i]; if(x0-g<o[2]&&x0+bw+g>o[0]&&y0-g<o[3]&&y0+bh+g>o[1]){ ok=false; break; } } if(ok){ bd=d; best=[x0,y0]; } }
       if(!best) best=[cx-bw/2,cy-bh/2]; var e=img(k); put(e,best[0],best[1],bw,bh); L.appendChild(e); occ.push([best[0],best[1],best[0]+bw,best[1]+bh]); bbOn(L,k,best[0],best[1],bw,bh); });
     // 관악산 북쪽 기슭에 노래방·PC방 (사장님 10-28 「나」 — 구 화면 건물은 그대로 두고 서울 전체 지도에 하나씩 더) · 누르면 관악구 노래방·PC방과 같은 화면
-    [["karaoke@gwanak",37.4668,126.9425],["pcbang@gwanak",37.4668,126.9555]].forEach(function(m){ var k=m[0], q=GU.d.P[k], f=null; try{ f=meGeoFrac("seoulall",m[1],m[2]); }catch(x){} if(!q||!f) return; f=[f[0]+0.27,f[1]];   /* 사장님 10-28 「오른쪽으로 5센티」(PC 화면 지도 폭 기준) */
+    [["karaoke@gwanak",37.4668,126.9425],["pcbang@gwanak",37.4668,126.9555]].forEach(function(m){ var k=m[0], q=GU.d.P[k], f=null; try{ f=meGeoFrac("seoulall",m[1],m[2]); }catch(x){} if(!q||!f) return; f=[f[0]+0.27+(k==="pcbang@gwanak"?0.06:0),f[1]];   /* 사장님 10-28 「오른쪽으로 5센티」(PC 화면 지도 폭 기준) */
       var bh=W*0.06, bw=bh*(q.ar||1), cx=f[0]*W, cy=f[1]*H, g=W*0.002, best=null, bd=1e18, st=W*0.002;
       for(var dy=-W*0.04;dy<=W*0.04;dy+=st) for(var dx=-W*0.04;dx<=W*0.04;dx+=st){ var d=dx*dx+dy*dy; if(d>=bd) continue; var x0=cx+dx-bw/2, y0=cy+dy-bh, ok=true;
         for(var i=0;i<occ.length;i++){ var o=occ[i]; if(x0-g<o[2]&&x0+bw+g>o[0]&&y0-g<o[3]&&y0+bh+g>o[1]){ ok=false; break; } } if(ok){ bd=d; best=[x0,y0]; } }
-      if(!best) best=[cx-bw/2,cy-bh]; var e=img(k); e.dataset.k=(GU.d.act&&GU.d.act[k])||k; put(e,best[0],best[1],bw,bh); L.appendChild(e); occ.push([best[0],best[1],best[0]+bw,best[1]+bh]); }); }
+      if(!best) best=[cx-bw/2,cy-bh]; var e=img(k); e.dataset.k=(GU.d.act&&GU.d.act[k])||k; put(e,best[0],best[1],bw,bh); L.appendChild(e); occ.push([best[0],best[1],best[0]+bw,best[1]+bh]);
+      var lb=(GU.d.lab||{})[k]; if(lb){ var t=document.createElement("div"); t.className="glb"; t.textContent=LP(lb); t.style.left=(best[0]+bw/2)+"px"; t.style.top=(best[1]+bh)+"px"; t.style.transform="scale("+(0.85/ZM.s)+") translate(-50%,2px)"; L.appendChild(t); } }); }   /* 명찰 (사장님 10-28) — 구 화면과 같은 「노래방」「PC방」 6개 언어 */
   // 묶음 화면 구 이름표 자리 (사장님 10-20) — 전국 지도 이름표 크기. 대표 그림·「+N」·다른 이름표·「나」와 띄워서, 구 한가운데에서 가장 가까운 빈 자리.
   //   빈 자리가 없으면 글자를 조금씩 줄여 다시(긴 영어·일본어·중국어 이름)
   function meBox(){   // 「나」 그림 자리(지도 단위) — 화면 크기 고정 그림이라 묶음 처음 배율(ZB) 기준으로 잡는다(확대해도 이름표가 안 흔들리게)
