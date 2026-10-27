@@ -249,6 +249,7 @@ var SHY={
  together:{ko:"코리아 빙고 같이 풀어요",en:"Let’s play Korea Bingo together",ja:"コリア・ビンゴ、一緒に解こう",zhs:"一起玩韩国宾果吧",zht:"一起玩韓國賓果吧",es:"¡Juguemos juntos al Bingo de Corea!"},
  play:{ko:"같이 풀기",en:"Play",ja:"一緒に解く",zhs:"一起玩",zht:"一起玩",es:"Jugar"},
  prep:{ko:"공유 링크 만드는 중…",en:"Making your share link…",ja:"共有リンクを作成中…",zhs:"正在生成分享链接…",zht:"正在產生分享連結…",es:"Creando tu enlace…"},
+ sms:{ko:"문자",en:"Text message",ja:"SMS",zhs:"短信",zht:"簡訊",es:"SMS"},
  copy:{ko:"링크 복사",en:"Copy link",ja:"リンクをコピー",zhs:"复制链接",zht:"複製連結",es:"Copiar enlace"},
  copied:{ko:"링크를 복사했어요. 붙여 넣어 보내세요.",en:"Link copied — paste it to send.",ja:"リンクをコピーしました。貼り付けて送ってください。",zhs:"链接已复制，粘贴发送即可。",zht:"連結已複製，貼上傳送即可。",es:"Enlace copiado: pégalo para enviarlo."},
  wechat:{ko:"링크를 복사했어요. 위챗에 붙여 넣으세요.",en:"Link copied — paste it into WeChat.",ja:"リンクをコピーしました。WeChatに貼り付けてください。",zhs:"链接已复制，请粘贴到微信。",zht:"連結已複製，請貼到微信。",es:"Enlace copiado: pégalo en WeChat."},
@@ -279,7 +280,7 @@ function shareResult(){ shDraw().then(function(c){ if(!c){ alert(L(T.err)); retu
   var btn=function(id,bg,lab,fg){ return '<button type="button" data-sh="'+id+'" style="'+BT+';background:'+bg+(fg?';color:'+fg:'')+'">'+esc(lab)+'</button>'; };
   var s=sheet('<h3>'+esc(L(SHX.btn))+'</h3><img src="'+d+'" alt="" style="width:100%;border-radius:12px;margin:6px 0 8px"><div id="shMsg" style="font-size:13px;color:#888;text-align:center;min-height:18px">'+esc(L(SHY.prep))+'</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">'
-    +btn("kakao","#FEE500","KakaoTalk","#3C1E1E")+btn("wa","#25D366","WhatsApp")+btn("line","#06C755","LINE")+btn("tg","#26A5E4","Telegram")
+    +btn("kakao","#FEE500","KakaoTalk","#3C1E1E")+btn("sms","#34C759",L(SHY.sms))+btn("wa","#25D366","WhatsApp")+btn("line","#06C755","LINE")+btn("tg","#26A5E4","Telegram")
     +btn("wechat","#07C160","WeChat")+btn("fb","#1877F2","Facebook")+btn("x","#111","X")+btn("tiktok","#111","TikTok")
     +btn("insta","#d62976","Instagram")+btn("more","#ff7a1a",L(SHX.other))+btn("copy","#6b7280",L(SHY.copy))
     +'<a download="money-puzzle-event.png" href="'+d+'" style="'+BT+';display:block;text-align:center;text-decoration:none;background:#fff;color:#2b2b2b;border:1.5px solid #e0d6cc;box-sizing:border-box">'+esc(L(SHX.save))+'</a></div>'
@@ -290,7 +291,8 @@ function shareResult(){ shDraw().then(function(c){ if(!c){ alert(L(T.err)); retu
   var file=function(){ return new Promise(function(r){ c.toBlob(function(b){ r(new File([b],"money-puzzle-event.png",{type:"image/png"})); },"image/png"); }); };
   [].forEach.call(s.querySelectorAll("[data-sh]"),function(b){ b.onclick=function(){ var k=b.dataset.sh, u=S.page, full=txt+"\n"+u;
     if(k==="x0"){ s.remove(); return; }
-    if(k==="wa") go("https://api.whatsapp.com/send?text="+E(full));
+    if(k==="sms") location.href="sms:?&body="+E(full);   // 문자 (사장님 10-27)
+    else if(k==="wa") go("https://api.whatsapp.com/send?text="+E(full));
     else if(k==="line") go("https://line.me/R/share?text="+E(full));
     else if(k==="tg") go("https://t.me/share/url?url="+E(u)+"&text="+E(txt));
     else if(k==="fb") go("https://www.facebook.com/sharer/sharer.php?u="+E(u));
