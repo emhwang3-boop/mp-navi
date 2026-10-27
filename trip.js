@@ -269,7 +269,7 @@ function sched(H,arr,date,from,mo){ var t=from, p=H, rows=[], lunch=false, dinne
     if(li>=0&&tg-t>=15){ var lr=rows[li], tail=rows.slice(li+1), ln=null, dn=null; tail.forEach(function(r){ if(r.meal==="lunch") ln=r; else if(r.meal==="dinner") dn=r; });
       rows.length=li; var tt=lr.t-(lr.leg?0:0);
       if(ln){ ln.t=tt; rows.push(ln); tt+=60; }
-      var dnBefore=dn&&tt>=17*60; if(dnBefore){ dn.t=tt; rows.push(dn); tt+=60; }
+      var pf=!!PERFK[lr.x.k], dnBefore=dn&&(tt>=17*60||(pf&&Math.max(tt,17*60+30)+60+lr.x.stay<=tg)); if(dnBefore){ dn.t=pf?Math.max(tt,17*60+30):tt; rows.push(dn); tt=dn.t+60; }   // 공연장은 저녁 먹고(17:30~) 공연
       lr.t=tt; var endAt=dn&&!dnBefore?tg-60:tg; lr.st=Math.max(lr.x.stay,endAt-tt); lr.ext=1; rows.push(lr); tt+=lr.st;
       if(dn&&!dnBefore){ dn.t=tt; rows.push(dn); tt+=60; }
       p=dn&&!dnBefore&&dn.r?dn.r:lr.x; t=tt; } }
