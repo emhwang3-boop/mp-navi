@@ -1,42 +1,40 @@
-/* 머니퍼즐 투어 — 구글 로그인 + 내 퍼즐골드(Puzzle Gold, PG) (사장님 2026-10-26)
- *  · ⋮ 메뉴 「로그인 / 내 퍼즐골드」 → 창: 로그인 전 = 「Google로 로그인」 단추(Google Identity Services) · 로그인 뒤 = 잔액·만료 예정·내역·남은 수상 횟수·졸업
+/* 머니퍼즐 투어 — 구글·애플 로그인 + 내 배지 (사장님 2026-10-26, 10-27 배지 창)
+ *  · ⋮ 메뉴 「내 ★배지」(★ = img/rank/star.webp, 10-27 퍼즐골드 창 대체) → 창: 로그인 전 = 구글·애플 로그인 단추 · 로그인 뒤 = 별·큰 별·작은 태양·큰 태양·매일 빙고 1등·주간 1·2·3등·졸업/명예의 전당
  *  · 클라이언트 ID 는 허브 GOOGLE_CLIENT_ID 한 곳(wrangler.toml) — /npg/cfg 로 읽는다. 비어 있으면 단추 「준비 중」
  *  · 받은 ID 토큰은 허브 /npg/login 이 구글 서명까지 검사 → 허브 세션(30일)만 이 브라우저(mpv_pg_sess)에 둔다. 구글 토큰은 저장 안 함
  *  · 기기 번호 = 앱이 이미 쓰는 mpv_dev (같은 기기 다른 계정 수상 경고용) · 사장님 기기(mp_owner)는 own=1 → MIS 합계에서 빠진다
- *  · PG 는 무료 상으로만 — 충전·구매 화면 없음. 이벤트 자체는 아직 없음
  */
 (function(){
 "use strict";
 var PH=window.HUB||"https://brief-live-hub.emhwang3.workers.dev";
 var PG_CID="778127744827-qp5b6m9pnlq2tp38b7b39ghmked0t8mc.apps.googleusercontent.com";   /* 구글 OAuth 클라이언트 ID(웹) — 허브 wrangler.toml GOOGLE_CLIENT_ID 와 같은 값. 허브 값이 우선, 허브가 비면 이 값 */
 var W={
- menu:{ko:"로그인 / 내 퍼즐골드",en:"Sign in / My Puzzle Gold",ja:"ログイン / マイパズルゴールド",zhs:"登录 / 我的 Puzzle Gold",zht:"登入 / 我的 Puzzle Gold",es:"Iniciar sesión / Mi Puzzle Gold"},
- menuIn:{ko:"내 퍼즐골드",en:"My Puzzle Gold",ja:"マイパズルゴールド",zhs:"我的 Puzzle Gold",zht:"我的 Puzzle Gold",es:"Mi Puzzle Gold"},
- title:{ko:"내 퍼즐골드",en:"My Puzzle Gold",ja:"マイパズルゴールド",zhs:"我的 Puzzle Gold",zht:"我的 Puzzle Gold",es:"Mi Puzzle Gold"},
- intro:{ko:"퍼즐골드(PG)는 매주 이벤트 상으로 드리는 앱 전용 포인트입니다. 1등 100 PG · 2등 50 PG · 3등 20 PG. 받은 날부터 1년 동안 이 앱의 유료 결제에만 쓸 수 있으며, 현금으로 바꾸거나 환불되지 않습니다. 상은 한 사람이 3번까지 받을 수 있습니다(3번이면 졸업).",
-  en:"Puzzle Gold (PG) is an in-app point awarded as weekly event prizes: 1st 100 PG · 2nd 50 PG · 3rd 20 PG. It can be used only for paid services in this app for 1 year from the day you receive it, and cannot be exchanged for cash or refunded. One person can win up to 3 times (after 3 wins you graduate).",
-  ja:"パズルゴールド（PG）は毎週のイベント賞品として差し上げるアプリ専用ポイントです。1位 100 PG・2位 50 PG・3位 20 PG。受け取った日から1年間、このアプリの有料決済にのみ使え、現金への交換や払い戻しはできません。受賞は1人3回まで（3回で卒業）です。",
-  zhs:"Puzzle Gold（PG）是每周活动奖品发放的应用专用积分：第1名 100 PG · 第2名 50 PG · 第3名 20 PG。自获得之日起1年内仅可用于本应用的付费服务，不可兑换现金或退款。每人最多可获奖3次（满3次即毕业）。",
-  zht:"Puzzle Gold（PG）是每週活動獎品發放的應用程式專用點數：第1名 100 PG · 第2名 50 PG · 第3名 20 PG。自取得之日起1年內僅可用於本應用程式的付費服務，不可兌換現金或退款。每人最多可得獎3次（滿3次即畢業）。",
-  es:"Puzzle Gold (PG) es un punto de la app que se entrega como premio de los eventos semanales: 1.º 100 PG · 2.º 50 PG · 3.º 20 PG. Solo se puede usar para pagos dentro de esta app durante 1 año desde que lo recibe, y no se puede canjear por dinero ni reembolsar. Cada persona puede ganar hasta 3 veces (con 3 premios se gradúa)."},
- ask:{ko:"구글 또는 애플 계정으로 로그인하면 받은 퍼즐골드를 확인할 수 있습니다.",en:"Sign in with your Google or Apple account to see the Puzzle Gold you have won.",ja:"GoogleまたはAppleアカウントでログインすると、受け取ったパズルゴールドを確認できます。",zhs:"使用Google或Apple账号登录即可查看您获得的 Puzzle Gold。",zht:"使用Google或Apple帳號登入即可查看您獲得的 Puzzle Gold。",es:"Inicie sesión con su cuenta de Google o Apple para ver el Puzzle Gold que ha ganado."},
+ badge:{ko:"내 {s} 배지",en:"My {s} badges",ja:"マイ{s}バッジ",zhs:"我的{s}徽章",zht:"我的{s}徽章",es:"Mis {s} insignias"},
+ intro:{ko:"매일 빙고(그날)와 이번 주 이벤트의 1등은 별 배지를 하나 받습니다. 별 10개는 큰 별, 큰 별 10개는 작은 태양, 작은 태양 10개는 큰 태양이 됩니다. 이번 주 이벤트 1·2·3등 또는 매일 빙고 주간 점수 1·2·3등에 3번 오르면 졸업하고 명예의 전당에 오릅니다.",
+  en:"The 1st place of each Daily Bingo day and of each weekly event gets one star badge. 10 stars become a big star, 10 big stars a small sun, and 10 small suns a big sun. Finish in the top 3 three times (weekly event 1st–3rd or Daily Bingo weekly points 1st–3rd) and you graduate into the Hall of Fame.",
+  ja:"毎日ビンゴ（その日）と今週のイベントの1位は星バッジを1つもらえます。星10個で大きな星、大きな星10個で小さな太陽、小さな太陽10個で大きな太陽になります。今週のイベント1・2・3位、または毎日ビンゴの週間ポイント1・2・3位に3回入ると卒業し、殿堂入りします。",
+  zhs:"每日宾果（当天）和本周活动的第1名获得一枚星星徽章。10颗星变成大星星，10颗大星星变成小太阳，10个小太阳变成大太阳。在本周活动第1·2·3名或每日宾果周积分第1·2·3名中累计进入3次即毕业，并进入名人堂。",
+  zht:"每日賓果（當天）和本週活動的第1名獲得一枚星星徽章。10顆星變成大星星，10顆大星星變成小太陽，10個小太陽變成大太陽。在本週活動第1·2·3名或每日賓果週積分第1·2·3名中累計進入3次即畢業，並進入名人堂。",
+  es:"El 1.º de cada día del Bingo diario y de cada evento semanal recibe una insignia de estrella. 10 estrellas forman una estrella grande, 10 estrellas grandes un sol pequeño y 10 soles pequeños un sol grande. Si quedas entre los 3 primeros tres veces (1.º–3.º del evento semanal o de los puntos semanales del Bingo diario), te gradúas y entras en el Salón de la Fama."},
+ ask:{ko:"구글 또는 애플 계정으로 로그인하면 내 배지와 이벤트 기록을 볼 수 있습니다.",en:"Sign in with your Google or Apple account to see your badges and event record.",ja:"GoogleまたはAppleアカウントでログインすると、自分のバッジとイベント記録を確認できます。",zhs:"使用Google或Apple账号登录即可查看您的徽章和活动记录。",zht:"使用Google或Apple帳號登入即可查看您的徽章和活動紀錄。",es:"Inicie sesión con su cuenta de Google o Apple para ver sus insignias y su historial de eventos."},
+ priv:{ko:"로그인하면 이름·이메일·구글 또는 애플 계정 식별값을 이벤트 순위·배지 표시(아이디 일부 가림)와 부정 참여 방지 목적으로 보관하며, 마지막 이용 후 1년 뒤 삭제합니다.",en:"When you sign in, we keep your name, email and Google or Apple account identifier to show event rankings and badges (with your ID partly hidden) and prevent fraudulent participation, and delete them 1 year after your last use.",ja:"ログインすると、氏名・メールアドレス・GoogleまたはAppleアカウント識別子をイベントの順位・バッジ表示（IDの一部を隠して表示）と不正参加防止のために保管し、最終利用から1年後に削除します。",zhs:"登录后，我们会为显示活动排名和徽章（账号部分隐藏）及防止违规参与保存您的姓名、电子邮箱和Google或Apple账号标识，并在最后一次使用1年后删除。",zht:"登入後，我們會為顯示活動排名和徽章（帳號部分隱藏）及防止不當參與保存您的姓名、電子郵件和Google或Apple帳號識別碼，並在最後一次使用1年後刪除。",es:"Al iniciar sesión guardamos su nombre, correo e identificador de Google o Apple para mostrar la clasificación y las insignias de los eventos (con su ID parcialmente oculto) y prevenir la participación fraudulenta, y los eliminamos 1 año después de su último uso."},
+ star:{ko:"별",en:"Star",ja:"星",zhs:"星星",zht:"星星",es:"Estrella"},
+ bigstar:{ko:"큰 별",en:"Big star",ja:"大きな星",zhs:"大星星",zht:"大星星",es:"Estrella grande"},
+ sun:{ko:"작은 태양",en:"Small sun",ja:"小さな太陽",zhs:"小太阳",zht:"小太陽",es:"Sol pequeño"},
+ bigsun:{ko:"큰 태양",en:"Big sun",ja:"大きな太陽",zhs:"大太阳",zht:"大太陽",es:"Sol grande"},
+ bEv:{ko:"이벤트",en:"Events",ja:"イベント",zhs:"活动",zht:"活動",es:"Eventos"},
+ bKo:{ko:"한국인 판",en:"Korean board",ja:"韓国人ボード",zhs:"韩国人专场",zht:"韓國人專場",es:"Tablero coreano"},
+ wtot:{ko:"1등 {n}회",en:"1st place × {n}",ja:"1位 {n}回",zhs:"第1名 {n}次",zht:"第1名 {n}次",es:"1.er puesto × {n}"},
+ nob:{ko:"아직 받은 배지가 없습니다.",en:"No badges yet.",ja:"まだバッジはありません。",zhs:"暂无徽章。",zht:"尚無徽章。",es:"Aún no tiene insignias."},
+ dw:{ko:"매일 빙고 1등",en:"Daily Bingo 1st place",ja:"毎日ビンゴ1位",zhs:"每日宾果第1名",zht:"每日賓果第1名",es:"1.er puesto en el Bingo diario"},
+ fin:{ko:"주간 1·2·3등",en:"Weekly top-3 finishes",ja:"週間1〜3位",zhs:"每周前三名",zht:"每週前三名",es:"Top 3 semanal"},
+ gradY:{ko:"졸업 — 1·2·3등에 3번 올라 명예의 전당에 올랐습니다.",en:"Graduated — you finished in the top 3 three times and entered the Hall of Fame.",ja:"卒業 — 1〜3位に3回入り、殿堂入りしました。",zhs:"已毕业 — 您已3次进入前三名，进入名人堂。",zht:"已畢業 — 您已3次進入前三名，進入名人堂。",es:"Graduado — ha quedado entre los 3 primeros tres veces y entró en el Salón de la Fama."},
+ hofY:{ko:"명예의 전당에 올랐습니다.",en:"You are in the Hall of Fame.",ja:"殿堂入りしました。",zhs:"您已进入名人堂。",zht:"您已進入名人堂。",es:"Está en el Salón de la Fama."},
+ gradN:{ko:"졸업(명예의 전당)까지 1·2·3등 {n}번 남았습니다.",en:"{n} more top-3 finishes to graduate into the Hall of Fame.",ja:"卒業（殿堂入り）まで、あと{n}回の1〜3位入りです。",zhs:"再进入前三名{n}次即可毕业（进入名人堂）。",zht:"再進入前三名{n}次即可畢業（進入名人堂）。",es:"Le faltan {n} puestos en el top 3 para graduarse en el Salón de la Fama."},
  prep:{ko:"Google로 로그인 (준비 중)",en:"Sign in with Google (coming soon)",ja:"Googleでログイン（準備中）",zhs:"使用Google登录（准备中）",zht:"使用Google登入（準備中）",es:"Iniciar sesión con Google (próximamente)"},
  prepNote:{ko:"로그인 기능을 준비하고 있습니다. 곧 열립니다.",en:"Sign-in is being prepared and will open soon.",ja:"ログイン機能を準備中です。まもなく開始します。",zhs:"登录功能正在准备中，即将开放。",zht:"登入功能正在準備中，即將開放。",es:"El inicio de sesión se está preparando y abrirá pronto."},
- priv:{ko:"로그인하면 이름·이메일·구글 또는 애플 계정 식별값을 퍼즐골드 관리·부정 참여 방지 목적으로 보관하며, 마지막 이용 후 1년 뒤 삭제합니다.",en:"When you sign in, we keep your name, email and Google or Apple account identifier to manage Puzzle Gold and prevent fraudulent participation, and delete them 1 year after your last use.",ja:"ログインすると、氏名・メールアドレス・GoogleまたはAppleアカウント識別子をパズルゴールドの管理・不正参加防止のために保管し、最終利用から1年後に削除します。",zhs:"登录后，我们会为管理 Puzzle Gold 及防止违规参与保存您的姓名、电子邮箱和Google或Apple账号标识，并在最后一次使用1年后删除。",zht:"登入後，我們會為管理 Puzzle Gold 及防止不當參與保存您的姓名、電子郵件和Google或Apple帳號識別碼，並在最後一次使用1年後刪除。",es:"Al iniciar sesión guardamos su nombre, correo e identificador de Google o Apple para gestionar Puzzle Gold y prevenir la participación fraudulenta, y los eliminamos 1 año después de su último uso."},
- nocash:{ko:"퍼즐골드는 이 앱 안에서만 쓰는 가상 포인트입니다. 어떠한 경우에도 현금이나 실제 돈으로 바꾸거나 환불·지급하지 않으며, 다른 사람에게 넘기거나 팔 수 없습니다.",en:"Puzzle Gold is a virtual point used only inside this app. Under no circumstances can it be exchanged for cash or real money, refunded or paid out, and it cannot be transferred or sold to anyone.",ja:"パズルゴールドはこのアプリ内でのみ使う仮想ポイントです。いかなる場合も現金や実際のお金への交換・払い戻し・支払いは行わず、他人への譲渡や販売もできません。",zhs:"Puzzle Gold 是仅限本应用内使用的虚拟积分。在任何情况下都不能兑换成现金或真实货币、不予退款或支付，也不能转让或出售给他人。",zht:"Puzzle Gold 是僅限本應用程式內使用的虛擬點數。在任何情況下都不能兌換成現金或真實貨幣、不予退款或支付，也不能轉讓或出售給他人。",es:"Puzzle Gold es un punto virtual que solo se usa dentro de esta app. En ningún caso se puede canjear por efectivo o dinero real, reembolsar ni pagar, y no se puede transferir ni vender a nadie."},
  privLink:{ko:"개인정보 처리방침",en:"Privacy Policy",ja:"個人情報処理方針",zhs:"隐私政策",zht:"隱私政策",es:"Política de Privacidad"},
- bal:{ko:"잔액",en:"Balance",ja:"残高",zhs:"余额",zht:"餘額",es:"Saldo"},
- soon:{ko:"만료 예정",en:"Expiring",ja:"有効期限",zhs:"即将到期",zht:"即將到期",es:"Vencimientos"},
- hist:{ko:"내역",en:"History",ja:"履歴",zhs:"记录",zht:"紀錄",es:"Historial"},
- left:{ko:"남은 수상 가능 횟수",en:"Wins remaining",ja:"残りの受賞可能回数",zhs:"剩余可获奖次数",zht:"剩餘可得獎次數",es:"Premios restantes"},
  times:{ko:"회",en:"",ja:"回",zhs:"次",zht:"次",es:""},
- grad:{ko:"졸업 — 상을 3번 받아 이벤트 참가가 끝났습니다. 남은 PG는 만료일까지 쓸 수 있습니다.",en:"Graduated — you have won 3 times, so your event participation has ended. Your remaining PG can be used until it expires.",ja:"卒業 — 3回受賞したため、イベント参加は終了しました。残りのPGは有効期限まで使えます。",zhs:"已毕业 — 您已获奖3次，活动参与资格结束。剩余PG可在到期前使用。",zht:"已畢業 — 您已得獎3次，活動參與資格結束。剩餘PG可在到期前使用。",es:"Graduado — ha ganado 3 veces, por lo que su participación en los eventos ha terminado. Puede usar su PG restante hasta que venza."},
- none:{ko:"아직 내역이 없습니다.",en:"No history yet.",ja:"まだ履歴はありません。",zhs:"暂无记录。",zht:"尚無紀錄。",es:"Aún no hay historial."},
- got:{ko:"받음",en:"Won",ja:"受取",zhs:"获得",zht:"獲得",es:"Ganado"},
- used:{ko:"사용",en:"Used",ja:"使用",zhs:"使用",zht:"使用",es:"Usado"},
- gone:{ko:"소멸",en:"Expired",ja:"失効",zhs:"已失效",zht:"已失效",es:"Vencido"},
- rank:{ko:"{n}등",en:"#{n}",ja:"{n}位",zhs:"第{n}名",zht:"第{n}名",es:"{n}.º"},
- until:{ko:"{d}까지",en:"until {d}",ja:"{d}まで",zhs:"至 {d}",zht:"至 {d}",es:"hasta {d}"},
  logout:{ko:"로그아웃",en:"Sign out",ja:"ログアウト",zhs:"退出登录",zht:"登出",es:"Cerrar sesión"},
  close:{ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"},
  load:{ko:"불러오는 중…",en:"Loading…",ja:"読み込み中…",zhs:"加载中…",zht:"載入中…",es:"Cargando…"},
@@ -57,18 +55,21 @@ function css(){ if(document.getElementById("pgCss")) return; var s=document.crea
   s.textContent="#pgBox{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}#pgBox[hidden]{display:none}"
   +"#pgIn{background:var(--card);color:var(--ink);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 16px calc(26px + env(safe-area-inset-bottom,0px));max-height:85vh;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;box-sizing:border-box}"
   +"@media (min-width:700px){#pgBox{align-items:center;padding:7.5vh 16px;box-sizing:border-box}#pgIn{border-radius:18px;max-height:85vh;padding-bottom:22px;box-shadow:0 12px 40px rgba(0,0,0,.3)}}"
-  +"#pgIn h3{margin:0 0 8px;font-size:18px;display:flex;align-items:center;gap:8px}#pgIn h3 img{height:22px;width:22px}#pgIn .pgx{margin-left:auto;border:0;background:none;color:var(--sub);font-size:15px;cursor:pointer}"
+  +"#pgIn h3{margin:0 0 8px;font-size:18px;display:flex;align-items:center;gap:8px}#pgIn h3 img{flex:none}#pgIn .pgx{margin-left:auto;border:0;background:none;color:var(--sub);font-size:15px;cursor:pointer}"
   +"#pgIn .pgp{color:var(--sub);font-size:13px;line-height:1.55;margin:8px 0}#pgIn .pgbal{background:linear-gradient(135deg,#ffe8a3,#f7c948);color:#4a3500;border-radius:14px;padding:14px;margin:10px 0}"
   +"#pgIn .pgbal b{display:block;font-size:30px;line-height:1.1}#pgIn .pgbal span{font-size:13px}#pgIn .pgrow{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}"
   +"#pgIn .pgrow small{color:var(--sub)}#pgIn .pgsec{font-weight:700;margin:14px 0 4px;font-size:14px}#pgIn .pggrad{background:#e7f5ff;color:#1c4f7a;border-radius:10px;padding:10px;font-size:13px;margin:8px 0}"
   +":root[data-theme=dark] #pgIn .pggrad{background:#1b2b3d;color:#a5d8ff}#pgIn .pgbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 16px;font-size:14px;cursor:pointer}"
-  +"#pgIn .pgbtn[disabled]{opacity:.6;cursor:default}#pgIn .pgplus{color:#2b8a3e;font-weight:700}#pgIn .pgminus{color:#c92a2a;font-weight:700}#pgIn .pgdim{color:var(--sub)}#pgGbtn{margin:12px 0 6px;min-height:44px}#pgAbtn{margin:0 0 12px;min-height:44px}#appleid-signin{width:240px;height:40px;cursor:pointer}";
+  +"#pgIn .pgbtn[disabled]{opacity:.6;cursor:default}#pgIn .pgplus{color:#2b8a3e;font-weight:700}#pgIn .pgminus{color:#c92a2a;font-weight:700}#pgIn .pgdim{color:var(--sub)}#pgGbtn{margin:12px 0 6px;min-height:44px}#pgAbtn{margin:0 0 12px;min-height:44px}#appleid-signin{width:240px;height:40px;cursor:pointer}"
+  +"#pgIn .pgbd{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:6px 0 2px}#pgIn .pgbd div{background:var(--line);border-radius:12px;padding:8px 2px;text-align:center;font-size:11px;color:var(--sub)}"
+  +"#pgIn .pgbd img{width:32px;height:32px;display:block;margin:0 auto 4px}#pgIn .pgbd b{display:block;font-size:18px;color:var(--ink)}#pgIn .pgdim0{opacity:.35}";
   document.head.appendChild(s); }
 function box(){ var b=document.getElementById("pgBox"); if(b) return b; css(); b=document.createElement("div"); b.id="pgBox"; b.hidden=true; b.innerHTML='<div id="pgIn"></div>';
   b.addEventListener("click",function(e){ if(e.target===b) close(); var a=e.target.closest&&e.target.closest("[data-pg]"); if(!a) return; var k=a.dataset.pg; if(k==="x") close(); else if(k==="out") logout(); });
   document.body.appendChild(b); return b; }
-function head(){ return '<h3><img src="img/menu/mi_star.png" alt="">'+esc(t("title"))+'<button type="button" class="pgx" data-pg="x">'+esc(t("close"))+' ✕</button></h3>'; }
-function privHtml(){ return '<div class="pgp">'+esc(t("priv"))+' <a href="privacy.html?lang='+esc(lg())+'" target="_blank" rel="noopener">'+esc(t("privLink"))+'</a></div><div class="pgp" style="font-weight:700">'+esc(t("nocash"))+'</div>'; }   /* 이벤트 규칙 5번 — 창 맨 아래 (사장님 10-26) */
+function ttl(px){ return esc(t("badge")).split("{s}").join('<img src="img/rank/star.webp" alt="" style="width:'+px+'px;height:'+px+'px;vertical-align:-2px;margin:0 1px">'); }   /* 「내 ★배지」 — ★ = 별 그림 (10-27) */
+function head(){ return '<h3><span>'+ttl(20)+'</span><button type="button" class="pgx" data-pg="x">'+esc(t("close"))+' ✕</button></h3>'; }
+function privHtml(){ return '<div class="pgp">'+esc(t("priv"))+' <a href="privacy.html?lang='+esc(lg())+'" target="_blank" rel="noopener">'+esc(t("privLink"))+'</a></div>'; }
 function close(){ var b=document.getElementById("pgBox"); if(b) b.hidden=true; }
 var GIS=null;
 function gisLoad(){ if(window.google&&google.accounts&&google.accounts.id) return Promise.resolve(); if(GIS) return GIS;
@@ -107,18 +108,18 @@ function login(b){ var I=document.getElementById("pgIn"); if(I) I.innerHTML=head
     .catch(function(){ paintLogin(t("lerr")); }); }
 function onCred(r){ login({cred:r&&r.credential}); }
 function logout(){ ls("mpv_pg_sess",null); try{ if(window.google&&google.accounts&&google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){} menuPaint(); paintLogin(); }
-function paintMe(m){ var I=document.getElementById("pgIn"); if(!I||!m) return;
-  var h=head()+'<div class="pgp" style="color:var(--ink)">'+esc(m.name||"")+(m.email?' <span class="pgdim">· '+esc(m.email)+'</span>':'')+'</div>'
-    +'<div class="pgbal"><span>'+esc(t("bal"))+'</span><b>'+(m.bal||0).toLocaleString()+' PG</b></div>';
-  h+= m.grad?'<div class="pggrad">'+esc(t("grad"))+'</div>':'<div class="pgrow"><span>'+esc(t("left"))+'</span><b>'+m.left+(t("times")?' '+esc(t("times")):'')+' / 3</b></div>';
-  if(m.soon&&m.soon.length){ h+='<div class="pgsec">'+esc(t("soon"))+'</div>'; m.soon.forEach(function(s){ h+='<div class="pgrow"><span>'+s.amt.toLocaleString()+' PG</span><small>'+esc(t("until",{d:day(s.exp)}))+'</small></div>'; }); }
-  h+='<div class="pgsec">'+esc(t("hist"))+'</div>';
-  if(!m.hist||!m.hist.length) h+='<div class="pgp">'+esc(t("none"))+'</div>';
-  else m.hist.forEach(function(x){
-    if(x.t==="g") h+='<div class="pgrow"><span>'+esc(day(x.at))+' · '+esc(x.ev||"")+' · '+esc(t("rank",{n:x.rk}))+'<br><small>'+(x.st==="exp"?esc(t("gone")):esc(t("until",{d:day(x.exp)})))+'</small></span><span class="'+(x.st==="exp"?"pgdim":"pgplus")+'">+'+x.amt+' PG<br><small>'+esc(x.st==="exp"?t("gone"):t("got"))+'</small></span></div>';
-    else h+='<div class="pgrow"><span>'+esc(day(x.at))+(x.memo?' · '+esc(x.memo):'')+'</span><span class="pgminus">−'+x.amt+' PG<br><small>'+esc(t("used"))+'</small></span></div>'; });
+function bdRow(n,lab){ n=n||0; var K=[["bigsun",Math.floor(n/1000)],["sun",Math.floor(n/100)%10],["bigstar",Math.floor(n/10)%10],["star",n%10]];
+  return (lab?'<div class="pgsec">'+esc(lab)+'</div>':'')+'<div class="pgbd">'+K.map(function(k){ return '<div'+(k[1]?'':' class="pgdim0"')+'><img src="img/rank/'+k[0]+'.webp" alt=""><b>'+k[1]+'</b>'+esc(t(k[0]))+'</div>'; }).join("")+'</div><div class="pgp" style="text-align:right;margin:2px 0 6px">'+esc(t("wtot",{n:n.toLocaleString()}))+'</div>'; }
+function paintMe(m){ var I=document.getElementById("pgIn"); if(!I||!m) return;   /* 내 배지 (10-27) — /npg/me 의 wins·twins·kwins·dw·fin·gr·hof */
+  var fw=(m.wins||0)+(m.twins||0), kw=m.kwins||0, fin=m.fin||0, tm=t("times")?' '+esc(t("times")):'';
+  var h=head()+'<div class="pgp" style="color:var(--ink)">'+esc(m.name||"")+(m.email?' <span class="pgdim">· '+esc(m.email)+'</span>':'')+'</div>';
+  if(!fw&&!kw) h+='<div class="pgp">'+esc(t("nob"))+'</div>'+bdRow(0,"");
+  else { if(fw) h+=bdRow(fw,kw?t("bEv"):""); if(kw) h+=bdRow(kw,fw?t("bKo"):""); }
+  h+='<div class="pgrow"><span>'+esc(t("dw"))+'</span><b>'+(m.dw||0)+tm+'</b></div><div class="pgrow"><span>'+esc(t("fin"))+'</span><b>'+fin+tm+'</b></div>';
+  h+= m.gr?'<div class="pggrad">'+esc(t("gradY"))+'</div>':(m.hof?'<div class="pggrad">'+esc(t("hofY"))+'</div>':'')+'<div class="pgp">'+esc(t("gradN",{n:Math.max(1,3-fin)}))+'</div>';
   h+='<div class="pgp" style="margin-top:12px">'+esc(t("intro"))+'</div>'+privHtml()+'<div style="margin-top:10px"><button type="button" class="pgbtn" data-pg="out">'+esc(t("logout"))+'</button></div>';
   I.innerHTML=h; }
+window.mpPGpaint=function(m){ box().hidden=false; paintMe(m); };   /* 화면 점검용 — 그리기만 */
 function open(){ var b=box(); b.hidden=false; var s=ls("mpv_pg_sess"), I=document.getElementById("pgIn");
   if(!s){ paintLogin(); return; }
   I.innerHTML=head()+'<div class="pgp">'+esc(t("load"))+'</div>';
@@ -126,7 +127,7 @@ function open(){ var b=box(); b.hidden=false; var s=ls("mpv_pg_sess"), I=documen
     .catch(function(){ I.innerHTML=head()+'<div class="pgp">'+esc(t("err"))+'</div>'; }); }
 function menuPaint(){ var mm=document.getElementById("mm"); if(!mm) return; var a=document.getElementById("mpg");
   if(!a){ a=document.createElement("a"); a.id="mpg"; a.href="#"; a.className="mi"; a.onclick=function(e){ e.preventDefault(); try{ document.getElementById("mm").hidden=true; }catch(x){} open(); }; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); }
-  a.innerHTML='<img class="miic" src="img/menu/mi_star.png" alt="">'+esc(ls("mpv_pg_sess")?t("menuIn"):t("menu")); }
+  a.innerHTML='<img class="miic" src="img/menu/mi_star.png" alt="">'+ttl(16); }
 var f=window.setLang; if(typeof f==="function"&&!f._pg){ var g=function(){ var r=f.apply(this,arguments); try{ menuPaint(); var b=document.getElementById("pgBox"); if(b&&!b.hidden) open(); }catch(e){} return r; }; g._pg=1; g._tr=f._tr; window.setLang=g; }
 menuPaint();
 window.mpPG={open:open,close:close};
