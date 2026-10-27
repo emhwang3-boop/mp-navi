@@ -26,7 +26,7 @@ window.__mpSrcOf=function(ua,q,ref,self){ try{ var m, h="", res="";
   if(ref){ m=/^android-app:\/\/([^\/?#]+)/i.exec(ref); if(m) h=m[1].toLowerCase(); else { m=/^[a-z][a-z0-9+.-]*:\/\/([^\/?#:]+)/i.exec(ref); h=m?m[1].toLowerCase():"?"; } }
   if(h){ var R=[[/(^|\.)line\.me$|jp\.naver\.line/,"line"],[/(^|\.)(facebook\.com|fb\.com|fb\.me)$|^com\.facebook/,"facebook"],[/(^|\.)instagram\.com$|^com\.instagram/,"instagram"],[/^t\.co$|(^|\.)(x\.com|twitter\.com)$|^com\.twitter/,"x"],[/kakao/,"kakao"],[/(^|\.)google\.[a-z.]+$|^com\.google\.android/,"google"],[/(^|\.)naver\.(com|me)$|^com\.nhn|^com\.naver/,"naver"],[/(^|\.)daum\.net$|daum/,"daum"],[/(^|\.)(linkedin\.com|lnkd\.in)$|^com\.linkedin/,"linkedin"],[/whatsapp/,"whatsapp"],[/(^|\.)tiktok\.com$|musically|ss\.android\.ugc/,"tiktok"],[/(^|\.)(weixin\.qq\.com|wechat\.com)$|^com\.tencent\.mm/,"wechat"],[/(^|\.)bing\.com$/,"bing"],[/yahoo/,"yahoo"]];
     if(h===self) res="internal"; else if(/(^|\.)moneypuzzle\.co\.kr$|^emhwang3-boop\.github\.io$/.test(h)) res="home"; else { for(var j=0;j<R.length&&!res;j++) if(R[j][0].test(h)) res=R[j][1]; if(!res) res="other_ref"; } }
-  if(res&&res!=="other_ref") return res;
+  if(res&&res!=="other_ref"&&res!=="internal") return res;
   if(/[?&]src=pwa(?![0-9a-z])/i.test(q)) return "pwa";
   if(/[?&]bs=/i.test(q)) return "bingo_share";
   return res||"direct"; }catch(e){ return "other"; } };
