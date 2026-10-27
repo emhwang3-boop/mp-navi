@@ -303,7 +303,7 @@ function bbMk(){ var mz=document.getElementById("mz"); if(!mz||document.getEleme
   bb.addEventListener("click",go,false); bb.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" ") go(e); },false);
   ["pointerdown","mousedown","touchstart"].forEach(function(ev){ bb.addEventListener(ev,function(e){ e.stopPropagation(); },false); });
   bbPaint(); }
-function bbPaint(){ if(!bb) return; var L2=OPEN?[["EVENT OPEN",""],[BBK[KIND]||"EVENT",""],["Win Puzzle Gold\n100 · 50 · 20","g"]]:BBT_CLOSE, t=bb.querySelector(".ebt");
+function bbPaint(){ if(!bb) return; var L2=OPEN?(TESTF?[["TEST BINGO",""],["No prizes\nTest only","g"],["New questions\nevery day",""]]:[["EVENT OPEN",""],[BBK[KIND]||"EVENT",""],["Win Puzzle Gold\n100 · 50 · 20","g"]]):BBT_CLOSE, t=bb.querySelector(".ebt");
   t.innerHTML=L2.map(function(x,i){ var ls=x[0].split("\n"), w=Math.max.apply(null,ls.map(function(q){ return q.length; })), fs="min("+(92/(w*0.68)).toFixed(1)+"cqw,"+(86/(ls.length*1.08)).toFixed(1)+"cqh)"; return '<b class="'+x[1]+'" style="font-size:'+fs+'">'+esc(x[0])+'</b>'; }).join("");
   bbI=0; bbStep(); }
 function bbStep(){ if(!bb) return; var bs=bb.querySelectorAll(".ebt b"); [].forEach.call(bs,function(b,i){ b.classList.toggle("on",i===bbI%bs.length); }); bbI++; }
