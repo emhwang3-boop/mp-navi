@@ -19,7 +19,7 @@ var T={
  same:{ko:"모두 같은 판",en:"Same board for everyone",ja:"全員同じボード",zhs:"所有人同一张卡",zht:"所有人同一張卡",es:"El mismo cartón para todos"},
  ends:{ko:"마감 일 24:00",en:"Ends Sun 24:00 KST",ja:"締切 日 24:00",zhs:"截止 周日 24:00",zht:"截止 週日 24:00",es:"Cierra dom 24:00 KST"},
  closed:{ko:"Event Close — 첫 이벤트 준비 중",en:"Event Close — the first event is being prepared",ja:"Event Close — 最初のイベントを準備中",zhs:"Event Close — 首个活动准备中",zht:"Event Close — 首個活動準備中",es:"Event Close — preparando el primer evento"},
- pgsum:{ko:"상: 1등 100 · 2등 50 · 3등 20 퍼즐골드(PG·가상머니). PG는 이 앱 결제에만 1년 동안 쓰는 가상 포인트이며 현금으로 바꿀 수 없습니다. 상은 한 사람 3번까지(졸업).",en:"Prizes: 1st 100 · 2nd 50 · 3rd 20 Puzzle Gold (PG, virtual money — not real gold). PG is a virtual point for payments in this app for 1 year and cannot be exchanged for cash. Up to 3 wins per person (then you graduate).",ja:"賞品：1位100・2位50・3位20パズルゴールド（PG・仮想マネー）。PGはこのアプリの決済に1年間使える仮想ポイントで、現金には交換できません。受賞は1人3回まで（卒業）。",zhs:"奖品：第1名100 · 第2名50 · 第3名20 Puzzle Gold（PG，虚拟货币）。PG是1年内仅可用于本应用付款的虚拟积分，不能兑换现金。每人最多获奖3次（毕业）。",zht:"獎品：第1名100 · 第2名50 · 第3名20 Puzzle Gold（PG，虛擬貨幣）。PG是1年內僅可用於本應用程式付款的虛擬點數，不能兌換現金。每人最多得獎3次（畢業）。",es:"Premios: 1.º 100 · 2.º 50 · 3.º 20 Puzzle Gold (PG, dinero virtual — no es oro real). PG es un punto virtual para pagos en esta app durante 1 año y no se canjea por dinero. Máximo 3 premios por persona (luego te gradúas)."},
+ pgsum:{ko:"상: 이번 주 이벤트 1등 100 · 2등 50 · 3등 20 퍼즐골드(PG·가상머니), 매일 빙고는 한 주 점수 합계 20점 20 PG · 50점 50 PG · 70점 100 PG. PG는 이 앱 결제에만 1년 동안 쓰는 가상 포인트이며 현금으로 바꿀 수 없습니다. 큰 상은 한 사람 3번까지(졸업).",en:"Prizes: weekly event 1st 100 · 2nd 50 · 3rd 20 Puzzle Gold (PG, virtual money — not real gold); Daily Bingo pays by weekly points: 20 pts → 20 PG · 50 pts → 50 PG · 70 pts → 100 PG. PG is a virtual point for payments in this app for 1 year and cannot be exchanged for cash. Up to 3 big prizes per person (then you graduate).",ja:"賞品：今週のイベントは1位100・2位50・3位20パズルゴールド（PG・仮想マネー）、毎日ビンゴは週間ポイント合計20点で20 PG・50点で50 PG・70点で100 PG。PGはこのアプリの決済に1年間使える仮想ポイントで、現金には交換できません。大きな賞は1人3回まで（卒業）。",zhs:"奖品：本周活动第1名100 · 第2名50 · 第3名20 Puzzle Gold（PG，虚拟货币）；每日宾果按周积分合计：20分得20 PG · 50分得50 PG · 70分得100 PG。PG是1年内仅可用于本应用付款的虚拟积分，不能兑换现金。大奖每人最多3次（毕业）。",zht:"獎品：本週活動第1名100 · 第2名50 · 第3名20 Puzzle Gold（PG，虛擬貨幣）；每日賓果按週積分合計：20分得20 PG · 50分得50 PG · 70分得100 PG。PG是1年內僅可用於本應用程式付款的虛擬點數，不能兌換現金。大獎每人最多3次（畢業）。",es:"Premios: evento semanal 1.º 100 · 2.º 50 · 3.º 20 Puzzle Gold (PG, dinero virtual — no es oro real); el Bingo diario paga por puntos semanales: 20 pts → 20 PG · 50 pts → 50 PG · 70 pts → 100 PG. PG es un punto virtual para pagos en esta app durante 1 año y no se canjea por dinero. Máximo 3 premios grandes por persona (luego te gradúas)."},
  mypg:{ko:"내 퍼즐골드",en:"My Puzzle Gold",ja:"マイパズルゴールド",zhs:"我的 Puzzle Gold",zht:"我的 Puzzle Gold",es:"Mi Puzzle Gold"},
  rules:{ko:"이벤트 규칙",en:"Event rules",ja:"イベント規約",zhs:"活动规则",zht:"活動規則",es:"Reglas del evento"},
  agree:{ko:"동의하고 참가",en:"Agree and join",ja:"同意して参加",zhs:"同意并参加",zht:"同意並參加",es:"Aceptar y participar"},
@@ -38,20 +38,21 @@ var T={
  last:{ko:"지난주 결과",en:"Last week’s results",ja:"先週の結果",zhs:"上周结果",zht:"上週結果",es:"Resultados de la semana pasada"},
  lnN:{ko:"줄",en:"lines",ja:"列",zhs:"线",zht:"線",es:"líneas"},
  grad:{ko:"상을 3번 받아 졸업했어요 — 판은 즐길 수 있지만 순위에는 들어가지 않아요.",en:"You’ve won 3 times and graduated — you can still play, but you won’t be ranked.",ja:"3回受賞して卒業しました — プレイはできますが順位には入りません。",zhs:"你已获奖3次并毕业 — 仍可游玩，但不计入排名。",zht:"你已得獎3次並畢業 — 仍可遊玩，但不計入排名。",es:"Ya ganaste 3 veces y te graduaste: puedes jugar, pero no entras en la clasificación."},
+ gradD:{ko:"상을 3번 받아 졸업했어요 — 상금은 더 없지만 점수·순위·별은 계속 쌓여요.",en:"You’ve won 3 big prizes and graduated — no more prizes, but your points, ranking and stars still count.",ja:"大きな賞を3回受賞して卒業しました — 賞品はもうありませんが、ポイント・順位・星は引き続き記録されます。",zhs:"你已获得3次大奖并毕业 — 不再有奖品，但积分、排名和星星仍会累积。",zht:"你已獲得3次大獎並畢業 — 不再有獎品，但積分、排名和星星仍會累積。",es:"Ya ganaste 3 premios grandes y te graduaste: no hay más premios, pero tus puntos, clasificación y estrellas siguen contando."},
  err:{ko:"잠시 뒤 다시 해 주세요.",en:"Please try again in a moment.",ja:"少し後でもう一度お試しください。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo de nuevo en un momento."},
  x:{ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"},
  load:{ko:"불러오는 중…",en:"Loading…",ja:"読み込み中…",zhs:"加载中…",zht:"載入中…",es:"Cargando…"}
 };
 // 이벤트 규칙 (사장님 10-26 확정 문구 — 한국어 기준, 6개 언어)
 var RULES=[
- {ko:"이벤트는 매주 월요일 0시부터 일요일 24시(한국 시간)까지 열립니다.",en:"The event runs every week from Monday 00:00 to Sunday 24:00 (Korea time).",ja:"イベントは毎週月曜0時から日曜24時（韓国時間）まで開催されます。",zhs:"活动每周一0点至周日24点（韩国时间）进行。",zht:"活動每週一0點至週日24點（韓國時間）進行。",es:"El evento se celebra cada semana del lunes 00:00 al domingo 24:00 (hora de Corea)."},
+ {ko:"이번 주 이벤트는 매주 월요일 0시부터 일요일 24시(한국 시간)까지 열리고, 매일 빙고는 매일 한국 시간 0시에 새 판으로 열립니다.",en:"The weekly event runs every week from Monday 00:00 to Sunday 24:00 (Korea time); Daily Bingo opens a new board every day at 00:00 Korea time.",ja:"今週のイベントは毎週月曜0時から日曜24時（韓国時間）まで、毎日ビンゴは毎日韓国時間0時に新しいボードで開かれます。",zhs:"本周活动每周一0点至周日24点（韩国时间）进行；每日宾果每天韩国时间0点开放新卡。",zht:"本週活動每週一0點至週日24點（韓國時間）進行；每日賓果每天韓國時間0點開放新卡。",es:"El evento semanal se celebra cada semana del lunes 00:00 al domingo 24:00 (hora de Corea); el Bingo diario abre un cartón nuevo cada día a las 00:00, hora de Corea."},
  {ko:"구글 계정으로 로그인한 사람만 참가할 수 있으며, 한 사람은 한 계정으로만 참가합니다.",en:"Only people signed in with a Google account can take part, and each person may join with one account only.",ja:"Googleアカウントでログインした人のみ参加でき、1人1アカウントでのみ参加できます。",zhs:"仅限使用Google账号登录者参加，每人只能用一个账号参加。",zht:"僅限使用Google帳號登入者參加，每人只能用一個帳號參加。",es:"Solo pueden participar personas con sesión iniciada en una cuenta de Google, y cada persona solo con una cuenta."},
  {b:1,ko:"대한민국에 거주하는 분은 참가할 수 없습니다. 한국에서 접속하거나 VPN·프록시를 쓰면 참가가 막히며, 한국 거주자로 확인되면 상과 퍼즐골드를 취소합니다.",en:"Residents of the Republic of Korea may not take part. Entry is blocked when connecting from Korea or through a VPN/proxy, and prizes and Puzzle Gold will be cancelled if a winner is found to live in Korea.",ja:"大韓民国にお住まいの方は参加できません。韓国からの接続やVPN・プロキシ経由では参加できず、韓国在住と確認された場合は賞とパズルゴールドを取り消します。",zhs:"居住在大韩民国的人士不能参加。从韩国连接或使用VPN/代理时将无法参加；如确认为韩国居民，将取消奖项及 Puzzle Gold。",zht:"居住在大韓民國的人士不能參加。從韓國連線或使用VPN/代理時將無法參加；如確認為韓國居民，將取消獎項及 Puzzle Gold。",es:"No pueden participar los residentes de la República de Corea. La participación se bloquea si te conectas desde Corea o mediante una VPN o proxy, y se cancelarán los premios y el Puzzle Gold si se confirma que el ganador reside en Corea."},
  {ko:"순위 정하는 방법은 이벤트마다 그 이벤트 화면에 따로 안내합니다. 마감 뒤 서버가 자동으로 판정하며, 사진처럼 심사가 필요한 이벤트는 회사가 뽑습니다.",en:"How winners are ranked is explained separately on each event’s screen. The server judges automatically after closing; for events that need judging, such as photo events, the company selects the winners.",ja:"順位の決め方はイベントごとにそのイベント画面で別途ご案内します。締切後にサーバーが自動で判定し、写真のように審査が必要なイベントは会社が選びます。",zhs:"排名方式在每个活动的画面中另行说明。截止后由服务器自动判定；像照片这类需要评审的活动，由公司评选。",zht:"排名方式在每個活動的畫面中另行說明。截止後由伺服器自動判定；像照片這類需要評審的活動，由公司評選。",es:"La forma de clasificar se explica por separado en la pantalla de cada evento. El servidor decide automáticamente tras el cierre; en eventos que requieren jurado, como los de fotos, la empresa elige a los ganadores."},
- {ko:"상은 1등 100 PG, 2등 50 PG, 3등 20 PG 「퍼즐골드(Puzzle Gold)」로 지급합니다.",en:"Prizes are paid in Puzzle Gold: 1st 100 PG, 2nd 50 PG, 3rd 20 PG.",ja:"賞品は「パズルゴールド（Puzzle Gold）」で、1位100 PG、2位50 PG、3位20 PGを付与します。",zhs:"奖品以“Puzzle Gold（拼图金）”发放：第1名100 PG，第2名50 PG，第3名20 PG。",zht:"獎品以「Puzzle Gold（拼圖金）」發放：第1名100 PG，第2名50 PG，第3名20 PG。",es:"Los premios se pagan en Puzzle Gold: 1.º 100 PG, 2.º 50 PG, 3.º 20 PG."},
+ {ko:"상은 「퍼즐골드(Puzzle Gold)」로 지급합니다. 이번 주 이벤트는 1등 100 PG, 2등 50 PG, 3등 20 PG이고, 매일 빙고는 한 주 점수 합계가 20점 이상이면 20 PG, 50점 이상 50 PG, 70점 이상 100 PG(가장 높은 하나만)입니다.",en:"Prizes are paid in Puzzle Gold. Weekly event: 1st 100 PG, 2nd 50 PG, 3rd 20 PG. Daily Bingo: a weekly points total of 20+ earns 20 PG, 50+ earns 50 PG, 70+ earns 100 PG (only the highest one).",ja:"賞品は「パズルゴールド（Puzzle Gold）」で付与します。今週のイベントは1位100 PG、2位50 PG、3位20 PG、毎日ビンゴは週間ポイント合計が20点以上で20 PG、50点以上で50 PG、70点以上で100 PG（最も高い1つのみ）です。",zhs:"奖品以“Puzzle Gold（拼图金）”发放。本周活动：第1名100 PG，第2名50 PG，第3名20 PG；每日宾果：周积分合计20分以上得20 PG，50分以上得50 PG，70分以上得100 PG（只取最高一档）。",zht:"獎品以「Puzzle Gold（拼圖金）」發放。本週活動：第1名100 PG，第2名50 PG，第3名20 PG；每日賓果：週積分合計20分以上得20 PG，50分以上得50 PG，70分以上得100 PG（只取最高一檔）。",es:"Los premios se pagan en Puzzle Gold. Evento semanal: 1.º 100 PG, 2.º 50 PG, 3.º 20 PG. Bingo diario: con 20 o más puntos semanales, 20 PG; con 50 o más, 50 PG; con 70 o más, 100 PG (solo el más alto)."},
  {b:1,ko:"퍼즐골드는 이 앱 안에서만 쓰는 가상 포인트입니다. 어떠한 경우에도 현금이나 실제 돈으로 바꾸거나 환불·지급하지 않으며, 다른 사람에게 넘기거나 팔 수 없습니다.",en:"Puzzle Gold is a virtual point used only inside this app. Under no circumstances can it be exchanged for cash or real money, refunded or paid out, and it cannot be transferred or sold to anyone.",ja:"パズルゴールドはこのアプリ内でのみ使う仮想ポイントです。いかなる場合も現金や実際のお金への交換・払い戻し・支払いは行わず、他人への譲渡や販売もできません。",zhs:"Puzzle Gold 是仅限本应用内使用的虚拟积分。在任何情况下都不能兑换成现金或真实货币、不予退款或支付，也不能转让或出售给他人。",zht:"Puzzle Gold 是僅限本應用程式內使用的虛擬點數。在任何情況下都不能兌換成現金或真實貨幣、不予退款或支付，也不能轉讓或出售給他人。",es:"Puzzle Gold es un punto virtual que solo se usa dentro de esta app. En ningún caso se puede canjear por efectivo o dinero real, reembolsar ni pagar, y no se puede transferir ni vender a nadie."},
  {ko:"퍼즐골드는 받은 날부터 1년 동안 이 앱의 유료 결제에만 쓸 수 있고, 기간이 지나면 자동으로 사라집니다.",en:"Puzzle Gold can be used only for paid purchases in this app for 1 year from the day you receive it, and disappears automatically after that.",ja:"パズルゴールドは受け取った日から1年間、このアプリの有料決済にのみ使え、期間が過ぎると自動的に消滅します。",zhs:"Puzzle Gold 自获得之日起1年内仅可用于本应用的付费消费，过期自动失效。",zht:"Puzzle Gold 自取得之日起1年內僅可用於本應用程式的付費消費，過期自動失效。",es:"Puzzle Gold solo se puede usar en compras de pago de esta app durante 1 año desde que lo recibes, y luego desaparece automáticamente."},
- {ko:"한 사람이 상을 3번 받으면 이벤트 참가가 끝납니다(졸업).",en:"Once a person has won 3 times, their participation in the event ends (graduation).",ja:"1人が3回受賞するとイベントへの参加は終了します（卒業）。",zhs:"每人获奖3次后即结束参加活动（毕业）。",zht:"每人得獎3次後即結束參加活動（畢業）。",es:"Cuando una persona gana 3 veces, termina su participación en el evento (graduación)."},
+ {ko:"큰 상(매일 빙고 주간 점수 상 · 이번 주 이벤트 1·2·3등)을 3번 받으면 상금 참가가 끝나며(졸업), 명예의 전당에 오릅니다. 졸업한 뒤에도 게임·점수·별은 계속됩니다.",en:"After winning 3 big prizes (Daily Bingo weekly points prizes or weekly event 1st–3rd), you can no longer win prizes (graduation) and join the Hall of Fame. You can still play and collect points and stars.",ja:"大きな賞（毎日ビンゴの週間ポイント賞・今週のイベント1・2・3位）を3回受けると賞品への参加は終了し（卒業）、殿堂入りします。卒業後もゲーム・ポイント・星は続きます。",zhs:"获得3次大奖（每日宾果周积分奖 · 本周活动第1·2·3名）后即不再获奖（毕业），并进入名人堂。毕业后仍可继续游戏、累积积分和星星。",zht:"獲得3次大獎（每日賓果週積分獎 · 本週活動第1·2·3名）後即不再得獎（畢業），並進入名人堂。畢業後仍可繼續遊戲、累積積分和星星。",es:"Tras ganar 3 premios grandes (premios por puntos semanales del Bingo diario o 1.º–3.º del evento semanal) ya no puedes ganar premios (graduación) y entras en el Salón de la Fama. Puedes seguir jugando y sumando puntos y estrellas."},
  {ko:"여러 계정 사용, 프로그램 사용 등 부정한 방법이 확인되면 상과 퍼즐골드를 취소할 수 있습니다.",en:"If cheating such as using multiple accounts or automated programs is found, prizes and Puzzle Gold may be cancelled.",ja:"複数アカウントの使用やプログラムの使用など不正な方法が確認された場合、賞品とパズルゴールドを取り消すことがあります。",zhs:"如发现使用多个账号、程序等不正当手段，可取消奖品和 Puzzle Gold。",zht:"如發現使用多個帳號、程式等不正當手段，可取消獎品和 Puzzle Gold。",es:"Si se detectan trampas como usar varias cuentas o programas automáticos, se pueden anular los premios y el Puzzle Gold."},
  {ko:"회사는 이벤트 내용과 일정을 바꾸거나 중단할 수 있으며, 바뀐 내용은 이 화면에 알립니다.",en:"The company may change or stop the event’s content and schedule, and will announce any changes on this screen.",ja:"会社はイベントの内容や日程を変更・中止することがあり、変更内容はこの画面でお知らせします。",zhs:"公司可变更或中止活动内容及日程，变更内容将在本画面公告。",zht:"公司可變更或中止活動內容及日程，變更內容將在本畫面公告。",es:"La empresa puede cambiar o detener el contenido y el calendario del evento, y avisará de los cambios en esta pantalla."},
  {ko:"문의: 앱 안 문의(고객의 소리) / 회사 이메일 emhwang3@moneypuzzle.co.kr (주식회사 부만)",en:"Contact: in-app inquiry (Customer Voice) / company email emhwang3@moneypuzzle.co.kr (주식회사 부만)",ja:"お問い合わせ：アプリ内のお問い合わせ（お客様の声）／会社メール emhwang3@moneypuzzle.co.kr (주식회사 부만)",zhs:"咨询：应用内咨询（顾客之声）/ 公司邮箱 emhwang3@moneypuzzle.co.kr (주식회사 부만)",zht:"諮詢：應用程式內諮詢（顧客之聲）/ 公司信箱 emhwang3@moneypuzzle.co.kr (주식회사 부만)",es:"Contacto: consulta en la app (La voz del cliente) / correo de la empresa emhwang3@moneypuzzle.co.kr (주식회사 부만)"},
@@ -66,7 +67,7 @@ var RULES=[
 ];
 // 이번 주 순위 방법 — 이벤트 종류별 설정값 (허브 board.kind). 보물상자·명소 맞히기·사진 등은 나중에 여기 값만 더한다 (사장님 10-26)
 var RANKHOW={
- bingo:{ko:"24칸을 모두 맞힌 사람 중, 첫 문제부터 다 맞힐 때까지 걸린 시간이 짧은 순",en:"Among players who answer all 24 squares, the shortest time from first answer to last wins",ja:"24マスすべて正解した人の中で、最初の解答から全問正解までの時間が短い順",zhs:"在答对全部24格的玩家中，从第一题到全部答对用时最短者优先",zht:"在答對全部24格的玩家中，從第一題到全部答對用時最短者優先",es:"Entre quienes aciertan las 24 casillas, gana el menor tiempo desde la primera respuesta hasta la última"}
+ bingo:{ko:"그날 판 24칸을 다 맞힌 사람 중 걸린 시간이 짧은 순 → 그날 점수(1등 10·2등 8·3등 6·4등 5·5등 4·6~10등 3·완성 1) → 한 주 합계",en:"Among players who finish all 24 squares of the day’s board, fastest time first → daily points (1st 10 · 2nd 8 · 3rd 6 · 4th 5 · 5th 4 · 6th–10th 3 · finished 1) → weekly total",ja:"その日のボード24マスをすべて正解した人の中で時間の短い順 → その日のポイント（1位10・2位8・3位6・4位5・5位4・6〜10位3・完成1）→ 週間合計",zhs:"在答对当天全部24格的玩家中，用时最短者优先 → 当日积分（第1名10 · 第2名8 · 第3名6 · 第4名5 · 第5名4 · 第6~10名3 · 完成1）→ 周合计",zht:"在答對當天全部24格的玩家中，用時最短者優先 → 當日積分（第1名10 · 第2名8 · 第3名6 · 第4名5 · 第5名4 · 第6~10名3 · 完成1）→ 週合計",es:"Entre quienes completan las 24 casillas del cartón del día, menor tiempo primero → puntos del día (1.º 10 · 2.º 8 · 3.º 6 · 4.º 5 · 5.º 4 · 6.º–10.º 3 · completado 1) → total semanal"}
 };
 var RKL={ko:"이번 주 순위 방법",en:"This week’s ranking",ja:"今週の順位の決め方",zhs:"本周排名方式",zht:"本週排名方式",es:"Clasificación de esta semana"};
 // ── 이벤트 종류 (사장님 10-26) — 닫혀 있으면 종류를 드러내지 않는다 「뭐가 나올지 몰라야지」. 열린 주에만 그 종류 제목·순위 방법·화면 ──
@@ -84,7 +85,11 @@ RANKHOW.treasure={ko:"보물상자를 먼저 연 순서 (1·2·3등)",en:"First 
 RANKHOW.spot={ko:"맞힌 개수가 많은 순, 같으면 걸린 시간이 짧은 순",en:"Most correct answers first; on a tie, the shortest total time",ja:"正解数が多い順、同じならかかった時間が短い順",zhs:"答对数多者优先，相同则用时短者优先",zht:"答對數多者優先，相同則用時短者優先",es:"Más aciertos primero; en empate, el menor tiempo total"};
 RANKHOW.photo={ko:"회사가 주제에 가장 잘 맞는 사진 1·2·3등을 고릅니다",en:"The company picks the three photos that best fit the theme",ja:"会社がテーマに最も合う写真1・2・3位を選びます",zhs:"由公司评选最符合主题的照片第1·2·3名",zht:"由公司評選最符合主題的照片第1·2·3名",es:"La empresa elige las tres fotos que mejor encajan con el tema"};
 var KRULES={
- bingo:[   // 24칸 완성 규칙 (사장님 10-27)
+ bingo:[   // 매일 빙고 — 매일 새 판·그날 점수·주간 기준 PG (사장님 10-27) + 24칸 완성 규칙
+  {ko:"매일 빙고는 매일 한국 시간 밤 12시에 새 판으로 바뀝니다. 그날 판을 24칸 모두 맞힌 사람을 걸린 시간이 짧은 순으로 줄 세웁니다.",en:"Daily Bingo switches to a new board every day at midnight Korea time. Everyone who answers all 24 squares of that day’s board is ranked by the shortest time.",ja:"毎日ビンゴは毎日韓国時間の夜12時に新しいボードに変わります。その日のボードの24マスをすべて正解した人を、かかった時間が短い順に並べます。",zhs:"每日宾果每天韩国时间午夜12点换新卡。答对当天全部24格的玩家按用时从短到长排名。",zht:"每日賓果每天韓國時間午夜12點換新卡。答對當天全部24格的玩家按用時從短到長排名。",es:"El Bingo diario cambia a un cartón nuevo cada día a medianoche, hora de Corea. Quienes aciertan las 24 casillas del cartón del día se clasifican por el menor tiempo."},
+  {ko:"그날 순위 점수: 1등 10점 · 2등 8점 · 3등 6점 · 4등 5점 · 5등 4점 · 6~10등 3점 · 그 밖에 판을 완성한 사람 1점. 그날 1등은 별 하나를 받습니다. 하루치 상금은 없습니다.",en:"Daily points: 1st 10 · 2nd 8 · 3rd 6 · 4th 5 · 5th 4 · 6th–10th 3 · anyone else who finishes the board 1. The day’s winner gets a star. There is no daily prize.",ja:"その日のポイント：1位10点・2位8点・3位6点・4位5点・5位4点・6〜10位3点・その他ボードを完成した人1点。その日の1位は星を1つもらえます。1日ごとの賞品はありません。",zhs:"当日积分：第1名10分 · 第2名8分 · 第3名6分 · 第4名5分 · 第5名4分 · 第6~10名3分 · 其他完成者1分。当日第1名获得一颗星。没有每日奖品。",zht:"當日積分：第1名10分 · 第2名8分 · 第3名6分 · 第4名5分 · 第5名4分 · 第6~10名3分 · 其他完成者1分。當日第1名獲得一顆星。沒有每日獎品。",es:"Puntos del día: 1.º 10 · 2.º 8 · 3.º 6 · 4.º 5 · 5.º 4 · 6.º–10.º 3 · cualquier otra persona que complete el cartón 1. El ganador del día recibe una estrella. No hay premio diario."},
+  {b:1,ko:"한 주(월~일, 한국 시간) 점수를 더해 월요일 0시에 마감합니다. 합계 20점 이상 20 PG · 50점 이상 50 PG · 70점 이상 100 PG — 순위가 아니라 기준 점수라 넘으면 누구나 받으며, 한 사람은 한 주에 가장 높은 하나만 받습니다.",en:"Points are added up over the week (Mon–Sun, Korea time) and closed on Monday at 00:00. Total 20+ → 20 PG · 50+ → 50 PG · 70+ → 100 PG. These are thresholds, not ranks — everyone who reaches one gets it, and each person gets only the highest one per week.",ja:"1週間（月〜日、韓国時間）のポイントを合計し、月曜0時に締め切ります。合計20点以上で20 PG・50点以上で50 PG・70点以上で100 PG — 順位ではなく基準点なので、達した人は誰でももらえ、1人1週間に最も高い1つだけです。",zhs:"一周（周一至周日，韩国时间）的积分累计后于周一0点截止。合计20分以上得20 PG · 50分以上得50 PG · 70分以上得100 PG——这是达标分数而非名次，达到者人人可得，每人每周只取最高一档。",zht:"一週（週一至週日，韓國時間）的積分累計後於週一0點截止。合計20分以上得20 PG · 50分以上得50 PG · 70分以上得100 PG——這是達標分數而非名次，達到者人人可得，每人每週只取最高一檔。",es:"Los puntos se suman durante la semana (lun–dom, hora de Corea) y se cierran el lunes a las 00:00. Total de 20+ → 20 PG · 50+ → 50 PG · 70+ → 100 PG. Son umbrales, no puestos: todos los que lleguen lo reciben, y cada persona solo recibe el más alto por semana."},
+  {ko:"시험(TEST) 기간에는 상금이 없고 순위·점수·별만 기록됩니다.",en:"During the TEST period there are no prizes; only rankings, points and stars are recorded.",ja:"テスト（TEST）期間中は賞品はなく、順位・ポイント・星のみ記録されます。",zhs:"测试（TEST）期间没有奖品，只记录排名、积分和星星。",zht:"測試（TEST）期間沒有獎品，只記錄排名、積分和星星。",es:"Durante el periodo de PRUEBA (TEST) no hay premios; solo se registran clasificaciones, puntos y estrellas."},
   {ko:"빙고판은 5×5이며 가운데(FREE)를 뺀 24칸이 모두 문제입니다. 24칸을 모두 맞히면 판 완성입니다(한 줄 완성이 아님).",en:"The bingo card is 5×5; all 24 squares except the centre (FREE) are questions. You complete the card when you answer all 24 correctly (not just one line).",ja:"ビンゴカードは5×5で、中央（FREE）を除く24マスすべてが問題です。24マスすべて正解するとカード完成です（1列完成ではありません）。",zhs:"宾果卡为5×5，除中间（FREE）外的24格都是题目。答对全部24格即完成整张卡（不是完成一条线）。",zht:"賓果卡為5×5，除中間（FREE）外的24格都是題目。答對全部24格即完成整張卡（不是完成一條線）。",es:"El cartón de bingo es de 5×5; las 24 casillas, salvo la central (FREE), son preguntas. Completas el cartón al acertar las 24 (no basta con una línea)."},
   {ko:"걸린 시간은 첫 문제에 답한 때부터 24번째 칸을 맞힌 때까지입니다. 틀린 칸은 판이 열려 있는 동안 횟수 제한 없이 다시 도전할 수 있습니다.",en:"Your time runs from your first answer until you get the 24th square right. You can retry wrong squares as many times as you like while the card is open.",ja:"時間は最初に解答した時から24マス目に正解した時までです。間違えたマスは、カードが開いている間は回数制限なく再挑戦できます。",zhs:"用时从你回答第一题起，到答对第24格为止。答错的格子在卡片开放期间可以不限次数重新挑战。",zht:"用時從你回答第一題起，到答對第24格為止。答錯的格子在卡片開放期間可以不限次數重新挑戰。",es:"Tu tiempo cuenta desde tu primera respuesta hasta que aciertas la casilla 24. Puedes reintentar las casillas falladas sin límite mientras el cartón esté abierto."}
  ],
@@ -100,6 +105,27 @@ var KRULES={
   {ko:"직접 찍은 사진만 됩니다. 남의 사진·AI로 만든 사진·다른 사람 얼굴이 크게 나온 사진은 제외하며, 부적절한 사진은 지웁니다.",en:"Only photos you took yourself. Other people’s photos, AI-made images and photos with other people’s faces shown large are excluded; inappropriate photos are deleted.",ja:"自分で撮った写真のみです。他人の写真・AIで作った画像・他人の顔が大きく写った写真は対象外で、不適切な写真は削除します。",zhs:"仅限本人拍摄的照片。他人照片、AI生成图片、他人脸部明显的照片不在评选范围内，不当照片将被删除。",zht:"僅限本人拍攝的照片。他人照片、AI生成圖片、他人臉部明顯的照片不在評選範圍內，不當照片將被刪除。",es:"Solo fotos hechas por ti. Se excluyen fotos de otros, imágenes hechas con IA y fotos con caras de otras personas en primer plano; las inadecuadas se eliminan."},
   {ko:"올리면 회사가 SNS에서 사진을 소개할 수 있다는 데 동의하는 것입니다. 1·2·3등은 회사가 고릅니다.",en:"By uploading you agree that the company may feature your photo on social media. The company picks 1st, 2nd and 3rd.",ja:"投稿すると、会社がSNSで写真を紹介することに同意したものとみなします。1・2・3位は会社が選びます。",zhs:"上传即表示同意公司在社交媒体上介绍你的照片。第1·2·3名由公司评选。",zht:"上傳即表示同意公司在社群媒體上介紹你的照片。第1·2·3名由公司評選。",es:"Al subirla aceptas que la empresa pueda mostrar tu foto en redes sociales. La empresa elige 1.º, 2.º y 3.º."}]
 };
+// 매일 빙고·이번 주 이벤트 두 칸 (사장님 10-27) — 탭·배너·이번 주 점수
+var TABS={bingo:{ko:"오늘의 빙고",en:"Today’s Bingo",ja:"今日のビンゴ",zhs:"今日宾果",zht:"今日賓果",es:"Bingo de hoy"},ev:{ko:"이번 주 이벤트",en:"This week’s event",ja:"今週のイベント",zhs:"本周活动",zht:"本週活動",es:"Evento de la semana"}};
+var DSUB={ko:"매일 새 판 · 한국 시간 밤 12시에 바뀜",en:"A new board every day · changes at midnight Korea time",ja:"毎日新しいボード・韓国時間の夜12時に更新",zhs:"每天新卡 · 韩国时间午夜12点更换",zht:"每天新卡 · 韓國時間午夜12點更換",es:"Un cartón nuevo cada día · cambia a medianoche (hora de Corea)"};
+var RKD={ko:"순위 방법",en:"How ranking works",ja:"順位の決め方",zhs:"排名方式",zht:"排名方式",es:"Cómo se clasifica"};
+var LIVEB={ko:"상금: 한 주(월~일) 점수 합계 20점 → 20 PG · 50점 → 50 PG · 70점 → 100 PG (월요일 0시 마감) · 매일 밤 12시(한국 시간) 새 판",en:"Prizes: weekly points total (Mon–Sun) 20 → 20 PG · 50 → 50 PG · 70 → 100 PG (closes Mon 00:00) · New board every midnight (Korea time)",ja:"賞品：1週間（月〜日）のポイント合計 20点→20 PG・50点→50 PG・70点→100 PG（月曜0時締切）・毎晩12時（韓国時間）に新しいボード",zhs:"奖品：一周（周一至周日）积分合计 20分→20 PG · 50分→50 PG · 70分→100 PG（周一0点截止）· 每天午夜12点（韩国时间）换新卡",zht:"獎品：一週（週一至週日）積分合計 20分→20 PG · 50分→50 PG · 70分→100 PG（週一0點截止）· 每天午夜12點（韓國時間）換新卡",es:"Premios: total de puntos semanal (lun–dom) 20 → 20 PG · 50 → 50 PG · 70 → 100 PG (cierra lun 00:00) · Cartón nuevo cada medianoche (hora de Corea)"};
+var EVP={ko:"상금: 1등 100 · 2등 50 · 3등 20 PG (퍼즐골드) · 한 주에 한 번 · 일요일 24:00(한국 시간) 마감",en:"Prizes: 1st 100 · 2nd 50 · 3rd 20 PG (Puzzle Gold) · once a week · closes Sun 24:00 (Korea time)",ja:"賞品：1位100・2位50・3位20 PG（パズルゴールド）・週1回・日曜24:00（韓国時間）締切",zhs:"奖品：第1名100 · 第2名50 · 第3名20 PG（Puzzle Gold）· 每周一次 · 周日24:00（韩国时间）截止",zht:"獎品：第1名100 · 第2名50 · 第3名20 PG（Puzzle Gold）· 每週一次 · 週日24:00（韓國時間）截止",es:"Premios: 1.º 100 · 2.º 50 · 3.º 20 PG (Puzzle Gold) · una vez por semana · cierra dom 24:00 (hora de Corea)"};
+var PTS={ko:"점",en:"pts",ja:"点",zhs:"分",zht:"分",es:"pts"};
+var WPT={t:{ko:"이번 주 점수",en:"This week’s points",ja:"今週のポイント",zhs:"本周积分",zht:"本週積分",es:"Puntos de esta semana"},
+ me:{ko:"내 점수",en:"My points",ja:"自分のポイント",zhs:"我的积分",zht:"我的積分",es:"Mis puntos"},
+ rk:{ko:"내 순위",en:"My rank",ja:"自分の順位",zhs:"我的排名",zht:"我的排名",es:"Mi puesto"},
+ top:{ko:"주간 점수 순위",en:"Weekly points ranking",ja:"週間ポイント順位",zhs:"周积分排名",zht:"週積分排名",es:"Clasificación semanal de puntos"},
+ none:{ko:"아직 이번 주 점수가 없어요 — 판을 완성하면 밤 12시에 점수가 들어와요",en:"No points yet this week — finish a board and your points arrive at midnight",ja:"今週のポイントはまだありません — ボードを完成すると夜12時にポイントが入ります",zhs:"本周还没有积分——完成卡片后，积分将在午夜到账",zht:"本週還沒有積分——完成卡片後，積分將在午夜入帳",es:"Aún no hay puntos esta semana: completa un cartón y los puntos llegan a medianoche"},
+ close:{ko:"월요일 0시(한국 시간) 마감",en:"Closes Mon 00:00 (Korea time)",ja:"月曜0時（韓国時間）締切",zhs:"周一0点（韩国时间）截止",zht:"週一0點（韓國時間）截止",es:"Cierra lun 00:00 (hora de Corea)"},
+ today:{ko:"오늘 점수는 밤 12시(한국 시간)에 더해져요",en:"Today’s points are added at midnight (Korea time)",ja:"今日のポイントは夜12時（韓国時間）に加算されます",zhs:"今日积分在午夜12点（韩国时间）计入",zht:"今日積分在午夜12點（韓國時間）計入",es:"Los puntos de hoy se suman a medianoche (hora de Corea)"},
+ last:{ko:"지난주 주간 점수",en:"Last week’s points",ja:"先週の週間ポイント",zhs:"上周积分",zht:"上週積分",es:"Puntos de la semana pasada"}};
+var KOEV='<div class="ecard" style="background:#eaf3ff;border:2px solid #3b82f6;font-weight:800;color:#1e3a8a;text-align:center">한국인 판 · 상금 없음 · 순위·별만<div style="font-weight:600;font-size:12.5px;margin-top:4px">해외 판과 같은 이벤트(같은 장소·문제·주제)이고, 기록과 순위는 따로입니다. 1등은 별을 받아요.</div></div>';   // 한국인 판 이벤트 (한국어만)
+var TAB="bingo"; try{ if(ls("mpv_ev_tab")==="ev") TAB="ev"; }catch(e){}
+function tabsH(){ if(!(E&&B)) return ""; return '<div class="etab">'+[["bingo",TABS.bingo],["ev",TABS.ev]].map(function(t){ return '<button type="button" data-tab="'+t[0]+'" class="'+(TAB===t[0]?"on":"")+'">'+esc(L(t[1]))+(t[0]==="ev"&&E?'<small>'+esc(L(KT[E.kind]||EVT))+'</small>':'')+'</button>'; }).join("")+'</div>'; }
+function render(){ if(TAB==="ev"&&E) evPaint(); else if(B) paint(); else if(E) evPaint(); }
+function hofH(o){ return o.hof&&o.hof.length?'<div style="margin-top:8px;font-size:13px"><b style="color:#b8860b">'+esc(L(HOF))+'</b> '+o.hof.map(function(x){ return esc(x.nm); }).join(" · ")+'</div>':""; }
+function bdPts(rk){ return [10,8,6,5,4,3,3,3,3,3][rk-1]||1; }   // 그날 순위 점수 — 허브 BD_PTS 와 같게
 var TX3={
  hint:{ko:"힌트",en:"Hint",ja:"ヒント",zhs:"提示",zht:"提示",es:"Pista"},
  day:{ko:"일째",en:"Day",ja:"日目",zhs:"第几天",zht:"第幾天",es:"Día"},
@@ -132,7 +158,7 @@ var TX3={
 };
 var E=null;   // 3종 화면 자료
 function evTitle(k){ return L(k?(KT[k]||EVT):EVT); }
-function setHead(k){ var h=document.querySelector("#evBox .ehd h1"), s=document.getElementById("evWk"); if(h) h.textContent=evTitle(k); if(s) s.textContent=k?L(T.sub):""; }
+function setHead(k){ var h=document.querySelector("#evBox .ehd h1"), s=document.getElementById("evWk"); if(h) h.textContent=evTitle(k); if(s) s.textContent=k?L(k==="bingo"&&B&&(B.daily||B.ko)?DSUB:T.sub):""; }
 function evClosed(last){ var e=document.getElementById("evBody"); if(!e) return; setHead("");
   var h='<div class="ecard" style="font-weight:800;color:#555">'+esc(L(NEXT))+'</div><div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   if(last&&last.res&&last.res.length){ var C=["#e0a100","#9aa4b0","#c47a3c"];
@@ -140,11 +166,13 @@ function evClosed(last){ var e=document.getElementById("evBody"); if(!e) return;
   e.innerHTML=h; wire(e); }
 function wire(e){ [].forEach.call(e.querySelectorAll("[data-ev]"),function(x){ x.onclick=function(){ var a=x.dataset.ev;
   if(a==="pg"||a==="signin") signIn(); else if(a==="rules") showRules(!!(cur()&&cur().open&&cur().me&&!cur().me.agreed));
-  else if(a==="find") treasureMode(); else if(a==="sstart") spotStart(); else if(a==="ppick") document.getElementById("evPf").click(); else if(a==="psend") photoSend(); else if(a==="share") shareResult(); }; }); }
-function cur(){ return E&&E.open?E:B; }
+  else if(a==="find") treasureMode(); else if(a==="sstart") spotStart(); else if(a==="ppick") document.getElementById("evPf").click(); else if(a==="psend") photoSend(); else if(a==="share") shareResult(); }; });
+  [].forEach.call(e.querySelectorAll("[data-tab]"),function(x){ x.onclick=function(){ TAB=x.dataset.tab; ls("mpv_ev_tab",TAB); render(); var b=box(); if(b) b.scrollTop=0; }; }); }
+function cur(){ if(E&&B) return TAB==="ev"?E:B; return E||B; }   // 두 칸이 다 열려 있으면 고른 탭
 function needIn(o){ if(!o.me) return '<div class="ecard"><button type="button" class="ebtn" data-ev="signin">'+esc(L(T.signin))+'</button></div>'; if(o.me.grad) return '<div class="ecard" style="color:#7a3cff;font-weight:700">'+esc(L(T.grad))+'</div>'; if(!o.me.agreed) return '<div class="ecard"><button type="button" class="ebtn" data-ev="rules">'+esc(L(T.agree))+'</button></div>'; return ""; }
 function evPaint(){ var e=document.getElementById("evBody"); if(!e||!E) return; var k=E.kind, me=E.me; setHead(k);
-  var h='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKL))+'</b> · '+esc(L(RANKHOW[k]||{en:""}))+'</div><div class="ecard ewk"><span>'+esc(L(T.ends))+'</span><span>'+leftTxt(E.end)+'</span></div>'+needIn(E);
+  var h=tabsH()+(E.ko?KOEV:'<div class="ecard" style="background:#fff1e4;border:2px solid #ff7a1a;font-size:13px;font-weight:800;color:#8a3d00">'+esc(L(EVP))+'</div>');
+  h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKL))+'</b> · '+esc(L(RANKHOW[k]||{en:""}))+'</div><div class="ecard ewk"><span>'+esc(L(T.ends))+'</span><span>'+leftTxt(E.end)+'</span></div>'+needIn(E);
   var ok=me&&me.agreed;
   if(k==="treasure"){
     h+='<div class="ecard"><b>'+esc(L(TX3.hint))+'</b>'+(E.hints||[]).map(function(x){ return '<div style="margin-top:6px"><b style="color:#ff7a1a">'+(lg()==="en"||lg()==="es"?esc(L(TX3.day))+' '+(x.d+1):(x.d+1)+esc(L(TX3.day)))+'</b> · '+esc(x.t)+'</div>'; }).join("")+'<div style="color:#888;font-size:12px;margin-top:6px">'+esc(L(TX3.nextHint))+'</div></div>';
@@ -164,10 +192,11 @@ function evPaint(){ var e=document.getElementById("evBody"); if(!e||!E) return; 
       +'<button type="button" class="ebtn g" data-ev="ppick">'+esc(L(TX3.pick))+'</button><button type="button" class="ebtn" data-ev="psend" id="evPs" disabled>'+esc(L(TX3.send))+'</button><div id="evPm" style="font-size:13px;color:#e8322f;margin-top:6px"></div></div>'; }
   }
   if(ok) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>';
-  h+='<div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
+  if(k!=="photo") h+=rankCard(E,RANKHOW[k]); else if(E.hof&&E.hof.length) h+='<div class="ecard">'+hofH(E)+'</div>';   // 지금 순위 (사진은 회사가 고르므로 명예의 전당만)
+  h+='<div class="ecard">'+(E.ko?'':esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button>')+'<button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   e.innerHTML=h; wire(e);
   var pf=document.getElementById("evPf"); if(pf) pf.onchange=function(){ photoPrep(pf.files&&pf.files[0]); };
-  if(k==="treasure"&&me&&me.lock&&me.lock>Date.now()) setTimeout(function(){ if(box()&&E&&E.kind==="treasure") evPaint(); },1000); }
+  if(k==="treasure"&&me&&me.lock&&me.lock>Date.now()) setTimeout(function(){ if(box()&&E&&E.kind==="treasure"&&cur()===E) evPaint(); },1000); }
 // 보물상자 — 지도 누르기
 var MODE=null;
 function modeBar(html){ var o=document.getElementById("evMode"); if(!html){ if(o) o.remove(); return null; } if(!o){ o=document.createElement("div"); o.id="evMode"; o.style.cssText="position:fixed;left:50%;top:8px;transform:translateX(-50%);z-index:2147483002;width:min(94vw,480px);background:#fff8f0;color:#2b2b2b;border:2px solid #ff7a1a;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);padding:10px 12px;font:600 14px/1.45 'Segoe UI','Malgun Gothic',system-ui,sans-serif"; document.body.appendChild(o); } o.innerHTML=html; return o; }
@@ -219,11 +248,12 @@ var SHX={
  save:{ko:"그림 저장",en:"Save image",ja:"画像を保存",zhs:"保存图片",zht:"儲存圖片",es:"Guardar imagen"},
  install:{ko:"앱 설치",en:"Install app",ja:"アプリを入れる",zhs:"安装应用",zht:"安裝應用",es:"Instalar app"}
 };
-function shLine(){ var c=cur(); if(!c||!c.open||!c.me) return null; var me=c.me, k=c.kind||"bingo", t=L(KT[k]||EVT), n=me.lines||0, l=lg();
-  if(k==="bingo"&&me.done) return [t, L(RNK.all)+" · "+elTxt(me.done-(me.f0||me.done))];   // 판 완성 + 걸린 시간 (10-27)
+function shLine(){ var c=cur(); if(!c||!c.open||!c.me) return null; var me=c.me, k=c.kind||"bingo", t=L(KT[k]||EVT), l=lg(), rk=c.myRank?"  #"+c.myRank:"";
+  if(k==="bingo"&&c.daily&&c.day) t+=" "+c.day.slice(5).replace("-","/");   // 매일 빙고 = 그날 날짜
+  if(k==="bingo"&&me.done) return [t, L(RNK.all)+" · "+elTxt(me.done-(me.f0||me.done))+rk];   // 판 완성 + 걸린 시간 (10-27)
   if(k==="bingo") return [t, (me.s||[]).length+"/24 · "+L(T.stamps)];
   if(k==="treasure") return [t, me.ft?L(SHX.found)+(me.rank?"  #"+me.rank:""):L(SHX.hunt)];
-  if(k==="spot") return [t, (me.ok||0)+"/"+(c.total||10)+" "+L(SHX.spot)];
+  if(k==="spot") return [t, (me.ok||0)+"/"+(c.total||10)+" "+L(SHX.spot)+rk];
   if(k==="photo") return [t, L(SHX.photo)];
   return null; }
 function shImg(src){ return new Promise(function(ok){ var i=new Image(); i.onload=function(){ ok(i); }; i.onerror=function(){ ok(null); }; i.src=src; }); }
@@ -253,10 +283,12 @@ var SHY={
  copy:{ko:"링크 복사",en:"Copy link",ja:"リンクをコピー",zhs:"复制链接",zht:"複製連結",es:"Copiar enlace"},
  copied:{ko:"링크를 복사했어요. 붙여 넣어 보내세요.",en:"Link copied — paste it to send.",ja:"リンクをコピーしました。貼り付けて送ってください。",zhs:"链接已复制，粘贴发送即可。",zht:"連結已複製，貼上傳送即可。",es:"Enlace copiado: pégalo para enviarlo."},
  wechat:{ko:"링크를 복사했어요. 위챗에 붙여 넣으세요.",en:"Link copied — paste it into WeChat.",ja:"リンクをコピーしました。WeChatに貼り付けてください。",zhs:"链接已复制，请粘贴到微信。",zht:"連結已複製，請貼到微信。",es:"Enlace copiado: pégalo en WeChat."},
- imgapp:{ko:"그림을 저장했어요. 틱톡·인스타그램에서 올려 주세요.",en:"Image saved — post it on TikTok or Instagram.",ja:"画像を保存しました。TikTok・Instagramで投稿してください。",zhs:"图片已保存，请在抖音/TikTok、Instagram 发布。",zht:"圖片已儲存，請在 TikTok、Instagram 發布。",es:"Imagen guardada: publícala en TikTok o Instagram."}};
+ imgapp:{ko:"그림을 저장했어요. 틱톡·인스타그램에서 올려 주세요.",en:"Image saved — post it on TikTok or Instagram.",ja:"画像を保存しました。TikTok・Instagramで投稿してください。",zhs:"图片已保存，请在抖音/TikTok、Instagram 发布。",zht:"圖片已儲存，請在 TikTok、Instagram 發布。",es:"Imagen guardada: publícala en TikTok o Instagram."},
+ join:{ko:"머니퍼즐 투어 이벤트 같이 해요",en:"Join the Money Puzzle Tour event with me",ja:"マネーパズル ツアーのイベント、一緒にやろう",zhs:"一起参加 Money Puzzle 韩国旅游活动吧",zht:"一起參加 Money Puzzle 韓國旅遊活動吧",es:"¡Únete conmigo al evento de Money Puzzle Tour!"}};
 var RNK={t:{ko:"지금 순위",en:"Current ranking",ja:"現在の順位",zhs:"当前排名",zht:"目前排名",es:"Clasificación actual"},
  how:{ko:"24칸 다 맞힌 사람 · 걸린 시간 짧은 순",en:"All 24 squares · fastest time first",ja:"24マス全問正解・時間の短い順",zhs:"答对全部24格 · 用时最短优先",zht:"答對全部24格 · 用時最短優先",es:"Las 24 casillas · menor tiempo primero"},
  none:{ko:"아직 판을 다 맞힌 사람이 없어요. 첫 완성자가 되어 보세요!",en:"No one has finished the board yet — be the first!",ja:"まだ全問正解した人はいません。最初の達成者になろう！",zhs:"还没有人全部答对，快来成为第一人！",zht:"還沒有人全部答對，快來成為第一人！",es:"Nadie ha completado el cartón todavía: ¡sé el primero!"},
+ none2:{ko:"아직 순위에 오른 사람이 없어요. 첫 번째가 되어 보세요!",en:"No one on the board yet — be the first!",ja:"まだ順位に入った人はいません。最初の一人になろう！",zhs:"还没有人上榜，快来成为第一人！",zht:"還沒有人上榜，快來成為第一人！",es:"Todavía no hay nadie en la clasificación: ¡sé el primero!"},
  all:{ko:"24칸 완성",en:"Full board",ja:"24マス完成",zhs:"全部完成",zht:"全部完成",es:"Cartón completo"},
  me:{ko:"나",en:"Me",ja:"自分",zhs:"我",zht:"我",es:"Yo"},
  play:{ko:"명 참가 중",en:" playing",ja:"人が参加中",zhs:"人参与中",zht:"人參與中",es:" jugando"}};
@@ -267,15 +299,25 @@ var HOF={ko:"명예의 전당",en:"Hall of Fame",ja:"殿堂入り",zhs:"名人�
 function winIcons(n){ n=n||0; if(!n) return ""; if(n>=10000) return '<span style="font-size:11px;font-weight:900;color:#b8860b">'+esc(L(HOF))+'</span>';
   var g=function(k,c,px){ var h=""; for(var i=0;i<c;i++) h+='<img src="img/rank/'+k+'.webp" alt="" style="width:'+px+'px;height:'+px+'px;vertical-align:middle;margin-right:1px">'; return h; };
   return '<div style="line-height:1;margin-bottom:2px" title="'+n+' '+esc(L(WINS))+'">'+g("bigsun",Math.floor(n/1000),18)+g("sun",Math.floor(n/100)%10,16)+g("bigstar",Math.floor(n/10)%10,16)+g("star",n%10,12)+'</div>'; }
-function rankCard(o){ var R=o.rank||[], C=["#e0a100","#9aa4b0","#c47a3c"];
-  var h='<div class="ecard"><b>'+esc(L(RNK.t))+'</b> <span style="color:#888;font-size:12px">'+esc(L(RNK.how))+(o.play?' · '+o.play+esc(L(RNK.play)):'')+'</span>';
-  if(!R.length) return h+'<div style="color:#888;font-size:13px;margin-top:6px">'+esc(L(RNK.none))+'</div></div>';
-  h+=R.map(function(r,i){ return '<div class="erk"'+(r.me?' style="background:#fff4d6;border-radius:8px"':'')+'><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div>'+winIcons(r.win)+'<b>'+esc(r.nm)+'</b>'+(r.me?' <span style="color:#ff7a1a;font-weight:800">('+esc(L(RNK.me))+')</span>':'')+'</div><div class="pg">'+elTxt(r.el)+'</div></div>'; }).join("");
+// 지금 순위 카드 — 빙고·보물상자·명소·주간 점수 모두 같은 모양 (사장님 10-27). 값 = 걸린 시간 · 찾은 시각 · 맞힌 수 · 점수
+function rankVal(o,r){ if(r.el!=null) return elTxt(r.el); if(r.ok!=null) return r.ok+"/"+(o.total||10)+" · "+(r.t||0)+"s"; if(r.at) return kst(r.at); if(r.p!=null) return r.p+" "+L(PTS); return ""; }
+function rankRows(o,R,dp){ var C=["#e0a100","#9aa4b0","#c47a3c"]; return R.map(function(r,i){ return '<div class="erk"'+(r.me?' style="background:#fff4d6;border-radius:8px"':'')+'><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div>'+winIcons(r.win)+'<b>'+esc(r.nm)+'</b>'+(r.me?' <span style="color:#ff7a1a;font-weight:800">('+esc(L(RNK.me))+')</span>':'')+'</div><div class="pg">'+rankVal(o,r)+(dp?'<div style="font-size:11px;color:#888;font-weight:700;text-align:right">+'+bdPts(r.rk)+' '+esc(L(PTS))+'</div>':'')+'</div></div>'; }).join(""); }
+function rankCard(o,how){ var R=o.rank||[], bg=(o.kind||"bingo")==="bingo", dp=bg&&(o.daily||o.ko);   // dp = 매일 빙고 — 그날 받을 점수도 같이
+  var h='<div class="ecard"><b>'+esc(L(RNK.t))+'</b> <span style="color:#888;font-size:12px">'+esc(L(bg?RNK.how:(how||{en:""})))+(o.play?' · '+o.play+esc(L(RNK.play)):'')+'</span>';
+  if(!R.length) return h+'<div style="color:#888;font-size:13px;margin-top:6px">'+esc(L(bg?RNK.none:RNK.none2))+'</div>'+hofH(o)+'</div>';
+  h+=rankRows(o,R,dp);
   if(o.myRank>R.length) h+='<div style="font-size:13px;margin-top:6px">'+esc(L(RNK.me))+': #'+o.myRank+'</div>';
-  if(o.hof&&o.hof.length) h+='<div style="margin-top:8px;font-size:13px"><b style="color:#b8860b">'+esc(L(HOF))+'</b> '+o.hof.map(function(x){ return esc(x.nm); }).join(" · ")+'</div>';
+  return h+hofH(o)+'</div>'; }
+// 이번 주 점수 카드 (매일 빙고) — 내 점수·기준 20/50/70(실전만)·주간 점수 10등
+function wpCard(o){ var w=o.wp; if(!w) return ""; var me=w.me||0;
+  var h='<div class="ecard"><b>'+esc(L(WPT.t))+'</b> <span style="color:#888;font-size:12px">'+esc(w.wk?w.wk.slice(5).replace("-","/")+" ~ · ":"")+esc(L(WPT.close))+'</span>';
+  h+='<div class="est" style="margin:8px 0 0"><div><b>'+me+' '+esc(L(PTS))+'</b>'+esc(L(WPT.me))+'</div><div><b>'+(w.myRank?"#"+w.myRank:"-")+'</b>'+esc(L(WPT.rk))+'</div></div>';
+  if(w.th) h+='<div style="display:flex;gap:6px;margin-top:8px">'+w.th.map(function(t){ var got=me>=t[0]; return '<div style="flex:1;text-align:center;border-radius:10px;padding:6px 4px;font-size:12.5px;font-weight:800;'+(got?'background:#e7f8ec;color:#1d7a35;border:1.5px solid #27a745':'background:#fff8f0;color:#8a5a00;border:1.5px dashed #e0a100')+'">'+t[0]+' '+esc(L(PTS))+'<br>→ '+t[1]+' PG'+(got?' ✓':'')+'</div>'; }).join("")+'</div>';
+  h+='<div style="color:#888;font-size:12px;margin-top:6px">'+esc(L(WPT.today))+'</div>';
+  h+='<div style="margin-top:8px;font-weight:800">'+esc(L(WPT.top))+'</div>'+(w.top&&w.top.length?rankRows(o,w.top,false):'<div style="color:#888;font-size:13px;margin-top:6px">'+esc(L(WPT.none))+'</div>');
   return h+'</div>'; }
 function shareResult(){ shDraw().then(function(c){ if(!c){ alert(L(T.err)); return; }
-  var ln=shLine(), APP="https://navi.moneypuzzle.co.kr/", txt=ln[0]+" · "+ln[1]+" — "+L(SHX.beat)+"\n"+L(SHY.together), d=c.toDataURL("image/png"), jp=c.toDataURL("image/jpeg",0.8);
+  var ln=shLine(), cc=cur(), TOG=L(cc&&cc.kind&&cc.kind!=="bingo"?SHY.join:SHY.together), APP="https://navi.moneypuzzle.co.kr/", txt=ln[0]+" · "+ln[1]+" — "+L(SHX.beat)+"\n"+TOG, d=c.toDataURL("image/png"), jp=c.toDataURL("image/jpeg",0.8);
   var BT='width:100%;border:0;border-radius:12px;padding:11px 6px;font-weight:900;font-size:14px;color:#fff;cursor:pointer';
   var btn=function(id,bg,lab,fg){ return '<button type="button" data-sh="'+id+'" style="'+BT+';background:'+bg+(fg?';color:'+fg:'')+'">'+esc(lab)+'</button>'; };
   var s=sheet('<h3>'+esc(L(SHX.btn))+'</h3><img src="'+d+'" alt="" style="width:100%;border-radius:12px;margin:6px 0 8px"><div id="shMsg" style="font-size:13px;color:#888;text-align:center;min-height:18px">'+esc(L(SHY.prep))+'</div>'
@@ -303,7 +345,7 @@ function shareResult(){ shDraw().then(function(c){ if(!c){ alert(L(T.err)); retu
     else if(k==="more"){ if(navigator.share) navigator.share({title:"Money Puzzle · Korea Bingo",text:txt,url:u}).catch(function(){}); else cp(full,L(SHY.copied)); }
     else if(k==="kakao"){ try{ var K=window.Kakao; if(!K) throw 0; if(!K.isInitialized()) K.init("90a47ca48c2a967dd4d14b3b48de2e3b");
         var au=APP+(S.id?"?bs="+S.id+"&lang="+lg():""), iu=APP+"?install=1&lang="+lg();
-        var send=function(im){ K.Share.sendDefault({objectType:"feed",content:{title:ln[0]+" · "+ln[1],description:L(SHY.together),imageUrl:im,imageWidth:1080,imageHeight:1080,link:{webUrl:au,mobileWebUrl:au}},buttons:[{title:L(SHY.play),link:{webUrl:au,mobileWebUrl:au}},{title:L(SHX.install),link:{webUrl:iu,mobileWebUrl:iu}}]}); };
+        var send=function(im){ K.Share.sendDefault({objectType:"feed",content:{title:ln[0]+" · "+ln[1],description:TOG,imageUrl:im,imageWidth:1080,imageHeight:1080,link:{webUrl:au,mobileWebUrl:au}},buttons:[{title:L(SHY.play),link:{webUrl:au,mobileWebUrl:au}},{title:L(SHX.install),link:{webUrl:iu,mobileWebUrl:iu}}]}); };
         if(S.img) send(S.img); else file().then(function(f){ return K.Share.uploadImage({file:[f]}); }).then(function(r){ send(r.infos.original.url); }).catch(function(){ cp(full,L(SHY.copied)); });
       }catch(e){ cp(full,L(SHY.copied)); } }
   }; });
@@ -330,6 +372,7 @@ css.textContent="#evIsle{position:absolute;z-index:4;width:7.2%;left:58.6%;top:9
  +"#evBox .ec .rt{position:absolute;bottom:2px;left:0;right:0;font-size:8.5px;color:#b07c00;font-weight:800}#evBox .ec .stp{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border:3px solid #e8322f;border-radius:50%;color:#e8322f;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;transform:rotate(-14deg);background:rgba(255,240,236,.25)}"
  +"#evBox .est{margin:12px 14px 0;display:flex;gap:8px}#evBox .est div{flex:1;background:#fff;border-radius:12px;padding:8px;text-align:center;font-size:11px;color:#888;box-shadow:0 1px 4px rgba(0,0,0,.06)}#evBox .est b{display:block;font-size:18px;color:#2b2b2b}"
  +"#evBox .erk{display:flex;align-items:center;gap:10px;margin-top:8px}#evBox .erk .n{width:32px;height:32px;border-radius:50%;color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center}#evBox .erk .pg{margin-left:auto;font-weight:900;color:#c98a00}"
+ +"#evBox .etab{display:flex;gap:6px;margin:12px 14px 0;position:sticky;top:58px;z-index:2}#evBox .etab button{flex:1;border:2px solid #ff7a1a;background:#fff;color:#ff7a1a;border-radius:14px;padding:8px 6px;font-weight:900;font-size:14px;cursor:pointer;line-height:1.2;font-family:inherit}#evBox .etab button small{display:block;font-size:11px;font-weight:700;opacity:.85}#evBox .etab button.on{background:#ff7a1a;color:#fff}"
  +"#evSheet{position:fixed;inset:0;z-index:2147483004;background:rgba(0,0,0,.35);display:flex;align-items:flex-end;justify-content:center}#evSheet>div{background:#fff;width:100%;max-width:520px;max-height:88vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px 18px 24px;font-family:'Segoe UI','Malgun Gothic',system-ui,sans-serif;color:#2b2b2b}"
  +"#evSheet .qc{font-size:13px;color:#ff7a1a;font-weight:800}#evSheet .qt{font-size:20px;font-weight:800;margin:6px 0 14px;line-height:1.3}#evSheet .op{display:block;width:100%;text-align:left;border:2px solid #e6e6e6;border-radius:14px;padding:13px 15px;font-size:17px;font-weight:700;margin-bottom:10px;background:#fff;cursor:pointer;color:#2b2b2b;font-family:inherit}"
  +"#evSheet .op.ok{background:#e7f8ec;border-color:#27a745;color:#1d7a35}#evSheet .op.bad{background:#fdeaea;border-color:#e8322f;color:#b0201e}#evSheet .msg{font-size:13px;color:#888}#evSheet ol{padding-left:20px;font-size:13.5px;line-height:1.6}#evSheet ol li{margin:4px 0}#evSheet h3{margin:0 0 8px;font-size:18px}"
@@ -360,15 +403,16 @@ function bbMk(){ var mz=document.getElementById("mz"); if(!mz||document.getEleme
   bb.addEventListener("click",go,false); bb.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" ") go(e); },false);
   ["pointerdown","mousedown","touchstart"].forEach(function(ev){ bb.addEventListener(ev,function(e){ e.stopPropagation(); },false); });
   bbPaint(); }
-function bbPaint(){ if(!bb) return; var L2=OPEN?(KOF?[["KOREA BINGO",""],["한국인 판",""],["매일 새 문제","g"]]:TESTF?[["TEST BINGO",""],["No prizes\nTest only","g"],["New questions\nevery day",""]]:[["EVENT OPEN",""],[BBK[KIND]||"EVENT",""],["Win Puzzle Gold\n100 · 50 · 20","g"]]):BBT_CLOSE, t=bb.querySelector(".ebt");
+function bbPaint(){ if(!bb) return; var EVL2=EVKIND?[["EVENT OPEN",""],[BBK[EVKIND]||"EVENT",""],["Win Puzzle Gold\n100 · 50 · 20","g"]]:[];
+  var L2=OPEN?(KOF?[["KOREA BINGO",""],["한국인 판",""],["매일 새 문제","g"]].concat(EVKIND?[[BBK[EVKIND]||"EVENT",""],["한국인 판",""]]:[]):TESTF?[["TEST BINGO",""],["No prizes\nTest only","g"],["New questions\nevery day",""]].concat(EVL2):LIVEF?[["EVENT OPEN",""],["DAILY\nKOREA BINGO",""],["Weekly points\n→ Puzzle Gold","g"]].concat(EVKIND?EVL2.slice(1):[]):[["EVENT OPEN",""],[BBK[KIND]||"EVENT",""],["Win Puzzle Gold\n100 · 50 · 20","g"]]):BBT_CLOSE, t=bb.querySelector(".ebt");
   t.innerHTML=L2.map(function(x,i){ var ls=x[0].split("\n"), w=Math.max.apply(null,ls.map(function(q){ return q.length; })), fs="min("+(92/(w*0.68)).toFixed(1)+"cqw,"+(86/(ls.length*1.08)).toFixed(1)+"cqh)"; return '<b class="'+x[1]+'" style="font-size:'+fs+'">'+esc(x[0])+'</b>'; }).join("");
   bbI=0; bbStep(); }
 function bbStep(){ if(!bb) return; var bs=bb.querySelectorAll(".ebt b"); [].forEach.call(bs,function(b,i){ b.classList.toggle("on",i===bbI%bs.length); }); bbI++; }
 setInterval(function(){ try{ if(bb&&typeof VIEW==="string"&&VIEW==="kr"&&!document.hidden) bbStep(); }catch(e){} },2300);
 // ── 섬 ──
 var isle=null, OPEN=false;
-var TESTF=false, KOF=false;   // 시험 빙고 · 한국인 판(한국어 설정일 때 간판 켜기) (10-27)
-function sign(){ try{ bbPaint(); }catch(e){} if(!isle) return; var s=isle.querySelector(".evS"); s.className="evS "+(OPEN?"on":"off"); s.textContent=OPEN?(KOF?"Korea Bingo":TESTF?"Test Bingo":"Event Open"):"Event Close"; fit(); }
+var TESTF=false, KOF=false, LIVEF=false, EVKIND="";   // 시험 빙고 · 한국인 판(한국어 + 한국 IP) · 매일 빙고 실전 · 이번 주 이벤트 종류 (10-27)
+function sign(){ try{ bbPaint(); }catch(e){} if(!isle) return; var s=isle.querySelector(".evS"); s.className="evS "+(OPEN?"on":"off"); s.textContent=OPEN?(KOF?"Korea Bingo":TESTF&&!EVKIND?"Test Bingo":"Event Open"):"Event Close"; fit(); }
 function fit(){ if(!isle) return; var s=isle.querySelector(".evS"), w=isle.clientWidth; if(w) s.style.fontSize=(w*0.037)+"px";   /* 간판 폭(섬의 21.5%)에 맞춤 — 지도를 키우면 같이 커진다 */ }
 function mk(){ var mz=document.getElementById("mz"); if(!mz||document.getElementById("evIsle")) return;
   isle=document.createElement("div"); isle.id="evIsle"; isle.setAttribute("role","button"); isle.tabIndex=0; isle.setAttribute("aria-label","Event");
@@ -378,7 +422,9 @@ function mk(){ var mz=document.getElementById("mz"); if(!mz||document.getElement
   ["pointerdown","mousedown","touchstart"].forEach(function(ev){ isle.addEventListener(ev,function(e){ e.stopPropagation(); },false); });
   try{ new ResizeObserver(fit).observe(isle); }catch(e){ window.addEventListener("resize",fit); }
   sign(); status(); }
-function status(){ fetch(H+"/npg/event",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ KOF=!!(j&&j.ko)&&lg()==="ko"&&!(j&&j.open); OPEN=!!(j&&j.open)||KOF; TESTF=!!(j&&j.test); KIND=OPEN?(j.kind||"bingo"):""; sign(); }).catch(function(){}); }
+function status(){ fetch(H+"/npg/event",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ if(!j) return;
+  var kr=!!j.kr&&lg()==="ko";   // 한국인(한국어 + 한국 IP)에겐 한국인 판만, 아니면 해외 판만 (서로 안 보인다)
+  EVKIND=j.ev||""; KOF=kr&&!!j.ko; OPEN=kr?(KOF||!!EVKIND):!!j.open; TESTF=!kr&&!!j.test; LIVEF=!kr&&!!j.live; KIND=OPEN?(kr?(KOF?"bingo":EVKIND):(j.kind||"bingo")):""; sign(); }).catch(function(){}); }
 setInterval(status,10*60000);
 // ── 이벤트(빙고) 화면 ──
 var B=null;   // 판 자료
@@ -391,9 +437,11 @@ function open(){ close(); var b=document.createElement("div"); b.id="evBox"; b.i
   document.body.appendChild(b); document.documentElement.style.overflow="hidden"; b.querySelector(".ex").onclick=close;
   try{ ntap("_event","open_area"); }catch(e){}
   load(); }
-function load(){ post("/npg/ev/board",{sess:sess(),l:lg()}).then(function(j){ if(!j||!j.ok) throw 0;
-    if(j.open){ E=j; B=null; evPaint(); return; } E=null;
-    return post("/npg/bingo/board",{sess:sess(),l:lg()}).then(function(k){ if(!k||!k.ok) throw 0; B=k; if(B.open&&B.cells) paint(); else evClosed(j.last||null); }); }).catch(function(){ var e=document.getElementById("evBody"); if(e) e.innerHTML='<div class="ecard">'+esc(L(T.err))+'</div>'; }); }
+function load(){ var q={sess:sess(),l:lg()};   // 빙고·이번 주 이벤트를 같이 — 둘 다 열려 있으면 탭 (10-27)
+  Promise.all([post("/npg/ev/board",q).catch(function(){ return null; }),post("/npg/bingo/board",q).catch(function(){ return null; })]).then(function(a){ var j=a[0], k=a[1]; if(!(j&&j.ok)&&!(k&&k.ok)) throw 0;
+    E=j&&j.ok&&j.open?j:null; B=k&&k.ok&&k.open&&k.cells?k:null;
+    if(!E&&!B){ evClosed((j&&j.last)||null); return; }
+    if(!E) TAB="bingo"; else if(!B) TAB="ev"; render(); }).catch(function(){ var e=document.getElementById("evBody"); if(e) e.innerHTML='<div class="ecard">'+esc(L(T.err))+'</div>'; }); }
 function rulesHtml(){ var c=cur(), kr=c&&c.open?(KRULES[c.kind||"bingo"]||[]):[]; return '<ol>'+RULES.concat(kr).map(function(r){ return '<li'+(r.b?' style="font-weight:800"':'')+'>'+esc(L(r))+'</li>'; }).join("")+'</ol>'; }
 function sheet(html){ var s=document.getElementById("evSheet"); if(s) s.remove(); s=document.createElement("div"); s.id="evSheet"; s.innerHTML='<div>'+html+'</div>'; s.onclick=function(e){ if(e.target===s) s.remove(); }; document.body.appendChild(s); return s; }
 function showRules(withAgree){ var s=sheet('<h3>'+esc(L(T.rules))+'</h3>'+rulesHtml()+(withAgree?'<button type="button" class="ebtn" id="evAg" style="background:#ff7a1a;color:#fff;border:0;border-radius:12px;padding:12px;width:100%;font-weight:900;font-size:15px">'+esc(L(T.agree))+'</button>':'')+'<button type="button" class="ebtn g" id="evRx" style="margin-top:8px;width:100%;border-radius:12px;padding:11px;background:#fff;border:1.5px solid #e0d6cc;font-weight:800">'+esc(L(T.x))+'</button>');
@@ -407,32 +455,31 @@ function signIn(){   // 퍼즐골드 로그인 창(구글·Apple)을 빙고 화�
     if(!p2||p2.hidden){ clearInterval(t); if(p2) p2.style.zIndex=""; if(box()) load(); } },500); }
 var TST={ko:"테스트 중이라 상금이 없습니다. 문제는 매일 한국 시간 밤 12시에 새로 바뀝니다.",en:"This is a test, so there are no prizes. New questions every day at midnight Korea time.",ja:"テスト中のため賞品はありません。問題は毎日、韓国時間の夜12時に新しくなります。",zhs:"目前为测试，没有奖品。题目每天韩国时间午夜12点更新。",zht:"目前為測試，沒有獎品。題目每天韓國時間午夜12點更新。",es:"Es una prueba, así que no hay premios. Preguntas nuevas cada día a medianoche, hora de Corea."},
     TNX={ko:"새 문제까지",en:"New questions in",ja:"新しい問題まで",zhs:"距新题目",zht:"距新題目",es:"Nuevas preguntas en"};   // 시험 빙고 (10-27)
-function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return; var wk=document.getElementById("evWk");
-  var st=B.wk?B.wk.slice(5).replace("-","/"):""; if(wk) wk.textContent=L(T.sub);
-  var h='', me=B.me, rh=RANKHOW[B.kind||"bingo"];
+function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return;
+  var h=tabsH(), me=B.me, rh=RANKHOW[B.kind||"bingo"], dl=B.daily||B.ko;
   if(!B.cells||!B.open){ evClosed(null); return; }
   setHead("bingo");
-  if(B.ko) h+='<div class="ecard" style="background:#eaf3ff;border:2px solid #3b82f6;font-weight:800;color:#1e3a8a;text-align:center">한국인 판 · 한국어 설정으로 한국에서 접속한 분만 풀 수 있어요. 상금은 없고 순위·별 배지만 있습니다. 사자성어·순우리말 등 어려운 문제가 매일 밤 12시에 바뀝니다.</div>';   // 한국인 판 (10-27, 한국어만)
+  if(B.ko) h+='<div class="ecard" style="background:#eaf3ff;border:2px solid #3b82f6;font-weight:800;color:#1e3a8a;text-align:center">한국인 판 · 한국어 설정으로 한국에서 접속한 분만 풀 수 있어요. 상금은 없고 순위·점수·별 배지만 있습니다. 사자성어·순우리말 등 어려운 문제가 매일 밤 12시에 바뀝니다.</div>';   // 한국인 판 (10-27, 한국어만)
   else if(B.test) h+='<div class="ecard" style="background:#fff4d6;border:2px dashed #e0a100;font-weight:800;color:#8a5a00;text-align:center">TEST · '+esc(L(TST))+'</div>';
-  else if(rh) h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKL))+'</b> · '+esc(L(rh))+'</div>';
-  if(false){ h+='<div class="ecard" style="font-weight:800;color:#555">'+esc(L(T.closed))+'</div><div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>'; }
-  else {
-    if(!B.test&&!B.ko) h+='<div class="ecard ewk"><span>'+esc(L(T.ends))+'</span><span>'+esc(L(T.same))+'</span></div>';
-    if(!me) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="signin">'+esc(L(T.signin))+'</button></div>';
-    else if(me.grad) h+='<div class="ecard" style="color:#7a3cff;font-weight:700">'+esc(L(T.grad))+'</div>';
-    var S=me?me.s:[], X=me?me.x:[];
-    h+='<div class="egrid">'+B.cells.map(function(c){ if(c.free) return '<div class="ec free">FREE</div>';
-      var done=S.indexOf(c.i)>=0, rt=!done&&X.indexOf(c.i)>=0;
-      return '<div class="ec'+(done?' done':'')+(rt?' retry':'')+'" data-i="'+c.i+'"><div>'+esc(c.w.en)+(c.w.ko?'<span class="ko">'+esc(c.w.ko)+'</span>':'')+'</div>'+(done?'<div class="stp">OK</div>':'')+(rt?'<div class="rt">'+esc(L(T.retry))+'</div>':'')+'</div>'; }).join("")+'</div>';
-    h+='<div class="est"><div><b>'+S.length+'/24</b>'+esc(L(T.stamps))+'</div><div><b>'+(me&&me.f0?elTxt((me.done||Date.now())-me.f0):"0:00")+'</b>'+esc(L(TMX))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(B.test||B.ko?TNX:T.left))+'</div></div>';
-    if(me&&me.agreed) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>';
-    h+=rankCard(B);
-    if(!B.test&&!B.ko) h+='<div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
-  }
+  else if(B.live) h+='<div class="ecard" style="background:#fff1e4;border:2px solid #ff7a1a;font-size:13px;font-weight:800;color:#8a3d00">'+esc(L(LIVEB))+'</div>';   // 매일 빙고 실전 — 상금·기간
+  if(rh) h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(dl?RKD:RKL))+'</b> · '+esc(L(rh))+'</div>';
+  if(!B.test&&!B.ko) h+='<div class="ecard ewk"><span>'+esc(L(dl?DSUB:T.ends))+'</span><span>'+esc(L(T.same))+'</span></div>';
+  if(!me) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="signin">'+esc(L(T.signin))+'</button></div>';
+  else if(me.grad&&!B.test&&!B.ko) h+='<div class="ecard" style="color:#7a3cff;font-weight:700">'+esc(L(B.daily?T.gradD:T.grad))+'</div>';
+  var S=me?me.s:[], X=me?me.x:[];
+  h+='<div class="egrid">'+B.cells.map(function(c){ if(c.free) return '<div class="ec free">FREE</div>';
+    var done=S.indexOf(c.i)>=0, rt=!done&&X.indexOf(c.i)>=0;
+    return '<div class="ec'+(done?' done':'')+(rt?' retry':'')+'" data-i="'+c.i+'"><div>'+esc(c.w.en)+(c.w.ko?'<span class="ko">'+esc(c.w.ko)+'</span>':'')+'</div>'+(done?'<div class="stp">OK</div>':'')+(rt?'<div class="rt">'+esc(L(T.retry))+'</div>':'')+'</div>'; }).join("")+'</div>';
+  h+='<div class="est"><div><b>'+S.length+'/24</b>'+esc(L(T.stamps))+'</div><div><b>'+(me&&me.f0?elTxt((me.done||Date.now())-me.f0):"0:00")+'</b>'+esc(L(TMX))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(dl||B.test?TNX:T.left))+'</div></div>';
+  if(me&&me.agreed) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>';
+  h+=rankCard(B);
+  h+=wpCard(B);   // 이번 주 점수 (매일 빙고)
+  if(!B.test&&!B.ko) h+='<div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
+  else h+='<div class="ecard"><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   if(B.last&&B.last.res&&B.last.res.length){ var C=["#e0a100","#9aa4b0","#c47a3c"];
-    h+='<div class="ecard"><b>'+esc(L(T.last))+'</b> <span style="color:#888;font-size:12px">'+esc(B.last.wk)+'</span>'+B.last.res.map(function(r,i){ return '<div class="erk"><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div><b>'+esc(r.nm)+'</b><div style="font-size:12px;color:#888">'+r.lines+' '+esc(L(T.lnN))+' · '+kst(r.lt)+'</div></div><div class="pg">'+(r.pg?r.pg+' PG':'')+'</div></div>'; }).join("")+'</div>'; }
-  e.innerHTML=h;
-  [].forEach.call(e.querySelectorAll("[data-ev]"),function(x){ x.onclick=function(){ var a=x.dataset.ev; if(a==="pg") signIn(); else if(a==="rules") showRules(!!(B.me&&!B.me.agreed)); else if(a==="signin") signIn(); else if(a==="share") shareResult(); }; });
+    if(B.last.pts) h+='<div class="ecard"><b>'+esc(L(WPT.last))+'</b> <span style="color:#888;font-size:12px">'+esc(B.last.wk)+'</span>'+B.last.res.map(function(r,i){ return '<div class="erk"><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div><b>'+esc(r.nm)+'</b><div style="font-size:12px;color:#888">'+r.p+' '+esc(L(PTS))+'</div></div><div class="pg">'+(r.pg?r.pg+' PG':'')+'</div></div>'; }).join("")+'</div>';   // 매일 빙고 — 지난주 주간 점수
+    else h+='<div class="ecard"><b>'+esc(L(T.last))+'</b> <span style="color:#888;font-size:12px">'+esc(B.last.wk)+'</span>'+B.last.res.map(function(r,i){ return '<div class="erk"><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div><b>'+esc(r.nm)+'</b><div style="font-size:12px;color:#888">'+(r.el!=null?elTxt(r.el):r.lines+' '+esc(L(T.lnN)))+' · '+kst(r.lt)+'</div></div><div class="pg">'+(r.pg?r.pg+' PG':'')+'</div></div>'; }).join("")+'</div>'; }
+  e.innerHTML=h; wire(e);
   [].forEach.call(e.querySelectorAll(".ec[data-i]"),function(x){ x.onclick=function(){ tap(+x.dataset.i); }; }); }
 function tap(i){ if(!B||!B.open) return; var me=B.me; if(!me){ signIn(); return; } if(!me.agreed){ showRules(true); return; }
   if(me.s.indexOf(i)>=0) return; var c=B.cells.filter(function(x){ return x.i===i; })[0]; if(!c) return;
@@ -451,7 +498,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
 var _gb=window.guBack; window.guBack=function(){ if(box()){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };
 var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ evRelang(); }catch(e){} return r; };
 // 언어 바꾸면 열린 이벤트 화면 전부 그 언어로 (사장님 10-27 「다른 이벤트도 다 그렇게」) — 새 이벤트 화면을 만들면 여기에 더한다
-function evRelang(){ var s=document.getElementById("evSheet"); if(s) s.remove(); if(box()) load();
+function evRelang(){ var s=document.getElementById("evSheet"); if(s) s.remove(); if(box()) load(); try{ status(); }catch(e){}
   if(MODE==="treasure") treasureMode();
   else if(MODE==="spot"&&SQ&&SQ._end) spotShow(Object.assign({},SQ,{left:Math.max(0,SQ._end-Date.now())})); }
 })();
