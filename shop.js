@@ -77,7 +77,7 @@ var S={cat:"all",prod:null,glang:"",guides:null,gid:null,date:"",n:2};
 var css=document.createElement("style");
 css.textContent="#shopBox{position:fixed;inset:0;z-index:2147483003;background:#f6f4ef;color:#1d2433;overflow:auto;-webkit-overflow-scrolling:touch;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif}"
  +"#shopBox .sstamp{position:fixed;inset:0;pointer-events:none;z-index:3;display:flex;align-items:center;justify-content:center;overflow:hidden}"
- +"#shopBox .sstamp span{transform:rotate(-24deg);font:900 clamp(44px,11vw,140px)/1 'Segoe UI',Arial,sans-serif;letter-spacing:.06em;color:rgba(214,40,40,.16);border:clamp(5px,1vw,12px) solid rgba(214,40,40,.16);border-radius:18px;padding:.12em .3em;white-space:nowrap}"
+ +"#shopBox .sstamp span{transform:rotate(-24deg);font:900 clamp(44px,11vw,140px)/1 'Segoe UI',Arial,sans-serif;letter-spacing:.06em;color:rgba(214,40,40,.4);border:clamp(5px,1vw,12px) solid rgba(214,40,40,.4);border-radius:18px;padding:.12em .3em;white-space:nowrap}"
  +"#shopBox .shd{position:sticky;top:0;z-index:4;display:flex;align-items:center;gap:10px;padding:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));background:#1d2433;color:#fff}"
  +"#shopBox .shd b{font-size:18px}#shopBox .shd .ut{font-size:11px;font-weight:900;color:#ffd6d6;border:1.5px solid #ff8a8a;border-radius:6px;padding:2px 6px;letter-spacing:.05em}"
  +"#shopBox .shd button{margin-left:auto;border:0;background:rgba(255,255,255,.16);color:#fff;font-weight:800;border-radius:999px;padding:8px 14px;cursor:pointer}"
