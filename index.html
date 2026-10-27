@@ -1766,7 +1766,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script src="karaoke.js?v=1026kr3"></script>
 <script src="pcbang.js?v=1026pc5"></script>
 <script src="pg.js?v=1027btn"></script>
-<script src="event.js?v=1027sms"></script>
+<script src="event.js?v=1027bso"></script>
 <script src="billboard.js?v=1021pl"></script>
 <script src="airport_i18n.js?v=1027i2"></script>
 <script src="airport.js?v=1027ap19"></script>
@@ -1910,6 +1910,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
     }
     window.mpCrawlReplay=function(){ try{ build(false); }catch(e){ endAll(); } };   // 메뉴 「인트로 다시 보기」 — 카운터 안 바꿈
     function shouldShow(){
+      if(/[?&]bs=[0-9a-f]{16}/.test(location.search)) return false;   // 빙고 공유 링크로 온 사람은 크롤 없이 바로 빙고 (10-27)
       try{
         var n=parseInt(localStorage.getItem("mpv_crawl_n")||"0",10)||0;
         if(n===0) return true;
