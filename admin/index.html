@@ -663,9 +663,43 @@ function misLoad(){ var P=$("pane"); var r=misMonth(0); MIS.from=r.from; MIS.to=
     +'<div id="misSum"></div></div>'
     +'<div class="card"><b>＋ 예약·결제 기록 추가</b><div class="msg">결제 연결 전, 끝난 투어를 손수 적어 둘 때 씁니다. 금액은 요금표에서 자동으로 채워지며 고칠 수 있습니다.</div><div id="misAdd"></div></div>'
     +'<div class="card"><div class="row"><b style="flex:1">날짜별</b></div><div class="tw"><table id="misTab"></table></div></div>'
-    +'<div class="card"><b>가이드별 합계 (고른 기간 · 결제완료·완료 건)</b><div class="tw"><table id="misG"></table></div></div>';
+    +'<div class="card"><b>가이드별 합계 (고른 기간 · 결제완료·완료 건)</b><div class="tw"><table id="misG"></table></div></div>'
+    +'<div class="card" id="soCard"><div class="row"><b style="flex:1">체험·입장권 주문</b><button onclick="soFetch()">새로고침</button><button class="g" onclick="xlsSo()">엑셀 받기</button><button class="g" onclick="soClearTest()">시험 주문 지우기</button></div>'
+    +'<div class="msg">앱 「체험·입장권」 결제창에서 들어온 주문입니다. 지금은 결제 연결 전이라 모두 <b>시험</b> 주문(가이드·손님에게 아무것도 안 감)입니다. '
+    +'결제가 붙으면 결제 완료 → 고른 가이드에게 메일·문자(수락/거절 링크) → 가이드가 수락하면 「확정」. 가이드 칸을 바꾸면(결제 완료 건) 새 가이드에게 알림이 갑니다.</div>'
+    +'<div id="soSum"></div><div class="tw"><table id="soTab"></table></div></div>';
   $("misP_this").classList.add("on");
-  misAddForm(); misFetch(); }
+  misAddForm(); misFetch(); soFetch(); }
+// ── 체험·입장권 주문 (10-28) — 허브 /shop/admin/orders · /shop/admin/order · /shop/admin/order/del · /shop/admin/order/cleartest ──
+var SO={items:[]}, SOS={test:"시험",pending:"결제 전",paid:"결제 완료",confirmed:"확정(가이드 수락)",cancelled:"취소",refunded:"환불"};
+function soFetch(){ var S=$("soSum"); if(S) S.innerHTML='<div class="msg">불러오는 중…</div>';
+  api("/shop/admin/orders").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); SO.items=j.items||[]; soDraw(); })
+  .catch(function(e){ if(S) S.innerHTML='<div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div>'; }); }
+function soGans(x){ return x.gAns&&x.gAns.gid===x.gid?(x.gAns.a==="accept"?"수락":"거절")+" "+x.gAns.at:""; }
+function soDraw(){ var t=$("soTab"); if(!t) return; var it=SO.items, real=it.filter(function(x){ return !x.test; }), paid=real.filter(function(x){ return x.status==="paid"||x.status==="confirmed"; });
+  var amt=paid.reduce(function(s,x){ return s+(x.amount||0); },0), need=paid.filter(function(x){ return !x.gid||(x.gAns&&x.gAns.a==="reject"&&x.gAns.gid===x.gid); }).length;
+  $("soSum").innerHTML='<div class="tiles">'+tile(it.length+"건","전체 주문 (시험 "+(it.length-real.length)+")")+tile(paid.length+"건","결제 완료·확정")+tile(won(amt),"결제 금액 합계")+tile(need+"건","가이드 배정 필요")+'</div>';
+  var gopt=function(sel){ return '<option value="">(미배정)</option>'+(MIS.guides||[]).map(function(g){ return '<option value="'+esc(g.id)+'"'+(g.id===sel?' selected':'')+'>'+esc(g.name)+'</option>'; }).join(""); };
+  var sopt=function(x){ var ks=x.test?["test","cancelled"]:["pending","paid","confirmed","cancelled","refunded"]; if(ks.indexOf(x.status)<0) ks.unshift(x.status); return ks.map(function(k){ return '<option value="'+k+'"'+(k===x.status?' selected':'')+'>'+esc(SOS[k]||k)+'</option>'; }).join(""); };
+  var h='<tr><th class="l">주문일시</th><th class="l">주문번호</th><th class="l">투어 날짜·시간</th><th class="l">상품</th><th>인원</th><th>금액</th><th class="l">손님</th><th class="l">언어</th><th class="l">가이드</th><th class="l">가이드 답</th><th class="l">상태</th><th></th></tr>';
+  it.forEach(function(x){ h+='<tr'+(x.test?' style="opacity:.75"':'')+'><td class="l">'+esc(x.at)+'</td><td class="l">'+esc(x.oid)+(x.test?' <span class="sub">[시험]</span>':'')+'</td><td class="l">'+esc(x.date+" "+x.time)+'</td><td class="l">'+esc(x.pnameKo||x.pid)+'</td><td>'+x.n+'</td><td>'+won(x.amount)+'</td>'
+    +'<td class="l">'+esc(x.name||"")+'<br><span class="sub">'+esc(x.email||"")+(x.phone?' · '+esc(x.phone):'')+'</span></td><td class="l">'+esc(gLangNm(x.lang))+(x.glang&&x.glang!==x.lang?' / 가이드 '+esc(gLangNm(x.glang)):'')+'</td>'
+    +'<td class="l"><select data-oid="'+esc(x.oid)+'" onchange="soSet(this.dataset.oid,{gid:this.value})">'+gopt(x.gid)+'</select>'+(x.gid&&!(MIS.guides||[]).some(function(g){ return g.id===x.gid; })?'<br><span class="sub">'+esc(x.gname||x.gid)+'</span>':'')+'</td>'
+    +'<td class="l">'+esc(soGans(x))+'</td><td class="l"><select data-oid="'+esc(x.oid)+'" onchange="soSet(this.dataset.oid,{status:this.value})">'+sopt(x)+'</select></td>'
+    +'<td><button class="g" data-oid="'+esc(x.oid)+'" onclick="soDel(this.dataset.oid)" title="이 주문 지우기">✕</button></td></tr>'; });
+  if(!it.length) h+='<tr><td class="l" colspan="12">주문이 없습니다.</td></tr>';
+  t.innerHTML=h; }
+function soSet(oid,ch){ var x=SO.items.filter(function(y){ return y.oid===oid; })[0]; if(!x) return;
+  var msg=ch.gid!==undefined?("가이드를 「"+(ch.gid?((MIS.guides||[]).filter(function(g){ return g.id===ch.gid; })[0]||{}).name||ch.gid:"미배정")+"」(으)로 바꿀까요?"+(!x.test&&(x.status==="paid"||x.status==="confirmed")&&ch.gid?"\n결제 완료 건이라 새 가이드에게 메일·문자가 갑니다.":"")):("상태를 「"+(SOS[ch.status]||ch.status)+"」(으)로 바꿀까요?");
+  if(!confirm(msg)){ soDraw(); return; }
+  api("/shop/admin/order",{method:"POST",body:JSON.stringify(Object.assign({oid:oid},ch))}).then(function(j){ if(!j.ok){ alert("바꾸지 못했습니다 ("+(j.err||"")+")"); soDraw(); return; }
+    SO.items=SO.items.map(function(y){ return y.oid===oid?j.order:y; }); soDraw(); }).catch(function(){ alert("바꾸지 못했습니다."); soDraw(); }); }
+function soDel(oid){ if(!confirm("이 주문을 지울까요? ("+oid+")")) return; api("/shop/admin/order/del",{method:"POST",body:JSON.stringify({oid:oid})}).then(function(j){ if(j&&j.ok) soFetch(); else alert("지우지 못했습니다."); }).catch(function(){ alert("지우지 못했습니다."); }); }
+function soClearTest(){ if(!confirm("시험 주문을 모두 지울까요?")) return; api("/shop/admin/order/cleartest",{method:"POST",body:JSON.stringify({})}).then(function(j){ if(j&&j.ok){ alert((j.removed||0)+"건을 지웠습니다."); soFetch(); } else alert("지우지 못했습니다."); }).catch(function(){ alert("지우지 못했습니다."); }); }
+function xlsSo(){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀습니다."); return; }
+  var rows=[[CO],["체험·입장권 주문"],["만든 날",kday(0)],[],["주문일시","주문번호","투어 날짜","시간","상품","인원","1인 금액(원)","합계(원)","손님 이름","이메일","전화","손님 언어","가이드 언어","가이드","가이드 답","상태","시험","결제 시각"]].concat(SO.items.map(function(x){
+    return [x.at,x.oid,x.date,x.time,x.pnameKo||x.pid,x.n,x.unit||0,x.amount||0,x.name||"",x.email||"",x.phone||"",gLangNm(x.lang),x.glang?gLangNm(x.glang):"",x.gname||"",soGans(x),SOS[x.status]||x.status,x.test?"시험":"",x.paidAt||""]; }));
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[16,22,11,6,30,6,11,11,12,24,14,10,10,10,18,12,6,16]),"체험 주문"); save(wb,"머니퍼즐_체험주문_"+kday(0)+".xlsx"); }
 function misFetch(){ var S=$("misSum"); if(S) S.innerHTML='<div class="msg">불러오는 중…</div>';
   api("/guide/admin/bookings?from="+MIS.from+"&to="+MIS.to).then(function(j){ if(!j.ok) throw new Error("x");
     MIS.items=j.items||[]; MIS.prices=j.prices||null; misDraw();
@@ -698,7 +732,7 @@ function misAddDraw(){ var gopt=MIS.guides.length?MIS.guides.map(function(g){ re
     +'<label>상태<br><select id="maS"><option value="completed">완료</option><option value="paid">결제완료</option><option value="requested">요청</option><option value="cancelled">취소</option></select></label>'
     +'<label>결제금액(원)<br><input type="text" id="maA" style="width:110px" inputmode="numeric"></label>'
     +'<button onclick="misAdd()">넣기</button></div><div id="maMsg" class="msg"></div>';
-  maLangs(); maAmt(); }
+  maLangs(); maAmt(); if(SO.items.length) soDraw(); }   // 가이드 목록이 오면 주문표의 가이드 고르기 칸도 다시
 function maLangs(){ var sel=$("maG"), o=sel&&sel.selectedOptions[0], ls=(o&&o.dataset.langs||"").split(",").filter(Boolean);
   $("maL").innerHTML=(ls.length?ls:["en"]).map(function(l){ return '<option value="'+esc(l)+'">'+esc(gLangNm(l))+'</option>'; }).join(""); }
 function maAmt(){ var l=$("maL").value, t=$("maT").value, p=MIS.prices&&MIS.prices[l]; if(p&&p[t]!=null) $("maA").value=p[t]; }
