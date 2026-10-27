@@ -32,6 +32,8 @@ var TX={
  pay:T6("예약·결제","Book & pay","予約・決済","预约·付款","預約·付款","Reservar y pagar"),
  payn:T6("결제창에서 날짜·인원을 다시 확인합니다. 취소·환불은 환불 정책을 따릅니다.","You will confirm the date and people in the payment window. Cancellations follow our refund policy.","決済画面で日付・人数をもう一度確認します。キャンセル・返金は返金ポリシーに従います。","将在付款页面再次确认日期和人数。取消·退款按退款政策办理。","將在付款頁面再次確認日期和人數。取消·退款依退款政策辦理。","Confirmarás la fecha y las personas en la ventana de pago. Las cancelaciones siguen nuestra política de reembolso."),
  soon:T6("준비 중인 상품이라 아직 예약할 수 없어요.","This product is coming soon and can’t be booked yet.","準備中の商品のため、まだ予約できません。","该商品正在筹备中，暂时无法预约。","該商品正在籌備中，暫時無法預約。","Este producto llega pronto y aún no se puede reservar."),
+ sel:T6("선택한 상품","Selected product","選んだ商品","已选商品","已選商品","Producto elegido"),
+ seln:T6("오른쪽에서 상품을 고르세요.","Pick a product on the right.","右から商品を選んでください。","请在右侧选择商品。","請在右側選擇商品。","Elige un producto a la derecha."),
  perf:T6("공연장 5곳의 공연 일정 보기","See shows at 5 theaters","劇場5か所の公演日程を見る","查看5家剧场的演出日程","查看5家劇場的演出日程","Ver funciones en 5 teatros"),
  b4p:T6("1인 ₩89,000 · 2인 이상 1인 ₩79,000","1 person ₩89,000 · 2+ ₩79,000 each","1名 ₩89,000 · 2名以上 1名 ₩79,000","1人 ₩89,000 · 2人以上每人 ₩79,000","1人 ₩89,000 · 2人以上每人 ₩79,000","1 persona ₩89,000 · 2+ ₩79,000 c/u")
 };
@@ -104,6 +106,9 @@ css.textContent="#shopBox{position:fixed;inset:0;z-index:2147483003;background:#
  +"#shopBox .sstp{display:flex;align-items:center;gap:8px}#shopBox .sstp button{width:30px;height:30px;border-radius:50%;border:1px solid #e4e0d6;background:#efece4;font-size:16px;font-weight:900;cursor:pointer}"
  +"#shopBox .stot{border-top:1px dashed #e4e0d6;padding-top:10px;display:flex;justify-content:space-between;font-size:18px;font-weight:900}"
  +"#shopBox .spay{border:0;border-radius:12px;padding:13px;background:#ff6a1a;color:#fff;font-size:16px;font-weight:900;cursor:pointer}#shopBox .spay:disabled{opacity:.45;cursor:not-allowed}";
+css.textContent+="#shopBox .sgrid{display:flex;flex-direction:column;gap:14px}#shopBox .sside{display:flex;flex-direction:column;gap:14px;order:2}#shopBox .smain{display:flex;flex-direction:column;gap:14px;order:1;min-width:0}"
+ +"@media (min-width:900px){#shopBox .sgrid{display:grid;grid-template-columns:340px minmax(0,1fr);align-items:start;gap:20px}#shopBox .sside{grid-column:1;grid-row:1;position:sticky;top:70px}#shopBox .smain{grid-column:2;grid-row:1}}"
+ +"#shopBox .ssel{display:flex;flex-direction:column;gap:8px}#shopBox .ssel img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px}#shopBox .ssel b{font-size:15px}#shopBox .ssel .spr{font-size:15px}";   // 넓은 화면 = 왼쪽 기둥 (사장님 10-27 「왼쪽 칸도 채워줘」)
 document.head.appendChild(css);
 function won(x){ return "₩"+Number(x).toLocaleString("ko-KR"); }
 function box(){ return document.getElementById("shopBox"); }
@@ -115,12 +120,15 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
   var L0=P.filter(function(p){ return S.cat==="all"||p.c===S.cat; });
   var h='<div class="sstamp" aria-hidden="true"><span>UNDER TESTING</span></div>'
    +'<div class="shd"><b>'+esc(L(TX.t))+'</b><span class="ut">UNDER TESTING</span><button type="button" data-s="x">✕ '+esc(L(TX.x))+'</button></div><div class="sin">'
-   +'<p class="ssub">'+esc(L(TX.s))+'</p>'
+   +'<p class="ssub">'+esc(L(TX.s))+'</p><div class="sgrid"><div class="smain">'
    +'<div class="scats">'+CATS.map(function(c){ var n=c[0]==="all"?P.length:P.filter(function(p){ return p.c===c[0]; }).length; return '<button type="button" data-cat="'+c[0]+'" class="'+(S.cat===c[0]?"on":"")+'">'+esc(L(c[1]))+' '+n+'</button>'; }).join("")+'</div>'
    +'<p class="scnt">'+L0.length+' '+esc(L(TX.n))+'</p>'
    +'<div class="scards">'+L0.map(function(p){ return '<button type="button" class="scard'+(S.prod===p.id?" on":"")+'" data-p="'+p.id+'"><div class="sph"><img src="img/shop/'+p.img+'.webp" alt="" loading="lazy"><span class="stag">'+esc(catName(p.c))+'</span>'+(p.real?'<span class="sreal">'+esc(L(TX.real))+'</span>':'<span class="sex">'+esc(L(TX.ex))+'</span>')+'</div>'
       +'<div class="scb"><h3>'+esc(L(p.t))+'</h3><div class="sft">'+p.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div><p>'+esc(L(p.d))+'</p>'
       +(p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':'')+'</div></button>'; }).join("")+'</div>';
+  h+='</div><aside class="sside">';
+  var p0=prod();   // 선택한 상품
+  h+='<section class="sbox"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel"><img src="img/shop/'+p0.img+'.webp" alt=""><b>'+esc(L(p0.t))+'</b><div class="sft">'+p0.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>';
   // 가이드
   h+='<section class="sbox"><h2><span class="sstep">1</span>'+esc(L(TX.g1))+'</h2><p class="snote">'+esc(L(TX.gl))+'</p><div class="sgl">'+GLANGS.map(function(l){ return '<button type="button" data-gl="'+l[0]+'" class="'+(S.glang===l[0]?"on":"")+'">'+esc(l[1])+'</button>'; }).join("")+'</div>';
   if(S.glang){ if(S.guides===null) h+='<p class="snote">'+esc(L(TX.gld))+'</p>'; else if(!S.guides.length) h+='<p class="snote">'+esc(L(TX.gn))+'</p>';
@@ -130,7 +138,6 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
   var p=prod(); h+='<section class="sbox" id="shopCo"><h2><span class="sstep">2</span>'+esc(L(TX.g2))+'</h2>';
   if(!p) h+='<p class="snote">'+esc(L(TX.pick))+'</p>';
   else { var gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0];
-    h+='<div class="spick"><img src="img/shop/'+p.img+'.webp" alt=""><b>'+esc(L(p.t))+'</b></div>';
     if(p.real==="perf") h+='<button type="button" class="spay" data-s="perf">'+esc(L(TX.perf))+' ›</button>';
     else { var unit=p.real==="b4"?b4Price(S.n):p.price;
       h+='<div class="srow"><label for="shopDt">'+esc(L(TX.date))+'</label><input type="date" id="shopDt" value="'+esc(S.date)+'"></div>'
@@ -139,7 +146,7 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
        +'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(unit*S.n)+'</span></div>'
        +(p.real==="b4"?'<button type="button" class="spay" data-s="pay">'+esc(L(TX.pay))+' ›</button><p class="snote">'+esc(L(TX.payn))+'</p>'
          :'<button type="button" class="spay" disabled>'+esc(L(TX.pay))+'</button><p class="snote">'+esc(L(TX.soon))+'</p>'); } }
-  h+='</section></div>';
+  h+='</section></aside></div></div>';
   b.innerHTML=h; b.scrollTop=y; }
 function loadGuides(){ var l=S.glang; S.guides=null; paint();
   fetch(HUBU+"/guide/guides?lang="+encodeURIComponent(l)).then(function(r){ return r.json(); }).then(function(j){ if(S.glang!==l) return; S.guides=(j&&j.ok&&j.items)||[]; paint(); }).catch(function(){ if(S.glang===l){ S.guides=[]; paint(); } }); }
@@ -149,7 +156,7 @@ function open(){ if(box()) return; var b=document.createElement("div"); b.id="sh
 function close(){ var b=box(); if(b) b.remove(); document.documentElement.style.overflow=""; }
 document.addEventListener("click",function(e){ var b=box(); if(!b||!b.contains(e.target)) return; var t=e.target.closest("[data-s],[data-cat],[data-p],[data-gl],[data-g],[data-n]"); if(!t) return;
   if(t.dataset.cat){ S.cat=t.dataset.cat; paint(); }
-  else if(t.dataset.p){ S.prod=t.dataset.p; paint(); try{ ntap("shop","p_"+S.prod); }catch(z){} var c=document.getElementById("shopCo"); if(c) c.scrollIntoView({behavior:"smooth",block:"start"}); }
+  else if(t.dataset.p){ S.prod=t.dataset.p; paint(); try{ ntap("shop","p_"+S.prod); }catch(z){} var c=document.getElementById("shopCo"); if(c&&window.innerWidth<900) c.scrollIntoView({behavior:"smooth",block:"start"}); }
   else if(t.dataset.gl){ S.glang=t.dataset.gl; S.gid=null; loadGuides(); }
   else if(t.dataset.g){ S.gid=t.dataset.g; paint(); }
   else if(t.dataset.n){ S.n=Math.max(1,Math.min(20,S.n+(+t.dataset.n))); paint(); }
