@@ -371,11 +371,11 @@ function gapFill(pl,di,until){ var d=pl.days[di], H=REPH, dt=new Date(d.date+"T0
   pl.days.forEach(function(x){ x.stops.forEach(function(k){ used[k]=1; }); });
   var cur=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), last=cur.filter(function(x){ return !isNight(x); }).pop()||cur[cur.length-1]||H; if(!last) return 0;
   var cand=[]; for(var k in (window.PLACES||{})){ if(used[k]||k.charAt(0)==="_") continue; var q=PLACES[k]; if(!q||!isFinite(+q.lat)||!isFinite(+q.lng)) continue;
-    var it={k:k,ko:q.ko,en:q.en,lat:+q.lat,lng:+q.lng,d:q.d,den:q.den}, c=catOf(it); if(c==="hotel"||c==="trans") continue; var dk=km(last,it); if(dk>6) continue; it.stay=stayOf(it); cand.push([dk,it]); }
+    var it={k:k,ko:q.ko,en:q.en,lat:+q.lat,lng:+q.lng,d:q.d,den:q.den}, c=catOf(it); if(c==="hotel"||c==="trans"||PERFK[k]) continue; var dk=km(last,it); if(dk>6) continue; it.stay=stayOf(it); cand.push([dk,it]); }
   cand.sort(function(a,b){ return a[0]-b[0]; }); var n=0;
-  for(var i=0;i<cand.length&&n<4;i++){ var it=cand[i][1], night=cur.filter(isNight), day=cur.filter(function(x){ return !isNight(x); }), trial=day.concat([it],night), sv=sched(H,trial,dt,pl.from);
+  for(var i=0;i<cand.length&&n<4;i++){ var it=cand[i][1], night=cur.filter(isNight), day=cur.filter(function(x){ return !isNight(x); }), trial=day.concat([it],night), sv=sched(H,trial,dt,pl.from,mealsOf(di));   // 식사 칸까지 넣고 잰다
     if(sv.end<=until&&sv.viol===0){ pl.pool[it.k]=it; cur=trial; n++; } }
-  d.stops=cur.map(function(x){ return x.k; }); d.end=sched(H,cur,dt,pl.from).end; return n; }
+  d.stops=cur.map(function(x){ return x.k; }); d.end=sched(H,cur,dt,pl.from,mealsOf(di)).end; return n; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-gap]"); if(!a) return; e.preventDefault(); var pl=TR.plan; if(!pl) return; var di=+a.dataset.d, d=pl.days[di]; if(!d) return;
   var g=a.dataset.gap;
   if(g==="y") d.gap="early"; else if(g==="n") d.gap="ask"; else if(g==="re") delete d.gap;
