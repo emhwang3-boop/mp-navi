@@ -79,7 +79,9 @@ var PH='<svg class="nrph" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16
 function km(m){ return m<1000?Math.round(m)+" m":(m/1000).toFixed(1)+" km"; }
 
 function css(){ if(document.getElementById("nrCss")) return; var s=document.createElement("style"); s.id="nrCss";
-  s.textContent="#gfchips .nrchip{display:inline-block;width:auto;margin:0;border:1.5px solid #1971c2;background:#e7f5ff;color:#1864ab;border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:800;cursor:pointer;box-shadow:none}"
+  s.textContent="#gfchips .nrchip.tg{border:0!important;background:linear-gradient(135deg,#ff6a1a,#ff2d87)!important;color:#fff!important;box-shadow:0 3px 12px rgba(255,60,110,.45)!important;animation:tgPulse 2.2s ease-in-out infinite}"   /* 체험·입장권 칩 = 눈에 띄게 (사장님 10-27) */
+  +"@keyframes tgPulse{0%,100%{transform:scale(1);box-shadow:0 3px 12px rgba(255,60,110,.45)}50%{transform:scale(1.05);box-shadow:0 4px 20px rgba(255,60,110,.75)}}@media (prefers-reduced-motion:reduce){#gfchips .nrchip.tg{animation:none}}"
+  +"#gfchips .nrchip{display:inline-block;width:auto;margin:0;border:1.5px solid #1971c2;background:#e7f5ff;color:#1864ab;border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:800;cursor:pointer;box-shadow:none}"
   +"#gfchips .nrchip.em{border-color:#e03131;background:#fff5f5;color:#c92a2a}"
   +".nrlock,.nrlock body{overflow:hidden}#nrBox{position:fixed;inset:0;z-index:1036;background:rgba(0,0,0,.45);overflow:auto;-webkit-overflow-scrolling:touch}"
   +"#nrBox .nrin{background:var(--bg);color:var(--ink);max-width:720px;margin:0 auto;min-height:100%;padding:14px 16px 40px;box-sizing:border-box}"
@@ -188,7 +190,8 @@ function hanokFar(p,a0){ return fetch(HUB+"/gplace?q="+encodeURIComponent("한�
       .sort(function(u,v){ var fu=kmLL(p,[u.y,u.x])>40?1:0, fv=kmLL(p,[v.y,v.x])>40?1:0; return (fu-fv)||(v.rating-u.rating)||(v.n-u.n); }); a.far=1; return a; }).catch(function(){ return a0; }); }
 function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.byL={}; S.fl=""; S.gr=0;
   if(S.k==="ig"){ IG={view:"pick",lang:"",guides:null,gid:null,gobj:null,err:"",busy:false,done:false}; S.items=[]; S.base=null; paint(); return; }   // 통역·길안내 = 가이드 매칭 판, 위치·목록 없음 (10-24)
-  if(S.k==="tg"){ S.items=[]; paint(); pickBase(false).then(function(b){ if(S.k!=="tg") return; S.base=b?b.p:null; paint(); },function(){}); return; }   // 투어 가이드 = Klook·GetYourGuide 링크만 (근처 여행사는 아웃바운드라 뺌, 사장님 10-23). 위치는 가까운 도시 이름에만
+  if(S.k==="tg"){ try{ window.SHOP&&SHOP.open(); }catch(e){}   // 상품 진열장 화면 (shop.js, 사장님 10-27) — 닫으면 아래 옛 판
+    S.items=[]; paint(); pickBase(false).then(function(b){ if(S.k!=="tg") return; S.base=b?b.p:null; paint(); },function(){}); return; }   // 투어 가이드 = Klook·GetYourGuide 링크만 (근처 여행사는 아웃바운드라 뺌, 사장님 10-23). 위치는 가까운 도시 이름에만
   if(t.fixed){ var mp=ME.pos||null; S.base=null; S.src="";   // 대사관: 고정 목록 · 위치를 묻지 않는다 · 「나」 위치가 있으면 거리만 (폰 안에서 계산)
     S.items=EMB.map(function(x){ var o=Object.assign({},x); o.dist=(mp&&x.y)?Math.round(kmLL(mp,[x.y,x.x])*1000):null; return o; }); if(embL()) S.items.sort(function(a,b){ return embKey(a).localeCompare(embKey(b),{ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]); }); paint(); return; }
   paint();
