@@ -310,7 +310,8 @@ function bbStep(){ if(!bb) return; var bs=bb.querySelectorAll(".ebt b"); [].forE
 setInterval(function(){ try{ if(bb&&typeof VIEW==="string"&&VIEW==="kr"&&!document.hidden) bbStep(); }catch(e){} },2300);
 // ── 섬 ──
 var isle=null, OPEN=false;
-function sign(){ try{ bbPaint(); }catch(e){} if(!isle) return; var s=isle.querySelector(".evS"); s.className="evS "+(OPEN?"on":"off"); s.textContent=OPEN?"Event Open":"Event Close"; fit(); }
+var TESTF=false;   // 시험 빙고 (10-27)
+function sign(){ try{ bbPaint(); }catch(e){} if(!isle) return; var s=isle.querySelector(".evS"); s.className="evS "+(OPEN?"on":"off"); s.textContent=OPEN?(TESTF?"Test Bingo":"Event Open"):"Event Close"; fit(); }
 function fit(){ if(!isle) return; var s=isle.querySelector(".evS"), w=isle.clientWidth; if(w) s.style.fontSize=(w*0.037)+"px";   /* 간판 폭(섬의 21.5%)에 맞춤 — 지도를 키우면 같이 커진다 */ }
 function mk(){ var mz=document.getElementById("mz"); if(!mz||document.getElementById("evIsle")) return;
   isle=document.createElement("div"); isle.id="evIsle"; isle.setAttribute("role","button"); isle.tabIndex=0; isle.setAttribute("aria-label","Event");
@@ -320,7 +321,7 @@ function mk(){ var mz=document.getElementById("mz"); if(!mz||document.getElement
   ["pointerdown","mousedown","touchstart"].forEach(function(ev){ isle.addEventListener(ev,function(e){ e.stopPropagation(); },false); });
   try{ new ResizeObserver(fit).observe(isle); }catch(e){ window.addEventListener("resize",fit); }
   sign(); status(); }
-function status(){ fetch(H+"/npg/event",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ OPEN=!!(j&&j.open); KIND=OPEN?(j.kind||"bingo"):""; sign(); }).catch(function(){}); }
+function status(){ fetch(H+"/npg/event",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ OPEN=!!(j&&j.open); TESTF=!!(j&&j.test); KIND=OPEN?(j.kind||"bingo"):""; sign(); }).catch(function(){}); }
 setInterval(status,10*60000);
 // ── 이벤트(빙고) 화면 ──
 var B=null;   // 판 자료
@@ -347,7 +348,8 @@ function signIn(){   // 퍼즐골드 로그인 창(구글·Apple)을 빙고 화�
   var t=setInterval(function(){ var p2=document.getElementById("pgBox"), now=sess();
     if(now&&now!==had){ clearInterval(t); try{ window.mpPG&&mpPG.close(); }catch(e){} if(p2) p2.style.zIndex=""; if(box()){ load(); setTimeout(function(){ var c=cur(); if(c&&c.open&&c.me&&!c.me.agreed) showRules(true); },1500); } return; }   // 로그인되면 바로 빙고로 → 규칙 동의
     if(!p2||p2.hidden){ clearInterval(t); if(p2) p2.style.zIndex=""; if(box()) load(); } },500); }
-var TST={ko:"시험판입니다 — 상금·순위가 없어요. 마음껏 풀어 보세요.",en:"Test board — no prizes and no ranking. Feel free to try it.",ja:"テスト版です — 賞品・順位はありません。自由に解いてみてください。",zhs:"测试版 — 没有奖品，也不排名。请随意试玩。",zht:"測試版 — 沒有獎品，也不排名。請隨意試玩。",es:"Tablero de prueba: sin premios ni clasificación. Pruébalo libremente."};   // 시험 빙고 (10-27)
+var TST={ko:"테스트 중이라 상금이 없습니다 (순위도 없어요). 문제는 매일 한국 시간 밤 12시에 새로 바뀝니다.",en:"This is a test, so there are no prizes (and no ranking). New questions every day at midnight Korea time.",ja:"テスト中のため賞品はありません（順位もありません）。問題は毎日、韓国時間の夜12時に新しくなります。",zhs:"目前为测试，没有奖品（也不排名）。题目每天韩国时间午夜12点更新。",zht:"目前為測試，沒有獎品（也不排名）。題目每天韓國時間午夜12點更新。",es:"Es una prueba, así que no hay premios (ni clasificación). Preguntas nuevas cada día a medianoche, hora de Corea."},
+    TNX={ko:"새 문제까지",en:"New questions in",ja:"新しい問題まで",zhs:"距新题目",zht:"距新題目",es:"Nuevas preguntas en"};   // 시험 빙고 (10-27)
 function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return; var wk=document.getElementById("evWk");
   var st=B.wk?B.wk.slice(5).replace("-","/"):""; if(wk) wk.textContent=L(T.sub);
   var h='', me=B.me, rh=RANKHOW[B.kind||"bingo"];
@@ -357,14 +359,14 @@ function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return; va
   else if(rh) h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKL))+'</b> · '+esc(L(rh))+'</div>';
   if(false){ h+='<div class="ecard" style="font-weight:800;color:#555">'+esc(L(T.closed))+'</div><div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>'; }
   else {
-    h+='<div class="ecard ewk"><span>'+esc(L(T.ends))+'</span><span>'+esc(L(T.same))+'</span></div>';
+    if(!B.test) h+='<div class="ecard ewk"><span>'+esc(L(T.ends))+'</span><span>'+esc(L(T.same))+'</span></div>';
     if(!me) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="signin">'+esc(L(T.signin))+'</button></div>';
     else if(me.grad) h+='<div class="ecard" style="color:#7a3cff;font-weight:700">'+esc(L(T.grad))+'</div>';
     var S=me?me.s:[], X=me?me.x:[];
     h+='<div class="egrid">'+B.cells.map(function(c){ if(c.free) return '<div class="ec free">FREE</div>';
       var done=S.indexOf(c.i)>=0, rt=!done&&X.indexOf(c.i)>=0;
       return '<div class="ec'+(done?' done':'')+(rt?' retry':'')+'" data-i="'+c.i+'"><div>'+esc(c.w.en)+(c.w.ko?'<span class="ko">'+esc(c.w.ko)+'</span>':'')+'</div>'+(done?'<div class="stp">OK</div>':'')+(rt?'<div class="rt">'+esc(L(T.retry))+'</div>':'')+'</div>'; }).join("")+'</div>';
-    h+='<div class="est"><div><b>'+(S.length+1)+'</b>'+esc(L(T.stamps))+'</div><div><b>'+(me?me.lines:0)+'</b>'+esc(L(T.lines))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(T.left))+'</div></div>';
+    h+='<div class="est"><div><b>'+(S.length+1)+'</b>'+esc(L(T.stamps))+'</div><div><b>'+(me?me.lines:0)+'</b>'+esc(L(T.lines))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(B.test?TNX:T.left))+'</div></div>';
     if(me&&me.agreed) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>';
     if(!B.test) h+='<div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   }
