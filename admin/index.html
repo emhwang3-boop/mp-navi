@@ -93,9 +93,18 @@ function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
 function usd(n){ return "$"+(Math.round((n||0)*100)/100).toLocaleString(); }
 function tile(v,l){ return '<div class="tile"><b>'+v+'</b><span>'+l+'</span></div>'; }
+// ── 나라·들어온 경로 (사장님 10-27) — 허브 /ntapstats 의 days[].cc·rf (합계 수만). 10-27 전 날은 기록 없음 ──
+var CCN={US:"미국",KR:"한국",JP:"일본",CN:"중국",TW:"대만",HK:"홍콩",MO:"마카오",GB:"영국",DE:"독일",FR:"프랑스",ES:"스페인",IT:"이탈리아",NL:"네덜란드",CA:"캐나다",AU:"호주",NZ:"뉴질랜드",SG:"싱가포르",VN:"베트남",TH:"태국",PH:"필리핀",ID:"인도네시아",MY:"말레이시아",IN:"인도",MX:"멕시코",BR:"브라질",AR:"아르헨티나",CL:"칠레",CO:"콜롬비아",PE:"페루",RU:"러시아",MN:"몽골",KZ:"카자흐스탄",UZ:"우즈베키스탄",TR:"튀르키예",AE:"아랍에미리트",SA:"사우디",IL:"이스라엘",PL:"폴란드",SE:"스웨덴",NO:"노르웨이",FI:"핀란드",DK:"덴마크",IE:"아일랜드",PT:"포르투갈",CH:"스위스",AT:"오스트리아",BE:"벨기에",UA:"우크라이나",ZA:"남아공",EG:"이집트",NG:"나이지리아",BD:"방글라데시",PK:"파키스탄",XX:"알 수 없음",T1:"토르"};
+var RFN={facebook:"페이스북",instagram:"인스타그램",x:"X",kakao:"카카오톡",line:"라인",whatsapp:"왓츠앱",tiktok:"틱톡",wechat:"위챗",linkedin:"링크드인",google:"구글",naver:"네이버",daum:"다음",bing:"빙",yahoo:"야후",home:"홈페이지",bingo_share:"빙고 공유",pwa:"설치 앱",internal:"앱 안 이동",direct:"직접",other_ref:"기타 링크",other:"기타"};
+function topN(o,N){ if(!o) return null; var a=Object.keys(o).map(function(k){ return [k,o[k]||0]; }).sort(function(x,y){ return y[1]-x[1]||(x[0]<y[0]?-1:1); }); if(!a.length) return null;
+  return a.slice(0,5).map(function(x){ return esc(N[x[0]]||x[0])+" "+x[1]; }).join(" · ")+(a.length>5?" …":""); }
+function srcRows(days){ var h='<tr><th class="l">날짜</th><th class="l">나라 상위</th><th class="l">경로 상위</th></tr>';
+  days.slice().reverse().forEach(function(d){ var c=topN(d.cc,CCN), r=topN(d.rf,RFN);
+    h+='<tr><td class="l">'+d.d+'</td>'+(c||r?'<td class="l">'+(c||"-")+'</td><td class="l">'+(r||"-")+'</td>':'<td class="l" colspan="2" style="color:var(--sub)">기록 시작 전</td>')+'</tr>'; });
+  return h; }
 // ── 계기판 — 건물에 들어오면 바로 보이는 장부 ──
 function homeLoad(){ var P=$("pane"), td=kday(0);
-  P.innerHTML='<div class="card"><b>오늘 '+td+'</b><div id="hsum"><div class="msg">불러오는 중…</div></div></div><div class="card"><b>새 고객의 소리</b><div id="hvc"></div></div><div class="card"><b>최근 7일 (투어앱)</b><div class="tw"><table id="h7"></table></div></div>';
+  P.innerHTML='<div class="card"><b>오늘 '+td+'</b><div id="hsum"><div class="msg">불러오는 중…</div></div></div><div class="card"><b>새 고객의 소리</b><div id="hvc"></div></div><div class="card"><b>최근 7일 (투어앱)</b><div class="tw"><table id="h7"></table></div><div class="msg" style="margin-top:10px">나라·들어온 경로 (방문 합계 수만 · 10-27부터)</div><div class="tw"><table id="h7s"></table></div></div>';
   Promise.all([api("/ntapstats?from="+kday(-6)+"&to="+td),api("/nvoice").catch(function(){ return {ok:false}; }),api("/ninq/admin").catch(function(){ return {ok:false}; }),hc("?sum=1").catch(function(){ return null; })]).then(function(a){
     var w=a[0], tdy=(w.days||[]).filter(function(d){ return d.d===td; })[0]||{}, V=a[1], IQ=a[2], H=a[3];
     $("hsum").innerHTML='<div class="tiles">'
@@ -110,6 +119,7 @@ function homeLoad(){ var P=$("pane"), td=kday(0);
     var h='<tr><th class="l">날짜</th><th>방문</th><th>기기</th><th>누름</th><th>사람 수</th><th>길찾기</th></tr>';
     (w.days||[]).slice().reverse().forEach(function(d){ h+='<tr><td class="l">'+d.d+'</td><td>'+(d.vis||0)+'</td><td>'+(d.visU||0)+'</td><td>'+d.t+'</td><td>'+d.u+'</td><td>'+d.r+'</td></tr>'; });
     $("h7").innerHTML=h;
+    $("h7s").innerHTML=srcRows(w.days||[]);
   }).catch(function(e){ $("hsum").innerHTML='<div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div>'; }); }
 // ── 방문 — 내비 숫자는 토큰 경로(/ntapstats)에서, 허브 공개 화면은 단추로 ──
 function visitLoad(){ var P=$("pane"), td=kday(0);
