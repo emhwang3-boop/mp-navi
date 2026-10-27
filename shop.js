@@ -25,6 +25,8 @@ var TX={
  gld:T6("불러오는 중…","Loading…","読み込み中…","加载中…","載入中…","Cargando…"),
  pick:T6("위에서 상품을 고르면 여기에 예약 내용이 나옵니다.","Pick a product above to see the booking here.","上で商品を選ぶと、ここに予約内容が表示されます。","在上方选择商品后，这里会显示预约内容。","在上方選擇商品後，這裡會顯示預約內容。","Elige un producto arriba para ver aquí la reserva."),
  date:T6("날짜","Date","日付","日期","日期","Fecha"),
+ tm:T6("시간","Time","時間","时间","時間","Hora"),
+ dtm:T6("날짜·시간","Date & time","日時","日期·时间","日期·時間","Fecha y hora"),
  ppl:T6("인원","People","人数","人数","人數","Personas"),
  gd:T6("가이드","Guide","ガイド","向导","嚮導","Guía"),
  none:T6("고르지 않음","Not chosen","未選択","未选择","未選擇","Sin elegir"),
@@ -154,6 +156,7 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
     if(p.real==="perf") h+='<button type="button" class="spay" data-s="perf">'+esc(L(TX.perf))+' ›</button>';
     else { var unit=p.real==="b4"?b4Price(S.n):p.price;
       h+='<div class="srow"><label for="shopDt">'+esc(L(TX.date))+'</label><input type="date" id="shopDt" value="'+esc(S.date)+'"></div>'
+       +'<div class="srow"><label for="shopTm">'+esc(L(TX.tm))+'</label><input type="time" id="shopTm" step="1800" value="'+esc(S.time)+'"></div>'   // 시간 (사장님 10-27 「결제화면에 날짜와 시간까지」)
        +'<div class="srow"><label>'+esc(L(TX.ppl))+'</label><div class="sstp"><button type="button" data-n="-1" aria-label="-">−</button><b>'+S.n+'</b><button type="button" data-n="1" aria-label="+">+</button></div></div>'
        +'<div class="srow"><label>'+esc(L(TX.gd))+'</label><b>'+(gg?esc(gName(gg)):esc(L(TX.none)))+'</b></div>'
        +'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(unit*S.n)+'</span></div>'
@@ -166,7 +169,7 @@ function mockPay(){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelec
   o=document.createElement("div"); o.className="spm"; b.appendChild(o);
   var draw=function(done){ o.innerHTML='<div><h3>'+esc(L(TX.pt))+'<span class="sut">UNDER TESTING</span></h3>'
     +'<b>'+esc(L(TX.ord))+'</b><div class="spick"><img src="img/shop/'+p.img+'.webp" alt=""><b>'+esc(L(p.t))+'</b></div>'
-    +'<div class="sl"><span>'+esc(L(TX.date))+'</span><span>'+esc(S.date||"-")+'</span></div><div class="sl"><span>'+esc(L(TX.ppl))+'</span><span>'+S.n+'</span></div><div class="sl"><span>'+esc(L(TX.gd))+'</span><span>'+(gg?esc(gName(gg)):esc(L(TX.none)))+'</span></div>'
+    +'<div class="sl"><span>'+esc(L(TX.dtm))+'</span><span>'+esc((S.date||"-")+" "+(S.time||""))+'</span></div><div class="sl"><span>'+esc(L(TX.ppl))+'</span><span>'+S.n+'</span></div><div class="sl"><span>'+esc(L(TX.gd))+'</span><span>'+(gg?esc(gName(gg)):esc(L(TX.none)))+'</span></div>'
     +'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(tot)+'</span></div>'
     +'<b>'+esc(L(TX.pm))+'</b><label class="sr"><input type="radio" name="spmm" checked> '+esc(L(TX.card))+'</label><label class="sr"><input type="radio" name="spmm"> PayPal</label><label class="sr"><input type="checkbox" id="spmPg"> '+esc(L(TX.pgp))+'</label>'
     +'<label class="sr"><input type="checkbox" id="spmAg"> '+esc(L(TX.agr))+'</label>'
@@ -179,6 +182,7 @@ function mockPay(){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelec
 function loadGuides(){ var l=S.glang; S.guides=null; paint();
   fetch(HUBU+"/guide/guides?lang="+encodeURIComponent(l)).then(function(r){ return r.json(); }).then(function(j){ if(S.glang!==l) return; S.guides=(j&&j.ok&&j.items)||[]; paint(); }).catch(function(){ if(S.glang===l){ S.guides=[]; paint(); } }); }
 function open(){ if(box()) return; var b=document.createElement("div"); b.id="shopBox"; document.body.appendChild(b); document.documentElement.style.overflow="hidden";
+  if(!S.time) S.time="09:00";
   if(!S.date){ S.date=new Date(Date.now()+3*864e5+9*36e5).toISOString().slice(0,10); }
   paint(); try{ ntap("shop","open"); }catch(e){} }
 function close(){ var b=box(); if(b) b.remove(); document.documentElement.style.overflow=""; }
@@ -193,7 +197,7 @@ document.addEventListener("click",function(e){ var b=box(); if(!b||!b.contains(e
   else if(t.dataset.s==="pay"){ close(); try{ if(window.TPAY) TPAY.open(); }catch(z){} }   // 빅4 — 기존 결제(tosspay.js) 그대로
   else if(t.dataset.s==="perf"){ close(); var a=document.querySelector('[data-nr="tgx"][data-g="perf"]'); if(a&&!/▾/.test(a.textContent)) a.click(); }   // 옛 판의 공연관람 펼치기
 });
-document.addEventListener("change",function(e){ if(e.target&&e.target.id==="shopDt"){ S.date=e.target.value; } });
+document.addEventListener("change",function(e){ if(e.target&&e.target.id==="shopDt"){ S.date=e.target.value; } if(e.target&&e.target.id==="shopTm"){ S.time=e.target.value; } });
 var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ paint(); }catch(e){} return r; };   // 언어 바꾸면 바로
 var _gb=window.guBack; window.guBack=function(){ if(box()){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };   // 뒤로 = 닫기
 window.SHOP={open:open,close:close};
