@@ -308,17 +308,10 @@ function shareResult(){ shDraw().then(function(c){ if(!c){ alert(L(T.err)); retu
       }catch(e){ cp(full,L(SHY.copied)); } }
   }; });
 }); }
-// 공유 링크로 들어온 사람 (?bs=<id>) — 친구 결과 그림 + 「코리아 빙고 같이 풀어요」(이벤트 창) · 「투어앱 설치」
-(function(){ var m=/[?&]bs=([0-9a-f]{16})/.exec(location.search); if(!m) return;
-  fetch(H+"/bs/"+m[1]+".json").then(function(r){ return r.json(); }).then(function(j){ if(!j||!j.ok) return;
-    var show=function(){ var st=window.matchMedia&&matchMedia("(display-mode: standalone)").matches;
-      var s=sheet('<img src="'+esc(j.img)+'" alt="" style="width:100%;border-radius:12px;margin:2px 0 8px"><h3 style="margin:4px 0">'+esc(j.t||"")+'</h3><div style="color:#888;font-size:13px;margin-bottom:8px">'+esc(j.d||"")+'</div>'
-        +'<button type="button" id="bsP" style="width:100%;border:0;border-radius:12px;padding:14px;background:#ff7a1a;color:#fff;font-weight:900;font-size:16px">'+esc(L(SHY.together))+'</button>'
-        +(st?'':'<a href="?install=1&lang='+lg()+'" style="display:block;text-align:center;margin-top:8px;border-radius:12px;padding:13px;background:#1f2a44;color:#fff;font-weight:900;text-decoration:none">'+esc(L(SHX.install))+'</a>')
-        +'<button type="button" id="bsX" style="display:block;width:100%;margin-top:8px;border:0;background:none;font-weight:700;color:#888">'+esc(L(T.x))+'</button>');
-      s.querySelector("#bsX").onclick=function(){ s.remove(); };
-      s.querySelector("#bsP").onclick=function(){ s.remove(); try{ open(); }catch(e){} }; };
-    if(document.readyState==="complete") setTimeout(show,1200); else window.addEventListener("load",function(){ setTimeout(show,1200); }); }).catch(function(){}); })();
+// 공유 링크로 들어온 사람 (?bs=<id>) — 지도보다 빙고(이벤트 창)를 바로 연다 (사장님 10-27 「같이 풀어요 누르면 빙고가 먼저」)
+(function(){ if(!/[?&]bs=[0-9a-f]{16}/.test(location.search)) return;
+  var go=function(){ try{ open(); }catch(e){} };
+  if(document.readyState==="complete") setTimeout(go,300); else window.addEventListener("load",function(){ setTimeout(go,300); }); })();
 window.evShareCard=shDraw;
 
 var css=document.createElement("style");
