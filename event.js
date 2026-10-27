@@ -410,7 +410,7 @@ function signIn(){   // 퍼즐골드 로그인 창(구글·Apple)을 빙고 화�
   var t=setInterval(function(){ var p2=document.getElementById("pgBox"), now=sess();
     if(now&&now!==had){ clearInterval(t); try{ window.mpPG&&mpPG.close(); }catch(e){} if(p2) p2.style.zIndex=""; if(box()){ load(); setTimeout(function(){ var c=cur(); if(c&&c.open&&c.me&&!c.me.agreed) showRules(true); },1500); } return; }   // 로그인되면 바로 빙고로 → 규칙 동의
     if(!p2||p2.hidden){ clearInterval(t); if(p2) p2.style.zIndex=""; if(box()) load(); } },500); }
-var TST={ko:"테스트 중이라 상금이 없습니다 (순위도 없어요). 문제는 매일 한국 시간 밤 12시에 새로 바뀝니다.",en:"This is a test, so there are no prizes (and no ranking). New questions every day at midnight Korea time.",ja:"テスト中のため賞品はありません（順位もありません）。問題は毎日、韓国時間の夜12時に新しくなります。",zhs:"目前为测试，没有奖品（也不排名）。题目每天韩国时间午夜12点更新。",zht:"目前為測試，沒有獎品（也不排名）。題目每天韓國時間午夜12點更新。",es:"Es una prueba, así que no hay premios (ni clasificación). Preguntas nuevas cada día a medianoche, hora de Corea."},
+var TST={ko:"테스트 중이라 상금이 없습니다. 문제는 매일 한국 시간 밤 12시에 새로 바뀝니다.",en:"This is a test, so there are no prizes. New questions every day at midnight Korea time.",ja:"テスト中のため賞品はありません。問題は毎日、韓国時間の夜12時に新しくなります。",zhs:"目前为测试，没有奖品。题目每天韩国时间午夜12点更新。",zht:"目前為測試，沒有獎品。題目每天韓國時間午夜12點更新。",es:"Es una prueba, así que no hay premios. Preguntas nuevas cada día a medianoche, hora de Corea."},
     TNX={ko:"새 문제까지",en:"New questions in",ja:"新しい問題まで",zhs:"距新题目",zht:"距新題目",es:"Nuevas preguntas en"};   // 시험 빙고 (10-27)
 function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return; var wk=document.getElementById("evWk");
   var st=B.wk?B.wk.slice(5).replace("-","/"):""; if(wk) wk.textContent=L(T.sub);
