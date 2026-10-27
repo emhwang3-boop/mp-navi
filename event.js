@@ -66,7 +66,7 @@ var RULES=[
 ];
 // 이번 주 순위 방법 — 이벤트 종류별 설정값 (허브 board.kind). 보물상자·명소 맞히기·사진 등은 나중에 여기 값만 더한다 (사장님 10-26)
 var RANKHOW={
- bingo:{ko:"빙고 줄 수가 많은 순, 같으면 마지막 줄을 먼저 완성한 순",en:"Most bingo lines first; on a tie, whoever completed their last line first",ja:"ビンゴの列数が多い順、同じなら最後の列を先に完成させた順",zhs:"宾果线数多者优先，相同则最后一条线先完成者优先",zht:"賓果線數多者優先，相同則最後一條線先完成者優先",es:"Más líneas de bingo primero; en empate, quien completó antes su última línea"}
+ bingo:{ko:"24칸을 모두 맞힌 사람 중, 첫 문제부터 다 맞힐 때까지 걸린 시간이 짧은 순",en:"Among players who answer all 24 squares, the shortest time from first answer to last wins",ja:"24マスすべて正解した人の中で、最初の解答から全問正解までの時間が短い順",zhs:"在答对全部24格的玩家中，从第一题到全部答对用时最短者优先",zht:"在答對全部24格的玩家中，從第一題到全部答對用時最短者優先",es:"Entre quienes aciertan las 24 casillas, gana el menor tiempo desde la primera respuesta hasta la última"}
 };
 var RKL={ko:"이번 주 순위 방법",en:"This week’s ranking",ja:"今週の順位の決め方",zhs:"本周排名方式",zht:"本週排名方式",es:"Clasificación de esta semana"};
 // ── 이벤트 종류 (사장님 10-26) — 닫혀 있으면 종류를 드러내지 않는다 「뭐가 나올지 몰라야지」. 열린 주에만 그 종류 제목·순위 방법·화면 ──
@@ -133,7 +133,7 @@ function setHead(k){ var h=document.querySelector("#evBox .ehd h1"), s=document.
 function evClosed(last){ var e=document.getElementById("evBody"); if(!e) return; setHead("");
   var h='<div class="ecard" style="font-weight:800;color:#555">'+esc(L(NEXT))+'</div><div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   if(last&&last.res&&last.res.length){ var C=["#e0a100","#9aa4b0","#c47a3c"];
-    h+='<div class="ecard"><b>'+esc(L(TX3.lastEv))+'</b> <span style="color:#888;font-size:12px">'+esc(last.wk||"")+'</span>'+last.res.slice(0,3).map(function(r,i){ return '<div class="erk"><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div><b>'+esc(r.nm)+'</b></div><div class="pg">'+(r.pg?r.pg+' PG':'')+'</div></div>'; }).join("")+'</div>'; }
+    h+='<div class="ecard"><b>'+esc(L(TX3.lastEv))+'</b> <span style="color:#888;font-size:12px">'+esc(last.wk||"")+'</span>'+last.res.slice(0,3).map(function(r,i){ return '<div class="erk"><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div><b>'+esc(r.nm)+'</b>'+(r.el!=null?' <span style="color:#888;font-size:12px">'+elTxt(r.el)+'</span>':'')+'</div><div class="pg">'+(r.pg?r.pg+' PG':'')+'</div></div>'; }).join("")+'</div>'; }
   e.innerHTML=h; wire(e); }
 function wire(e){ [].forEach.call(e.querySelectorAll("[data-ev]"),function(x){ x.onclick=function(){ var a=x.dataset.ev;
   if(a==="pg"||a==="signin") signIn(); else if(a==="rules") showRules(!!(cur()&&cur().open&&cur().me&&!cur().me.agreed));
@@ -217,6 +217,7 @@ var SHX={
  install:{ko:"앱 설치",en:"Install app",ja:"アプリを入れる",zhs:"安装应用",zht:"安裝應用",es:"Instalar app"}
 };
 function shLine(){ var c=cur(); if(!c||!c.open||!c.me) return null; var me=c.me, k=c.kind||"bingo", t=L(KT[k]||EVT), n=me.lines||0, l=lg();
+  if(k==="bingo"&&me.done) return [t, L(RNK.all)+" · "+elTxt(me.done-(me.f0||me.done))];   // 판 완성 + 걸린 시간 (10-27)
   if(k==="bingo") return [t, (l==="ko"||l==="ja"||l==="zhs"||l==="zht")?n+L(SHX.lines):n+" "+L(SHX.lines)];
   if(k==="treasure") return [t, me.ft?L(SHX.found)+(me.rank?"  #"+me.rank:""):L(SHX.hunt)];
   if(k==="spot") return [t, (me.ok||0)+"/"+(c.total||10)+" "+L(SHX.spot)];
@@ -239,22 +240,79 @@ function shDraw(){ var ln=shLine(); if(!ln) return Promise.resolve(null);
     if(nm){ x.fillStyle="#c9c2e6"; x.font="700 44px "+F; x.fillText("— "+nm,70,680); }
     x.fillStyle="#39d5ff"; x.font="800 44px "+F; x.fillText("navi.moneypuzzle.co.kr",70,S-70);
     return c; }); }
+// 결과 공유 (사장님 10-27) — 그림을 허브(/bshare)에 올려 링크 하나로: 미리보기에 결과 그림이 뜨고, 그 쪽에 「코리아 빙고 같이 풀어요」·「투어앱 설치」 단추
+//   카톡(그림+단추 2개) · 왓츠앱 · 라인 · 텔레그램 · 위챗(링크 복사) · 페북 · X · 틱톡·인스타(그림을 폰 공유창으로) · 다른 앱 · 링크 복사 · 그림 저장
+var SHY={
+ together:{ko:"코리아 빙고 같이 풀어요",en:"Let’s play Korea Bingo together",ja:"コリア・ビンゴ、一緒に解こう",zhs:"一起玩韩国宾果吧",zht:"一起玩韓國賓果吧",es:"¡Juguemos juntos al Bingo de Corea!"},
+ play:{ko:"같이 풀기",en:"Play",ja:"一緒に解く",zhs:"一起玩",zht:"一起玩",es:"Jugar"},
+ prep:{ko:"공유 링크 만드는 중…",en:"Making your share link…",ja:"共有リンクを作成中…",zhs:"正在生成分享链接…",zht:"正在產生分享連結…",es:"Creando tu enlace…"},
+ copy:{ko:"링크 복사",en:"Copy link",ja:"リンクをコピー",zhs:"复制链接",zht:"複製連結",es:"Copiar enlace"},
+ copied:{ko:"링크를 복사했어요. 붙여 넣어 보내세요.",en:"Link copied — paste it to send.",ja:"リンクをコピーしました。貼り付けて送ってください。",zhs:"链接已复制，粘贴发送即可。",zht:"連結已複製，貼上傳送即可。",es:"Enlace copiado: pégalo para enviarlo."},
+ wechat:{ko:"링크를 복사했어요. 위챗에 붙여 넣으세요.",en:"Link copied — paste it into WeChat.",ja:"リンクをコピーしました。WeChatに貼り付けてください。",zhs:"链接已复制，请粘贴到微信。",zht:"連結已複製，請貼到微信。",es:"Enlace copiado: pégalo en WeChat."},
+ imgapp:{ko:"그림을 저장했어요. 틱톡·인스타그램에서 올려 주세요.",en:"Image saved — post it on TikTok or Instagram.",ja:"画像を保存しました。TikTok・Instagramで投稿してください。",zhs:"图片已保存，请在抖音/TikTok、Instagram 发布。",zht:"圖片已儲存，請在 TikTok、Instagram 發布。",es:"Imagen guardada: publícala en TikTok o Instagram."}};
+var RNK={t:{ko:"지금 순위",en:"Current ranking",ja:"現在の順位",zhs:"当前排名",zht:"目前排名",es:"Clasificación actual"},
+ how:{ko:"24칸 다 맞힌 사람 · 걸린 시간 짧은 순",en:"All 24 squares · fastest time first",ja:"24マス全問正解・時間の短い順",zhs:"答对全部24格 · 用时最短优先",zht:"答對全部24格 · 用時最短優先",es:"Las 24 casillas · menor tiempo primero"},
+ none:{ko:"아직 판을 다 맞힌 사람이 없어요. 첫 완성자가 되어 보세요!",en:"No one has finished the board yet — be the first!",ja:"まだ全問正解した人はいません。最初の達成者になろう！",zhs:"还没有人全部答对，快来成为第一人！",zht:"還沒有人全部答對，快來成為第一人！",es:"Nadie ha completado el cartón todavía: ¡sé el primero!"},
+ all:{ko:"24칸 완성",en:"Full board",ja:"24マス完成",zhs:"全部完成",zht:"全部完成",es:"Cartón completo"},
+ me:{ko:"나",en:"Me",ja:"自分",zhs:"我",zht:"我",es:"Yo"},
+ play:{ko:"명 참가 중",en:" playing",ja:"人が参加中",zhs:"人参与中",zht:"人參與中",es:" jugando"}};
+function elTxt(ms){ var s=Math.max(0,Math.round((ms||0)/1000)), h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+":"+(m<10?"0":""):"")+m+":"+(x<10?"0":"")+x; }
+// 우승 횟수 배지 (사장님 10-27) — 별 1~9 · 큰 별(10) · 작은 태양(100) · 큰 태양(1,000) · 1만 = 명예의 전당. 그림은 img/rank/*.webp (생성기로 뽑음)
+var HOF={ko:"명예의 전당",en:"Hall of Fame",ja:"殿堂入り",zhs:"名人堂",zht:"名人堂",es:"Salón de la Fama"}, WINS={ko:"우승",en:"wins",ja:"優勝",zhs:"次冠军",zht:"次冠軍",es:"victorias"};
+function winIcons(n){ n=n||0; if(!n) return ""; if(n>=10000) return '<span style="font-size:11px;font-weight:900;color:#b8860b">'+esc(L(HOF))+'</span>';
+  var g=function(k,c,px){ var h=""; for(var i=0;i<c;i++) h+='<img src="img/rank/'+k+'.webp" alt="" style="width:'+px+'px;height:'+px+'px;vertical-align:middle;margin-right:1px">'; return h; };
+  return '<div style="line-height:1;margin-bottom:2px" title="'+n+' '+esc(L(WINS))+'">'+g("bigsun",Math.floor(n/1000),18)+g("sun",Math.floor(n/100)%10,16)+g("bigstar",Math.floor(n/10)%10,16)+g("star",n%10,12)+'</div>'; }
+function rankCard(o){ var R=o.rank||[], C=["#e0a100","#9aa4b0","#c47a3c"];
+  var h='<div class="ecard"><b>'+esc(L(RNK.t))+'</b> <span style="color:#888;font-size:12px">'+esc(L(RNK.how))+(o.play?' · '+o.play+esc(L(RNK.play)):'')+'</span>';
+  if(!R.length) return h+'<div style="color:#888;font-size:13px;margin-top:6px">'+esc(L(RNK.none))+'</div></div>';
+  h+=R.map(function(r,i){ return '<div class="erk"'+(r.me?' style="background:#fff4d6;border-radius:8px"':'')+'><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div>'+winIcons(r.win)+'<b>'+esc(r.nm)+'</b>'+(r.me?' <span style="color:#ff7a1a;font-weight:800">('+esc(L(RNK.me))+')</span>':'')+'</div><div class="pg">'+elTxt(r.el)+'</div></div>'; }).join("");
+  if(o.myRank>R.length) h+='<div style="font-size:13px;margin-top:6px">'+esc(L(RNK.me))+': #'+o.myRank+'</div>';
+  if(o.hof&&o.hof.length) h+='<div style="margin-top:8px;font-size:13px"><b style="color:#b8860b">'+esc(L(HOF))+'</b> '+o.hof.map(function(x){ return esc(x.nm); }).join(" · ")+'</div>';
+  return h+'</div>'; }
 function shareResult(){ shDraw().then(function(c){ if(!c){ alert(L(T.err)); return; }
-  var url="https://navi.moneypuzzle.co.kr/", iurl=url+"?install=1", ln=shLine(), txt=ln[0]+" · "+ln[1]+" "+L(SHX.beat);
-  c.toBlob(function(blob){ var file=new File([blob],"money-puzzle-event.png",{type:"image/png"}), d=c.toDataURL("image/png");
-    var s=sheet('<h3>'+esc(L(SHX.btn))+'</h3><img src="'+d+'" alt="" style="width:100%;border-radius:12px;margin:6px 0 10px">'
-      +'<button type="button" class="ebtn" id="shK" style="width:100%;border:0;border-radius:12px;padding:12px;background:#FEE500;color:#3C1E1E;font-weight:900;font-size:15px">'+esc(L(SHX.kakao))+'</button>'
-      +'<button type="button" class="ebtn" id="shO" style="width:100%;margin-top:8px;border:0;border-radius:12px;padding:12px;background:#ff7a1a;color:#fff;font-weight:900;font-size:15px">'+esc(L(SHX.other))+'</button>'
-      +'<a id="shS" download="money-puzzle-event.png" href="'+d+'" style="display:block;text-align:center;margin-top:8px;border:1.5px solid #e0d6cc;border-radius:12px;padding:11px;font-weight:800;color:#2b2b2b;text-decoration:none">'+esc(L(SHX.save))+'</a>'
-      +'<button type="button" id="shX" style="display:block;width:100%;margin-top:8px;border:0;background:none;font-weight:700;color:#888">'+esc(L(T.x))+'</button>');
-    s.querySelector("#shX").onclick=function(){ s.remove(); };
-    s.querySelector("#shO").onclick=function(){ var data={title:"Money Puzzle · Tour for Korea",text:txt+"\n"+url+"\n"+L(SHX.install)+": "+iurl};
-      if(navigator.canShare&&navigator.canShare({files:[file]})) navigator.share(Object.assign({files:[file]},data)).catch(function(){}); else if(navigator.share) navigator.share(Object.assign({url:url},data)).catch(function(){}); else { try{ navigator.clipboard.writeText(data.text); }catch(e){} alert(data.text); } };
-    s.querySelector("#shK").onclick=function(){ try{ var K=window.Kakao; if(!K) throw 0; if(!K.isInitialized()) K.init("90a47ca48c2a967dd4d14b3b48de2e3b");
-        K.Share.uploadImage({file:[file]}).then(function(r){ var im=r&&r.infos&&r.infos.original&&r.infos.original.url;
-          K.Share.sendDefault({objectType:"feed",content:{title:ln[0]+" · "+ln[1],description:L(SHX.beat),imageUrl:im,link:{webUrl:url,mobileWebUrl:url}},buttons:[{title:"Open",link:{webUrl:url,mobileWebUrl:url}},{title:L(SHX.install),link:{webUrl:iurl,mobileWebUrl:iurl}}]}); })
-        .catch(function(){ s.querySelector("#shO").click(); }); }catch(e){ s.querySelector("#shO").click(); } };
-  },"image/png"); }); }
+  var ln=shLine(), APP="https://navi.moneypuzzle.co.kr/", txt=ln[0]+" · "+ln[1]+" — "+L(SHX.beat)+"\n"+L(SHY.together), d=c.toDataURL("image/png"), jp=c.toDataURL("image/jpeg",0.8);
+  var BT='width:100%;border:0;border-radius:12px;padding:11px 6px;font-weight:900;font-size:14px;color:#fff;cursor:pointer';
+  var btn=function(id,bg,lab,fg){ return '<button type="button" data-sh="'+id+'" style="'+BT+';background:'+bg+(fg?';color:'+fg:'')+'">'+esc(lab)+'</button>'; };
+  var s=sheet('<h3>'+esc(L(SHX.btn))+'</h3><img src="'+d+'" alt="" style="width:100%;border-radius:12px;margin:6px 0 8px"><div id="shMsg" style="font-size:13px;color:#888;text-align:center;min-height:18px">'+esc(L(SHY.prep))+'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">'
+    +btn("kakao","#FEE500","KakaoTalk","#3C1E1E")+btn("wa","#25D366","WhatsApp")+btn("line","#06C755","LINE")+btn("tg","#26A5E4","Telegram")
+    +btn("wechat","#07C160","WeChat")+btn("fb","#1877F2","Facebook")+btn("x","#111","X")+btn("tiktok","#111","TikTok")
+    +btn("insta","#d62976","Instagram")+btn("more","#ff7a1a",L(SHX.other))+btn("copy","#6b7280",L(SHY.copy))
+    +'<a download="money-puzzle-event.png" href="'+d+'" style="'+BT+';display:block;text-align:center;text-decoration:none;background:#fff;color:#2b2b2b;border:1.5px solid #e0d6cc;box-sizing:border-box">'+esc(L(SHX.save))+'</a></div>'
+    +'<button type="button" data-sh="x0" style="display:block;width:100%;margin-top:8px;border:0;background:none;font-weight:700;color:#888">'+esc(L(T.x))+'</button>');
+  var S={page:APP,img:"",id:""}, msg=function(t){ var m=s.querySelector("#shMsg"); if(m) m.textContent=t||""; };
+  post("/bshare",{img:jp,t:ln[0]+" · "+ln[1],d:L(SHX.beat),l:lg()}).then(function(j){ if(j&&j.ok){ S.page=j.page+"?l="+lg(); S.img=j.img; S.id=j.id; } msg(""); }).catch(function(){ msg(""); });
+  var go=function(u){ window.open(u,"_blank","noopener"); }, E=encodeURIComponent, cp=function(t,ok){ try{ navigator.clipboard.writeText(t).then(function(){ msg(ok); },function(){ prompt("",t); }); }catch(e){ prompt("",t); } };
+  var file=function(){ return new Promise(function(r){ c.toBlob(function(b){ r(new File([b],"money-puzzle-event.png",{type:"image/png"})); },"image/png"); }); };
+  [].forEach.call(s.querySelectorAll("[data-sh]"),function(b){ b.onclick=function(){ var k=b.dataset.sh, u=S.page, full=txt+"\n"+u;
+    if(k==="x0"){ s.remove(); return; }
+    if(k==="wa") go("https://api.whatsapp.com/send?text="+E(full));
+    else if(k==="line") go("https://line.me/R/share?text="+E(full));
+    else if(k==="tg") go("https://t.me/share/url?url="+E(u)+"&text="+E(txt));
+    else if(k==="fb") go("https://www.facebook.com/sharer/sharer.php?u="+E(u));
+    else if(k==="x") go("https://twitter.com/intent/tweet?text="+E(txt)+"&url="+E(u));
+    else if(k==="wechat") cp(full,L(SHY.wechat));
+    else if(k==="copy") cp(full,L(SHY.copied));
+    else if(k==="tiktok"||k==="insta"){ file().then(function(f){ if(navigator.canShare&&navigator.canShare({files:[f]})) navigator.share({files:[f],text:full}).catch(function(){}); else { var a=document.createElement("a"); a.href=d; a.download="money-puzzle-event.png"; document.body.appendChild(a); a.click(); a.remove(); msg(L(SHY.imgapp)); } }); }
+    else if(k==="more"){ if(navigator.share) navigator.share({title:"Money Puzzle · Korea Bingo",text:txt,url:u}).catch(function(){}); else cp(full,L(SHY.copied)); }
+    else if(k==="kakao"){ try{ var K=window.Kakao; if(!K) throw 0; if(!K.isInitialized()) K.init("90a47ca48c2a967dd4d14b3b48de2e3b");
+        var au=APP+(S.id?"?bs="+S.id+"&lang="+lg():""), iu=APP+"?install=1&lang="+lg();
+        var send=function(im){ K.Share.sendDefault({objectType:"feed",content:{title:ln[0]+" · "+ln[1],description:L(SHY.together),imageUrl:im,imageWidth:1080,imageHeight:1080,link:{webUrl:au,mobileWebUrl:au}},buttons:[{title:L(SHY.play),link:{webUrl:au,mobileWebUrl:au}},{title:L(SHX.install),link:{webUrl:iu,mobileWebUrl:iu}}]}); };
+        if(S.img) send(S.img); else file().then(function(f){ return K.Share.uploadImage({file:[f]}); }).then(function(r){ send(r.infos.original.url); }).catch(function(){ cp(full,L(SHY.copied)); });
+      }catch(e){ cp(full,L(SHY.copied)); } }
+  }; });
+}); }
+// 공유 링크로 들어온 사람 (?bs=<id>) — 친구 결과 그림 + 「코리아 빙고 같이 풀어요」(이벤트 창) · 「투어앱 설치」
+(function(){ var m=/[?&]bs=([0-9a-f]{16})/.exec(location.search); if(!m) return;
+  fetch(H+"/bs/"+m[1]+".json").then(function(r){ return r.json(); }).then(function(j){ if(!j||!j.ok) return;
+    var show=function(){ var st=window.matchMedia&&matchMedia("(display-mode: standalone)").matches;
+      var s=sheet('<img src="'+esc(j.img)+'" alt="" style="width:100%;border-radius:12px;margin:2px 0 8px"><h3 style="margin:4px 0">'+esc(j.t||"")+'</h3><div style="color:#888;font-size:13px;margin-bottom:8px">'+esc(j.d||"")+'</div>'
+        +'<button type="button" id="bsP" style="width:100%;border:0;border-radius:12px;padding:14px;background:#ff7a1a;color:#fff;font-weight:900;font-size:16px">'+esc(L(SHY.together))+'</button>'
+        +(st?'':'<a href="?install=1&lang='+lg()+'" style="display:block;text-align:center;margin-top:8px;border-radius:12px;padding:13px;background:#1f2a44;color:#fff;font-weight:900;text-decoration:none">'+esc(L(SHX.install))+'</a>')
+        +'<button type="button" id="bsX" style="display:block;width:100%;margin-top:8px;border:0;background:none;font-weight:700;color:#888">'+esc(L(T.x))+'</button>');
+      s.querySelector("#bsX").onclick=function(){ s.remove(); };
+      s.querySelector("#bsP").onclick=function(){ s.remove(); try{ open(); }catch(e){} }; };
+    if(document.readyState==="complete") setTimeout(show,1200); else window.addEventListener("load",function(){ setTimeout(show,1200); }); }).catch(function(){}); })();
 window.evShareCard=shDraw;
 
 var css=document.createElement("style");
@@ -368,6 +426,7 @@ function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return; va
       return '<div class="ec'+(done?' done':'')+(rt?' retry':'')+'" data-i="'+c.i+'"><div>'+esc(c.w.en)+(c.w.ko?'<span class="ko">'+esc(c.w.ko)+'</span>':'')+'</div>'+(done?'<div class="stp">OK</div>':'')+(rt?'<div class="rt">'+esc(L(T.retry))+'</div>':'')+'</div>'; }).join("")+'</div>';
     h+='<div class="est"><div><b>'+(S.length+1)+'</b>'+esc(L(T.stamps))+'</div><div><b>'+(me?me.lines:0)+'</b>'+esc(L(T.lines))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(B.test?TNX:T.left))+'</div></div>';
     if(me&&me.agreed) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>';
+    h+=rankCard(B);
     if(!B.test) h+='<div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   }
   if(B.last&&B.last.res&&B.last.res.length){ var C=["#e0a100","#9aa4b0","#c47a3c"];
