@@ -41,7 +41,6 @@ var TX={
  ord:T6("주문 내용","Order summary","ご注文内容","订单内容","訂單內容","Resumen del pedido"),
  pm:T6("결제 수단","Payment method","お支払い方法","付款方式","付款方式","Método de pago"),
  card:T6("신용·체크카드 (해외 카드 포함)","Credit/debit card (incl. overseas cards)","クレジット・デビットカード（海外カード可）","信用卡/借记卡（含境外卡）","信用卡/簽帳卡（含境外卡）","Tarjeta de crédito/débito (incl. extranjeras)"),
- pgp:T6("퍼즐골드 함께 쓰기 (결제액의 50%까지)","Use Puzzle Gold too (up to 50%)","パズルゴールド併用（50%まで）","同时使用 Puzzle Gold（最多50%）","同時使用 Puzzle Gold（最多50%）","Usar Puzzle Gold (hasta 50%)"),
  agr:T6("주문 내용과 환불 정책을 확인했으며 결제에 동의합니다","I have checked the order and refund policy and agree to pay","注文内容と返金ポリシーを確認し、支払いに同意します","我已确认订单和退款政策并同意付款","我已確認訂單和退款政策並同意付款","He revisado el pedido y la política de reembolso y acepto pagar"),
  payb:T6("결제하기","Pay","支払う","付款","付款","Pagar"),
  test:T6("UNDER TESTING — 시험 화면이라 실제로 결제되지 않았어요.","UNDER TESTING — this is a test screen; no payment was made.","UNDER TESTING — テスト画面のため、実際の決済は行われていません。","UNDER TESTING — 测试页面，未实际扣款。","UNDER TESTING — 測試頁面，未實際扣款。","UNDER TESTING — pantalla de prueba; no se realizó ningún cobro."),
@@ -171,7 +170,7 @@ function mockPay(){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelec
     +'<b>'+esc(L(TX.ord))+'</b><div class="spick"><img src="img/shop/'+p.img+'.webp" alt=""><b>'+esc(L(p.t))+'</b></div>'
     +'<div class="sl"><span>'+esc(L(TX.dtm))+'</span><span>'+esc((S.date||"-")+" "+(S.time||""))+'</span></div><div class="sl"><span>'+esc(L(TX.ppl))+'</span><span>'+S.n+'</span></div><div class="sl"><span>'+esc(L(TX.gd))+'</span><span>'+(gg?esc(gName(gg)):esc(L(TX.none)))+'</span></div>'
     +'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(tot)+'</span></div>'
-    +'<b>'+esc(L(TX.pm))+'</b><label class="sr"><input type="radio" name="spmm" checked> '+esc(L(TX.card))+'</label><label class="sr"><input type="radio" name="spmm"> PayPal</label><label class="sr"><input type="checkbox" id="spmPg"> '+esc(L(TX.pgp))+'</label>'
+    +'<b>'+esc(L(TX.pm))+'</b><label class="sr"><input type="radio" name="spmm" checked> '+esc(L(TX.card))+'</label><label class="sr"><input type="radio" name="spmm"> PayPal</label>'
     +'<label class="sr"><input type="checkbox" id="spmAg"> '+esc(L(TX.agr))+'</label>'
     +(done?'<div class="sdone">'+esc(L(TX.test))+'</div>':'<button type="button" class="spay" id="spmGo" disabled>'+won(tot)+' '+esc(L(TX.payb))+'</button>')
     +'<button type="button" class="spay" id="spmX" style="background:#efece4;color:#1d2433">'+esc(L(TX.back))+'</button></div>';
