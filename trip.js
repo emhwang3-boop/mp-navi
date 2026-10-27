@@ -261,6 +261,13 @@ function sched(H,arr,date,from,mo){ var t=from, p=H, rows=[], lunch=false, dinne
     if(!lunch&&t>=11*60+45&&t<=14*60+30&&(mo||i<arr.length-1)){ meal("lunch",x,arr[i+1]||null); lunch=true; }   // 보고서에선 마지막 장소 뒤라도 점심 칸
     else if(mo&&!dinner&&t>=17*60+30&&i<arr.length-1){ meal("dinner",x,arr[i+1]); dinner=true; } });
   if(mo&&!dinner&&arr.length){ var dt=Math.max(t,18*60); if(dt+60<=mo.to){ t=dt; meal("dinner",arr[arr.length-1],null); dinner=true; } }   // 저녁 칸이 없으면 하루 끝 전에
+  // 하루 끝 시각에 맞춰 숙소로 (사장님 10-27 「끝나는 시간에 맞춰 호텔로 돌아오게 — 지금은 멋대로 7시에 돌아온다」)
+  //   남는 시간은 마지막 장소에 더 머무는 시간으로 (예: 예술의전당 21:00 까지) → 이동 → 하루 끝에 숙소 도착. 저녁 칸이 마지막 장소 뒤에 붙어 있으면 마지막 장소 앞으로 옮긴다
+  if(mo&&mo.to&&arr.length){ var bk0=H?leg(p,H):null, ex=mo.to-(bk0?bk0.min:0)-t, li=-1; rows.forEach(function(r,i){ if(r.x) li=i; });
+    if(ex>=15&&li>=0){ var lr=rows[li], tail=rows.slice(li+1);
+      if(tail.length&&tail[0].meal==="dinner"){ var dn=tail[0]; dn.t=lr.t; lr.t=dn.t+60+(dn.leg?dn.leg.min:0); rows.splice(li,2,dn,lr); lr.st=lr.x.stay+ex-(dn.leg?dn.leg.min:0); p=lr.x; }   // 저녁 먹고 마지막 장소
+      else { lr.st=lr.x.stay+ex; tail.forEach(function(r){ r.t+=ex; }); }
+      lr.ext=1; t=mo.to-(bk0?bk0.min:0); } }
   var back=(H&&arr.length)?leg(p,H):null; if(back) t+=back.min;
   return {rows:rows,back:back,end:t,viol:viol,wait:wait,miss:miss}; }
 function sc(s){ return s.viol*1000+s.miss*120+s.end+s.wait*0.5; }
@@ -377,7 +384,7 @@ function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan;
       n++; var tip=tips[r.x.k], memo=r.note.map(function(q){ return T(q[0],q[1]); });
       if(needCheck(r.x)) memo.push(T("운영 시간·휴무일 확인 필요","Check opening hours/closures"));
       if(isNight(r.x)) memo.push(T("밤 추천","Best at night"));
-      h+='<div class="trw tpk" data-k="'+esc(r.x.k)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp"><b class="tno">'+n+'</b> <b>'+esc(nm(r.x))+'</b> <i>'+durTxt(r.x.stay)+'</i>'
+      h+='<div class="trw tpk" data-k="'+esc(r.x.k)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp"><b class="tno">'+n+'</b> <b>'+esc(nm(r.x))+'</b> <i>'+durTxt(r.st||r.x.stay)+(r.ext?' · '+T(m2hm(r.t+(r.st||r.x.stay))+"까지","until "+m2hm(r.t+(r.st||r.x.stay))):'')+'</i>'
         +(memo.length?'<span class="tmemo">'+esc(memo.join(" · "))+'</span>':"")+(aiTx(tip)?'<span class="ttip">'+MPIMG("mi_tip",MIS)+esc(aiTx(tip))+'</span>':"")+'</span></div>';
       prevK=r.x.k; });
     if(s.back) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="__hotel" data-d="'+di+'">'+legTxt(s.back)+(s.back.mode!=="walk"?' <a href="#" class="tlgo">· '+T("실제 경로 보기","See real routes")+'</a>':'')+'<div class="tods"></div></div><div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+MPICO("mi_stay",T("숙소 도착","Back to lodging"),MIS)+'</span></div>';
