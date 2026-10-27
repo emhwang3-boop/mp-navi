@@ -81,9 +81,14 @@ function ask(cb){   // cb(true)=동의, cb(false)=거부
   okB.onclick=function(){ if(!chk.checked) return; ls("mpv_geo_ok","1"); close(true); };
   b.addEventListener("click",function(e){ if(e.target===b) close(false); });
 }
+// 위치 이용사실 확인자료 (위치정보법 16조②, 10-27) — 위치를 받으면 허브에 「일시·기기번호·서비스」만 남긴다(좌표는 안 보냄). 같은 서비스는 10분에 한 번
+var LBSN={}; function lbsLog(name){ try{ var svc=name==="watchPosition"?"내 위치 표시·길안내":"주변 추천·검색·일정", n=Date.now(); if(LBSN[svc]&&n-LBSN[svc]<600000) return; LBSN[svc]=n;
+  var d=""; try{ d=localStorage.getItem("mpv_dev")||""; if(!/^[0-9a-f]{16,32}$/.test(d)){ d=""; for(var i=0;i<24;i++) d+=Math.floor(Math.random()*16).toString(16); localStorage.setItem("mpv_dev",d); } }catch(e){ return; }
+  fetch("https://brief-live-hub.emhwang3.workers.dev/nlbs",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({dev:d,svc:svc}),keepalive:true}).catch(function(){}); }catch(e){} }
 function wrap(name){
-  var orig = G[name] && G[name].bind(G);
-  if (!orig) return;
+  var orig0 = G[name] && G[name].bind(G);
+  if (!orig0) return;
+  var orig = function(success, error, options){ return orig0(function(){ lbsLog(name); return success&&success.apply(this,arguments); }, error, options); };
   navigator.geolocation[name] = function(success, error, options){
     if (okAlready()) return orig(success, error, options);
     ask(function(agree){
