@@ -307,8 +307,7 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
   var mPerf='<div class="tgm"><div class="tgh" data-nr="tgx" data-g="perf">'+MPIMG("mi_ticket")+'<span>'+esc(LG6(PERF6))+'</span><span class="tgar">'+(TGX.perf?"▾":"▸")+'</span></div>'
     +(TGX.perf?TG_PERF.map(function(r){ return tgRow(r[0],r[1]); }).join(""):"")+'</div>';
   var kBook='<div class="tgbook"><div class="tgbh"><img src="img/kpop_marker.png" alt="">'+esc(LG6(KTOUR6))+'</div><div class="d">'+esc(LG6(KTOURD6))+'</div>'
-    +'<a href="https://www.klook.com/'+kl+'/search/result/?query=k-pop" target="_blank" rel="noopener">Klook ›</a>'
-    +'<a href="https://www.trazy.com/" target="_blank" rel="noopener">Trazy ›</a></div>';
+    +'</div>';
   var mKpop='<div class="tgm"><div class="tgh" data-nr="tgx" data-g="kpop"><img src="img/kpop_marker.png" alt=""><span>'+esc(LG6(KPOP6))+'</span><span class="tgar">'+(TGX.kpop?"▾":"▸")+'</span></div>'
     +(TGX.kpop?('<div class="tgsub">'+esc(LG6(KPOPNOTE6))+'</div>'+TG_KPOP.map(function(r){ return tgRow(r[0],r[1]); }).join("")):"")+'</div>';   // K-pop 투어 예약(kBook) 블록 삭제 (사장님 10-25)
   var pkg='<div class="tgbook b4pkg"><div class="tgbh" data-nr="tgx" data-g="pkg" style="cursor:pointer"><img src="img/kpop_marker.png" alt="">'+esc(LG6(B4PKG.t))+'<span class="tgar" style="margin-left:auto">'+(TGX.pkg?"▾":"▸")+'</span></div>'
@@ -322,19 +321,18 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
     +'<div class="d" style="color:var(--sub);margin-top:4px">'+esc(LG6(PAYTEST6))+'</div>'):'')+'</div>';
   var part='<div class="tgpart">'+esc(LG6(PARTNER6))+'</div>';
   if(!TG_PARTNER_SHOW) return pkg+mPerf;   // 제휴 사이트 줄 숨김 (사장님 10-27 「삭제 말고 숨기기」) — 다시 보이려면 TG_PARTNER_SHOW=true
-  return pkg+mPerf+part   /* 「빅4 사옥 견학」 메뉴(mKpop) 제거 — 사옥이 지도 해당 구에 올라가 손님이 직접 찾아감, 투어는 가이드판(B4PKG)만 (사장님 10-25) */
-    +one("https://www.klook.com/"+kl+"/","Klook")+one("https://www.getyourguide.com/"+gl,"GetYourGuide")+one("https://creatrip.com/"+cl,"Creatrip")+one("https://www.trazy.com/","Trazy",tzd); }
+  return pkg+mPerf; }   /* 제휴 사이트 링크 삭제 (사장님 10-27) */
 // 통역·길안내 (사장님 10-24) — 우리 가이드(관광통역안내사) 등록·매칭. 무료. GoWithGuide 외부 링크 대신 우리 목록.
 //   손님: 언어 고르기 → 승인된 가이드 목록(사진·이름·언어·경력·지역·소개) → 한 명 골라 요청(이름·연락처·날짜·메모) → 가이드 이메일 + 우리 텔레그램
 //   가이드 등록은 「입점 문의」 빌딩 → 「관광 가이드 등록」(window.GUIDEREG) · 승인은 통계청(관리자)
 var GLANG6=[["한국어","ko"],["English","en"],["日本語","ja"],["中文(简)","zhs"],["中文(繁)","zht"],["Español","es"]];
 var IG={view:"pick",lang:"",guides:null,gid:null,gobj:null,err:"",busy:false,done:false};
-function igNote(){ return LG6({ko:"실제 통역·길안내를 해 주는 사람(관광통역안내사)을 연결해 드립니다. 「체험·입장권」에서 연결되는 Klook·GetYourGuide·Creatrip·Trazy의 투어 가이드와는 별개이며, 여기서 소개해 드리는 가이드만이 머니퍼즐 투어앱과 제휴를 맺은 가이드입니다. 우리 앱에서 선정된 가이드가 Klook·GetYourGuide·Creatrip·Trazy의 여행 상품을 안내해 드릴 수는 없습니다. 가이드를 중복으로 선정하지 않도록 주의해 주세요.",
-  en:"We connect you with a real licensed interpreter-guide (Korea Tour Guide license). These are separate from the tour guides on Klook, GetYourGuide, Creatrip and Trazy linked under “Try & tickets” — only the guides introduced here are partnered with the Money Puzzle tour app. A guide selected in our app cannot guide travel products booked on Klook, GetYourGuide, Creatrip or Trazy. Please take care not to book duplicate guides.",
-  ja:"実際に通訳・道案内をしてくれる人（通訳案内士）をおつなぎします。「体験・入場券」からつながるKlook・GetYourGuide・Creatrip・Trazyのツアーガイドとは別で、ここでご紹介するガイドのみがMoney Puzzleツアーアプリと提携したガイドです。当アプリで選んだガイドが、Klook・GetYourGuide・Creatrip・Trazyの旅行商品をご案内することはできません。ガイドを重複して選ばないようご注意ください。",
-  zhs:"为您联系真人口译·向导（持证导游）。与「体验·门票」中链接的 Klook、GetYourGuide、Creatrip、Trazy 的旅游向导不同，只有在这里为您介绍的向导，才是与 Money Puzzle 旅游App 合作的向导。在本App选定的向导，无法为 Klook、GetYourGuide、Creatrip、Trazy 的旅游产品提供导览。请注意不要重复选定向导。",
-  zht:"為您聯繫真人口譯·嚮導（持證導遊）。與「體驗·門票」中連結的 Klook、GetYourGuide、Creatrip、Trazy 的旅遊嚮導不同，只有在這裡為您介紹的嚮導，才是與 Money Puzzle 旅遊App 合作的嚮導。在本App選定的嚮導，無法為 Klook、GetYourGuide、Creatrip、Trazy 的旅遊產品提供導覽。請注意不要重複選定嚮導。",
-  es:"Te ponemos en contacto con un intérprete-guía con licencia real. Son distintos de los guías turísticos de Klook, GetYourGuide, Creatrip y Trazy que aparecen en «Prueba y entradas»: solo los guías que presentamos aquí están asociados con la app Money Puzzle Tour. Un guía seleccionado en nuestra app no puede acompañar los productos de viaje comprados en Klook, GetYourGuide, Creatrip o Trazy. Tenga cuidado de no seleccionar guías por duplicado."}); }
+function igNote(){ return LG6({ko:"실제 통역·길안내를 해 주는 사람(관광통역안내사)을 연결해 드립니다. 외부 여행 예약 사이트의 투어 가이드와는 별개이며, 여기서 소개해 드리는 가이드만이 머니퍼즐 투어앱과 제휴를 맺은 가이드입니다. 우리 앱에서 선정된 가이드가 외부 여행 예약 사이트의 여행 상품을 안내해 드릴 수는 없습니다. 가이드를 중복으로 선정하지 않도록 주의해 주세요.",
+  en:"We connect you with a real licensed interpreter-guide (Korea Tour Guide license). These are separate from tour guides on external travel booking sites — only the guides introduced here are partnered with the Money Puzzle tour app. A guide selected in our app cannot guide travel products booked on external travel booking sites. Please take care not to book duplicate guides.",
+  ja:"実際に通訳・道案内をしてくれる人（通訳案内士）をおつなぎします。外部の旅行予約サイトのツアーガイドとは別で、ここでご紹介するガイドのみがMoney Puzzleツアーアプリと提携したガイドです。当アプリで選んだガイドが、外部の旅行予約サイトの旅行商品をご案内することはできません。ガイドを重複して選ばないようご注意ください。",
+  zhs:"为您联系真人口译·向导（持证导游）。与外部旅游预订网站的旅游向导不同，只有在这里为您介绍的向导，才是与 Money Puzzle 旅游App 合作的向导。在本App选定的向导，无法为外部旅游预订网站的旅游产品提供导览。请注意不要重复选定向导。",
+  zht:"為您聯繫真人口譯·嚮導（持證導遊）。與外部旅遊預訂網站的旅遊嚮導不同，只有在這裡為您介紹的嚮導，才是與 Money Puzzle 旅遊App 合作的嚮導。在本App選定的嚮導，無法為外部旅遊預訂網站的旅遊產品提供導覽。請注意不要重複選定嚮導。",
+  es:"Te ponemos en contacto con un intérprete-guía con licencia real. Son distintos de los guías turísticos de sitios externos de reservas de viaje: solo los guías que presentamos aquí están asociados con la app Money Puzzle Tour. Un guía seleccionado en nuestra app no puede acompañar los productos de viaje comprados en sitios externos de reservas de viaje. Tenga cuidado de no seleccionar guías por duplicado."}); }
 function igDates(){ var out=[]; for(var i=1;i<=2;i++){ var d=new Date(Date.now()+9*3600e3+i*864e5), s=d.toISOString().slice(0,10);
     out.push([s, (i===1?LG6({ko:"내일",en:"Tomorrow",ja:"明日",zhs:"明天",zht:"明天",es:"Mañana"}):LG6({ko:"모레",en:"Day after tomorrow",ja:"明後日",zhs:"后天",zht:"後天",es:"Pasado mañana"}))+" ("+s+")"]); } return out; }
 function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) return GLANG6[i][0]; return c; }
@@ -505,10 +503,7 @@ function openGedit(token){ open("ig"); IG.view="edit"; IG.geToken=String(token||
     if(j&&j.ok){ IG.geGuide=j.guide||{}; IG.geId=j.guideId||""; IG.geErr=""; if(j.lang&&window.setLang&&j.lang!==window.LANG){ try{ window.setLang(j.lang); }catch(e){} } paint(); }
     else { IG.geErr=(j&&j.err)||"invalid"; IG.geGuide=null; paint(); } }).catch(function(){ if(IG.geToken===tv&&IG.view==="edit"){ IG.geErr="net"; IG.geGuide=null; paint(); } });
   paint(); }
-function tourBand(){ var c="South Korea", best=1e9, b=S.base;
-  if(b) TB_CITY.forEach(function(x){ var d=kmLL(b,[x[1],x[2]]); if(d<=x[3]&&d<best){ best=d; c=x[0]; } });
-  var q=encodeURIComponent(c+" day tour"), kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en-US", gl={ja:"ja-jp/",zhs:"zh-cn/",es:"es-es/"}[LANG]||"";
-  return '<div class="nrtb"><img src="img/phone_tour.png" alt="" style="height:22px;width:auto;vertical-align:-5px;margin-right:4px">'+T("📱 내일 투어를 바로 예약:","📱 Book a tour for tomorrow:").replace(/^📱\s*/,"")+' <a href="https://www.klook.com/'+kl+'/search/result/?query='+q+'" target="_blank" rel="noopener">Klook</a> · <a href="https://www.getyourguide.com/'+gl+'s/?q='+q+'" target="_blank" rel="noopener">GetYourGuide</a></div>'; }
+function tourBand(){ return ""; }   // 제휴 사이트 띠 삭제 (사장님 10-27)
 // 대사관 — 일본어·중국어 화면은 나라 이름(EMB_L)으로 「아르헨티나 대사관」 꼴 (10-18). 표에 없으면 영어 이름
 // 일·중 화면은 나라 이름을 그 언어로만, 그 언어 순서(일: 50음, 简: 병음, 繁: 획수)로 (10-18)
 function embL(){ return {ja:1,zhs:1,zht:1,es:1}[LANG]===1; }
@@ -544,7 +539,7 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
     if(tg&&S.items&&S.items.length) h+='<div class="nrord"><button type="button" data-nr="ord" data-o="d" class="'+(rr?'':'on')+'">'+T("거리순","Nearest")+'</button><button type="button" data-nr="ord" data-o="r" class="'+(rr?'on':'')+'">'+T("별점순 (구글)","Top rated (Google)")+'</button></div>';   // 구글 자료(음식점·여행사)만 거리순·별점순 (사장님 10-21)
     if(S.base) h+='<div class="nrbase">'+(rr?(function(){ var g=((S.gr||k.tabs[S.tab].r)/1000).toFixed(1).replace(/\.0$/,""); return MPICO("mi_star",T("⭐ "+g+"km 안 구글 별점 높은 순","⭐ Highest Google rating within "+g+" km"),MIS); })():(S.src==="me"?(tg?MPICO("mi_pin",T("📍 내 위치에서 가까운 순 (비슷한 거리는 별점순)","📍 Nearest to you (similar distance: higher rating first)"),MIS):(S.k==="st"&&!S.far)?MPICO("mi_star",T("⭐ 구글 별점 높은 순 (같으면 가까운 순)","⭐ Highest Google rating first (then nearest)"),MIS):MPICO("mi_pin",T("📍 내 위치에서 가까운 순","📍 Nearest to you"),MIS)):MPICO("mi_map",T("🗺 지금 보는 지도 가운데에서 가까운 순","🗺 Nearest to the center of the map"),MIS)))
       +(S.src!=="me"?' <button type="button" class="nrme" data-nr="me">'+MPICO("mi_pin",T("내 위치로","Use my location"),MIS)+'</button>':'')+'</div>';
-    if(k.tabs[S.tab].gt==="travel_agency"&&S.k!=="tg") h+=tourBand();   // 여행사 맨 위 띠 — Klook·GetYourGuide 당일 투어 검색 (10-22)
+    // 여행사 맨 위 띠(tourBand, 제휴 사이트 당일 투어 검색) 삭제 (사장님 10-27)
     if(!S.items) h+='<div class="msg">'+T("찾는 중…","Searching…")+'</div>';
     else if(!S.items.length) h+='<div class="msg">'+T("가까운 곳에 없습니다.","None found nearby.")+'</div>';
     else h+=(S.far?'<div class="msg">'+T("가까운 곳에 한옥스테이가 없어, 멀어도 별점 높은 곳을 보여 드립니다.","No hanok stays nearby — showing top-rated ones farther away.")+'</div>':"")+S.items.map(function(x,i){ return itemHtml(x,i,em); }).join(""); }
