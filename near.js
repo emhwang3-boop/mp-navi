@@ -230,6 +230,7 @@ var TGX={perf:false,kpop:false,pkg:false};
 var PERF6={ko:"공연관람",en:"Performance viewing",ja:"公演鑑賞",zhs:"演出观赏",zht:"演出觀賞",es:"Ver espectáculos"};
 var KPOP6={ko:"K-POP BIG4 사옥 견학",en:"K-pop Big4 agency buildings",ja:"K-POP BIG4 社屋見学",zhs:"K-POP四大社参观",zht:"K-POP四大社參觀",es:"Edificios de las Big4 del K-pop"};
 var KPOPNOTE6={ko:"사옥 외관만 보고 사진 찍는 곳입니다 — 공연 관람이 아니며, 사무실이라 내부 입장은 안 됩니다.",en:"Exterior photo spots only — not performances; offices, no public entry inside.",ja:"社屋の外観を見て写真を撮る場所です — 公演鑑賞ではなく、オフィスのため館内への入場はできません。",zhs:"只是观看大楼外观、拍照的地方——并非观看演出，且为办公楼，内部不对外开放。",zht:"只是觀看大樓外觀、拍照的地方——並非觀看演出，且為辦公大樓，內部不對外開放。",es:"Solo puntos para fotos del exterior — no son espectáculos; son oficinas, sin acceso al público."};
+var TG_PARTNER_SHOW=false;   // 체험·입장권 칩의 제휴 사이트(Klook·GetYourGuide·Creatrip·Trazy) 보이기 — 10-27 숨김
 var PARTNER6={ko:"제휴 사이트",en:"Partner sites",ja:"提携サイト",zhs:"合作网站",zht:"合作網站",es:"Sitios asociados"};
 var KTOUR6={ko:"K-pop 투어 예약",en:"Book a K-pop tour",ja:"K-popツアー予約",zhs:"预订K-pop之旅",zht:"預訂K-pop之旅",es:"Reservar tour de K-pop"};
 var KTOURD6={ko:"사옥·굿즈샵 도는 당일 K-pop 투어 (가이드 동행)",en:"Day K-pop tours around agency buildings & goods shops",ja:"社屋・グッズショップを巡る日帰りK-popツアー（ガイド同行）",zhs:"环游社屋·周边店的当日K-pop之旅（向导同行）",zht:"環遊社屋·周邊店的當日K-pop之旅（嚮導同行）",es:"Tours de K-pop de un día por edificios de agencias y tiendas de productos"};
@@ -318,6 +319,7 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
     +'<button type="button" class="nrsel" data-nr="b4pay" style="margin-top:7px;background:#3182f6;color:#fff;border-color:#3182f6">'+esc(LG6(PAYB6))+' ›</button>'   // 「예약·결제」 하나만 — 모든 손님 (사장님 10-25)
     +'<div class="d" style="color:var(--sub);margin-top:4px">'+esc(LG6(PAYTEST6))+'</div>'):'')+'</div>';
   var part='<div class="tgpart">'+esc(LG6(PARTNER6))+'</div>';
+  if(!TG_PARTNER_SHOW) return pkg+mPerf;   // 제휴 사이트 줄 숨김 (사장님 10-27 「삭제 말고 숨기기」) — 다시 보이려면 TG_PARTNER_SHOW=true
   return pkg+mPerf+part   /* 「빅4 사옥 견학」 메뉴(mKpop) 제거 — 사옥이 지도 해당 구에 올라가 손님이 직접 찾아감, 투어는 가이드판(B4PKG)만 (사장님 10-25) */
     +one("https://www.klook.com/"+kl+"/","Klook")+one("https://www.getyourguide.com/"+gl,"GetYourGuide")+one("https://creatrip.com/"+cl,"Creatrip")+one("https://www.trazy.com/","Trazy",tzd); }
 // 통역·길안내 (사장님 10-24) — 우리 가이드(관광통역안내사) 등록·매칭. 무료. GoWithGuide 외부 링크 대신 우리 목록.
