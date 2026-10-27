@@ -1537,7 +1537,7 @@ function krideL(ko,addr){ var h=krideHref(), app=/^intent:/.test(h), pc=h===KRID
 // 한국어 화면 — 카카오 T (사장님 10-28 「K.Ride 처럼」). 스토어 확인 2026-10-28: Play com.kakao.taxi · App Store id981110422 (카카오모빌리티)
 var KT_PLAY="https://play.google.com/store/apps/details?id=com.kakao.taxi", KT_IOS="https://apps.apple.com/kr/app/id981110422";
 function kakaoTL(ko,addr){ var ua=navigator.userAgent||"", h=/Android/i.test(ua)?"intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.kakao.taxi;S.browser_fallback_url="+encodeURIComponent(KT_PLAY)+";end":(/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1))?KT_IOS:"", app=/^intent:/.test(h), pc=!h;
-  return '<a href="'+(pc?'#':esc(h))+'"'+(app||pc?'':' target="_blank" rel="noopener"')+' class="kride kt'+(pc?' kpc':'')+'" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'">'+MPICO("mi_taxi","🚕 택시 부르기 (카카오 T)",MIS)+'</a>'; }
+  return '<a href="'+(pc?'#':esc(h))+'"'+(app||pc?'':' target="_blank" rel="noopener"')+' class="kride kt'+(pc?' kpc':'')+'" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'">'+MPICO("mi_taxi","카카오 T",MIS)+'</a>'; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("a.kride"); if(!a) return;
   var t=(a.dataset.ko||"")+(a.dataset.ad?" "+a.dataset.ad:""), m=a.parentNode.querySelector(".kmsg");
   if(!m){ m=document.createElement("div"); m.className="d kmsg"; m.style.cssText="margin:6px 0 0;color:#1a73e8;font-weight:700"; a.insertAdjacentElement("afterend",m); }
