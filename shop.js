@@ -105,7 +105,7 @@ css.textContent="#shopBox{position:fixed;inset:0;z-index:2147483003;background:#
  +"#shopBox .scb{padding:11px 12px 13px;display:flex;flex-direction:column;gap:6px;flex:1}#shopBox .scb h3{font-size:15px;margin:0;line-height:1.35}"
  +"#shopBox .sft{display:flex;flex-wrap:wrap;gap:5px}#shopBox .sft span{font-size:11.5px;background:#fff1e6;border-radius:6px;padding:2px 7px}"
  +"#shopBox .scb p{margin:0;color:#667085;font-size:12.5px;line-height:1.5}#shopBox .spr{margin-top:auto;font-size:16px;font-weight:900}#shopBox .spr small{font-size:12px;color:#667085;font-weight:500}"
- +"#shopBox .sbox{background:#fff;border:1px solid #e4e0d6;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}#shopBox .sbox h2{font-size:16px;margin:0;display:flex;align-items:center;gap:8px}"
+ +"#shopBox .shbx{background:#fff;border:1px solid #e4e0d6;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}#shopBox .shbx h2{font-size:16px;margin:0;display:flex;align-items:center;gap:8px}"
  +"#shopBox .sstep{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#1f5fa8;color:#fff;font-size:12px;font-weight:900}"
  +"#shopBox .snote{color:#667085;font-size:13px;margin:0;line-height:1.5}"
  +"#shopBox .sg{display:flex;gap:10px;align-items:center;border:1.5px solid #e4e0d6;border-radius:12px;padding:9px;cursor:pointer;background:#fff;text-align:left;width:100%;font:inherit;color:inherit}#shopBox .sg.on{border-color:#1f5fa8;background:#eef4fc}"
@@ -141,14 +141,14 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
       +(p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':'')+'</div></button>'; }).join("")+'</div>';
   h+='</div><aside class="sside">';
   var p0=prod();   // 선택한 상품
-  h+='<section class="sbox" id="shopSel"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel"><img src="img/shop/'+p0.img+'.webp" alt=""><b>'+esc(L(p0.t))+'</b><div class="sft">'+p0.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>';
+  h+='<section class="shbx" id="shopSel"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel"><img src="img/shop/'+p0.img+'.webp" alt=""><b>'+esc(L(p0.t))+'</b><div class="sft">'+p0.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>';
   // 가이드
-  h+='<section class="sbox"><h2><span class="sstep">1</span>'+esc(L(TX.g1))+'</h2><p class="snote">'+esc(L(TX.gl))+'</p><div class="sgl">'+GLANGS.map(function(l){ return '<button type="button" data-gl="'+l[0]+'" class="'+(S.glang===l[0]?"on":"")+'">'+esc(l[1])+'</button>'; }).join("")+'</div>';
+  h+='<section class="shbx"><h2><span class="sstep">1</span>'+esc(L(TX.g1))+'</h2><p class="snote">'+esc(L(TX.gl))+'</p><div class="sgl">'+GLANGS.map(function(l){ return '<button type="button" data-gl="'+l[0]+'" class="'+(S.glang===l[0]?"on":"")+'">'+esc(l[1])+'</button>'; }).join("")+'</div>';
   if(S.glang){ if(S.guides===null) h+='<p class="snote">'+esc(L(TX.gld))+'</p>'; else if(!S.guides.length) h+='<p class="snote">'+esc(L(TX.gn))+'</p>';
     else h+=S.guides.map(function(g){ return '<button type="button" class="sg'+(S.gid===g.id?" on":"")+'" data-g="'+esc(g.id)+'">'+(g.photo?'<img src="'+esc(g.photo)+'" alt="">':'<span class="sav">'+esc(gName(g).slice(0,1))+'</span>')+'<span><b>'+esc(gName(g))+'</b><small>'+esc((g.langs||[]).join(" · "))+(g.years?' · '+esc(g.years):'')+(g.region?' · '+esc(g.region):'')+'</small></span></button>'; }).join(""); }
   h+='</section>';
   // 예약·결제
-  var p=prod(); h+='<section class="sbox" id="shopCo"><h2><span class="sstep">2</span>'+esc(L(TX.g2))+'</h2>';
+  var p=prod(); h+='<section class="shbx" id="shopCo"><h2><span class="sstep">2</span>'+esc(L(TX.g2))+'</h2>';
   if(!p) h+='<p class="snote">'+esc(L(TX.pick))+'</p>';
   else { var gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0];
     if(p.real==="perf") h+='<button type="button" class="spay" data-s="perf">'+esc(L(TX.perf))+' ›</button>';
