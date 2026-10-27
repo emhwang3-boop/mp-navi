@@ -51,6 +51,7 @@ var TX={
  left:{ko:"남은 곡",en:"Songs left",ja:"残り曲数",zhs:"剩余歌曲",zht:"剩餘歌曲",es:"Canciones"},
  pt:{ko:"노래 충전",en:"Buy songs",ja:"曲をチャージ",zhs:"充值歌曲",zht:"儲值歌曲",es:"Comprar canciones"},
  pn:{ko:"곡",en:"songs",ja:"曲",zhs:"首",zht:"首",es:"canciones"},
+ pn1:{ko:"곡",en:"song",ja:"曲",zhs:"首",zht:"首",es:"canción"},   // 1곡 (영·스페인어 단수, 10-27)
  tot:{ko:"결제 금액",en:"Amount",ja:"お支払い金額",zhs:"支付金额",zht:"付款金額",es:"Importe"},
  pay:{ko:"결제하기",en:"Pay",ja:"支払う",zhs:"付款",zht:"付款",es:"Pagar"},
  cancel:{ko:"취소",en:"Cancel",ja:"キャンセル",zhs:"取消",zht:"取消",es:"Cancelar"},
@@ -174,7 +175,7 @@ function payOpen(){ var b=box(); if(!b) return; var o=b.querySelector(".kpm"); i
       o.querySelector(".kc").onclick=function(){ mode=""; draw(); }; return; }
     o.innerHTML='<div><h3>'+esc(L(TX.pt))+' · '+esc(L(TX.rate))+'</h3>'
     +(sg?'<div class="klf">'+esc(fmtN(L(TX.lftN),left))+'</div>':'<div class="ksg">'+esc(L(TX.sgi))+'<button type="button" class="ksgb">'+esc(L(TX.sgb))+'</button></div>')
-    +'<div class="ksel">'+PAYN.map(function(k){ return '<button type="button" data-pn="'+k+'" class="'+(k===n?"on":"")+'">'+k+' '+esc(L(TX.pn))+'</button>'; }).join("")+'</div>'
+    +'<div class="ksel">'+PAYN.map(function(k){ return '<button type="button" data-pn="'+k+'" class="'+(k===n?"on":"")+'">'+k+' '+esc(L(k===1?TX.pn1:TX.pn))+'</button>'; }).join("")+'</div>'
     +'<div class="kt"><span>'+esc(L(TX.tot))+'</span><span>'+won(n)+'</span></div><button type="button" class="kgo">'+won(n)+' '+esc(L(TX.pay))+'</button>'
     +(msg?'<p class="km">'+esc(msg)+'</p>':'')
     +(sg&&left>=1?'<button type="button" class="krf">'+esc(fmtN(L(TX.rfb),left))+'</button>':'')
