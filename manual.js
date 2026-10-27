@@ -16,7 +16,7 @@ var TX={
 };
 function L(o){ return o[window.LANG]||o.en; }
 function lg(){ return ORD.indexOf(window.LANG)>=0?window.LANG:"en"; }
-function url(l){ return "manual/manual_"+l+".pdf?v="+(window.NAVI_V||""); }
+function url(l){ return "manual/manual_"+l+".pdf?v="+(window.NAVI_V||"")+"m1028"; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 var st=document.createElement("style");
 st.textContent="#libBox{position:fixed;inset:0;z-index:1045;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}"
