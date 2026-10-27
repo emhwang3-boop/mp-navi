@@ -191,7 +191,7 @@ document.addEventListener("click",function(e){ var b=box(); if(!b||!b.contains(e
   else if(t.dataset.gl){ S.glang=t.dataset.gl; S.gid=null; loadGuides(); }
   else if(t.dataset.g){ S.gid=t.dataset.g; paint(); }
   else if(t.dataset.n){ S.n=Math.max(1,Math.min(20,S.n+(+t.dataset.n))); paint(); }
-  else if(t.dataset.s==="x") close();
+  else if(t.dataset.s==="x"){ close(); try{ var nb=window.NEAR&&NEAR.state(); if(nb&&nb.k==="tg") NEAR.close(); }catch(z){} }   // ✕ = 아래 옛 판(빅4·공연관람 목록)까지 닫는다 (사장님 10-28)
   else if(t.dataset.s==="mock") mockPay();
   else if(t.dataset.s==="pay"){ close(); try{ if(window.TPAY) TPAY.open(); }catch(z){} }   // 빅4 — 기존 결제(tosspay.js) 그대로
   else if(t.dataset.s==="perf"){ close(); var a=document.querySelector('[data-nr="tgx"][data-g="perf"]'); if(a&&!/▾/.test(a.textContent)) a.click(); }   // 옛 판의 공연관람 펼치기
