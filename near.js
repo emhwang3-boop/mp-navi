@@ -313,7 +313,7 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
   var pkg='<div class="tgbook b4pkg"><div class="tgbh" data-nr="tgx" data-g="pkg" style="cursor:pointer"><img src="img/kpop_marker.png" alt="">'+esc(LG6(B4PKG.t))+'<span class="tgar" style="margin-left:auto">'+(TGX.pkg?"▾":"▸")+'</span></div>'
     +(TGX.pkg?('<div class="d" style="font-weight:700;color:var(--ink)">'+esc(LG6(B4PKG.g))+'</div>'
     +'<div class="d">'+esc(LG6(B4PKG.c))+'</div>'
-    +'<div class="d" style="font-weight:800;color:var(--ink);margin-top:2px">'+esc(LG6(B4PKG.p))+pgBadge(B4PKG)+'</div>'
+    +'<div class="d" style="font-weight:800;color:var(--ink);margin-top:2px">'+esc(LG6(B4PKG.p))+'</div>'
     +'<div class="d" style="color:var(--ink);margin-top:3px">'+esc(LG6(B4SV6))+'</div>'   // 제공기간·인원 (사장님 10-26, 토스 심사)
     +refundLine(B4PKG)   // 환불 규정 요약 + 링크 — 공통 부품 (토스 PG, 10-25)
     +'<button type="button" class="nrsel" data-nr="b4map" style="margin-top:7px;background:#fff;color:#d9480f;border-color:#ff7a00">'+MPICO("mi_bus",LG6({ko:"투어 노선도 보기",en:"View tour route",ja:"ツアー路線図を見る",zhs:"查看游览路线图",zht:"查看遊覽路線圖",es:"Ver la ruta del tour"}),MIS)+' ›</button>'
