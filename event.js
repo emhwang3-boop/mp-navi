@@ -285,7 +285,9 @@ var RNK={t:{ko:"지금 순위",en:"Current ranking",ja:"現在の順位",zhs:"�
  all:{ko:"24칸 완성",en:"Full board",ja:"24マス完成",zhs:"全部完成",zht:"全部完成",es:"Cartón completo"},
  me:{ko:"나",en:"Me",ja:"自分",zhs:"我",zht:"我",es:"Yo"},
  play:{ko:"명 참가 중",en:" playing",ja:"人が参加中",zhs:"人参与中",zht:"人參與中",es:" jugando"}};
-function elTxt(ms){ var s=Math.max(0,Math.round((ms||0)/1000)), h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+":"+(m<10?"0":""):"")+m+":"+(x<10?"0":"")+x; }
+// 걸린 시간 = 단위 붙여서 (사장님 10-28 「2:50 은 헷갈려」) — 앞자리 0 단위는 뺀다. 화면·순위·공유 그림·공유 글 모두 이것 하나
+var ELU={ko:["시간 ","분 ","초"],en:["h ","m ","s"],ja:["時間","分","秒"],zhs:["小时","分","秒"],zht:["小時","分","秒"],es:[" h "," min "," s"]};
+function elTxt(ms){ var s=Math.max(0,Math.round((ms||0)/1000)), h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60, u=ELU[lg()]||ELU.en; return (h?h+u[0]:"")+(h||m?m+u[1]:"")+x+u[2]; }
 // 우승 횟수 배지 (사장님 10-27) — 별 1~9 · 큰 별(10) · 작은 태양(100) · 큰 태양(1,000) · 1만 = 명예의 전당. 그림은 img/rank/*.webp (생성기로 뽑음)
 var TMX={ko:"걸린 시간",en:"Your time",ja:"経過時間",zhs:"用时",zht:"用時",es:"Tu tiempo"};
 var HOF={ko:"명예의 전당",en:"Hall of Fame",ja:"殿堂入り",zhs:"名人堂",zht:"名人堂",es:"Salón de la Fama"}, WINS={ko:"우승",en:"wins",ja:"優勝",zhs:"次冠军",zht:"次冠軍",es:"victorias"};
@@ -484,7 +486,7 @@ function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return;
   h+='<div class="egrid">'+B.cells.map(function(c){ if(c.free) return '<div class="ec free">FREE</div>';
     var done=S.indexOf(c.i)>=0, rt=!done&&X.indexOf(c.i)>=0;
     return '<div class="ec'+(done?' done':'')+(rt?' retry':'')+'" data-i="'+c.i+'"><div>'+esc(c.w.en)+(c.w.ko?'<span class="ko">'+esc(c.w.ko)+'</span>':'')+'</div>'+(done?'<div class="stp">OK</div>':'')+(rt?'<div class="rt">'+esc(L(T.retry))+'</div>':'')+'</div>'; }).join("")+'</div>';
-  h+='<div class="est"><div><b>'+S.length+'/24</b>'+esc(L(T.stamps))+'</div><div><b>'+(me&&me.f0?elTxt((me.done||Date.now())-me.f0):"0:00")+'</b>'+esc(L(TMX))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(dl||B.test?TNX:T.left))+'</div></div>';
+  h+='<div class="est"><div><b>'+S.length+'/24</b>'+esc(L(T.stamps))+'</div><div><b>'+(me&&me.f0?elTxt((me.done||Date.now())-me.f0):elTxt(0))+'</b>'+esc(L(TMX))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(dl||B.test?TNX:T.left))+'</div></div>';
   if(me&&me.agreed&&dl) h+=rpCard(me);   // 다시하기 (10-27 밤)
   if(me&&me.agreed) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>';
   h+=rankCard(B);
