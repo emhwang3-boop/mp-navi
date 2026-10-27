@@ -49,6 +49,11 @@ var W5={
 function W(k){ return LP(W5[k]); }
 var WICON={near:"mi_pin",bme:"mi_pin",bmap:"mi_map",r3:"mi_star",r10:"mi_star",r30:"mi_star",useme:"mi_pin",local:"mi_pin"};   // 앞 이모지를 떼고 그림 아이콘을 붙인다 (6개 언어 한 번에, 사장님 10-24)
 function WI(k){ return WICON[k]?MPICO(WICON[k],W(k),MIS):W(k); }
+// 누구에게·종류·특산물 이모지 → 그림 아이콘 (나노바나나, 사장님 10-28) — gifts.json 의 i(이모지)는 그대로 두고 코드(c)로 그림을 고른다. 없으면 이모지
+var GIC={family:"mi_g_family",friend:"mi_g_friend",coworker:"mi_g_coworker",kid:"mi_g_kid",self:"mi_g_self",
+  cosme:"mi_g_cosme",ginseng:"mi_g_ginseng",snack:"mi_g_snack",craft:"mi_g_craft",muds:"mi_g_muds",kpop:"mi_g_kpop",hanbok:"mi_g_hanbok",tea:"mi_g_tea",chara:"mi_g_chara",stationery:"mi_g_stationery",
+  l_jeju_gyul:"mi_g_gyul",l_jeju_omegi:"mi_g_omegi",l_jeju_choco:"mi_g_jejuchoco",l_gj_bread:"mi_g_gjbread",l_bs_eomuk:"mi_g_eomuk",l_gn_coffee:"mi_g_coffee",l_ca_hodu:"mi_g_hodu",l_jj_choco:"mi_g_chocopie",l_ty_kkul:"mi_g_kkulppang",l_ad_fish:"mi_g_mackerel",l_ys_gat:"mi_g_gatkimchi"};
+function GI(o){ var n=GIC[o.c]; return n?MPIMG(n,MIS):(o.i?o.i+" ":""); }
 // 기준 위치 — near.js pickBase 와 같은 규칙 (그 코드를 옮겨 씀, near.js 는 그대로)
 function mapCenter(){ try{
     if(window.DET&&window._nm){ var c=_nm.getCenter(); return [c.lat(),c.lng()]; }
@@ -152,14 +157,14 @@ function paint(){ var b=document.querySelector("#gfBox .gfin"); if(!b) return;
   var h='<div class="gftop"><b>'+MPICO("mi_gift",T("🎁 선물 고르기","🎁 Gift finder"),MIS)+'</b><button type="button" class="gfx" data-gf="x" aria-label="close">✕</button></div>';
   if(!G){ b.innerHTML=h+'<div class="msg">'+T("불러오는 중…","Loading…")+'</div>'; return; }
   if(S.who) h+='<button type="button" class="gfrs" data-gf="rs">'+T("↺ 처음부터 다시","↺ Start over")+'</button>';
-  h+='<div class="gfq">1. '+T("누구에게 주나요?","Who is it for?")+'</div><div class="gfopts">'+G.who.map(function(x){ return opt("w",x.c,(x.i?x.i+" ":"")+esc(nm(x)),S.who===x.c); }).join("")+'</div>';
+  h+='<div class="gfq">1. '+T("누구에게 주나요?","Who is it for?")+'</div><div class="gfopts">'+G.who.map(function(x){ return opt("w",x.c,GI(x)+esc(nm(x)),S.who===x.c); }).join("")+'</div>';
   if(S.who) h+='<div class="gfq">2. '+T("예산은요? (1개 기준)","Budget? (per gift)")+'</div><div class="gfopts">'+G.budget.map(function(x){ return opt("b",x.c,esc(nm(x)),S.bud===x.c); }).join("")+'</div>';
   if(S.who&&S.bud){ var R=ranked();
     if(!S.bst) setTimeout(function(){ baseGo(false); },0);
     h+='<div class="gfq">3. '+T("이런 선물을 추천해요","Our picks for you")+'</div>'+dfsHtml();
-    var LK=localKinds(); if(LK.length) h+='<div class="gflh">'+WI("local")+'</div>'+LK.map(function(k){ return '<div class="gfk gfl" data-kc="'+esc(k.c)+'"><div class="h">'+k.i+' '+esc(nm(k))+'</div><div class="d">'+esc(LD(k))+'</div>'+nbHtml(k)+'</div>'; }).join("");
-    h+=R.map(function(k,i){ var n=[k.note&&k.note[S.who],k.note&&k.note[S.bud]].filter(Boolean).map(function(a){ return '<div class="n">👉 '+esc(t2(a))+'</div>'; }).join("");
-      return '<div class="gfk" data-kc="'+esc(k.c)+'"><div class="h"><span class="gfrank">'+(i+1)+'</span>'+k.i+' '+esc(nm(k))+'</div><div class="d">'+esc(LD(k))+'</div>'+n
+    var LK=localKinds(); if(LK.length) h+='<div class="gflh">'+WI("local")+'</div>'+LK.map(function(k){ return '<div class="gfk gfl" data-kc="'+esc(k.c)+'"><div class="h">'+GI(k)+esc(nm(k))+'</div><div class="d">'+esc(LD(k))+'</div>'+nbHtml(k)+'</div>'; }).join("");
+    h+=R.map(function(k,i){ var n=[k.note&&k.note[S.who],k.note&&k.note[S.bud]].filter(Boolean).map(function(a){ return '<div class="n">'+MPIMG("mi_g_point",MIS)+esc(t2(a))+'</div>'; }).join("");
+      return '<div class="gfk" data-kc="'+esc(k.c)+'"><div class="h"><span class="gfrank">'+(i+1)+'</span>'+GI(k)+esc(nm(k))+'</div><div class="d">'+esc(LD(k))+'</div>'+n
         +'<div class="gfads"></div>'+nbHtml(k)+'</div>'; }).join("");
     h+=tips(); }
   b.innerHTML=h;
