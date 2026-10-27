@@ -278,7 +278,7 @@ function sched(H,arr,date,from,mo){ var t=from, p=H, rows=[], lunch=false, dinne
 function sc(s){ return s.viol*1000+s.miss*120+s.end+s.wait*0.5; }
 function fixTimes(H,arr,date,from){ var cur=arr, cs=sched(H,cur,date,from);
   arr.forEach(function(x){ if(!FACT[x.k]||PERFK[x.k]) return; var base=cur.filter(function(y){ return y!==x; });
-    for(var i=0;i<=base.length;i++){ var c=base.slice(0,i).concat([x],base.slice(i)), s=sched(H,c,date,from);
+    for(var i=0;i<=base.length;i++){ var c=base.slice(0,i).concat([x],base.slice(i)); if(c.some(function(y,j){ return j>0&&!isNight(y)&&isNight(c[j-1]); })) continue; var s=sched(H,c,date,from);   // 밤·공연 장소는 늘 끝자리
       if(sc(s)<sc(cs)-1){ cur=c; cs=s; } } });
   return cur; }
 function orderDay(H,arr,date,from){ if(!arr.length) return arr; var o=twoOpt(H,nnOrder(H,arr)), night=o.filter(isNight); o=o.filter(function(x){ return !isNight(x); }).concat(night); return fixTimes(H,o,date,from); }
