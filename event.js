@@ -84,7 +84,10 @@ RANKHOW.treasure={ko:"보물상자를 먼저 연 순서 (1·2·3등)",en:"First 
 RANKHOW.spot={ko:"맞힌 개수가 많은 순, 같으면 걸린 시간이 짧은 순",en:"Most correct answers first; on a tie, the shortest total time",ja:"正解数が多い順、同じならかかった時間が短い順",zhs:"答对数多者优先，相同则用时短者优先",zht:"答對數多者優先，相同則用時短者優先",es:"Más aciertos primero; en empate, el menor tiempo total"};
 RANKHOW.photo={ko:"회사가 주제에 가장 잘 맞는 사진 1·2·3등을 고릅니다",en:"The company picks the three photos that best fit the theme",ja:"会社がテーマに最も合う写真1・2・3位を選びます",zhs:"由公司评选最符合主题的照片第1·2·3名",zht:"由公司評選最符合主題的照片第1·2·3名",es:"La empresa elige las tres fotos que mejor encajan con el tema"};
 var KRULES={
- bingo:[],
+ bingo:[   // 24칸 완성 규칙 (사장님 10-27)
+  {ko:"빙고판은 5×5이며 가운데(FREE)를 뺀 24칸이 모두 문제입니다. 24칸을 모두 맞히면 판 완성입니다(한 줄 완성이 아님).",en:"The bingo card is 5×5; all 24 squares except the centre (FREE) are questions. You complete the card when you answer all 24 correctly (not just one line).",ja:"ビンゴカードは5×5で、中央（FREE）を除く24マスすべてが問題です。24マスすべて正解するとカード完成です（1列完成ではありません）。",zhs:"宾果卡为5×5，除中间（FREE）外的24格都是题目。答对全部24格即完成整张卡（不是完成一条线）。",zht:"賓果卡為5×5，除中間（FREE）外的24格都是題目。答對全部24格即完成整張卡（不是完成一條線）。",es:"El cartón de bingo es de 5×5; las 24 casillas, salvo la central (FREE), son preguntas. Completas el cartón al acertar las 24 (no basta con una línea)."},
+  {ko:"걸린 시간은 첫 문제에 답한 때부터 24번째 칸을 맞힌 때까지입니다. 틀린 칸은 판이 열려 있는 동안 횟수 제한 없이 다시 도전할 수 있습니다.",en:"Your time runs from your first answer until you get the 24th square right. You can retry wrong squares as many times as you like while the card is open.",ja:"時間は最初に解答した時から24マス目に正解した時までです。間違えたマスは、カードが開いている間は回数制限なく再挑戦できます。",zhs:"用时从你回答第一题起，到答对第24格为止。答错的格子在卡片开放期间可以不限次数重新挑战。",zht:"用時從你回答第一題起，到答對第24格為止。答錯的格子在卡片開放期間可以不限次數重新挑戰。",es:"Tu tiempo cuenta desde tu primera respuesta hasta que aciertas la casilla 24. Puedes reintentar las casillas falladas sin límite mientras el cartón esté abierto."}
+ ],
  treasure:[
   {ko:"앱 지도(서울) 어딘가에 보물상자가 하나 숨어 있습니다. 매일 12시(한국 시간)에 힌트가 하나씩 공개되며, 처음엔 넓게 시작해 점점 좁아집니다.",en:"One treasure box is hidden somewhere on the app’s Seoul map. A new hint is revealed every day at 12:00 (Korea time), starting broad and getting narrower.",ja:"アプリの地図（ソウル）のどこかに宝箱が1つ隠れています。毎日12時（韓国時間）にヒントが1つずつ公開され、最初は広く、だんだん絞られていきます。",zhs:"应用的首尔地图上藏着一个宝箱。每天12点（韩国时间）公开一条提示，从大范围开始逐渐缩小。",zht:"應用程式的首爾地圖上藏著一個寶箱。每天12點（韓國時間）公開一條提示，從大範圍開始逐漸縮小。",es:"Hay un cofre escondido en algún lugar del mapa de Seúl de la app. Cada día a las 12:00 (hora de Corea) se revela una pista, de más general a más precisa."},
   {ko:"지도에서 상자가 있을 것 같은 곳을 누르면 열립니다. 틀리게 누르면 1분 동안 기다려야 다시 누를 수 있습니다.",en:"Tap the spot on the map where you think the box is. After a wrong tap you must wait 1 minute before trying again.",ja:"宝箱がありそうな場所を地図でタップすると開きます。外れたら1分待ってから再挑戦できます。",zhs:"在地图上点击你认为宝箱所在的位置即可打开。点错后需等待1分钟才能再试。",zht:"在地圖上點擊你認為寶箱所在的位置即可打開。點錯後需等待1分鐘才能再試。",es:"Toca en el mapa el lugar donde crees que está el cofre. Tras un toque equivocado, espera 1 minuto para volver a intentarlo."},
@@ -218,7 +221,7 @@ var SHX={
 };
 function shLine(){ var c=cur(); if(!c||!c.open||!c.me) return null; var me=c.me, k=c.kind||"bingo", t=L(KT[k]||EVT), n=me.lines||0, l=lg();
   if(k==="bingo"&&me.done) return [t, L(RNK.all)+" · "+elTxt(me.done-(me.f0||me.done))];   // 판 완성 + 걸린 시간 (10-27)
-  if(k==="bingo") return [t, (l==="ko"||l==="ja"||l==="zhs"||l==="zht")?n+L(SHX.lines):n+" "+L(SHX.lines)];
+  if(k==="bingo") return [t, (me.s||[]).length+"/24 · "+L(T.stamps)];
   if(k==="treasure") return [t, me.ft?L(SHX.found)+(me.rank?"  #"+me.rank:""):L(SHX.hunt)];
   if(k==="spot") return [t, (me.ok||0)+"/"+(c.total||10)+" "+L(SHX.spot)];
   if(k==="photo") return [t, L(SHX.photo)];
@@ -258,6 +261,7 @@ var RNK={t:{ko:"지금 순위",en:"Current ranking",ja:"現在の順位",zhs:"�
  play:{ko:"명 참가 중",en:" playing",ja:"人が参加中",zhs:"人参与中",zht:"人參與中",es:" jugando"}};
 function elTxt(ms){ var s=Math.max(0,Math.round((ms||0)/1000)), h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+":"+(m<10?"0":""):"")+m+":"+(x<10?"0":"")+x; }
 // 우승 횟수 배지 (사장님 10-27) — 별 1~9 · 큰 별(10) · 작은 태양(100) · 큰 태양(1,000) · 1만 = 명예의 전당. 그림은 img/rank/*.webp (생성기로 뽑음)
+var TMX={ko:"걸린 시간",en:"Your time",ja:"経過時間",zhs:"用时",zht:"用時",es:"Tu tiempo"};
 var HOF={ko:"명예의 전당",en:"Hall of Fame",ja:"殿堂入り",zhs:"名人堂",zht:"名人堂",es:"Salón de la Fama"}, WINS={ko:"우승",en:"wins",ja:"優勝",zhs:"次冠军",zht:"次冠軍",es:"victorias"};
 function winIcons(n){ n=n||0; if(!n) return ""; if(n>=10000) return '<span style="font-size:11px;font-weight:900;color:#b8860b">'+esc(L(HOF))+'</span>';
   var g=function(k,c,px){ var h=""; for(var i=0;i<c;i++) h+='<img src="img/rank/'+k+'.webp" alt="" style="width:'+px+'px;height:'+px+'px;vertical-align:middle;margin-right:1px">'; return h; };
@@ -424,7 +428,7 @@ function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return; va
     h+='<div class="egrid">'+B.cells.map(function(c){ if(c.free) return '<div class="ec free">FREE</div>';
       var done=S.indexOf(c.i)>=0, rt=!done&&X.indexOf(c.i)>=0;
       return '<div class="ec'+(done?' done':'')+(rt?' retry':'')+'" data-i="'+c.i+'"><div>'+esc(c.w.en)+(c.w.ko?'<span class="ko">'+esc(c.w.ko)+'</span>':'')+'</div>'+(done?'<div class="stp">OK</div>':'')+(rt?'<div class="rt">'+esc(L(T.retry))+'</div>':'')+'</div>'; }).join("")+'</div>';
-    h+='<div class="est"><div><b>'+(S.length+1)+'</b>'+esc(L(T.stamps))+'</div><div><b>'+(me?me.lines:0)+'</b>'+esc(L(T.lines))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(B.test?TNX:T.left))+'</div></div>';
+    h+='<div class="est"><div><b>'+S.length+'/24</b>'+esc(L(T.stamps))+'</div><div><b>'+(me&&me.f0?elTxt((me.done||Date.now())-me.f0):"0:00")+'</b>'+esc(L(TMX))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(B.test?TNX:T.left))+'</div></div>';
     if(me&&me.agreed) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>';
     h+=rankCard(B);
     if(!B.test) h+='<div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
@@ -441,9 +445,9 @@ function tap(i){ if(!B||!B.open) return; var me=B.me; if(!me){ signIn(); return;
     var before=me.lines||0;
     post("/npg/bingo/answer",{sess:sess(),i:i,c:+b.dataset.c,l:lg()}).then(function(j){
       if(!j||!j.ok){ s.querySelector(".msg").textContent=j&&j.err==="limit"?L(T.limit):L(T.err); return; }
-      me.s=j.s||me.s; me.x=j.x||me.x; me.lines=j.lines||0; me.tries[i]=3-(j.left==null?0:j.left);
+      me.s=j.s||me.s; me.x=j.x||me.x; me.lines=j.lines||0; me.f0=me.f0||Date.now(); if(me.s.length>=24&&!me.done) me.done=Date.now(); me.tries[i]=3-(j.left==null?0:j.left);
       b.classList.add(j.right?"ok":"bad"); toast(j.right?L(T.right):L(T.wrong),j.right?"#27a745":"#e8322f");
-      setTimeout(function(){ s.remove(); paint(); if(j.right&&me.lines>before) toast(L(T.bingo),"",true); },900);
+      setTimeout(function(){ s.remove(); paint(); if(j.right&&me.s.length>=24) toast(L(T.bingo)+" "+L(RNK.all)+"!","",true); try{ load(); }catch(e){} },900);
     }).catch(function(){ s.querySelector(".msg").textContent=L(T.err); }); }; }); }
 function toast(t,bg,big){ var o=document.getElementById("evToast"); if(o) o.remove(); o=document.createElement("div"); o.id="evToast"; if(big) o.className="big"; else o.style.background=bg; o.textContent=t; document.body.appendChild(o); setTimeout(function(){ o.remove(); },big?2200:1100); }
 window.evOpen=open;
