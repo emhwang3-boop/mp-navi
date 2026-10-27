@@ -1105,7 +1105,7 @@ function routePlan(a,b,km){ var p=PLACES[a], q=PLACES[b], na=encodeURIComponent(
   if(km<=60) return {train:false,ods:true,html:'<div id="ods"></div><div class="trh">'+(ia==="jeju"?MPICO("mi_bus",T("버스·택시","Bus, taxi"),MIS):MPICO("mi_subway",T("지하철·버스·택시","Subway, bus, taxi"),MIS))+'</div>'
     +(FG()?L(go+"transit",TE("Google Maps (English)"))+L(nv+"transit",TE("Naver transit"))+L(nv+"car",TE("Taxi (fare, Naver)"))+krideL(q.ko,q.addr)
       +'<div class="d" style="margin-top:6px">'+esc(TE("Tip: in the Naver Map app, Settings → Language → English shows routes in English."))+'</div>'
-     :L(nv+"transit","네이버 대중교통")+L(kk,"카카오맵 길찾기")+L(nv+"car","택시 (요금 보기)")+L(go+"transit","구글 지도"))};
+     :L(nv+"transit","네이버 대중교통")+L(kk,"카카오맵 길찾기")+L(nv+"car","택시 (요금 보기)")+L(go+"transit","구글 지도")+kakaoTL(q.ko,q.addr))};
   return {train:ia==="land",html:'<div class="trh">'+MPICO("mi_guide",T("고속버스·자동차","Express bus, car"),MIS)+'</div>'
     +(FG()?L(go+"driving",TE("Google driving (English)"))+L(nv+"transit",TE("Naver transit (incl. intercity bus)"))+L(nv+"car",TE("Naver car"))
      :L(nv+"transit","네이버 대중교통 (고속·시외버스 포함)")+L(nv+"car","네이버 자동차")+L(go+"driving","구글 자동차"))};
@@ -1523,7 +1523,7 @@ function linksTo(nmKo,lat,lng,naverName,addr){ lat=+lat; lng=+lng; var f=meFrom(
   // 「자세히 보기」(사장님 10-20) — 외국어 화면은 구글 지도 장소 화면(앱 언어 hl 연동), 한국어 화면은 네이버 플레이스(이름 검색)
   var gq=nmKo+(addr?" "+addr:""), mr=FG()?"https://www.google.com/maps/search/?api=1"+hlG()+"&query="+encodeURIComponent(gq):"https://search.naver.com/search.naver?query="+encodeURIComponent(nmKo);   // 한국어 화면 = 네이버 통합검색(지식백과·블로그·플레이스 한 화면, 사장님 10-22)
   var mt={ko:"ℹ️ 자세히 보기 (네이버)",en:"ℹ️ More info (Google)",ja:"ℹ️ 詳しく見る (Google)",zhs:"ℹ️ 查看详情 (Google)",zht:"ℹ️ 查看詳情 (Google)",es:"ℹ️ Más información (Google)"}[LANG]||"ℹ️ More info (Google)";
-  return L(mr,MPICO("mi_info",mt,MIS))+(FG()?L(go,TE("Google Maps (English)"))+L(nv,TE("Naver Map"))+krideL(nmKo,addr):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도")); }
+  return L(mr,MPICO("mi_info",mt,MIS))+(FG()?L(go,TE("Google Maps (English)"))+L(nv,TE("Naver Map"))+krideL(nmKo,addr):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도")+kakaoTL(nmKo,addr)); }
 // 영어 화면 — 외국인용 카카오 택시 앱 K.Ride (사장님 10-15). 주소·패키지는 스토어에서 확인함(2026-10-15):
 //   Play com.kakaomobility.kride · App Store id6474654222 · 소개 kride.kakaomobility.com
 //   안드로이드는 깔려 있으면 앱을 열고(MAIN/LAUNCHER 꼴) 없으면 Play 상세로, 아이폰은 App Store, PC 는 소개 페이지. 누르면 목적지 이름·주소를 복사한다
@@ -1534,11 +1534,16 @@ function krideHref(){ var ua=navigator.userAgent||"";
   return KRIDE_WEB; }
 function krideL(ko,addr){ var h=krideHref(), app=/^intent:/.test(h), pc=h===KRIDE_WEB;   // PC = 앱 설치 화면으로 안 보내고 안내 한 줄만 (사장님 10-23)
   return '<a href="'+(pc?'#':esc(h))+'"'+(app||pc?'':' target="_blank" rel="noopener"')+' class="kride'+(pc?' kpc':'')+'" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'">'+MPICO("mi_taxi",TE("🚕 Call a taxi (K.Ride)"),MIS)+'</a>'; }
+// 한국어 화면 — 카카오 T (사장님 10-28 「K.Ride 처럼」). 스토어 확인 2026-10-28: Play com.kakao.taxi · App Store id981110422 (카카오모빌리티)
+var KT_PLAY="https://play.google.com/store/apps/details?id=com.kakao.taxi", KT_IOS="https://apps.apple.com/kr/app/id981110422";
+function kakaoTL(ko,addr){ var ua=navigator.userAgent||"", h=/Android/i.test(ua)?"intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.kakao.taxi;S.browser_fallback_url="+encodeURIComponent(KT_PLAY)+";end":(/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1))?KT_IOS:"", app=/^intent:/.test(h), pc=!h;
+  return '<a href="'+(pc?'#':esc(h))+'"'+(app||pc?'':' target="_blank" rel="noopener"')+' class="kride kt'+(pc?' kpc':'')+'" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'">'+MPICO("mi_taxi","🚕 택시 부르기 (카카오 T)",MIS)+'</a>'; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("a.kride"); if(!a) return;
   var t=(a.dataset.ko||"")+(a.dataset.ad?" "+a.dataset.ad:""), m=a.parentNode.querySelector(".kmsg");
   if(!m){ m=document.createElement("div"); m.className="d kmsg"; m.style.cssText="margin:6px 0 0;color:#1a73e8;font-weight:700"; a.insertAdjacentElement("afterend",m); }
-  if(a.classList.contains("kpc")){ e.preventDefault(); m.textContent=TE("Taxi booking works on your phone (K.Ride app)."); return; }
-  m.textContent=TE("Destination copied — paste it in K.Ride");
+  var kt=a.classList.contains("kt");
+  if(a.classList.contains("kpc")){ e.preventDefault(); m.textContent=kt?"택시 호출은 폰의 카카오 T 앱에서 됩니다.":TE("Taxi booking works on your phone (K.Ride app)."); return; }
+  m.textContent=kt?"목적지를 복사했어요 — 카카오 T에 붙여 넣으세요":TE("Destination copied — paste it in K.Ride");
   try{ navigator.clipboard.writeText(t).catch(function(){}); }catch(x){} },true);
 function poseForQuery(q,it){ var p=poseFor1(String(q).toLowerCase()); if(p) return p; return poseFor1((it||[]).slice(0,3).map(function(x){ return (x.cat||"")+" "+(x.cat_en||""); }).join(" ").toLowerCase()); }   /* 검색어가 먼저, 없으면 결과 종류 */
 function poseFor1(s){
