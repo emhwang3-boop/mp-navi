@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권 (무료)","무료 확정 · 결제 미연결"],["pg","퍼즐골드","지갑·상 지급·사용 내역 · 엑셀"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["pay","이용권 (무료)","무료 확정 · 결제 미연결"],["pg","퍼즐골드","지갑·상 지급·사용 내역 · 엑셀"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -176,6 +176,18 @@ function iqDraw(){ if(!IQD) return; var all=IQD.items, cnt={}, cntB={};
       +'<button class="g" data-id="'+esc(x.id)+'" onclick="iqAct(\'del\',this.dataset.id)">지우기</button></div></div>'; }).join(""); }
 function iqAct(a,id){ if(a==="del"&&!confirm("이 문의를 지울까요?")) return; api("/ninq/admin?"+a+"="+encodeURIComponent(id),{method:"POST"}).then(inqLoad); }
 function iqContact(b){ api("/ninq/admin?contact="+encodeURIComponent(b.dataset.id)).then(function(j){ var s=document.createElement("span"); s.textContent=(j.email||"")+(j.contact?" · "+j.contact:""); s.style.padding="8px"; b.replaceWith(s); }); }
+// ── 위치 이용·제공사실 확인자료 (위치정보법 16조②, 2026-10-27) — 허브 /nlbs/admin · 좌표 없음(일시·기기번호·서비스) · 183일 지나면 허브가 지운다
+var LB=null;
+function lbsLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><div class="row"><b style="flex:1">위치정보 이용·제공사실 확인자료</b><button class="g" onclick="xlsLbs()">엑셀 받기</button></div><div class="msg">앱이 이용자 위치를 쓸 때마다 자동으로 남습니다. 위치 좌표는 남기지 않습니다. 6개월 지나면 자동 삭제.</div>'
+  +'<div class="row" style="margin-top:8px">기간 <input type="date" id="lbf" value="'+kday(-29)+'"> ~ <input type="date" id="lbt" value="'+kday(0)+'"><button onclick="lbsGet()">조회</button></div><div id="lbo"><div class="msg">불러오는 중…</div></div></div>'; lbsGet(); }
+function lbsGet(){ api("/nlbs/admin?from="+$("lbf").value+"&to="+$("lbt").value).then(function(j){ LB=j; var e=$("lbo"); if(!j.ok){ e.innerHTML='<div class="msg">못 불러왔습니다 ('+esc(j.err||"")+')</div>'; return; }
+  var it=j.items||[], by={}, devs={}; it.forEach(function(x){ by[x.svc]=(by[x.svc]||0)+1; devs[x.dev]=1; });
+  e.innerHTML='<div class="msg">'+esc(j.from)+' ~ '+esc(j.to)+' · '+it.length.toLocaleString()+'건 · 기기 '+Object.keys(devs).length.toLocaleString()+'대'+Object.keys(by).map(function(k){ return ' · '+esc(k)+' '+by[k]; }).join('')+'</div>'
+   +'<div class="tw"><table><tr><th>일시</th><th>기기번호</th><th>서비스</th><th>취득 경로</th><th>제공 대상</th></tr>'+it.slice(-200).reverse().map(function(x){ return '<tr><td>'+esc(x.at)+'</td><td>'+esc(x.dev)+'</td><td>'+esc(x.svc)+'</td><td>'+esc(x.src)+'</td><td>'+esc(x.to)+'</td></tr>'; }).join("")+'</table></div>'+(it.length>200?'<div class="msg">화면엔 최근 200건만. 전부는 엑셀로.</div>':''); }).catch(function(){ $("lbo").innerHTML='<div class="msg">못 불러왔습니다</div>'; }); }
+function xlsLbs(){ if(!LB||!LB.ok||!window.XLSX){ alert("자료나 엑셀 도구를 아직 못 불렀습니다."); return; }
+  var rows=[[CO],["위치정보 이용·제공사실 확인자료 (위치정보법 제16조 제2항)"],["기간",LB.from+" ~ "+LB.to],["만든 날",kday(0)],["비고","위치 좌표는 기록하지 않음 · 6개월 보관 후 자동 삭제"],[],["일시","기기번호","서비스","취득 경로(위치정보사업자)","제공 대상"]];
+  (LB.items||[]).forEach(function(x){ rows.push([x.at,x.dev,x.svc,x.src,x.to]); });
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[20,28,22,26,14]),"위치 확인자료"); save(wb,"머니퍼즐내비_위치확인자료_"+LB.from+"_"+LB.to+".xlsx"); }
 function xlsInq(){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀습니다."); return; }
   Promise.all([iqCats(),api("/ninq/admin?full=1")]).then(function(a){ var j=a[1], rows=[[CO],["입점·광고 문의"+(IQF.a?" — "+iqCatNm(IQF.b||IQF.a).filter(Boolean).join(" > "):"")],["만든 날",kday(0)],[],["시각","상호/회사","대분류","소분류","업종(직접 입력)","담당자","사업자등록번호","사업자 확인","이메일(인증)","전화","위치","언어","문의 내용","읽음"]];
     j.items.filter(function(x){ var c=String(x.cat||""); return (!IQF.a||c.split(".")[0]===IQF.a)&&(!IQF.b||c===IQF.b); }).forEach(function(x){ var cn=iqCatNm(x.cat);
@@ -360,6 +372,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="tap"){ P.innerHTML=TAP_HTML; tapInit(); return; }
   if(id==="paid"){ P.innerHTML=PAID_HTML; paidInit(); return; }   // 유료 콘텐츠 (2026-10-26)
   if(id==="home"){ homeLoad(); return; }
+  if(id==="lbs"){ lbsLoad(); return; }   // 위치 이용·제공사실 확인자료 (2026-10-27)
   if(id==="visit"){ visitLoad(); return; }
   if(id==="voice"){ voiceLoad(); return; }
   if(id==="inq"){ inqLoad(); return; }
