@@ -66,6 +66,15 @@ var TX={
  ntcR:{ko:"환불 규정 전체 보기",en:"View full refund policy",ja:"返金規定の全文を見る",zhs:"查看完整退款规定",zht:"查看完整退款規定",es:"Ver la política de reembolso completa"},
  ntcP:{ko:"남은 곡은 1년간 보관 · 안 부른 곡은 환불 가능 — 공지사항",en:"Unused songs kept 1 year · refundable — Notice",ja:"残り曲は1年保管・未使用分は返金可能 — お知らせ",zhs:"剩余歌曲保留1年 · 未唱可退款 — 公告",zht:"剩餘歌曲保留1年 · 未唱可退款 — 公告",es:"Canciones sin usar: 1 año guardadas · reembolsables — Aviso"},
  ok:{ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"},
+ // 남은 곡·로그인·환불 요청 (사장님 10-27 화면 미리보기 — 결제 연결 전)
+ lftN:{ko:"남은 곡: {n}곡",en:"Songs left: {n}",ja:"残り曲数: {n}曲",zhs:"剩余歌曲：{n}首",zht:"剩餘歌曲：{n}首",es:"Canciones restantes: {n}"},
+ sgi:{ko:"로그인하면 남은 곡이 1년간 보관됩니다",en:"Sign in to keep unused songs for 1 year",ja:"ログインすると残り曲が1年間保管されます",zhs:"登录后剩余歌曲可保留1年",zht:"登入後剩餘歌曲可保留1年",es:"Inicia sesión para guardar tus canciones 1 año"},
+ sgb:{ko:"로그인",en:"Sign in",ja:"ログイン",zhs:"登录",zht:"登入",es:"Iniciar sesión"},
+ rfb:{ko:"남은 곡 환불 요청 ({n}곡 · {w})",en:"Request refund for unused songs ({n} · {w})",ja:"残り曲の返金を申請（{n}曲・{w}）",zhs:"申请退还剩余歌曲（{n}首 · {w}）",zht:"申請退還剩餘歌曲（{n}首 · {w}）",es:"Solicitar reembolso de canciones ({n} · {w})"},
+ rfh:{ko:"환불 요청",en:"Refund request",ja:"返金申請",zhs:"退款申请",zht:"退款申請",es:"Solicitud de reembolso"},
+ rfq:{ko:"남은 곡 {n}곡({w}) 환불을 요청할까요? 결제한 수단으로 영업일 3~7일 안에 환불됩니다.",en:"Request a refund for {n} unused songs ({w})? It will go to your original payment method within 3–7 business days.",ja:"残り{n}曲（{w}）の返金を申請しますか？お支払い方法へ3〜7営業日以内に返金されます。",zhs:"要申请退还剩余的{n}首歌（{w}）吗？款项将在3–7个工作日内退回原支付方式。",zht:"要申請退還剩餘的{n}首歌（{w}）嗎？款項將在3–7個工作天內退回原付款方式。",es:"¿Solicitar el reembolso de {n} canciones sin usar ({w})? Se devolverá a tu método de pago original en 3–7 días hábiles."},
+ rfo:{ko:"요청",en:"Request",ja:"申請",zhs:"申请",zht:"申請",es:"Solicitar"},
+ rfd:{ko:"환불 요청이 접수되었습니다.",en:"Your refund request has been received.",ja:"返金申請を受け付けました。",zhs:"退款申请已受理。",zht:"退款申請已受理。",es:"Hemos recibido tu solicitud de reembolso."},
  free:{ko:"노래방 제휴를 준비 중이라 지금은 무료로 부를 수 있어요. 결제는 되지 않습니다.",en:"Karaoke partnership in progress — singing is free for now. No payment is taken.",ja:"カラオケ提携の準備中のため、今は無料で歌えます。決済は行われません。",zhs:"练歌房合作筹备中，目前可免费唱歌，不会扣款。",zht:"練歌房合作籌備中，目前可免費唱歌，不會扣款。",es:"Alianza de karaoke en preparación: por ahora cantar es gratis. No se cobra nada."}
 };
 var st=document.createElement("style");
@@ -89,6 +98,8 @@ st.textContent+="#karBox .kpay{display:flex;align-items:center;gap:10px;margin:1
  +"#karBox .kpm .kt{display:flex;justify-content:space-between;font-size:18px;font-weight:900}#karBox .kpm .kgo{border:0;border-radius:12px;padding:12px;background:#ffe066;color:#1a1300;font-size:16px;font-weight:900;cursor:pointer}#karBox .kpm .kc{border:0;background:none;color:#cfc6e8;font-weight:700;cursor:pointer}#karBox .kpm .km{font-size:12.5px;color:#cfc6e8;line-height:1.5;margin:0}"
  +"#karBox .kntl{display:block;margin:4px 0 0 auto;border:0;background:none;color:#cfc6e8;font-size:12px;font-weight:700;text-decoration:underline;cursor:pointer;padding:2px 4px}"
  +"#karBox .kpm.kntc{z-index:6}#karBox .kpm.kntc>div{max-height:100%;overflow:auto}#karBox .kpm ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px;font-size:13.5px;line-height:1.5;color:#efe6ff}#karBox .kpm .kra{color:#ffe066;font-size:13px;font-weight:800;text-decoration:underline}#karBox .kpm .kpp{border:0;background:none;padding:0;text-align:left;font-size:12.5px;color:#ffe066;text-decoration:underline;cursor:pointer;line-height:1.4}";
+st.textContent+="#karBox .kpm .klf{font:800 15px/1.3 system-ui,sans-serif;color:#7CFFB2}#karBox .kpm .ksg{font-size:13px;color:#efe6ff;line-height:1.5}#karBox .kpm .ksgb{border:0;background:none;padding:0 0 0 4px;color:#ffe066;font-size:13px;font-weight:800;text-decoration:underline;cursor:pointer}"
+ +"#karBox .kpm .krf{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.06);color:#fff;border-radius:12px;padding:10px;font-size:14px;font-weight:800;cursor:pointer}#karBox .kpm .kq{margin:0;font-size:14.5px;line-height:1.55;color:#efe6ff}";
 document.head.appendChild(st);
 var K={code:"",tab:"kpop",items:[],idx:-1,pl:null,q:""};
 function ytApi(cb){ if(window.YT&&YT.Player) return cb(); var prev=window.onYouTubeIframeAPIReady; window.onYouTubeIframeAPIReady=function(){ try{ prev&&prev(); }catch(e){} cb(); };
@@ -137,13 +148,41 @@ function open(code){ var D=window.GU&&GU.d, o=D&&D.kara&&D.kara[code]; K.code=co
   mpPaid.start("kara_"+code); load(); }
 // 노래방 안 결제 창 — 다른 화면으로 넘어가지 않고 이 안에서 (1,000원 × 곡 수). 제휴 전이라 실제 결제는 하지 않는다
 var PAYN=[1,3,5,10];
-function payOpen(){ var b=box(); if(!b) return; var o=b.querySelector(".kpm"); if(o) o.remove(); var n=3;
+// 로그인 여부 = pg.js 가 허브 세션을 두는 자리(mpv_pg_sess) — pg.js 는 안 건드리고 읽기만
+function karSigned(){ try{ return !!localStorage.getItem("mpv_pg_sess"); }catch(e){ return false; } }
+// 남은 곡 수 — 지금은 늘 0. 결제가 연결되면 진짜 값은 허브(계정별 남은 곡)에서 받아 온다
+function karLeft(){
+  // 사장님 미리보기 전용: 주소에 ?kartest=1 이거나 localStorage mpv_kartest=1 이면 5곡으로 보여 환불 단추를 볼 수 있게 한다
+  try{ if(/[?&]kartest=1(&|$)/.test(location.search)||localStorage.getItem("mpv_kartest")==="1") return 5; }catch(e){}
+  return 0; }
+function won(n){ return "₩"+(n*1000).toLocaleString("ko-KR"); }
+function fmtN(t,n){ return String(t).replace("{n}",n).replace("{w}",won(n)); }
+// 로그인 창(pg.js)을 노래방 위에 띄운다 — 닫히면 원래 높이로 돌리고 결제 창을 다시 그린다(로그인하면 남은 곡 표시)
+function signIn(){ if(!window.mpPG||!mpPG.open) return; mpPG.open(); var p=document.getElementById("pgBox"); if(!p) return; p.style.zIndex="2147483006";
+  if(!p._karMo&&window.MutationObserver){ p._karMo=new MutationObserver(function(){ if(!p.hidden) return; p.style.zIndex=""; var b=box(); if(b&&b.querySelector(".kpm:not(.kntc)")) payOpen(); }); p._karMo.observe(p,{attributes:true,attributeFilter:["hidden"]}); } }
+function payOpen(){ var b=box(); if(!b) return; var o=b.querySelector(".kpm"); if(o) o.remove(); var n=3, mode="";
   o=document.createElement("div"); o.className="kpm"; b.appendChild(o);
-  var draw=function(msg){ o.innerHTML='<div><h3>'+esc(L(TX.pt))+' · '+esc(L(TX.rate))+'</h3><div class="ksel">'+PAYN.map(function(k){ return '<button type="button" data-pn="'+k+'" class="'+(k===n?"on":"")+'">'+k+' '+esc(L(TX.pn))+'</button>'; }).join("")+'</div>'
-    +'<div class="kt"><span>'+esc(L(TX.tot))+'</span><span>₩'+(n*1000).toLocaleString("ko-KR")+'</span></div><button type="button" class="kgo">₩'+(n*1000).toLocaleString("ko-KR")+' '+esc(L(TX.pay))+'</button>'
-    +(msg?'<p class="km">'+esc(msg)+'</p>':'')+'<button type="button" class="kpp" data-kntc="1">'+esc(L(TX.ntcP))+'</button><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+  var draw=function(msg){ var sg=karSigned(), left=karLeft();
+    if(mode==="rq"){   // 환불 요청 확인 — 노래방 안에서
+      o.innerHTML='<div><h3>'+esc(L(TX.rfh))+'</h3><p class="kq">'+esc(fmtN(L(TX.rfq),left))+'</p><button type="button" class="kgo" data-rfo="1">'+esc(L(TX.rfo))+'</button><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+      o.querySelector("[data-rfo]").onclick=function(){ try{ ntap("kara_pay","refund_req"); }catch(e){}
+        // TODO 결제 연결되면: 허브에 환불 요청 POST (세션 mpv_pg_sess · 남은 곡 수) 후 접수 결과로 바꾼다. 지금은 허브 호출 없음
+        mode="done"; draw(); };
+      o.querySelector(".kc").onclick=function(){ mode=""; draw(); }; return; }
+    if(mode==="done"){
+      o.innerHTML='<div><h3>'+esc(L(TX.rfh))+'</h3><p class="kq">'+esc(L(TX.rfd))+'</p><button type="button" class="kc">'+esc(L(TX.ok))+'</button></div>';
+      o.querySelector(".kc").onclick=function(){ mode=""; draw(); }; return; }
+    o.innerHTML='<div><h3>'+esc(L(TX.pt))+' · '+esc(L(TX.rate))+'</h3>'
+    +(sg?'<div class="klf">'+esc(fmtN(L(TX.lftN),left))+'</div>':'<div class="ksg">'+esc(L(TX.sgi))+'<button type="button" class="ksgb">'+esc(L(TX.sgb))+'</button></div>')
+    +'<div class="ksel">'+PAYN.map(function(k){ return '<button type="button" data-pn="'+k+'" class="'+(k===n?"on":"")+'">'+k+' '+esc(L(TX.pn))+'</button>'; }).join("")+'</div>'
+    +'<div class="kt"><span>'+esc(L(TX.tot))+'</span><span>'+won(n)+'</span></div><button type="button" class="kgo">'+won(n)+' '+esc(L(TX.pay))+'</button>'
+    +(msg?'<p class="km">'+esc(msg)+'</p>':'')
+    +(sg&&left>=1?'<button type="button" class="krf">'+esc(fmtN(L(TX.rfb),left))+'</button>':'')
+    +'<button type="button" class="kpp" data-kntc="1">'+esc(L(TX.ntcP))+'</button><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
     [].forEach.call(o.querySelectorAll("[data-pn]"),function(x){ x.onclick=function(){ n=+x.dataset.pn; draw(); }; });
     o.querySelector(".kgo").onclick=function(){ try{ ntap("kara_pay","try_"+n); }catch(e){} draw(L(TX.free)); };
+    var sb=o.querySelector(".ksgb"); if(sb) sb.onclick=signIn;
+    var rb=o.querySelector(".krf"); if(rb) rb.onclick=function(){ mode="rq"; draw(); };
     o.querySelector(".kpp").onclick=ntcOpen;
     o.querySelector(".kc").onclick=function(){ o.remove(); }; };
   draw(); }
