@@ -18,6 +18,20 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="theme-color" content="#2f9e44">
 <script>/* 남의 사이트 액자(iframe) 안에서는 안 돈다 (사장님 10-17 퍼가기 막기) */try{ if(window.top!==window.self){ document.documentElement.style.display="none"; try{ window.top.location.replace(window.self.location.href); }catch(e){} throw 0; } }catch(e){ if(window.top!==window.self) throw e; }</script>
+<script>/* 들어온 경로 (사장님 10-27) — 방문 1건에 경로 이름 하나만(kakao·google·direct …) 보낸다. 주소·IP·기기 정보는 안 보낸다. 주소창 정리(replaceState) 전에 먼저 읽는다 */
+window.__mpSrcOf=function(ua,q,ref,self){ try{ var m, h="", res="";
+  m=/[?&]utm_source=([^&#]*)/i.exec(q); if(m){ var u=m[1]; try{ u=decodeURIComponent(u.replace(/\+/g," ")); }catch(e){} u=u.toLowerCase().replace(/[^a-z0-9_]+/g,"_").replace(/^_+|_+$/g,"").slice(0,16); if(u) return u; }
+  var A=[[/KAKAOTALK/i,"kakao"],[/Instagram/i,"instagram"],[/FBAN|FBAV|FB_IAB/i,"facebook"],[/ Line\//i,"line"],[/Twitter/i,"x"],[/NAVER\(inapp/i,"naver"],[/WhatsApp/i,"whatsapp"],[/LinkedInApp/i,"linkedin"],[/TikTok|musical_ly|BytedanceWebview/i,"tiktok"],[/MicroMessenger/i,"wechat"],[/DaumApps/i,"daum"]];
+  for(var i=0;i<A.length;i++) if(A[i][0].test(ua)) return A[i][1];
+  if(ref){ m=/^android-app:\/\/([^\/?#]+)/i.exec(ref); if(m) h=m[1].toLowerCase(); else { m=/^[a-z][a-z0-9+.-]*:\/\/([^\/?#:]+)/i.exec(ref); h=m?m[1].toLowerCase():"?"; } }
+  if(h){ var R=[[/(^|\.)line\.me$|jp\.naver\.line/,"line"],[/(^|\.)(facebook\.com|fb\.com|fb\.me)$|^com\.facebook/,"facebook"],[/(^|\.)instagram\.com$|^com\.instagram/,"instagram"],[/^t\.co$|(^|\.)(x\.com|twitter\.com)$|^com\.twitter/,"x"],[/kakao/,"kakao"],[/(^|\.)google\.[a-z.]+$|^com\.google\.android/,"google"],[/(^|\.)naver\.(com|me)$|^com\.nhn|^com\.naver/,"naver"],[/(^|\.)daum\.net$|daum/,"daum"],[/(^|\.)(linkedin\.com|lnkd\.in)$|^com\.linkedin/,"linkedin"],[/whatsapp/,"whatsapp"],[/(^|\.)tiktok\.com$|musically|ss\.android\.ugc/,"tiktok"],[/(^|\.)(weixin\.qq\.com|wechat\.com)$|^com\.tencent\.mm/,"wechat"],[/(^|\.)bing\.com$/,"bing"],[/yahoo/,"yahoo"]];
+    if(h===self) res="internal"; else if(/(^|\.)moneypuzzle\.co\.kr$|^emhwang3-boop\.github\.io$/.test(h)) res="home"; else { for(var j=0;j<R.length&&!res;j++) if(R[j][0].test(h)) res=R[j][1]; if(!res) res="other_ref"; } }
+  if(res&&res!=="other_ref") return res;
+  if(/[?&]src=pwa(?![0-9a-z])/i.test(q)) return "pwa";
+  if(/[?&]bs=/i.test(q)) return "bingo_share";
+  return res||"direct"; }catch(e){ return "other"; } };
+try{ window.__mpSrc=window.__mpSrcOf(navigator.userAgent||"",location.search||"",document.referrer||"",location.hostname); }catch(e){ window.__mpSrc="other"; }
+</script>
 <script>
 /* 머니퍼즐 내비 첫 화면 — 2026-10-26 초대 제한 없앰(사장님 「가」): 누구나 바로 열린다. ?inv= 는 확인만 하고(실패해도 그대로) 홈페이지로 보내지 않는다 */
 (function(){ try{
@@ -324,7 +338,8 @@ function ntap(k,e){ try{ if(!k||!/^[A-Za-z0-9_-]{1,64}$/.test(k)) return; var x=
   var id=e+":"+k, u=(e==="tap"||e==="open_area"||e==="visit")&&s.s.indexOf(id)<0?1:0, f=s.s.length?0:1;
   if(u||f){ s.s.push(u?id:"~"); if(s.s.length>500) s.s=s.s.slice(-500); try{ localStorage.setItem("mpv_ntd",JSON.stringify(s)); }catch(z){} }
   var v=String(typeof VIEW==="string"?VIEW:""); if(!/^[A-Za-z0-9_-]{1,64}$/.test(v)) v="";
-  var b=JSON.stringify({k:k,v:v,l:L2(),l2:LANG,e:e,u:u,f:f,x:x});
+  var o2={k:k,v:v,l:L2(),l2:LANG,e:e,u:u,f:f,x:x}; if(e==="visit") o2.r=window.__mpSrc||"direct";   // 들어온 경로 이름 하나 (10-27)
+  var b=JSON.stringify(o2);
   if(navigator.sendBeacon&&navigator.sendBeacon(HUB+"/ntap",new Blob([b],{type:"text/plain"}))) return;
   fetch(HUB+"/ntap",{method:"POST",body:b,keepalive:true}).catch(function(){});
 }catch(z){} }
