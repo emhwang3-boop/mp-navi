@@ -365,15 +365,15 @@ function bbMk(){ var mz=document.getElementById("mz"); if(!mz||document.getEleme
   bb.addEventListener("click",go,false); bb.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" ") go(e); },false);
   ["pointerdown","mousedown","touchstart"].forEach(function(ev){ bb.addEventListener(ev,function(e){ e.stopPropagation(); },false); });
   bbPaint(); }
-function bbPaint(){ if(!bb) return; var L2=OPEN?(TESTF?[["TEST BINGO",""],["No prizes\nTest only","g"],["New questions\nevery day",""]]:[["EVENT OPEN",""],[BBK[KIND]||"EVENT",""],["Win Puzzle Gold\n100 · 50 · 20","g"]]):BBT_CLOSE, t=bb.querySelector(".ebt");
+function bbPaint(){ if(!bb) return; var L2=OPEN?(KOF?[["KOREA BINGO",""],["한국인 판",""],["매일 새 문제","g"]]:TESTF?[["TEST BINGO",""],["No prizes\nTest only","g"],["New questions\nevery day",""]]:[["EVENT OPEN",""],[BBK[KIND]||"EVENT",""],["Win Puzzle Gold\n100 · 50 · 20","g"]]):BBT_CLOSE, t=bb.querySelector(".ebt");
   t.innerHTML=L2.map(function(x,i){ var ls=x[0].split("\n"), w=Math.max.apply(null,ls.map(function(q){ return q.length; })), fs="min("+(92/(w*0.68)).toFixed(1)+"cqw,"+(86/(ls.length*1.08)).toFixed(1)+"cqh)"; return '<b class="'+x[1]+'" style="font-size:'+fs+'">'+esc(x[0])+'</b>'; }).join("");
   bbI=0; bbStep(); }
 function bbStep(){ if(!bb) return; var bs=bb.querySelectorAll(".ebt b"); [].forEach.call(bs,function(b,i){ b.classList.toggle("on",i===bbI%bs.length); }); bbI++; }
 setInterval(function(){ try{ if(bb&&typeof VIEW==="string"&&VIEW==="kr"&&!document.hidden) bbStep(); }catch(e){} },2300);
 // ── 섬 ──
 var isle=null, OPEN=false;
-var TESTF=false;   // 시험 빙고 (10-27)
-function sign(){ try{ bbPaint(); }catch(e){} if(!isle) return; var s=isle.querySelector(".evS"); s.className="evS "+(OPEN?"on":"off"); s.textContent=OPEN?(TESTF?"Test Bingo":"Event Open"):"Event Close"; fit(); }
+var TESTF=false, KOF=false;   // 시험 빙고 · 한국인 판(한국어 설정일 때 간판 켜기) (10-27)
+function sign(){ try{ bbPaint(); }catch(e){} if(!isle) return; var s=isle.querySelector(".evS"); s.className="evS "+(OPEN?"on":"off"); s.textContent=OPEN?(KOF?"Korea Bingo":TESTF?"Test Bingo":"Event Open"):"Event Close"; fit(); }
 function fit(){ if(!isle) return; var s=isle.querySelector(".evS"), w=isle.clientWidth; if(w) s.style.fontSize=(w*0.037)+"px";   /* 간판 폭(섬의 21.5%)에 맞춤 — 지도를 키우면 같이 커진다 */ }
 function mk(){ var mz=document.getElementById("mz"); if(!mz||document.getElementById("evIsle")) return;
   isle=document.createElement("div"); isle.id="evIsle"; isle.setAttribute("role","button"); isle.tabIndex=0; isle.setAttribute("aria-label","Event");
@@ -383,7 +383,7 @@ function mk(){ var mz=document.getElementById("mz"); if(!mz||document.getElement
   ["pointerdown","mousedown","touchstart"].forEach(function(ev){ isle.addEventListener(ev,function(e){ e.stopPropagation(); },false); });
   try{ new ResizeObserver(fit).observe(isle); }catch(e){ window.addEventListener("resize",fit); }
   sign(); status(); }
-function status(){ fetch(H+"/npg/event",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ OPEN=!!(j&&j.open); TESTF=!!(j&&j.test); KIND=OPEN?(j.kind||"bingo"):""; sign(); }).catch(function(){}); }
+function status(){ fetch(H+"/npg/event",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ KOF=!!(j&&j.ko)&&lg()==="ko"&&!(j&&j.open); OPEN=!!(j&&j.open)||KOF; TESTF=!!(j&&j.test); KIND=OPEN?(j.kind||"bingo"):""; sign(); }).catch(function(){}); }
 setInterval(status,10*60000);
 // ── 이벤트(빙고) 화면 ──
 var B=null;   // 판 자료
@@ -417,21 +417,22 @@ function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return; va
   var h='', me=B.me, rh=RANKHOW[B.kind||"bingo"];
   if(!B.cells||!B.open){ evClosed(null); return; }
   setHead("bingo");
-  if(B.test) h+='<div class="ecard" style="background:#fff4d6;border:2px dashed #e0a100;font-weight:800;color:#8a5a00;text-align:center">TEST · '+esc(L(TST))+'</div>';
+  if(B.ko) h+='<div class="ecard" style="background:#eaf3ff;border:2px solid #3b82f6;font-weight:800;color:#1e3a8a;text-align:center">한국인 판 · 한국어 설정으로 한국에서 접속한 분만 풀 수 있어요. 상금은 없고 순위·별 배지만 있습니다. 사자성어·순우리말 등 어려운 문제가 매일 밤 12시에 바뀝니다.</div>';   // 한국인 판 (10-27, 한국어만)
+  else if(B.test) h+='<div class="ecard" style="background:#fff4d6;border:2px dashed #e0a100;font-weight:800;color:#8a5a00;text-align:center">TEST · '+esc(L(TST))+'</div>';
   else if(rh) h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKL))+'</b> · '+esc(L(rh))+'</div>';
   if(false){ h+='<div class="ecard" style="font-weight:800;color:#555">'+esc(L(T.closed))+'</div><div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>'; }
   else {
-    if(!B.test) h+='<div class="ecard ewk"><span>'+esc(L(T.ends))+'</span><span>'+esc(L(T.same))+'</span></div>';
+    if(!B.test&&!B.ko) h+='<div class="ecard ewk"><span>'+esc(L(T.ends))+'</span><span>'+esc(L(T.same))+'</span></div>';
     if(!me) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="signin">'+esc(L(T.signin))+'</button></div>';
     else if(me.grad) h+='<div class="ecard" style="color:#7a3cff;font-weight:700">'+esc(L(T.grad))+'</div>';
     var S=me?me.s:[], X=me?me.x:[];
     h+='<div class="egrid">'+B.cells.map(function(c){ if(c.free) return '<div class="ec free">FREE</div>';
       var done=S.indexOf(c.i)>=0, rt=!done&&X.indexOf(c.i)>=0;
       return '<div class="ec'+(done?' done':'')+(rt?' retry':'')+'" data-i="'+c.i+'"><div>'+esc(c.w.en)+(c.w.ko?'<span class="ko">'+esc(c.w.ko)+'</span>':'')+'</div>'+(done?'<div class="stp">OK</div>':'')+(rt?'<div class="rt">'+esc(L(T.retry))+'</div>':'')+'</div>'; }).join("")+'</div>';
-    h+='<div class="est"><div><b>'+S.length+'/24</b>'+esc(L(T.stamps))+'</div><div><b>'+(me&&me.f0?elTxt((me.done||Date.now())-me.f0):"0:00")+'</b>'+esc(L(TMX))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(B.test?TNX:T.left))+'</div></div>';
+    h+='<div class="est"><div><b>'+S.length+'/24</b>'+esc(L(T.stamps))+'</div><div><b>'+(me&&me.f0?elTxt((me.done||Date.now())-me.f0):"0:00")+'</b>'+esc(L(TMX))+'</div><div><b>'+leftTxt(B.end)+'</b>'+esc(L(B.test||B.ko?TNX:T.left))+'</div></div>';
     if(me&&me.agreed) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>';
     h+=rankCard(B);
-    if(!B.test) h+='<div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
+    if(!B.test&&!B.ko) h+='<div class="ecard">'+esc(L(T.pgsum))+'<button type="button" class="ebtn g" data-ev="pg">'+esc(L(T.mypg))+'</button><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   }
   if(B.last&&B.last.res&&B.last.res.length){ var C=["#e0a100","#9aa4b0","#c47a3c"];
     h+='<div class="ecard"><b>'+esc(L(T.last))+'</b> <span style="color:#888;font-size:12px">'+esc(B.last.wk)+'</span>'+B.last.res.map(function(r,i){ return '<div class="erk"><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div><b>'+esc(r.nm)+'</b><div style="font-size:12px;color:#888">'+r.lines+' '+esc(L(T.lnN))+' · '+kst(r.lt)+'</div></div><div class="pg">'+(r.pg?r.pg+' PG':'')+'</div></div>'; }).join("")+'</div>'; }
