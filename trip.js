@@ -257,7 +257,7 @@ function sched(H,arr,date,from,mo){ var t=from, p=H, rows=[], lunch=false, dinne
   var meal=function(kind,anchor,next){ var r=mo&&mo[kind], lg=null; if(r){ lg=p?leg(p,r):null; if(lg) t+=lg.min; } rows.push({meal:kind,lunch:1,t:t,anchor:anchor,next:next,r:r||null,leg:lg}); t+=60; if(r) p=r; };
   arr.forEach(function(x,i){ var lg=p?leg(p,x):null; if(lg) t+=lg.min; var f=FACT[x.k], dw=date.getUTCDay(), note=[];
     if(f&&f.ev&&f.evd.indexOf(dw)>=0){ var ev=null; f.ev.forEach(function(e){ if(ev==null&&t<=e-10+5) ev=e; }); if(ev!=null&&ev-10>t&&ev-10-t<=90){ wait+=ev-10-t; t=ev-10; } if(ev!=null) note.push([f.evn[0]+" "+m2hm(ev),f.evn[1]+" "+m2hm(ev)]); else miss++; }
-    var li=lastIn(f,date); if(li!=null&&t>li){ viol++; note.push(["입장 마감 "+m2hm(li)+" 지남","Last entry "+m2hm(li)+" passed"]); }
+    var li=PERFK[x.k]?null:lastIn(f,date); if(li!=null&&t>li){ viol++; note.push(["입장 마감 "+m2hm(li)+" 지남","Last entry "+m2hm(li)+" passed"]); }
     rows.push({x:x,leg:lg,t:t,note:note}); t+=x.stay; p=x;
     if(!lunch&&t>=11*60+45&&t<=14*60+30&&(mo||i<arr.length-1)){ meal("lunch",x,arr[i+1]||null); lunch=true; }   // 보고서에선 마지막 장소 뒤라도 점심 칸
     else if(mo&&!dinner&&t>=17*60+30&&i<arr.length-1){ meal("dinner",x,arr[i+1]); dinner=true; } });
@@ -277,7 +277,7 @@ function sched(H,arr,date,from,mo){ var t=from, p=H, rows=[], lunch=false, dinne
   return {rows:rows,back:back,end:t,viol:viol,wait:wait,miss:miss}; }
 function sc(s){ return s.viol*1000+s.miss*120+s.end+s.wait*0.5; }
 function fixTimes(H,arr,date,from){ var cur=arr, cs=sched(H,cur,date,from);
-  arr.forEach(function(x){ if(!FACT[x.k]) return; var base=cur.filter(function(y){ return y!==x; });
+  arr.forEach(function(x){ if(!FACT[x.k]||PERFK[x.k]) return; var base=cur.filter(function(y){ return y!==x; });
     for(var i=0;i<=base.length;i++){ var c=base.slice(0,i).concat([x],base.slice(i)), s=sched(H,c,date,from);
       if(sc(s)<sc(cs)-1){ cur=c; cs=s; } } });
   return cur; }
