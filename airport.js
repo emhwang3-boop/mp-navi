@@ -55,7 +55,7 @@ function depGmp(t){ if(t==="dom") return [
 var FIG={ icn_t1_arr:{ img:"img/airport/icn_t1_arr.webp?v=1027",
   floors:[[330,"3층 출국장",1],[478,"2층 입국심사"],[648,"1층 짐 찾기·입국장"],[828,"지하1층 공항철도"]],
   path:["M330,468 L690,498","M690,498 L845,522 L862,632","M862,660 L705,688","M705,688 L1068,732","M1068,732 L880,748 L1010,872 L1170,900","M1068,732 L1395,742 L1590,700","M1395,742 L1520,790 L1770,810","M1068,732 L1120,560 L1180,420 L1320,392"],
-  badge:[[690,440,"1-1","입국심사"],[905,590,"1-2","짐 찾기"],[630,632,"1-3","세관"],[1060,688,"2","입국장"],[1160,592,"2-1","",1],[1214,592,"2-2","",1],[1268,592,"2-3","",1],[1322,592,"2-4","",1],[965,850,"3","공항철도"],[1600,662,"4","공항버스 (서울 3~7번 출구)"],[1770,758,"5","택시 (일반 5C·6C)"],[1350,350,"6","셔틀버스 (3층 8번 출구) → T2"]],
+  badge:[[690,440,"1-1","입국심사"],[905,590,"1-2","짐 찾기"],[630,632,"1-3","세관"],[1060,688,"2","입국장"],[1160,592,"2-1","",1],[1214,592,"2-2","",1],[1268,592,"2-3","",1],[1322,592,"2-4","",1],[965,850,"3","공항철도"],[1600,662,"4","공항버스\n(서울행\n3~7번 출구)",0,[1745,505]],[1770,758,"5","택시 (일반 5C·6C)"],[1350,350,"6","셔틀버스 (3층 8번 출구) → T2"]],
   legend:[1150,555,"2-1 안내 · 2-2 환전 · 2-3 유심 · 2-4 편의점"] },
  icn_t2_arr:{ img:"img/airport/icn_t2_arr.webp?v=1027",
   floors:[[360,"3층 출국장"],[505,"2층 입국심사"],[655,"1층 짐 찾기·입국장"],[850,"지하1층 공항철도·버스"]],
@@ -66,8 +66,9 @@ function fig(k){ var F=FIG[k]; if(!F) return ""; var s='<svg viewBox="0 0 2000 1
  F.floors.forEach(function(f){ s+='<g opacity="'+(f[2]?.45:1)+'"><rect x="24" y="'+(f[0]-34)+'" width="'+(f[1].length*34+40)+'" height="56" rx="12" fill="#fff" fill-opacity=".92"/><text x="44" y="'+(f[0]+6)+'" font-size="34" font-weight="800" fill="#17324d">'+esc(f[1])+'</text></g>'; });
  F.path.forEach(function(d){ s+='<path d="'+d+'" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><path d="'+d+'" fill="none" stroke="#ff5a0a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#apAr)"/>'; });
  F.badge.forEach(function(b){ var r=b[4]?24:32, fs=b[2].length>1?(b[4]?20:24):32; s+='<circle cx="'+b[0]+'" cy="'+b[1]+'" r="'+r+'" fill="#ff5a0a" stroke="#fff" stroke-width="5"/><text x="'+b[0]+'" y="'+(b[1]+fs*0.36)+'" text-anchor="middle" font-size="'+fs+'" font-weight="900" fill="#fff">'+esc(b[2])+'</text>';
-  var lf=b[3]&&b[0]+r+10+b[3].length*31>1990;   /* 오른쪽 끝을 넘으면 이름을 동그라미 왼쪽에 */
-  if(b[3]) s+='<text x="'+(lf?b[0]-r-10:b[0]+r+10)+'" y="'+(b[1]+12)+'"'+(lf?' text-anchor="end"':'')+' font-size="34"font-weight="900" fill="#17324d" stroke="#fff" stroke-width="9" paint-order="stroke" stroke-linejoin="round">'+esc(b[3])+'</text>'; });
+  var ln=String(b[3]||"").split("\n"), w=Math.max.apply(null,ln.map(function(q){ return q.length; })), lf=!b[5]&&b[3]&&b[0]+r+10+w*31>1990;   /* 오른쪽 끝을 넘으면 이름을 동그라미 왼쪽에 · b[5]=[x,y] 이름 자리 따로(여러 줄은 \n) */
+  var lx=b[5]?b[5][0]:(lf?b[0]-r-10:b[0]+r+10), ly=b[5]?b[5][1]:b[1]+12;
+  if(b[3]) s+='<text x="'+lx+'" y="'+ly+'"'+(lf?' text-anchor="end"':'')+' font-size="34" font-weight="900" fill="#17324d" stroke="#fff" stroke-width="9" paint-order="stroke" stroke-linejoin="round">'+ln.map(function(q,i){ return '<tspan x="'+lx+'" dy="'+(i?40:0)+'">'+esc(q)+'</tspan>'; }).join("")+'</text>'; });
  if(F.legend) s+='<text x="'+F.legend[0]+'" y="'+F.legend[1]+'" font-size="26" font-weight="800" fill="#17324d" stroke="#fff" stroke-width="7" paint-order="stroke">'+esc(F.legend[2])+'</text>';
  s+='</svg>'; return '<div class="apfig"><div class="apfw"><img src="'+F.img+'" alt="" loading="lazy">'+s+'</div></div><p class="apnote">그림을 옆으로 밀어 보세요. 실제 층 배치는 공식 안내도가 정확해요.</p>'; }
 var S={ap:null,dir:null,t:null};
