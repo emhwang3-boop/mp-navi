@@ -49,7 +49,7 @@ var TX={
  cu:T6("예약자 정보","Your details","ご予約者情報","预约人信息","預約人資訊","Tus datos"),
  cn:T6("이름 (필수)","Name (required)","お名前（必須）","姓名（必填）","姓名（必填）","Nombre (obligatorio)"),
  ce:T6("이메일 (필수)","Email (required)","メール（必須）","邮箱（必填）","電子郵件（必填）","Correo electrónico (obligatorio)"),
- cp:T6("전화 (선택)","Phone (optional)","電話（任意）","电话（选填）","電話（選填）","Teléfono (opcional)"),
+ cp:T6("전화 (필수)","Phone (required)","電話（必須）","电话（必填）","電話（必填）","Teléfono (obligatorio)"),
  cpn:T6("입력한 이름·이메일·전화는 예약 안내와 가이드 연결에만 씁니다. 결제가 끝나면 고른 가이드에게 상품·날짜·시간·인원·연락처가 전달됩니다.","Your name, email and phone are used only for booking notices and to connect you with your guide. After payment, the guide you chose receives the product, date, time, people and your contact.","入力したお名前・メール・電話は予約のご案内とガイドとの連絡にのみ使います。お支払い後、選んだガイドに商品・日時・人数・連絡先が伝わります。","您填写的姓名、邮箱和电话仅用于预约通知和联系向导。付款后，所选向导会收到商品、日期、时间、人数和您的联系方式。","您填寫的姓名、電子郵件和電話僅用於預約通知和聯絡嚮導。付款後，所選嚮導會收到商品、日期、時間、人數和您的聯絡方式。","Tu nombre, correo y teléfono solo se usan para avisos de la reserva y para contactar con tu guía. Tras el pago, el guía elegido recibe el producto, la fecha, la hora, las personas y tu contacto."),
  enm:T6("이름을 넣어 주세요.","Please enter your name.","お名前を入力してください。","请填写姓名。","請填寫姓名。","Escribe tu nombre."),
  eem:T6("이메일 주소를 확인해 주세요.","Please check your email address.","メールアドレスをご確認ください。","请检查邮箱地址。","請檢查電子郵件地址。","Revisa tu correo electrónico."),
@@ -187,8 +187,8 @@ function mockPay(){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelec
     +(oid?'<div class="sl"><span>'+esc(L(TX.oid))+'</span><b>'+esc(oid)+'</b></div><div class="sdone">'+esc(L(TX.test))+'<br>'+esc(L(TX.tsv))+'</div>'
      :'<b>'+esc(L(TX.cu))+'</b>'
      +'<label class="scl">'+esc(L(TX.cn))+'<input type="text" id="spmN" maxlength="40" autocomplete="name" value="'+esc(S.cn)+'"></label>'
-     +'<label class="scl">'+esc(L(TX.ce))+'<input type="email" id="spmE" maxlength="100" autocomplete="email" value="'+esc(S.ce)+'"></label>'
      +'<label class="scl">'+esc(L(TX.cp))+'<input type="tel" id="spmP" maxlength="30" autocomplete="tel" value="'+esc(S.cp)+'"></label>'
+     +'<label class="scl">'+esc(L(TX.ce))+'<input type="email" id="spmE" maxlength="100" autocomplete="email" value="'+esc(S.ce)+'"></label>'
      +'<p class="snote">'+esc(L(TX.cpn))+'</p>'
      +'<b>'+esc(L(TX.pm))+'</b><label class="sr"><input type="radio" name="spmm" checked> '+esc(L(TX.card))+'</label><label class="sr"><input type="radio" name="spmm"> PayPal</label>'
      +'<label class="sr"><input type="checkbox" id="spmAg"> '+esc(L(TX.agr))+'</label>'
@@ -200,8 +200,8 @@ function mockPay(){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelec
     if(ag&&go){ if(busy){ ag.checked=true; ag.disabled=true; } else { ag.checked=agd; go.disabled=!agd; ag.onchange=function(){ agd=ag.checked; go.disabled=!agd; }; } }
     if(go) go.onclick=function(){ if(busy) return; var nm=S.cn.trim(), em=S.ce.trim(), ph=S.cp.trim(), today=new Date(Date.now()+9*36e5).toISOString().slice(0,10);
       if(!nm){ draw(null,L(TX.enm)); return; }
+      if(!/^[\d\s+()-]{7,30}$/.test(ph)){ draw(null,L(TX.eph)); return; }   // 전화도 필수 (사장님 10-28)
       if(!/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/.test(em)){ draw(null,L(TX.eem)); return; }
-      if(ph&&!/^[\d\s+()-]{7,30}$/.test(ph)){ draw(null,L(TX.eph)); return; }
       if(!S.date||S.date<today||!/^\d{2}:\d{2}$/.test(S.time||"")){ draw(null,L(TX.edt)); return; }
       draw(null,"",true);
       fetch(HUBU+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:p.id,pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,glang:S.glang||"",lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,test:true})})
