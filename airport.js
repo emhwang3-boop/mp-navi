@@ -1,10 +1,10 @@
 /* 공항 화면 (사장님 10-27) — 지도에서 인천(kr "icn")·김포(seoulall "gimpo") 아이콘을 누르면 열린다. X 로 닫는다.
  *   순서: 입국/출국 고르기 → (인천) 1·2터미널 / (김포) 국제선·국내선 → 동선 순서대로 한 장
  *   입국 = 공항을 빠져나오는 순서(입국심사→편의시설→공항철도→버스→택시), 출국 = 공항에 들어가는 순서
- *   1차: 한국어판만. 사장님이 보고 고친 뒤 6개 언어로 늘린다. 층별 동선은 공항 공식 지도로 연결(그림은 안 그린다)
+ *   6개 언어(10-27): 문구는 한국어로 쓰고 airport_i18n.js 에 같은 한국어를 열쇠로 번역을 넣는다. 층별 동선은 공항 공식 지도로 연결(그림은 안 그린다)
  */
 (function(){
-var MAP={ t1:"https://www.airport.kr/geomap/ap_ko/view.do?type=2&alertType=0&tmnlId=P01", t2:"https://www.airport.kr/geomap/ap_ko/view.do?type=2&alertType=0&tmnlId=P03",
+var MAP={ t1:"https://www.airport.kr/geomap/ap_ko/view.do?type=2&alertType=0&tmnlId=P01", cc:"https://www.airport.kr/geomap/ap_ko/view.do?type=2&alertType=0&tmnlId=P01", t2:"https://www.airport.kr/geomap/ap_ko/view.do?type=2&alertType=0&tmnlId=P03",
   icn:"https://www.airport.kr", gmp:"https://www.airport.co.kr/gimpo/index.do", arex:"https://www.airportrailroad.com" };
 var AP={
  icn:{ name:"인천국제공항", sub:"Incheon International Airport · ICN",
@@ -112,15 +112,21 @@ var FIG={ icn_t1_arr:{ img:"img/airport/icn_t1_arr.webp?v=1027",
   badge:[[1700,690,"1","공항철도로 도착",0,[1530,1010]],[1850,515,"1","버스·택시로 도착 (3층)",0,[1560,465]],[1260,400,"2","체크인"],[1010,480,"3","출국장·보안검색"],[720,460,"4","출국심사"],[760,360,"5","면세구역"],[380,420,"6","탑승교로 탑승",0,[90,385]],[900,780,"6","버스로 탑승\n(226·227·229·230·\n269·270·272·273번)",0,[980,950]]],
   legend:null } };
 function fig(k){ var F=FIG[k]; if(!F) return ""; var vb=F.vb||[2000,1116], s='<svg viewBox="0 0 '+vb[0]+' '+vb[1]+'" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="apAr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ff5a0a"/></marker></defs>';
- F.floors.forEach(function(f){ s+='<g opacity="'+(f[2]?.45:1)+'"><rect x="24" y="'+(f[0]-34)+'" width="'+(f[1].length*34+40)+'" height="56" rx="12" fill="#fff" fill-opacity=".92"/><text x="44" y="'+(f[0]+6)+'" font-size="34" font-weight="800" fill="#17324d">'+esc(f[1])+'</text></g>'; });
+ F.floors.forEach(function(f){ f=[f[0],tr(f[1]),f[2]]; s+='<g opacity="'+(f[2]?.45:1)+'"><rect x="24" y="'+(f[0]-34)+'" width="'+(tw(f[1])*1.1+40)+'" height="56" rx="12" fill="#fff" fill-opacity=".92"/><text x="44" y="'+(f[0]+6)+'" font-size="34" font-weight="800" fill="#17324d">'+esc(f[1])+'</text></g>'; });
  F.path.forEach(function(d){ s+='<path d="'+d+'" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><path d="'+d+'" fill="none" stroke="#ff5a0a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#apAr)"/>'; });
  F.badge.forEach(function(b){ var r=b[4]?24:32, fs=b[2].length>1?(b[4]?20:24):32; s+='<circle cx="'+b[0]+'" cy="'+b[1]+'" r="'+r+'" fill="#ff5a0a" stroke="#fff" stroke-width="5"/><text x="'+b[0]+'" y="'+(b[1]+fs*0.36)+'" text-anchor="middle" font-size="'+fs+'" font-weight="900" fill="#fff">'+esc(b[2])+'</text>';
-  var ln=String(b[3]||"").split("\n"), w=Math.max.apply(null,ln.map(function(q){ return q.length; })), lf=!b[5]&&b[3]&&b[0]+r+10+w*31>1990;   /* 오른쪽 끝을 넘으면 이름을 동그라미 왼쪽에 · b[5]=[x,y] 이름 자리 따로(여러 줄은 \n) */
+  var bl=tr(b[3]), ln=String(bl||"").split("\n"), w=Math.max.apply(null,ln.map(tw)), lf=!b[5]&&bl&&b[0]+r+10+w>1990;   /* 오른쪽 끝을 넘으면 이름을 동그라미 왼쪽에 · b[5]=[x,y] 이름 자리 따로(여러 줄은 \n) */
   var lx=b[5]?b[5][0]:(lf?b[0]-r-10:b[0]+r+10), ly=b[5]?b[5][1]:b[1]+12;
-  if(b[3]) s+='<text x="'+lx+'" y="'+ly+'"'+(lf?' text-anchor="end"':'')+' font-size="34" font-weight="900" fill="#17324d" stroke="#fff" stroke-width="9" paint-order="stroke" stroke-linejoin="round">'+ln.map(function(q,i){ return '<tspan x="'+lx+'" dy="'+(i?40:0)+'">'+esc(q)+'</tspan>'; }).join("")+'</text>'; });
- if(F.legend) s+='<text x="'+F.legend[0]+'" y="'+F.legend[1]+'" font-size="26" font-weight="800" fill="#17324d" stroke="#fff" stroke-width="7" paint-order="stroke">'+String(F.legend[2]).split("\n").map(function(q,i){ return '<tspan x="'+F.legend[0]+'" dy="'+(i?32:0)+'">'+esc(q)+'</tspan>'; }).join("")+'</text>';
- s+='</svg>'; return '<div class="apfig"><div class="apfw"><img src="'+F.img+'" alt="" loading="lazy">'+s+'</div></div><p class="apnote">그림을 옆으로 밀어 보세요. 실제 층 배치는 공식 안내도가 정확해요.</p>'; }
+  if(bl) s+='<text x="'+lx+'" y="'+ly+'"'+(lf?' text-anchor="end"':'')+' font-size="34" font-weight="900" fill="#17324d" stroke="#fff" stroke-width="9" paint-order="stroke" stroke-linejoin="round">'+ln.map(function(q,i){ return '<tspan x="'+lx+'" dy="'+(i?40:0)+'">'+esc(q)+'</tspan>'; }).join("")+'</text>'; });
+ if(F.legend) s+='<text x="'+F.legend[0]+'" y="'+F.legend[1]+'" font-size="26" font-weight="800" fill="#17324d" stroke="#fff" stroke-width="7" paint-order="stroke">'+String(tr(F.legend[2])).split("\n").map(function(q,i){ return '<tspan x="'+F.legend[0]+'" dy="'+(i?32:0)+'">'+esc(q)+'</tspan>'; }).join("")+'</text>';
+ s+='</svg>'; return '<div class="apfig"><div class="apfw"><img src="'+F.img+'" alt="" loading="lazy">'+s+'</div></div><p class="apnote">'+esc(tr("그림을 옆으로 밀어 보세요. 실제 층 배치는 공식 안내도가 정확해요."))+'</p>'; }
 var S={ap:null,dir:null,t:null};
+/* 다국어 (10-27) — 한국어 원문을 열쇠로 airport_i18n.js(window.AP_TR)에서 찾는다. 없으면 원문 */
+function lg(){ return ["ko","en","ja","zhs","zht","es"].indexOf(window.LANG)>=0?window.LANG:"en"; }
+function tr(x){ var l=lg(); if(l==="ko"||!x) return x; var d=(window.AP_TR||{})[l]||{}; return d[x]!=null?d[x]:x; }
+function tw(q){ var w=0; for(var i=0;i<q.length;i++) w+=/[\u1100-\uffdc]/.test(q[i])?31:18; return w; }   /* 이름 글자 폭(한·중·일 31, 영문 18) */
+function mapUrl(k){ var l=lg(), u=MAP[k]; if(k==="gmp") return {ko:u,ja:"https://www.airport.co.kr/gimpojpn/index.do",zhs:"https://www.airport.co.kr/gimpochn/index.do",zht:"https://www.airport.co.kr/gimpochn/index.do"}[l]||"https://www.airport.co.kr/gimpoeng/index.do";
+ if(k==="t1"||k==="t2"||k==="cc") return u.replace("/ap_ko/","/"+({ko:"ap_ko",ja:"ap_ja",zhs:"ap_ch",zht:"ap_ch"}[l]||"ap_en")+"/"); return u; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
 function css(){ if(document.getElementById("apCss")) return; var st=document.createElement("style"); st.id="apCss";
  st.textContent="#apBox{position:fixed;inset:0;z-index:1040;background:var(--bg,#f6f7f9);overflow:auto;-webkit-overflow-scrolling:touch}"
@@ -149,28 +155,29 @@ function css(){ if(document.getElementById("apCss")) return; var st=document.cre
 function close(){ var b=document.getElementById("apBox"); if(b) b.remove(); document.documentElement.style.overflow=""; }
 function open(k){ css(); close(); S={ap:k,dir:null,t:null}; var b=document.createElement("div"); b.id="apBox"; document.body.appendChild(b); document.documentElement.style.overflow="hidden"; paint(); }
 function paint(){ var b=document.getElementById("apBox"); if(!b) return; var A=AP[S.ap], h='';
- h+='<div class="aph"><div><h1>'+esc(A.name)+'</h1><small>'+esc(A.sub)+'</small></div><button type="button" class="apx" data-a="x" aria-label="닫기">✕ 닫기</button></div><div class="apin">';
+ h+='<div class="aph"><div><h1>'+esc(tr(A.name))+'</h1><small>'+esc(A.sub)+'</small></div><button type="button" class="apx" data-a="x" aria-label="'+esc(tr("닫기"))+'">'+esc(tr("✕ 닫기"))+'</button></div><div class="apin">';
  if(!S.dir){
-  h+='<div class="apq">한국에 도착하셨나요, 떠나시나요?</div><div class="apbig"><button type="button" class="a" data-a="dir" data-v="arr"><b>입국</b><span>한국에 도착 — 공항에서 시내로 나가는 길</span></button><button type="button" class="d" data-a="dir" data-v="dep"><b>출국</b><span>한국을 떠남 — 공항 가는 길과 탑승까지</span></button></div>';
+  h+='<div class="apq">'+esc(tr("한국에 도착하셨나요, 떠나시나요?"))+'</div><div class="apbig"><button type="button" class="a" data-a="dir" data-v="arr"><b>'+esc(tr("입국"))+'</b><span>'+esc(tr("한국에 도착 — 공항에서 시내로 나가는 길"))+'</span></button><button type="button" class="d" data-a="dir" data-v="dep"><b>'+esc(tr("출국"))+'</b><span>'+esc(tr("한국을 떠남 — 공항 가는 길과 탑승까지"))+'</span></button></div>';
  } else if(!S.t){
-  h+='<div class="apnav"><button type="button" data-a="back">‹ 처음으로</button><span class="apnote">'+(S.dir==="arr"?"입국":"출국")+'</span></div>';
-  h+='<div class="apq">'+(S.ap==="icn"?"어느 터미널인가요?":"어느 청사인가요?")+'</div><div class="appk">';
-  A.pick.forEach(function(p){ h+='<button type="button" data-a="t" data-v="'+p[0]+'"><b>'+esc(p[1])+'</b><span>'+esc(p[2])+'</span></button>'; });
-  h+='</div><p class="apnote">'+esc(A.pickNote)+'</p>';
+  h+='<div class="apnav"><button type="button" data-a="back">'+esc(tr("‹ 처음으로"))+'</button><span class="apnote">'+esc(tr(S.dir==="arr"?"입국":"출국"))+'</span></div>';
+  h+='<div class="apq">'+esc(tr(S.ap==="icn"?"어느 터미널인가요?":"어느 청사인가요?"))+'</div><div class="appk">';
+  A.pick.forEach(function(p){ h+='<button type="button" data-a="t" data-v="'+p[0]+'"><b>'+esc(tr(p[1]))+'</b><span>'+esc(tr(p[2]))+'</span></button>'; });
+  h+='</div><p class="apnote">'+esc(tr(A.pickNote))+'</p>';
  } else {
   var L=S.ap==="icn"?(S.dir==="arr"?arrIcn(S.t):depIcn(S.t)):(S.dir==="arr"?arrGmp(S.t):depGmp(S.t)), tn=A.pick.filter(function(p){ return p[0]===S.t; })[0][1];
-  h+='<div class="apnav"><button type="button" data-a="back">‹ 처음으로</button>';
-  A.pick.forEach(function(p){ h+='<button type="button" data-a="t" data-v="'+p[0]+'" class="'+(p[0]===S.t?"on":"")+'">'+esc(p[1].split(" (")[0])+'</button>'; });
-  h+='</div><div class="apq">'+(S.dir==="arr"?"입국":"출국")+' · '+esc(tn)+'</div>';
+  h+='<div class="apnav"><button type="button" data-a="back">'+esc(tr("‹ 처음으로"))+'</button>';
+  A.pick.forEach(function(p){ h+='<button type="button" data-a="t" data-v="'+p[0]+'" class="'+(p[0]===S.t?"on":"")+'">'+esc(tr(p[1].split(" (")[0]))+'</button>'; });
+  h+='</div><div class="apq">'+esc(tr(S.dir==="arr"?"입국":"출국"))+' · '+esc(tr(tn))+'</div>';
   h+=fig(S.ap+"_"+S.t+"_"+S.dir);
-  var mu=S.ap==="icn"?MAP[S.t]:MAP.gmp; h+='<a class="apmap" href="'+mu+'" target="_blank" rel="noopener">공식 공항 안내도 보기 (층·출구 번호)</a>';
-  L.forEach(function(s,i){ h+='<div class="apst '+S.dir+'"><div class="apn">'+(i+1)+'</div><div><h3>'+esc(s[0])+'</h3><ul>'+s[1].map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>'+(s[2]?'<p>'+esc(s[2])+'</p>':'')+'</div></div>'; });
-  if(S.ap==="icn"&&S.dir==="arr") h+='<a class="apmap" href="'+MAP.arex+'" target="_blank" rel="noopener">공항철도 공식 시간표·요금</a>';
+  var mu=mapUrl(S.ap==="icn"?S.t:"gmp"); h+='<a class="apmap" href="'+mu+'" target="_blank" rel="noopener">'+esc(tr("공식 공항 안내도 보기 (층·출구 번호)"))+'</a>';
+  L.forEach(function(s,i){ h+='<div class="apst '+S.dir+'"><div class="apn">'+(i+1)+'</div><div><h3>'+esc(tr(s[0]))+'</h3><ul>'+s[1].map(function(x){ return '<li>'+esc(tr(x))+'</li>'; }).join("")+'</ul>'+(s[2]?'<p>'+esc(tr(s[2]))+'</p>':'')+'</div></div>'; });
+  if(S.ap==="icn"&&S.dir==="arr") h+='<a class="apmap" href="'+MAP.arex+'" target="_blank" rel="noopener">'+esc(tr("공항철도 공식 시간표·요금"))+'</a>';
  }
  h+='</div>'; b.innerHTML=h; b.scrollTop=0; }
 document.addEventListener("click",function(e){ var el=e.target.closest&&e.target.closest("#apBox [data-a]"); if(!el) return; var a=el.getAttribute("data-a"), v=el.getAttribute("data-v");
  if(a==="x") close(); else if(a==="dir"){ S.dir=v; paint(); } else if(a==="t"){ S.t=v; paint(); } else if(a==="back"){ S.dir=null; S.t=null; paint(); } });
 var _gb=window.guBack; window.guBack=function(){ if(document.getElementById("apBox")){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };   // 뒤로 = 닫기
 var _hc=window.hitClick; window.hitClick=function(k){ if(k==="icn"||k==="gimpo"){ open(k); return; } return _hc.apply(this,arguments); };
+var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ var b=document.getElementById("apBox"); if(b){ var y=b.scrollTop; paint(); b.scrollTop=y; } }catch(e){} return r; };   // 언어 바꾸면 열린 공항 화면도 바로
 window.apOpen=open;
 })();
