@@ -17,8 +17,8 @@ var AP={
 // 동선 — [제목, [줄...], 덧붙임(회색)]
 function arrIcn(t){ var T2=t==="t2", B1=T2?"교통센터 지하 1층":"교통센터 지하 1층";
  return [
-  ["비행기에서 내려서", ["입국심사 → 짐 찾기(수하물 수취대) → 세관 순서로 걸어가요.","세관을 지나면 1층 입국장으로 나와요."], "입국심사 줄이 길 수 있어요. 입국신고서가 필요한 경우 기내에서 미리 써 두세요."],
-  ["입국장(1층)에서 바로 할 것", ["인포메이션 데스크 — 길·교통·숙소 무엇이든 물어보세요","환전소·ATM — 시내 교통비·간식비 정도만 바꾸면 충분해요","유심·eSIM·포켓와이파이 — 통신사 로밍센터","교통카드(티머니) — 편의점에서 사고 충전, 지하철·버스·택시 모두 사용","짐 보관·배송 — 짐을 호텔로 먼저 보낼 수 있어요","편의점·약국·화장실"], "정확한 위치는 아래 「공식 안내도」에서 층·출구 번호로 확인하세요."],
+  ["비행기에서 내려서", ["1-1 입국심사 (2층)","1-2 짐 찾기 — 1층 수하물 수취대, 전광판에서 내 편명 확인","1-3 세관 — 지나면 1층 입국장으로 나와요"], "입국심사 줄이 길 수 있어요. 입국신고서가 필요한 경우 기내에서 미리 써 두세요."],
+  ["입국장(1층)에서 바로 할 것", ["2-1 인포메이션 데스크 — 길·교통·숙소 무엇이든 물어보세요","2-2 환전소·ATM — 시내 교통비·간식비 정도만 바꾸면 충분해요","2-3 유심·eSIM·포켓와이파이 — 통신사 로밍센터","2-4 편의점 — 교통카드(티머니) 사고 충전, 지하철·버스·택시 모두 사용","짐 보관·배송 — 짐을 호텔로 먼저 보낼 수 있어요"], "정확한 위치는 아래 「공식 안내도」에서 층·출구 번호로 확인하세요."],
   ["시내로 ① 공항철도 (AREX) — 가장 빠르고 막히지 않아요", ["타는 곳: 1층 입국장에서 「Train / 공항철도」 표지판 → "+B1,"직통열차: 서울역까지 쉬지 않고 "+(T2?"약 51분":"약 43분")+", 지정좌석 · 표는 자동발매기·앱","일반열차: 서울역까지 "+(T2?"약 66분":"약 59분")+" · 홍대입구·공덕 등에 서요 · 교통카드로 바로 타요"], "직통 요금 성인 13,000원 안팎(바뀔 수 있음). 홍대·명동 쪽은 일반열차가 편해요."],
   ["시내로 ② 공항버스 (리무진)", [(T2?"타는 곳: 교통센터 지하 1층 버스터미널":"타는 곳: 1층 입국장 밖 버스 승차장 — 번호별로 행선지가 적혀 있어요"),"명동·강남·동대문·잠실 등 호텔 근처까지 바로 가요","표: 입국장 버스 매표소·자동발매기, 교통카드로 타는 노선도 있어요"], "짐이 많고 호텔이 버스 노선 근처면 편해요. 노선·승차장 번호는 공식 안내도에서 확인하세요."],
   ["시내로 ③ 택시", ["타는 곳: 1층 입국장 밖 택시 승차장","일반택시(가장 저렴) · 모범택시(검은색, 더 비쌈) · 대형택시(짐 많을 때) · 국제택시(외국어 기사)","미터기 요금 + 고속도로 통행료를 내요. 카드 결제 돼요"], "입국장 안에서 말을 걸어오는 호객 택시·콜밴은 타지 마세요. 반드시 지정 승차장에서 타세요."],
@@ -51,6 +51,19 @@ function depGmp(t){ if(t==="dom") return [
   ["보안검색 → 출국심사 → 탑승구", ["면세점·식당","남은 원화 재환전"], ""]
  ]; }
 
+// 입국 동선 단면도 — 그림은 나노바나나(글자 없는 실사 단면), 번호·화살표·층 이름은 여기서 얹는다(글자가 정확하고 언어 바꾸기 쉬움). 좌표 = 그림 2000×1116 기준
+var FIG={ icn_t1_arr:{ img:"img/airport/icn_t1_arr.webp?v=1027",
+  floors:[[330,"3층 출국장",1],[478,"2층 입국심사"],[648,"1층 짐 찾기·입국장"],[828,"지하1층 공항철도"]],
+  path:["M330,468 L690,498","M690,498 L845,522 L862,632","M862,660 L705,688","M705,688 L1068,732","M1068,732 L880,748 L1010,872 L1170,900","M1068,732 L1395,742 L1590,700","M1395,742 L1520,790 L1770,810"],
+  badge:[[690,440,"1-1","입국심사"],[905,590,"1-2","짐 찾기"],[630,632,"1-3","세관"],[1060,688,"2","입국장"],[1160,600,"2-1","",1],[1214,600,"2-2","",1],[1268,600,"2-3","",1],[1322,600,"2-4","",1],[965,850,"3","공항철도"],[1580,652,"4","공항버스"],[1770,758,"5","택시"]],
+  legend:"2-1 안내 · 2-2 환전 · 2-3 유심 · 2-4 편의점" } };
+function fig(k){ var F=FIG[k]; if(!F) return ""; var s='<svg viewBox="0 0 2000 1116" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="apAr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ff5a0a"/></marker></defs>';
+ F.floors.forEach(function(f){ s+='<g opacity="'+(f[2]?.45:1)+'"><rect x="24" y="'+(f[0]-34)+'" width="'+(f[1].length*34+40)+'" height="56" rx="12" fill="#fff" fill-opacity=".92"/><text x="44" y="'+(f[0]+6)+'" font-size="34" font-weight="800" fill="#17324d">'+esc(f[1])+'</text></g>'; });
+ F.path.forEach(function(d){ s+='<path d="'+d+'" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><path d="'+d+'" fill="none" stroke="#ff5a0a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#apAr)"/>'; });
+ F.badge.forEach(function(b){ var r=b[4]?24:32, fs=b[2].length>1?(b[4]?20:24):32; s+='<circle cx="'+b[0]+'" cy="'+b[1]+'" r="'+r+'" fill="#ff5a0a" stroke="#fff" stroke-width="5"/><text x="'+b[0]+'" y="'+(b[1]+fs*0.36)+'" text-anchor="middle" font-size="'+fs+'" font-weight="900" fill="#fff">'+esc(b[2])+'</text>';
+  if(b[3]) s+='<text x="'+(b[0]+r+10)+'" y="'+(b[1]+12)+'" font-size="34" font-weight="900" fill="#17324d" stroke="#fff" stroke-width="9" paint-order="stroke" stroke-linejoin="round">'+esc(b[3])+'</text>'; });
+ if(F.legend) s+='<text x="1150" y="560" font-size="26" font-weight="800" fill="#17324d" stroke="#fff" stroke-width="7" paint-order="stroke">'+esc(F.legend)+'</text>';
+ s+='</svg>'; return '<div class="apfig"><div class="apfw"><img src="'+F.img+'" alt="" loading="lazy">'+s+'</div></div><p class="apnote">그림을 옆으로 밀어 보세요. 실제 층 배치는 공식 안내도가 정확해요.</p>'; }
 var S={ap:null,dir:null,t:null};
 function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
 function css(){ if(document.getElementById("apCss")) return; var st=document.createElement("style"); st.id="apCss";
@@ -74,6 +87,7 @@ function css(){ if(document.getElementById("apCss")) return; var st=document.cre
  +"#apBox .apn{flex:0 0 26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:900;font-size:13px}"
  +"#apBox .arr .apn{background:#1f7a5a}#apBox .dep .apn{background:#1f5fa8}"
  +"#apBox .apst h3{margin:2px 0 6px;font-size:15px;line-height:1.35}#apBox .apst ul{margin:0;padding-left:16px}#apBox .apst li{margin:3px 0;font-size:14px;line-height:1.5}"
+ +"#apBox .apfig{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px;background:#eeeef3}#apBox .apfw{position:relative;width:max(100%,880px)}#apBox .apfw img{display:block;width:100%;height:auto}#apBox .apfw svg{position:absolute;inset:0;width:100%;height:100%;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif}"
  +"#apBox .apst p{margin:6px 0 0;font-size:12.5px;color:var(--sub,#667);line-height:1.5}";
  document.head.appendChild(st); }
 function close(){ var b=document.getElementById("apBox"); if(b) b.remove(); document.documentElement.style.overflow=""; }
@@ -92,6 +106,7 @@ function paint(){ var b=document.getElementById("apBox"); if(!b) return; var A=A
   h+='<div class="apnav"><button type="button" data-a="back">‹ 처음으로</button>';
   A.pick.forEach(function(p){ h+='<button type="button" data-a="t" data-v="'+p[0]+'" class="'+(p[0]===S.t?"on":"")+'">'+esc(p[1].split(" (")[0])+'</button>'; });
   h+='</div><div class="apq">'+(S.dir==="arr"?"입국":"출국")+' · '+esc(tn)+'</div>';
+  h+=fig(S.ap+"_"+S.t+"_"+S.dir);
   var mu=S.ap==="icn"?MAP[S.t]:MAP.gmp; h+='<a class="apmap" href="'+mu+'" target="_blank" rel="noopener">공식 공항 안내도 보기 (층·출구 번호)</a>';
   L.forEach(function(s,i){ h+='<div class="apst '+S.dir+'"><div class="apn">'+(i+1)+'</div><div><h3>'+esc(s[0])+'</h3><ul>'+s[1].map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>'+(s[2]?'<p>'+esc(s[2])+'</p>':'')+'</div></div>'; });
   if(S.ap==="icn"&&S.dir==="arr") h+='<a class="apmap" href="'+MAP.arex+'" target="_blank" rel="noopener">공항철도 공식 시간표·요금</a>';
