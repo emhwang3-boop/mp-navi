@@ -326,7 +326,7 @@ html.mpc-lock #treasIsle{visibility:hidden}
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
 <script src="geoconsent.js?v=1027lbs"></script>
-<script src="i18n.js?v=1025nopay"></script>
+<script src="i18n.js?v=1028pw"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
 // 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
@@ -359,7 +359,7 @@ function inqCss(){ if(document.getElementById("inqCss")) return; var s=document.
   document.head.appendChild(s); }
 function inqOpen(){ inqCss(); var b=document.getElementById("inqBox"); if(b) b.remove(); INQ={bno:null,vt:null,busy:false};
   b=document.createElement("div"); b.id="inqBox"; b.onclick=function(e){ if(e.target===b) b.remove(); };
-  b.innerHTML='<div id="inqIn"><div style="display:flex;align-items:center"><h3 style="flex:1">'+T("입점·광고 문의","Advertise with us")+'</h3><button class="g" onclick="document.getElementById(\'inqBox\').remove()">✕</button></div>'
+  b.innerHTML='<div id="inqIn"><div style="display:flex;align-items:center"><h3 style="flex:1">'+T("제휴 문의","Partner with us")+'</h3><button class="g" onclick="document.getElementById(\'inqBox\').remove()">✕</button></div>'
    +'<div class="m">'+T("이 지도에 가게·기업을 알리고 싶다면 남겨 주세요. 먼저 두 가지를 확인합니다.","Want your shop or company on this map? Please verify two things first.")+'</div>'
    +'<button type="button" style="width:100%;margin:10px 0 2px;background:#0c8599" onclick="document.getElementById(\'inqBox\').remove(); if(window.GUIDEREG) window.GUIDEREG();"><img src="img/menu/mi_guideperson.png" alt="" style="height:20px;width:auto;vertical-align:-4px;margin-right:6px">'+T("관광 가이드 등록","Register as a tour guide")+'</button>'
    +'<div class="m" style="margin-bottom:6px">'+T("관광통역안내사 등 통역·길안내를 해 주실 분은 여기서 등록하세요 (무료).","Licensed interpreter-guides can register here (free).")+'</div>'
@@ -427,7 +427,7 @@ function bbDraw(){ try{ var z=document.getElementById("mz"); if(!z) return; var 
   if(bbDraw.k===key) return; bbDraw.k=key; [].slice.call(z.querySelectorAll(".bbt")).forEach(function(e){ e.remove(); });
   if(!c||!c.spots||DET) return; var as=ASP(), W=w*as, H=w;
   for(var k in c.spots){ var p=PLACES[k], b=p&&p.board; if(!b||b.length<5) continue;
-    var e=document.createElement("div"); e.className="bbt"; var en=LANG==="en"; if(k==="adinq") e.innerHTML=en?"Advertise<br>here":LANG==="ko"?"입점 문의":esc(TE("Advertise here (sign)"));
+    var e=document.createElement("div"); e.className="bbt"; var en=LANG==="en"; if(k==="adinq") e.innerHTML=en?"Partner<br>with us":LANG==="ko"?"제휴 문의":esc(TE("Partner with us (sign)"));
     var bw=(b[2]-b[0])*W, bh=b[4]*H, ang=Math.atan2((b[3]-b[1])*H,bw)*180/Math.PI;
     e.style.cssText="position:absolute;left:"+(b[0]*100)+"%;top:"+(b[1]*100)+"%;width:"+(bw/W*100)+"%;height:"+(bh/H*100)+"%;transform-origin:0 0;transform:skewY("+ang+"deg);display:flex;align-items:center;justify-content:center;"
       +"pointer-events:none;white-space:nowrap;overflow:hidden;text-align:center;line-height:1.02;font-weight:900;color:#ffd84a;letter-spacing:.03em;"
@@ -861,7 +861,7 @@ function perfShow(k){ var pk=AREAPERF[k]?k:(PERF_ALIAS[k]||k), cf=AREAPERF[pk]; 
 // 장소 「추천 시간」 등 한 줄 배지 (사장님 10-25) — 자료 칸 tip:{ko,en,ja,zhs,zht,es}. 카드 이름 바로 아래 주황 배지, 이모지 대신 시계 아이콘
 function tipTag(p){ var t=p&&p.tip; if(!t) return ""; var s=typeof t==="string"?t:(t[LANG]||t.en||t.ko||""); if(!s) return "";
   return '<div class="tiptag" style="display:inline-flex;align-items:center;gap:5px;margin:4px 0 3px;padding:5px 10px;border-radius:12px;background:#fff4e6;border:1px solid #ffa94d;color:#d9480f;font-size:12.5px;font-weight:800;line-height:1.35">'+MPIMG("mi_clock","width:15px;height:15px;flex:0 0 auto")+'<span>'+esc(s)+'</span></div>'; }
-function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } if(p.app){ appGo(p.app); return; } var nm=LN(p), ll=p.lat+","+p.lng;
+function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } if(p.app){ if(window.tvidOpen&&(p.app==="youtube"||p.app==="netflix")) tvidOpen(p.app==="netflix"?"nf":"yt"); else appGo(p.app); return; } var nm=LN(p), ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
   window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+tipTag(p)+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
     +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng,null,p.addr))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
@@ -1647,7 +1647,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}</script>
 <script src="reco.js?v=1026pm"></script>
-<script src="gu.js?v=1028lb"></script>
+<script src="gu.js?v=1028pw"></script>
 <script src="citytour.js?v=1024icons"></script>
 <script src="pass.js?v=1024gmatch"></script>
 <script>
@@ -1784,11 +1784,12 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script src="interp.js?v=1025qs"></script>
 <script src="manual.js?v=1028m"></script>
 <script src="karaoke.js?v=1028kx"></script>
+<script src="tvid.js?v=1028tv"></script>
 <script src="pcbang.js?v=1026pc5"></script>
 <script src="pg.js?v=1027badge"></script>
 <script src="event.js?v=1028b2"></script>
 <script src="billboard.js?v=1021pl"></script>
-<script src="airport_i18n.js?v=1027i2"></script>
+<script src="airport_i18n.js?v=1028pw"></script>
 <script src="airport.js?v=1027ap19"></script>
 <script>
 /* ★ 전국 지도(kr) 맨 위 「Treasure Map of Korea」 고지도 리본 (사장님 10-25) — 지도 그림·자료는 그대로, 위에 얹기만.
