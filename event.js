@@ -254,6 +254,7 @@ function shLine(){ var c=cur(); if(!c||!c.open||!c.me) return null; var me=c.me,
   if(k==="bingo"&&c.daily&&c.day) t+=" "+c.day.slice(5).replace("-","/");   // 매일 빙고 = 그날 날짜
   if(k==="bingo"&&(me.best!=null||me.done)) return [t, L(RNK.all)+" · "+elTxt(me.best!=null?me.best:me.done-(me.f0||me.done))+rk];   // 그날 가장 빠른 기록 (하루 여러 판, 10-27 밤)   // 판 완성 + 걸린 시간 (10-27)
   if(k==="bingo") return [t, (me.s||[]).length+"/24 · "+L(T.stamps)];
+  if(k==="sudoku"){ if(c.day) t+=" "+c.day.slice(5).replace("-","/"); return [t, me.best?L(SDT.ok).replace(/[!！]$/,"")+" · "+elTxt(me.best)+rk:L(SDT.bn).replace("{n}",me.n||1)]; }   // 스도쿠 — 그날 가장 빠른 기록, 없으면 몇 번째 판 (10-28)
   if(k==="treasure") return [t, me.ft?L(SHX.found)+(me.rank?"  #"+me.rank:""):L(SHX.hunt)];
   if(k==="spot") return [t, (me.ok||0)+"/"+(c.total||10)+" "+L(SHX.spot)+rk];
   if(k==="photo") return [t, L(SHX.photo)];
@@ -608,7 +609,8 @@ function sdPaint(){ var e=document.getElementById("evBody"); if(!e||!SD) return;
       if(!me.done) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="sdchk" style="background:#27a745"'+(SDG.indexOf(0)>=0?' disabled':'')+'>'+esc(L(SDT.chk))+'</button><div style="font-size:12px;color:#888;margin-top:6px;text-align:center">'+esc(L(SDT.fill))+'</div></div>';
       if(me.n<max) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="sdnew" style="background:'+(me.done?'#ff7a1a':'#fff;color:#ff7a1a;border:2px solid #ff7a1a')+'">'+esc(L(me.done?SDT.nx:SDT.nw))+'</button></div>';
       else if(me.done) h+='<div class="ecard"><button type="button" class="ebtn" disabled style="background:#bbb">'+esc(L(RPA))+'</button></div>'; }
-    if(me.best) h+='<div class="ecard" style="font-size:14px"><b>'+esc(L(SDT.my))+'</b> · '+elTxt(me.best)+(SD.myRank?' · #'+SD.myRank:'')+'</div>'; }
+    if(me.best) h+='<div class="ecard" style="font-size:14px"><b>'+esc(L(SDT.my))+'</b> · '+elTxt(me.best)+(SD.myRank?' · #'+SD.myRank:'')+'</div>';
+    if(me.st||me.best) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>'; }   // 결과 공유 — 빙고와 같은 단추 (10-28)
   h+=rankCard(SD,RANKHOW.sudoku);
   h+='<div class="ecard"><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   if(SD.last&&SD.last.res&&SD.last.res.length){ var C=["#e0a100","#9aa4b0","#c47a3c"]; h+='<div class="ecard"><b>'+esc(L(SDT.last))+'</b> <span style="color:#888;font-size:12px">'+esc(SD.last.day)+'</span>'+SD.last.res.map(function(r,i){ return '<div class="erk"><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div><b>'+esc(r.nm)+'</b></div><div class="pg">'+elTxt(r.el)+'</div></div>'; }).join("")+'</div>'; }
