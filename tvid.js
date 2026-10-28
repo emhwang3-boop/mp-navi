@@ -87,6 +87,7 @@ function open(mode){ var M=MD[mode]||MD.yt; T.m=MD[mode]?mode:"yt"; T.g=M.g; T.a
   var nb=b.querySelector(".tnf"); if(nb) nb.onclick=function(){ try{ mpPaid.out(); }catch(e){} try{ T.pl&&T.pl.pauseVideo&&T.pl.pauseVideo(); }catch(e){} try{ appGo("netflix"); }catch(e){} };
   load(); }
 function close(){ var b=box(); if(b){ try{ T.pl&&T.pl.destroy&&T.pl.destroy(); }catch(e){} b.remove(); } T.pl=null; T.ready=false; document.documentElement.style.overflow=""; try{ mpPaid.end(); }catch(e){} }
-window.tvidOpen=open; window.tvidClose=close; window.tvidState=T;
+window.tvidOpen=open;
+var _hcT=window.hitClick; if(_hcT) window.hitClick=function(k){ if(k==="__tv_yt"){ open("yt"); return; } if(k==="__tv_nf"){ open("nf"); return; } return _hcT.apply(this,arguments); };   // 서울 전체 관악산 기슭 상영관 (gu.js fxPlace, 10-28); window.tvidClose=close; window.tvidState=T;
 var _gb=window.guBack; window.guBack=function(){ if(box()){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };   // 뒤로가기 = 창 닫기
 })();
