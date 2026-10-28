@@ -1,4 +1,4 @@
-/* 서울 구(區) 묶음 (사장님 2026-10-20) — 서울 약도(seoulall)에서 구마다 대표 그림 1개 + 「+N」(대표를 뺀 나머지 명소 수) · 명소 없는 구는 이름표
+/* 서울 구(區) 묶음 (사장님 2026-10-20) · 부산 16개 구·군도 같은 방식 (10-28, data/gu_busan.json · img/gu/bs/ · tour_icons/busan/gu/gu_build_busan.py) — 서울 약도(seoulall)에서 구마다 대표 그림 1개 + 「+N」(대표를 뺀 나머지 명소 수) · 명소 없는 구는 이름표
    누르면 그 구 화면: 그 구 약도(서울 전체 좌표에서 잘라 그린 바탕, img/gu/maps/<id>.jpg) 위에 기존 하위 약도(광화문·인사동·경복궁·명동…)를
    제자리·제 크기로 얹는다. 명소는 약도에 그려진 실제 자리 그대로 — 손가락으로 끌고 두 손가락으로 확대(기존 약도 방식 그대로)
    구 밖은 하얗게 가리고 경계는 주황 선. 돌아가기 = ← · 「✕」 · 뒤로가기 → 서울 묶음 화면
@@ -17,8 +17,10 @@
     "#gul .glb{pointer-events:none;transform-origin:0 0;background:rgba(20,24,32,.88);color:#fff;font:800 12px/1.2 system-ui,sans-serif;padding:3px 8px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.35)}"+
     "#guX{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:#808080!important;color:#fff!important;white-space:nowrap;z-index:30;border:0;border-radius:999px;background:rgba(20,24,32,.88);color:#fff;font-weight:900;font-size:15px;padding:7px 14px;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer}#guX[hidden]{display:none}";
   document.head.appendChild(st);
-  function load(){ if(GU.p) return GU.p; return GU.p=fetch("data/gu_seoul.json?v="+V).then(function(r){ if(!r.ok) throw new Error("gu "+r.status); return r.json(); }).then(function(d){ GU.d=d; return d; },function(e){ GU.p=null; throw e; }); }
-  function on(){ return !!(GU.d&&typeof VIEW==="string"&&VIEW===GU.d.map&&!window.DET); }
+  // 구 묶음이 있는 약도 (사장님 10-28 부산 추가) — 약도마다 자료 파일 하나. GU.d = 지금 약도의 자료(서울이면 예전과 같은 gu_seoul.json)
+  var REG={seoulall:"data/gu_seoul.json",busan:"data/gu_busan.json"}, PS={}; GU.all={}; GU.reg=REG;
+  function load(v){ v=v||"seoulall"; if(PS[v]) return PS[v]; if(v==="seoulall") GU.p=null; var p=PS[v]=fetch(REG[v]+"?v="+V).then(function(r){ if(!r.ok) throw new Error("gu "+r.status); return r.json(); }).then(function(d){ GU.all[v]=d; if(!GU.d||VIEW===v) GU.d=d; return d; },function(e){ PS[v]=null; throw e; }); if(v==="seoulall") GU.p=p; return p; }
+  function on(){ if(typeof VIEW==="string"&&GU.all[VIEW]&&GU.d!==GU.all[VIEW]){ GU.d=GU.all[VIEW]; GU.key=null; } return !!(GU.d&&typeof VIEW==="string"&&VIEW===GU.d.map&&!window.DET); }
   function gObj(g){ var L=GU.d.gus; for(var i=0;i<L.length;i++) if(L[i].g===g) return L[i]; return null; }
   function layer(){ var L=document.getElementById("gul"); if(!L){ L=document.createElement("div"); L.id="gul"; document.getElementById("mz").appendChild(L); } return L; }
   function chip(){ var b=document.getElementById("guX"); if(!b){ b=document.createElement("button"); b.type="button"; b.id="guX"; b.hidden=true; document.getElementById("map").appendChild(b);
@@ -47,7 +49,7 @@
     var lv=(ZM.s*w/G2<0.12)?1:0, sz=lv?C*4:C, set=lv?GU.l1:GU.l0, fx0=(-ZM.tx)/(w*ZM.s), fy0=(-ZM.ty)/(w*ZM.s), fx1=(w-ZM.tx)/(w*ZM.s), fy1=(h-ZM.ty)/(w*ZM.s);
     var x0=Math.floor(fx0*G2/sz)-1, x1=Math.floor(fx1*G2/sz)+1, y0=Math.floor(fy0*G2/sz)-1, y1=Math.floor(fy1*G2/sz)+1, want={};
     for(var x=x0;x<=x1;x++) for(var y=y0;y<=y1;y++){ var id=lv+":"+x+"_"+y; if(!set[x+"_"+y]) continue; want[id]=1;
-      if(!GU.cel[id]){ var e=document.createElement("img"); e.className="gm gc"; e.alt=""; e.draggable=false; e.src="img/gu/c"+(lv?"1":"")+"/"+x+"_"+y+".jpg?v="+ch.v; put(e,x*sz/G2*W,y*sz/G2*H,sz/G2*W+0.6,sz/G2*H+0.6); cl.appendChild(e); GU.cel[id]=e; } }
+      if(!GU.cel[id]){ var e=document.createElement("img"); e.className="gm gc"; e.alt=""; e.draggable=false; e.src=(ch.dir||"img/gu/c")+(lv?"1":"")+"/"+x+"_"+y+".jpg?v="+ch.v; var ov=ch.ov!=null?ch.ov:0.6; put(e,x*sz/G2*W,y*sz/G2*H,sz/G2*W+ov,sz/G2*H+ov);   /* ov = 조각 사이 틈 메움(지도 단위) — 부산은 작게(조각이 커서 늘이면 이음매가 보인다, 10-28) */ cl.appendChild(e); GU.cel[id]=e; } }
     for(var id2 in GU.cel){ if(!want[id2]&&!(GU.cel[id2].dataset.keep)){ var lv2=+id2.charAt(0); if(lv2!==lv||Object.keys(GU.cel).length>60){ GU.cel[id2].remove(); delete GU.cel[id2]; } } } }
   // 거리선 굵기·끝 동그라미 — 구 화면은 배율이 25~30배라 그대로 두면 동그라미·선이 화면을 덮는다(10-20 「깨진다」). 서울 묶음·다른 약도는 원래 크기
   function dlFix(){ var s=document.getElementById("dl"); if(!s||!s.firstChild) return; var k=(on()&&ZM.s>4)?4/ZM.s:1;
@@ -64,6 +66,7 @@
         if(!o.rep){ labs.push(o); return; }
         var b=P[o.rep].b, x=b[0]*W, y=b[1]*H, bw=(b[2]-b[0])*W, bh=(b[3]-b[1])*H, e=img(o.rep); e.dataset.g=o.g; e.removeAttribute("data-k"); e.title=LP(o.n); put(e,x,y,bw,bh); L.appendChild(e);
         var n=o.keys.length-1; if(n>0){ var t=document.createElement("div"); t.className="gb"; t.dataset.g=o.g; t.textContent="+"+n; t.title=LP(o.n); t.style.fontSize=fs+"px"; t.style.height=(fs*1.55)+"px"; t.style.padding="0 "+(fs*0.45)+"px"; t.style.borderWidth=Math.max(0.5,fs*0.12)+"px";
+          if(GU.d.bz) t.style.zIndex="3";   /* 부산(10-28): 「+N」이 옆 대표 그림에 가리지 않게 — 서울 자료엔 bz 없음 */
           L.appendChild(t); var tw=t.offsetWidth||fs*2.4; t.style.left=(x+bw-tw*0.55)+"px"; t.style.top=(y-fs*0.6)+"px"; } });
       GU.d.out.forEach(function(k){ var b=P[k].b, e=img(k); put(e,b[0]*W,b[1]*H,(b[2]-b[0])*W,(b[3]-b[1])*H); L.appendChild(e); });
       fxPlace(L,W,H); gnPlace(L,labs,w,W,H);
@@ -145,14 +148,15 @@
   // 옛 도심 약도 4개(광화문·인사동·경복궁·명동)로 가는 이동은 서울 지도 → 그 좌표가 든 구 화면으로 (사장님 10-25)
   //   공연관람 고르기·검색·☆·추천 등 spinGo 를 쓰는 모든 길. 다른 약도(홍대·용산·성수·올림픽공원 등)는 그대로. 카드는 구 화면에 들어간 뒤 다시 띄운다
   var OLD4={seoul:1,insadong:1,gyeongbok:1,myeongdong:1};
-  var _sg=window.spinGo; if(_sg) window.spinGo=function(id,lat,lng,sc){ if(!(OLD4[id]||id==="seoulall")||lat==null||lng==null||window.DET) return _sg.apply(this,arguments);
-    var run=function(re){ try{ if(VIEW!=="seoulall") viewSet("seoulall"); if(!on()) return false; var f=meGeoFrac("seoulall",+lat,+lng); if(!f) return false;
+  var _sg=window.spinGo; if(_sg) window.spinGo=function(id,lat,lng,sc){ if(!(OLD4[id]||REG[id])||lat==null||lng==null||window.DET) return _sg.apply(this,arguments);
+    var RG=OLD4[id]?"seoulall":id;   /* 부산(10-28)도 서울처럼 그 좌표가 든 구 화면으로 */
+    var run=function(re){ try{ if(VIEW!==RG) viewSet(RG); if(!on()) return false; var f=meGeoFrac(RG,+lat,+lng); if(!f) return false;
         var g=null; GU.d.gus.forEach(function(o){ if(!g&&inPoly(f[0],f[1],o.poly||[])) g=o.g; }); if(!g) return false;
         var k=window._cardK, sp=document.getElementById("spin"), spP=sp&&sp.parentNode, pin=window.PLACES&&PLACES.__pin; enter(g); if(sp&&spP&&!sp.isConnected){ spP.appendChild(sp); if(pin) PLACES.__pin=pin; }   /* 구에 들어가도 빨간 핀은 그대로 (10-26) */ var m=document.getElementById("map"), w=m.clientWidth, as=ASP(), z=ZM.s; ZM={s:z,tx:w/2-f[0]*w*as*z,ty:MH()/2-f[1]*w*z}; zApply(); try{ LOD.s0=ZM.s; }catch(e){}
         pinFit();
         if(re&&k){ if(k==="__pin"){ try{ window.spinCard(); }catch(e){} } else { try{ placeShow(k); }catch(e){} } } return true; }catch(e){ return false; } };
-    if(GU.d){ if(!run(false)) _sg(id,lat,lng,sc); return; }   // 자료가 있으면 바로 — 부른 쪽이 곧이어 카드를 띄운다
-    viewSet("seoulall"); load().then(function(){ if(!run(true)) _sg(id,lat,lng,sc); },function(){ _sg(id,lat,lng,sc); }); };
+    if(GU.all[RG]){ if(!run(false)) _sg(id,lat,lng,sc); return; }   // 자료가 있으면 바로 — 부른 쪽이 곧이어 카드를 띄운다
+    viewSet(RG); load(RG).then(function(){ if(!run(true)) _sg(id,lat,lng,sc); },function(){ _sg(id,lat,lng,sc); }); };
   // 구 화면의 빨간 핀 크기 — 핀은 서울 전체 지도 배율에 맞춰 만들어지니, 구 화면 배율만큼 줄인다 (핀 끝 = 정확한 자리, 10-26)
   function pinFit(){ try{ var e=document.getElementById("spin"); if(!e||!on()||!GU.g) return; var s0=(ASP()>1?1.5:2)*ZB(), k=Math.min(1,s0/ZM.s); e.style.transformOrigin="50% 100%"; e.style.transform="translate(-50%,-100%) scale("+k+")"; }catch(x){} }
   window.guPinFit=pinFit;
@@ -163,7 +167,7 @@
   // 들어갈 때 — 대표 명소(없으면 구 한가운데)를 가운데, 전역 약도 1 px ≈ 화면 0.3 px (하위 약도 화면과 같은 크기)
   function enter(g){ var o=gObj(g); if(!o||!on()) return; try{ ntap("gu:"+g,"open_area"); }catch(e){} try{ inBlur(); }catch(e){} try{ resClear(); }catch(e){}
     GU.g=g; GU.key=null; GU.pb=pbOf(o); var ch=GU.d.ch; GU.l0={}; GU.l1={}; (ch.l0||[]).forEach(function(c){ GU.l0[c[0]+"_"+c[1]]=1; }); (ch.l1||[]).forEach(function(c){ GU.l1[c[0]+"_"+c[1]]=1; });
-    var m=document.getElementById("map"), w=m.clientWidth, h=MH(), as=ASP(), b=o.rep&&o.ic&&o.ic[o.rep], s=0.3*ch.G2/w, cx=b?(b[0]+b[2])/2:o.c[0], cy=b?(b[1]+b[3])/2:o.c[1];
+    var m=document.getElementById("map"), w=m.clientWidth, h=MH(), as=ASP(), b=o.rep&&o.ic&&o.ic[o.rep], s=(ch.es||0.3)*ch.G2/w, cx=b?(b[0]+b[2])/2:o.c[0], cy=b?(b[1]+b[3])/2:o.c[1];
     GU.zmax=s*4; ZM={s:s,tx:w/2-cx*w*as*s,ty:h/2-cy*w*s}; zApply(); try{ LOD.s0=ZM.s; }catch(e){} draw(); }
   function exit(){ if(!GU.g) return false; GU.g=null; GU.key=null; GU.zmax=0; var m=document.getElementById("map"), w=m.clientWidth, c=CITY[VIEW], s0=ZB(); ZM={s:s0,tx:w/2-((c&&c.fx)||0.5)*w*((c&&c.aspect)||1)*s0,ty:0}; zApply(); try{ LOD.s0=ZM.s; }catch(e){} draw(); return true; }
   window.guEnter=enter; window.guBack=function(){ return on()&&exit(); };
@@ -174,7 +178,7 @@
       if(!(inb(a1)&&inb(a2))) exit(); } }catch(e){} return _ml.apply(this,arguments); };
   function kidsLoad(){ (GU.d.kids||[]).forEach(function(id){ try{ mapLoad(id).catch(function(){}); }catch(e){} }); }
   function apply(){ if(!on()){ draw(); return; } var im=document.getElementById("mapimg"); if(im.getAttribute("src")!==GU.d.img) im.src=GU.d.img; kidsLoad(); draw(); }
-  var _vs=window.viewSet; window.viewSet=function(v){ GU.g=null; GU.key=null; GU.zmax=0; var r=_vs.apply(this,arguments); if(CITY[v]&&v==="seoulall") load().then(apply).catch(function(){}); else draw(); return r; };
+  var _vs=window.viewSet; window.viewSet=function(v){ GU.g=null; GU.key=null; GU.zmax=0; var r=_vs.apply(this,arguments); if(CITY[v]&&REG[v]) load(v).then(apply).catch(function(){}); else draw(); return r; };
   var _ds=window.detSet; window.detSet=function(){ var r=_ds.apply(this,arguments); try{ draw(); }catch(e){} return r; };
   var _ld=window.lodDraw; window.lodDraw=function(){ var r=_ld.apply(this,arguments); try{ draw(); }catch(e){} return r; };
   var _zm=window.ZMAX; window.ZMAX=function(){ var r=_zm.apply(this,arguments); return (GU.g&&on())?Math.max(r,GU.zmax||0):r; };   // 구 화면은 하위 약도 크기까지 당길 수 있게
@@ -193,5 +197,5 @@
     if(dn&&Math.hypot(e.clientX-dn.x,e.clientY-dn.y)>8) return;
     e.stopImmediatePropagation(); e.preventDefault();
     if(t.dataset.g) enter(t.dataset.g); else if(t.dataset.k) hitClick(t.dataset.k); },true);
-  if(typeof VIEW==="string"&&VIEW==="seoulall") load().then(apply).catch(function(){});
+  if(typeof VIEW==="string"&&REG[VIEW]) load(VIEW).then(apply).catch(function(){});
 })();
