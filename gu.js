@@ -90,7 +90,7 @@
         d+=(i?"L":"M")+(p[i][0]+sg*off*nx/as)+" "+(p[i][1]+sg*off*ny); } e.setAttribute("d",d); }); }); }
   function labScale(){ var L=document.getElementById("gul"); if(!L) return; var sc=1/ZM.s; [].forEach.call(L.querySelectorAll(".glb"),function(t){ t.style.transform=t.dataset.tx?"scale("+(sc*(+t.dataset.sc||1))+") translate("+t.dataset.tx+",2px)":"scale("+sc+") translate(-50%,3px)"; }); }
   // 입점 문의 빌딩 광고판 글자 (index.html bbDraw 와 같은 모양) — 아이콘 상자 안 비율 P[k].bd 자리에 (10-20 되살림)
-  function bbOn(L,k,x,y,bw,bh){ var q=GU.d.P[k], b=q&&q.bd; if(!b) return; var e=document.createElement("div"), en=LANG==="en"; e.className="gbb"; e.innerHTML=k==="adinq"?(en?"Advertise<br>here":LANG==="ko"?"입점 문의":esc(TE("Advertise here (sign)"))):"";
+  function bbOn(L,k,x,y,bw,bh){ var q=GU.d.P[k], b=q&&q.bd; if(!b) return; var e=document.createElement("div"), en=LANG==="en"; e.className="gbb"; e.innerHTML=k==="adinq"?(en?"Partner<br>with us":LANG==="ko"?"제휴 문의":esc(TE("Partner with us (sign)"))):"";
     var S=60, w=(b[2]-b[0])*bw*S, h=b[4]*bh*S, ang=Math.atan2((b[3]-b[1])*bh*S,w)*180/Math.PI;   /* 지도 단위로는 글자가 1px 도 안 돼 안 그려진다 → 60배로 쓰고 1/60 로 줄인다 */
     e.style.cssText="position:absolute;left:"+(x+b[0]*bw)+"px;top:"+(y+b[1]*bh)+"px;width:"+w+"px;height:"+h+"px;transform-origin:0 0;transform:scale("+(1/S)+") skewY("+ang+"deg);display:flex;align-items:center;justify-content:center;"
       +"pointer-events:none;white-space:nowrap;overflow:hidden;text-align:center;line-height:1.02;font-weight:900;color:#ffd84a;letter-spacing:.03em;background:none;border:0;box-shadow:none;"
