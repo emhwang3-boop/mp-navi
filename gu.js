@@ -112,7 +112,7 @@
       for(var dy=-W*0.04;dy<=W*0.04;dy+=st) for(var dx=-W*0.04;dx<=W*0.04;dx+=st){ var d=dx*dx+dy*dy; if(d>=bd) continue; var x0=cx+dx-bw/2, y0=cy+dy-bh, ok=true;
         for(var i=0;i<occ.length;i++){ var o=occ[i]; if(x0-g<o[2]&&x0+bw+g>o[0]&&y0-g<o[3]&&y0+bh+g>o[1]){ ok=false; break; } } if(ok){ bd=d; best=[x0,y0]; } }
       if(!best) best=[cx-bw/2,cy-bh]; var e=img(k); e.dataset.k=(GU.d.act&&GU.d.act[k])||k; put(e,best[0],best[1],bw,bh); L.appendChild(e); occ.push([best[0],best[1],best[0]+bw,best[1]+bh]);
-      var lb=(GU.d.lab||{})[k]; if(lb){ var t=document.createElement("div"); t.className="glb"; t.textContent=LP(lb); t.style.left=(best[0]+bw/2)+"px"; t.style.top=(best[1]+bh)+"px"; t.style.transform="scale("+(0.85/ZM.s)+") translate(-50%,2px)"; L.appendChild(t); } }); }   /* 명찰 (사장님 10-28) — 구 화면과 같은 「노래방」「PC방」 6개 언어 */
+      var lb={"karaoke@gwanak":["노래방","Karaoke","カラオケ","KTV","KTV","Karaoke"],"pcbang@gwanak":["PC방","PC Bang","PC房","网吧","網咖","PC Bang"]}[k];   /* 사장님 10-28 「간단하게, 설명 달지 마」 — 괄호 설명 없이 */ if(lb){ var t=document.createElement("div"); t.className="glb"; t.textContent=LP(lb); t.style.left=(best[0]+bw/2)+"px"; t.style.top=(best[1]+bh)+"px"; t.style.transform="scale("+(0.85/ZM.s)+") translate(-50%,2px)"; L.appendChild(t); } }); }   /* 명찰 (사장님 10-28) — 구 화면과 같은 「노래방」「PC방」 6개 언어 */
   // 묶음 화면 구 이름표 자리 (사장님 10-20) — 전국 지도 이름표 크기. 대표 그림·「+N」·다른 이름표·「나」와 띄워서, 구 한가운데에서 가장 가까운 빈 자리.
   //   빈 자리가 없으면 글자를 조금씩 줄여 다시(긴 영어·일본어·중국어 이름)
   function meBox(){   // 「나」 그림 자리(지도 단위) — 화면 크기 고정 그림이라 묶음 처음 배율(ZB) 기준으로 잡는다(확대해도 이름표가 안 흔들리게)
