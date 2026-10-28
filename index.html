@@ -151,7 +151,7 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 }
 @media (orientation:landscape) and (max-height:560px){ .map{--W:calc(100vw - 112px)}   /* 가로 화면: 지도 양옆 손잡이(지도 밖 = 화면 넘김) */ .wrap{padding:6px 12px}.top{margin:0 0 6px}.logo{font-size:17px}.logo img{height:26px}.tbs .tb{font-size:12px;padding:5px 8px} .wrap .sbox{flex-wrap:wrap}   /* 칩 2열 그리드는 제 줄로 (사장님 10-24) */ }
 .map{position:relative}.map img{display:block;width:100%;height:auto}
-.map{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.map img{-webkit-user-drag:none;pointer-events:none}
+.map{touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.map img{-webkit-user-drag:none;pointer-events:none}
 #dl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}   /* 길 점선은 그림 위로 (사장님 10-16) */
 #lod{position:absolute;inset:0;pointer-events:none;z-index:1}#lod>div{position:absolute;pointer-events:auto;cursor:pointer;box-sizing:border-box}
 #lod .lt{background:#808080;color:#fff;font-weight:900;line-height:1;display:flex;align-items:center;white-space:nowrap;border:solid #fff;border-bottom:0;box-shadow:0 0 2px rgba(0,0,0,.35)}
@@ -161,7 +161,7 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 #mz .mlb.post{background:linear-gradient(#dcac6c,#b8803f);color:#17702c;border-color:#6b411d;border-radius:.2em;line-height:1.2;text-shadow:0 0 1px #f6e6c4;box-shadow:0 1px 2px rgba(0,0,0,.35)}   /* 제주 올레 코스 번호 나무 팻말 (사장님 10-21) — 나무색 판·초록 글자 */
 #mz .mlb.post::after{content:"";position:absolute;left:26%;right:26%;top:100%;height:.7em;border-left:.2em solid #6b411d;border-right:.2em solid #6b411d}   /* 짧은 다리 둘 */
 #mz{position:relative;transform-origin:0 0;will-change:transform}
-.map.zoomed{touch-action:none}
+.map.zoomed{touch-action:pan-y}   /* 한 손가락 = 화면 넘김, 지도는 두 손가락 (사장님 10-29) */
 .zb{position:absolute;right:10px;bottom:10px;z-index:3;display:none!important;flex-direction:column;align-items:flex-end;gap:6px}   /* ＋ − ⟲ 단추 숨김 — 손가락 벌리기·휠로 대신 (사장님 10-16) */
 /* ◎ 현재 위치 — 지도 왼쪽 아래 (사장님 10-15). © OpenStreetMap·네이버 로고/저작권 줄 바로 위에 얹어 그것들을 가리지 않는다 */
 #zme{position:absolute;left:8px;bottom:26px;z-index:4;height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:800;white-space:nowrap;color:#1a73e8;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);line-height:1}
@@ -1336,7 +1336,7 @@ if(DET) return;     if(pan){ var dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math
   window.addEventListener("mouseup",function(e){ if(e.button===0){ pan=null; return; } if(e.button!==2||!drag) return; var k=hitAt(e.clientX,e.clientY), d=drag; drag=null; distShow(d.k,k,d.p,dlPt(e.clientX,e.clientY)); });
   function dist2(a,b){ return Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); }
   m.addEventListener("touchstart",function(e){ if(DET) return; if(e.target.closest(".zb")||e.target.closest("#zme")) return; inBlur(); clearTimeout(tmr); tch=null; pin=null; one=null;
-    if(e.touches.length===1){ moved=false; var t=e.touches[0]; one={x:t.clientX,y:t.clientY,tx:ZM.tx,ty:ZM.ty,h:false}; return; }   // 지도 위 한 손가락은 늘 지도만 민다 — 화면은 지도 밖에서만 넘긴다 (사장님 10-16)
+    if(e.touches.length===1){ moved=false; return; }   // 지도 위 한 손가락 = 화면 넘김(브라우저가 함, 넘기면 그림 안 눌림) · 지도 옮기기·키우기는 두 손가락 (사장님 10-29)
     if(e.touches.length!==2) return; e.preventDefault();
     var t0=e.touches[0], t1=e.touches[1], a=hitAt(t0.clientX,t0.clientY), b=hitAt(t1.clientX,t1.clientY);
     pin={d:dist2(t0,t1),s:ZM.s,cx:(t0.clientX+t1.clientX)/2,cy:(t0.clientY+t1.clientY)/2,tx:ZM.tx,ty:ZM.ty,go:false};
