@@ -161,7 +161,7 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 #mz .mlb.post{background:linear-gradient(#dcac6c,#b8803f);color:#17702c;border-color:#6b411d;border-radius:.2em;line-height:1.2;text-shadow:0 0 1px #f6e6c4;box-shadow:0 1px 2px rgba(0,0,0,.35)}   /* 제주 올레 코스 번호 나무 팻말 (사장님 10-21) — 나무색 판·초록 글자 */
 #mz .mlb.post::after{content:"";position:absolute;left:26%;right:26%;top:100%;height:.7em;border-left:.2em solid #6b411d;border-right:.2em solid #6b411d}   /* 짧은 다리 둘 */
 #mz{position:relative;transform-origin:0 0;will-change:transform}
-.map.zoomed{touch-action:pan-y}   /* 한 손가락 = 화면 넘김, 지도는 두 손가락 (사장님 10-29) */
+.map.zoomed{touch-action:none}   /* 처음 크기 = 한 손가락 화면 넘김 · 키운 뒤 = 한 손가락으로 지도 이리저리 (사장님 10-29) */
 .zb{position:absolute;right:10px;bottom:10px;z-index:3;display:none!important;flex-direction:column;align-items:flex-end;gap:6px}   /* ＋ − ⟲ 단추 숨김 — 손가락 벌리기·휠로 대신 (사장님 10-16) */
 /* ◎ 현재 위치 — 지도 왼쪽 아래 (사장님 10-15). © OpenStreetMap·네이버 로고/저작권 줄 바로 위에 얹어 그것들을 가리지 않는다 */
 #zme{position:absolute;left:8px;bottom:26px;z-index:4;height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:800;white-space:nowrap;color:#1a73e8;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);line-height:1}
@@ -1336,7 +1336,7 @@ if(DET) return;     if(pan){ var dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math
   window.addEventListener("mouseup",function(e){ if(e.button===0){ pan=null; return; } if(e.button!==2||!drag) return; var k=hitAt(e.clientX,e.clientY), d=drag; drag=null; distShow(d.k,k,d.p,dlPt(e.clientX,e.clientY)); });
   function dist2(a,b){ return Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); }
   m.addEventListener("touchstart",function(e){ if(DET) return; if(e.target.closest(".zb")||e.target.closest("#zme")) return; inBlur(); clearTimeout(tmr); tch=null; pin=null; one=null;
-    if(e.touches.length===1){ moved=false; return; }   // 지도 위 한 손가락 = 화면 넘김(브라우저가 함, 넘기면 그림 안 눌림) · 지도 옮기기·키우기는 두 손가락 (사장님 10-29)
+    if(e.touches.length===1){ moved=false; if(m.classList.contains("zoomed")){ var t=e.touches[0]; one={x:t.clientX,y:t.clientY,tx:ZM.tx,ty:ZM.ty,h:false}; } return; }   // 처음 크기: 한 손가락 = 화면 넘김(브라우저가 함) · 두 손가락으로 키운 뒤엔 한 손가락으로 지도를 이리저리 (사장님 10-29)
     if(e.touches.length!==2) return; e.preventDefault();
     var t0=e.touches[0], t1=e.touches[1], a=hitAt(t0.clientX,t0.clientY), b=hitAt(t1.clientX,t1.clientY);
     pin={d:dist2(t0,t1),s:ZM.s,cx:(t0.clientX+t1.clientX)/2,cy:(t0.clientY+t1.clientY)/2,tx:ZM.tx,ty:ZM.ty,go:false};
