@@ -88,7 +88,7 @@
     [].forEach.call(L.querySelectorAll("svg.gcab"),function(cs){ var l=GU.d.ln[+cs.dataset.ln], p=l.p; [].forEach.call(cs.querySelectorAll("path"),function(e){ var sg=e.dataset.j==="0"?-1:1, d=""; e.setAttribute("stroke-width",String(1.6/ZM.s));   /* 경계선처럼 화면 1.6px */
       for(var i=0;i<p.length;i++){ var a=p[Math.max(0,i-1)], b=p[Math.min(p.length-1,i+1)], dx=(b[0]-a[0])*as, dy=b[1]-a[1], n=Math.hypot(dx,dy)||1, nx=-dy/n, ny=dx/n;
         d+=(i?"L":"M")+(p[i][0]+sg*off*nx/as)+" "+(p[i][1]+sg*off*ny); } e.setAttribute("d",d); }); }); }
-  function labScale(){ var L=document.getElementById("gul"); if(!L) return; var sc=1/ZM.s; [].forEach.call(L.querySelectorAll(".glb"),function(t){ t.style.transform="scale("+sc+") translate(-50%,3px)"; }); }
+  function labScale(){ var L=document.getElementById("gul"); if(!L) return; var sc=1/ZM.s; [].forEach.call(L.querySelectorAll(".glb"),function(t){ t.style.transform=t.dataset.tx?"scale("+(sc*(+t.dataset.sc||1))+") translate("+t.dataset.tx+",2px)":"scale("+sc+") translate(-50%,3px)"; }); }
   // 입점 문의 빌딩 광고판 글자 (index.html bbDraw 와 같은 모양) — 아이콘 상자 안 비율 P[k].bd 자리에 (10-20 되살림)
   function bbOn(L,k,x,y,bw,bh){ var q=GU.d.P[k], b=q&&q.bd; if(!b) return; var e=document.createElement("div"), en=LANG==="en"; e.className="gbb"; e.innerHTML=k==="adinq"?(en?"Advertise<br>here":LANG==="ko"?"입점 문의":esc(TE("Advertise here (sign)"))):"";
     var S=60, w=(b[2]-b[0])*bw*S, h=b[4]*bh*S, ang=Math.atan2((b[3]-b[1])*bh*S,w)*180/Math.PI;   /* 지도 단위로는 글자가 1px 도 안 돼 안 그려진다 → 60배로 쓰고 1/60 로 줄인다 */
@@ -112,7 +112,7 @@
       for(var dy=-W*0.04;dy<=W*0.04;dy+=st) for(var dx=-W*0.04;dx<=W*0.04;dx+=st){ var d=dx*dx+dy*dy; if(d>=bd) continue; var x0=cx+dx-bw/2, y0=cy+dy-bh, ok=true;
         for(var i=0;i<occ.length;i++){ var o=occ[i]; if(x0-g<o[2]&&x0+bw+g>o[0]&&y0-g<o[3]&&y0+bh+g>o[1]){ ok=false; break; } } if(ok){ bd=d; best=[x0,y0]; } }
       if(!best) best=[cx-bw/2,cy-bh]; var e=img(k); e.dataset.k=(GU.d.act&&GU.d.act[k])||k; put(e,best[0],best[1],bw,bh); L.appendChild(e); occ.push([best[0],best[1],best[0]+bw,best[1]+bh]);
-      var lb={"karaoke@gwanak":["노래방","Karaoke","カラオケ","KTV","KTV","Karaoke"],"pcbang@gwanak":["PC방","PC Bang","PC房","网吧","網咖","PC Bang"]}[k];   /* 사장님 10-28 「간단하게, 설명 달지 마」 — 괄호 설명 없이 */ if(lb){ var t=document.createElement("div"); t.className="glb"; t.textContent=LP(lb); t.style.left=(best[0]+bw/2)+"px"; t.style.top=(best[1]+bh)+"px"; t.style.transform="scale("+(0.85/ZM.s)+") translate(-50%,2px)"; L.appendChild(t); } }); }   /* 명찰 (사장님 10-28) — 구 화면과 같은 「노래방」「PC방」 6개 언어 */
+      var lb={"karaoke@gwanak":["노래방","Karaoke","カラオケ","KTV","KTV","Karaoke"],"pcbang@gwanak":["PC방","PC Bang","PC房","网吧","網咖","PC Bang"]}[k];   /* 사장님 10-28 「간단하게, 설명 달지 마」 — 괄호 설명 없이 */ if(lb){ var t=document.createElement("div"); t.className="glb"; t.textContent=LP(lb); var kr=k==="karaoke@gwanak"; t.dataset.tx=kr?"-100%":"0"; t.dataset.sc="0.85"; t.style.left=(kr?best[0]+bw:best[0])+"px"; t.style.top=(best[1]+bh)+"px"; t.style.transform="scale("+(0.85/ZM.s)+") translate("+t.dataset.tx+",2px)"; L.appendChild(t); }   /* 두 명찰이 서로 반대쪽으로 펼쳐져 안 겹치게 (10-28 폰 영어 화면 겹침) */ }); }   /* 명찰 (사장님 10-28) — 구 화면과 같은 「노래방」「PC방」 6개 언어 */
   // 묶음 화면 구 이름표 자리 (사장님 10-20) — 전국 지도 이름표 크기. 대표 그림·「+N」·다른 이름표·「나」와 띄워서, 구 한가운데에서 가장 가까운 빈 자리.
   //   빈 자리가 없으면 글자를 조금씩 줄여 다시(긴 영어·일본어·중국어 이름)
   function meBox(){   // 「나」 그림 자리(지도 단위) — 화면 크기 고정 그림이라 묶음 처음 배율(ZB) 기준으로 잡는다(확대해도 이름표가 안 흔들리게)
