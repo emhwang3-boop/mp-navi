@@ -410,7 +410,7 @@ function bbMk(){ var mz=document.getElementById("mz"); if(!mz||document.getEleme
   ["pointerdown","mousedown","touchstart"].forEach(function(ev){ bb.addEventListener(ev,function(e){ e.stopPropagation(); },false); });
   bbPaint(); }
 function bbPaint(){ if(!bb) return; var EVL2=EVKIND?[["EVENT OPEN",""],[BBK[EVKIND]||"EVENT",""],["Earn stars\nTop 3 ranking","g"]]:[];
-  var L2=OPEN?(KOF?[["KOREA BINGO",""],["매일 새 문제","g"]].concat(EVKIND?[[BBK[EVKIND]||"EVENT",""]]:[]):TESTF?[["TEST BINGO",""],["Test only","g"],["New questions\nevery day",""]].concat(EVL2):LIVEF?[["EVENT OPEN",""],["DAILY\nKOREA BINGO",""],["Weekly points\nranking","g"]].concat(EVKIND?EVL2.slice(1):[]):[["EVENT OPEN",""],[BBK[KIND]||"EVENT",""],["Earn stars\nTop 3 ranking","g"]]):BBT_CLOSE, t=bb.querySelector(".ebt");
+  var L2=OPEN?(KOF?[["KOREA BINGO",""],["매일\n새 문제","g"]].concat(EVKIND?[[BBK[EVKIND]||"EVENT",""]]:[]):TESTF?[["TEST BINGO",""],["Test only","g"],["New questions\nevery day",""]].concat(EVL2):LIVEF?[["EVENT OPEN",""],["DAILY\nKOREA BINGO",""],["Weekly points\nranking","g"]].concat(EVKIND?EVL2.slice(1):[]):[["EVENT OPEN",""],[BBK[KIND]||"EVENT",""],["Earn stars\nTop 3 ranking","g"]]):BBT_CLOSE, t=bb.querySelector(".ebt");
   t.innerHTML=L2.map(function(x,i){ var ls=x[0].split("\n"), w=Math.max.apply(null,ls.map(function(q){ return q.length; })), fs="min("+(92/(w*0.68)).toFixed(1)+"cqw,"+(86/(ls.length*1.08)).toFixed(1)+"cqh)"; return '<b class="'+x[1]+'" style="font-size:'+fs+'">'+esc(x[0])+'</b>'; }).join("");
   bbI=0; bbStep(); }
 function bbStep(){ if(!bb) return; var bs=bb.querySelectorAll(".ebt b"); [].forEach.call(bs,function(b,i){ b.classList.toggle("on",i===bbI%bs.length); }); bbI++; }
