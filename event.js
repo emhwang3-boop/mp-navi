@@ -378,6 +378,7 @@ css.textContent="#evIsle{position:absolute;z-index:4;width:7.2%;left:58.6%;top:9
  +"#evBox .etab{display:flex;gap:6px;margin:12px 14px 0;position:sticky;top:58px;z-index:2}#evBox .etab button{flex:1;border:2px solid #ff7a1a;background:#fff;color:#ff7a1a;border-radius:14px;padding:8px 6px;font-weight:900;font-size:14px;cursor:pointer;line-height:1.2;font-family:inherit}#evBox .etab button small{display:block;font-size:11px;font-weight:700;opacity:.85}#evBox .etab button.on{background:#ff7a1a;color:#fff}"
  +"#evBox .sg{display:grid;grid-template-columns:repeat(9,1fr);margin:12px auto 0;width:calc(100% - 28px);max-width:420px;border:2px solid #333;background:#fff;user-select:none}#evBox .sc{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#1f5fbf;border-right:1px solid #ccc;border-bottom:1px solid #ccc;cursor:pointer}#evBox .sc:nth-child(9n){border-right:0}#evBox .sc:nth-last-child(-n+9){border-bottom:0}#evBox .sc.br{border-right:2px solid #333}#evBox .sc.bb{border-bottom:2px solid #333}#evBox .sc.gv{color:#222;font-weight:900;background:#f3f3f3}#evBox .sc.same{background:#fff1e0}#evBox .sc.sel{background:#ffd4a8}#evBox .sc.cf{color:#e8322f}#evBox .sc.bad{background:#fdeaea;color:#e8322f}"
  +"#evBox .spad{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px auto 0;width:calc(100% - 28px);max-width:420px}#evBox .spad button{border:2px solid #ff7a1a;background:#fff;color:#ff7a1a;border-radius:12px;padding:10px 0;font-size:20px;font-weight:900;cursor:pointer;font-family:inherit}#evBox .spad button:active{background:#ff7a1a;color:#fff}"
+ +"@keyframes fxg{0%{background:#9be7ae;transform:scale(1.15)}100%{}}@keyframes fxb{0%,40%{background:#ff8a8a}20%,60%{transform:translateX(-4px)}30%,70%{transform:translateX(4px)}100%{}}@keyframes fxl{0%{background:#ffe066;box-shadow:inset 0 0 0 3px #ff7a1a}50%{background:#fff3b0}100%{}}#evBox .fxg{animation:fxg .6s}#evBox .fxb{animation:fxb .6s}#evBox .fxl{animation:fxl .9s}"
  +"#evSheet{position:fixed;inset:0;z-index:2147483004;background:rgba(0,0,0,.35);display:flex;align-items:flex-end;justify-content:center}#evSheet>div{background:#fff;width:100%;max-width:520px;max-height:88vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px 18px 24px;font-family:'Segoe UI','Malgun Gothic',system-ui,sans-serif;color:#2b2b2b}"
  +"#evSheet .qc{font-size:13px;color:#ff7a1a;font-weight:800}#evSheet .qt{font-size:20px;font-weight:800;margin:6px 0 14px;line-height:1.3}#evSheet .op{display:block;width:100%;text-align:left;border:2px solid #e6e6e6;border-radius:14px;padding:13px 15px;font-size:17px;font-weight:700;margin-bottom:10px;background:#fff;cursor:pointer;color:#2b2b2b;font-family:inherit}"
  +"#evSheet .op.ok{background:#e7f8ec;border-color:#27a745;color:#1d7a35}#evSheet .op.bad{background:#fdeaea;border-color:#e8322f;color:#b0201e}#evSheet .msg{font-size:13px;color:#888}#evSheet ol{padding-left:20px;font-size:13.5px;line-height:1.6}#evSheet ol li{margin:4px 0}#evSheet h3{margin:0 0 8px;font-size:18px}"
@@ -513,19 +514,39 @@ function tap(i){ if(!B||!B.open) return; var me=B.me; if(!me){ signIn(); return;
   if(me.s.indexOf(i)>=0) return; var c=B.cells.filter(function(x){ return x.i===i; })[0]; if(!c) return;
   var s=sheet('<div class="qc">'+esc(L(T.sq))+': '+esc(c.w.en)+(c.w.ko?' · '+esc(c.w.ko):'')+'</div><div class="qt">'+esc(c.q)+'</div>'+c.o.map(function(o,k){ return '<button type="button" class="op" data-c="'+k+'">'+["①","②","③"][k]+' '+esc(o)+'</button>'; }).join("")+'<div class="msg"></div>');   // 하루 3번 제한 없앰 (10-27)
   [].forEach.call(s.querySelectorAll(".op"),function(b){ b.onclick=function(){ [].forEach.call(s.querySelectorAll(".op"),function(x){ x.disabled=true; });
-    var before=me.lines||0;
+    var before=me.lines||0, bl=bgLines(me.s);
     post("/npg/bingo/answer",{sess:sess(),i:i,c:+b.dataset.c,l:lg()}).then(function(j){
       if(!j||!j.ok){ s.querySelector(".msg").textContent=j&&j.err==="limit"?L(T.limit):L(T.err); return; }
       me.s=j.s||me.s; me.x=j.x||me.x; me.lines=j.lines||0; me.f0=me.f0||Date.now(); if(me.s.length>=24&&!me.done) me.done=Date.now(); me.tries[i]=3-(j.left==null?0:j.left);
       b.classList.add(j.right?"ok":"bad"); toast(j.right?L(T.right):L(T.wrong),j.right?"#27a745":"#e8322f");
-      setTimeout(function(){ s.remove(); paint(); if(j.right&&me.s.length>=24) toast(L(T.bingo)+" "+L(RNK.all)+"!","",true); try{ load(); }catch(e){} },900);
+      if(!j.right) fxSnd("bad"); else if(me.s.length<24&&bgLines(me.s).length<=bl.length) fxSnd("ok");
+      setTimeout(function(){ s.remove(); paint(); if(j.right&&me.s.length>=24) fxWin(L(T.bingo)+" "+L(RNK.all)+"!"); else if(j.right){ var nl=bgLines(me.s).filter(function(x){ return bl.indexOf(x)<0; }); if(nl.length){ fxSnd("line"); var cs=document.querySelectorAll("#evBody .egrid > .ec"), on=[]; nl.forEach(function(x){ BGL[x].forEach(function(p){ on.push(cs[p]); }); }); fxFlash(on,"fxl"); toast(L(T.bingo),"#ff7a1a"); } } setTimeout(function(){ try{ load(); }catch(e){} },1000); },900);
     }).catch(function(){ s.querySelector(".msg").textContent=L(T.err); }); }; }); }
+var BGL=(function(){ var a=[], r, k; for(r=0;r<5;r++){ a.push([0,1,2,3,4].map(function(c){ return r*5+c; })); a.push([0,1,2,3,4].map(function(c){ return c*5+r; })); } a.push([0,6,12,18,24]); a.push([4,8,12,16,20]); return a; })();   // 빙고 줄 12개 (가로 5·세로 5·대각선 2)
+function bgLines(S){ if(!B||!B.cells) return []; var on=B.cells.map(function(c){ return !!c.free||S.indexOf(c.i)>=0; }); var o=[]; BGL.forEach(function(l,k){ if(l.every(function(p){ return on[p]; })) o.push(k); }); return o; }
 function toast(t,bg,big){ var o=document.getElementById("evToast"); if(o) o.remove(); o=document.createElement("div"); o.id="evToast"; if(big) o.className="big"; else o.style.background=bg; o.textContent=t; document.body.appendChild(o); setTimeout(function(){ o.remove(); },big?2200:1100); }
 window.evOpen=open;
 if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",function(){ bbMk(); mk(); }); else { bbMk(); mk(); }
 var _gb=window.guBack; window.guBack=function(){ if(box()){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };
 var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ evRelang(); }catch(e){} return r; };
 // 언어 바꾸면 열린 이벤트 화면 전부 그 언어로 (사장님 10-27 「다른 이벤트도 다 그렇게」) — 새 이벤트 화면을 만들면 여기에 더한다
+// 효과 — 맞음·틀림·줄 완성 소리와 번쩍임, 다 풀면 팡파레+폭죽 (사장님 10-28). 소리는 코드로 내는 음(파일 없음), 폭죽은 캔버스 불꽃
+var FXA=null; function fxAC(){ try{ if(!FXA) FXA=new (window.AudioContext||window.webkitAudioContext)(); if(FXA.state==="suspended") FXA.resume(); }catch(e){ FXA=null; } return FXA; }
+function fxTone(f,t0,d,tp,v){ var a=fxAC(); if(!a) return; var o=a.createOscillator(), g=a.createGain(), s=a.currentTime+t0; o.type=tp||"sine"; o.frequency.setValueAtTime(f,s); g.gain.setValueAtTime(0.0001,s); g.gain.exponentialRampToValueAtTime(v||0.18,s+0.02); g.gain.exponentialRampToValueAtTime(0.0001,s+d); o.connect(g); g.connect(a.destination); o.start(s); o.stop(s+d+0.05); }
+function fxSnd(k){ try{
+  if(k==="ok"){ fxTone(880,0,0.12); fxTone(1320,0.08,0.18); }
+  else if(k==="bad"){ fxTone(180,0,0.28,"square",0.12); fxTone(140,0.12,0.3,"square",0.1); }
+  else if(k==="line"){ [523,659,784,1047].forEach(function(f,i){ fxTone(f,i*0.08,0.25,"triangle",0.2); }); }
+  else if(k==="fan"){ var n=[[523,0,.18],[523,.2,.18],[523,.4,.18],[659,.6,.5],[784,1.15,.25],[659,1.4,.18],[784,1.6,.9]]; n.forEach(function(x){ fxTone(x[0],x[1],x[2]+.1,"sawtooth",0.09); fxTone(x[0]*2,x[1],x[2]+.1,"triangle",0.08); fxTone(x[0]/2,x[1],x[2]+.1,"sine",0.12); }); }
+}catch(e){} }
+function fxFlash(els,cls){ [].forEach.call(els,function(x){ if(!x) return; x.classList.remove(cls); void x.offsetWidth; x.classList.add(cls); setTimeout(function(){ x.classList.remove(cls); },900); }); }
+function fxBoom(){ var c=document.createElement("canvas"), W=c.width=innerWidth, Hh=c.height=innerHeight, x=c.getContext("2d"), P=[], C=["#ff3b3b","#ffb800","#2ecc71","#3b82f6","#a855f7","#ff7a1a","#ff4fa3","#ffffff"], t0=Date.now(), nb=0;
+  c.style.cssText="position:fixed;inset:0;width:100vw;height:100vh;z-index:2147483006;pointer-events:none"; document.body.appendChild(c);
+  function burst(){ var cx=W*(0.15+Math.random()*0.7), cy=Hh*(0.12+Math.random()*0.4), col=C[Math.floor(Math.random()*C.length)]; for(var i=0;i<70;i++){ var a=Math.PI*2*i/70, s=2+Math.random()*4.5; P.push({x:cx,y:cy,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c:Math.random()<.3?C[Math.floor(Math.random()*C.length)]:col}); } }
+  (function fr(){ var e=Date.now()-t0; if(e<2600&&e>nb*260){ burst(); nb++; }
+    x.clearRect(0,0,W,Hh); P=P.filter(function(p){ p.x+=p.vx; p.y+=p.vy; p.vy+=0.07; p.vx*=0.985; p.l-=0.011; if(p.l<=0) return false; x.globalAlpha=p.l; x.fillStyle=p.c; x.beginPath(); x.arc(p.x,p.y,2.6,0,7); x.fill(); return true; });
+    if(e<5200||P.length) requestAnimationFrame(fr); else c.remove(); })(); }
+function fxWin(t){ fxSnd("fan"); fxBoom(); if(t) toast(t,"",true); }
 // 스도쿠 (사장님 10-28 「시행 전까지는 매일 빙고 + 스도쿠」) — 매일 빙고와 같은 창의 탭. 정답·시간은 허브(/npg/sdk/*), 칸에 넣은 숫자는 이 기기(mpv_sd:)에만
 var SD=null, SDG=null, SDSEL=-1, SDBAD=[], SDTI=0, SDK="";
 var SDT={go:{ko:"시작",en:"Start",ja:"スタート",zhs:"开始",zht:"開始",es:"Empezar"},
@@ -544,6 +565,9 @@ function sdKey(){ return "mpv_sd:"+(SD.ko?"k":"t")+":"+SD.day+":"+(SD.me?SD.me.n
 function sdLoadG(){ var k=sdKey(); if(SDK===k&&SDG) return; SDK=k; SDBAD=[]; SDSEL=-1; var v=null; try{ v=JSON.parse(ls(k)||"null"); }catch(e){} SDG=Array.isArray(v)&&v.length===81?v:new Array(81).fill(0);
   for(var i=0;i<81;i++) if(SD.puz[i]!=="0") SDG[i]=+SD.puz[i]; }
 function sdSave(){ ls(SDK,JSON.stringify(SDG)); }
+function sdSol(i){ var k=SD&&SD.sk; if(!k||k.length!==81) return 0; for(var d=1;d<=9;d++) if((d+i*7)%9===+k[i]) return d; return 0; }   // 허브가 섞어 보낸 답
+function sdUnits(i){ var r=Math.floor(i/9), q=i%9, br=r-r%3, bq=q-q%3, a=[[],[],[]]; for(var k=0;k<9;k++){ a[0].push(r*9+k); a[1].push(k*9+q); a[2].push((br+Math.floor(k/3))*9+bq+k%3); } return a; }
+function sdUnitOk(u){ return u.every(function(j){ return SDG[j]&&(!SD.sk||SDG[j]===sdSol(j)); }); }
 function sdElapsed(){ var me=SD&&SD.me; if(!me||!me.st) return 0; if(me.done) return me.el; return (me.acc||0)+(me.rs?Math.max(0,Date.now()-(SD._sk||0)-me.rs):0)+(me.pen||0); }
 // 시계는 스도쿠 화면을 보고 있을 때만 (사장님 10-28) — 창 닫기·다른 탭·앱 숨김 = 멈춤, 돌아오면 이어서
 function sdLive(){ return SD&&SD.me&&SD.me.st&&!SD.me.done&&SD.puz; }
@@ -555,7 +579,7 @@ document.addEventListener("visibilitychange",function(){ if(document.hidden) sdP
 function sdConf(){ var c={}, i, j; for(i=0;i<81;i++){ if(!SDG[i]) continue; var r=Math.floor(i/9), q=i%9; for(j=0;j<81;j++){ if(j===i||SDG[j]!==SDG[i]) continue; var r2=Math.floor(j/9), q2=j%9; if(r===r2||q===q2||(Math.floor(r/3)===Math.floor(r2/3)&&Math.floor(q/3)===Math.floor(q2/3))){ c[i]=1; break; } } } return c; }
 function sdGridH(){ var me=SD.me, done=!!me.done, cf=sdConf(), sv=SDSEL>=0?SDG[SDSEL]:0, h='<div class="sg">';
   for(var i=0;i<81;i++){ var gv=SD.puz[i]!=="0", r=Math.floor(i/9), q=i%9, cl="sc"+(gv?" gv":"")+(q%3===2&&q<8?" br":"")+(r%3===2&&r<8?" bb":"");
-    if(i===SDSEL) cl+=" sel"; else if(sv&&SDG[i]===sv) cl+=" same"; if(cf[i]&&!gv) cl+=" cf"; if(SDBAD.indexOf(i)>=0) cl+=" bad";
+    if(i===SDSEL) cl+=" sel"; else if(sv&&SDG[i]===sv) cl+=" same"; if(cf[i]&&!gv) cl+=" cf"; if(SDBAD.indexOf(i)>=0||(!gv&&SDG[i]&&SD.sk&&!done&&SDG[i]!==sdSol(i))) cl+=" bad";
     h+='<div class="'+cl+'" data-s="'+i+'">'+(SDG[i]||"")+'</div>'; }
   h+='</div>';
   if(!done){ h+='<div class="spad">'; for(var n=1;n<=9;n++) h+='<button type="button" data-n="'+n+'">'+n+'</button>'; h+='<button type="button" data-n="0">⌫</button></div>'; }
@@ -563,7 +587,12 @@ function sdGridH(){ var me=SD.me, done=!!me.done, cf=sdConf(), sv=SDSEL>=0?SDG[S
 function sdWireGrid(e){ [].forEach.call(e.querySelectorAll(".sc[data-s]"),function(x){ x.onclick=function(){ if(SD.me.done) return; var i=+x.dataset.s; if(SD.puz[i]!=="0"){ SDSEL=i; } else SDSEL=(SDSEL===i?-1:i); sdRepaintGrid(); }; });
   [].forEach.call(e.querySelectorAll(".spad [data-n]"),function(x){ x.onclick=function(){ sdPut(+x.dataset.n); }; }); }
 function sdRepaintGrid(){ var w=document.getElementById("sdW"); if(!w) return; w.innerHTML=sdGridH(); sdWireGrid(w); var c=document.querySelector('#evBody [data-ev="sdchk"]'); if(c) c.disabled=SDG.indexOf(0)>=0; }
-function sdPut(n){ if(!SD||!SD.me||SD.me.done||SDSEL<0||SD.puz[SDSEL]!=="0") return; SDG[SDSEL]=n; var b=SDBAD.indexOf(SDSEL); if(b>=0) SDBAD.splice(b,1); sdSave(); sdRepaintGrid(); }
+function sdPut(n){ if(!SD||!SD.me||SD.me.done||SDSEL<0||SD.puz[SDSEL]!=="0") return; var i=SDSEL, U=sdUnits(i), was=U.map(sdUnitOk); SDG[i]=n; var b=SDBAD.indexOf(i); if(b>=0) SDBAD.splice(b,1); sdSave(); sdRepaintGrid();
+  if(!n||!SD.sk) return; var w=document.getElementById("sdW"), cel=function(j){ return w&&w.querySelector('.sc[data-s="'+j+'"]'); };
+  if(n!==sdSol(i)){ fxSnd("bad"); fxFlash([cel(i)],"fxb"); if(navigator.vibrate) try{ navigator.vibrate(120); }catch(e){} return; }
+  if(SDG.every(function(v,j){ return v===sdSol(j); })){ sdCheck(); return; }   // 다 맞으면 바로 확인 → 팡파레
+  var nw=[]; U.forEach(function(u,k){ if(!was[k]&&sdUnitOk(u)) nw=nw.concat(u); });
+  if(nw.length){ fxSnd("line"); fxFlash(nw.map(cel),"fxl"); } else { fxSnd("ok"); fxFlash([cel(i)],"fxg"); } }
 function sdTick(){ clearInterval(SDTI); SDTI=setInterval(function(){ var c=document.getElementById("sdClk"); if(!c||!SD||!SD.me||SD.me.done){ clearInterval(SDTI); return; } c.textContent=elTxt(sdElapsed()); },1000); }
 function sdPaint(){ var e=document.getElementById("evBody"); if(!e||!SD) return; setHead("sudoku"); var me=SD.me, h=tabsH(), max=SD.max||12;
   if(SD.ko) h+='<div class="ecard" style="background:#eaf3ff;border:2px solid #3b82f6;font-weight:800;color:#1e3a8a;text-align:center">한국인 판 · 한국어 설정으로 한국에서 접속한 분만 참가합니다. 순위·별 배지가 있습니다. 판은 매일 밤 12시에 바뀝니다.</div>';
@@ -589,7 +618,7 @@ function sdStart(force){ if(force&&!confirm(L(SDT.ask))) return; var b=document.
   post("/npg/sdk/start",{sess:sess(),l:lg(),force:force?1:0}).then(function(j){ if(j&&j.ok){ SDK=""; load(); return; } if(j&&j.err==="all"){ load(); return; } alert(L(T.err)); if(b) b.disabled=false; }).catch(function(){ alert(L(T.err)); if(b) b.disabled=false; }); }
 function sdCheck(){ if(!SDG||SDG.indexOf(0)>=0){ toast(L(SDT.fill),"#888"); return; } var b=document.querySelector('#evBody [data-ev="sdchk"]'); if(b) b.disabled=true;
   post("/npg/sdk/check",{sess:sess(),l:lg(),g:SDG.join("")}).then(function(j){
-    if(j&&j.ok&&j.done){ toast(L(SDT.ok)+" "+elTxt(j.el),"#27a745",true); load(); return; }
+    if(j&&j.ok&&j.done){ fxWin(L(SDT.ok)+" "+elTxt(j.el)); load(); return; }
     if(j&&j.ok){ SDBAD=j.bad||[]; SD.me.pen=j.pen||0; toast(L(SDT.bad).replace("{n}",SDBAD.length),"#e8322f"); sdRepaintGrid(); return; }
     load(); }).catch(function(){ alert(L(T.err)); if(b) b.disabled=false; }); }
 document.addEventListener("keydown",function(ev){ if(!box()||TAB!=="sd"||!SD||!SD.me||SD.me.done||!SD.puz) return; var k=ev.key;
