@@ -50,7 +50,7 @@ function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ ret
 function day(ms){ return new Date(ms+9*3600e3).toISOString().slice(0,10); }
 function sess(){ try{ return localStorage.getItem("mpv_pg_sess")||""; }catch(e){ return ""; } }
 function post(path,b){ return fetch(PH+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b),cache:"no-store"}).then(function(r){ return r.json(); }); }
-function okK(k){ return typeof k==="string"&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,39}$/.test(k)&&k!=="mpstat"; }
+function okK(k){ return typeof k==="string"&&(/^shop:[a-z0-9]{1,10}$/.test(k)||(/^[A-Za-z0-9][A-Za-z0-9_-]{0,39}$/.test(k)&&k!=="mpstat"&&k!=="shop")); }   // 체험·입장권 상품 = "shop:<상품id>" (10-29)
 function stars(n,px){ n=Math.round(n||0); var h=""; for(var i=1;i<=5;i++) h+='<span style="color:'+(i<=n?"#f59f00":"#ced4da")+'">★</span>'; return '<span class="rvst" style="font-size:'+(px||14)+'px">'+h+'</span>'; }
 function css(){ if(document.getElementById("rvCss")) return; var s=document.createElement("style"); s.id="rvCss";
   s.textContent=".rvs{display:flex;align-items:center;gap:8px;margin:5px 0 3px;padding:6px 10px;border-radius:12px;background:#fff9db;border:1px solid #ffe066;font-size:13.5px;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}"
@@ -63,29 +63,35 @@ function css(){ if(document.getElementById("rvCss")) return; var s=document.crea
   +".rvw textarea{width:100%;box-sizing:border-box;min-height:74px;margin-top:8px;padding:8px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:14px;background:var(--card);color:var(--ink);resize:vertical}"
   +".rvw .rvr{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}.rvw .rvc{color:var(--sub);font-size:12px;margin-right:auto}"
   +".rvw button,.rvp .rvlg{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 16px;font-size:14px;cursor:pointer}.rvw button.rvgo,.rvp .rvlg{background:#f59f00;border-color:#f59f00;color:#fff;font-weight:700}"
+  +".rvmini{display:inline-flex;align-items:center;gap:4px;align-self:flex-start;margin-top:2px;padding:2px 9px;border-radius:999px;background:#fff9db;border:1px solid #ffe066;font-size:12px;color:#5c4a0f}.rvmini b{color:#e67700}"
   +".rvw button[disabled]{opacity:.6}.rvmsg{font-size:12.5px;margin-top:6px;color:var(--sub)}.rvmsg.e{color:#c92a2a}.rvmsg.o{color:#2b8a3e}.rvsm{font-size:12px;color:var(--sub);line-height:1.5;margin:6px 0}";
   document.head.appendChild(s); }
 var SUM={}, OPEN=null, LIST=null, PICK=0;
 window.rvSlot=function(k){ if(!okK(k)) return ""; css(); return '<div class="rvs" data-rvk="'+esc(k)+'" hidden></div>'; };
-function slot(){ return document.querySelector("#res .rvs"); }
-function paintSum(k){ var e=slot(); if(!e||e.dataset.rvk!==k) return; var s=SUM[k]||{n:0,avg:0}, on=OPEN===k;
+function slot(k){ if(!k) return document.querySelector("#res .rvs"); var a=document.querySelectorAll(".rvs[data-rvk]"); for(var i=0;i<a.length;i++) if(a[i].dataset.rvk===k) return a[i]; return null; }   // 명소 카드(#res) 또는 상품 상세(#shopBox [data-rvhost]) (10-29)
+function rvp(k){ var a=document.querySelectorAll(".rvp[data-rvk]"); for(var i=0;i<a.length;i++) if(a[i].dataset.rvk===k) return a[i]; return null; }
+function paintMini(k){ var s=SUM[k], a=document.querySelectorAll(".rvmini[data-rvm]"); for(var i=0;i<a.length;i++) if(a[i].dataset.rvm===k){ a[i].innerHTML=s&&s.n?'<b>★ '+(+s.avg).toFixed(1)+'</b> '+esc(t("rev",{n:s.n})):esc(t("none")); a[i].hidden=false; } }
+function paintSum(k){ paintMini(k); var e=slot(k); if(!e||e.dataset.rvk!==k) return; var s=SUM[k]||{n:0,avg:0}, on=OPEN===k;
   e.classList.toggle("on",on);
   e.innerHTML=(s.n?'<b>★ '+(+s.avg).toFixed(1)+'</b><span class="rvn">'+esc(t("rev",{n:s.n}))+'</span>':'<span class="rvn">'+esc(t("none"))+'</span>')+'<span class="rvh">'+esc(t(on?"tap2c":"tap2"))+'</span>';
   e.hidden=false; }
-window.rvLoad=function(k){ if(!okK(k)) return; OPEN=null; LIST=null; if(SUM[k]) paintSum(k);
+function toBottom(){ var it=document.querySelector("#res .item"), el=it&&it.querySelector(".rvs"); if(!el) return; if(it.lastElementChild!==el&&!(it.lastElementChild&&it.lastElementChild.classList.contains("rvp")&&el.nextElementSibling===it.lastElementChild)) { it.appendChild(el); var p=it.querySelector(".rvp"); if(p) it.appendChild(p); } }   // 별점 띠는 카드 맨 아랫줄 (사장님 10-29) — 「내 여행에 담기」 등이 뒤늦게 붙어도 다시 맨 아래로
+window.rvLoad=function(k){ if(!okK(k)) return; OPEN=null; LIST=null; toBottom(); [300,1200,3000].forEach(function(t){ setTimeout(toBottom,t); }); if(SUM[k]) paintSum(k);
   post("/npg/rv/sum",{k:k}).then(function(j){ if(j&&j.ok){ SUM[k]={n:j.n,avg:j.avg}; paintSum(k); } }).catch(function(){}); };
-function panel(){ var it=document.querySelector("#res .item"); if(!it) return null; var p=it.querySelector(".rvp"); if(!p){ p=document.createElement("div"); p.className="rvp"; it.appendChild(p); } return p; }
-function toggle(k){ if(OPEN===k){ OPEN=null; var p=document.querySelector("#res .rvp"); if(p) p.remove(); paintSum(k); return; }
-  OPEN=k; paintSum(k); var p2=panel(); if(!p2) return; p2.innerHTML='<div class="rvsm">'+esc(t("load"))+'</div>'; list(k); }
-function list(k){ var s=sess(); post("/npg/rv/list",{k:k,l:lg(),sess:s||undefined}).then(function(j){ if(OPEN!==k||window._cardK!==k) return;
-    if(!j||!j.ok){ var p=panel(); if(p) p.innerHTML='<div class="rvmsg e">'+esc(t("err"))+'</div>'; return; }
+function panel(k){ var sl=slot(k), host=sl&&sl.closest("[data-rvhost]"), p=rvp(k);
+  if(host){ if(!p){ p=document.createElement("div"); p.className="rvp"; p.dataset.rvk=k; host.appendChild(p); } return p; }   // 상품 상세 — 띠 바로 아래로 펼침 (10-29)
+  var it=document.querySelector("#res .item"); if(!it) return null; p=it.querySelector(".rvp"); if(!p){ p=document.createElement("div"); p.className="rvp"; it.appendChild(p); } p.dataset.rvk=k; return p; }
+function toggle(k){ if(OPEN===k){ OPEN=null; var p=rvp(k); if(p) p.remove(); paintSum(k); return; }
+  OPEN=k; paintSum(k); var p2=panel(k); if(!p2) return; p2.innerHTML='<div class="rvsm">'+esc(t("load"))+'</div>'; list(k); }
+function list(k){ var s=sess(); post("/npg/rv/list",{k:k,l:lg(),sess:s||undefined}).then(function(j){ if(OPEN!==k||!slot(k)) return;
+    if(!j||!j.ok){ var p=panel(k); if(p) p.innerHTML='<div class="rvmsg e">'+esc(t("err"))+'</div>'; return; }
     if(s&&!j.login){ try{ localStorage.removeItem("mpv_pg_sess"); }catch(e){} }
     SUM[k]={n:j.n,avg:j.avg}; LIST=j; PICK=j.mine?j.mine.st:0; paintSum(k); paintList(k); })
-  .catch(function(){ var p=panel(); if(p&&OPEN===k) p.innerHTML='<div class="rvmsg e">'+esc(t("err"))+'</div>'; }); }
+  .catch(function(){ var p=panel(k); if(p&&OPEN===k) p.innerHTML='<div class="rvmsg e">'+esc(t("err"))+'</div>'; }); }
 function itemHtml(x,i){ return '<div class="rvi'+(x.me?' me':'')+'"><div class="rvm">'+stars(x.st,13)+'<b>'+esc(x.nm)+'</b><span>'+esc(day(x.up||x.at))+(x.up?' · '+esc(t("edited")):'')+'</span>'+(x.me?'<span style="color:#e67700;font-weight:700">'+esc(t("mine"))+'</span>':'')+'</div>'
   +(x.txt?'<div class="rvt" data-i="'+i+'">'+esc(x.txt)+'</div>':'')+(x.o?'<button type="button" class="rvo" data-rvo="'+i+'">'+esc(t("orig"))+'</button> <span style="font-size:11px;color:var(--sub)">'+esc(t("aitr"))+'</span>':'')+'</div>'; }
 function pickHtml(){ var h=""; for(var i=1;i<=5;i++) h+='<span data-rvpick="'+i+'"'+(i<=PICK?' class="on"':'')+'>★</span>'; return h; }
-function paintList(k){ var p=panel(); if(!p||!LIST) return; var j=LIST, h="";
+function paintList(k){ var p=panel(k); if(!p||!LIST) return; var j=LIST, h="";
   h+=(j.items||[]).map(itemHtml).join("")||'<div class="rvsm">'+esc(t("none"))+'</div>';
   if(sess()&&j.login){ var m=j.mine;
     h+='<div class="rvw"><div class="rvq">'+esc(t(m?"edit":"write"))+'</div><div class="rvpick">'+pickHtml()+'</div>'
@@ -94,8 +100,8 @@ function paintList(k){ var p=panel(); if(!p||!LIST) return; var j=LIST, h="";
       +'<div class="rvmsg"></div><div class="rvsm">'+esc(t("rule"))+'</div></div>'; }
   else h+='<div class="rvw"><button type="button" class="rvlg" data-rvlogin="1">'+esc(t("login"))+'</button><div class="rvsm">'+esc(t("loginNote"))+'</div></div>';
   p.innerHTML=h; }
-function msg(s,c){ var e=document.querySelector("#res .rvp .rvmsg"); if(e){ e.className="rvmsg"+(c?" "+c:""); e.textContent=s; } }
-function save(k){ var ta=document.querySelector("#res .rvp textarea"), b=document.querySelector("#res .rvp [data-rvgo]"); if(!ta) return;
+function msg(s,c){ var pp=rvp(OPEN), e=pp&&pp.querySelector(".rvmsg"); if(e){ e.className="rvmsg"+(c?" "+c:""); e.textContent=s; } }
+function save(k){ var pp=rvp(k), ta=pp&&pp.querySelector("textarea"), b=pp&&pp.querySelector("[data-rvgo]"); if(!ta) return;
   if(!(PICK>=1&&PICK<=5)){ msg(t("pick"),"e"); return; }
   var s=sess(); if(!s){ paintList(k); return; }
   if(b) b.disabled=true; msg(t("saving"));
@@ -112,18 +118,23 @@ function del(k){ if(!confirm(t("delq"))) return; var s=sess(); if(!s) return;
   post("/npg/rv/del",{sess:s,k:k}).then(function(j){ if(j&&j.ok){ SUM[k]={n:j.n,avg:j.avg}; PICK=0; paintSum(k); list(k); } else msg(t("e_x"),"e"); }).catch(function(){ msg(t("e_x"),"e"); }); }
 function loginOpen(k){ if(!window.mpPG) return; window.mpPG.open();   // 로그인 창이 닫히면 후기 칸을 다시 그린다
   var bx=document.getElementById("pgBox"); if(!bx||!window.MutationObserver) return;
-  var mo=new MutationObserver(function(){ if(!bx.hidden) return; mo.disconnect(); if(OPEN===k&&window._cardK===k) list(k); }); mo.observe(bx,{attributes:true,attributeFilter:["hidden"]}); }
+  var mo=new MutationObserver(function(){ if(!bx.hidden) return; mo.disconnect(); if(OPEN===k&&slot(k)) list(k); }); mo.observe(bx,{attributes:true,attributeFilter:["hidden"]}); }
+// 체험·입장권 (shop.js, 10-29) — 목록 카드 작은 띠(평균·개수만) · 상세는 rvSlot("shop:<id>") + rvLoad · 상세를 다시 그리면 rvPaint
+window.rvMini=function(k){ if(!okK(k)) return ""; css(); return '<span class="rvmini" data-rvm="'+esc(k)+'" hidden></span>'; };
+window.rvMiniLoad=function(keys){ (keys||[]).filter(okK).forEach(function(k){ if(SUM[k]){ paintMini(k); return; }
+  post("/npg/rv/sum",{k:k}).then(function(j){ if(j&&j.ok){ SUM[k]={n:j.n,avg:j.avg}; paintMini(k); } }).catch(function(){}); }); };
+window.rvPaint=function(k){ if(!okK(k)) return; paintSum(k); if(OPEN===k&&!rvp(k)&&LIST) paintList(k); };
 // 두 번 누르기 — 마우스 dblclick · 손가락은 350ms 안에 두 번 톡
 var lastT=0, lastEl=null;
-document.addEventListener("dblclick",function(e){ var el=e.target.closest&&e.target.closest("#res .rvs"); if(!el) return; e.preventDefault(); if(Date.now()-lastT<600&&lastEl===null) return; toggle(el.dataset.rvk); });
-document.addEventListener("touchend",function(e){ var el=e.target.closest&&e.target.closest("#res .rvs"); if(!el) return; var n=Date.now();
+document.addEventListener("dblclick",function(e){ var el=e.target.closest&&e.target.closest(".rvs[data-rvk]"); if(!el) return; e.preventDefault(); if(Date.now()-lastT<600&&lastEl===null) return; toggle(el.dataset.rvk); });
+document.addEventListener("touchend",function(e){ var el=e.target.closest&&e.target.closest(".rvs[data-rvk]"); if(!el) return; var n=Date.now();
   if(lastEl===el&&n-lastT<350){ e.preventDefault(); lastEl=null; lastT=n; toggle(el.dataset.rvk); } else { lastEl=el; lastT=n; } },{passive:false});
-document.addEventListener("click",function(e){ var p=e.target.closest&&e.target.closest("#res .rvp"); if(!p) return; var k=window._cardK; if(!okK(k)) return;
+document.addEventListener("click",function(e){ var p=e.target.closest&&e.target.closest(".rvp[data-rvk]"); if(!p) return; var k=p.dataset.rvk; if(!okK(k)) return;
   var a=e.target.closest("[data-rvpick]"); if(a){ PICK=+a.dataset.rvpick; var w=p.querySelector(".rvpick"); if(w) w.innerHTML=pickHtml(); return; }
   if(e.target.closest("[data-rvgo]")){ save(k); return; }
   if(e.target.closest("[data-rvdel]")){ del(k); return; }
   if(e.target.closest("[data-rvlogin]")){ loginOpen(k); return; }
   var o=e.target.closest("[data-rvo]"); if(o&&LIST){ var i=+o.dataset.rvo, x=LIST.items[i], tx=p.querySelector('.rvt[data-i="'+i+'"]'); if(!x||!tx) return;
     var show=o.dataset.on!=="1"; o.dataset.on=show?"1":""; tx.textContent=show?x.o:x.txt; o.textContent=t(show?"trn":"orig"); } });
-document.addEventListener("input",function(e){ if(!e.target.matches||!e.target.matches("#res .rvp textarea")) return; var c=document.querySelector("#res .rvp .rvc"); if(c) c.textContent=e.target.value.length+" / 300"; });
+document.addEventListener("input",function(e){ if(!e.target.matches||!e.target.matches(".rvp[data-rvk] textarea")) return; var c=e.target.closest(".rvp").querySelector(".rvc"); if(c) c.textContent=e.target.value.length+" / 300"; });
 })();
