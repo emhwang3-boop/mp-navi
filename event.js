@@ -342,7 +342,7 @@ function wpCard(o){ var w=o.wp; if(!w) return ""; var me=w.me||0;
   h+='<div style="margin-top:8px;font-weight:800">'+esc(L(WPT.top))+'</div>'+(w.top&&w.top.length?rankRows(o,w.top,false):'<div style="color:#888;font-size:13px;margin-top:6px">'+esc(L(WPT.none))+'</div>');
   return h+'</div>'; }
 function shareResult(){ shDraw().then(function(c){ if(!c){ alert(L(T.err)); return; }
-  var ln=shLine(), cc=cur(), TOG=L(cc&&cc.kind&&cc.kind!=="bingo"?SHY.join:SHY.together), APP="https://navi.moneypuzzle.co.kr/", txt=ln[0]+" · "+ln[1]+" — "+L(SHX.beat)+"\n"+TOG, d=c.toDataURL("image/png"), jp=c.toDataURL("image/jpeg",0.8);
+  var ln=shLine(), cc=cur(), TOG=L(cc&&cc.kind&&cc.kind!=="bingo"?SHY.join:SHY.together), APP="https://navi.moneypuzzle.co.kr/", txt=ln[0]+" · "+ln[1]+" — "+L(SHX.beat),   /* 아래 줄(TOG) 뺌 — 같은 말 두 번 (사장님 10-29) */ d=c.toDataURL("image/png"), jp=c.toDataURL("image/jpeg",0.8);
   var BT='width:100%;border:0;border-radius:12px;padding:11px 6px;font-weight:900;font-size:14px;color:#fff;cursor:pointer';
   var btn=function(id,bg,lab,fg){ return '<button type="button" data-sh="'+id+'" style="'+BT+';background:'+bg+(fg?';color:'+fg:'')+'">'+esc(lab)+'</button>'; };
   var s=sheet('<h3>'+esc(L(SHX.btn))+'</h3><img src="'+d+'" alt="" style="width:100%;border-radius:12px;margin:6px 0 8px"><div id="shMsg" style="font-size:13px;color:#888;text-align:center;min-height:18px">'+esc(L(SHY.prep))+'</div>'
