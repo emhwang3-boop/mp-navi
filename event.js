@@ -258,7 +258,7 @@ function photoSend(){ var m=document.getElementById("evPm"), sns=document.getEle
 //   개인정보 없음: 이름은 가린 표시(M***a)만, 이메일 등은 안 넣는다
 var SHX={
  btn:{ko:"결과 공유",en:"Share my result",ja:"結果をシェア",zhs:"分享结果",zht:"分享結果",es:"Compartir resultado"},
- beat:{ko:"나를 이길 수 있어요?",en:"Can you beat me?",ja:"私に勝てる？",zhs:"你能赢我吗？",zht:"你能贏我嗎？",es:"¿Puedes superarme?"},
+ beat:{ko:"같이 풀어요!",en:"Let’s play together!",ja:"一緒に解こう！",zhs:"一起来玩吧！",zht:"一起來玩吧！",es:"¡Juguemos juntos!"},   // 공유 카드 문구 (사장님 10-29)
  lines:{ko:"줄 빙고!",en:"lines!",ja:"列ビンゴ！",zhs:"条宾果线！",zht:"條賓果線！",es:"líneas!"},
  found:{ko:"보물상자를 찾았어요!",en:"I found the treasure!",ja:"宝箱を見つけた！",zhs:"我找到宝箱了！",zht:"我找到寶箱了！",es:"¡Encontré el tesoro!"},
  hunt:{ko:"보물상자를 찾는 중",en:"Hunting the treasure",ja:"宝箱を探し中",zhs:"正在寻找宝箱",zht:"正在尋找寶箱",es:"Buscando el tesoro"},
