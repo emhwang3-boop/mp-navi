@@ -521,7 +521,7 @@ function tap(i){ if(!B||!B.open) return; var me=B.me; if(!me){ signIn(); return;
       me.s=j.s||me.s; me.x=j.x||me.x; me.lines=j.lines||0; me.f0=me.f0||Date.now(); if(me.s.length>=24&&!me.done) me.done=Date.now(); me.tries[i]=3-(j.left==null?0:j.left);
       b.classList.add(j.right?"ok":"bad"); toast(j.right?L(T.right):L(T.wrong),j.right?"#27a745":"#e8322f");
       if(!j.right) fxSnd("bad"); else if(me.s.length<24&&bgLines(me.s).length<=bl.length) fxSnd("ok");
-      setTimeout(function(){ s.remove(); paint(); if(j.right&&me.s.length>=24) fxWin(L(T.bingo)+" "+L(RNK.all)+"!"); else if(j.right){ var nl=bgLines(me.s).filter(function(x){ return bl.indexOf(x)<0; }); if(nl.length){ fxSnd("line"); var cs=document.querySelectorAll("#evBody .egrid > .ec"), on=[]; nl.forEach(function(x){ BGL[x].forEach(function(p){ on.push(cs[p]); }); }); fxFlash(on,"fxl"); toast(L(T.bingo),"#ff7a1a"); } } setTimeout(function(){ try{ load(); }catch(e){} },1000); },900);
+      setTimeout(function(){ s.remove(); paint(); if(j.right&&me.s.length>=24) fxWin(L(T.bingo)); else if(j.right){ var nl=bgLines(me.s).filter(function(x){ return bl.indexOf(x)<0; }); if(nl.length){ fxSnd("line"); var cs=document.querySelectorAll("#evBody .egrid > .ec"), on=[]; nl.forEach(function(x){ BGL[x].forEach(function(p){ on.push(cs[p]); }); }); fxFlash(on,"fxl"); toast(L(T.bingo),"#ff7a1a"); } } setTimeout(function(){ try{ load(); }catch(e){} },1000); },900);
     }).catch(function(){ s.querySelector(".msg").textContent=L(T.err); }); }; }); }
 var BGL=(function(){ var a=[], r, k; for(r=0;r<5;r++){ a.push([0,1,2,3,4].map(function(c){ return r*5+c; })); a.push([0,1,2,3,4].map(function(c){ return c*5+r; })); } a.push([0,6,12,18,24]); a.push([4,8,12,16,20]); return a; })();   // 빙고 줄 12개 (가로 5·세로 5·대각선 2)
 function bgLines(S){ if(!B||!B.cells) return []; var on=B.cells.map(function(c){ return !!c.free||S.indexOf(c.i)>=0; }); var o=[]; BGL.forEach(function(l,k){ if(l.every(function(p){ return on[p]; })) o.push(k); }); return o; }
@@ -556,7 +556,7 @@ var SDT={go:{ko:"시작",en:"Start",ja:"スタート",zhs:"开始",zht:"開始",
  nx:{ko:"다음 판",en:"Next board",ja:"次の盤",zhs:"下一盘",zht:"下一盤",es:"Siguiente tablero"},
  bn:{ko:"{n}번째 판",en:"Board {n}",ja:"{n}盤目",zhs:"第{n}盘",zht:"第{n}盤",es:"Tablero {n}"},
  bad:{ko:"틀린 칸 {n}개 · +30초",en:"{n} wrong · +30 s",ja:"間違い{n}マス・+30秒",zhs:"错误{n}格 · +30秒",zht:"錯誤{n}格 · +30秒",es:"{n} incorrectas · +30 s"},
- ok:{ko:"다 풀었어요!",en:"Solved!",ja:"クリア！",zhs:"完成！",zht:"完成！",es:"¡Resuelto!"},
+ ok:{ko:"완성!",en:"Complete!",ja:"完成！",zhs:"完成！",zht:"完成！",es:"¡Completado!"},   // 끝 문구 (사장님 10-29)
  fill:{ko:"빈칸을 다 채우면 확인할 수 있어요",en:"Fill every square to check",ja:"すべて埋めると確認できます",zhs:"填满所有格子后即可检查",zht:"填滿所有格子後即可檢查",es:"Rellena todas las casillas para comprobar"},
  ask:{ko:"지금 판을 끝내고 새 판을 시작할까요?",en:"End this board and start a new one?",ja:"今の盤を終えて新しい盤を始めますか？",zhs:"结束当前这盘并开始新的一盘吗？",zht:"結束目前這盤並開始新的一盤嗎？",es:"¿Terminar este tablero y empezar uno nuevo?"},
  last:{ko:"어제 1·2·3등",en:"Yesterday’s top 3",ja:"昨日の1・2・3位",zhs:"昨日前三名",zht:"昨日前三名",es:"Top 3 de ayer"},
@@ -620,7 +620,7 @@ function sdStart(force){ if(force&&!confirm(L(SDT.ask))) return; var b=document.
   post("/npg/sdk/start",{sess:sess(),l:lg(),force:force?1:0}).then(function(j){ if(j&&j.ok){ SDK=""; load(); return; } if(j&&j.err==="all"){ load(); return; } alert(L(T.err)); if(b) b.disabled=false; }).catch(function(){ alert(L(T.err)); if(b) b.disabled=false; }); }
 function sdCheck(){ if(!SDG||SDG.indexOf(0)>=0){ toast(L(SDT.fill),"#888"); return; } var b=document.querySelector('#evBody [data-ev="sdchk"]'); if(b) b.disabled=true;
   post("/npg/sdk/check",{sess:sess(),l:lg(),g:SDG.join("")}).then(function(j){
-    if(j&&j.ok&&j.done){ fxWin(L(SDT.ok)+" "+elTxt(j.el)); load(); return; }
+    if(j&&j.ok&&j.done){ fxWin(L(SDT.ok)); load(); return; }
     if(j&&j.ok){ SDBAD=j.bad||[]; SD.me.pen=j.pen||0; toast(L(SDT.bad).replace("{n}",SDBAD.length),"#e8322f"); sdRepaintGrid(); return; }
     load(); }).catch(function(){ alert(L(T.err)); if(b) b.disabled=false; }); }
 document.addEventListener("keydown",function(ev){ if(!box()||TAB!=="sd"||!SD||!SD.me||SD.me.done||!SD.puz) return; var k=ev.key;
