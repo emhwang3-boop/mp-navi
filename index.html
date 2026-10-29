@@ -643,8 +643,9 @@ function cphLoad(k,ko,lat,lng){ if(!ko||!(+lat)) return; var ck=ko+"|"+(+lat).to
 function spinCard(){ var p=PLACES.__pin; if(!p) return; if(window.KL) KL.ensure([p],"pin",null,function(){ if(window._cardK==="__pin"&&PLACES.__pin===p) window.spinCard(); });   // 다른 외국어로 처음이면 이름만 받아 와 다시 (10-18)
   try{ var sl=document.querySelector("#spin .spl"); if(sl) sl.textContent=FG()?KS(p.en||p.ko):p.ko; }catch(e){}
   var en=FG(), nm=LN(p), ad=en?p.addr_en:p.addr, ct=en?p.cat_en:String(p.cat||"").split(">").pop().trim();
-  var d=""; window._cardK="__pin";
-  document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine("__pin")+'<div class="t">'+MPICO("mi_pin",nm,MIS)+'</div>'+(en&&p.en!==p.ko?'<div class="d" style="margin:1px 0 0">'+esc(p.ko)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+d+'</div>'+telLine(p.tel)+linksTo(p.ko,p.lat,p.lng,p.ko,p.addr)+'</div>'; try{ cphLoad("__pin",p.ko,p.lat,p.lng); }catch(e){} }
+  var d="", rk="pin:"+(+p.lat).toFixed(4)+"_"+(+p.lng).toFixed(4); window._cardK="__pin";
+  document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine("__pin")+'<div class="t">'+MPICO("mi_pin",nm,MIS)+'</div>'+(en&&p.en!==p.ko?'<div class="d" style="margin:1px 0 0">'+esc(p.ko)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+d+'</div>'+telLine(p.tel)+linksTo(p.ko,p.lat,p.lng,p.ko,p.addr)+(window.rvSlot?rvSlot(rk,{nm:p.ko,addr:p.addr}):"")+'</div>'; try{ cphLoad("__pin",p.ko,p.lat,p.lng); }catch(e){}
+  try{ if(window.rvLoad) rvLoad(rk); }catch(e){} }   // 지도 밖 장소도 별점·후기 — 키 "pin:<위도>_<경도>" 소수 4자리, 맨 아랫줄 (사장님 10-29) — review.js
 document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest("a")) return; var it=e.target.closest&&e.target.closest("#res .sres"); if(!it) return; var x=(window._sres||[])[+it.dataset.i]; if(x) spinShow(x); });
 // 공유 — 화면은 보여 주되 실제로는 보내지 않는다 (체험판, 사장님 기기 포함 · 2026-10-12)
 // HTS 앱 공유 창을 그대로 옮겨 왔다 — 단추는 모두 막힘 (2026-10-12)
@@ -1789,7 +1790,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script src="tvid.js?v=1028tg"></script>
 <script src="pcbang.js?v=1026pc5"></script>
 <script src="pg.js?v=1029grac"></script>
-<script src="review.js?v=1029pm"></script>
+<script src="review.js?v=1029pin"></script>
 <script src="event.js?v=1029tb"></script>
 <script src="billboard.js?v=1021pl"></script>
 <script src="airport_i18n.js?v=1028pw"></script>
