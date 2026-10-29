@@ -59,7 +59,20 @@ var TX={
  sav:T6("저장 중…","Saving…","保存中…","保存中…","儲存中…","Guardando…"),
  oid:T6("주문번호","Order no.","注文番号","订单号","訂單號","N.º de pedido"),
  tsv:T6("시험 주문으로 저장했어요. 가이드·예약자에게는 아무것도 보내지 않았어요.","Saved as a test order. Nothing was sent to the guide or to you.","テスト注文として保存しました。ガイドやご予約者には何も送っていません。","已保存为测试订单，未向向导或您发送任何内容。","已儲存為測試訂單，未向嚮導或您傳送任何內容。","Guardado como pedido de prueba. No se envió nada al guía ni a ti."),
- b4p:T6("1인 ₩89,000 · 2인 이상 1인 ₩79,000","1 person ₩89,000 · 2+ ₩79,000 each","1名 ₩89,000 · 2名以上 1名 ₩79,000","1人 ₩89,000 · 2人以上每人 ₩79,000","1人 ₩89,000 · 2人以上每人 ₩79,000","1 persona ₩89,000 · 2+ ₩79,000 c/u")
+ b4p:T6("1인 ₩89,000 · 2인 이상 1인 ₩79,000","1 person ₩89,000 · 2+ ₩79,000 each","1名 ₩89,000 · 2名以上 1名 ₩79,000","1人 ₩89,000 · 2人以上每人 ₩79,000","1人 ₩89,000 · 2人以上每人 ₩79,000","1 persona ₩89,000 · 2+ ₩79,000 c/u"),
+ // 상품 상세 화면 (사장님 10-29 「카드를 누르면 자세한 설명 · 옆에 결제 화면이 계속 따라오도록 · 되돌아가는 버튼」)
+ bk:T6("뒤로","Back","戻る","返回","返回","Atrás"),
+ dIn:T6("상품 소개","About this experience","商品紹介","商品介绍","商品介紹","Sobre esta experiencia"),
+ dFt:T6("포함·특징","What’s included","含まれるもの・特徴","包含内容·特色","包含內容·特色","Qué incluye"),
+ dPr:T6("가격","Price","料金","价格","價格","Precio"),
+ dRf:T6("취소·환불 안내","Cancellation & refunds","キャンセル・返金","取消·退款说明","取消·退款說明","Cancelación y reembolsos"),
+ rf1:T6("여행 시작 5일 전까지 취소: 전액 환불","Cancel up to 5 days before the tour: full refund","旅行開始の5日前までの取消：全額返金","出发前5天及以前取消：全额退款","出發前5天及以前取消：全額退款","Hasta 5 días antes del tour: reembolso total"),
+ rf2:T6("여행 시작 2일 전까지 취소: 요금의 10% 공제 후 환불","Cancel up to 2 days before: 10% of the fee deducted","2日前までの取消：料金の10%を差し引いて返金","出发前2天及以前取消：扣除费用的10%后退款","出發前2天及以前取消：扣除費用的10%後退款","Hasta 2 días antes: se descuenta el 10% del precio"),
+ rf3:T6("여행 시작 1일 전 취소: 요금의 20% 공제 후 환불","Cancel 1 day before: 20% of the fee deducted","1日前の取消：料金の20%を差し引いて返金","出发前1天取消：扣除费用的20%后退款","出發前1天取消：扣除費用的20%後退款","1 día antes: se descuenta el 20% del precio"),
+ rf4:T6("여행 당일 취소 또는 불참: 요금의 30% 공제 후 환불","Cancel on the day or no-show: 30% of the fee deducted","当日取消・不参加：料金の30%を差し引いて返金","当天取消或未参加：扣除费用的30%后退款","當天取消或未參加：扣除費用的30%後退款","El mismo día o si no te presentas: se descuenta el 30% del precio"),
+ rf5:T6("날씨·안전 문제를 포함해 회사 또는 가이드의 사정으로 투어가 취소되면 전액 환불합니다.","If the tour is cancelled for reasons on our or the guide's side, including weather or safety, you get a full refund.","天候・安全上の理由を含め、会社またはガイドの都合でツアーが中止になった場合は全額返金します。","因公司或向导原因（包括天气、安全问题）取消行程时，全额退款。","因公司或嚮導原因（包括天氣、安全問題）取消行程時，全額退款。","Si el tour se cancela por motivos nuestros o del guía, incluidos el clima o la seguridad, el reembolso es total."),
+ rf6:T6("환불은 결제한 수단으로 영업일 기준 3~7일 안에 처리됩니다.","Refunds are made to your original payment method within 3–7 business days.","返金は決済した手段で、営業日3～7日以内に行います。","退款将通过原支付方式在3～7个工作日内办理。","退款將透過原付款方式於3～7個工作天內辦理。","El reembolso se hace al medio de pago original en 3–7 días hábiles."),
+ rfL:T6("환불 규정 전체 보기","View full refund policy","返金規定の全文を見る","查看完整退款规定","查看完整退款規定","Ver la política de reembolso completa")
 };
 var CATS=[["all",T6("전체","All","すべて","全部","全部","Todo")],["kpop",T6("K-POP","K-POP","K-POP","K-POP","K-POP","K-POP")],["tour",T6("관광","Sightseeing","観光","观光","觀光","Turismo")],["beauty",T6("미용","Beauty","美容","美容","美容","Belleza")],["hair",T6("헤어","Hair","ヘア","美发","美髮","Peluquería")],["food",T6("음식","Food","グルメ","美食","美食","Comida")],["show",T6("공연","Shows","公演","演出","演出","Espectáculos")],["well",T6("웰니스","Wellness","ウェルネス","养生","養生","Bienestar")]];
 var P=[
@@ -136,6 +149,17 @@ css.textContent+="#shopBox .sgrid{display:flex;flex-direction:column;gap:14px}#s
 css.textContent+="#shopBox .spm{position:fixed;inset:0;z-index:6;background:rgba(10,14,24,.6);display:flex;align-items:center;justify-content:center;padding:16px}#shopBox .spm>div{width:min(440px,100%);max-height:100%;overflow:auto;background:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px}"
  +"#shopBox .spm h3{margin:0;font-size:18px}#shopBox .spm .sut{font-size:11px;font-weight:900;color:#d62828;border:1.5px solid #d62828;border-radius:6px;padding:2px 6px;margin-left:6px}#shopBox .spm .sl{display:flex;justify-content:space-between;gap:10px;font-size:14px}#shopBox .spm .sl span:first-child{color:#667085}"
  +"#shopBox .spm label.sr{display:flex;gap:8px;align-items:center;border:1.5px solid #e4e0d6;border-radius:10px;padding:9px 10px;font-size:14px;cursor:pointer}#shopBox .spm label.scl{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#667085}#shopBox .spm label.scl input{font:inherit;font-size:15px;color:#1d2433;border:1.5px solid #e4e0d6;border-radius:10px;padding:9px 10px}#shopBox .spm .serr{background:#fdecec;color:#b42318;border-radius:10px;padding:8px 10px;font-size:13.5px;font-weight:700}#shopBox .spm .sdone{background:#fff4d6;border:2px dashed #e0a100;color:#8a5a00;font-weight:800;border-radius:12px;padding:10px;text-align:center}";
+// 상품 상세 (10-29) — 넓은 화면(800px~): 왼쪽 상세 · 오른쪽 결제 칸 sticky / 폰: 상세 아래 결제 칸 + 맨 아래 금액·「예약·결제」 띠 고정
+css.textContent+="#shopBox .sdbk{align-self:flex-start;border:1.5px solid #1d2433;background:#fff;color:#1d2433;font-weight:800;font-size:15px;border-radius:999px;padding:8px 16px;cursor:pointer}"
+ +"#shopBox .sdg{display:flex;flex-direction:column;gap:14px}#shopBox .sdm{display:flex;flex-direction:column;gap:14px;min-width:0}#shopBox .sds{display:flex;flex-direction:column;gap:14px}"
+ +"#shopBox .sdph{position:relative;border-radius:16px;overflow:hidden;background:#efece4;aspect-ratio:16/10}#shopBox .sdph img{width:100%;height:100%;object-fit:cover;display:block}"
+ +"#shopBox .sdh{font-size:22px;line-height:1.35;margin:0}#shopBox .sdm .sft span{font-size:13px;padding:3px 9px}#shopBox .sdm .spr{font-size:19px}"
+ +"#shopBox .sdm .shbx h2{font-size:15.5px}#shopBox .sdm .shbx p{margin:0;font-size:14.5px;line-height:1.65;color:#344054}#shopBox .sdm ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px;line-height:1.55;color:#344054}"
+ +"#shopBox .sdm a.srfl{color:#1f5fa8;font-weight:800;font-size:14px;text-decoration:none}"
+ +"#shopBox .sbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;align-items:center;gap:12px;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#fff;border-top:1px solid #e4e0d6;box-shadow:0 -4px 16px rgba(0,0,0,.08);transition:transform .2s}"
+ +"#shopBox .sbar.off{transform:translateY(110%)}#shopBox .sbar div{flex:1;min-width:0;display:flex;flex-direction:column}#shopBox .sbar small{color:#667085;font-size:12px}#shopBox .sbar b{font-size:18px;font-weight:900}#shopBox .sbar .spay{flex:0 0 auto;padding:12px 18px}"
+ +"#shopBox .sin.sdet{padding-bottom:96px}#shopBox #shopCo{scroll-margin-top:66px}"
+ +"@media (min-width:800px){#shopBox .sdg{display:grid;grid-template-columns:minmax(0,1fr) 360px;align-items:start;gap:22px}#shopBox .sds{position:sticky;top:66px;max-height:calc(100vh - 80px);overflow:auto;padding-bottom:4px}#shopBox .sbar{display:none}#shopBox .sin.sdet{padding-bottom:40px}}";
 document.head.appendChild(css);
 function won(x){ return "₩"+Number(x).toLocaleString("ko-KR"); }
 function box(){ return document.getElementById("shopBox"); }
@@ -158,6 +182,10 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
   h+='</div><aside class="sside">';
   var p0=prod();   // 선택한 상품
   h+='<section class="shbx" id="shopSel"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel"><img src="img/shop/'+p0.img+'.webp" alt=""><b>'+esc(L(p0.t))+'</b><div class="sft">'+p0.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p0.rt?rtBtn():'')+(p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>';
+  h+=sideHtml()+'</aside></div></div>';
+  b.innerHTML=h; b.scrollTop=y; }
+// 가이드 고르기 + 예약·결제 칸 — 목록 화면 왼쪽 기둥과 상세 화면 결제 칸이 같이 쓴다 (10-29)
+function sideHtml(){ var h='';
   // 가이드
   h+='<section class="shbx"><h2><span class="sstep">1</span>'+esc(L(TX.g1))+'</h2><p class="snote">'+esc(L(TX.gl))+'</p><div class="sgl">'+GLANGS.map(function(l){ return '<button type="button" data-gl="'+l[0]+'" class="'+(S.glang===l[0]?"on":"")+'">'+esc(l[1])+'</button>'; }).join("")+'</div>';
   if(S.glang){ if(S.guides===null) h+='<p class="snote">'+esc(L(TX.gld))+'</p>'; else if(!S.guides.length) h+='<p class="snote">'+esc(L(TX.gn))+'</p>';
@@ -175,8 +203,31 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
        +'<div class="srow"><label>'+esc(L(TX.gd))+'</label><b>'+(gg?esc(gName(gg)):esc(L(TX.none)))+'</b></div>'
        +'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(unit*S.n)+'</span></div>'
        +'<button type="button" class="spay" data-s="mock">'+esc(L(TX.pay))+' ›</button><p class="snote">'+esc(L(p.real?TX.payn:TX.soon2))+'</p>'; } }   // 시험 결제창 (사장님 10-27 「결제화면도 띄워줘, 어차피 결제는 안 돼」)
-  h+='</section></aside></div></div>';
-  b.innerHTML=h; b.scrollTop=y; }
+  return h+'</section>'; }
+function priceHtml(p){ return p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':''; }
+// 상품 상세 화면 — 왼쪽 상세 · 오른쪽(폰은 아래) 결제 칸 + 폰 맨 아래 띠 (10-29)
+function paintDet(){ var b=box(), p=prod(); if(!b||!p) return; var y=b.scrollTop;
+  var h='<div class="sstamp" aria-hidden="true"><span>UNDER TESTING</span></div>'
+   +'<div class="shd"><b>'+esc(L(TX.t))+'</b><span class="ut">UNDER TESTING</span><button type="button" data-s="x">✕ '+esc(L(TX.x))+'</button></div><div class="sin sdet">'
+   +'<button type="button" class="sdbk" data-s="bk">← '+esc(L(TX.bk))+'</button><div class="sdg"><div class="sdm">'
+   +'<div class="sdph"><img src="img/shop/'+p.img+'.webp" alt=""><span class="stag">'+esc(catName(p.c))+'</span>'+(p.real?'<span class="sreal">'+esc(L(TX.real))+'</span>':'<span class="sex">'+esc(L(TX.ex))+'</span>')+'</div>'
+   +'<h1 class="sdh">'+esc(L(p.t))+'</h1><div class="sft">'+p.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+priceHtml(p)+(p.rt?'<div>'+rtBtn()+'</div>':'')
+   +'<section class="shbx"><h2>'+esc(L(TX.dIn))+'</h2><p>'+esc(L(p.d))+'</p>'+(p.real==="perf"?'':'<p class="snote">'+esc(L(p.real?TX.payn:TX.soon2))+'</p>')+'</section>'
+   +'<section class="shbx"><h2>'+esc(L(TX.dFt))+'</h2><ul>'+p.f.map(function(x){ return '<li>'+esc(L(x))+'</li>'; }).join("")+'</ul></section>'
+   +(p.real!=="perf"?'<section class="shbx"><h2>'+esc(L(TX.dPr))+'</h2>'+priceHtml(p)+'</section>'
+     +'<section class="shbx"><h2>'+esc(L(TX.dRf))+'</h2><ul>'+["rf1","rf2","rf3","rf4"].map(function(k){ return '<li>'+esc(L(TX[k]))+'</li>'; }).join("")+'</ul><p>'+esc(L(TX.rf5))+'</p><p>'+esc(L(TX.rf6))+'</p>'
+     +'<a class="srfl" href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(L(TX.rfL))+' ›</a></section>':'')
+   +'</div><aside class="sds">'+sideHtml()+'</aside></div></div>';
+  // 폰 맨 아래 띠 — 금액 + 「예약·결제」(누르면 결제 칸으로). 결제 칸이 화면에 보이면 숨긴다
+  if(p.real==="perf") h+='<div class="sbar"><div><b style="font-size:15px">'+esc(L(p.t))+'</b></div><button type="button" class="spay" data-s="perf">'+esc(L(TX.perf))+' ›</button></div>';
+  else h+='<div class="sbar"><div><small>'+esc(L(TX.tot))+' · '+esc(L(TX.ppl))+' '+S.n+'</small><b>'+won((p.real==="b4"?b4Price(S.n):p.price)*S.n)+'</b></div><button type="button" class="spay" data-s="go">'+esc(L(TX.pay))+' ›</button></div>';
+  b.innerHTML=h; b.scrollTop=y; barTog(); }
+function barTog(){ var b=box(); if(!b) return; var bar=b.querySelector(".sbar"), co=b.querySelector("#shopCo"); if(!bar||!co) return;
+  var r=co.getBoundingClientRect(); bar.classList.toggle("off", r.top<window.innerHeight-60 && r.bottom>60); }
+var listY=0;
+function openDet(id){ var b=box(); if(!b) return; listY=b.scrollTop; S.prod=id; S.det=true; b.scrollTop=0; paintDet(); b.scrollTop=0; barTog(); }
+function toList(){ var b=box(); S.det=false; var o=b&&b.querySelector(".spm"); if(o) o.remove(); paint(); if(b) b.scrollTop=listY; }
+function repaint(){ if(S.det) paintDet(); else paint(); }
 // 시험 결제창 — 「결제하기」(시험)를 누르면 허브 /shop/order 에 시험 주문(status test)으로 저장하고 주문번호를 보여 준다 (10-28). 실제 결제는 하지 않는다
 //   🔴 결제 붙일 때: 아래 fetch 본문의 test:true 를 false 로 → 돌려받은 orderId·amount 로 토스 requestPayment → 허브 /shop/toss/confirm (worker.js shopRoute 주석)
 function mockPay(){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelector(".spm"); if(o) o.remove();
@@ -213,19 +264,22 @@ function mockPay(){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelec
        .catch(function(){ draw(null,L(TX.efail)); }); };
     o.querySelector("#spmX").onclick=function(){ o.remove(); }; };
   draw(null); }
-function loadGuides(){ var l=S.glang; S.guides=null; paint();
-  fetch(HUBU+"/guide/guides?lang="+encodeURIComponent(l)).then(function(r){ return r.json(); }).then(function(j){ if(S.glang!==l) return; S.guides=(j&&j.ok&&j.items)||[]; paint(); }).catch(function(){ if(S.glang===l){ S.guides=[]; paint(); } }); }
+function loadGuides(){ var l=S.glang; S.guides=null; repaint();
+  fetch(HUBU+"/guide/guides?lang="+encodeURIComponent(l)).then(function(r){ return r.json(); }).then(function(j){ if(S.glang!==l) return; S.guides=(j&&j.ok&&j.items)||[]; repaint(); }).catch(function(){ if(S.glang===l){ S.guides=[]; repaint(); } }); }
 function open(){ if(box()) return; var b=document.createElement("div"); b.id="shopBox"; document.body.appendChild(b); document.documentElement.style.overflow="hidden";
+  S.det=false; b.addEventListener("scroll",barTog,{passive:true});   // 처음엔 목록 · 스크롤하면 폰 띠 숨김/보임 (10-29)
   if(!S.time) S.time="09:00";
   if(!S.date){ S.date=new Date(Date.now()+3*864e5+9*36e5).toISOString().slice(0,10); }
   paint(); try{ ntap("shop","open"); }catch(e){} }
 function close(){ var b=box(); if(b) b.remove(); document.documentElement.style.overflow=""; }
 document.addEventListener("click",function(e){ var b=box(); if(!b||!b.contains(e.target)) return; var t=e.target.closest("[data-s],[data-cat],[data-p],[data-gl],[data-g],[data-n]"); if(!t) return;
   if(t.dataset.cat){ S.cat=t.dataset.cat; paint(); }
-  else if(t.dataset.p){ S.prod=t.dataset.p; paint(); try{ ntap("shop","p_"+S.prod); }catch(z){} var c=document.getElementById("shopSel"); if(c&&window.innerWidth<900) c.scrollIntoView({behavior:"smooth",block:"start"}); }
+  else if(t.dataset.p){ openDet(t.dataset.p); try{ ntap("shop","p_"+S.prod); }catch(z){} }   // 카드 = 상세 화면 (10-29)
+  else if(t.dataset.s==="bk") toList();
+  else if(t.dataset.s==="go"){ var co=document.getElementById("shopCo"); if(co) co.scrollIntoView({behavior:"smooth",block:"start"}); }
   else if(t.dataset.gl){ S.glang=t.dataset.gl; S.gid=null; loadGuides(); }
-  else if(t.dataset.g){ S.gid=t.dataset.g; paint(); }
-  else if(t.dataset.n){ S.n=Math.max(1,Math.min(20,S.n+(+t.dataset.n))); paint(); }
+  else if(t.dataset.g){ S.gid=t.dataset.g; repaint(); }
+  else if(t.dataset.n){ S.n=Math.max(1,Math.min(20,S.n+(+t.dataset.n))); repaint(); }
   else if(t.dataset.s==="x"){ close(); try{ var nb=window.NEAR&&NEAR.state(); if(nb&&nb.k==="tg") NEAR.close(); }catch(z){} }   // ✕ = 아래 옛 판(빅4·공연관람 목록)까지 닫는다 (사장님 10-28)
   else if(t.dataset.s==="b4map"){ e.preventDefault(); e.stopPropagation(); close(); try{ var nb2=window.NEAR&&NEAR.state(); if(nb2&&nb2.k==="tg") NEAR.close(); }catch(z){} try{ ntap("shop","b4map"); }catch(z){} try{ if(window.b4RouteShow) b4RouteShow(); }catch(z){} }
   else if(t.dataset.s==="mock") mockPay();
@@ -233,7 +287,10 @@ document.addEventListener("click",function(e){ var b=box(); if(!b||!b.contains(e
   else if(t.dataset.s==="perf"){ close(); var a=document.querySelector('[data-nr="tgx"][data-g="perf"]'); if(a&&!/▾/.test(a.textContent)) a.click(); }   // 옛 판의 공연관람 펼치기
 });
 document.addEventListener("change",function(e){ if(e.target&&e.target.id==="shopDt"){ S.date=e.target.value; } if(e.target&&e.target.id==="shopTm"){ S.time=e.target.value; } });
-var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ paint(); }catch(e){} return r; };   // 언어 바꾸면 바로
-var _gb=window.guBack; window.guBack=function(){ if(box()){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };   // 뒤로 = 닫기
-window.SHOP={open:open,close:close};
+var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ repaint(); }catch(e){} return r; };   // 언어 바꾸면 바로
+var _gb=window.guBack; window.guBack=function(){ if(box()){ if(back()) return true; close(); return true; } return _gb?_gb.apply(this,arguments):false; };   // 뒤로 = 닫기
+// 폰 뒤로가기(index.html backClose 맨 앞에서 부름) — 결제창 → 상세 → 목록 한 단계씩. 목록이면 false (원래 동작 그대로) (10-29)
+function back(){ var b=box(); if(!b) return false; var o=b.querySelector(".spm"); if(o){ o.remove(); return true; } if(S.det){ toList(); return true; } return false; }
+window.addEventListener("resize",function(){ try{ barTog(); }catch(e){} });
+window.SHOP={open:open,close:close,back:back};
 })();
