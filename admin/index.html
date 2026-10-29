@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -623,11 +623,23 @@ function grevStars(n){ n=Math.max(0,Math.min(5,Math.round(n||0))); var s=""; for
 function prvLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>명소 후기 관리</b><div class="msg">불러오는 중…</div></div>';
   api("/shop/admin/products").then(function(q){ (q&&q.items||[]).forEach(function(x){ PRV_NM["shop:"+x.id]=(x.t&&x.t.ko)||x.id; }); }).catch(function(){}).then(function(){ return api("/npg/admin/rv/list"); }).then(function(j){ if(!j.ok) throw new Error(j.err||"x"); var it=j.items||[], c=j.cost;   // 체험 상품 후기(k=shop:<id>)는 상품 이름으로 (10-29)
     P.innerHTML='<div class="card"><b>명소 후기 ('+j.n+')</b><div class="msg">욕설·광고·개인정보는 AI 가 올리기 전에 거릅니다. 그래도 부적절하면 지우세요(평균·개수 다시 셈). 이번 달 AI 비용: '+(c?won(c.krw)+' · '+c.calls+'회':'0원')+' / 상한 '+won(j.stop)+(c&&c.krw>=j.stop?' · <b class="err">새 후기 멈춤</b>':'')+'</div>'
-      +(it.length?it.map(prvCard).join(""):'<div class="msg">아직 후기가 없습니다.</div>')+'</div>';
+      +(it.length?it.map(prvCard).join(""):'<div class="msg">아직 후기가 없습니다.</div>')+'</div><div id="prvCand"></div>';
+    prvCandLoad();
   }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+').</div></div>'; }); }
+// ── 새 그림 후보 (2026-10-29) — 허브 GET /npg/admin/rv/cand. 지도에 그림 없는 검색 장소(pin:) 중 후기 많은 곳. 매달 1일 Cron 이 뽑아 텔레그램 · 그림은 사장님이 고른 뒤 따로 넣는다 ──
+function prvCandRows(a){ if(!a||!a.length) return '<div class="msg">조건에 맞는 곳이 없습니다.</div>';
+  return a.map(function(x,i){ var g="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(x.lat+","+x.lng);
+    return '<div class="inv"><b>'+(i+1)+'. '+esc(x.nm||x.k)+'</b> <span class="sub">'+esc(x.addr||"")+'</span><div class="sub">후기 '+x.n+' · 평균 '+grevStars(x.avg)+' '+(+x.avg).toFixed(1)+' · 점수 '+x.sc+' · <a href="'+esc(g)+'" target="_blank" rel="noopener">구글 지도</a> · <span style="color:#868e96">'+esc(x.k)+'</span></div></div>'; }).join(""); }
+function prvCandLoad(){ var E=$("prvCand"); if(!E) return; E.innerHTML='<div class="card"><b>새 그림 후보</b><div class="msg">불러오는 중…</div></div>';
+  api("/npg/admin/rv/cand").then(function(j){ if(!j||!j.ok) throw new Error(j&&j.err||"x");
+    E.innerHTML='<div class="card"><b>새 그림 후보</b><div class="msg">지도에 그림이 없는 장소(검색 카드)의 후기를 모아 매달 1일(한국 시간) 상위 10곳을 뽑아 텔레그램으로 보냅니다. 점수 = 후기 수 × 평균 별점, 후기 '+j.min+'개 이상. 그림은 여기서 고른 뒤 따로 넣습니다.</div>'
+      +'<div style="margin-top:8px"><b>이번 달 ('+esc(j.mo)+')</b>'+(j.cur?' <span class="sub">뽑은 때 '+esc(new Date(j.cur.at+9*3600e3).toISOString().slice(0,16).replace("T"," "))+'</span>'+prvCandRows(j.cur.items):'<div class="msg">아직 안 뽑았습니다 (매달 1일).</div>')+'</div>'
+      +'<div style="margin-top:8px"><b>지난달 ('+esc(j.pmo)+')</b>'+(j.prev?prvCandRows(j.prev.items):'<div class="msg">기록 없음.</div>')+'</div>'
+      +'<div style="margin-top:8px"><b>지금 센다면 (미리보기)</b>'+prvCandRows(j.live)+'</div></div>';
+  }).catch(function(e){ E.innerHTML='<div class="card"><b>새 그림 후보</b><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+').</div></div>'; }); }
 var PRV_NM={};
 function prvCard(r){ var d=new Date((r.up||r.at)+9*3600e3).toISOString().slice(0,16).replace("T"," ");
-  return '<div class="inv"><div class="sub">'+esc(d)+(/^shop:/.test(r.k)?' · 체험 상품 <b>'+esc(PRV_NM[r.k]||r.k.slice(5))+'</b> · ':' · 명소 <b>'+esc(r.k)+'</b> · ')+esc(r.nm)+(r.own?' · 사장님/심사 계정':'')+(r.up?' · 수정됨':'')+'</div>'
+  return '<div class="inv"><div class="sub">'+esc(d)+(/^shop:/.test(r.k)?' · 체험 상품 <b>'+esc(PRV_NM[r.k]||r.k.slice(5))+'</b> · ':/^pin:/.test(r.k)?' · 지도 밖 장소 <b>'+esc(r.pnm||r.k)+'</b>'+(r.paddr?' ('+esc(r.paddr)+')':'')+' · ':' · 명소 <b>'+esc(r.k)+'</b> · ')+esc(r.nm)+(r.own?' · 사장님/심사 계정':'')+(r.up?' · 수정됨':'')+'</div>'
   +'<div style="margin:4px 0"><span style="color:#e8590c;font-weight:800">'+grevStars(r.st)+'</span></div>'
   +(r.txt?'<div style="white-space:pre-wrap">'+esc(r.txt)+'</div>':'')+(r.ko&&r.ko!==r.txt?'<div class="msg" style="white-space:pre-wrap">한국어: '+esc(r.ko)+'</div>':'')
   +'<div class="row" style="margin-top:6px"><button class="g" data-k="'+esc(r.k)+'" data-u="'+esc(r.uid)+'" onclick="prvDel(this.dataset.k,this.dataset.u)">삭제</button></div></div>'; }
