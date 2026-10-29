@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["prv","명소 후기 관리","관광 카드 별점·댓글 · 삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -406,7 +406,8 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="voice"){ voiceLoad(); return; }
   if(id==="inq"){ inqLoad(); return; }
   if(id==="guide"){ guideLoad(); return; }   // 통역·길안내 가이드 승인 (2026-10-24)
-  if(id==="greview"){ grevLoad(); return; }   // 가이드 후기 관리 (2026-10-24)
+  if(id==="greview"){ grevLoad(); return; }
+  if(id==="prv"){ prvLoad(); return; }   // 명소 후기 (2026-10-29)   // 가이드 후기 관리 (2026-10-24)
   if(id==="mis"){ misLoad(); return; }   // 가이드 예약·결제 장부 MIS (2026-10-24)
   if(id==="ptn"){ ptnLoad(); return; }   // 제휴 가게 — partner.js (2026-10-16)
   if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
@@ -616,6 +617,18 @@ function gLeadDone(id){ if(!confirm('이 요청을 완료 처리하고 손님에
 function gCopy(t){ try{ navigator.clipboard.writeText(t).then(function(){ alert('복사했습니다.'); },function(){ prompt('복사하세요:',t); }); }catch(e){ prompt('복사하세요:',t); } }
 // ── 가이드 후기 관리 (2026-10-24) — 허브 /guide/admin/reviews · /guide/admin/review (숨기기·삭제). 숨기면 손님 화면·평균에서 빠진다 ──
 function grevStars(n){ n=Math.max(0,Math.min(5,Math.round(n||0))); var s=""; for(var i=0;i<5;i++) s+=(i<n?"★":"☆"); return s; }
+// ── 명소 후기 (2026-10-29) — 허브 /npg/admin/rv/list·del. 관광 카드 별점·댓글(AI 검사·번역 뒤 올라온 것). 원문·한국어 번역 · 지우면 평균·개수 다시 셈 ──
+function prvLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>명소 후기 관리</b><div class="msg">불러오는 중…</div></div>';
+  api("/npg/admin/rv/list").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); var it=j.items||[], c=j.cost;
+    P.innerHTML='<div class="card"><b>명소 후기 ('+j.n+')</b><div class="msg">욕설·광고·개인정보는 AI 가 올리기 전에 거릅니다. 그래도 부적절하면 지우세요(평균·개수 다시 셈). 이번 달 AI 비용: '+(c?won(c.krw)+' · '+c.calls+'회':'0원')+' / 상한 '+won(j.stop)+(c&&c.krw>=j.stop?' · <b class="err">새 후기 멈춤</b>':'')+'</div>'
+      +(it.length?it.map(prvCard).join(""):'<div class="msg">아직 후기가 없습니다.</div>')+'</div>';
+  }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+').</div></div>'; }); }
+function prvCard(r){ var d=new Date((r.up||r.at)+9*3600e3).toISOString().slice(0,16).replace("T"," ");
+  return '<div class="inv"><div class="sub">'+esc(d)+' · 명소 <b>'+esc(r.k)+'</b> · '+esc(r.nm)+(r.own?' · 사장님/심사 계정':'')+(r.up?' · 수정됨':'')+'</div>'
+  +'<div style="margin:4px 0"><span style="color:#e8590c;font-weight:800">'+grevStars(r.st)+'</span></div>'
+  +(r.txt?'<div style="white-space:pre-wrap">'+esc(r.txt)+'</div>':'')+(r.ko&&r.ko!==r.txt?'<div class="msg" style="white-space:pre-wrap">한국어: '+esc(r.ko)+'</div>':'')
+  +'<div class="row" style="margin-top:6px"><button class="g" data-k="'+esc(r.k)+'" data-u="'+esc(r.uid)+'" onclick="prvDel(this.dataset.k,this.dataset.u)">삭제</button></div></div>'; }
+function prvDel(k,u){ if(!confirm('이 후기를 삭제할까요? (되돌릴 수 없습니다)')) return; api("/npg/admin/rv/del",{method:"POST",body:JSON.stringify({k:k,uid:u})}).then(function(j){ if(j&&j.ok) prvLoad(); else alert('지우지 못했습니다.'); }).catch(function(){ alert('지우지 못했습니다.'); }); }
 function grevLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>가이드 후기 관리</b><div class="msg">불러오는 중…</div></div>';
   api("/guide/admin/reviews").then(function(j){ if(!j.ok) throw new Error("x"); var it=j.items||[];
     P.innerHTML='<div class="card"><b>후기 ('+it.length+')</b><div class="msg">악성·부적절한 후기를 숨기거나 지울 수 있습니다. 숨기면 손님 화면에서 사라지고 평균 별점에서도 빠집니다.</div>'+(it.length?it.map(grevCard).join(""):'<div class="msg">아직 후기가 없습니다.</div>')+'</div>';
