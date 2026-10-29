@@ -79,7 +79,15 @@ var TX={
  rf4:T6("여행 당일 취소 또는 불참: 요금의 30% 공제 후 환불","Cancel on the day or no-show: 30% of the fee deducted","当日取消・不参加：料金の30%を差し引いて返金","当天取消或未参加：扣除费用的30%后退款","當天取消或未參加：扣除費用的30%後退款","El mismo día o si no te presentas: se descuenta el 30% del precio"),
  rf5:T6("날씨·안전 문제를 포함해 회사 또는 가이드의 사정으로 투어가 취소되면 전액 환불합니다.","If the tour is cancelled for reasons on our or the guide's side, including weather or safety, you get a full refund.","天候・安全上の理由を含め、会社またはガイドの都合でツアーが中止になった場合は全額返金します。","因公司或向导原因（包括天气、安全问题）取消行程时，全额退款。","因公司或嚮導原因（包括天氣、安全問題）取消行程時，全額退款。","Si el tour se cancela por motivos nuestros o del guía, incluidos el clima o la seguridad, el reembolso es total."),
  rf6:T6("환불은 결제한 수단으로 영업일 기준 3~7일 안에 처리됩니다.","Refunds are made to your original payment method within 3–7 business days.","返金は決済した手段で、営業日3～7日以内に行います。","退款将通过原支付方式在3～7个工作日内办理。","退款將透過原付款方式於3～7個工作天內辦理。","El reembolso se hace al medio de pago original en 3–7 días hábiles."),
- rfL:T6("환불 규정 전체 보기","View full refund policy","返金規定の全文を見る","查看完整退款规定","查看完整退款規定","Ver la política de reembolso completa")
+ rfL:T6("환불 규정 전체 보기","View full refund policy","返金規定の全文を見る","查看完整退款规定","查看完整退款規定","Ver la política de reembolso completa"),
+ // 관리자에서 등록한 상품 (10-29)
+ dp:T6("{n}인 이상 1인","{n}+ people, each","{n}名以上 1名","{n}人以上每人","{n}人以上每人","{n}+ personas, c/u"),
+ tk:T6("예매처로 가기","Go to the ticket site","チケットサイトへ","前往购票网站","前往購票網站","Ir al sitio de entradas"),
+ tkn:T6("예약·결제는 공식 예매처에서 합니다.","Booking and payment are done on the official ticket site.","予約・決済は公式チケットサイトで行います。","预约和付款请在官方购票网站完成。","預約和付款請在官方購票網站完成。","La reserva y el pago se hacen en el sitio oficial de entradas."),
+ dys:T6("진행 요일","Days","開催曜日","开放日","開放日","Días"),
+ wd:[T6("일","Sun","日","日","日","dom"),T6("월","Mon","月","一","一","lun"),T6("화","Tue","火","二","二","mar"),T6("수","Wed","水","三","三","mié"),T6("목","Thu","木","四","四","jue"),T6("금","Fri","金","五","五","vie"),T6("토","Sat","土","六","六","sáb")],
+ edy:T6("이 상품은 고른 요일에 진행하지 않아요. 진행 요일을 확인해 주세요.","This product doesn't run on that day. Please check the days.","この商品は選んだ曜日には開催しません。開催曜日をご確認ください。","该商品在所选日期不开放，请确认开放日。","該商品在所選日期不開放，請確認開放日。","Este producto no se ofrece ese día. Revisa los días."),
+ mx:T6("최대 {n}명","Up to {n} people","最大{n}名","最多{n}人","最多{n}人","Hasta {n} personas")
 };
 var CATS=[["all",T6("전체","All","すべて","全部","全部","Todo")],["kpop",T6("K-POP","K-POP","K-POP","K-POP","K-POP","K-POP")],["tour",T6("관광","Sightseeing","観光","观光","觀光","Turismo")],["beauty",T6("미용","Beauty","美容","美容","美容","Belleza")],["hair",T6("헤어","Hair","ヘア","美发","美髮","Peluquería")],["food",T6("음식","Food","グルメ","美食","美食","Comida")],["show",T6("공연","Shows","公演","演出","演出","Espectáculos")],["well",T6("웰니스","Wellness","ウェルネス","养生","養生","Bienestar")]];
 var P=[
@@ -116,6 +124,18 @@ var P=[
   f:[T6("자유 이용","Stay as long as you like","時間自由","不限时","不限時","Sin límite"),T6("입장권","Entry ticket","入場券","门票","門票","Entrada"),T6("식혜·구운 달걀","Sikhye & baked eggs","シッケ・ゆで卵","甜米露·烤鸡蛋","甜米露·烤雞蛋","Sikhye y huevos")],
   d:T6("한국 사람들의 휴식 공간. 여러 온도의 방과 사우나, 간식까지 한 번에 즐깁니다.","Where Koreans relax: rooms at different temperatures, saunas and snacks in one place.","韓国人の憩いの場。温度の違う部屋やサウナ、おやつまで一度に楽しめます。","韩国人的休闲场所，各种温度的房间、桑拿和小吃一次享受。","韓國人的休閒場所，各種溫度的房間、桑拿和小吃一次享受。","Donde se relajan los coreanos: salas a distintas temperaturas, saunas y tentempiés.")}
 ];
+// 상품 목록 = 허브 /shop/products (관리자 「상품 관리」, 10-29). 허브가 안 되면 위 P 표 8개 그대로 (대비책)
+//   🔴 고정 상품(P 표 8개)은 허브가 base:1 로 주면 이 파일의 P 를 그대로 쓴다 — 토스 심사 중, 글자·분류·가격·상태 안 바뀜
+var HP=null, PLc=null;
+function hubP(x){ return {id:x.id,c:x.c,imgs:x.imgs||[],img0:x.img||"",t:x.t,d:x.d,f:x.f||[],price:x.price||0,disc:x.disc||[],free:!!x.free,days:x.days||[],times:x.times||[],max:x.max||20,st:x.st,link:x.link||"",rt:x.rt,real:x.real==="perf"?"perf":(x.st==="sale"?"hub":""),hub:1}; }
+function PL(){ if(!HP) return P; if(PLc) return PLc; var o=[]; HP.forEach(function(x){ if(x.base){ var q=P.filter(function(p){ return p.id===x.id; })[0]; if(q) o.push(q); } else if(x&&x.id&&x.t) o.push(hubP(x)); }); PLc=o.length?o:P; return PLc; }
+function loadP(){ return fetch(HUBU+"/shop/products?l="+encodeURIComponent(window.LANG||"en"),{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ if(j&&j.ok&&Array.isArray(j.items)){ HP=j.items; PLc=null; } }).catch(function(){}); }
+function psrc(p,gi){ if(!p.hub) return "img/shop/"+p.img+".webp"; return p.imgs.length?HUBU+"/shop/img/"+p.imgs[Math.min(gi||0,p.imgs.length-1)]:(p.img0||""); }
+function unitOf(p,n){ if(!p.hub) return p.real==="b4"?b4Price(n):p.price; var u=p.price; (p.disc||[]).forEach(function(d){ if(n>=d.n) u=d.p; }); return u; }
+function fmt(o,n){ return L(o).replace("{n}",n); }
+function hubPr(p,sm){ if(!p.price) return ""; return '<div class="spr">'+won(p.price)+(sm?' <small>/ '+esc(L(TX.per))+'</small>':' / '+esc(L(TX.per)))+(p.disc||[]).map(function(d){ return ' · '+esc(fmt(TX.dp,d.n))+' '+won(d.p); }).join("")+'</div>'; }
+function noteOf(p){ return p.hub&&!p.real?TX.soon:(p.real?TX.payn:TX.soon2); }
+function dayLine(p){ return p.hub&&!p.free&&p.days.length?'<span>'+esc(L(TX.dys))+': '+p.days.map(function(d){ return esc(L(TX.wd[d])); }).join("·")+'</span>':''; }
 var GLANGS=[["en","English"],["ja","日本語"],["zhs","中文(简)"],["zht","中文(繁)"],["es","Español"],["ko","한국어"]];
 var S={cat:"all",prod:null,glang:"",guides:null,gid:null,date:"",n:2,cn:"",ce:"",cp:""};   // cn·ce·cp = 예약자 이름·이메일·전화 (10-28 주문 저장)
 var css=document.createElement("style");
@@ -169,31 +189,33 @@ css.textContent+="#shopBox .sdbk{align-self:flex-start;border:1.5px solid #1d243
  +"@media (max-width:799px){#shopBox .sds #shopSel{display:none}}"   /* 폰 상세는 위에 같은 상품이 이미 크게 있다 */
  +"#shopBox .sin.sdet{padding-bottom:96px}#shopBox #shopCo{scroll-margin-top:66px}"
  +"@media (min-width:800px){#shopBox .sdg{display:grid;grid-template-columns:340px minmax(0,1fr);align-items:start;gap:20px}#shopBox .sdm{grid-column:2;grid-row:1;min-width:0}#shopBox .sds{grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:14px;position:sticky;top:66px;max-height:calc(100vh - 80px);overflow:auto;padding-bottom:4px}#shopBox .sbar{display:none}#shopBox .sin.sdet{padding-bottom:40px}}";
+css.textContent+="#shopBox .sdth{display:flex;gap:6px;overflow-x:auto}#shopBox .sdth button{flex:0 0 auto;width:72px;height:54px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:#efece4;cursor:pointer}#shopBox .sdth button.on{border-color:#ff6a1a}#shopBox .sdth img{width:100%;height:100%;object-fit:cover;display:block}"
+ +"#shopBox .rvhost{--ink:#1d2433;--sub:#667085;--line:#e4e0d6;--card:#fff}#shopBox .rvhost .rvs{background:#fff9db;border-color:#ffe066}#shopBox .rvhost .rvs.on{border-color:#f59f00}#shopBox select#shopTm{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid #d0cbbf;background:#fff}";
 document.head.appendChild(css);
 function won(x){ return "₩"+Number(x).toLocaleString("ko-KR"); }
 function box(){ return document.getElementById("shopBox"); }
 function catName(c){ return L(CATS.filter(function(x){ return x[0]===c; })[0][1]); }
-function prod(){ return P.filter(function(p){ return p.id===S.prod; })[0]; }
+function prod(){ return PL().filter(function(p){ return p.id===S.prod; })[0]; }
 // 빅4 「투어 노선도 보기」 — 서울 지도 위 노선도(index.html b4RouteShow)로 (10-28). 카드가 button 이라 span 으로
 function rtBtn(){ return '<span class="srt" role="button" data-s="b4map">'+esc(L(T6("투어 노선도 보기","View tour route","ツアー路線図を見る","查看游览路线图","查看遊覽路線圖","Ver la ruta del tour")))+' ›</span>'; }
 function b4Price(n){ return n>=2?79000:89000; }
 function gName(g){ return window.LANG==="ko"?(g.name||g.name_en||""):(g.name_en||g.name||""); }
 function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
-  var L0=P.filter(function(p){ return S.cat==="all"||p.c===S.cat; });
+  var PA=PL(), L0=PA.filter(function(p){ return S.cat==="all"||p.c===S.cat; });
   var h='<div class="sstamp" aria-hidden="true"><span>UNDER TESTING</span></div>'
    +'<div class="shd"><b>'+esc(L(TX.t))+'</b><span class="ut">UNDER TESTING</span><button type="button" data-s="x">✕ '+esc(L(TX.x))+'</button></div><div class="sin">'
    +'<p class="ssub">'+esc(L(TX.s))+'</p><div class="sgrid"><div class="smain">'
-   +'<div class="scats">'+CATS.map(function(c){ var n=c[0]==="all"?P.length:P.filter(function(p){ return p.c===c[0]; }).length; return '<button type="button" data-cat="'+c[0]+'" class="'+(S.cat===c[0]?"on":"")+'">'+esc(L(c[1]))+' '+n+'</button>'; }).join("")+'</div>'
+   +'<div class="scats">'+CATS.map(function(c){ var n=c[0]==="all"?PA.length:PA.filter(function(p){ return p.c===c[0]; }).length; return '<button type="button" data-cat="'+c[0]+'" class="'+(S.cat===c[0]?"on":"")+'">'+esc(L(c[1]))+' '+n+'</button>'; }).join("")+'</div>'
    +'<p class="scnt">'+L0.length+' '+esc(L(TX.n))+'</p>'
-   +'<div class="scards">'+L0.map(function(p){ return '<button type="button" class="scard'+(S.prod===p.id?" on":"")+'" data-p="'+p.id+'"><div class="sph"><img src="img/shop/'+p.img+'.webp" alt="" loading="lazy"><span class="stag">'+esc(catName(p.c))+'</span>'+(p.real?'<span class="sreal">'+esc(L(TX.real))+'</span>':'<span class="sex">'+esc(L(TX.ex))+'</span>')+'</div>'
+   +'<div class="scards">'+L0.map(function(p){ return '<button type="button" class="scard'+(S.prod===p.id?" on":"")+'" data-p="'+p.id+'"><div class="sph">'+(psrc(p)?'<img src="'+esc(psrc(p))+'" alt="" loading="lazy">':'')+'<span class="stag">'+esc(catName(p.c))+'</span>'+(p.real?'<span class="sreal">'+esc(L(TX.real))+'</span>':'<span class="sex">'+esc(L(TX.ex))+'</span>')+'</div>'
       +'<div class="scb"><h3>'+esc(L(p.t))+'</h3><div class="sft">'+p.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p.rt?rtBtn():'')+'<p>'+esc(L(p.d))+'</p>'
-      +(p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':'')+'</div></button>'; }).join("")+'</div>';
+      +(p.hub?hubPr(p,true):p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':'')+(window.rvMini?rvMini("shop:"+p.id):'')+'</div></button>'; }).join("")+'</div>';
   h+='</div><aside class="sside">';
   h+=selHtml()+sideHtml()+'</aside></div></div>';
-  b.innerHTML=h; b.scrollTop=y; }
+  b.innerHTML=h; b.scrollTop=y; try{ if(window.rvMiniLoad) rvMiniLoad(L0.map(function(p){ return "shop:"+p.id; })); }catch(e){} }   // 카드 맨 아래 별점 작은 띠 (10-29)
 // 선택한 상품 칸 — 목록 화면과 상세 화면 왼쪽 기둥이 같이 쓴다 (사장님 10-29 「두 번째 화면을 첫 번째와 같게」)
 function selHtml(){ var p0=prod();   // 선택한 상품
-  return '<section class="shbx" id="shopSel"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel"><img src="img/shop/'+p0.img+'.webp" alt=""><b>'+esc(L(p0.t))+'</b><div class="sft">'+p0.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p0.rt?rtBtn():'')+(p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>'; }
+  return '<section class="shbx" id="shopSel"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel">'+(psrc(p0)?'<img src="'+esc(psrc(p0))+'" alt="">':'')+'<b>'+esc(L(p0.t))+'</b><div class="sft">'+p0.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p0.rt?rtBtn():'')+(p0.hub?hubPr(p0):p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>'; }
 // 가이드 고르기 + 예약·결제 칸 — 목록 화면 왼쪽 기둥과 상세 화면 결제 칸이 같이 쓴다 (10-29)
 function sideHtml(){ var h='';
   // 가이드
@@ -206,36 +228,48 @@ function sideHtml(){ var h='';
   if(!p) h+='<p class="snote">'+esc(L(TX.pick))+'</p>';
   else { var gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0];
     if(p.real==="perf") h+='<button type="button" class="spay" data-s="perf">'+esc(L(TX.perf))+' ›</button>';
-    else { var unit=p.real==="b4"?b4Price(S.n):p.price;
+    else if(p.hub&&p.link) h+='<a class="spay" href="'+esc(p.link)+'" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">'+esc(L(TX.tk))+' ›</a><p class="snote">'+esc(L(TX.tkn))+'</p>';   // 외부 예매처 (10-29)
+    else if(p.hub&&!p.real) h+='<p class="snote">'+esc(L(TX.soon))+'</p>';   // 관리자 상품 「준비 중」 — 주문 안 받음
+    else { var unit=unitOf(p,S.n), tsel=p.hub&&!p.free&&p.times.length;
       h+='<div class="srow"><label for="shopDt">'+esc(L(TX.date))+'</label><input type="date" id="shopDt" value="'+esc(S.date)+'"></div>'
-       +'<div class="srow"><label for="shopTm">'+esc(L(TX.tm))+'</label><input type="time" id="shopTm" step="1800" value="'+esc(S.time)+'"></div>'   // 시간 (사장님 10-27 「결제화면에 날짜와 시간까지」)
+       +(dayLine(p)?'<p class="snote">'+dayLine(p)+'</p>':'')
+       +'<div class="srow"><label for="shopTm">'+esc(L(TX.tm))+'</label>'+(tsel?'<select id="shopTm">'+p.times.map(function(x){ return '<option'+(x===S.time?' selected':'')+'>'+esc(x)+'</option>'; }).join("")+'</select>':'<input type="time" id="shopTm" step="1800" value="'+esc(S.time)+'">')+'</div>'   // 시간 (사장님 10-27 「결제화면에 날짜와 시간까지」)
        +'<div class="srow"><label>'+esc(L(TX.ppl))+'</label><div class="sstp"><button type="button" data-n="-1" aria-label="-">−</button><b>'+S.n+'</b><button type="button" data-n="1" aria-label="+">+</button></div></div>'
        +'<div class="srow"><label>'+esc(L(TX.gd))+'</label><b>'+(gg?esc(gName(gg)):esc(L(TX.none)))+'</b></div>'
        +'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(unit*S.n)+'</span></div>'
-       +'<button type="button" class="spay" data-s="mock">'+esc(L(TX.pay))+' ›</button><p class="snote">'+esc(L(p.real?TX.payn:TX.soon2))+'</p>'; } }   // 시험 결제창 (사장님 10-27 「결제화면도 띄워줘, 어차피 결제는 안 돼」)
+       +'<button type="button" class="spay" data-s="mock">'+esc(L(TX.pay))+' ›</button><p class="snote">'+esc(L(noteOf(p)))+'</p>'; } }   // 시험 결제창 (사장님 10-27 「결제화면도 띄워줘, 어차피 결제는 안 돼」)
   return h+'</section>'; }
-function priceHtml(p){ return p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':''; }
+function priceHtml(p){ return p.hub?hubPr(p,true):p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':''; }
 // 상품 상세 화면 — 왼쪽 상세 · 오른쪽(폰은 아래) 결제 칸 + 폰 맨 아래 띠 (10-29)
-function paintDet(){ var b=box(), p=prod(); if(!b||!p) return; var y=b.scrollTop;
+function paintDet(){ var b=box(), p=prod(); if(!b||!p) return; var y=b.scrollTop, rk="shop:"+p.id, keep=b.querySelector('.rvp[data-rvk="'+rk+'"]');   // 펼친 후기 칸은 다시 그려도 그대로 (10-29)
+  var noPay=p.real==="perf"||(p.hub&&!!p.link);
   var h='<div class="sstamp" aria-hidden="true"><span>UNDER TESTING</span></div>'
    +'<div class="shd"><b>'+esc(L(TX.t))+'</b><span class="ut">UNDER TESTING</span><button type="button" data-s="x">✕ '+esc(L(TX.x))+'</button></div><div class="sin sdet">'
    +'<button type="button" class="sdbk" data-s="bk">← '+esc(L(TX.bk))+'</button><div class="sdg"><div class="sdm">'
-   +'<div class="sdph"><img src="img/shop/'+p.img+'.webp" alt=""><span class="stag">'+esc(catName(p.c))+'</span>'+(p.real?'<span class="sreal">'+esc(L(TX.real))+'</span>':'<span class="sex">'+esc(L(TX.ex))+'</span>')+'</div>'
-   +'<h1 class="sdh">'+esc(L(p.t))+'</h1><div class="sft">'+p.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+priceHtml(p)+(p.rt?'<div>'+rtBtn()+'</div>':'')
-   +'<section class="shbx"><h2>'+esc(L(TX.dIn))+'</h2><p>'+esc(L(p.d))+'</p>'+(p.real==="perf"?'':'<p class="snote">'+esc(L(p.real?TX.payn:TX.soon2))+'</p>')+'</section>'
+   +'<div class="sdph">'+(psrc(p,S.gi)?'<img src="'+esc(psrc(p,S.gi))+'" alt="">':'')+'<span class="stag">'+esc(catName(p.c))+'</span>'+(p.real?'<span class="sreal">'+esc(L(TX.real))+'</span>':'<span class="sex">'+esc(L(TX.ex))+'</span>')+'</div>'
+   +(p.hub&&p.imgs.length>1?'<div class="sdth">'+p.imgs.map(function(x,i){ return '<button type="button" data-gi="'+i+'" class="'+(i===(S.gi||0)?"on":"")+'"><img src="'+esc(HUBU+"/shop/img/"+x)+'" alt="" loading="lazy"></button>'; }).join("")+'</div>':'')
+   +'<h1 class="sdh">'+esc(L(p.t))+'</h1><div class="sft">'+p.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+priceHtml(p)+(p.hub&&(dayLine(p)||p.max<20)?'<div class="sft">'+dayLine(p)+(p.max<20?'<span>'+esc(fmt(TX.mx,p.max))+'</span>':'')+'</div>':'')+(p.rt?'<div>'+rtBtn()+'</div>':'')
+   +'<section class="shbx"><h2>'+esc(L(TX.dIn))+'</h2><p>'+esc(L(p.d))+'</p>'+(noPay?'':'<p class="snote">'+esc(L(noteOf(p)))+'</p>')+'</section>'
    +'<section class="shbx"><h2>'+esc(L(TX.dFt))+'</h2><ul>'+p.f.map(function(x){ return '<li>'+esc(L(x))+'</li>'; }).join("")+'</ul></section>'
-   +(p.real!=="perf"?'<section class="shbx"><h2>'+esc(L(TX.dPr))+'</h2>'+priceHtml(p)+'</section>'
+   +(!noPay?'<section class="shbx"><h2>'+esc(L(TX.dPr))+'</h2>'+priceHtml(p)+'</section>'
      +'<section class="shbx"><h2>'+esc(L(TX.dRf))+'</h2><ul>'+["rf1","rf2","rf3","rf4"].map(function(k){ return '<li>'+esc(L(TX[k]))+'</li>'; }).join("")+'</ul><p>'+esc(L(TX.rf5))+'</p><p>'+esc(L(TX.rf6))+'</p>'
      +'<a class="srfl" href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(L(TX.rfL))+' ›</a></section>':'')
+   +(window.rvSlot?'<div class="rvhost" data-rvhost="1">'+rvSlot(rk)+'</div>':'')   // 별점·후기 띠 = 상세 맨 아래 (사장님 10-29)
    +'</div><aside class="sds">'+selHtml()+sideHtml()+'</aside></div></div>';
   // 폰 맨 아래 띠 — 금액 + 「예약·결제」(누르면 결제 칸으로). 결제 칸이 화면에 보이면 숨긴다
   if(p.real==="perf") h+='<div class="sbar"><div><b style="font-size:15px">'+esc(L(p.t))+'</b></div><button type="button" class="spay" data-s="perf">'+esc(L(TX.perf))+' ›</button></div>';
-  else h+='<div class="sbar"><div><small>'+esc(L(TX.tot))+' · '+esc(L(TX.ppl))+' '+S.n+'</small><b>'+won((p.real==="b4"?b4Price(S.n):p.price)*S.n)+'</b></div><button type="button" class="spay" data-s="go">'+esc(L(TX.pay))+' ›</button></div>';
-  b.innerHTML=h; b.scrollTop=y; barTog(); }
+  else if(p.hub&&p.link) h+='<div class="sbar"><div><b style="font-size:15px">'+esc(L(p.t))+'</b></div><a class="spay" href="'+esc(p.link)+'" target="_blank" rel="noopener" style="text-decoration:none">'+esc(L(TX.tk))+' ›</a></div>';
+  else if(p.hub&&!p.real) h+='<div class="sbar"><div><b style="font-size:15px">'+esc(L(p.t))+'</b><small>'+esc(L(TX.ex))+'</small></div></div>';
+  else h+='<div class="sbar"><div><small>'+esc(L(TX.tot))+' · '+esc(L(TX.ppl))+' '+S.n+'</small><b>'+won(unitOf(p,S.n)*S.n)+'</b></div><button type="button" class="spay" data-s="go">'+esc(L(TX.pay))+' ›</button></div>';
+  b.innerHTML=h; b.scrollTop=y;
+  if(window.rvPaint){ var hs=b.querySelector("[data-rvhost]"); if(keep&&hs) hs.appendChild(keep); try{ rvPaint(rk); }catch(e){} }
+  barTog(); }
 function barTog(){ var b=box(); if(!b) return; var bar=b.querySelector(".sbar"), co=b.querySelector("#shopCo"); if(!bar||!co) return;
   var r=co.getBoundingClientRect(); bar.classList.toggle("off", r.top<window.innerHeight-60 && r.bottom>60); }
 var listY=0;
-function openDet(id){ var b=box(); if(!b) return; listY=b.scrollTop; S.prod=id; S.det=true; b.scrollTop=0; paintDet(); b.scrollTop=0; barTog(); }
+function openDet(id){ var b=box(); if(!b) return; listY=b.scrollTop; S.prod=id; S.det=true; S.gi=0;
+  var p=prod(); if(p&&p.hub){ if(!p.free&&p.times.length&&p.times.indexOf(S.time)<0) S.time=p.times[0]; if(S.n>p.max) S.n=p.max; }
+  b.scrollTop=0; paintDet(); b.scrollTop=0; try{ if(window.rvLoad) rvLoad("shop:"+id); }catch(e){} barTog(); }
 function toList(){ var b=box(); S.det=false; var o=b&&b.querySelector(".spm"); if(o) o.remove(); paint(); if(b) b.scrollTop=listY; }
 function repaint(){ if(S.det) paintDet(); else paint(); }
 // 결제창 — 「결제하기」를 누르면 허브 /shop/order 에 시험 주문(test:true, 서버가 금액 계산·orderId 발급, 텔레그램 [시험 주문])을 만들고
@@ -246,12 +280,12 @@ var TCK="test_ck_5OWRapdA8dzyq72vW4gRVo1zEqZK", TSDK="https://js.tosspayments.co
 function tsdk(){ return new Promise(function(ok,no){ if(window.TossPayments) return ok(); var s=document.createElement("script"); s.src=TSDK; s.onload=function(){ ok(); }; s.onerror=no; document.head.appendChild(s); }); }
 function ss(k,v){ try{ if(v===undefined) return JSON.parse(sessionStorage.getItem(k)||"null"); if(v===null) sessionStorage.removeItem(k); else sessionStorage.setItem(k,JSON.stringify(v)); }catch(e){ return null; } }
 function mockPay(res){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelector(".spm"); if(o) o.remove();
-  var unit=p.real==="b4"?b4Price(S.n):p.price, tot=unit*S.n, gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0], gnm=gg?gName(gg):(S.gid&&S.gname)||"";
+  var unit=unitOf(p,S.n), tot=unit*S.n, gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0], gnm=gg?gName(gg):(S.gid&&S.gname)||"";
   o=document.createElement("div"); o.className="spm"; b.appendChild(o); var agd=false; if(!S.pm) S.pm="card";
   // res = 결제창에서 돌아온 결과 {ok, oid, amount} 또는 {ok:false, err}
   var draw=function(oid,err,busy){ var done=res&&res.ok;
     o.innerHTML='<div><h3>'+esc(L(done?TX.pdT:TX.pt))+'<span class="sut">UNDER TESTING</span></h3>'
-    +'<b>'+esc(L(TX.ord))+'</b><div class="spick"><img src="img/shop/'+p.img+'.webp" alt=""><b>'+esc(L(p.t))+'</b></div>'
+    +'<b>'+esc(L(TX.ord))+'</b><div class="spick">'+(psrc(p)?'<img src="'+esc(psrc(p))+'" alt="">':'')+'<b>'+esc(L(p.t))+'</b></div>'
     +'<div class="sl"><span>'+esc(L(TX.dtm))+'</span><span>'+esc((S.date||"-")+" "+(S.time||""))+'</span></div><div class="sl"><span>'+esc(L(TX.ppl))+'</span><span>'+S.n+'</span></div><div class="sl"><span>'+esc(L(TX.gd))+'</span><span>'+(gnm?esc(gnm):esc(L(TX.none)))+'</span></div>'
     +'<div class="stot"><span>'+esc(L(done?TX.amt:TX.tot))+'</span><span>'+won(done?res.amount:tot)+'</span></div>'
     +(done?'<div class="sl"><span>'+esc(L(TX.oid))+'</span><b>'+esc(res.oid)+'</b></div><div class="sdone">'+esc(L(TX.tkey))+'<br>'+esc(L(TX.tsv))+'</div>'
@@ -274,11 +308,12 @@ function mockPay(res){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySe
       if(!/^[\d\s+()-]{7,30}$/.test(ph)){ draw(null,L(TX.eph)); return; }   // 전화도 필수 (사장님 10-28)
       if(!/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/.test(em)){ draw(null,L(TX.eem)); return; }
       if(!S.date||S.date<today||!/^\d{2}:\d{2}$/.test(S.time||"")){ draw(null,L(TX.edt)); return; }
+      if(p.hub&&!p.free&&p.days.length&&p.days.indexOf(new Date(S.date+"T00:00:00Z").getUTCDay())<0){ draw(null,L(TX.edy)); return; }   // 진행 요일 (10-29)
       if(S.pm==="paypal"){ draw(null,L(TX.ppn)); return; }   // 토스 해외간편결제(PayPal)는 USD·별도 계약이라 시험 키에서 COMMON_ERROR (10-29 확인) — 주문 만들지 않고 안내만
       draw(null,"",1); var pm="card";
       fetch(HUBU+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:p.id,pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,glang:S.glang||"",lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,test:true})})
        .then(function(r){ return r.json(); }).then(function(j){
-         if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err; draw(null,e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(TX.edt):L(TX.efail)); return; }
+         if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err; draw(null,e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(p.hub&&p.days&&p.days.length?TX.edy:TX.edt):e==="notsale"?L(TX.soon):L(TX.efail)); return; }
          try{ ntap("shop","order_"+p.id); }catch(z){}
          draw(null,"",2);
          // 돌아왔을 때 화면을 다시 그리려고 주문 내용을 이 탭에만 잠깐 둔다 (sessionStorage)
@@ -300,7 +335,9 @@ function mockPay(res){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySe
 function shopReturn(){ var sp=new URLSearchParams(location.search), r=sp.get("shres"); if(!r) return;
   try{ var keep=location.search.slice(1).split("&").filter(function(x){ return !/^(shres|paymentKey|orderId|amount|paymentType|code|message)=/.test(x); }).join("&");
     history.replaceState(history.state,"",location.pathname+(keep?"?"+keep:"")+location.hash); }catch(e){}
-  var v=ss(PKEY); if(!v||!v.pid||!P.some(function(x){ return x.id===v.pid; })) return;
+  var v=ss(PKEY); if(!v||!v.pid) return;
+  loadP().then(function(){ shopRet2(sp,r,v); }); }
+function shopRet2(sp,r,v){ if(!PL().some(function(x){ return x.id===v.pid; })) return;
   var oid=sp.get("orderId")||"", amt=Math.round(Number(sp.get("amount")||0)), ok=r==="ok"&&oid===v.oid&&amt===v.amount;
   if(ok) ss(PKEY,null);
   S.date=v.date; S.time=v.time; S.n=v.n; S.gid=v.gid; S.gname=v.gname; S.cn=v.cn||""; S.ce=v.ce||""; S.cp=v.cp||""; S.pm=v.pm;
@@ -317,16 +354,18 @@ function open(){ if(box()) return; var b=document.createElement("div"); b.id="sh
   S.det=false; b.addEventListener("scroll",barTog,{passive:true});   // 처음엔 목록 · 스크롤하면 폰 띠 숨김/보임 (10-29)
   if(!S.time) S.time="09:00";
   if(!S.date){ S.date=new Date(Date.now()+3*864e5+9*36e5).toISOString().slice(0,10); }
-  paint(); try{ ntap("shop","open"); }catch(e){} }
+  paint(); try{ ntap("shop","open"); }catch(e){}
+  loadP().then(function(){ var bb=box(); if(!bb||bb.querySelector(".spm")) return; if(S.det&&!prod()){ toList(); return; } repaint(); }); }   // 허브 상품 목록 (10-29) — 안 되면 P 그대로
 function close(){ var b=box(); if(b) b.remove(); document.documentElement.style.overflow=""; }
-document.addEventListener("click",function(e){ var b=box(); if(!b||!b.contains(e.target)) return; var t=e.target.closest("[data-s],[data-cat],[data-p],[data-gl],[data-g],[data-n]"); if(!t) return;
+document.addEventListener("click",function(e){ var b=box(); if(!b||!b.contains(e.target)) return; var t=e.target.closest("[data-s],[data-cat],[data-p],[data-gl],[data-g],[data-n],[data-gi]"); if(!t) return;
+  if(t.dataset.gi){ S.gi=+t.dataset.gi; repaint(); return; }   // 상품 사진 넘기기 (10-29)
   if(t.dataset.cat){ S.cat=t.dataset.cat; paint(); }
   else if(t.dataset.p){ openDet(t.dataset.p); try{ ntap("shop","p_"+S.prod); }catch(z){} }   // 카드 = 상세 화면 (10-29)
   else if(t.dataset.s==="bk") toList();
   else if(t.dataset.s==="go"){ var co=document.getElementById("shopCo"); if(co) co.scrollIntoView({behavior:"smooth",block:"start"}); }
   else if(t.dataset.gl){ S.glang=t.dataset.gl; S.gid=null; loadGuides(); }
   else if(t.dataset.g){ S.gid=t.dataset.g; repaint(); }
-  else if(t.dataset.n){ S.n=Math.max(1,Math.min(20,S.n+(+t.dataset.n))); repaint(); }
+  else if(t.dataset.n){ var pm=prod(); S.n=Math.max(1,Math.min(pm&&pm.hub?pm.max:20,S.n+(+t.dataset.n))); repaint(); }
   else if(t.dataset.s==="x"){ close(); try{ var nb=window.NEAR&&NEAR.state(); if(nb&&nb.k==="tg") NEAR.close(); }catch(z){} }   // ✕ = 아래 옛 판(빅4·공연관람 목록)까지 닫는다 (사장님 10-28)
   else if(t.dataset.s==="b4map"){ e.preventDefault(); e.stopPropagation(); close(); try{ var nb2=window.NEAR&&NEAR.state(); if(nb2&&nb2.k==="tg") NEAR.close(); }catch(z){} try{ ntap("shop","b4map"); }catch(z){} try{ if(window.b4RouteShow) b4RouteShow(); }catch(z){} }
   else if(t.dataset.s==="mock") mockPay();
