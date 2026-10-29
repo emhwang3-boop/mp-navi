@@ -77,8 +77,8 @@ function gisLoad(){ if(window.google&&google.accounts&&google.accounts.id) retur
 var GLOC={ko:"ko",en:"en",ja:"ja",zhs:"zh_CN",zht:"zh_TW",es:"es"};
 function paintLogin(msg){ var I=document.getElementById("pgIn");
   I.innerHTML=head()+'<div class="pgp">'+esc(t("intro"))+'</div><div class="pgp" style="color:var(--ink)">'+esc(t("ask"))+'</div>'+(msg?'<div class="pgp" style="color:#c92a2a">'+esc(msg)+'</div>':'')
-    +'<div id="pgGbtn"><button type="button" class="pgbtn" disabled>'+esc(t("load"))+'</button></div><div id="pgAbtn"></div>'+privHtml();
-  appleBtn();
+    +'<div id="pgGbtn"><button type="button" class="pgbtn" disabled>'+esc(t("load"))+'</button></div><div id="pgAbtn"></div>'+rvHtml()+privHtml();
+  appleBtn(); rvWire();
   cfg().then(function(c){ var g=document.getElementById("pgGbtn"); if(!g) return; c={cid:(c&&c.cid)||PG_CID};
     if(!c||!c.cid){ g.innerHTML='<button type="button" class="pgbtn" id="pgPrep" disabled><img src="img/menu/mi_globe.png" alt="" style="height:16px;width:16px;vertical-align:-3px;margin-right:6px">'+esc(t("prep"))+'</button><div class="pgp">'+esc(t("prepNote"))+'</div>'; return; }
     gisLoad().then(function(){ var g2=document.getElementById("pgGbtn"); if(!g2) return; g2.innerHTML="";
@@ -102,6 +102,14 @@ function appleBtn(){ var a=document.getElementById("pgAbtn"); if(!a) return;
 function onApple(d){ var au=d&&d.authorization; if(!au||!au.id_token||!AS||au.state!==AS.state){ paintLogin(t("lerr")); return; }
   var nm=""; try{ var n=d.user&&d.user.name; if(n) nm=[n.firstName,n.lastName].filter(Boolean).join(" "); }catch(e){}   // 이름은 첫 로그인 때만 온다
   login({prov:"apple",cred:au.id_token,nonce:AS.nonce,name:nm}); }
+/* 게임물관리위원회 심사용 로그인 (사장님 10-29) — ?grac=1 로 들어온 창에서만 아이디·비밀번호 칸이 보인다. 허브 /npg/rvlogin */
+var GR=false; try{ GR=/[?&]grac=1(?![0-9a-z])/i.test(location.search)||sessionStorage.getItem("mp_grac")==="1"; if(GR) sessionStorage.setItem("mp_grac","1"); }catch(e){}
+function rvHtml(){ if(!GR) return ""; var st="width:100%;box-sizing:border-box;padding:8px;margin:4px 0;border:1px solid #ccc;border-radius:8px;font-size:15px";
+  return '<div class="pgsec" style="margin-top:12px">심사용 로그인 (GRAC)</div><input id="pgRvId" autocomplete="username" placeholder="아이디" style="'+st+'"><input id="pgRvPw" type="password" autocomplete="current-password" placeholder="비밀번호" style="'+st+'"><button type="button" class="pgbtn" id="pgRvGo">로그인</button>'; }
+function rvWire(){ var g=document.getElementById("pgRvGo"); if(!g) return; g.onclick=function(){ var i=document.getElementById("pgRvId"), w=document.getElementById("pgRvPw"); rvLogin(i&&i.value, w&&w.value); }; }
+function rvLogin(id,pw){ var I=document.getElementById("pgIn"); if(I) I.innerHTML=head()+'<div class="pgp">'+esc(t("load"))+'</div>';
+  post("/npg/rvlogin",{id:id||"",pw:pw||""}).then(function(j){ if(!j||!j.ok||!j.sess){ paintLogin("아이디 또는 비밀번호가 맞지 않습니다."); return; } ls("mpv_pg_sess",j.sess); paintMe(j.me); menuPaint(); })
+    .catch(function(){ paintLogin(t("lerr")); }); }
 function login(b){ var I=document.getElementById("pgIn"); if(I) I.innerHTML=head()+'<div class="pgp">'+esc(t("load"))+'</div>';
   var own=0; try{ own=localStorage.getItem("mp_owner")?1:0; }catch(e){} b.dev=dev(); b.own=own;
   post("/npg/login",b).then(function(j){ if(!j||!j.ok||!j.sess){ paintLogin(t("lerr")); return; } ls("mpv_pg_sess",j.sess); paintMe(j.me); menuPaint(); })
@@ -131,5 +139,5 @@ function menuPaint(){ var mm=document.getElementById("mm"); if(!mm) return; var 
 var f=window.setLang; if(typeof f==="function"&&!f._pg){ var g=function(){ var r=f.apply(this,arguments); try{ menuPaint(); var b=document.getElementById("pgBox"); if(b&&!b.hidden) open(); }catch(e){} return r; }; g._pg=1; g._tr=f._tr; window.setLang=g; }
 menuPaint();
 window.mpPG={open:open,close:close};
-if(/[?&]pg=1(?![0-9a-z])/i.test(location.search)) setTimeout(open,400);
+if(/[?&]pg=1(?![0-9a-z])/i.test(location.search)||(/[?&]grac=1(?![0-9a-z])/i.test(location.search)&&!ls("mpv_pg_sess"))) setTimeout(open,400);   // 심사용 주소는 로그인 창부터
 })();
