@@ -158,8 +158,9 @@ css.textContent+="#shopBox .sdbk{align-self:flex-start;border:1.5px solid #1d243
  +"#shopBox .sdm a.srfl{color:#1f5fa8;font-weight:800;font-size:14px;text-decoration:none}"
  +"#shopBox .sbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;align-items:center;gap:12px;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#fff;border-top:1px solid #e4e0d6;box-shadow:0 -4px 16px rgba(0,0,0,.08);transition:transform .2s}"
  +"#shopBox .sbar.off{transform:translateY(110%)}#shopBox .sbar div{flex:1;min-width:0;display:flex;flex-direction:column}#shopBox .sbar small{color:#667085;font-size:12px}#shopBox .sbar b{font-size:18px;font-weight:900}#shopBox .sbar .spay{flex:0 0 auto;padding:12px 18px}"
+ +"@media (max-width:799px){#shopBox .sds #shopSel{display:none}}"   /* 폰 상세는 위에 같은 상품이 이미 크게 있다 */
  +"#shopBox .sin.sdet{padding-bottom:96px}#shopBox #shopCo{scroll-margin-top:66px}"
- +"@media (min-width:800px){#shopBox .sdg{display:grid;grid-template-columns:minmax(0,1fr) 360px;align-items:start;gap:22px}#shopBox .sds{position:sticky;top:66px;max-height:calc(100vh - 80px);overflow:auto;padding-bottom:4px}#shopBox .sbar{display:none}#shopBox .sin.sdet{padding-bottom:40px}}";
+ +"@media (min-width:800px){#shopBox .sdg{display:grid;grid-template-columns:340px minmax(0,1fr);align-items:start;gap:20px}#shopBox .sdm{grid-column:2;grid-row:1;min-width:0}#shopBox .sds{grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:14px;position:sticky;top:66px;max-height:calc(100vh - 80px);overflow:auto;padding-bottom:4px}#shopBox .sbar{display:none}#shopBox .sin.sdet{padding-bottom:40px}}";
 document.head.appendChild(css);
 function won(x){ return "₩"+Number(x).toLocaleString("ko-KR"); }
 function box(){ return document.getElementById("shopBox"); }
@@ -180,10 +181,11 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
       +'<div class="scb"><h3>'+esc(L(p.t))+'</h3><div class="sft">'+p.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p.rt?rtBtn():'')+'<p>'+esc(L(p.d))+'</p>'
       +(p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':'')+'</div></button>'; }).join("")+'</div>';
   h+='</div><aside class="sside">';
-  var p0=prod();   // 선택한 상품
-  h+='<section class="shbx" id="shopSel"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel"><img src="img/shop/'+p0.img+'.webp" alt=""><b>'+esc(L(p0.t))+'</b><div class="sft">'+p0.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p0.rt?rtBtn():'')+(p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>';
-  h+=sideHtml()+'</aside></div></div>';
+  h+=selHtml()+sideHtml()+'</aside></div></div>';
   b.innerHTML=h; b.scrollTop=y; }
+// 선택한 상품 칸 — 목록 화면과 상세 화면 왼쪽 기둥이 같이 쓴다 (사장님 10-29 「두 번째 화면을 첫 번째와 같게」)
+function selHtml(){ var p0=prod();   // 선택한 상품
+  return '<section class="shbx" id="shopSel"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel"><img src="img/shop/'+p0.img+'.webp" alt=""><b>'+esc(L(p0.t))+'</b><div class="sft">'+p0.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p0.rt?rtBtn():'')+(p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>'; }
 // 가이드 고르기 + 예약·결제 칸 — 목록 화면 왼쪽 기둥과 상세 화면 결제 칸이 같이 쓴다 (10-29)
 function sideHtml(){ var h='';
   // 가이드
@@ -217,7 +219,7 @@ function paintDet(){ var b=box(), p=prod(); if(!b||!p) return; var y=b.scrollTop
    +(p.real!=="perf"?'<section class="shbx"><h2>'+esc(L(TX.dPr))+'</h2>'+priceHtml(p)+'</section>'
      +'<section class="shbx"><h2>'+esc(L(TX.dRf))+'</h2><ul>'+["rf1","rf2","rf3","rf4"].map(function(k){ return '<li>'+esc(L(TX[k]))+'</li>'; }).join("")+'</ul><p>'+esc(L(TX.rf5))+'</p><p>'+esc(L(TX.rf6))+'</p>'
      +'<a class="srfl" href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(L(TX.rfL))+' ›</a></section>':'')
-   +'</div><aside class="sds">'+sideHtml()+'</aside></div></div>';
+   +'</div><aside class="sds">'+selHtml()+sideHtml()+'</aside></div></div>';
   // 폰 맨 아래 띠 — 금액 + 「예약·결제」(누르면 결제 칸으로). 결제 칸이 화면에 보이면 숨긴다
   if(p.real==="perf") h+='<div class="sbar"><div><b style="font-size:15px">'+esc(L(p.t))+'</b></div><button type="button" class="spay" data-s="perf">'+esc(L(TX.perf))+' ›</button></div>';
   else h+='<div class="sbar"><div><small>'+esc(L(TX.tot))+' · '+esc(L(TX.ppl))+' '+S.n+'</small><b>'+won((p.real==="b4"?b4Price(S.n):p.price)*S.n)+'</b></div><button type="button" class="spay" data-s="go">'+esc(L(TX.pay))+' ›</button></div>';
