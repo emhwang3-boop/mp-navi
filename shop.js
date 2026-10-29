@@ -1,7 +1,7 @@
 /* 머니퍼즐 투어 — 체험·입장권 상품 진열장 (사장님 2026-10-27 「Klook·Creatrip 처럼 상품을 사진과 함께 · 주제별 분류 · 가이드 고르기 · 결제」)
  *  · 「체험·입장권」 칩을 누르면 near.js 옛 판(빅4 패키지·공연관람) 위에 이 화면이 전체로 뜬다. ✕ 로 닫으면 옛 판이 그대로 있다
  *  · 순서(웹·폰 같음, 사장님 「웹도 폰의 순서를 따라」): 주제 칩 → 상품 카드 → 가이드 고르기(언어 → 그 언어 승인 가이드, 허브 /guide/guides) → 예약·결제
- *  · 페이지 전체에 「UNDER TESTING」 도장 (사장님 지시). 진짜 상품 = 빅4 사옥 투어(결제는 기존 tosspay TPAY.open 그대로)·공연관람(옛 판 목록). 나머지는 「예시 · 준비 중」
+ *  · 페이지 전체에 「UNDER TESTING」 도장 (사장님 지시). 진짜 상품 = 빅4 사옥 투어(결제하기 → 토스 결제창, 10-29)·공연관람(옛 판 목록). 나머지는 「예시 · 준비 중」
  *  · 상품 사진 img/shop/*.webp = 생성기(나노바나나)로 뽑음. 후기·별점은 실제 후기가 쌓이기 전엔 넣지 않는다
  */
 (function(){
@@ -59,6 +59,12 @@ var TX={
  sav:T6("저장 중…","Saving…","保存中…","保存中…","儲存中…","Guardando…"),
  oid:T6("주문번호","Order no.","注文番号","订单号","訂單號","N.º de pedido"),
  tsv:T6("시험 주문으로 저장했어요. 가이드·예약자에게는 아무것도 보내지 않았어요.","Saved as a test order. Nothing was sent to the guide or to you.","テスト注文として保存しました。ガイドやご予約者には何も送っていません。","已保存为测试订单，未向向导或您发送任何内容。","已儲存為測試訂單，未向嚮導或您傳送任何內容。","Guardado como pedido de prueba. No se envió nada al guía ni a ti."),
+ // 토스 결제창 (10-29 카드사 심사 「결제창이 떠야 한다」)
+ opn:T6("토스 결제창을 여는 중…","Opening the Toss payment window…","Toss決済画面を開いています…","正在打开Toss付款窗口…","正在開啟Toss付款視窗…","Abriendo la ventana de pago de Toss…"),
+ pdT:T6("결제 완료","Payment complete","決済完了","付款完成","付款完成","Pago completado"),
+ tkey:T6("시험 결제(테스트 키) — 실제 청구 없음","Test payment (test key) — no real charge","テスト決済（テストキー）— 実際の請求はありません","测试付款（测试密钥）— 不会实际扣款","測試付款（測試金鑰）— 不會實際扣款","Pago de prueba (clave de prueba): sin cargo real"),
+ pfT:T6("결제가 완료되지 않았어요 (취소 또는 실패).","The payment was not completed (cancelled or failed).","決済が完了しませんでした（キャンセルまたは失敗）。","付款未完成（已取消或失败）。","付款未完成（已取消或失敗）。","El pago no se completó (cancelado o fallido)."),
+ amt:T6("결제 금액","Amount paid","決済金額","付款金额","付款金額","Importe pagado"),
  b4p:T6("1인 ₩89,000 · 2인 이상 1인 ₩79,000","1 person ₩89,000 · 2+ ₩79,000 each","1名 ₩89,000 · 2名以上 1名 ₩79,000","1人 ₩89,000 · 2人以上每人 ₩79,000","1人 ₩89,000 · 2人以上每人 ₩79,000","1 persona ₩89,000 · 2+ ₩79,000 c/u"),
  // 상품 상세 화면 (사장님 10-29 「카드를 누르면 자세한 설명 · 옆에 결제 화면이 계속 따라오도록 · 되돌아가는 버튼」)
  bk:T6("뒤로","Back","戻る","返回","返回","Atrás"),
@@ -146,7 +152,8 @@ css.textContent="#shopBox{position:fixed;inset:0;z-index:2147483003;background:#
 css.textContent+="#shopBox .sgrid{display:flex;flex-direction:column;gap:14px}#shopBox .sside{display:flex;flex-direction:column;gap:14px;order:2}#shopBox .smain{display:flex;flex-direction:column;gap:14px;order:1;min-width:0}"
  +"@media (min-width:900px){#shopBox .sgrid{display:grid;grid-template-columns:340px minmax(0,1fr);align-items:start;gap:20px}#shopBox .sside{grid-column:1;grid-row:1;position:sticky;top:70px}#shopBox .smain{grid-column:2;grid-row:1}}"
  +"#shopBox .ssel{display:flex;flex-direction:column;gap:8px}#shopBox .ssel img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px}#shopBox .ssel b{font-size:15px}#shopBox .ssel .spr{font-size:15px}";   // 넓은 화면 = 왼쪽 기둥 (사장님 10-27 「왼쪽 칸도 채워줘」)
-css.textContent+="#shopBox .spm{position:fixed;inset:0;z-index:6;background:rgba(10,14,24,.6);display:flex;align-items:center;justify-content:center;padding:16px}#shopBox .spm>div{width:min(440px,100%);max-height:100%;overflow:auto;background:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px}"
+css.textContent+="div[id^=__tosspayments_]{z-index:2147483600!important}"   // 토스 결제창(dimmer z 9999999)이 이 화면(z 2147483003) 뒤에 숨지 않게 (10-29)
+ +"#shopBox .spm{position:fixed;inset:0;z-index:6;background:rgba(10,14,24,.6);display:flex;align-items:center;justify-content:center;padding:16px}#shopBox .spm>div{width:min(440px,100%);max-height:100%;overflow:auto;background:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px}"
  +"#shopBox .spm h3{margin:0;font-size:18px}#shopBox .spm .sut{font-size:11px;font-weight:900;color:#d62828;border:1.5px solid #d62828;border-radius:6px;padding:2px 6px;margin-left:6px}#shopBox .spm .sl{display:flex;justify-content:space-between;gap:10px;font-size:14px}#shopBox .spm .sl span:first-child{color:#667085}"
  +"#shopBox .spm label.sr{display:flex;gap:8px;align-items:center;border:1.5px solid #e4e0d6;border-radius:10px;padding:9px 10px;font-size:14px;cursor:pointer}#shopBox .spm label.scl{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#667085}#shopBox .spm label.scl input{font:inherit;font-size:15px;color:#1d2433;border:1.5px solid #e4e0d6;border-radius:10px;padding:9px 10px}#shopBox .spm .serr{background:#fdecec;color:#b42318;border-radius:10px;padding:8px 10px;font-size:13.5px;font-weight:700}#shopBox .spm .sdone{background:#fff4d6;border:2px dashed #e0a100;color:#8a5a00;font-weight:800;border-radius:12px;padding:10px;text-align:center}";
 // 상품 상세 (10-29) — 넓은 화면(800px~): 왼쪽 상세 · 오른쪽 결제 칸 sticky / 폰: 상세 아래 결제 칸 + 맨 아래 금액·「예약·결제」 띠 고정
@@ -230,42 +237,78 @@ var listY=0;
 function openDet(id){ var b=box(); if(!b) return; listY=b.scrollTop; S.prod=id; S.det=true; b.scrollTop=0; paintDet(); b.scrollTop=0; barTog(); }
 function toList(){ var b=box(); S.det=false; var o=b&&b.querySelector(".spm"); if(o) o.remove(); paint(); if(b) b.scrollTop=listY; }
 function repaint(){ if(S.det) paintDet(); else paint(); }
-// 시험 결제창 — 「결제하기」(시험)를 누르면 허브 /shop/order 에 시험 주문(status test)으로 저장하고 주문번호를 보여 준다 (10-28). 실제 결제는 하지 않는다
-//   🔴 결제 붙일 때: 아래 fetch 본문의 test:true 를 false 로 → 돌려받은 orderId·amount 로 토스 requestPayment → 허브 /shop/toss/confirm (worker.js shopRoute 주석)
-function mockPay(){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelector(".spm"); if(o) o.remove();
-  var unit=p.real==="b4"?b4Price(S.n):p.price, tot=unit*S.n, gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0];
-  o=document.createElement("div"); o.className="spm"; b.appendChild(o); var agd=false;
-  var draw=function(oid,err,busy){ o.innerHTML='<div><h3>'+esc(L(TX.pt))+'<span class="sut">UNDER TESTING</span></h3>'
+// 결제창 — 「결제하기」를 누르면 허브 /shop/order 에 시험 주문(test:true, 서버가 금액 계산·orderId 발급, 텔레그램 [시험 주문])을 만들고
+//   그 orderId·금액으로 토스 결제창(API 개별 연동, 우리 상점 시험 키)을 띄운다 (10-29 카드사 심사 「바로 테스트 결제 완료 → 결제창이 떠야」)
+//   돌아오면(?shres=ok|fail) 아래 shopReturn 이 완료/실패 화면. 승인 API(/shop/toss/confirm)는 TOSS_SK 가 없어 부르지 않는다 — 시험 키라 실제 청구 없음
+//   🔴 결제 붙일 때: test:true → false, 돌아오면 paymentKey·orderId·amount 를 허브 /shop/toss/confirm 으로 (worker.js shopRoute 주석)
+var TCK="test_ck_5OWRapdA8dzyq72vW4gRVo1zEqZK", TSDK="https://js.tosspayments.com/v2/standard", PKEY="mpv_shpay";   // 시험 키 원본 _secrets\toss_test_ck.txt (tosspay.js CK_API 와 같음)
+function tsdk(){ return new Promise(function(ok,no){ if(window.TossPayments) return ok(); var s=document.createElement("script"); s.src=TSDK; s.onload=function(){ ok(); }; s.onerror=no; document.head.appendChild(s); }); }
+function ss(k,v){ try{ if(v===undefined) return JSON.parse(sessionStorage.getItem(k)||"null"); if(v===null) sessionStorage.removeItem(k); else sessionStorage.setItem(k,JSON.stringify(v)); }catch(e){ return null; } }
+function mockPay(res){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelector(".spm"); if(o) o.remove();
+  var unit=p.real==="b4"?b4Price(S.n):p.price, tot=unit*S.n, gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0], gnm=gg?gName(gg):(S.gid&&S.gname)||"";
+  o=document.createElement("div"); o.className="spm"; b.appendChild(o); var agd=false; if(!S.pm) S.pm="card";
+  // res = 결제창에서 돌아온 결과 {ok, oid, amount} 또는 {ok:false, err}
+  var draw=function(oid,err,busy){ var done=res&&res.ok;
+    o.innerHTML='<div><h3>'+esc(L(done?TX.pdT:TX.pt))+'<span class="sut">UNDER TESTING</span></h3>'
     +'<b>'+esc(L(TX.ord))+'</b><div class="spick"><img src="img/shop/'+p.img+'.webp" alt=""><b>'+esc(L(p.t))+'</b></div>'
-    +'<div class="sl"><span>'+esc(L(TX.dtm))+'</span><span>'+esc((S.date||"-")+" "+(S.time||""))+'</span></div><div class="sl"><span>'+esc(L(TX.ppl))+'</span><span>'+S.n+'</span></div><div class="sl"><span>'+esc(L(TX.gd))+'</span><span>'+(gg?esc(gName(gg)):esc(L(TX.none)))+'</span></div>'
-    +'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(tot)+'</span></div>'
-    +(oid?'<div class="sl"><span>'+esc(L(TX.oid))+'</span><b>'+esc(oid)+'</b></div><div class="sdone">'+esc(L(TX.test))+'<br>'+esc(L(TX.tsv))+'</div>'
+    +'<div class="sl"><span>'+esc(L(TX.dtm))+'</span><span>'+esc((S.date||"-")+" "+(S.time||""))+'</span></div><div class="sl"><span>'+esc(L(TX.ppl))+'</span><span>'+S.n+'</span></div><div class="sl"><span>'+esc(L(TX.gd))+'</span><span>'+(gnm?esc(gnm):esc(L(TX.none)))+'</span></div>'
+    +'<div class="stot"><span>'+esc(L(done?TX.amt:TX.tot))+'</span><span>'+won(done?res.amount:tot)+'</span></div>'
+    +(done?'<div class="sl"><span>'+esc(L(TX.oid))+'</span><b>'+esc(res.oid)+'</b></div><div class="sdone">'+esc(L(TX.tkey))+'<br>'+esc(L(TX.tsv))+'</div>'
      :'<b>'+esc(L(TX.cu))+'</b>'
      +'<label class="scl">'+esc(L(TX.cn))+'<input type="text" id="spmN" maxlength="40" autocomplete="name" value="'+esc(S.cn)+'"></label>'
      +'<label class="scl">'+esc(L(TX.cp))+'<input type="tel" id="spmP" maxlength="30" autocomplete="tel" value="'+esc(S.cp)+'"></label>'
      +'<label class="scl">'+esc(L(TX.ce))+'<input type="email" id="spmE" maxlength="100" autocomplete="email" value="'+esc(S.ce)+'"></label>'
      +'<p class="snote">'+esc(L(TX.cpn))+'</p>'
-     +'<b>'+esc(L(TX.pm))+'</b><label class="sr"><input type="radio" name="spmm" checked> '+esc(L(TX.card))+'</label><label class="sr"><input type="radio" name="spmm"> PayPal</label>'
+     +'<b>'+esc(L(TX.pm))+'</b><label class="sr"><input type="radio" name="spmm" value="card"'+(S.pm!=="paypal"?" checked":"")+'> '+esc(L(TX.card))+'</label><label class="sr"><input type="radio" name="spmm" value="paypal"'+(S.pm==="paypal"?" checked":"")+'> PayPal</label>'
      +'<label class="sr"><input type="checkbox" id="spmAg"> '+esc(L(TX.agr))+'</label>'
      +(err?'<div class="serr">'+esc(err)+'</div>':'')
-     +'<button type="button" class="spay" id="spmGo" disabled>'+(busy?esc(L(TX.sav)):won(tot)+' '+esc(L(TX.payb)))+'</button>')
+     +'<button type="button" class="spay" id="spmGo" disabled>'+(busy?esc(L(busy===2?TX.opn:TX.sav)):won(tot)+' '+esc(L(TX.payb)))+'</button>')
     +'<button type="button" class="spay" id="spmX" style="background:#efece4;color:#1d2433">'+esc(L(TX.back))+'</button></div>';
     var ag=o.querySelector("#spmAg"), go=o.querySelector("#spmGo");
     ["spmN","spmE","spmP"].forEach(function(id,k){ var el=o.querySelector("#"+id); if(el) el.oninput=function(){ S[["cn","ce","cp"][k]]=el.value; }; });
+    [].forEach.call(o.querySelectorAll('input[name="spmm"]'),function(r){ r.onchange=function(){ if(r.checked) S.pm=r.value; }; });
     if(ag&&go){ if(busy){ ag.checked=true; ag.disabled=true; } else { ag.checked=agd; go.disabled=!agd; ag.onchange=function(){ agd=ag.checked; go.disabled=!agd; }; } }
     if(go) go.onclick=function(){ if(busy) return; var nm=S.cn.trim(), em=S.ce.trim(), ph=S.cp.trim(), today=new Date(Date.now()+9*36e5).toISOString().slice(0,10);
       if(!nm){ draw(null,L(TX.enm)); return; }
       if(!/^[\d\s+()-]{7,30}$/.test(ph)){ draw(null,L(TX.eph)); return; }   // 전화도 필수 (사장님 10-28)
       if(!/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/.test(em)){ draw(null,L(TX.eem)); return; }
       if(!S.date||S.date<today||!/^\d{2}:\d{2}$/.test(S.time||"")){ draw(null,L(TX.edt)); return; }
-      draw(null,"",true);
+      draw(null,"",1); var pm=S.pm==="paypal"?"paypal":"card";
       fetch(HUBU+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:p.id,pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,glang:S.glang||"",lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,test:true})})
        .then(function(r){ return r.json(); }).then(function(j){
-         if(j&&j.ok&&j.orderId){ try{ ntap("shop","order_"+p.id); }catch(z){} draw(j.orderId); return; }
-         var e=j&&j.err; draw(null,e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(TX.edt):L(TX.efail)); })
+         if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err; draw(null,e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(TX.edt):L(TX.efail)); return; }
+         try{ ntap("shop","order_"+p.id); }catch(z){}
+         draw(null,"",2);
+         // 돌아왔을 때 화면을 다시 그리려고 주문 내용을 이 탭에만 잠깐 둔다 (sessionStorage)
+         ss(PKEY,{oid:j.orderId,amount:j.amount,pid:p.id,date:S.date,time:S.time,n:S.n,gid:S.gid||null,gname:gnm,glang:S.glang||"",cn:nm,ce:em,cp:ph,pm:pm,at:Date.now()});
+         var base=location.origin+location.pathname, mob=ph.replace(/\D/g,"");
+         var req={method:"CARD",amount:{currency:"KRW",value:j.amount},orderId:j.orderId,orderName:String(j.orderName||L(p.t)).slice(0,100),
+           successUrl:base+"?shres=ok",failUrl:base+"?shres=fail",customerName:nm.slice(0,40),customerEmail:em};
+         if(/^01\d{8,9}$/.test(mob)) req.customerMobilePhone=mob;   // 토스는 한국 휴대폰 숫자만 받는다
+         if(pm==="card") req.card={flowMode:"DEFAULT",useEscrow:false,useCardPoint:false,useAppCardOnly:false};
+         else { req.method="FOREIGN_EASY_PAY"; req.foreignEasyPay={provider:"PAYPAL",country:"KR"}; }
+         return tsdk().then(function(){ return window.TossPayments(TCK).payment({customerKey:window.TossPayments.ANONYMOUS}).requestPayment(req); })
+           .catch(function(e){ window.__shTossErr=String((e&&e.code||"")+" "+(e&&e.message||e)); ss(PKEY,null); draw(null,(e&&e.code==="USER_CANCEL")?L(TX.pfT):((e&&e.message)||L(TX.pfT))); }); })
        .catch(function(){ draw(null,L(TX.efail)); }); };
     o.querySelector("#spmX").onclick=function(){ o.remove(); }; };
-  draw(null); }
+  draw(null,res&&!res.ok?res.err:""); }
+// 토스 결제창에서 돌아왔을 때 (successUrl ?shres=ok&paymentKey&orderId&amount · failUrl ?shres=fail&code&message&orderId)
+//   ok  → 체험·입장권 상세 화면 위에 결제 완료(주문 내용·주문번호·「시험 결제(테스트 키) — 실제 청구 없음」)
+//   fail→ 실패/취소 안내를 단 결제창으로 되돌아간다. 주소창 쿼리는 처리 후 지운다
+function shopReturn(){ var sp=new URLSearchParams(location.search), r=sp.get("shres"); if(!r) return;
+  try{ var keep=location.search.slice(1).split("&").filter(function(x){ return !/^(shres|paymentKey|orderId|amount|paymentType|code|message)=/.test(x); }).join("&");
+    history.replaceState(history.state,"",location.pathname+(keep?"?"+keep:"")+location.hash); }catch(e){}
+  var v=ss(PKEY); if(!v||!v.pid||!P.some(function(x){ return x.id===v.pid; })) return;
+  var oid=sp.get("orderId")||"", amt=Math.round(Number(sp.get("amount")||0)), ok=r==="ok"&&oid===v.oid&&amt===v.amount;
+  if(ok) ss(PKEY,null);
+  S.date=v.date; S.time=v.time; S.n=v.n; S.gid=v.gid; S.gname=v.gname; S.cn=v.cn||""; S.ce=v.ce||""; S.cp=v.cp||""; S.pm=v.pm;
+  var msg=L(TX.pfT)+(r!=="ok"&&sp.get("message")?" ("+sp.get("message")+")":""), res=ok?{ok:true,oid:v.oid,amount:v.amount}:{ok:false,err:msg};
+  open(); openDet(v.pid); mockPay(res);
+  if(v.glang){ S.glang=v.glang; S.guides=null;   // 가이드 목록은 다시 받아 오되, 다 그린 뒤 결제창을 다시 얹는다
+    fetch(HUBU+"/guide/guides?lang="+encodeURIComponent(v.glang)).then(function(q){ return q.json(); }).then(function(j){ S.guides=(j&&j.ok&&j.items)||[]; }).catch(function(){ S.guides=[]; })
+      .then(function(){ if(!box()||!S.det) return; var had=!!box().querySelector(".spm"); repaint(); if(had) mockPay(res); }); }
+  try{ ntap("shop",ok?"paid_test_"+v.pid:"payfail_"+v.pid); }catch(z){}
+  window.__shResult=ok?"ok":"fail"; }
 function loadGuides(){ var l=S.glang; S.guides=null; repaint();
   fetch(HUBU+"/guide/guides?lang="+encodeURIComponent(l)).then(function(r){ return r.json(); }).then(function(j){ if(S.glang!==l) return; S.guides=(j&&j.ok&&j.items)||[]; repaint(); }).catch(function(){ if(S.glang===l){ S.guides=[]; repaint(); } }); }
 function open(){ if(box()) return; var b=document.createElement("div"); b.id="shopBox"; document.body.appendChild(b); document.documentElement.style.overflow="hidden";
@@ -295,4 +338,5 @@ var _gb=window.guBack; window.guBack=function(){ if(box()){ if(back()) return tr
 function back(){ var b=box(); if(!b) return false; var o=b.querySelector(".spm"); if(o){ o.remove(); return true; } if(S.det){ toList(); return true; } return false; }
 window.addEventListener("resize",function(){ try{ barTog(); }catch(e){} });
 window.SHOP={open:open,close:close,back:back};
+if(/[?&]shres=/.test(location.search)){ var _sr=function(){ setTimeout(function(){ try{ shopReturn(); }catch(e){ window.__shRetErr=String(e); } },700); }; if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",_sr); else _sr(); }   // 토스 결제창에서 돌아옴 (10-29)
 })();
