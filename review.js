@@ -50,7 +50,7 @@ function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ ret
 function day(ms){ return new Date(ms+9*3600e3).toISOString().slice(0,10); }
 function sess(){ try{ return localStorage.getItem("mpv_pg_sess")||""; }catch(e){ return ""; } }
 function post(path,b){ return fetch(PH+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b),cache:"no-store"}).then(function(r){ return r.json(); }); }
-function okK(k){ return typeof k==="string"&&(/^shop:[a-z0-9]{1,10}$/.test(k)||(/^[A-Za-z0-9][A-Za-z0-9_-]{0,39}$/.test(k)&&k!=="mpstat"&&k!=="shop")); }   // 체험·입장권 상품 = "shop:<상품id>" (10-29)
+function okK(k){ return typeof k==="string"&&(/^shop:[a-z0-9]{1,10}$/.test(k)||/^pin:-?[0-9]{1,2}[.][0-9]{4}_-?[0-9]{1,3}[.][0-9]{4}$/.test(k)||(/^[A-Za-z0-9][A-Za-z0-9_-]{0,39}$/.test(k)&&k!=="mpstat"&&k!=="shop"&&k!=="pin")); }   // 지도에 그림 없는 검색 장소 = "pin:<위도>_<경도>" 소수 4자리 (10-29)   // 체험·입장권 상품 = "shop:<상품id>" (10-29)
 function stars(n,px){ n=Math.round(n||0); var h=""; for(var i=1;i<=5;i++) h+='<span style="color:'+(i<=n?"#f59f00":"#ced4da")+'">★</span>'; return '<span class="rvst" style="font-size:'+(px||14)+'px">'+h+'</span>'; }
 function css(){ if(document.getElementById("rvCss")) return; var s=document.createElement("style"); s.id="rvCss";
   s.textContent=".rvs{display:flex;align-items:center;gap:8px;margin:5px 0 3px;padding:6px 10px;border-radius:12px;background:#fff9db;border:1px solid #ffe066;font-size:13.5px;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}"
@@ -66,8 +66,8 @@ function css(){ if(document.getElementById("rvCss")) return; var s=document.crea
   +".rvmini{display:inline-flex;align-items:center;gap:4px;align-self:flex-start;margin-top:2px;padding:2px 9px;border-radius:999px;background:#fff9db;border:1px solid #ffe066;font-size:12px;color:#5c4a0f}.rvmini b{color:#e67700}"
   +".rvw button[disabled]{opacity:.6}.rvmsg{font-size:12.5px;margin-top:6px;color:var(--sub)}.rvmsg.e{color:#c92a2a}.rvmsg.o{color:#2b8a3e}.rvsm{font-size:12px;color:var(--sub);line-height:1.5;margin:6px 0}";
   document.head.appendChild(s); }
-var SUM={}, OPEN=null, LIST=null, PICK=0;
-window.rvSlot=function(k){ if(!okK(k)) return ""; css(); return '<div class="rvs" data-rvk="'+esc(k)+'" hidden></div>'; };
+var SUM={}, OPEN=null, LIST=null, PICK=0, META={};
+window.rvSlot=function(k,m){ if(!okK(k)) return ""; css(); if(m&&/^pin:/.test(k)) META[k]={nm:String(m.nm||"").slice(0,60),addr:String(m.addr||"").slice(0,120)};   /* 지도 밖 장소는 이름·주소를 후기와 같이 보낸다(새 그림 후보, 10-29) */ return '<div class="rvs" data-rvk="'+esc(k)+'" hidden></div>'; };
 function slot(k){ if(!k) return document.querySelector("#res .rvs"); var a=document.querySelectorAll(".rvs[data-rvk]"); for(var i=0;i<a.length;i++) if(a[i].dataset.rvk===k) return a[i]; return null; }   // 명소 카드(#res) 또는 상품 상세(#shopBox [data-rvhost]) (10-29)
 function rvp(k){ var a=document.querySelectorAll(".rvp[data-rvk]"); for(var i=0;i<a.length;i++) if(a[i].dataset.rvk===k) return a[i]; return null; }
 function paintMini(k){ var s=SUM[k], a=document.querySelectorAll(".rvmini[data-rvm]"); for(var i=0;i<a.length;i++) if(a[i].dataset.rvm===k){ a[i].innerHTML=s&&s.n?'<b>★ '+(+s.avg).toFixed(1)+'</b> '+esc(t("rev",{n:s.n})):esc(t("none")); a[i].hidden=false; } }
@@ -105,7 +105,7 @@ function save(k){ var pp=rvp(k), ta=pp&&pp.querySelector("textarea"), b=pp&&pp.q
   if(!(PICK>=1&&PICK<=5)){ msg(t("pick"),"e"); return; }
   var s=sess(); if(!s){ paintList(k); return; }
   if(b) b.disabled=true; msg(t("saving"));
-  post("/npg/rv/put",{sess:s,k:k,st:PICK,txt:ta.value.slice(0,300),l:lg()}).then(function(j){ if(b) b.disabled=false;
+  post("/npg/rv/put",{sess:s,k:k,st:PICK,txt:ta.value.slice(0,300),l:lg(),nm:META[k]?META[k].nm:undefined,addr:META[k]?META[k].addr:undefined}).then(function(j){ if(b) b.disabled=false;
     if(j&&j.ok){ SUM[k]={n:j.n,avg:j.avg}; paintSum(k); list(k); setTimeout(function(){ msg(t("saved"),"o"); },400); return; }
     var er=j&&j.err;
     if(er==="reject") msg(t("r_"+(W["r_"+j.why]?j.why:"spam")),"e");
