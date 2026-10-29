@@ -57,6 +57,7 @@ var RANKHOW={
  bingo:{ko:"그날 판 24칸을 다 맞힌 사람 중 걸린 시간이 짧은 순 → 그날 점수(1등 10·2등 8·3등 6·4등 5·5등 4·6~10등 3·완성 1) → 한 주 합계",en:"Among players who finish all 24 squares of the day’s board, fastest time first → daily points (1st 10 · 2nd 8 · 3rd 6 · 4th 5 · 5th 4 · 6th–10th 3 · finished 1) → weekly total",ja:"その日のボード24マスをすべて正解した人の中で時間の短い順 → その日のポイント（1位10・2位8・3位6・4位5・5位4・6〜10位3・完成1）→ 週間合計",zhs:"在答对当天全部24格的玩家中，用时最短者优先 → 当日积分（第1名10 · 第2名8 · 第3名6 · 第4名5 · 第5名4 · 第6~10名3 · 完成1）→ 周合计",zht:"在答對當天全部24格的玩家中，用時最短者優先 → 當日積分（第1名10 · 第2名8 · 第3名6 · 第4名5 · 第5名4 · 第6~10名3 · 完成1）→ 週合計",es:"Entre quienes completan las 24 casillas del cartón del día, menor tiempo primero → puntos del día (1.º 10 · 2.º 8 · 3.º 6 · 4.º 5 · 5.º 4 · 6.º–10.º 3 · completado 1) → total semanal"}
 };
 RANKHOW.sudoku={ko:"그날 판을 다 푼 사람 중 걸린 시간이 짧은 순 (틀린 확인마다 +30초) · 그날 1등은 별 하나",en:"Among players who solve a board that day, fastest time first (+30 s for each check with mistakes) · the day’s 1st place gets a star",ja:"その日の盤を解いた人の中で時間の短い順（間違いのある確認ごとに+30秒）・その日の1位は星1つ",zhs:"在当天解完棋盘的玩家中，用时最短者优先（每次检查有错 +30秒）· 当天第1名获得一颗星",zht:"在當天解完盤面的玩家中，用時最短者優先（每次檢查有錯 +30秒）· 當天第1名獲得一顆星",es:"Entre quienes resuelven un tablero ese día, el tiempo más rápido primero (+30 s por cada comprobación con errores) · el 1.º del día gana una estrella"};
+RANKHOW.dspot={ko:"그날 가장 좋은 기록 하나로 — 맞힌 개수가 많은 순, 같으면 걸린 시간이 짧은 순 · 그날 1등은 별 하나",en:"Your single best result of the day — most correct answers first; on a tie, the shortest time · the day’s 1st place gets a star",ja:"その日の一番良い記録1つで — 正解数が多い順、同じならかかった時間が短い順・その日の1位は星1つ",zhs:"以当天最好的一次记录为准 — 答对数多者优先，相同则用时短者优先 · 当天第1名获得一颗星",zht:"以當天最好的一次紀錄為準 — 答對數多者優先，相同則用時短者優先 · 當天第1名獲得一顆星",es:"Tu mejor resultado del día: más aciertos primero; en empate, el menor tiempo · el 1.º del día gana una estrella"};   // 오늘의 명소 맞히기 (10-29)
 var RKL={ko:"이번 주 순위 방법",en:"This week’s ranking",ja:"今週の順位の決め方",zhs:"本周排名方式",zht:"本週排名方式",es:"Clasificación de esta semana"};
 // ── 이벤트 종류 (사장님 10-26) — 닫혀 있으면 종류를 드러내지 않는다 「뭐가 나올지 몰라야지」. 열린 주에만 그 종류 제목·순위 방법·화면 ──
 var KIND="";   // 지금 열린 종류 (/npg/event)
@@ -67,6 +68,8 @@ var KT={
  treasure:{ko:"지도 속 보물상자",en:"Treasure on the Map",ja:"地図の中の宝箱",zhs:"地图里的宝箱",zht:"地圖裡的寶箱",es:"El tesoro del mapa"},
  spot:{ko:"명소 맞히기",en:"Spot the Sight",ja:"名所当てクイズ",zhs:"猜景点",zht:"猜景點",es:"Adivina el lugar"},
  sudoku:{ko:"스도쿠",en:"Sudoku",ja:"ナンプレ",zhs:"数独",zht:"數獨",es:"Sudoku"},
+ dspot:{ko:"오늘의 명소 맞히기",en:"Today’s Spot the Sight",ja:"今日の名所当てクイズ",zhs:"今日猜景点",zht:"今日猜景點",es:"Adivina el lugar de hoy"},
+ thunt:{ko:"보물상자",en:"Treasure Box",ja:"宝箱",zhs:"宝箱",zht:"寶箱",es:"Cofre del tesoro"},
  photo:{ko:"이번 주 사진",en:"Photo of the Week",ja:"今週の写真",zhs:"本周照片",zht:"本週照片",es:"Foto de la semana"}
 };
 var BBK={bingo:"KOREA\nBINGO",treasure:"TREASURE\nON THE MAP",spot:"SPOT THE\nSIGHT",photo:"PHOTO OF\nTHE WEEK"};
@@ -96,13 +99,29 @@ var KRULES={
   {ko:"하루 12판까지 할 수 있습니다. 「새 판」을 누르면 지금 판을 끝내고 새 판을 바로 시작합니다. 판은 매일 한국 시간 밤 12시에 바뀝니다.",en:"You can play up to 12 boards a day. “New board” ends the current one and starts a new one right away. Boards change every day at midnight Korea time.",ja:"1日12盤までプレイできます。「新しい盤」を押すと今の盤を終えてすぐ新しい盤を始めます。盤は毎日韓国時間の夜12時に変わります。",zhs:"每天最多可玩12盘。按「换新盘」会结束当前一盘并立即开始新的一盘。棋盘每天韩国时间午夜12点更换。",zht:"每天最多可玩12盤。按「換新盤」會結束目前這盤並立即開始新的一盤。盤面每天韓國時間午夜12點更換。",es:"Puedes jugar hasta 12 tableros al día. «Nuevo tablero» termina el actual y empieza otro al instante. Los tableros cambian cada día a medianoche, hora de Corea."},
   {b:1,ko:"순위는 그날 가장 빠른 기록 하나로 정합니다. 그날 1등은 별 하나를 받습니다.",en:"Your ranking uses your single fastest time of the day. The day’s 1st place receives one star.",ja:"順位はその日の一番速い記録1つで決まります。その日の1位は星を1つもらえます。",zhs:"排名以当天最快的一次记录为准。当天第1名获得一颗星。",zht:"排名以當天最快的一次紀錄為準。當天第1名獲得一顆星。",es:"La clasificación usa tu mejor tiempo del día. El 1.º del día recibe una estrella."}
  ],
+ dspot:[   // 오늘의 명소 맞히기 (10-29) — 첫 줄(null)은 아래에서 주간 명소 맞히기 첫 줄(지도·지역 안내)로 채운다
+  null,
+  {ko:"「시작」을 누르면 명소 사진 10장이 차례로 나옵니다. 문제당 60초이며, 시간이 지나거나 「넘기기」를 누르면 틀린 것으로 하고 다음 문제로 넘어갑니다.",en:"Press “Start” and 10 sight photos appear one by one. You have 60 seconds per photo; if time runs out or you press “Skip”, it counts as wrong and the next photo appears.",ja:"「スタート」を押すと名所の写真10枚が順番に出ます。1問60秒で、時間切れか「スキップ」を押すと不正解として次の問題に進みます。",zhs:"按「开始」后会依次出现10张景点照片。每题60秒，超时或按「跳过」则算答错并进入下一题。",zht:"按「開始」後會依次出現10張景點照片。每題60秒，超時或按「跳過」則算答錯並進入下一題。",es:"Pulsa «Empezar» y aparecerán 10 fotos de lugares una a una. Tienes 60 segundos por foto; si se acaba el tiempo o pulsas «Saltar», cuenta como fallo y pasa a la siguiente."},
+  {ko:"하루 12판까지 할 수 있습니다. 「새 판」을 누르면 지금 판을 끝내고 새 문제 10개로 바로 시작합니다. 끝까지 푼 판만 기록됩니다. 판은 매일 한국 시간 밤 12시에 바뀝니다.",en:"You can play up to 12 rounds a day. “New round” ends the current one and starts 10 new photos right away. Only rounds played to the end are recorded. Rounds change every day at midnight Korea time.",ja:"1日12回まで遊べます。「新しい回」を押すと今の回を終えて、新しい10問をすぐに始めます。最後まで解いた回だけ記録されます。問題は毎日韓国時間の夜12時に変わります。",zhs:"每天最多可玩12轮。按「换新一轮」会结束当前一轮并立即开始新的10题。只有完成到最后的轮次才会记录。题目每天韩国时间午夜12点更换。",zht:"每天最多可玩12輪。按「換新一輪」會結束目前這輪並立即開始新的10題。只有完成到最後的輪次才會記錄。題目每天韓國時間午夜12點更換。",es:"Puedes jugar hasta 12 rondas al día. «Nueva ronda» termina la actual y empieza enseguida 10 fotos nuevas. Solo se registran las rondas jugadas hasta el final. Las rondas cambian cada día a medianoche, hora de Corea."},
+  {b:1,ko:"순위는 그날 가장 좋은 기록 하나로 정합니다(맞힌 개수가 많은 순, 같으면 걸린 시간이 짧은 순). 그날 1등은 별 하나를 받습니다.",en:"Your ranking uses your single best result of the day (most correct answers first; on a tie, the shortest time). The day’s 1st place receives one star.",ja:"順位はその日の一番良い記録1つで決まります（正解数が多い順、同じならかかった時間が短い順）。その日の1位は星を1つもらえます。",zhs:"排名以当天最好的一次记录为准（答对数多者优先，相同则用时短者优先）。当天第1名获得一颗星。",zht:"排名以當天最好的一次紀錄為準（答對數多者優先，相同則用時短者優先）。當天第1名獲得一顆星。",es:"La clasificación usa tu mejor resultado del día (más aciertos primero; en empate, el menor tiempo). El 1.º del día recibe una estrella."}
+ ],
  photo:[
   {ko:"이번 주 주제에 맞는 사진을 1인 1장 올립니다. 자기 나라에서 찍은 사진도 됩니다. 본인 얼굴은 나와도 안 나와도 됩니다.",en:"Upload one photo per person that fits this week’s theme. Photos taken in your own country are fine. Your own face may or may not appear.",ja:"今週のテーマに合う写真を1人1枚投稿します。自分の国で撮った写真でもOKです。本人の顔は写っていても写っていなくても構いません。",zhs:"每人上传一张符合本周主题的照片，在自己国家拍的也可以。本人的脸出现与否均可。",zht:"每人上傳一張符合本週主題的照片，在自己國家拍的也可以。本人的臉出現與否均可。",es:"Sube una foto por persona que encaje con el tema de la semana. Vale una foto hecha en tu país. Tu cara puede salir o no."},
   {ko:"직접 찍은 사진만 됩니다. 남의 사진·AI로 만든 사진·다른 사람 얼굴이 크게 나온 사진은 제외하며, 부적절한 사진은 지웁니다.",en:"Only photos you took yourself. Other people’s photos, AI-made images and photos with other people’s faces shown large are excluded; inappropriate photos are deleted.",ja:"自分で撮った写真のみです。他人の写真・AIで作った画像・他人の顔が大きく写った写真は対象外で、不適切な写真は削除します。",zhs:"仅限本人拍摄的照片。他人照片、AI生成图片、他人脸部明显的照片不在评选范围内，不当照片将被删除。",zht:"僅限本人拍攝的照片。他人照片、AI生成圖片、他人臉部明顯的照片不在評選範圍內，不當照片將被刪除。",es:"Solo fotos hechas por ti. Se excluyen fotos de otros, imágenes hechas con IA y fotos con caras de otras personas en primer plano; las inadecuadas se eliminan."},
   {ko:"올리면 회사가 SNS에서 사진을 소개할 수 있다는 데 동의하는 것입니다. 1·2·3등은 회사가 고릅니다.",en:"By uploading you agree that the company may feature your photo on social media. The company picks 1st, 2nd and 3rd.",ja:"投稿すると、会社がSNSで写真を紹介することに同意したものとみなします。1・2・3位は会社が選びます。",zhs:"上传即表示同意公司在社交媒体上介绍你的照片。第1·2·3名由公司评选。",zht:"上傳即表示同意公司在社群媒體上介紹你的照片。第1·2·3名由公司評選。",es:"Al subirla aceptas que la empresa pueda mostrar tu foto en redes sociales. La empresa elige 1.º, 2.º y 3.º."}]
 };
 // 매일 빙고·이번 주 이벤트 두 칸 (사장님 10-27) — 탭·배너·이번 주 점수
-var TABS={bingo:{ko:"오늘의 빙고",en:"Today’s Bingo",ja:"今日のビンゴ",zhs:"今日宾果",zht:"今日賓果",es:"Bingo de hoy"},sd:{ko:"오늘의 스도쿠",en:"Today’s Sudoku",ja:"今日のナンプレ",zhs:"今日数独",zht:"今日數獨",es:"Sudoku de hoy"},ev:{ko:"이번 주 이벤트",en:"This week’s event",ja:"今週のイベント",zhs:"本周活动",zht:"本週活動",es:"Evento de la semana"}};
+KRULES.dspot[0]=KRULES.spot[0];
+// 보물상자 (레벨 판, 사장님 10-29) — 순위 방법·규칙
+RANKHOW.thunt={ko:"올라간 판(레벨) 수가 많은 순, 같으면 쓴 힌트 수가 적은 순, 그래도 같으면 먼저 올라간 순 · 날마다 초기화하지 않고 계속 쌓입니다",en:"Most levels cleared first; on a tie, fewest hints used; then whoever got there first · progress keeps adding up and never resets",ja:"クリアしたレベル数が多い順、同じなら使ったヒントが少ない順、さらに同じなら先に到達した順・毎日リセットされず積み上がります",zhs:"按通过的关卡（等级）数多者优先，相同则使用提示少者优先，再相同则先到达者优先 · 进度不会每天重置，持续累计",zht:"按通過的關卡（等級）數多者優先，相同則使用提示少者優先，再相同則先到達者優先 · 進度不會每天重置，持續累計",es:"Más niveles superados primero; en caso de empate, menos pistas usadas; después, quien llegó antes · el progreso se acumula y no se reinicia cada día"};
+KRULES.thunt=[
+ {ko:"지도에 그림이 있는 전국 명소가 한 판에 한 곳씩 보물상자가 숨은 곳입니다. 판 순서는 모두 같고, 누구나 1판부터 차례로 올라갑니다(레벨).",en:"Each level hides one treasure box at a sight that has a picture on the app map, anywhere in Korea. Everyone gets the levels in the same order and climbs from level 1.",ja:"アプリの地図に絵がある全国の名所が、1レベルに1か所ずつ宝箱の隠し場所です。順番は全員同じで、誰でもレベル1から順に進みます。",zhs:"每一关都在应用地图上有图画的全国景点中藏着一个宝箱。所有人的关卡顺序相同，都从第1关开始依次往上。",zht:"每一關都在應用程式地圖上有圖畫的全國景點中藏著一個寶箱。所有人的關卡順序相同，都從第1關開始依序往上。",es:"Cada nivel esconde un cofre en un lugar de Corea que tiene dibujo en el mapa de la app. El orden es el mismo para todos y se sube desde el nivel 1."},
+ {ko:"판마다 힌트 1개가 먼저 나오고, 모르면 「다음 힌트」를 눌러 하나씩 더 받을 수 있습니다(최대 10개). 힌트는 넓게 시작해 점점 좁아집니다.",en:"Each level starts with one hint; if you’re stuck, press “Next hint” to get one more at a time (up to 10). Hints start broad and get narrower.",ja:"各レベルは最初にヒントが1つ出ます。わからなければ「次のヒント」を押して1つずつ追加でもらえます（最大10個）。ヒントは広い範囲から始まり、だんだん絞られます。",zhs:"每关先给出1条提示，不知道的话可按「下一条提示」逐条获取更多（最多10条）。提示从大范围开始，逐渐缩小。",zht:"每關先給出1條提示，不知道的話可按「下一條提示」逐條取得更多（最多10條）。提示從大範圍開始，逐漸縮小。",es:"Cada nivel empieza con una pista; si no lo sabes, pulsa «Siguiente pista» para recibir otra (hasta 10). Las pistas empiezan amplias y se van concretando."},
+ {ko:"정답이라고 생각하는 명소의 그림을 지도에서 누르면 됩니다(직접 가지 않아도 됩니다). 맞히면 다음 판으로 올라가고, 틀려도 벌칙 없이 다시 누르거나 다음 힌트를 볼 수 있습니다.",en:"Tap the picture of the sight you think it is on the map (no need to go there). Get it right and you move up a level; a wrong tap has no penalty — try again or take the next hint.",ja:"答えだと思う名所の絵を地図でタップします（実際に行く必要はありません）。正解すると次のレベルへ。間違えてもペナルティはなく、もう一度タップするか次のヒントを見られます。",zhs:"在地图上点击你认为是答案的景点图画即可（不必亲自前往）。答对即升到下一关；答错没有惩罚，可以再点或查看下一条提示。",zht:"在地圖上點擊你認為是答案的景點圖畫即可（不必親自前往）。答對即升到下一關；答錯沒有懲罰，可以再點或查看下一條提示。",es:"Toca en el mapa el dibujo del lugar que crees que es (no hace falta ir). Si aciertas, subes de nivel; fallar no tiene penalización: vuelve a intentarlo o pide la siguiente pista."},
+ {ko:"진행은 날마다 초기화되지 않고 계속 쌓입니다. 새 명소가 지도에 들어가면 판이 뒤에 더 붙고, 다음 판 힌트가 준비 중이면 준비될 때까지 기다려 주세요. 마지막 판까지 다 맞히면 「만렙 성공!」입니다.",en:"Progress never resets daily — it keeps adding up. When new sights join the map, more levels are added at the end; if the next level’s hints are still being prepared, please wait until they’re ready. Clear the last level for “MAX LEVEL!”.",ja:"進み具合は毎日リセットされず積み上がります。地図に新しい名所が入るとレベルが後ろに追加されます。次のレベルのヒントが準備中のときは準備ができるまでお待ちください。最後のレベルまで正解すると「レベルMAX達成！」です。",zhs:"进度不会每天重置，会持续累计。地图加入新景点后，关卡会接在后面增加；若下一关的提示还在准备中，请等待准备完成。答对到最后一关即「满级成功！」。",zht:"進度不會每天重置，會持續累計。地圖加入新景點後，關卡會接在後面增加；若下一關的提示還在準備中，請等待準備完成。答對到最後一關即「滿級成功！」。",es:"El progreso no se reinicia cada día: se acumula. Cuando el mapa suma lugares nuevos, se añaden niveles al final; si las pistas del siguiente nivel aún se están preparando, espera a que estén listas. Supera el último nivel para «¡Nivel máximo!»."},
+ {b:1,ko:"순위: 올라간 판 수가 많은 순, 같으면 쓴 힌트 수가 적은 순입니다. 보물상자는 별·정산이 없습니다.",en:"Ranking: most levels cleared first; on a tie, fewest hints used. Treasure Box has no stars or payouts.",ja:"順位：クリアしたレベル数が多い順、同じなら使ったヒントが少ない順です。宝箱には星・精算はありません。",zhs:"排名：通过的关卡数多者优先，相同则使用提示少者优先。宝箱没有星星和结算。",zht:"排名：通過的關卡數多者優先，相同則使用提示少者優先。寶箱沒有星星和結算。",es:"Clasificación: más niveles superados primero; en caso de empate, menos pistas usadas. El Cofre del tesoro no da estrellas ni premios."}
+];   // 주간 명소 맞히기 첫 줄(지도·지역 안내) 그대로
+var TABS={bingo:{ko:"오늘의 빙고",en:"Today’s Bingo",ja:"今日のビンゴ",zhs:"今日宾果",zht:"今日賓果",es:"Bingo de hoy"},sd:{ko:"오늘의 스도쿠",en:"Today’s Sudoku",ja:"今日のナンプレ",zhs:"今日数独",zht:"今日數獨",es:"Sudoku de hoy"},dsp:{ko:"오늘의 명소 맞히기",en:"Today’s Spot the Sight",ja:"今日の名所当てクイズ",zhs:"今日猜景点",zht:"今日猜景點",es:"Adivina el lugar de hoy"},th:{ko:"보물상자",en:"Treasure Box",ja:"宝箱",zhs:"宝箱",zht:"寶箱",es:"Cofre del tesoro"},ev:{ko:"이번 주 이벤트",en:"This week’s event",ja:"今週のイベント",zhs:"本周活动",zht:"本週活動",es:"Evento de la semana"}};
 var DSUB={ko:"매일 새 판 · 한국 시간 밤 12시에 바뀜",en:"A new board every day · changes at midnight Korea time",ja:"毎日新しいボード・韓国時間の夜12時に更新",zhs:"每天新卡 · 韩国时间午夜12点更换",zht:"每天新卡 · 韓國時間午夜12點更換",es:"Un cartón nuevo cada día · cambia a medianoche (hora de Corea)"};
 var RKD={ko:"순위 방법",en:"How ranking works",ja:"順位の決め方",zhs:"排名方式",zht:"排名方式",es:"Cómo se clasifica"};
 var LIVEB={ko:"주간 점수: 한 주(월~일) 점수 합계로 1·2·3등 (월요일 0시 마감) · 매일 밤 12시(한국 시간) 새 판",en:"Weekly points: the Mon–Sun total decides the top 3 (closes Mon 00:00) · New board every midnight (Korea time)",ja:"週間ポイント：1週間（月〜日）の合計で1・2・3位（月曜0時締切）・毎晩12時（韓国時間）に新しいボード",zhs:"周积分：按一周（周一至周日）合计决定第1·2·3名（周一0点截止）· 每天午夜12点（韩国时间）换新卡",zht:"週積分：按一週（週一至週日）合計決定第1·2·3名（週一0點截止）· 每天午夜12點（韓國時間）換新卡",es:"Puntos semanales: el total lun–dom decide los 3 primeros (cierra lun 00:00) · Cartón nuevo cada medianoche (hora de Corea)"};
@@ -117,10 +136,10 @@ var WPT={t:{ko:"이번 주 점수",en:"This week’s points",ja:"今週のポイ
  today:{ko:"오늘 점수는 밤 12시(한국 시간)에 더해져요",en:"Today’s points are added at midnight (Korea time)",ja:"今日のポイントは夜12時（韓国時間）に加算されます",zhs:"今日积分在午夜12点（韩国时间）计入",zht:"今日積分在午夜12點（韓國時間）計入",es:"Los puntos de hoy se suman a medianoche (hora de Corea)"},
  last:{ko:"지난주 주간 점수",en:"Last week’s points",ja:"先週の週間ポイント",zhs:"上周积分",zht:"上週積分",es:"Puntos de la semana pasada"}};
 var KOEV='<div class="ecard" style="background:#eaf3ff;border:2px solid #3b82f6;font-weight:800;color:#1e3a8a;text-align:center">한국인 판 · 순위·별<div style="font-weight:600;font-size:12.5px;margin-top:4px">해외 판과 같은 이벤트(같은 장소·문제·주제)이고, 기록과 순위는 따로입니다. 1등은 별을 받아요.</div></div>';   // 한국인 판 이벤트 (한국어만)
-var TAB="bingo"; try{ var _t0=ls("mpv_ev_tab"); if(_t0==="ev"||_t0==="sd") TAB=_t0; }catch(e){}
-function tabList(){ var a=[]; if(B) a.push(["bingo",TABS.bingo]); if(SD) a.push(["sd",TABS.sd]); if(E) a.push(["ev",TABS.ev]); return a; }   // 빙고·스도쿠·이번 주 이벤트 (10-28)
+var TAB="bingo"; try{ var _t0=ls("mpv_ev_tab"); if(_t0==="ev"||_t0==="sd"||_t0==="dsp"||_t0==="th") TAB=_t0; }catch(e){}
+function tabList(){ var a=[]; if(B) a.push(["bingo",TABS.bingo]); if(SD) a.push(["sd",TABS.sd]); if(DS) a.push(["dsp",TABS.dsp]); if(TH) a.push(["th",TABS.th]); if(E) a.push(["ev",TABS.ev]); return a; }   // 빙고·스도쿠·이번 주 이벤트 (10-28)
 function tabsH(){ var a=tabList(); if(a.length<2) return ""; return '<div class="etab">'+a.map(function(t){ return '<button type="button" data-tab="'+t[0]+'" class="'+(TAB===t[0]?"on":"")+'">'+esc(L(t[1]))+(t[0]==="ev"&&E?'<small>'+esc(L(KT[E.kind]||EVT))+'</small>':'')+'</button>'; }).join("")+'</div>'; }
-function render(){ if(TAB==="ev"&&E) evPaint(); else if(TAB==="sd"&&SD) sdPaint(); else if(B) paint(); else if(SD) sdPaint(); else if(E) evPaint(); }
+function render(){ if(TAB==="ev"&&E) evPaint(); else if(TAB==="sd"&&SD) sdPaint(); else if(TAB==="dsp"&&DS) dsPaint(); else if(TAB==="th"&&TH) thPaint(); else if(B) paint(); else if(SD) sdPaint(); else if(DS) dsPaint(); else if(TH) thPaint(); else if(E) evPaint(); }
 function hofH(o){ return o.hof&&o.hof.length?'<div style="margin-top:8px;font-size:13px"><b style="color:#b8860b">'+esc(L(HOF))+'</b> '+o.hof.map(function(x){ return esc(x.nm); }).join(" · ")+'</div>':""; }
 function bdPts(rk){ return [10,8,6,5,4,3,3,3,3,3][rk-1]||1; }   // 그날 순위 점수 — 허브 BD_PTS 와 같게
 var TX3={
@@ -155,7 +174,7 @@ var TX3={
 };
 var E=null;   // 3종 화면 자료
 function evTitle(k){ return L(k?(KT[k]||EVT):EVT); }
-function setHead(k){ var h=document.querySelector("#evBox .ehd h1"), s=document.getElementById("evWk"); if(h) h.textContent=evTitle(k); if(s) s.textContent=k?L(k==="sudoku"||k==="bingo"&&B&&(B.daily||B.ko)?DSUB:T.sub):""; }
+function setHead(k){ var h=document.querySelector("#evBox .ehd h1"), s=document.getElementById("evWk"); if(h) h.textContent=evTitle(k); if(s) s.textContent=k?L(k==="thunt"?THSUB:k==="sudoku"||k==="dspot"||k==="bingo"&&B&&(B.daily||B.ko)?DSUB:T.sub):""; }
 function evClosed(last){ var e=document.getElementById("evBody"); if(!e) return; setHead("");
   var h='<div class="ecard" style="font-weight:800;color:#555">'+esc(L(NEXT))+'</div><div class="ecard"><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   if(last&&last.res&&last.res.length){ var C=["#e0a100","#9aa4b0","#c47a3c"];
@@ -163,9 +182,9 @@ function evClosed(last){ var e=document.getElementById("evBody"); if(!e) return;
   e.innerHTML=h; wire(e); }
 function wire(e){ [].forEach.call(e.querySelectorAll("[data-ev]"),function(x){ x.onclick=function(){ var a=x.dataset.ev;
   if(a==="pg"||a==="signin") signIn(); else if(a==="rules") showRules(!!(cur()&&cur().open&&cur().me&&!cur().me.agreed));
-  else if(a==="find") treasureMode(); else if(a==="sstart") spotStart(); else if(a==="ppick") document.getElementById("evPf").click(); else if(a==="psend") photoSend(); else if(a==="share") shareResult(); else if(a==="replay") replay(); else if(a==="sdgo") sdStart(0); else if(a==="sdnew") sdStart(1); else if(a==="sdchk") sdCheck(); }; });
+  else if(a==="find") treasureMode(); else if(a==="sstart") spotStart(); else if(a==="ppick") document.getElementById("evPf").click(); else if(a==="psend") photoSend(); else if(a==="share") shareResult(); else if(a==="replay") replay(); else if(a==="sdgo") sdStart(0); else if(a==="sdnew") sdStart(1); else if(a==="sdchk") sdCheck(); else if(a==="dsgo") dsStart(0); else if(a==="thgo") thStart(); else if(a==="dsnew") dsStart(1); }; });
   [].forEach.call(e.querySelectorAll("[data-tab]"),function(x){ x.onclick=function(){ TAB=x.dataset.tab; if(TAB!=="sd") sdPause(); ls("mpv_ev_tab",TAB); render(); var b=box(); if(b) b.scrollTop=0; }; }); }
-function cur(){ if(TAB==="ev"&&E) return E; if(TAB==="sd"&&SD) return SD; return B||SD||E; }   // 두 칸이 다 열려 있으면 고른 탭
+function cur(){ if(TAB==="ev"&&E) return E; if(TAB==="sd"&&SD) return SD; if(TAB==="dsp"&&DS) return DS; if(TAB==="th"&&TH) return TH; return B||SD||DS||TH||E; }   // 두 칸이 다 열려 있으면 고른 탭
 function needIn(o){ if(!o.me) return '<div class="ecard"><button type="button" class="ebtn" data-ev="signin">'+esc(L(T.signin))+'</button></div>'; var gh=o.me.grad?'<div class="ecard" style="color:#7a3cff;font-weight:700">'+esc(L(T.grad))+'</div>':''; if(!o.me.agreed) return gh+'<div class="ecard"><button type="button" class="ebtn" data-ev="rules">'+esc(L(T.agree))+'</button></div>'; return gh; }   /* 졸업자도 순위에 든다 — 졸업 안내 + 동의 단추 (10-27) */
 function evPaint(){ var e=document.getElementById("evBody"); if(!e||!E) return; var k=E.kind, me=E.me; setHead(k);
   var h=tabsH()+(E.ko?KOEV:'<div class="ecard" style="background:#fff1e4;border:2px solid #ff7a1a;font-size:13px;font-weight:800;color:#8a3d00">'+esc(L(EVP))+'</div>');
@@ -212,19 +231,19 @@ document.addEventListener("click",function(ev){ if(MODE!=="treasure") return; va
     if(j.err==="lock"||j.lock){ if(mm) mm.textContent=(j.far==="near"?L(TX3.near)+" ":"")+L(TX3.miss); var t=setInterval(function(){ var s=Math.ceil((j.lock-Date.now())/1000); if(!document.getElementById("evMm")){ clearInterval(t); return; } if(s<=0){ clearInterval(t); document.getElementById("evMm").textContent=""; return; } document.getElementById("evMm").textContent=(j.far==="near"?L(TX3.near)+" ":"")+L(TX3.wait)+" "+s+"s"; },1000); }
   }).catch(function(){ if(mm) mm.textContent=L(T.err); }); },true);
 // 명소 맞히기 — 사진 보며 지도 그림 누르기
-var SQ=null, ST=null;
-function spotStart(){ post("/npg/ev/spot/start",{sess:sess(),l:lg()}).then(function(j){ if(!j||!j.ok){ alert(L(T.err)); return; } if(j.done){ load(); return; } close(); MODE="spot"; spotShow(j.q); try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){} }).catch(function(){ alert(L(T.err)); }); }
+var SQ=null, ST=null, SPD=0;   // SPD = 오늘의 명소 맞히기(매일 판, 10-29)면 1
+function spotStart(){ post("/npg/ev/spot/start",{sess:sess(),l:lg()}).then(function(j){ if(!j||!j.ok){ alert(L(T.err)); return; } if(j.done){ load(); return; } close(); MODE="spot"; SPD=0; spotShow(j.q); try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){} }).catch(function(){ alert(L(T.err)); }); }
 function spotShow(q){ SQ=q; if(!q){ modeEnd(); open(); return; } clearInterval(ST);
   var o=modeBar('<div style="display:flex;gap:10px;align-items:center"><img src="'+q.img+'" alt="" style="width:110px;height:84px;object-fit:contain;background:#fff;border-radius:8px;flex:0 0 auto"><div style="flex:1"><b>'+(q.i+1)+' / '+q.total+'</b> · <span id="evSt" style="color:#e8322f;font-weight:900"></span><div style="font-size:13px">'+esc(L(TX3.smode))+(q.gu?' · '+esc(L({ko:q.gu.ko||"",en:q.gu.en||"",ja:q.gu.ja||"",zhs:q.gu.zhs||"",zht:q.gu.zht||"",es:q.gu.en||""})):'')+'</div><button type="button" id="evSk" style="margin-top:4px;border:1px solid #ddd;background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.skip))+'</button></div></div>');
   var end=Date.now()+q.left; q._end=end; var tick=function(){ var s=Math.max(0,Math.ceil((end-Date.now())/1000)), el=document.getElementById("evSt"); if(el) el.textContent=s+"s"; if(s<=0){ clearInterval(ST); spotAns("",1); } }; tick(); ST=setInterval(tick,500);
   o.querySelector("#evSk").onclick=function(){ spotAns("",1); }; }
-function spotAns(k,skip){ if(MODE!=="spot") return; clearInterval(ST); post("/npg/ev/spot/ans",{sess:sess(),k:k,skip:skip?1:0,l:lg()}).then(function(j){ if(!j||!j.ok){ modeEnd(); open(); return; }
+function spotAns(k,skip){ if(MODE!=="spot") return; clearInterval(ST); post(SPD?"/npg/dsp/ans":"/npg/ev/spot/ans",{sess:sess(),k:k,skip:skip?1:0,l:lg()}).then(function(j){ if(!j||!j.ok){ modeEnd(); open(); return; }
   if(!skip) toast(j.right?L(T.right):L(T.wrong).split(" — ")[0],j.right?"#27a745":"#e8322f");
-  if(j.done){ modeEnd(); setTimeout(open,900); return; } setTimeout(function(){ spotShow(j.q); },400); }).catch(function(){ modeEnd(); open(); }); }
-function spotTap(k){ if(MODE!=="spot"||!k||String(k).indexOf("__")===0) return false; k=String(k);   // 명소 맞히기 중 지도 그림 누름 = 답
+  if(j.done){ modeEnd(); if(SPD) setTimeout(function(){ fxWin(dsRes(j.okN,j.total)); },500); setTimeout(open,900); return; } setTimeout(function(){ spotShow(j.q); },400); }).catch(function(){ modeEnd(); open(); }); }
+function spotTap(k){ if((MODE!=="spot"&&MODE!=="thunt")||!k||String(k).indexOf("__")===0) return false; k=String(k);   // 보물상자(thunt)도 같은 방식 (10-29)   // 명소 맞히기 중 지도 그림 누름 = 답
   var c=null; if(window.VIEW==="kr"){ try{ c=cityFor(k); }catch(e){} }   // 전국 지도의 지역 그림(해운대·설악산·한라산 등)은 답이 아니라 그 지역 약도로 들어가기 (10-27 전국 확대)
   if(c){ try{ clearTimeout(_tapT); }catch(e){} try{ viewSet(c); }catch(e){} return true; }
-  spotAns(k,0); return true; }
+  if(MODE==="thunt") thAns(k); else spotAns(k,0); return true; }
 var _hc3=window.hitClick; window.hitClick=function(k){ if(spotTap(k)) return; if(MODE==="treasure") return; return _hc3.apply(this,arguments); };
 window.addEventListener("load",function(){ var h=window.hitClick; window.hitClick=function(k){ if(spotTap(k)) return; return h.apply(this,arguments); }; });   // 나중에 붙은 단추(김포공항 그림 = 공항 화면)보다 먼저 답으로
 // 이번 주 사진 — 줄여서 올리기
@@ -255,6 +274,8 @@ function shLine(){ var c=cur(); if(!c||!c.open||!c.me) return null; var me=c.me,
   if(k==="bingo"&&(me.best!=null||me.done)) return [t, L(RNK.all)+" · "+elTxt(me.best!=null?me.best:me.done-(me.f0||me.done))+rk];   // 그날 가장 빠른 기록 (하루 여러 판, 10-27 밤)   // 판 완성 + 걸린 시간 (10-27)
   if(k==="bingo") return [t, (me.s||[]).length+"/24 · "+L(T.stamps)];
   if(k==="sudoku"){ if(c.day) t+=" "+c.day.slice(5).replace("-","/"); return [t, me.best?L(SDT.ok).replace(/[!！]$/,"")+" · "+elTxt(me.best)+rk:L(SDT.bn).replace("{n}",me.n||1)]; }   // 스도쿠 — 그날 가장 빠른 기록, 없으면 몇 번째 판 (10-28)
+  if(k==="dspot"){ if(c.day) t+=" "+c.day.slice(5).replace("-","/"); var bs=me.best; return [t, bs?dsRes(bs.ok,c.total).replace(/[!！]$/,"")+" · "+elTxt(bs.t*1000)+rk:L(DST.bn).replace("{n}",me.n||1)]; }   // 오늘의 명소 맞히기 — 그날 가장 좋은 기록 (10-29)
+  if(k==="thunt") return [t, (me.done?L(THT.max)+" · ":"")+L(THT.lvn).replace("{n}",me.lv||0)+" · "+L(THT.hint)+" "+(me.ht||0)+rk];   // 보물상자 — 내 레벨·쓴 힌트 (10-29)
   if(k==="treasure") return [t, me.ft?L(SHX.found)+(me.rank?"  #"+me.rank:""):L(SHX.hunt)];
   if(k==="spot") return [t, (me.ok||0)+"/"+(c.total||10)+" "+L(SHX.spot)+rk];
   if(k==="photo") return [t, L(SHX.photo)];
@@ -305,7 +326,7 @@ function winIcons(n){ n=n||0; if(!n) return ""; if(n>=10000) return '<span style
   var g=function(k,c,px){ var h=""; for(var i=0;i<c;i++) h+='<img src="img/rank/'+k+'.webp" alt="" style="width:'+px+'px;height:'+px+'px;vertical-align:middle;margin-right:1px">'; return h; };
   return '<div style="line-height:1;margin-bottom:2px" title="'+n+' '+esc(L(WINS))+'">'+g("bigsun",Math.floor(n/1000),18)+g("sun",Math.floor(n/100)%10,16)+g("bigstar",Math.floor(n/10)%10,16)+g("star",n%10,12)+'</div>'; }
 // 지금 순위 카드 — 빙고·보물상자·명소·주간 점수 모두 같은 모양 (사장님 10-27). 값 = 걸린 시간 · 찾은 시각 · 맞힌 수 · 점수
-function rankVal(o,r){ if(r.el!=null) return elTxt(r.el); if(r.ok!=null) return r.ok+"/"+(o.total||10)+" · "+(r.t||0)+"s"; if(r.at) return kst(r.at); if(r.p!=null) return r.p+" "+L(PTS); return ""; }
+function rankVal(o,r){ if(r.lv!=null) return L(THT.lvn).replace("{n}",r.lv)+" · "+L(THT.hint)+" "+(r.ht||0); if(r.el!=null) return elTxt(r.el); if(r.ok!=null) return r.ok+"/"+(o.total||10)+" · "+(r.t||0)+"s"; if(r.at) return kst(r.at); if(r.p!=null) return r.p+" "+L(PTS); return ""; }
 function rankRows(o,R,dp){ var C=["#e0a100","#9aa4b0","#c47a3c"]; return R.map(function(r,i){ return '<div class="erk"'+(r.me?' style="background:#fff4d6;border-radius:8px"':'')+'><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div>'+winIcons(r.win)+'<b>'+esc(r.nm)+'</b>'+(r.me?' <span style="color:#ff7a1a;font-weight:800">('+esc(L(RNK.me))+')</span>':'')+'</div><div class="pg">'+rankVal(o,r)+(dp?'<div style="font-size:11px;color:#888;font-weight:700;text-align:right">+'+bdPts(r.rk)+' '+esc(L(PTS))+'</div>':'')+'</div></div>'; }).join(""); }
 function rankCard(o,how){ var R=o.rank||[], bg=(o.kind||"bingo")==="bingo", dp=bg&&(o.daily||o.ko);   // dp = 매일 빙고 — 그날 받을 점수도 같이
   var h='<div class="ecard"><b>'+esc(L(RNK.t))+'</b> <span style="color:#888;font-size:12px">'+esc(L(bg?RNK.how:(how||{en:""})))+(o.play?' · '+o.play+esc(L(RNK.play)):'')+'</span>';
@@ -445,9 +466,9 @@ function open(){ close(); var b=document.createElement("div"); b.id="evBox"; b.i
   try{ ntap("_event","open_area"); }catch(e){}
   load(); }
 function load(){ var q={sess:sess(),l:lg()};   // 빙고·이번 주 이벤트를 같이 — 둘 다 열려 있으면 탭 (10-27)
-  Promise.all([post("/npg/ev/board",q).catch(function(){ return null; }),post("/npg/bingo/board",q).catch(function(){ return null; }),post("/npg/sdk/board",q).catch(function(){ return null; })]).then(function(a){ var j=a[0], k=a[1], s=a[2]; if(!(j&&j.ok)&&!(k&&k.ok)) throw 0;
-    E=j&&j.ok&&j.open?j:null; B=k&&k.ok&&k.open&&k.cells?k:null; SD=s&&s.ok&&s.open?s:null; if(SD) SD._sk=Date.now()-(SD.now||Date.now());
-    if(!E&&!B&&!SD){ evClosed((j&&j.last)||null); return; }
+  Promise.all([post("/npg/ev/board",q).catch(function(){ return null; }),post("/npg/bingo/board",q).catch(function(){ return null; }),post("/npg/sdk/board",q).catch(function(){ return null; }),post("/npg/dsp/board",q).catch(function(){ return null; }),post("/npg/th/board",q).catch(function(){ return null; })]).then(function(a){ var j=a[0], k=a[1], s=a[2], d=a[3], t=a[4]; if(!(j&&j.ok)&&!(k&&k.ok)) throw 0;
+    E=j&&j.ok&&j.open?j:null; B=k&&k.ok&&k.open&&k.cells?k:null; SD=s&&s.ok&&s.open?s:null; if(SD) SD._sk=Date.now()-(SD.now||Date.now()); DS=d&&d.ok&&d.open?d:null; TH=t&&t.ok&&t.open?t:null;
+    if(!E&&!B&&!SD&&!DS&&!TH){ evClosed((j&&j.last)||null); return; }
     var av=tabList().map(function(t){ return t[0]; }); if(av.indexOf(TAB)<0) TAB=av[0]; render(); }).catch(function(){ var e=document.getElementById("evBody"); if(e) e.innerHTML='<div class="ecard">'+esc(L(T.err))+'</div>'; }); }
 function rulesHtml(){ var c=cur(), kr=c&&c.open?(KRULES[c.kind||"bingo"]||[]):[]; return '<ol>'+RULES.concat(kr).map(function(r){ return '<li'+(r.b?' style="font-weight:800"':'')+'>'+esc(L(r))+'</li>'; }).join("")+'</ol>'; }
 function sheet(html){ var s=document.getElementById("evSheet"); if(s) s.remove(); s=document.createElement("div"); s.id="evSheet"; s.innerHTML='<div>'+html+'</div>'; s.onclick=function(e){ if(e.target===s) s.remove(); }; document.body.appendChild(s); return s; }
@@ -626,7 +647,89 @@ function sdCheck(){ if(!SDG||SDG.indexOf(0)>=0){ toast(L(SDT.fill),"#888"); retu
 document.addEventListener("keydown",function(ev){ if(!box()||TAB!=="sd"||!SD||!SD.me||SD.me.done||!SD.puz) return; var k=ev.key;
   if(/^[1-9]$/.test(k)){ sdPut(+k); ev.preventDefault(); } else if(k==="Backspace"||k==="Delete"||k==="0"){ sdPut(0); ev.preventDefault(); }
   else if(SDSEL>=0&&/^Arrow/.test(k)){ var r=Math.floor(SDSEL/9), q=SDSEL%9; if(k==="ArrowUp") r=(r+8)%9; else if(k==="ArrowDown") r=(r+1)%9; else if(k==="ArrowLeft") q=(q+8)%9; else q=(q+1)%9; SDSEL=r*9+q; sdRepaintGrid(); ev.preventDefault(); } });
+// 오늘의 명소 맞히기 (사장님 10-29 「준비한 게임을 그냥 골라서 할 수 있게 다 올려줘」) — 스도쿠처럼 매일 판 탭. 문제·정답·시간은 허브(/npg/dsp/*), 푸는 화면은 주간 명소 맞히기(spotShow) 그대로
+var DS=null;
+var DST={res:{ko:"{t}문제 중 {n}개!",en:"{n} out of {t}!",ja:"{t}問中{n}問正解！",zhs:"{t}题中答对{n}题！",zht:"{t}題中答對{n}題！",es:"¡{n} de {t}!"},
+ go2:{ko:"이어서 하기",en:"Continue",ja:"続きから",zhs:"继续",zht:"繼續",es:"Continuar"},
+ nw:{ko:"새 판",en:"New round",ja:"新しい回",zhs:"换新一轮",zht:"換新一輪",es:"Nueva ronda"},
+ nx:{ko:"다음 판",en:"Next round",ja:"次の回",zhs:"下一轮",zht:"下一輪",es:"Siguiente ronda"},
+ bn:{ko:"{n}번째 판",en:"Round {n}",ja:"{n}回目",zhs:"第{n}轮",zht:"第{n}輪",es:"Ronda {n}"},
+ ask:{ko:"지금 판을 끝내고 새 판을 시작할까요? (끝까지 안 푼 판은 기록되지 않아요)",en:"End this round and start a new one? (Unfinished rounds are not recorded)",ja:"今の回を終えて新しい回を始めますか？（最後まで解いていない回は記録されません）",zhs:"结束当前这一轮并开始新的一轮吗？（未完成的轮次不会记录）",zht:"結束目前這一輪並開始新的一輪嗎？（未完成的輪次不會記錄）",es:"¿Terminar esta ronda y empezar otra? (Las rondas sin terminar no se registran)"},
+ ln:{ko:"「시작」을 누르면 지도 위에 명소 사진이 나오고 시간이 갑니다.",en:"Press “Start” — a sight photo appears over the map and the clock starts.",ja:"「スタート」を押すと地図の上に名所の写真が出て、時間の計測が始まります。",zhs:"按「开始」后，地图上方会出现景点照片并开始计时。",zht:"按「開始」後，地圖上方會出現景點照片並開始計時。",es:"Pulsa «Empezar»: aparece una foto del lugar sobre el mapa y empieza el reloj."}};
+function dsRes(n,t){ return L(DST.res).replace("{n}",n||0).replace("{t}",t||10); }
+function dsPaint(){ var e=document.getElementById("evBody"); if(!e||!DS) return; setHead("dspot"); var me=DS.me, h=tabsH(), max=DS.max||12, tot=DS.total||10;
+  if(DS.ko) h+='<div class="ecard" style="background:#eaf3ff;border:2px solid #3b82f6;font-weight:800;color:#1e3a8a;text-align:center">한국인 판 · 한국어 설정으로 한국에서 접속한 분만 참가합니다. 순위·별 배지가 있습니다. 문제는 매일 밤 12시에 바뀝니다.</div>';
+  else if(DS.test) h+='<div class="ecard" style="background:#fff4d6;border:2px dashed #e0a100;font-weight:800;color:#8a5a00;text-align:center">TEST · '+esc(L(TST))+'</div>';
+  h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKD))+'</b> · '+esc(L(RANKHOW.dspot))+'</div>';
+  h+=needIn(DS);
+  if(me&&me.agreed){ var live=me.st&&!me.done;
+    if(me.n) h+='<div class="est"><div><b>'+esc(L(DST.bn).replace("{n}",me.n))+'</b>/ '+max+'</div><div><b>'+(me.ok||0)+' / '+tot+'</b>'+esc(L(TX3.sres))+'</div><div><b>'+leftTxt(DS.end)+'</b>'+esc(L(TNX))+'</div></div>';
+    if(me.done) h+='<div class="ecard" style="text-align:center;font-weight:900;color:#1d7a35;font-size:17px">'+esc(dsRes(me.ok,tot))+' '+elTxt((me.t||0)*1000)+'</div>';
+    if(!me.st) h+='<div class="ecard" style="text-align:center"><div style="font-size:13px;color:#666;margin-bottom:8px">'+esc(L(DST.ln))+'</div><button type="button" class="ebtn" data-ev="dsgo" style="background:#ff7a1a">'+esc(L(TX3.sstart))+'</button></div>';
+    else if(live){ h+='<div class="ecard"><button type="button" class="ebtn" data-ev="dsgo" style="background:#27a745">'+esc(L(DST.go2))+' ('+((me.i||0)+1)+' / '+tot+')</button></div>';
+      if(me.n<max) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="dsnew" style="background:#fff;color:#ff7a1a;border:2px solid #ff7a1a">'+esc(L(DST.nw))+'</button></div>'; }
+    else if(me.n<max) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="dsnew" style="background:#ff7a1a">'+esc(L(DST.nx))+'</button></div>';
+    else h+='<div class="ecard"><button type="button" class="ebtn" disabled style="background:#bbb">'+esc(L(RPA))+'</button></div>';
+    if(me.best) h+='<div class="ecard" style="font-size:14px"><b>'+esc(L(SDT.my))+'</b> · '+me.best.ok+' / '+tot+' · '+elTxt(me.best.t*1000)+(DS.myRank?' · #'+DS.myRank:'')+'</div>';
+    if(me.st||me.best) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>'; }   // 결과 공유 — 스도쿠와 같은 단추
+  h+=rankCard(DS,RANKHOW.dspot);
+  h+='<div class="ecard"><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
+  if(DS.last&&DS.last.res&&DS.last.res.length){ var C=["#e0a100","#9aa4b0","#c47a3c"], lt=DS.last.total||tot; h+='<div class="ecard"><b>'+esc(L(SDT.last))+'</b> <span style="color:#888;font-size:12px">'+esc(DS.last.day)+'</span>'+DS.last.res.map(function(r,i){ return '<div class="erk"><div class="n" style="background:'+(C[i]||"#bbb")+'">'+r.rk+'</div><div><b>'+esc(r.nm)+'</b></div><div class="pg">'+r.ok+'/'+lt+' · '+elTxt((r.t||0)*1000)+'</div></div>'; }).join("")+'</div>'; }
+  e.innerHTML=h; wire(e); }
+function dsStart(force){ var me=DS&&DS.me; if(force&&me&&me.st&&!me.done&&!confirm(L(DST.ask))) return; var b=document.querySelector('#evBody [data-ev="'+(force?"dsnew":"dsgo")+'"]'); if(b) b.disabled=true;
+  post("/npg/dsp/start",{sess:sess(),l:lg(),force:force?1:0}).then(function(j){ if(j&&j.ok&&j.q){ close(); MODE="spot"; SPD=1; spotShow(j.q); try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){} return; }
+    if(j&&j.ok&&j.done){ fxWin(dsRes(j.okN,j.total)); load(); return; } if(j&&j.err==="all"){ load(); return; } alert(L(T.err)); if(b) b.disabled=false; }).catch(function(){ alert(L(T.err)); if(b) b.disabled=false; }); }
+// 보물상자 (레벨 판, 사장님 10-29) — 판마다 힌트 1개 → 「다음 힌트」 최대 10개 → 지도에서 그 명소 그림 누르기. 정답·힌트·레벨은 허브(/npg/th/*)만 안다
+var TH=null, TQ=null, TBUSY=0;
+var THSUB={ko:"레벨이 계속 쌓여요 · 날마다 초기화되지 않아요",en:"Your level keeps adding up · never resets daily",ja:"レベルは積み上がります・毎日リセットされません",zhs:"等级持续累计 · 不会每天重置",zht:"等級持續累計 · 不會每天重置",es:"Tu nivel se acumula · no se reinicia cada día"};
+var THT={lvn:{ko:"레벨 {n}",en:"Level {n}",ja:"レベル{n}",zhs:"等级 {n}",zht:"等級 {n}",es:"Nivel {n}"},
+ lv:{ko:"내 레벨",en:"My level",ja:"自分のレベル",zhs:"我的等级",zht:"我的等級",es:"Mi nivel"},
+ hint:{ko:"힌트",en:"Hints",ja:"ヒント",zhs:"提示",zht:"提示",es:"Pistas"},
+ hu:{ko:"쓴 힌트",en:"Hints used",ja:"使ったヒント",zhs:"已用提示",zht:"已用提示",es:"Pistas usadas"},
+ open:{ko:"열린 판",en:"Levels open",ja:"公開中のレベル",zhs:"已开放关卡",zht:"已開放關卡",es:"Niveles abiertos"},
+ stage:{ko:"{n}번째 판",en:"Level {n}",ja:"第{n}レベル",zhs:"第{n}关",zht:"第{n}關",es:"Nivel {n}"},
+ go:{ko:"보물 찾기 시작",en:"Start the hunt",ja:"宝探しスタート",zhs:"开始寻宝",zht:"開始尋寶",es:"Empezar la búsqueda"},
+ nh:{ko:"다음 힌트",en:"Next hint",ja:"次のヒント",zhs:"下一条提示",zht:"下一條提示",es:"Siguiente pista"},
+ tap:{ko:"힌트에 맞는 명소의 그림을 지도에서 누르세요",en:"Tap the picture of the sight these hints describe on the map",ja:"ヒントに合う名所の絵を地図でタップしてください",zhs:"在地图上点击符合提示的景点图画",zht:"在地圖上點擊符合提示的景點圖畫",es:"Toca en el mapa el dibujo del lugar que describen las pistas"},
+ wait:{ko:"다음 판 힌트를 준비 중이에요 — 잠시 뒤 다시 와 주세요",en:"The next level’s hints are being prepared — please come back a little later",ja:"次のレベルのヒントを準備中です — 少し後でまた来てください",zhs:"下一关的提示正在准备中——请稍后再来",zht:"下一關的提示正在準備中——請稍後再來",es:"Las pistas del siguiente nivel se están preparando: vuelve un poco más tarde"},
+ max:{ko:"만렙 성공!",en:"MAX LEVEL!",ja:"レベルMAX達成！",zhs:"满级成功！",zht:"滿級成功！",es:"¡Nivel máximo!"},
+ up:{ko:"정답! 다음 판으로",en:"Correct! Next level",ja:"正解！次のレベルへ",zhs:"答对了！进入下一关",zht:"答對了！進入下一關",es:"¡Correcto! Siguiente nivel"},
+ miss:{ko:"아니에요 — 다시 눌러 보거나 다음 힌트를 보세요",en:"Not this one — tap again or take the next hint",ja:"違います — もう一度タップするか次のヒントを見てください",zhs:"不是这个——再点一次或看下一条提示",zht:"不是這個——再點一次或看下一條提示",es:"No es este: vuelve a tocar o pide la siguiente pista"},
+ ln:{ko:"「시작」을 누르면 지도 위에 첫 힌트가 나옵니다. 힌트에 맞는 명소 그림을 지도에서 누르세요.",en:"Press “Start” and the first hint appears over the map. Tap the matching sight’s picture on the map.",ja:"「スタート」を押すと地図の上に最初のヒントが出ます。ヒントに合う名所の絵を地図でタップしてください。",zhs:"按「开始」后，地图上方会出现第一条提示。请在地图上点击符合提示的景点图画。",zht:"按「開始」後，地圖上方會出現第一條提示。請在地圖上點擊符合提示的景點圖畫。",es:"Pulsa «Empezar» y aparece la primera pista sobre el mapa. Toca el dibujo del lugar que coincida."}};
+function thPaint(){ var e=document.getElementById("evBody"); if(!e||!TH) return; setHead("thunt"); var me=TH.me, h=tabsH(), tot=TH.total||0;
+  if(TH.ko) h+='<div class="ecard" style="background:#eaf3ff;border:2px solid #3b82f6;font-weight:800;color:#1e3a8a;text-align:center">한국인 판 · 한국어 설정으로 한국에서 접속한 분만 참가합니다. 순위가 따로 있고, 레벨은 날마다 초기화되지 않습니다.</div>';
+  else if(TH.test) h+='<div class="ecard" style="background:#fff4d6;border:2px dashed #e0a100;font-weight:800;color:#8a5a00;text-align:center">TEST</div>';
+  h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKD))+'</b> · '+esc(L(RANKHOW.thunt))+'</div>';
+  h+=needIn(TH);
+  if(me&&me.agreed){
+    h+='<div class="est"><div><b>'+(me.lv||0)+' / '+tot+'</b>'+esc(L(THT.lv))+'</div><div><b>'+(me.ht||0)+'</b>'+esc(L(THT.hu))+'</div><div><b>'+(TH.ready||0)+' / '+tot+'</b>'+esc(L(THT.open))+'</div></div>';
+    if(me.done) h+='<div class="ecard" style="text-align:center;font-weight:900;color:#1d7a35;font-size:19px">'+esc(L(THT.max))+'</div>';
+    else if(!me.st) h+='<div class="ecard" style="text-align:center"><div style="font-size:13px;color:#666;margin-bottom:8px">'+esc(L(THT.ln))+'</div><button type="button" class="ebtn" data-ev="thgo" style="background:#ff7a1a">'+esc(L(THT.go))+'</button></div>';
+    else h+='<div class="ecard"><button type="button" class="ebtn" data-ev="thgo" style="background:#27a745">'+esc(L(DST.go2))+' ('+esc(L(THT.stage).replace("{n}",(me.lv||0)+1))+')</button></div>';
+    if(me.st) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>'; }   // 결과 공유 — 다른 탭과 같은 단추
+  h+=rankCard(TH,RANKHOW.thunt);
+  h+='<div class="ecard"><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
+  e.innerHTML=h; wire(e); }
+function thStart(){ var b=document.querySelector('#evBody [data-ev="thgo"]'); if(b) b.disabled=true;
+  post("/npg/th/start",{sess:sess(),l:lg()}).then(function(j){ if(!j||!j.ok){ alert(L(T.err)); if(b) b.disabled=false; return; } var q=j.q||{};
+    if(q.done){ load(); return; } if(q.wait){ toast(L(THT.wait),"#888"); load(); return; }
+    close(); MODE="thunt"; thShow(q); var m=document.getElementById("map"); if(m) try{ m.scrollIntoView({behavior:"smooth",block:"center"}); }catch(e){} }).catch(function(){ alert(L(T.err)); if(b) b.disabled=false; }); }
+function thShow(q){ TQ=q; var hs=q.hints||[], n=hs.length;
+  var o=modeBar('<div style="display:flex;justify-content:space-between;gap:8px"><b>'+esc(L(THT.stage).replace("{n}",(q.lv||0)+1))+' / '+(q.total||0)+'</b><span style="color:#ff7a1a;font-weight:800">'+esc(L(THT.hint))+' '+n+' / '+(q.max||10)+'</span></div>'
+    +'<div id="evThH" style="max-height:32vh;overflow:auto;margin:6px 0">'+hs.map(function(t,i){ return '<div style="'+(i===n-1?'font-weight:800;font-size:15px;color:#2b2b2b':'font-weight:600;font-size:13px;color:#777')+';margin-top:3px">'+(i+1)+'. '+esc(t)+'</div>'; }).join("")+'</div>'
+    +'<div style="font-size:12.5px;color:#666">'+esc(L(THT.tap))+'</div><div id="evMm" style="color:#e8322f;font-weight:700;min-height:1.2em"></div>'
+    +'<div style="display:flex;gap:8px;margin-top:4px"><button type="button" id="evThN" style="border:0;background:#ff7a1a;color:#fff;border-radius:999px;padding:6px 14px;font-weight:800;cursor:pointer"'+(n>=(q.max||10)?' disabled':'')+'>'+esc(L(THT.nh))+'</button><button type="button" id="evMq" style="border:1px solid #ddd;background:#fff;border-radius:999px;padding:5px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.quit))+'</button></div>');
+  var hh=document.getElementById("evThH"); if(hh) hh.scrollTop=hh.scrollHeight;
+  o.querySelector("#evMq").onclick=function(){ modeEnd(); open(); };
+  o.querySelector("#evThN").onclick=function(){ if(TBUSY) return; TBUSY=1; post("/npg/th/hint",{sess:sess(),l:lg()}).then(function(j){ TBUSY=0; if(!j||!j.ok){ modeEnd(); open(); return; } var q2=j.q||{}; if(q2.done||q2.wait){ modeEnd(); open(); return; } thShow(q2); }).catch(function(){ TBUSY=0; var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(T.err); }); }; }
+function thAns(k){ if(MODE!=="thunt"||TBUSY) return; TBUSY=1; post("/npg/th/ans",{sess:sess(),k:k,l:lg()}).then(function(j){ TBUSY=0; if(!j||!j.ok){ modeEnd(); open(); return; }
+  if(!j.right){ if(j.q&&(j.q.wait||j.q.done)){ modeEnd(); open(); return; } fxSnd("bad"); var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(THT.miss); return; }
+  if(j.done){ modeEnd(); fxWin(L(THT.max)); setTimeout(open,1800); return; }   // 마지막 판까지 — 팡파레 + 만렙 성공
+  fxSnd("ok"); toast(L(THT.up),"#27a745");   // 판 하나 = 짧은 맞음 효과만
+  var q=j.q||{}; if(q.wait){ modeEnd(); setTimeout(function(){ toast(L(THT.wait),"#888"); open(); },900); return; }
+  setTimeout(function(){ if(MODE==="thunt") thShow(q); },500); }).catch(function(){ TBUSY=0; var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(T.err); }); }
 function evRelang(){ var s=document.getElementById("evSheet"); if(s) s.remove(); if(box()) load(); try{ status(); }catch(e){}
   if(MODE==="treasure") treasureMode();
-  else if(MODE==="spot"&&SQ&&SQ._end) spotShow(Object.assign({},SQ,{left:Math.max(0,SQ._end-Date.now())})); }
+  else if(MODE==="spot"&&SQ&&SQ._end) spotShow(Object.assign({},SQ,{left:Math.max(0,SQ._end-Date.now())}));
+  else if(MODE==="thunt") post("/npg/th/start",{sess:sess(),l:lg()}).then(function(j){ if(j&&j.ok&&j.q&&!j.q.done&&!j.q.wait) thShow(j.q); }).catch(function(){}); }
 })();
