@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["prv","명소 후기 관리","관광 카드 별점·댓글 · 삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -407,6 +407,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="inq"){ inqLoad(); return; }
   if(id==="guide"){ guideLoad(); return; }   // 통역·길안내 가이드 승인 (2026-10-24)
   if(id==="greview"){ grevLoad(); return; }
+  if(id==="shop"){ pdLoad(); return; }   // 상품 관리 (2026-10-29)
   if(id==="prv"){ prvLoad(); return; }   // 명소 후기 (2026-10-29)   // 가이드 후기 관리 (2026-10-24)
   if(id==="mis"){ misLoad(); return; }   // 가이드 예약·결제 장부 MIS (2026-10-24)
   if(id==="ptn"){ ptnLoad(); return; }   // 제휴 가게 — partner.js (2026-10-16)
@@ -550,7 +551,7 @@ function guideLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>가이�
   api("/guide/admin/all").then(function(j){ if(!j.ok) throw new Error("x");
     var pend=j.pending||[], appr=j.approved||[], rej=j.rejected||[], leads=j.leads||[], H='';
     GGUIDES={}; pend.concat(appr,rej).forEach(function(g){ GGUIDES[g.id]=g; });   // 수정 폼 미리채움용
-    H+='<div class="card"><b>승인 대기 ('+pend.length+')</b><div class="msg">자격증 번호와 사본을 확인하고 승인/거절하세요.</div>'+(pend.length?pend.map(gCard).join(""):'<div class="msg">대기 중인 신청이 없습니다.</div>')+'</div>';
+    H+='<div class="card"><b>승인 대기 ('+pend.length+')</b><div class="msg">자격증 번호·사본과 서명한 업무위탁 계약서를 확인하고 승인/거절하세요.</div>'+(pend.length?pend.map(gCard).join(""):'<div class="msg">대기 중인 신청이 없습니다.</div>')+'</div>';
     H+='<div class="card"><b>승인된 가이드 ('+appr.length+')</b>'+(appr.length?appr.map(gCard).join(""):'<div class="msg">아직 없습니다.</div>')+'</div>';
     if(rej.length) H+='<div class="card"><b>거절 ('+rej.length+')</b>'+rej.map(gCard).join("")+'</div>';
     H+='<div class="card"><b>손님 요청 ('+leads.length+')</b><div class="msg">손님이 가이드에게 보낸 요청입니다. 가이드에게 이메일로도 갑니다. 1년 지나면 지워집니다.</div>'+(leads.length?leads.map(gLead).join(""):'<div class="msg">아직 없습니다.</div>')+'</div>';
@@ -564,11 +565,12 @@ function gCard(g){ var langs=(g.langs||[]).map(gLangNm).join(", ");
     +(g.intro?'<div style="white-space:pre-wrap;margin:4px 0">'+esc(g.intro)+'</div>':'')
     +(g.email?'<div class="sub">연락처 '+esc(g.email)+(g.phone?' · '+esc(g.phone):'')+'</div>':'')
     +'<div class="row" style="margin-top:6px"><button class="g" data-id="'+esc(g.id)+'" onclick="gLic(this.dataset.id)">자격증 사본 보기</button>'
+    +(g.ct?'<button class="g" data-id="'+esc(g.id)+'" data-n="'+(+g.ct||0)+'" onclick="gCt(this.dataset.id,+this.dataset.n)">계약서 사본 보기 ('+(+g.ct||0)+'장)</button>':'<span class="sub" style="color:#e03131;align-self:center">계약서 없음</span>')
     +(g.status!=='approved'?'<button data-id="'+esc(g.id)+'" onclick="gAct(\'approve\',this.dataset.id)">승인</button>':'')
     +(g.status==='new'?'<button class="g" data-id="'+esc(g.id)+'" onclick="gAct(\'reject\',this.dataset.id)">거절</button>':'')
     +'<button class="g" data-id="'+esc(g.id)+'" onclick="gEdit(this.dataset.id)">수정</button>'
     +'<button class="g" data-id="'+esc(g.id)+'" onclick="gAct(\'delete\',this.dataset.id)">지우기</button></div>'
-    +'<div id="glic_'+esc(g.id)+'"></div><div id="gedit_'+esc(g.id)+'"></div></div></div></div>'; }
+    +'<div id="glic_'+esc(g.id)+'"></div><div id="gct_'+esc(g.id)+'"></div><div id="gedit_'+esc(g.id)+'"></div></div></div></div>'; }
 // ── 가이드 프로필 수정 (관리자, 2026-10-24) — /guide/admin/edit. 사진·자격증 사본은 바꿀 때만 올린다(안 바꾸면 그대로). 상태는 유지(수정이 승인을 풀지 않음) ──
 var GGUIDES={}, GEDIT={photo:null,lic:null};
 var GLANG6A=[["한국어","ko"],["영어","en"],["일본어","ja"],["중국어(간체)","zhs"],["중국어(번체)","zht"],["스페인어","es"]];
@@ -619,12 +621,13 @@ function gCopy(t){ try{ navigator.clipboard.writeText(t).then(function(){ alert(
 function grevStars(n){ n=Math.max(0,Math.min(5,Math.round(n||0))); var s=""; for(var i=0;i<5;i++) s+=(i<n?"★":"☆"); return s; }
 // ── 명소 후기 (2026-10-29) — 허브 /npg/admin/rv/list·del. 관광 카드 별점·댓글(AI 검사·번역 뒤 올라온 것). 원문·한국어 번역 · 지우면 평균·개수 다시 셈 ──
 function prvLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>명소 후기 관리</b><div class="msg">불러오는 중…</div></div>';
-  api("/npg/admin/rv/list").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); var it=j.items||[], c=j.cost;
+  api("/shop/admin/products").then(function(q){ (q&&q.items||[]).forEach(function(x){ PRV_NM["shop:"+x.id]=(x.t&&x.t.ko)||x.id; }); }).catch(function(){}).then(function(){ return api("/npg/admin/rv/list"); }).then(function(j){ if(!j.ok) throw new Error(j.err||"x"); var it=j.items||[], c=j.cost;   // 체험 상품 후기(k=shop:<id>)는 상품 이름으로 (10-29)
     P.innerHTML='<div class="card"><b>명소 후기 ('+j.n+')</b><div class="msg">욕설·광고·개인정보는 AI 가 올리기 전에 거릅니다. 그래도 부적절하면 지우세요(평균·개수 다시 셈). 이번 달 AI 비용: '+(c?won(c.krw)+' · '+c.calls+'회':'0원')+' / 상한 '+won(j.stop)+(c&&c.krw>=j.stop?' · <b class="err">새 후기 멈춤</b>':'')+'</div>'
       +(it.length?it.map(prvCard).join(""):'<div class="msg">아직 후기가 없습니다.</div>')+'</div>';
   }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+').</div></div>'; }); }
+var PRV_NM={};
 function prvCard(r){ var d=new Date((r.up||r.at)+9*3600e3).toISOString().slice(0,16).replace("T"," ");
-  return '<div class="inv"><div class="sub">'+esc(d)+' · 명소 <b>'+esc(r.k)+'</b> · '+esc(r.nm)+(r.own?' · 사장님/심사 계정':'')+(r.up?' · 수정됨':'')+'</div>'
+  return '<div class="inv"><div class="sub">'+esc(d)+(/^shop:/.test(r.k)?' · 체험 상품 <b>'+esc(PRV_NM[r.k]||r.k.slice(5))+'</b> · ':' · 명소 <b>'+esc(r.k)+'</b> · ')+esc(r.nm)+(r.own?' · 사장님/심사 계정':'')+(r.up?' · 수정됨':'')+'</div>'
   +'<div style="margin:4px 0"><span style="color:#e8590c;font-weight:800">'+grevStars(r.st)+'</span></div>'
   +(r.txt?'<div style="white-space:pre-wrap">'+esc(r.txt)+'</div>':'')+(r.ko&&r.ko!==r.txt?'<div class="msg" style="white-space:pre-wrap">한국어: '+esc(r.ko)+'</div>':'')
   +'<div class="row" style="margin-top:6px"><button class="g" data-k="'+esc(r.k)+'" data-u="'+esc(r.uid)+'" onclick="prvDel(this.dataset.k,this.dataset.u)">삭제</button></div></div>'; }
@@ -641,6 +644,10 @@ function grevHide(id,h){ api("/guide/admin/review",{method:"POST",body:JSON.stri
 function grevDel(id){ if(!confirm('이 후기를 삭제할까요? (되돌릴 수 없습니다)')) return; api("/guide/admin/review",{method:"POST",body:JSON.stringify({id:id,del:true})}).then(function(j){ if(j&&j.ok) grevLoad(); else alert('지우지 못했습니다.'); }).catch(function(){ alert('지우지 못했습니다.'); }); }
 function gLic(id){ var box=$("glic_"+id); if(!box) return; if(box.innerHTML){ box.innerHTML=''; return; } box.innerHTML='<div class="msg">불러오는 중…</div>';
   api("/guide/admin/lic?id="+encodeURIComponent(id)).then(function(j){ box.innerHTML=j&&j.ok&&j.data?'<img src="'+j.data+'" style="max-width:100%;border-radius:10px;margin-top:6px">':'<div class="msg">사본을 불러오지 못했습니다.</div>'; }).catch(function(){ box.innerHTML='<div class="msg err">불러오지 못했습니다.</div>'; }); }
+// 서명한 업무위탁 계약서 사본 (10-29) — /guide/admin/contract?id=&n= 장마다
+function gCt(id,n){ var box=$("gct_"+id); if(!box) return; if(box.innerHTML){ box.innerHTML=''; return; } n=Math.max(1,Math.min(3,n||1)); box.innerHTML='<div class="msg">불러오는 중…</div>';
+  var ps=[]; for(var i=0;i<n;i++) ps.push(api("/guide/admin/contract?id="+encodeURIComponent(id)+"&n="+i).catch(function(){ return null; }));
+  Promise.all(ps).then(function(a){ box.innerHTML=a.map(function(j,i){ return j&&j.ok&&j.data?'<div class="sub" style="margin-top:6px">계약서 '+(i+1)+'/'+n+'</div><img src="'+j.data+'" style="max-width:100%;border-radius:10px;margin-top:4px;border:1px solid var(--line)">':'<div class="msg">'+(i+1)+'번째 장을 불러오지 못했습니다.</div>'; }).join(""); }); }
 function gAct(a,id){ if(a==='delete'&&!confirm('이 가이드를 지울까요?')) return; if(a==='reject'&&!confirm('이 신청을 거절할까요?')) return;
   api("/guide/admin/"+a,{method:"POST",body:JSON.stringify({id:id})}).then(function(j){ if(j&&j.ok) guideLoad(); else alert('처리하지 못했습니다.'); }).catch(function(){ alert('처리하지 못했습니다.'); }); }
 
@@ -772,5 +779,150 @@ function xlsMis(){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀�
 if(TOK) login();
 </script>
 <script src="partner.js?v=1016"></script>
+<script>
+// ── 상품 관리 (사장님 2026-10-29) — 체험·입장권 상품 등록·수정·삭제 · 사진은 사장님이 직접 찍어 올린다 ──
+//   허브: GET /shop/admin/products · POST /shop/admin/product · /shop/admin/product/del · /shop/admin/img(사진 바이트) · /shop/admin/lock
+//   고정 상품 8개(토스 카드사 심사 중)는 「심사 중 — 수정 잠금」. 잠금은 맨 위 스위치 하나로 풀고 잠근다
+//   사진: 폴더 고르기(폴더 안 사진을 쭉 보여 주고 체크) · 사진 고르기 · 끌어다 놓기 → 브라우저에서 긴 변 1600px·JPEG 약 300KB 이하로 줄여 올린다. 순서는 끌어서 바꾸고 첫 장이 대표
+var PD={items:[],lock:1,cats:[],r2:false,cost:null,stop:0,ed:null,ph:[],pick:[]};
+var PD_ST={sale:"판매 중",prep:"준비 중(예시)",stop:"판매 중지"}, PD_STC={sale:"#2b8a3e",prep:"#e8590c",stop:"#868e96"};
+var PD_LG=[["en","영어"],["ja","일본어"],["zhs","중국어(간체)"],["zht","중국어(번체)"],["es","스페인어"]], PD_WD=["일","월","화","수","목","금","토"];
+(function(){ var s=document.createElement("style"); s.textContent=
+ ".pdl{display:flex;gap:10px;align-items:center;padding:10px;border-radius:12px;background:var(--bg);margin-top:8px}.pdl img,.pdl .pdn{width:84px;height:63px;object-fit:cover;border-radius:8px;flex:0 0 auto;background:var(--line)}"
++".pdl .pdx{flex:1;min-width:0}.pdl b{display:block}.pdtag{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:1px 8px;margin-right:4px;color:#fff}.pdlock{background:#495057}"
++".pdf label{display:block;font-size:13px;color:var(--sub);margin-top:12px}.pdf input[type=text],.pdf input[type=number],.pdf textarea,.pdf select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;color:inherit}"
++".pdf textarea{min-height:90px;resize:vertical}.pdf .row label{display:inline-flex;align-items:center;gap:4px;margin:0;color:var(--ink);font-size:14px}"
++".pdz{border:2px dashed var(--line);border-radius:12px;padding:10px;margin-top:6px;min-height:90px}.pdz.on{border-color:var(--acc);background:rgba(47,91,211,.06)}"
++".pdph{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.pdph .it{position:relative;width:120px;height:90px;border-radius:8px;overflow:hidden;background:var(--line);cursor:grab}.pdph .it img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}"
++".pdph .it .rep{position:absolute;left:4px;top:4px;background:#ff6a1a;color:#fff;font-size:11px;font-weight:800;border-radius:6px;padding:1px 6px}.pdph .it .no{position:absolute;right:4px;bottom:4px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;border-radius:6px;padding:0 5px}"
++".pdph .it button{position:absolute;right:3px;top:3px;padding:0 7px;border-radius:999px;background:rgba(0,0,0,.65);font-size:13px;line-height:22px}.pdph .it.dr{opacity:.4}.pdph .it .stt{position:absolute;left:4px;bottom:4px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;border-radius:6px;padding:0 5px}"
++".pdpk{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px}.pdpk>div{background:var(--card);border-radius:14px;max-width:980px;width:100%;max-height:90vh;display:flex;flex-direction:column;padding:14px}"
++".pdpk .grid{overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:10px 0}.pdpk .grid label{position:relative;display:block;border-radius:8px;overflow:hidden;border:3px solid transparent;cursor:pointer;background:var(--line)}"
++".pdpk .grid label.on{border-color:var(--acc)}.pdpk .grid img{width:100%;height:100px;object-fit:cover;display:block}.pdpk .grid input{position:absolute;left:6px;top:6px;width:18px;height:18px}.pdpk .grid small{display:block;font-size:11px;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}";
+ document.head.appendChild(s); })();
+function pdName(x){ return (x.t&&x.t.ko)||x.id; }
+function pdCat(c){ var a=PD.cats.filter(function(x){ return x[0]===c; })[0]; return a?a[1].ko:c; }
+function pdThumb(x){ if(x.imgs&&x.imgs.length) return HUB+"/shop/img/"+x.imgs[0]; if(x.img) return "../"+x.img; return ""; }
+function pdPrice(x){ if(x.link&&!x.price) return "외부 예매처"; if(!x.price) return x.real==="perf"?"공연 일정·예매처 연결":"가격 없음"; return won(x.price)+" / 1인"+(x.disc||[]).map(function(d){ return " · "+d.n+"인 이상 1인 "+won(d.p); }).join(""); }
+function pdLocked(x){ return x.fixed&&PD.lock; }
+function pdLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>상품 관리</b><div class="msg">불러오는 중…</div></div>';
+  api("/shop/admin/products").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); PD.items=j.items||[]; PD.lock=j.lock; PD.cats=j.cats||[]; PD.r2=!!j.r2; PD.cost=j.cost; PD.stop=j.stop||0; pdList(); })
+  .catch(function(e){ P.innerHTML='<div class="card"><b>상품 관리</b><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div></div>'; }); }
+function pdList(){ var P=$("pane"), c=PD.cost;
+  var h='<div class="card"><div class="row" style="justify-content:space-between"><b>상품 관리 ('+PD.items.length+')</b><button onclick="pdEdit()">+ 새 상품</button></div>'
+   +'<div class="msg">앱 「체험·입장권」에 이 순서대로 나옵니다. 판매 중지는 앱에서 안 보이고, 준비 중(예시)은 보이지만 주문을 받지 않습니다. 한국어로만 쓰면 저장할 때 AI 가 6개 언어로 번역합니다. 이번 달 번역 비용: '+(c?won(c.krw)+' · '+c.calls+'회':'0원')+(PD.stop?' / 상한 '+won(PD.stop):'')+'</div>'
+   +'<div class="inv" style="margin-top:10px"><b>고정 상품 8개 (토스 카드사 심사 중)</b> — '+(PD.lock?'<span class="pdtag pdlock">심사 중 — 수정 잠금</span> 이름·분류·가격·판매 상태가 바뀌면 재심사가 걸려 잠가 두었습니다. <button class="g" onclick="pdLock(0)">잠금 풀기</button>':'<span class="pdtag" style="background:#c92a2a">잠금 풀림</span> 고정 상품을 고칠 수 있습니다. <button onclick="pdLock(1)">다시 잠그기</button>')+'</div>'
+   +(PD.r2?'':'<div class="msg err">사진 저장소(R2)가 아직 연결되지 않아 사진을 올릴 수 없습니다. 사진 없이 저장은 됩니다.</div>');
+  h+=PD.items.map(function(x){ var th=pdThumb(x), lk=pdLocked(x);
+    return '<div class="pdl">'+(th?'<img src="'+esc(th)+'" alt="" loading="lazy">':'<span class="pdn"></span>')+'<div class="pdx"><b>'+esc(pdName(x))+'</b>'
+      +'<div class="sub"><span class="pdtag" style="background:'+(PD_STC[x.st]||"#868e96")+'">'+esc(PD_ST[x.st]||x.st)+'</span>'+(x.fixed?'<span class="pdtag pdlock">고정'+(lk?' · 심사 중 — 수정 잠금':'')+'</span>':'')+(x.trw?'<span class="pdtag" style="background:#c92a2a">번역 필요</span>':'')
+      +esc(pdCat(x.c))+' · '+esc(pdPrice(x))+(x.link?' · 외부 예매처':'')+(x.rt?' · 노선도':'')+'</div></div>'
+      +'<div class="row"><button '+(lk?'disabled title="심사 중 — 수정 잠금"':'')+' data-id="'+esc(x.id)+'" onclick="pdEdit(this.dataset.id)">수정</button>'
+      +(x.fixed?(x.ov&&!lk?'<button class="g" data-id="'+esc(x.id)+'" onclick="pdDel(this.dataset.id,1)">원래대로</button>':''):'<button class="g" data-id="'+esc(x.id)+'" onclick="pdDel(this.dataset.id)">삭제</button>')+'</div></div>'; }).join("");
+  P.innerHTML=h+'</div>'; }
+function pdLock(v){ if(!v&&!confirm('고정 상품 8개의 수정 잠금을 풀까요?\n토스 카드사 심사 중에는 이름·분류·가격·판매 상태를 바꾸면 재심사가 걸립니다.')) return;
+  api("/shop/admin/lock",{method:"POST",body:JSON.stringify({unlock:v?0:1})}).then(function(j){ if(j&&j.ok) pdLoad(); else alert("바꾸지 못했습니다."); }).catch(function(){ alert("바꾸지 못했습니다."); }); }
+function pdDel(id,rev){ if(!confirm(rev?'이 고정 상품을 처음(코드에 있던) 모습으로 되돌릴까요?':'이 상품을 삭제할까요? 사진도 지워집니다. (되돌릴 수 없습니다)')) return;
+  api("/shop/admin/product/del",{method:"POST",body:JSON.stringify({id:id})}).then(function(j){ if(j&&j.ok) pdLoad(); else alert(j&&j.err==="locked"?"심사 중 — 수정 잠금 상태입니다.":"지우지 못했습니다."); }).catch(function(){ alert("지우지 못했습니다."); }); }
+// ── 편집 화면 ──
+function pdEdit(id){ var x=id?PD.items.filter(function(y){ return y.id===id; })[0]:null; if(x&&pdLocked(x)){ alert("심사 중 — 수정 잠금 상태입니다."); return; }
+  x=x?JSON.parse(JSON.stringify(x)):{t:{},d:{},f:[],c:(PD.cats[0]||["tour"])[0],price:0,disc:[],free:1,days:[],times:[],max:20,st:"prep",link:"",rt:0,imgs:[]};
+  PD.ed=x; PD.ph=(x.imgs||[]).map(function(i){ return {id:i,url:HUB+"/shop/img/"+i}; });
+  if(!PD.ph.length&&x.img) PD.ph=[{fixedImg:x.img,url:"../"+x.img}];
+  var T=x.t||{}, D=x.d||{}, F=x.f||[];
+  var h='<div class="card pdf"><div class="row" style="justify-content:space-between"><b>'+(id?'상품 수정':'새 상품')+(x.fixed?' <span class="pdtag pdlock">고정 상품</span>':'')+'</b><button class="g" onclick="pdLoad()">← 목록</button></div>'
+   +'<label>상품 이름 (한국어)</label><input type="text" id="pdT" maxlength="120" value="'+esc(T.ko||"")+'">'
+   +'<label>분류</label><select id="pdC">'+PD.cats.map(function(c){ return '<option value="'+esc(c[0])+'"'+(c[0]===x.c?' selected':'')+'>'+esc(c[1].ko)+'</option>'; }).join("")+'</select>'
+   +'<label>사진 (여러 장 · 첫 장이 대표 · 끌어서 순서 바꾸기)</label>'
+   +'<div class="pdz" id="pdZ"><div class="row"><button type="button" onclick="$(\'pdDir\').click()">폴더 고르기</button><button type="button" class="g" onclick="$(\'pdFiles\').click()">사진 고르기</button><span class="sub">또는 탐색기에서 사진을 여기로 끌어다 놓으세요</span></div>'
+   +'<input type="file" id="pdDir" webkitdirectory directory multiple accept="image/*" hidden><input type="file" id="pdFiles" multiple accept="image/*" hidden>'
+   +'<div class="pdph" id="pdPh"></div><div class="msg">올릴 때 긴 변 1600px · JPEG 약 300KB 이하로 줄여서 올립니다.'+(PD.r2?'':' <span class="err">사진 저장소(R2)가 아직 없어 사진은 올라가지 않습니다.</span>')+'</div></div>'
+   +'<label>소개 글 (한국어)</label><textarea id="pdD" maxlength="2000">'+esc(D.ko||"")+'</textarea>'
+   +'<label>포함·특징 (한국어 · 줄마다 하나)</label><textarea id="pdF">'+esc(F.map(function(y){ return y.ko||""; }).join("\n"))+'</textarea>'
+   +'<label>1인 가격 (원)</label><input type="number" id="pdP" min="0" step="1000" value="'+(x.price||"")+'">'
+   +'<label>인원별 할인 (예: 2인 이상 1인 79,000원)</label><div id="pdDisc"></div><button type="button" class="g" style="margin-top:6px" onclick="pdDiscAdd()">+ 할인 줄 더하기</button>'
+   +'<label>진행 요일·시간</label><div class="row"><label><input type="checkbox" id="pdFree"'+(x.free?' checked':'')+' onchange="pdFreeTog()"> 날짜 자유 (손님이 날짜·시간을 고름)</label></div>'
+   +'<div id="pdWhen"><div class="row" style="margin-top:6px">'+PD_WD.map(function(w,i){ return '<label><input type="checkbox" class="pdW" value="'+i+'"'+((x.days||[]).indexOf(i)>=0?' checked':'')+'> '+w+'</label>'; }).join("")+'</div>'
+   +'<input type="text" id="pdTm" style="margin-top:6px" placeholder="시작 시간, 쉼표로 (예: 10:00, 14:00)" value="'+esc((x.times||[]).join(", "))+'"></div>'
+   +'<label>최대 인원</label><input type="number" id="pdMax" min="1" max="20" value="'+(x.max||20)+'">'
+   +'<label>판매 상태</label><div class="row">'+["sale","prep","stop"].map(function(k){ return '<label><input type="radio" name="pdSt" value="'+k+'"'+(x.st===k?' checked':'')+'> '+PD_ST[k]+'</label>'; }).join("")+'</div>'
+   +'<label>외부 예매처 링크 (있으면 앱에서 결제 대신 이 링크로 보냅니다)</label><input type="text" id="pdLk" placeholder="https://" value="'+esc(x.link||"")+'">'
+   +'<div class="row" style="margin-top:12px"><label><input type="checkbox" id="pdRt"'+(x.rt?' checked':'')+'> 투어 노선도 연결 (「투어 노선도 보기」 단추)</label></div>'
+   +'<details style="margin-top:14px"><summary style="cursor:pointer;font-weight:700">언어별 고치기 (영어·일본어·중국어 간체/번체·스페인어)</summary><div class="msg">한국어(이름·소개·특징)를 바꾸고 저장하면 AI 가 다시 번역합니다(여기 고친 글은 덮어씀). 한국어는 그대로 두고 여기만 고치면 고친 대로 저장됩니다. 특징은 한국어 줄 순서와 같게 줄마다 하나.</div>'
+   +PD_LG.map(function(l){ return '<div class="inv"><b>'+l[1]+'</b><label>이름</label><input type="text" id="pdT_'+l[0]+'" maxlength="120" value="'+esc(T[l[0]]||"")+'"><label>소개</label><textarea id="pdD_'+l[0]+'">'+esc(D[l[0]]||"")+'</textarea><label>특징 (줄마다)</label><textarea id="pdF_'+l[0]+'" style="min-height:60px">'+esc(F.map(function(y){ return y[l[0]]||""; }).join("\n"))+'</textarea></div>'; }).join("")+'</details>'
+   +'<div class="row" style="margin-top:16px"><button id="pdSave" onclick="pdSave()">저장</button><button class="g" onclick="pdLoad()">취소</button><span class="msg" id="pdMsg"></span></div></div>';
+  $("pane").innerHTML=h; (x.disc||[]).forEach(function(d){ pdDiscAdd(d); }); pdFreeTog(); pdPhPaint(); pdPhWire(); }
+function pdDiscAdd(d){ var w=$("pdDisc"); if(w.children.length>=5) return; var r=document.createElement("div"); r.className="row pdDr"; r.style.marginTop="6px";
+  r.innerHTML='<input type="number" class="pdDn" min="2" max="20" style="width:80px" value="'+((d&&d.n)||2)+'"> 인 이상 1인 <input type="number" class="pdDp" min="0" step="1000" style="width:140px" value="'+((d&&d.p)||"")+'"> 원 <button type="button" class="g" onclick="this.parentNode.remove()">빼기</button>'; w.appendChild(r); }
+function pdFreeTog(){ $("pdWhen").style.display=$("pdFree").checked?"none":""; }
+// ── 사진 칸 ──
+function pdPhPaint(){ var w=$("pdPh"); if(!w) return;
+  w.innerHTML=PD.ph.map(function(p,i){ return '<div class="it" draggable="true" data-i="'+i+'"><img src="'+esc(p.url)+'" alt="">'+(i===0?'<span class="rep">대표</span>':'')+'<span class="no">'+(i+1)+'</span>'+(p.st?'<span class="stt">'+esc(p.st)+'</span>':'')+'<button type="button" data-rm="'+i+'" title="빼기">×</button></div>'; }).join("")||'<div class="sub">아직 사진이 없습니다.</div>'; }
+function pdIsImg(f){ return /^image\//.test(f.type||"")||/\.(jpe?g|png|webp|gif|bmp|heic|heif)$/i.test(f.name||""); }
+function pdAddFiles(list){ var a=[].slice.call(list||[]).filter(pdIsImg); a.forEach(function(f){ PD.ph.push({file:f,url:URL.createObjectURL(f)}); }); pdPhPaint(); }
+function pdPhWire(){ var z=$("pdZ"), w=$("pdPh"), dragI=-1;
+  $("pdFiles").onchange=function(){ pdAddFiles(this.files); this.value=""; };
+  $("pdDir").onchange=function(){ var fs=[].slice.call(this.files||[]).filter(pdIsImg); this.value=""; if(!fs.length){ alert("이 폴더에 사진이 없습니다."); return; } pdPicker(fs); };
+  w.addEventListener("click",function(e){ var b=e.target.closest("[data-rm]"); if(!b) return; PD.ph.splice(+b.dataset.rm,1); pdPhPaint(); });
+  w.addEventListener("dragstart",function(e){ var it=e.target.closest(".it"); if(!it) return; dragI=+it.dataset.i; it.classList.add("dr"); try{ e.dataTransfer.setData("text/plain","pd"); e.dataTransfer.effectAllowed="move"; }catch(x){} });
+  w.addEventListener("dragend",function(){ dragI=-1; pdPhPaint(); });
+  z.addEventListener("dragover",function(e){ e.preventDefault(); z.classList.add("on"); });
+  z.addEventListener("dragleave",function(e){ if(!z.contains(e.relatedTarget)) z.classList.remove("on"); });
+  z.addEventListener("drop",function(e){ e.preventDefault(); z.classList.remove("on");
+    if(dragI>=0){ var it=e.target.closest(".it"), to=it?+it.dataset.i:PD.ph.length-1; var m=PD.ph.splice(dragI,1)[0]; PD.ph.splice(to,0,m); dragI=-1; pdPhPaint(); return; }   // 순서 바꾸기
+    if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files.length) pdAddFiles(e.dataTransfer.files); });   // 탐색기에서 끌어다 놓기
+}
+// 폴더 고르기 — 폴더 안 사진을 모두 미리보기로 보여 주고 체크해서 넣는다
+function pdPicker(fs){ fs.sort(function(a,b){ return (a.webkitRelativePath||a.name).localeCompare(b.webkitRelativePath||b.name); });
+  PD.pick=fs.map(function(f){ return {file:f,url:URL.createObjectURL(f),on:false}; });
+  var o=document.createElement("div"); o.className="pdpk"; o.id="pdPk";
+  o.innerHTML='<div><div class="row" style="justify-content:space-between"><b>폴더 사진 '+fs.length+'장 — 넣을 사진을 고르세요</b><span class="row"><label style="display:inline-flex;gap:4px;align-items:center"><input type="checkbox" id="pdAll"> 전체 선택</label></span></div>'
+   +'<div class="grid">'+PD.pick.map(function(p,i){ return '<label data-k="'+i+'"><input type="checkbox" data-k="'+i+'"><img src="'+esc(p.url)+'" alt="" loading="lazy"><small>'+esc(p.file.name)+'</small></label>'; }).join("")+'</div>'
+   +'<div class="row" style="justify-content:flex-end"><span class="sub" id="pdPkN">0장 고름</span><button class="g" id="pdPkX">닫기</button><button id="pdPkGo">고른 사진 넣기</button></div></div>';
+  document.body.appendChild(o);
+  var cnt=function(){ var n=PD.pick.filter(function(p){ return p.on; }).length; $("pdPkN").textContent=n+"장 고름"; $("pdAll").checked=n===PD.pick.length; };
+  o.addEventListener("change",function(e){ var t=e.target; if(t.id==="pdAll"){ PD.pick.forEach(function(p){ p.on=t.checked; }); [].forEach.call(o.querySelectorAll(".grid input"),function(c){ c.checked=t.checked; c.parentNode.classList.toggle("on",t.checked); }); cnt(); return; }
+    if(t.dataset.k!=null){ PD.pick[+t.dataset.k].on=t.checked; t.parentNode.classList.toggle("on",t.checked); cnt(); } });
+  $("pdPkX").onclick=function(){ PD.pick.forEach(function(p){ URL.revokeObjectURL(p.url); }); o.remove(); };
+  $("pdPkGo").onclick=function(){ PD.pick.forEach(function(p){ if(p.on) PD.ph.push({file:p.file,url:p.url}); else URL.revokeObjectURL(p.url); }); o.remove(); pdPhPaint(); };
+}
+// 브라우저에서 줄이기 — 긴 변 1600px · JPEG · 약 300KB 이하
+function pdShrink(file){ return new Promise(function(ok,no){ var u=URL.createObjectURL(file), im=new Image();
+  im.onload=function(){ var W=im.naturalWidth, H=im.naturalHeight, sc=Math.min(1,1600/Math.max(W,H)), q=0.86;
+    var go=function(){ var c=document.createElement("canvas"); c.width=Math.max(1,Math.round(W*sc)); c.height=Math.max(1,Math.round(H*sc)); var g=c.getContext("2d"); g.fillStyle="#fff"; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height);
+      c.toBlob(function(b){ if(!b){ URL.revokeObjectURL(u); no(new Error("canvas")); return; }
+        if(b.size>300*1024&&q>0.5){ q-=0.08; go(); return; }
+        if(b.size>300*1024&&sc>0.3){ sc*=0.85; q=0.8; go(); return; }
+        URL.revokeObjectURL(u); ok(b); },"image/jpeg",q); };
+    go(); };
+  im.onerror=function(){ URL.revokeObjectURL(u); no(new Error("decode")); }; im.src=u; }); }
+function pdUpload(p){ return pdShrink(p.file).then(function(b){ return fetch(HUB+"/shop/admin/img",{method:"POST",headers:{"x-admin":encodeURIComponent(TOK),"Content-Type":"image/jpeg"},body:b,cache:"no-store"}); })
+  .then(function(r){ return r.json(); }).then(function(j){ if(!j||!j.ok) throw new Error(j&&j.err==="r2"?"사진 저장소(R2) 없음":(j&&j.err)||"올리기 실패"); p.id=j.id; p.st=""; delete p.file; return j.id; }); }
+function pdLines(id){ return ($(id).value||"").split("\n").map(function(s){ return s.trim(); }); }
+function pdSave(){ var x=PD.ed, btn=$("pdSave"), msg=function(s,e){ $("pdMsg").innerHTML=e?'<span class="err">'+esc(s)+'</span>':esc(s); };
+  var t={ko:$("pdT").value.trim()}, d={ko:$("pdD").value.trim()}, fk=pdLines("pdF").filter(Boolean);
+  if(!t.ko){ msg("상품 이름을 넣어 주세요.",1); return; }
+  var f=fk.map(function(s){ return {ko:s}; });
+  PD_LG.forEach(function(l){ t[l[0]]=$("pdT_"+l[0]).value.trim(); d[l[0]]=$("pdD_"+l[0]).value.trim(); var ls=pdLines("pdF_"+l[0]).filter(Boolean); f.forEach(function(y,i){ y[l[0]]=ls[i]||""; }); });
+  var st=(document.querySelector('input[name="pdSt"]:checked')||{}).value||"prep", price=parseInt($("pdP").value,10)||0, link=$("pdLk").value.trim();
+  if(link&&!/^https?:\/\/\S{3,}$/.test(link)){ msg("예매처 링크는 https:// 로 시작해야 합니다.",1); return; }
+  if(st==="sale"&&!price&&!link&&x.real!=="perf"){ msg("판매 중이면 1인 가격(또는 외부 예매처 링크)이 있어야 합니다.",1); return; }
+  var disc=[].map.call(document.querySelectorAll("#pdDisc .pdDr"),function(r){ return {n:parseInt(r.querySelector(".pdDn").value,10),p:parseInt(r.querySelector(".pdDp").value,10)}; }).filter(function(y){ return y.n>=2&&y.p>0; });
+  var free=$("pdFree").checked, days=[].filter.call(document.querySelectorAll(".pdW"),function(c){ return c.checked; }).map(function(c){ return +c.value; });
+  var times=($("pdTm").value||"").split(/[,\s]+/).filter(Boolean).map(function(s){ var m=s.match(/^(\d{1,2}):(\d{2})$/); return m?("0"+m[1]).slice(-2)+":"+m[2]:""; });
+  if(!free&&times.some(function(s){ return !s; })){ msg("시간은 10:00 처럼 써 주세요.",1); return; }
+  var need=PD.ph.filter(function(p){ return p.file; });
+  if(need.length&&!PD.r2){ msg("사진 저장소(R2)가 아직 없어 새 사진은 올릴 수 없습니다. 사진을 빼고 저장해 주세요.",1); return; }
+  btn.disabled=true; var k=0;
+  var up=need.reduce(function(pr,p){ return pr.then(function(){ k++; p.st="올리는 중"; pdPhPaint(); msg("사진 올리는 중 "+k+" / "+need.length+"…"); return pdUpload(p); }); },Promise.resolve());
+  up.then(function(){ pdPhPaint(); msg("저장 중… (한국어가 바뀌었으면 AI 번역까지 몇 초 걸립니다)");
+    var body={id:x.id||"",t:t,d:d,f:f,c:$("pdC").value,imgs:PD.ph.filter(function(p){ return p.id; }).map(function(p){ return p.id; }),price:price,disc:disc,free:free?1:0,days:days,times:times,max:parseInt($("pdMax").value,10)||20,st:st,link:link,rt:$("pdRt").checked?1:0};
+    return api("/shop/admin/product",{method:"POST",body:JSON.stringify(body)}); })
+  .then(function(j){ btn.disabled=false; if(!j||!j.ok){ msg(j&&j.err==="locked"?"심사 중 — 수정 잠금 상태입니다.":j&&j.err==="price"?"판매 중이면 가격이 있어야 합니다.":"저장하지 못했습니다 ("+((j&&j.err)||"x")+")",1); return; }
+    var ai=String(j.ai||"");
+    alert("저장했습니다."+(ai==="ok"?"\nAI 가 6개 언어로 번역했습니다. 「언어별 고치기」에서 확인·수정할 수 있습니다.":ai.indexOf("fail")===0?"\n번역은 실패했습니다("+ai.slice(5)+"). 다른 언어에는 한국어가 임시로 나옵니다. 다시 저장하면 다시 번역합니다.":""));
+    pdLoad(); })
+  .catch(function(e){ btn.disabled=false; pdPhPaint(); msg("저장하지 못했습니다: "+e.message,1); }); }
+</script>
 </body>
 </html>
