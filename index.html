@@ -863,12 +863,13 @@ function tipTag(p){ var t=p&&p.tip; if(!t) return ""; var s=typeof t==="string"?
   return '<div class="tiptag" style="display:inline-flex;align-items:center;gap:5px;margin:4px 0 3px;padding:5px 10px;border-radius:12px;background:#fff4e6;border:1px solid #ffa94d;color:#d9480f;font-size:12.5px;font-weight:800;line-height:1.35">'+MPIMG("mi_clock","width:15px;height:15px;flex:0 0 auto")+'<span>'+esc(s)+'</span></div>'; }
 function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } if(p.app){ if(window.tvidOpen&&(p.app==="youtube"||p.app==="netflix")) tvidOpen(p.app==="netflix"?"nf":"yt"); else appGo(p.app); return; } var nm=LN(p), ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
-  window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+tipTag(p)+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
+  window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+tipTag(p)+(window.rvSlot?rvSlot(k):"")+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
     +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng,null,p.addr))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
   if(k==="smartium") try{ cphVideo(); }catch(e){}   // 코엑스 아티움 = 호랑이 영상 (사장님 10-26)
   else if(k!=="mpstat") try{ cphLoad(k,p.ko,p.lat,p.lng); }catch(e){}   // 카드 빈자리에 구글 사진 (사장님 10-23)
   /*nolink*/   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 · 출발지는 내 위치(있으면)
   if(k==="mpstat") document.getElementById("res").firstElementChild.insertAdjacentHTML("beforeend",'<div class="d" style="margin-top:6px">'+T("머니퍼즐 통계청 — 주식회사 부만","Money Puzzle Data Center — Booman Inc.")+'<br>'+T("사업자등록번호 297-81-03712 · 연락처 ","Business Reg. No. 297-81-03712 · Contact ")+'<a href="mailto:emhwang3@moneypuzzle.co.kr">emhwang3@moneypuzzle.co.kr</a></div>');   // 회사 카드 (10-15)
+  try{ if(window.rvLoad) rvLoad(k); }catch(e){}   // 명소 후기 별점·개수 (사장님 10-29) — review.js
   ntMark(k);
   try{ mePose("photo"); }catch(e){}
   if(p.route&&p.route.map===VIEW) routeShow(p); else rtClear();
@@ -1788,6 +1789,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script src="tvid.js?v=1028tg"></script>
 <script src="pcbang.js?v=1026pc5"></script>
 <script src="pg.js?v=1029grac"></script>
+<script src="review.js?v=1029rv"></script>
 <script src="event.js?v=1029tb"></script>
 <script src="billboard.js?v=1021pl"></script>
 <script src="airport_i18n.js?v=1028pw"></script>
