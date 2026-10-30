@@ -135,6 +135,18 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".iglb{display:block;font-size:13px;color:var(--sub);font-weight:700;margin:10px 2px 3px}"
   +".igin{width:100%;box-sizing:border-box;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 11px}"
   +".igchk{display:flex;gap:7px;align-items:flex-start;font-size:13px;color:var(--ink);margin:12px 2px 0;line-height:1.5}.igchk input{width:18px;height:18px;margin-top:1px;flex:0 0 auto}"
+  // 가이드 예약·결제 화면 (사장님 10-30)
+  +".gbm{display:grid;grid-template-columns:1fr 1fr;gap:7px}.gbm button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:11px 6px;font-size:14.5px;font-weight:800;cursor:pointer;min-height:44px}.gbm button.on{border-color:#0c8599;background:#e3fafc;color:#0b7285}"
+  +".gbrow{display:flex;gap:8px}.gbrow>div{flex:1;min-width:0}"
+  +".gbpr{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:12px 0 0}.gbl{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;margin:4px 0}.gbl>span:first-child{color:var(--sub);flex:0 0 auto}.gbl>span:last-child{text-align:right;min-width:0;word-break:break-word}"
+  +".gbt{display:flex;justify-content:space-between;border-top:1px dashed var(--line);margin-top:7px;padding-top:8px;font-size:18px;font-weight:900}"
+  +".gbrate{font-size:12.5px;color:var(--sub);line-height:1.5;margin:6px 2px 0}.gbx{font-size:12.5px;color:#c2410c;font-weight:700;line-height:1.5;margin:6px 2px 0}"
+  +".gbgo{display:block;width:100%;border:0;border-radius:12px;background:#0c8599;color:#fff;font-size:17px;font-weight:900;padding:14px;margin-top:14px;cursor:pointer}.gbgo:disabled{opacity:.5;cursor:default}.gbgo.g2{background:#efece4;color:#1d2433;font-size:15px;padding:11px;margin-top:8px}"
+  +".gbrf{font-size:12.5px;color:var(--sub);margin:10px 2px 0;line-height:1.5}.gbrf a{color:#0b7285;font-weight:800}"
+  +".gbstamp{position:fixed;inset:0;pointer-events:none;z-index:1037;display:flex;align-items:center;justify-content:center;overflow:hidden}.gbstamp span{transform:rotate(-24deg);font:900 clamp(44px,11vw,120px)/1 'Segoe UI',Arial,sans-serif;letter-spacing:.06em;color:rgba(214,40,40,.4);border:clamp(5px,1vw,12px) solid rgba(214,40,40,.4);border-radius:18px;padding:.12em .3em;white-space:nowrap}"
+  +".gbut{display:inline-block;font-size:11px;font-weight:900;color:#c92a2a;border:1.5px solid #ff8a8a;border-radius:6px;padding:2px 6px;margin-left:8px;vertical-align:3px;letter-spacing:.05em}"
+  +".gbr{display:flex;gap:8px;align-items:center;font-size:14.5px;margin:9px 2px}.gbr input{width:18px;height:18px;flex:0 0 auto}"
+  +".gbdone{background:#ebfbee;border:1px solid #b2f2bb;color:#2b8a3e;border-radius:12px;padding:12px 14px;font-weight:800;line-height:1.55;margin:12px 0}.gberr{color:#c92a2a;font-weight:800;font-size:13.5px;margin:10px 2px 0}"
   +".igrb{display:inline-block;font-size:12.5px;font-weight:800;color:#e8590c;white-space:nowrap}.igrb0{color:var(--sub);font-weight:700;font-size:12px}"
   +".igrsum{font-size:15px;font-weight:800;color:#e8590c;margin:2px 2px 8px}.igrsum b{color:var(--ink)}.igrsum0{color:var(--sub);font-weight:700;font-size:13px}"
   +".igrv{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 11px;margin:7px 0}.igrvh{font-size:14px;color:#e8590c;font-weight:800}.igrvh b{color:var(--ink);margin-left:3px}.igrvd{color:var(--sub);font-size:12px;font-weight:600;margin-left:4px}.igrvt{color:var(--ink);font-size:13.5px;margin-top:4px;line-height:1.5;white-space:pre-wrap}"
@@ -336,6 +348,188 @@ function igNote(){ return LG6({ko:"실제 통역·길안내를 해 주는 사람
 function igDates(){ var out=[]; for(var i=1;i<=2;i++){ var d=new Date(Date.now()+9*3600e3+i*864e5), s=d.toISOString().slice(0,10);
     out.push([s, (i===1?LG6({ko:"내일",en:"Tomorrow",ja:"明日",zhs:"明天",zht:"明天",es:"Mañana"}):LG6({ko:"모레",en:"Day after tomorrow",ja:"明後日",zhs:"后天",zht:"後天",es:"Pasado mañana"}))+" ("+s+")"]); } return out; }
 function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) return GLANG6[i][0]; return c; }
+// ── 가이드 예약·결제 (사장님 2026-10-30 「가이드를 고르면 맨 위 안내 → 반일·하루·시간·기간 → 메모 → 보내기 및 결제 → 결제 화면까지」) ──
+//   흐름: req(안내문·가이드·이용 시간·날짜·시작 시간·인원·요금·메모·예약자) → gconf(요약 확인) → gpay(결제창, UNDER TESTING) → 토스 시험 결제창 → ?gbres=ok|fail → gdone
+//   주문 = 허브 POST /shop/order {pid:"gbk", test:true} (서버가 GBK_PRICE 로 금액 다시 계산 · 텔레그램 「[시험 주문] 가이드 예약」 · 가이드·손님 발송 없음)
+//   🔴 요금 바꿀 땐 여기 GBK 와 허브 worker.js GBK_PRICE 둘 다. 숫자는 「일단 보고 고치자」 임시값
+var GBK={hr:50000, half:190000, full:360000, big:5, bigHr:10000, hMin:2, hMax:12, dMin:2, dMax:7, dayH:8, nMax:10};
+function gbkCalc(mode,h,d,n){ var P=GBK, hb=function(x){ return x>=8?P.full+(x-8)*P.hr:x>=4?P.half+(x-4)*P.hr:x*P.hr; };
+  var hours=mode==="half"?4:mode==="full"?8:mode==="days"?d*P.dayH:h, base=mode==="days"?d*P.full:hb(hours), extra=n>=P.big?P.bigHr*hours:0;
+  return {hours:hours,base:base,extra:extra,total:base+extra}; }
+var GB_TCK="test_ck_5OWRapdA8dzyq72vW4gRVo1zEqZK", GB_SDK="https://js.tosspayments.com/v2/standard", GB_KEY="mpv_gbpay";   // shop.js 와 같은 토스 시험 키·SDK (새 PG 연결 아님)
+function T6(ko,en,ja,zhs,zht,es){ return {ko:ko,en:en,ja:ja,zhs:zhs,zht:zht,es:es}; }
+var GBT={
+ note:T6("자유여행을 하고 싶은 관광객이 반일, 하루 또는 원하는 기간만큼 통역관광가이드와 함께 자유롭게 여행할 수 있는 메뉴입니다. 원하는 가이드를 고르신 뒤 가고 싶은 곳이나 원하는 관광 내용을 간단히 적고 「보내기 및 결제」를 누른 다음 결제해 주세요.",
+  "This menu is for travelers who want to explore Korea on their own with a licensed interpreter-guide — for half a day, a full day or as long as you like. Choose your guide, briefly write where you want to go or what you would like to do, tap \"Send & pay\" and then complete the payment.",
+  "自由旅行をしたい旅行者が、半日・1日、またはご希望の期間だけ通訳案内士と一緒に自由に旅するためのメニューです。ご希望のガイドを選んだら、行きたい場所やご希望の観光内容を簡単に入力し、「送信して支払う」を押してからお支払いください。",
+  "本菜单供想自由行的游客，在半天、一天或所需的期间内，与持证翻译导游一起自由旅行。选好想要的向导后，请简单填写想去的地方或希望的游览内容，点击「发送并付款」后完成付款。",
+  "本選單供想自由行的旅客，在半天、一天或所需的期間內，與持證翻譯導遊一起自由旅行。選好想要的嚮導後，請簡單填寫想去的地方或希望的遊覽內容，點擊「送出並付款」後完成付款。",
+  "Este menú es para viajeros que quieren recorrer Corea por su cuenta con un guía-intérprete con licencia: medio día, un día entero o el tiempo que quieran. Elige a tu guía, escribe brevemente adónde quieres ir o qué te gustaría hacer, pulsa «Enviar y pagar» y completa el pago."),
+ gd:T6("가이드","Guide","ガイド","向导","嚮導","Guía"),
+ dur:T6("이용 시간","Duration","ご利用時間","使用时长","使用時長","Duración"),
+ half:T6("반일 (4시간)","Half day (4 h)","半日（4時間）","半天（4小时）","半天（4小時）","Medio día (4 h)"),
+ full:T6("하루 (8시간)","Full day (8 h)","1日（8時間）","一天（8小时）","一天（8小時）","Día completo (8 h)"),
+ hours:T6("시간 직접 선택","Choose hours","時間を選ぶ","自选时长","自選時長","Elegir horas"),
+ days:T6("여러 날","Several days","複数日","多天","多天","Varios días"),
+ hN:T6("{n}시간","{n} h","{n}時間","{n}小时","{n}小時","{n} h"),
+ dN:T6("{n}일 (하루 8시간)","{n} days (8 h a day)","{n}日（1日8時間）","{n}天（每天8小时）","{n}天（每天8小時）","{n} días (8 h al día)"),
+ hSel:T6("몇 시간","How many hours","何時間","几小时","幾小時","Cuántas horas"),
+ dSel:T6("며칠","How many days","何日","几天","幾天","Cuántos días"),
+ date:T6("날짜 (여러 날이면 첫날 · 당일 예약은 받지 않습니다)","Date (first day if several · no same-day booking)","日付（複数日の場合は初日・当日予約不可）","日期（多天则为第一天 · 不接受当天预约）","日期（多天則為第一天 · 不接受當天預約）","Fecha (primer día si son varios · no el mismo día)"),
+ tm:T6("시작 시간","Start time","開始時間","开始时间","開始時間","Hora de inicio"),
+ ppl:T6("인원","People","人数","人数","人數","Personas"),
+ pN:T6("{n}명","{n}","{n}名","{n}人","{n}人","{n}"),
+ fee:T6("요금","Price","料金","费用","費用","Precio"),
+ rate:T6("시간당 {hr} (1~4인 같은 요금) · 반일 4시간 {half} · 하루 8시간 {full} · {big}인 이상은 시간당 {bh} 추가",
+  "{hr} per hour (same for 1–4 people) · Half day 4 h {half} · Full day 8 h {full} · {big}+ people: {bh} more per hour",
+  "1時間 {hr}（1～4名同料金）・半日4時間 {half}・1日8時間 {full}・{big}名以上は1時間あたり {bh} 追加",
+  "每小时 {hr}（1～4人同价）· 半天4小时 {half} · 一天8小时 {full} · {big}人及以上每小时加 {bh}",
+  "每小時 {hr}（1～4人同價）· 半天4小時 {half} · 一天8小時 {full} · {big}人及以上每小時加 {bh}",
+  "{hr} por hora (igual de 1 a 4 personas) · Medio día 4 h {half} · Día completo 8 h {full} · {big}+ personas: {bh} más por hora"),
+ excl:T6("가이드 교통비·입장료·식사비는 손님 부담입니다 (현장에서 직접 내 주세요).","The guide's transport, admission tickets and meals are paid by you (on the spot).","ガイドの交通費・入場料・食事代はお客様のご負担です（現地でお支払いください）。","向导的交通费、门票和餐费由游客承担（请在现场支付）。","嚮導的交通費、門票和餐費由旅客負擔（請在現場支付）。","El transporte, las entradas y las comidas del guía corren por tu cuenta (se pagan en el momento)."),
+ xtra:T6("{big}인 이상 추가","{big}+ people surcharge","{big}名以上の追加料金","{big}人及以上加价","{big}人及以上加價","Suplemento {big}+ personas"),
+ tot:T6("합계","Total","合計","合计","合計","Total"),
+ memo:T6("가고 싶은 곳·원하는 관광 내용 (최대 500자)","Where you want to go · what you would like to do (up to 500 characters)","行きたい場所・ご希望の観光内容（500字まで）","想去的地方·希望的游览内容（最多500字）","想去的地方·希望的遊覽內容（最多500字）","Adónde quieres ir · qué te gustaría hacer (máx. 500 caracteres)"),
+ memoPh:T6("예) 오전엔 경복궁·북촌 한옥마을, 점심은 광장시장, 오후엔 N서울타워","e.g. Gyeongbokgung and Bukchon Hanok Village in the morning, lunch at Gwangjang Market, N Seoul Tower in the afternoon","例）午前は景福宮・北村韓屋村、昼は広蔵市場、午後はNソウルタワー","例：上午景福宫·北村韩屋村，午饭在广藏市场，下午N首尔塔","例：上午景福宮·北村韓屋村，午飯在廣藏市場，下午N首爾塔","p. ej.: por la mañana Gyeongbokgung y Bukchon, almuerzo en el mercado de Gwangjang, por la tarde la N Seoul Tower"),
+ memoL:T6("메모","Notes","メモ","备注","備註","Notas"),
+ cu:T6("예약자 정보","Your details","ご予約者情報","预约人信息","預約人資訊","Tus datos"),
+ cn:T6("이름 (필수)","Name (required)","お名前（必須）","姓名（必填）","姓名（必填）","Nombre (obligatorio)"),
+ ce:T6("이메일 (필수)","Email (required)","メール（必須）","邮箱（必填）","電子郵件（必填）","Correo electrónico (obligatorio)"),
+ cp:T6("휴대폰 (필수)","Mobile phone (required)","携帯電話（必須）","手机（必填）","手機（必填）","Móvil (obligatorio)"),
+ cpn:T6("입력한 이름·이메일·휴대폰은 예약 안내와 가이드 연결에만 씁니다. 결제가 끝나면 고른 가이드에게 날짜·시간·인원·메모·연락처가 전달됩니다.","Your name, email and phone are used only for booking notices and to connect you with your guide. After payment, the guide you chose receives the date, time, people, notes and your contact.","入力したお名前・メール・携帯電話は予約のご案内とガイドとの連絡にのみ使います。お支払い後、選んだガイドに日時・人数・メモ・連絡先が伝わります。","您填写的姓名、邮箱和手机仅用于预约通知和联系向导。付款后，所选向导会收到日期、时间、人数、备注和您的联系方式。","您填寫的姓名、電子郵件和手機僅用於預約通知和聯絡嚮導。付款後，所選嚮導會收到日期、時間、人數、備註和您的聯絡方式。","Tu nombre, correo y móvil solo se usan para avisos de la reserva y para contactar con tu guía. Tras el pago, el guía elegido recibe la fecha, la hora, las personas, las notas y tu contacto."),
+ send:T6("보내기 및 결제","Send & pay","送信して支払う","发送并付款","送出並付款","Enviar y pagar"),
+ rf:T6("취소·환불은 환불 규정을 따릅니다 (여행 5일 전까지 취소하면 전액 환불).","Cancellations and refunds follow our refund policy (full refund if you cancel 5 days before).","キャンセル・返金は返金規定に従います（5日前までの取消は全額返金）。","取消·退款按退款规定办理（出发前5天及以前取消全额退款）。","取消·退款依退款規定辦理（出發前5天及以前取消全額退款）。","Las cancelaciones y reembolsos siguen nuestra política (reembolso total si cancelas 5 días antes)."),
+ rfL:T6("환불 규정 보기","View refund policy","返金規定を見る","查看退款规定","查看退款規定","Ver la política de reembolso"),
+ cfT:T6("예약 내용 확인","Check your booking","予約内容の確認","确认预约内容","確認預約內容","Revisa tu reserva"),
+ cfS:T6("아래 내용이 맞으면 결제로 넘어가세요.","If everything is correct, go on to payment.","内容がよろしければお支払いへお進みください。","确认无误后请前往付款。","確認無誤後請前往付款。","Si todo es correcto, continúa al pago."),
+ who:T6("예약자","Booked by","ご予約者","预约人","預約人","Reserva a nombre de"),
+ cfGo:T6("확인, 결제로","Confirm & go to payment","確認して支払いへ","确认并去付款","確認並前往付款","Confirmar e ir al pago"),
+ edit:T6("고치기","Edit","修正する","修改","修改","Editar"),
+ pt:T6("결제","Payment","お支払い","付款","付款","Pago"),
+ pm:T6("결제 수단","Payment method","お支払い方法","付款方式","付款方式","Método de pago"),
+ card:T6("신용·체크카드 (해외 카드 포함)","Credit/debit card (incl. overseas cards)","クレジット・デビットカード（海外カード可）","信用卡/借记卡（含境外卡）","信用卡/簽帳卡（含境外卡）","Tarjeta de crédito/débito (incl. extranjeras)"),
+ agr:T6("예약 내용과 환불 규정을 확인했으며 결제에 동의합니다","I have checked the booking and refund policy and agree to pay","予約内容と返金規定を確認し、支払いに同意します","我已确认预约内容和退款规定并同意付款","我已確認預約內容和退款規定並同意付款","He revisado la reserva y la política de reembolso y acepto pagar"),
+ payb:T6("결제하기","Pay","支払う","付款","付款","Pagar"),
+ sav:T6("저장 중…","Saving…","保存中…","保存中…","儲存中…","Guardando…"),
+ opn:T6("토스 결제창을 여는 중…","Opening the Toss payment window…","Toss決済画面を開いています…","正在打开Toss付款窗口…","正在開啟Toss付款視窗…","Abriendo la ventana de pago de Toss…"),
+ ppn:T6("PayPal 결제는 아직 연결 전이에요. 신용·체크카드(해외 카드 포함)로 결제해 주세요.","PayPal is not connected yet. Please pay by credit/debit card (overseas cards accepted).","PayPal決済はまだ準備中です。クレジット・デビットカード（海外カード可）でお支払いください。","PayPal付款尚未开通，请使用信用卡/借记卡（含境外卡）付款。","PayPal付款尚未開通，請使用信用卡/簽帳卡（含境外卡）付款。","PayPal aún no está disponible. Paga con tarjeta de crédito/débito (se aceptan extranjeras)."),
+ pdT:T6("결제 완료","Payment complete","決済完了","付款完成","付款完成","Pago completado"),
+ pdS:T6("예약이 접수되었습니다. 가이드가 확인하면 이메일로 안내해 드립니다.","Your booking has been received. We will email you once the guide confirms.","ご予約を受け付けました。ガイドが確認しましたらメールでお知らせします。","预约已受理。向导确认后会通过邮件通知您。","預約已受理。嚮導確認後會透過電子郵件通知您。","Hemos recibido tu reserva. Te escribiremos cuando el guía la confirme."),
+ amt:T6("결제 금액","Amount paid","決済金額","付款金额","付款金額","Importe pagado"),
+ oid:T6("주문번호","Order no.","注文番号","订单号","訂單號","N.º de pedido"),
+ tkey:T6("시험 결제(테스트 키) — 실제 청구 없음","Test payment (test key) — no real charge","テスト決済（テストキー）— 実際の請求はありません","测试付款（测试密钥）— 不会实际扣款","測試付款（測試金鑰）— 不會實際扣款","Pago de prueba (clave de prueba): sin cargo real"),
+ tsv:T6("시험 주문으로 저장했어요. 가이드·예약자에게는 아무것도 보내지 않았어요.","Saved as a test order. Nothing was sent to the guide or to you.","テスト注文として保存しました。ガイドやご予約者には何も送っていません。","已保存为测试订单，未向向导或您发送任何内容。","已儲存為測試訂單，未向嚮導或您傳送任何內容。","Guardado como pedido de prueba. No se envió nada al guía ni a ti."),
+ pfT:T6("결제가 완료되지 않았어요 (취소 또는 실패).","The payment was not completed (cancelled or failed).","決済が完了しませんでした（キャンセルまたは失敗）。","付款未完成（已取消或失败）。","付款未完成（已取消或失敗）。","El pago no se completó (cancelado o fallido)."),
+ home:T6("처음으로","Start over","最初に戻る","返回开始","返回開始","Volver al inicio"),
+ enm:T6("이름을 넣어 주세요.","Please enter your name.","お名前を入力してください。","请填写姓名。","請填寫姓名。","Escribe tu nombre."),
+ eem:T6("이메일 주소를 확인해 주세요.","Please check your email address.","メールアドレスをご確認ください。","请检查邮箱地址。","請檢查電子郵件地址。","Revisa tu correo electrónico."),
+ eph:T6("휴대폰 번호를 확인해 주세요.","Please check your mobile number.","携帯電話番号をご確認ください。","请检查手机号码。","請檢查手機號碼。","Revisa tu número de móvil."),
+ edt:T6("날짜를 확인해 주세요 (내일부터 1년 안).","Please check the date (from tomorrow, within a year).","日付をご確認ください（明日から1年以内）。","请检查日期（明天起一年内）。","請檢查日期（明天起一年內）。","Revisa la fecha (desde mañana, dentro de un año)."),
+ egd:T6("이 가이드는 지금 예약할 수 없어요. 다른 가이드를 골라 주세요.","This guide can't be booked right now. Please choose another guide.","このガイドは現在予約できません。別のガイドを選んでください。","该向导目前无法预约，请选择其他向导。","該嚮導目前無法預約，請選擇其他嚮導。","Este guía no se puede reservar ahora. Elige otro guía."),
+ efail:T6("저장하지 못했어요. 잠시 뒤 다시 눌러 주세요.","Could not save. Please try again shortly.","保存できませんでした。しばらくしてからもう一度お試しください。","保存失败，请稍后再试。","儲存失敗，請稍後再試。","No se pudo guardar. Inténtalo de nuevo en un momento.")
+};
+function gbF(o,m){ var s=LG6(o); for(var k in m) s=s.split("{"+k+"}").join(m[k]); return s; }
+function gbWon(x){ return "₩"+Number(x||0).toLocaleString("ko-KR"); }
+function gbDay(add){ return new Date(Date.now()+9*3600e3+add*864e5).toISOString().slice(0,10); }
+function gbInit(){ var o=IG.bk||{}; IG.bk={mode:o.mode||"half",h:o.h||3,d:o.d||2,date:(o.date&&o.date>=gbDay(1))?o.date:gbDay(3),time:o.time||"09:00",n:o.n||2,memo:o.memo||"",cn:o.cn||"",ce:o.ce||"",cp:o.cp||"",pm:"card",err:""}; }
+function gbCalcNow(){ var k=IG.bk; return gbkCalc(k.mode,k.mode==="hours"?k.h:0,k.mode==="days"?k.d:0,k.n); }
+function gbModeTxt(k){ return k.mode==="hours"?gbF(GBT.hN,{n:k.h}):k.mode==="days"?gbF(GBT.dN,{n:k.d}):LG6(GBT[k.mode]); }
+function gbGrab(){ var k=IG.bk; if(!k) return; var v=function(i){ var e=document.getElementById(i); return e?e.value:null; };
+  var x; if((x=v("gbDt"))!=null) k.date=x; if((x=v("gbTm"))!=null) k.time=x; if((x=v("gbN"))!=null) k.n=+x; if((x=v("gbH"))!=null) k.h=+x; if((x=v("gbD"))!=null) k.d=+x;
+  if((x=v("gbMemo"))!=null) k.memo=x.slice(0,500); if((x=v("gbCn"))!=null) k.cn=x; if((x=v("gbCe"))!=null) k.ce=x; if((x=v("gbCp"))!=null) k.cp=x; }
+function gbPriceBox(){ var k=IG.bk, c=gbCalcNow();
+  return '<div class="gbl"><span>'+esc(gbModeTxt(k))+'</span><span>'+gbWon(c.base)+'</span></div>'
+    +(c.extra?'<div class="gbl"><span>'+esc(gbF(GBT.xtra,{big:GBK.big}))+' ('+gbWon(GBK.bigHr)+' × '+c.hours+')</span><span>'+gbWon(c.extra)+'</span></div>':'')
+    +'<div class="gbt"><span>'+esc(LG6(GBT.tot))+'</span><span>'+gbWon(c.total)+'</span></div>'; }
+function gbGuideCard(g){ return '<div class="igcard" style="margin-top:8px;cursor:default">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b><div class="igm">'+(g.langs||[]).map(igLangName).map(esc).join(" · ")+(g.years?' · '+esc(igYears(g.years)):"")+(g.region?' · '+esc(igRegion(g.region)):"")+'</div></div></div>'; }
+function gbRefund(){ return '<div class="gbrf">'+esc(LG6(GBT.rf))+' <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(LG6(GBT.rfL))+' ›</a></div>'; }
+function gbForm(g){ var k=IG.bk, L=LG6, mn=gbDay(1), mx=gbDay(365), opt=function(a,b,cur,lab){ var s=""; for(var i=a;i<=b;i++) s+='<option value="'+i+'"'+(i===cur?" selected":"")+'>'+esc(lab(i))+'</option>'; return s; };
+  var tms=[]; for(var t=7*60;t<=18*60;t+=30) tms.push(("0"+Math.floor(t/60)).slice(-2)+":"+("0"+t%60).slice(-2));
+  return '<div class="ignote" style="margin-top:6px">'+esc(L(GBT.note))+'</div>'
+    +gbGuideCard(g)
+    +'<label class="iglb">'+esc(L(GBT.dur))+'</label><div class="gbm">'+["half","full","hours","days"].map(function(m){ return '<button type="button" data-gbm="'+m+'" class="'+(k.mode===m?"on":"")+'">'+esc(L(GBT[m]))+'</button>'; }).join("")+'</div>'
+    +(k.mode==="hours"?'<label class="iglb">'+esc(L(GBT.hSel))+'</label><select class="igin" id="gbH">'+opt(GBK.hMin,GBK.hMax,k.h,function(i){ return gbF(GBT.hN,{n:i}); })+'</select>':'')
+    +(k.mode==="days"?'<label class="iglb">'+esc(L(GBT.dSel))+'</label><select class="igin" id="gbD">'+opt(GBK.dMin,GBK.dMax,k.d,function(i){ return gbF(GBT.dN,{n:i}); })+'</select>':'')
+    +'<label class="iglb">'+esc(L(GBT.date))+'</label><input class="igin" type="date" id="gbDt" min="'+mn+'" max="'+mx+'" value="'+esc(k.date)+'">'
+    +'<div class="gbrow"><div><label class="iglb">'+esc(L(GBT.tm))+'</label><select class="igin" id="gbTm">'+tms.map(function(x){ return '<option'+(x===k.time?" selected":"")+'>'+x+'</option>'; }).join("")+'</select></div>'
+    +'<div><label class="iglb">'+esc(L(GBT.ppl))+'</label><select class="igin" id="gbN">'+opt(1,GBK.nMax,k.n,function(i){ return gbF(GBT.pN,{n:i}); })+'</select></div></div>'
+    +'<label class="iglb">'+esc(L(GBT.fee))+'</label><div class="gbpr" style="margin-top:0" id="gbPr">'+gbPriceBox()+'</div>'
+    +'<div class="gbrate">'+esc(gbF(GBT.rate,{hr:gbWon(GBK.hr),half:gbWon(GBK.half),full:gbWon(GBK.full),big:GBK.big,bh:gbWon(GBK.bigHr)}))+'</div>'
+    +'<div class="gbx">'+esc(L(GBT.excl))+'</div>'
+    +'<label class="iglb">'+esc(L(GBT.memo))+'</label><textarea class="igin" id="gbMemo" maxlength="500" style="min-height:96px" placeholder="'+esc(L(GBT.memoPh))+'">'+esc(k.memo)+'</textarea>'
+    +'<div class="iglbl" style="margin-top:14px">'+esc(L(GBT.cu))+'</div>'
+    +'<label class="iglb">'+esc(L(GBT.cn))+'</label><input class="igin" id="gbCn" maxlength="40" autocomplete="name" value="'+esc(k.cn)+'">'
+    +'<label class="iglb">'+esc(L(GBT.cp))+'</label><input class="igin" id="gbCp" type="tel" maxlength="30" autocomplete="tel" value="'+esc(k.cp)+'">'
+    +'<label class="iglb">'+esc(L(GBT.ce))+'</label><input class="igin" id="gbCe" type="email" maxlength="100" autocomplete="email" value="'+esc(k.ce)+'">'
+    +'<div class="ignt">'+esc(L(GBT.cpn))+'</div>'
+    +(k.err?'<div class="gberr" id="gbM">'+esc(k.err)+'</div>':'<div class="gberr" id="gbM"></div>')
+    +'<button type="button" class="gbgo" id="gbSend">'+esc(L(GBT.send))+'</button>'
+    +gbRefund(); }
+function gbRows(g){ var k=IG.bk, L=LG6, row=function(a,b,cls){ return '<div class="gbl"><span>'+esc(L(a))+'</span><span'+(cls?' class="'+cls+'"':'')+'>'+b+'</span></div>'; };
+  return row(GBT.gd,igName(g))+row(T6("날짜","Date","日付","日期","日期","Fecha"),esc(k.date))+row(GBT.tm,esc(k.time)+" (KST)")+row(GBT.dur,esc(gbModeTxt(k)))+row(GBT.ppl,esc(gbF(GBT.pN,{n:k.n})))
+    +(k.memo?'<div class="gbl"><span>'+esc(L(GBT.memoL))+'</span></div><div style="white-space:pre-wrap;word-break:break-word;font-size:13.5px;margin:2px 0 6px;padding:8px 10px;border-radius:8px;background:var(--bg)">'+esc(k.memo)+'</div>':'')
+    +row(GBT.who,esc(k.cn)+'<br><small>'+esc(k.cp)+' · '+esc(k.ce)+'</small>'); }
+function gbConf(g){ var L=LG6;
+  return '<div class="iglbl" style="margin-top:8px;font-size:16px;color:var(--ink)">'+esc(L(GBT.cfT))+'</div><div class="ignt" style="margin-top:0">'+esc(L(GBT.cfS))+'</div>'
+    +'<div class="gbpr">'+gbRows(g)+'</div><div class="gbpr">'+gbPriceBox()+'</div><div class="gbx">'+esc(L(GBT.excl))+'</div>'+gbRefund()
+    +'<button type="button" class="gbgo" id="gbCf">'+esc(L(GBT.cfGo))+' ›</button><button type="button" class="gbgo g2" data-igback="req">'+esc(L(GBT.edit))+'</button>'; }
+function gbPayHtml(g,busy){ var k=IG.bk, L=LG6, c=gbCalcNow();
+  return '<div class="gbstamp" aria-hidden="true"><span>UNDER TESTING</span></div>'
+    +'<div class="iglbl" style="margin-top:8px;font-size:17px;color:var(--ink)">'+esc(L(GBT.pt))+'<span class="gbut">UNDER TESTING</span></div>'
+    +'<div class="gbpr">'+gbRows(g)+'<div class="gbt"><span>'+esc(L(GBT.tot))+'</span><span>'+gbWon(c.total)+'</span></div></div>'
+    +'<div class="iglbl" style="margin-top:14px">'+esc(L(GBT.pm))+'</div>'
+    +'<label class="gbr"><input type="radio" name="gbpm" value="card"'+(k.pm!=="paypal"?" checked":"")+'> '+esc(L(GBT.card))+'</label><label class="gbr"><input type="radio" name="gbpm" value="paypal"'+(k.pm==="paypal"?" checked":"")+'> PayPal</label>'
+    +'<label class="igchk"><input type="checkbox" id="gbAg"'+(busy?" checked disabled":"")+'> '+esc(L(GBT.agr))+'</label>'
+    +gbRefund()
+    +(k.err?'<div class="gberr">'+esc(k.err)+'</div>':'')
+    +'<button type="button" class="gbgo" id="gbPay" disabled>'+(busy?esc(L(busy===2?GBT.opn:GBT.sav)):gbWon(c.total)+' '+esc(L(GBT.payb)))+'</button>'
+    +'<button type="button" class="gbgo g2" data-igback="gconf">'+esc(LG6({ko:"돌아가기",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Volver"}))+'</button>'; }
+function gbDone(g){ var L=LG6, r=IG.gbRes||{};
+  return '<div class="gbstamp" aria-hidden="true"><span>UNDER TESTING</span></div>'
+    +'<div class="iglbl" style="margin-top:8px;font-size:17px;color:var(--ink)">'+esc(L(GBT.pdT))+'<span class="gbut">UNDER TESTING</span></div>'
+    +'<div class="gbdone">✓ '+esc(L(GBT.pdS))+'</div>'
+    +'<div class="gbpr">'+gbRows(g)+'<div class="gbt"><span>'+esc(L(GBT.amt))+'</span><span>'+gbWon(r.amount)+'</span></div><div class="gbl"><span>'+esc(L(GBT.oid))+'</span><b>'+esc(r.oid||"")+'</b></div></div>'
+    +'<div class="ignt">'+esc(L(GBT.tkey))+'<br>'+esc(L(GBT.tsv))+'</div>'+gbRefund()
+    +'<button type="button" class="gbgo g2" data-igback="pick">'+esc(L(GBT.home))+'</button>'; }
+// 「보내기 및 결제」 — 칸 확인 → 요약 확인(gconf)
+function gbSend(){ gbGrab(); var k=IG.bk, L=LG6, err="";
+  if(!k.cn.trim()) err=L(GBT.enm);
+  else if(!/^[\d\s+()-]{7,30}$/.test(k.cp.trim())) err=L(GBT.eph);   // 휴대폰 필수 (체험·입장권과 같은 규칙)
+  else if(!/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/.test(k.ce.trim())) err=L(GBT.eem);
+  else if(!/^\d{4}-\d{2}-\d{2}$/.test(k.date)||k.date<gbDay(1)||k.date>gbDay(365)) err=L(GBT.edt);
+  k.err=err; if(err){ var m=document.getElementById("gbM"); if(m){ m.textContent=err; try{ m.scrollIntoView({block:"center",behavior:"smooth"}); }catch(e){} } return; }
+  IG.view="gconf"; paint(); gbTop(); try{ ntap("guide","gbk_conf"); }catch(e){} }
+function gbTop(){ var o=document.getElementById("nrBox"); if(o) o.scrollTop=0; }
+// 결제창 「결제하기」 — 허브에 시험 주문(test:true) → 받은 orderId·금액으로 토스 시험 결제창 (shop.js 와 같은 방식)
+function gbPay(){ var k=IG.bk, g=IG.gobj, L=LG6; if(!k||!g||IG.busy) return;
+  if(k.pm==="paypal"){ k.err=L(GBT.ppn); paint(); return; }
+  k.err=""; IG.busy=1; gbPaint(1);
+  var body={pid:"gbk",pname:L(GBT.gd)+" · "+gbModeTxt(k),mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0,n:k.n,date:k.date,time:k.time,memo:k.memo,gid:g.id,glang:IG.lang||"",lang:window.LANG||"en",name:k.cn.trim(),email:k.ce.trim(),phone:k.cp.trim(),consent:true,test:true};
+  fetch(HUB+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){ return r.json(); }).then(function(j){
+    if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err; IG.busy=0; k.err=e==="name"?L(GBT.enm):e==="email"?L(GBT.eem):e==="phone"?L(GBT.eph):(e==="date"||e==="time")?L(GBT.edt):e==="guide"?L(GBT.egd):L(GBT.efail); paint(); return; }
+    try{ ntap("guide","gbk_order"); }catch(z){}
+    gbPaint(2);
+    try{ sessionStorage.setItem(GB_KEY,JSON.stringify({oid:j.orderId,amount:j.amount,g:{id:g.id,name:g.name,name_en:g.name_en,name_ja:g.name_ja,name_zh:g.name_zh,langs:g.langs,years:g.years,region:g.region,photo:g.photo},lang:IG.lang,bk:k,at:Date.now()})); }catch(z){}
+    var base=location.origin+location.pathname, mob=k.cp.replace(/\D/g,"");
+    var req={method:"CARD",amount:{currency:"KRW",value:j.amount},orderId:j.orderId,orderName:String(j.orderName||"Guide booking").slice(0,100),successUrl:base+"?gbres=ok",failUrl:base+"?gbres=fail",customerName:k.cn.trim().slice(0,40),customerEmail:k.ce.trim()};
+    if(/^01\d{8,9}$/.test(mob)) req.customerMobilePhone=mob;
+    req.card={flowMode:"DEFAULT",useEscrow:false,useCardPoint:false,useAppCardOnly:false};
+    return new Promise(function(ok,no){ if(window.TossPayments) return ok(); var s=document.createElement("script"); s.src=GB_SDK; s.onload=function(){ ok(); }; s.onerror=no; document.head.appendChild(s); })
+      .then(function(){ return window.TossPayments(GB_TCK).payment({customerKey:window.TossPayments.ANONYMOUS}).requestPayment(req); })
+      .catch(function(e){ window.__gbTossErr=String((e&&e.code||"")+" "+(e&&e.message||e)); try{ sessionStorage.removeItem(GB_KEY); }catch(z){} IG.busy=0; k.err=(e&&e.code==="USER_CANCEL")?L(GBT.pfT):((e&&e.message)||L(GBT.pfT)); paint(); }); })
+  .catch(function(){ IG.busy=0; k.err=L(GBT.efail); paint(); }); }
+function gbPaint(busy){ var b=document.querySelector("#nrBox .nrin"); if(!b||IG.view!=="gpay") return; var bt=b.querySelector("#gbPay"); if(bt){ bt.disabled=true; bt.textContent=LG6(busy===2?GBT.opn:GBT.sav); } var ag=b.querySelector("#gbAg"); if(ag){ ag.checked=true; ag.disabled=true; } }
+// 토스 결제창에서 돌아옴 (?gbres=ok&paymentKey&orderId&amount · ?gbres=fail&code&message) — 주문번호·금액이 맞을 때만 완료 화면
+function gbReturn(){ var sp=new URLSearchParams(location.search), r=sp.get("gbres"); if(!r) return;
+  try{ var keep=location.search.slice(1).split("&").filter(function(x){ return !/^(gbres|paymentKey|orderId|amount|paymentType|code|message)=/.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(keep?"?"+keep:"")+location.hash); }catch(e){}
+  var v=null; try{ v=JSON.parse(sessionStorage.getItem(GB_KEY)||"null"); }catch(e){} if(!v||!v.oid||!v.g) return;
+  var oid=sp.get("orderId")||"", amt=Math.round(Number(sp.get("amount")||0)), ok=r==="ok"&&oid===v.oid&&amt===v.amount;
+  if(ok){ try{ sessionStorage.removeItem(GB_KEY); }catch(e){} }
+  open("ig"); IG.lang=v.lang||""; IG.gobj=v.g; IG.gid=v.g.id; IG.bk=v.bk; IG.bk.err=ok?"":(LG6(GBT.pfT)+(r!=="ok"&&sp.get("message")?" ("+sp.get("message")+")":"")); IG.busy=0;
+  IG.gbRes=ok?{oid:v.oid,amount:v.amount}:null; IG.view=ok?"gdone":"gpay"; paint();
+  try{ ntap("guide",ok?"gbk_paid_test":"gbk_payfail"); }catch(e){} window.__gbResult=ok?"ok":"fail"; }
+if(/[?&]gbres=/.test(location.search)){ var _gr=function(){ setTimeout(function(){ try{ gbReturn(); }catch(e){ window.__gbRetErr=String(e); } },700); }; if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",_gr); else _gr(); }
+
 // 한 판 안에서 세 화면(pick=언어 고르기 · list=가이드 목록 · req=요청하기) 을 state(IG)로
 function igRender(b){
   var head='<div class="nrtop"><b>'+esc(LG6({ko:"통역·길안내",en:"Interpreter & guide",ja:"通訳・ガイド",zhs:"翻译·向导",zht:"翻譯·嚮導",es:"Intérprete y guía"}))+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
@@ -345,7 +539,12 @@ function igRender(b){
   if(IG.view==="editdone"){ b.innerHTML=head+'<div class="ignote">'+esc(LG6({ko:"요청을 받았습니다. 등록된 이메일이면 수정 링크를 보냈습니다. 메일함을 확인해 주세요.",en:"If that email is registered, we've sent an edit link. Please check your inbox.",ja:"リクエストを受け付けました。登録済みのメールであれば編集リンクをお送りしました。メールをご確認ください。",zhs:"已收到请求。如果该邮箱已登记，我们已发送修改链接，请查收。",zht:"已收到請求。如果該電郵已登記，我們已寄出修改連結，請查收。",es:"Si ese correo está registrado, te hemos enviado un enlace de edición. Revisa tu bandeja de entrada."}))+'</div><button type="button" class="nrsel" data-igback="pick">'+esc(LG6({ko:"처음으로",en:"Start over",ja:"最初に戻る",zhs:"返回开始",zht:"返回開始",es:"Volver al inicio"}))+'</button>'; igWire(b); return; }
   if(IG.view==="edit"){ b.innerHTML=head+igEditForm(); igWire(b); return; }   // 가이드 본인 — ?gedit= 토큰으로 연 수정 폼
   if(IG.view==="done"){ b.innerHTML=head+'<div class="ignote">✓'+esc(LG6({ko:"요청이 전달되었습니다. 가이드가 곧 연락 드릴 거예요.",en:"Your request was sent. The guide will contact you soon.",ja:"リクエストを送りました。ガイドからまもなくご連絡します。",zhs:"请求已发送，向导会尽快与您联系。",zht:"請求已發送，嚮導會盡快與您聯繫。",es:"Tu solicitud fue enviada. El guía te contactará pronto."}))+'</div><button type="button" class="nrsel" data-igback="pick">'+esc(LG6({ko:"처음으로",en:"Start over",ja:"最初に戻る",zhs:"返回开始",zht:"返回開始",es:"Volver al inicio"}))+'</button>'; igWire(b); return; }
-  if(IG.view==="req"&&IG.gobj){ var g=IG.gobj, ds=igDates();
+  if(IG.view==="gconf"&&IG.gobj&&IG.bk){ b.innerHTML=head+'<button type="button" class="igback" data-igback="req">‹ '+esc(LG6({ko:"뒤로",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Atrás"}))+'</button>'+gbConf(IG.gobj); igWire(b); return; }   // 가이드 예약 — 요약 확인 (10-30)
+  if(IG.view==="gpay"&&IG.gobj&&IG.bk){ b.innerHTML=head+'<button type="button" class="igback" data-igback="gconf">‹ '+esc(LG6({ko:"뒤로",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Atrás"}))+'</button>'+gbPayHtml(IG.gobj,IG.busy); igWire(b); return; }   // 결제창 (UNDER TESTING)
+  if(IG.view==="gdone"&&IG.gobj&&IG.bk){ b.innerHTML=head+gbDone(IG.gobj); igWire(b); return; }   // 결제 완료
+  if(IG.view==="req"&&IG.gobj){ if(!IG.bk) gbInit(); else gbGrab();   // 가이드 예약 화면 (10-30) — 맨 위 안내문 → 가이드 → 이용 시간·날짜·인원·요금 → 메모 → 예약자 → 보내기 및 결제. 아래 손님 후기는 그대로
+    b.innerHTML=head+back+gbForm(IG.gobj)+'<div id="igRevWrap">'+igReviewsBlock()+'</div>'; igWire(b); return; }
+  if(IG.view==="req_old"&&IG.gobj){ var g=IG.gobj, ds=igDates();   // 옛 무료 요청 폼 (/guide/lead) — 안 쓰지만 남겨 둠
     b.innerHTML=head+back
       +'<div class="igcard" style="margin-top:8px">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b><div class="igm">'+g.langs.map(igLangName).map(esc).join(" · ")+(g.years?' · '+esc(igYears(g.years)):"")+(g.region?' · '+esc(igRegion(g.region)):"")+'</div></div></div>'
       +'<div class="iglbl" style="margin-top:12px">'+esc(LG6({ko:"요청 내용을 적어 주세요",en:"Fill in your request",ja:"リクエストを入力してください",zhs:"请填写您的请求",zht:"請填寫您的請求",es:"Completa tu solicitud"}))+'</div>'
@@ -383,9 +582,19 @@ window.igName=igName; window.igRegion=igRegion; window.igYears=igYears;
 function igFace(g){ return g.photo?'<img class="igav" src="'+HUB+'/guide/photo?id='+encodeURIComponent(g.id)+'" alt="" loading="lazy">':'<span class="igav igavx">🧭</span>'; }
 function igWire(b){
   [].forEach.call(b.querySelectorAll("[data-iglang]"),function(a){ a.onclick=function(e){ e.preventDefault(); IG.lang=a.dataset.iglang; IG.view="list"; IG.guides=null; IG.err=""; paint(); igLoad(); }; });
-  [].forEach.call(b.querySelectorAll("[data-igback]"),function(a){ a.onclick=function(e){ e.preventDefault(); var to=a.dataset.igback==="pick"?"pick":(IG.view==="req"?"list":"pick"); IG.view=to; if(to==="pick"){ IG.lang=""; IG.guides=null; } IG.done=false; paint(); }; });
-  [].forEach.call(b.querySelectorAll("[data-igpick]"),function(c){ c.onclick=function(){ var g=IG.guides&&IG.guides[+c.dataset.igpick]; if(g){ IG.gobj=g; IG.gid=g.id; IG.view="req"; IG.reviews=null; paint(); igLoadReviews(g.id); } }; });
+  [].forEach.call(b.querySelectorAll("[data-igback]"),function(a){ a.onclick=function(e){ e.preventDefault(); var v=a.dataset.igback;
+    if(v==="req"||v==="gconf"){ if(IG.busy) return; if(IG.bk) IG.bk.err=""; IG.view=v; paint(); gbTop(); if(v==="req"&&IG.gid&&IG.reviews==null) igLoadReviews(IG.gid); return; }   // 가이드 예약 단계 되돌리기 (10-30)
+    if(IG.view==="req") gbGrab();
+    var to=v==="pick"?"pick":(IG.view==="req"?"list":"pick"); IG.view=to; if(to==="pick"){ IG.lang=""; IG.guides=null; } IG.done=false; IG.gbRes=null; paint(); }; });
+  [].forEach.call(b.querySelectorAll("[data-igpick]"),function(c){ c.onclick=function(){ var g=IG.guides&&IG.guides[+c.dataset.igpick]; if(g){ IG.gobj=g; IG.gid=g.id; IG.view="req"; IG.reviews=null; gbInit(); paint(); gbTop(); igLoadReviews(g.id); try{ ntap("guide","gbk_open"); }catch(z){} } }; });
   var go=b.querySelector("#igqGo"); if(go) go.onclick=igSend;
+  // 가이드 예약 화면 (10-30)
+  [].forEach.call(b.querySelectorAll("[data-gbm]"),function(bt){ bt.onclick=function(){ gbGrab(); IG.bk.mode=bt.dataset.gbm; IG.bk.err=""; paint(); }; });
+  ["gbH","gbD","gbN"].forEach(function(id){ var s=b.querySelector("#"+id); if(s) s.onchange=function(){ gbGrab(); var p=document.getElementById("gbPr"); if(p) p.innerHTML=gbPriceBox(); }; });
+  var gs=b.querySelector("#gbSend"); if(gs) gs.onclick=gbSend;
+  var gc=b.querySelector("#gbCf"); if(gc) gc.onclick=function(){ IG.bk.err=""; IG.busy=0; IG.view="gpay"; paint(); gbTop(); };
+  [].forEach.call(b.querySelectorAll('input[name="gbpm"]'),function(r){ r.onchange=function(){ if(r.checked){ IG.bk.pm=r.value; IG.bk.err=""; } }; });
+  var gag=b.querySelector("#gbAg"), gpy=b.querySelector("#gbPay"); if(gag&&gpy&&!IG.busy){ gag.onchange=function(){ gpy.disabled=!gag.checked; }; gpy.onclick=gbPay; }
   [].forEach.call(b.querySelectorAll("[data-rvstar]"),function(bt){ bt.onclick=function(){ var t=document.getElementById("igrvText"), n=document.getElementById("igrvName"); if(t) IG.rvText=t.value; if(n) IG.rvName=n.value; IG.rvStars=+bt.dataset.rvstar; paint(); }; });
   var rgo=b.querySelector("#igrvGo"); if(rgo) rgo.onclick=igRvSend;
   [].forEach.call(b.querySelectorAll("[data-igedit]"),function(a){ a.onclick=function(e){ e.preventDefault(); IG.view="editask"; IG.busy=false; paint(); }; });   // 가이드 본인 — 내 프로필 수정
