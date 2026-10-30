@@ -633,13 +633,15 @@ function cphVideo(){ var e=document.querySelector("#res .cph"); if(!e) return;
   e.innerHTML='<video autoplay muted loop playsinline webkit-playsinline preload="auto" poster="img/coex/tiger_poster.jpg?v=1026" style="display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;background:#e9edf3"><source src="img/coex/tiger.webm?v=1026" type="video/webm"><source src="img/coex/tiger.mp4?v=1026" type="video/mp4"><img src="img/coex/tiger_poster.jpg?v=1026" alt=""></video><div class="cpa">'+esc(LP([CPHV.ko,CPHV.en,CPHV.ja,CPHV.zhs,CPHV.zht,CPHV.es]))+'</div>';
   var v=e.querySelector("video"); v.muted=true; try{ var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){}); }catch(x){} e.hidden=false; }
 function cphSlot(){ return '<div class="cph" hidden></div>'; }
-function cphLoad(k,ko,lat,lng){ if(!ko||!(+lat)) return; var ck=ko+"|"+(+lat).toFixed(4)+","+(+lng).toFixed(4);
+// 명소별 사진 지정표 (10-30) — 구글 사진이 엉뚱하면 한 줄: 키:{pi:사진 순번 0~9} 또는 {q:"검색어"} (둘 다 가능). 없는 명소는 그대로
+var CPH_FIX={oreumi:{pi:1}};   // 남산 오르미 — 조작판 사진 대신 승강장+경사 레일 사진
+function cphLoad(k,ko,lat,lng){ if(!ko||!(+lat)) return; var fx=CPH_FIX[k]||null, fq=fx?(fx.q?"&pq="+encodeURIComponent(fx.q):"")+(fx.pi!=null?"&pi="+fx.pi:""):""; var ck=ko+"|"+(+lat).toFixed(4)+","+(+lng).toFixed(4)+fq;
   var put=function(j){ if(window._cardK!==k) return; var e=document.querySelector("#res .cph"); if(!e||!j||!j.ok) return;
     var at=(j.attr||[]).filter(function(a){ return a&&a.n; }).map(function(a){ return /^https:\/\//.test(a.u||"")?'<a href="'+esc(a.u)+'" target="_blank" rel="noopener">'+esc(a.n)+'</a>':esc(a.n); }).join(", ");
     e.innerHTML='<img alt="" src="'+HUB+esc(j.img)+'"><div class="cpa">'+(at?T("사진","Photo")+': '+at+' · ':'')+'Google</div>';
     var im=e.querySelector("img"); im.onerror=function(){ e.hidden=true; }; im.onload=function(){ e.hidden=false; }; };
   if(_cphC[ck]) return put(_cphC[ck]);
-  fetch(HUB+"/gphoto?q="+encodeURIComponent(ko)+"&lat="+(+lat).toFixed(5)+"&lng="+(+lng).toFixed(5)).then(function(r){ return r.json(); }).then(function(j){ _cphC[ck]=j; put(j); }).catch(function(){}); }
+  fetch(HUB+"/gphoto?q="+encodeURIComponent(ko)+"&lat="+(+lat).toFixed(5)+"&lng="+(+lng).toFixed(5)+fq).then(function(r){ return r.json(); }).then(function(j){ _cphC[ck]=j; put(j); }).catch(function(){}); }
 function spinCard(){ var p=PLACES.__pin; if(!p) return; if(window.KL) KL.ensure([p],"pin",null,function(){ if(window._cardK==="__pin"&&PLACES.__pin===p) window.spinCard(); });   // 다른 외국어로 처음이면 이름만 받아 와 다시 (10-18)
   try{ var sl=document.querySelector("#spin .spl"); if(sl) sl.textContent=FG()?KS(p.en||p.ko):p.ko; }catch(e){}
   var en=FG(), nm=LN(p), ad=en?p.addr_en:p.addr, ct=en?p.cat_en:String(p.cat||"").split(">").pop().trim();
