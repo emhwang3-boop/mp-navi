@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["forms","양식함","계약서·서식 내려받기 (PDF·워드)"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["karlog","노래방 이용 기록","곡별 재생·끝까지·시간·이용자 · 협회 보고용 CSV"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["forms","양식함","계약서·서식 내려받기 (PDF·워드)"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -198,6 +198,32 @@ function xlsLbs(){ if(!LB||!LB.ok||!window.XLSX){ alert("자료나 엑셀 도구
   var rows=[[CO],["위치정보 이용·제공사실 확인자료 (위치정보법 제16조 제2항)"],["기간",LB.from+" ~ "+LB.to],["만든 날",kday(0)],["비고","위치 좌표는 기록하지 않음 · 6개월 보관 후 자동 삭제"],[],["일시","기기번호","서비스","취득 경로(위치정보사업자)","제공 대상"]];
   (LB.items||[]).forEach(function(x){ rows.push([x.at,x.dev,x.svc,x.src,x.to]); });
   var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[20,28,22,26,14]),"위치 확인자료"); save(wb,"머니퍼즐내비_위치확인자료_"+LB.from+"_"+LB.to+".xlsx"); }
+// ── 노래방 이용 기록 (사장님 2026-10-30) — 허브 /nkara/admin · 곡별 저작권 사용료 정산 대비 · 5년 보관 · 이름·이메일 없음(이용자는 가린 번호)
+var KL=null;
+function klMon(add){ var d=new Date(Date.now()+9*3600e3); d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth()+(add||0)); return d.toISOString().slice(0,7); }
+function klHms(s){ s=Math.round(s||0); var h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+"시간 ":"")+(h||m?m+"분 ":"")+x+"초"; }
+var KLCO={tj:"TJ미디어",ky:"금영엔터테인먼트"};
+function klLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><div class="row"><b style="flex:1">노래방 이용 기록</b><button class="g" onclick="klCsv(0)">협회 보고용 CSV 내려받기</button><button class="g" onclick="klCsv(1)">원자료 CSV 내려받기</button></div>'
+  +'<div class="msg">노래를 한 번 부를 때마다 한 줄씩 남습니다 (시각·곡·회사·재생 시간·끝까지·나라·언어·가린 이용자 번호·재생 방식·결제 금액). 이름·이메일은 남기지 않습니다. 5년 보관. 10초 미만은 「미리 듣기」로 표시만 합니다.</div>'
+  +'<div class="row" style="margin-top:8px">월 <input type="month" id="klm" value="'+klMon(0)+'"><button onclick="klGet()">조회</button><label style="font-size:13px"><input type="checkbox" id="klx"> 시험 기록</label></div><div id="klo"><div class="msg">불러오는 중…</div></div></div>'; klGet(); }
+function klQ(raw){ return "/nkara/admin?m="+encodeURIComponent($("klm").value||klMon(0))+(raw?"&raw=1":"")+($("klx").checked?"&test=1":""); }
+function klGet(){ var e=$("klo"); e.innerHTML='<div class="msg">불러오는 중…</div>';
+  api(klQ(0)).then(function(j){ KL=j; if(!j.ok){ e.innerHTML='<div class="msg">못 불러왔습니다 ('+esc(j.err||"")+')</div>'; return; } var T=j.tot||{}, S=j.songs||[];
+    e.innerHTML='<div class="tiles">'+tile((T.n||0).toLocaleString(),"재생 수")+tile((T.full||0).toLocaleString(),"끝까지")+tile(esc(klHms(T.sec)),"총 재생 시간")+tile((T.u||0).toLocaleString(),"이용자 수")+tile((T.pv||0).toLocaleString(),"미리 듣기(10초 미만)")+tile((T.yt||0).toLocaleString(),"유튜브로 보냄")+tile(won(T.won),"매출")+'</div>'
+     +(S.length?'<div class="tw"><table><tr><th class="l">제목</th><th class="l">가수</th><th class="l">회사</th><th>곡 번호</th><th>재생 수</th><th>끝까지</th><th>미리 듣기</th><th>총 시간</th><th>이용자 수</th><th>매출</th><th class="l">영상</th></tr>'
+       +S.map(function(x){ return '<tr><td class="l">'+esc(x.t)+'</td><td class="l">'+esc(x.a)+'</td><td class="l">'+esc(KLCO[x.ch]||x.ch)+'</td><td>'+esc(x.no||"")+'</td><td>'+(x.n||0)+'</td><td>'+(x.full||0)+'</td><td>'+(x.pv||0)+'</td><td>'+esc(klHms(x.sec))+'</td><td>'+(x.u||0)+'</td><td>'+won(x.won)+'</td><td class="l"><a href="https://www.youtube.com/watch?v='+encodeURIComponent(x.id)+'" target="_blank" rel="noopener">'+esc(x.id)+'</a></td></tr>'; }).join("")+'</table></div>'
+       :'<div class="msg">이 달 기록이 없습니다.</div>'); }).catch(function(){ e.innerHTML='<div class="msg">못 불러왔습니다</div>'; }); }
+function klCsvDl(rows,name){ var t="\ufeff"+rows.map(function(r){ return r.map(function(v){ v=String(v==null?"":v); return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }).join(","); }).join("\r\n");
+  var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([t],{type:"text/csv;charset=utf-8"})); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1000); }
+function klCsv(raw){ var m=$("klm").value||klMon(0);
+  api(klQ(raw)).then(function(j){ if(!j.ok){ alert("못 불러왔습니다 ("+(j.err||"")+")"); return; }
+    if(!raw){ var r=[["월","제목","가수","반주 회사","곡 번호","유튜브 영상 id","작사","작곡","재생 수","끝까지 재생","미리 듣기(10초 미만)","유튜브로 보냄","총 재생 시간(초)","이용자 수","매출(원)"]];
+      (j.songs||[]).forEach(function(x){ r.push([m,x.t,x.a,KLCO[x.ch]||x.ch,x.no||"",x.id,x.lyr||"",x.cmp||"",x.n||0,x.full||0,x.pv||0,x.yt||0,x.sec||0,x.u||0,x.won||0]); });
+      var T=j.tot||{}; r.push([m,"합계","","","","","","",T.n||0,T.full||0,T.pv||0,T.yt||0,T.sec||0,T.u||0,T.won||0]);
+      klCsvDl(r,"머니퍼즐투어_노래방_협회보고_"+m+(j.test?"_시험":"")+".csv"); return; }
+    var r2=[["시각(KST)","곡 id(회사_영상)","곡 번호","제목","가수","반주 회사","유튜브 영상 id","원래 유튜브 제목","작사","작곡","이용자(가린 번호)","나라","앱 언어","재생 시간(초)","끝까지","미리 듣기","영상 길이(초)","마지막 위치(초)","결제 금액(원)","재생 방식","사장님 기기","마지막 기록"]];
+    (j.items||[]).forEach(function(x){ r2.push([x.at,x.ch+"_"+x.id,x.no||"",x.t,x.a,x.co||KLCO[x.ch]||x.ch,x.id,x.rt||"",x.lyr||"",x.cmp||"",x.uh,x.cc,x.l||"",x.sec||0,x.full?"예":"",x.pv?"예":"",x.dur||0,x.pos||0,x.won||0,x.mode==="yt"?"유튜브로 보냄":"앱 안 퍼가기",x.own?"예":"",x.last||""]); });
+    klCsvDl(r2,"머니퍼즐투어_노래방_원자료_"+m+(j.test?"_시험":"")+".csv"); }).catch(function(e){ alert("못 불러왔습니다: "+e.message); }); }
 function xlsInq(){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀습니다."); return; }
   Promise.all([iqCats(),api("/ninq/admin?full=1")]).then(function(a){ var j=a[1], rows=[[CO],["입점·광고 문의"+(IQF.a?" — "+iqCatNm(IQF.b||IQF.a).filter(Boolean).join(" > "):"")],["만든 날",kday(0)],[],["시각","상호/회사","대분류","소분류","업종(직접 입력)","담당자","사업자등록번호","사업자 확인","이메일(인증)","전화","위치","언어","문의 내용","읽음"]];
     j.items.filter(function(x){ var c=String(x.cat||""); return (!IQF.a||c.split(".")[0]===IQF.a)&&(!IQF.b||c===IQF.b); }).forEach(function(x){ var cn=iqCatNm(x.cat);
@@ -401,7 +427,8 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="tap"){ P.innerHTML=TAP_HTML; tapInit(); return; }
   if(id==="paid"){ P.innerHTML=PAID_HTML; paidInit(); return; }   // 유료 콘텐츠 (2026-10-26)
   if(id==="home"){ homeLoad(); return; }
-  if(id==="lbs"){ lbsLoad(); return; }   // 위치 이용·제공사실 확인자료 (2026-10-27)
+  if(id==="lbs"){ lbsLoad(); return; }
+  if(id==="karlog"){ klLoad(); return; }   // 노래방 이용 기록 (2026-10-30)   // 위치 이용·제공사실 확인자료 (2026-10-27)
   if(id==="visit"){ visitLoad(); return; }
   if(id==="voice"){ voiceLoad(); return; }
   if(id==="inq"){ inqLoad(); return; }
