@@ -562,16 +562,22 @@ function kScStart(st){ kScStop(); var ac=kAC(); if(!ac||!st||!st.getAudioTracks(
     k.iv=setInterval(function(){ if(KSC!==k) return; var i, x, sq=0, pk=0, N=an.fftSize;
       if(fb){ an.getFloatTimeDomainData(fb); for(i=0;i<N;i++){ x=fb[i]; sq+=x*x; if(x<0) x=-x; if(x>pk) pk=x; } }
       else { an.getByteTimeDomainData(bb); for(i=0;i<N;i++){ x=(bb[i]-128)/128; sq+=x*x; if(x<0) x=-x; if(x>pk) pk=x; } }
-      var db=20*Math.log(Math.sqrt(sq/N)+1e-9)/Math.LN10; k.n++;
+      var db=20*Math.log(Math.sqrt(sq/N)+1e-9)/Math.LN10; k.n++; (k.d=k.d||[]).push(db); if(pk>0.985) k.c2=(k.c2||0)+1;
       if(db>-42){ k.v++; k.cur++; k.q+=db<-32?0.3+0.7*(db+42)/10:db<=-6?1:Math.max(0.3,1-(db+6)/10); if(pk>0.985) k.c++; }   // 소리 냄 = -42dB 위 · 알맞은 크기 -32~-6dB
       else if(k.cur){ k.rn++; k.cur=0; } },100);
   }catch(e){ kScStop(); } }
 function kScCalc(k,dur){ if(!k||k.n<5) return 0;
-  var vr=k.v/k.n, lq=k.v?k.q/k.v:0, clip=k.v?k.c/k.v:0, runs=k.rn+(k.cur?1:0), cont=Math.min(1,(k.v*0.1/Math.max(1,runs))/2.5);   // 이어 부르기 = 소리 덩어리 평균 2.5초면 만점
-  var raw=0.4*Math.min(1,vr/0.65)+0.35*lq+0.25*cont-Math.min(0.3,clip*1.5); raw=Math.max(0,Math.min(1,raw));
-  var s=55+42*Math.pow(raw,0.8);   // 노래방 기계처럼 기분 좋은 점수대
-  if(vr<0.15) s=25+(s-25)*vr/0.15;   // 거의 안 불렀으면 낮게
-  if(dur<15) s=Math.min(s,30+dur*2);   // 15초 미만 = 낮게
+  // 깐깐하게 (사장님 10-30 「너무 후하다」): 스피커 반주 소리를 바닥으로 보고, 그보다 6dB 이상 큰 순간만 「노래함」으로 센다
+  var d=(k.d||[]).slice(-6000), n=d.length; if(n<5) return 0;
+  var so=d.slice().sort(function(a,b){ return a-b; }), base=so[Math.floor(n*0.2)], thr=Math.max(-42,base+6);
+  var v=0, q=0, runs=0, cur=0, lens=[];
+  for(var i=0;i<n;i++){ var db=d[i]; if(db>thr){ v++; cur++; q+=db<-30?0.2:db<=-8?1:Math.max(0.2,1-(db+8)/8); } else if(cur){ lens.push(cur); runs++; cur=0; } }
+  if(cur){ lens.push(cur); runs++; }
+  var vr=v/n, lq=v?q/v:0, clip=v?(k.c2||0)/v:0, avg=runs?v/runs*0.1:0, cont=Math.min(1,avg/3);   // 이어 부르기 = 소리 덩어리 평균 3초면 만점
+  var raw=0.4*Math.min(1,vr/0.55)+0.3*lq+0.3*cont-Math.min(0.35,clip*2); raw=Math.max(0,Math.min(1,raw));
+  var s=30+65*Math.pow(raw,1.5);   // 보통 60~80점, 아주 잘 불러야 90점대
+  if(vr<0.12) s=Math.min(s,20+vr/0.12*25);   // 거의 안 불렀으면 낮게
+  if(dur<30) s=Math.min(s,20+dur*1.5);   // 30초 미만 = 낮게
   return Math.max(0,Math.min(100,Math.round(s))); }
 // 끝 점수 화면 — 큰 숫자가 0부터 올라가고 팡파레 (소리는 이벤트 섬 스도쿠·빙고 끝 팡파레(event.js fxSnd "fan")와 같은 가락, 노래방 따로 배포판에도 울리게 여기 같이 둠)
 function kTone(f,t0,d,tp,v){ var a=kAC(); if(!a) return; var o=a.createOscillator(), g=a.createGain(), s=a.currentTime+t0; o.type=tp||"sine"; o.frequency.setValueAtTime(f,s); g.gain.setValueAtTime(0.0001,s); g.gain.exponentialRampToValueAtTime(v||0.18,s+0.02); g.gain.exponentialRampToValueAtTime(0.0001,s+d); o.connect(g); g.connect(a.destination); o.start(s); o.stop(s+d+0.05); }
