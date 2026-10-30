@@ -978,16 +978,43 @@ function kBgRow(on){ var b=box(), pl=b&&b.querySelector(".kpl"); if(!pl) return;
   r.onclick=function(e){ var t=e.target.closest&&e.target.closest("[data-kbg]"); e.stopPropagation(); if(!t) return; kBgPick(t.getAttribute("data-kbg")); };
   pl.appendChild(r); }
 function kBgPick(k){ kBgSet(k); kThSet(""); kBgRow(false); kBgApply(k); }   // 배경을 고르면 테마는 끔
-function kBgApply(k){ var b=box(), pl=b&&b.querySelector(".kpl"); if(!pl||!REC.st) return;
+function kBgApply(k){ if(REC.nat){ kNatBg(k); return; }   // 앱 녹화 (10-31)
+  var b=box(), pl=b&&b.querySelector(".kpl"); if(!pl||!REC.st) return;
   if(KCV){ kBgPrep(k); if(k!=="none") kBgSeg(); return; }   // 이미 합성 중 = 바로 바꿈 (녹화 그대로 이어짐)
   if(k==="none") return;
   var v=pl.querySelector("video.kcam"); if(!v||!(window.HTMLCanvasElement&&HTMLCanvasElement.prototype.captureStream)){ kBgFail(); return; }   // 카메라 그대로 녹화 중 → 합성으로 바꾸고 녹화를 처음부터 다시 (녹화기 영상 줄은 도중에 못 바꿈)
   var go=function(){ if(!REC.st||KCV) return; var ms=kCvOn(pl,v,REC.st,k); if(!ms){ kCvOff(); kBgFail(); return; }
     if(REC.mr&&REC.mr.state!=="inactive"){ REC.mr.onstop=null; REC.mr.ondataavailable=null; try{ REC.mr.stop(); }catch(e){} REC.mr=null; if(!recMr(ms,REC.st)){ soon(L(TX.recNo)); recExit(); } } };
   if(v.videoWidth) go(); else v.addEventListener("loadedmetadata",go,{once:true}); }
-function camOff(){ kScStop(); kCvOff(); try{ if(REC.st) REC.st.getTracks().forEach(function(t){ t.stop(); }); }catch(e){} REC.st=null; var b=box(); if(!b) return; [].forEach.call(b.querySelectorAll(".kcam,.kbgb,.kbgr"),function(x){ x.remove(); }); }
+function camOff(){ kScStop(); kCvOff(); kNatOff(); try{ if(REC.st) REC.st.getTracks().forEach(function(t){ t.stop(); }); }catch(e){} REC.st=null; var b=box(); if(!b) return; [].forEach.call(b.querySelectorAll(".kcam,.kbgb,.kbgr"),function(x){ x.remove(); }); }
 function recExit(){ camOff(); recFx(false); var b=box(); if(!b) return; b.classList.remove("krecm"); var k=b.querySelector(".krec"); if(k) k.textContent=L(TX.rec); }
+// ── StageSong 전용 앱 녹화 (10-31) — 앱 안이면 카메라·사람 오려내기·배경 합성·녹화를 앱(네이티브 StageCam)이 한다 · 웹은 녹화 칸을 투명하게 비워 앱 화면이 비쳐 보이게 · 웹판(브라우저)은 위 그대로
+//   소리 크기는 앱이 0.1초마다 보내 줌(level) → KSC.d 에 그대로 쌓아 점수·소리 막대가 웹판과 같게 · 끝나면 mp4 를 받아 REC.blob 흐름(미리 보기·올리기·상황 사진)에 그대로 넣는다
+function kNat(){ try{ var C=window.Capacitor; return C&&C.isNativePlatform&&C.isNativePlatform()&&C.Plugins&&C.Plugins.StageCam||null; }catch(e){ return null; } }
+var KNL=[];   // 앱 이벤트 듣기 핸들
+function kNatBgv(k){ if(!k||k==="none") return null; if(k==="blur") return "blur"; var f=""; KBG_LIST.forEach(function(x){ if(x[0]===k) f=x[1]; }); if(/^th:/.test(k)&&kTh(k.slice(3))) f="th_"+k.slice(3)+".jpg"; return f?new URL("img/kara/"+f,location.href).href:null; }   // 앱에 넘길 배경 = 그림 전체 주소 · 흐림 · 없음(null)
+function kNatRect(){ var b=box(), pl=b&&b.querySelector(".kpl"); if(!pl) return null; var r=pl.getBoundingClientRect(); return {x:r.left,y:r.top,w:r.width,h:r.height}; }
+function kNatRs(){ var P=kNat(), r=kNatRect(); if(P&&REC.nat&&r) P.setRect({rect:r}).catch(function(){}); }
+function kNatCss(){ if(document.getElementById("kstnCss")) return; var s=document.createElement("style"); s.id="kstnCss"; s.textContent="html.kstn,html.kstn body{background:transparent!important}html.kstn body>*:not(#karBox){visibility:hidden!important}html.kstn #karBox,html.kstn #karBox .kin,html.kstn #karBox .kpl,html.kstn #karBox .kcam.knv{background:transparent!important}html.kstn #karBox::before{display:none}"; document.head.appendChild(s); }   // 앱 화면이 비치도록 녹화 칸까지 투명
+function kNatUn(){ KNL.forEach(function(h){ Promise.resolve(h).then(function(x){ x&&x.remove&&x.remove(); }).catch(function(){}); }); KNL=[]; }
+function kNatBg(k){ var P=kNat(); REC.nk=k; if(P&&REC.nat) P.setBackground({bg:kNatBgv(k)}).catch(function(){}); }   // 녹화 도중 배경 바꿔도 녹화는 그대로 이어짐
+function kNatOff(){ if(!REC.nat) return; REC.nat=0; kNatUn(); window.removeEventListener("resize",kNatRs); document.documentElement.classList.remove("kstn"); var P=kNat(); if(P) P.close().catch(function(){}); }
+function kNatStart(b,pl){ var P=kNat(); kAC(); REC.sc=null; var k=isOwn()?kEff():"none";
+  kNatCss(); document.documentElement.classList.add("kstn"); var d=document.createElement("div"); d.className="kcam knv"; pl.insertBefore(d,pl.firstChild); kBgBtn(pl); REC.nat=1; REC.nst=0; REC.nk=k;
+  kNatUn(); [["level",function(e){ var q=KSC; if(!q||!q.nat) return; q.n++; q.d.push(e.db); if(e.pk>0.985) q.c2=(q.c2||0)+1; }],["bgfail",function(){ kBgFail(); kNatBg("none"); }],["segfail",function(){ soon(L(TX.bgNo)); }]].forEach(function(x){ KNL.push(P.addListener(x[0],x[1])); });
+  window.addEventListener("resize",kNatRs);
+  P.start({bg:kNatBgv(k),facing:"user",rect:kNatRect()}).then(function(){ if(!REC.nat||!b.classList.contains("krecm")||!box()){ kNatOff(); return; }
+    kScStop(); KSC={nat:1,t0:Date.now(),n:0,d:[],c2:0,iv:0}; REC.t0=Date.now(); REC.frc=null; recFx(true); setTimeout(kNatRs,300); try{ ntap("kara_rec","tap"); }catch(e){} })   // KSC = 웹판 점수 판과 같은 모양 (d = dB 기록)
+  .catch(function(){ kNatOff(); soon(L(TX.recNo)); recExit(); }); }
+function kNatBlob(P,r){ var u=window.Capacitor.convertFileSrc?window.Capacitor.convertFileSrc(r.path):"";   // 앱 파일 → Blob (안 되면 조각조각 읽기)
+  var rd=function(){ var parts=[], off=0, nx=function(){ return P.read({path:r.path,offset:off,length:2097152}).then(function(x){ var s=atob(x.data||""), a=new Uint8Array(s.length); for(var i=0;i<s.length;i++) a[i]=s.charCodeAt(i); parts.push(a); off+=a.length; return x.eof||!a.length?new Blob(parts,{type:"video/mp4"}):nx(); }); }; return nx(); };
+  return (u?fetch(u).then(function(x){ if(!x.ok) throw 0; return x.blob(); }).then(function(bl){ if(!bl.size) throw 0; return bl; }):Promise.reject(0)).catch(rd); }
+function kNatStop(){ var P=kNat(); if(!P||REC.nst) return; REC.nst=1;
+  P.stop().then(function(r){ return kNatBlob(P,r).then(function(bl){ REC.ch=[bl]; REC.mt="video/mp4";
+      if(r.frame&&isOwn()) return new Promise(function(ok){ var im=new Image(); im.onload=function(){ var c=mkc0(im.naturalWidth,im.naturalHeight); c.getContext("2d").drawImage(im,0,0); REC.frc=c; ok(); }; im.onerror=function(){ ok(); }; im.src=r.frame; }); }); })   // 상황 사진용 장면 = 앱이 1.5초 때 찍어 둔 합성 전 카메라(거울)
+  .then(function(){ REC.nst=0; recDone(); }).catch(function(){ REC.nst=0; soon(L(TX.recNo)); recExit(); }); }
 function recStart(){ var b=box(), pl=b&&b.querySelector(".kpl"); if(!pl) return;
+  if(kNat()){ kNatStart(b,pl); return; }   // 전용 앱 = 앱이 녹화 (10-31)
   if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder)){ soon(L(TX.recNo)); recExit(); return; }
   kAC(); REC.sc=null;   // 아이폰은 누른 순간에 소리판을 깨워야 점수 재기·팡파레가 된다
   var k=isOwn()?kEff():"none"; if(k!=="none") kSegLoad().catch(function(){});   // 배경 골라 뒀으면 카메라 허락 받는 동안 미리 불러옴
@@ -1001,8 +1028,9 @@ function recStart(){ var b=box(), pl=b&&b.querySelector(".kpl"); if(!pl) return;
     if(k==="none"||v.videoWidth) go(); else v.addEventListener("loadedmetadata",go,{once:true});   // 합성 판 크기는 카메라 크기를 안 뒤에 정한다
   }).catch(function(){ soon(L(TX.recNo)); recExit(); }); }
 function recStop(){ try{ K.pl&&K.pl.pauseVideo&&K.pl.pauseVideo(); }catch(e){}   // 녹화 끝 = 노래도 멈춤 (사장님 10-30)
+ if(REC.nat){ kNatStop(); return; }   // 앱 녹화 (10-31)
  if(REC.mr&&REC.mr.state!=="inactive") REC.mr.stop(); else recExit(); }
-function recDone(){ var blob=new Blob(REC.ch,{type:(REC.mt||"video/webm").split(";")[0]}); REC.blob=blob; clearTimeout(REC.frt); if(!REC.frc&&isOwn()) kFrGrab(); REC.th=KCV&&/^th:/.test(KCV.k)&&kTh(KCV.k.slice(3))?KCV.k.slice(3):""; REC.aiCard=null; REC.dur=REC.t0?Math.round((Date.now()-REC.t0)/1000):0; REC.sc=KSC?kScCalc(KSC,REC.dur):null; REC.t0=0; REC.mr=null; REC.ch=[]; camOff(); recFx(false); var b=box(); if(!b) return;
+function recDone(){ var blob=new Blob(REC.ch,{type:(REC.mt||"video/webm").split(";")[0]}); REC.blob=blob; clearTimeout(REC.frt); if(!REC.frc&&isOwn()) kFrGrab(); var _ek=KCV?KCV.k:(REC.nat&&REC.nk||""); REC.th=/^th:/.test(_ek)&&kTh(_ek.slice(3))?_ek.slice(3):"";   /* 앱 녹화 = REC.nk (10-31) */ REC.aiCard=null; REC.dur=REC.t0?Math.round((Date.now()-REC.t0)/1000):0; REC.sc=KSC?kScCalc(KSC,REC.dur):null; REC.t0=0; REC.mr=null; REC.ch=[]; camOff(); recFx(false); var b=box(); if(!b) return;
   if(REC.url) try{ URL.revokeObjectURL(REC.url); }catch(e){} REC.url=URL.createObjectURL(blob);
   var o=document.createElement("div"); o.className="kpm kpv"; b.appendChild(o);
   o.innerHTML='<div><h3>'+esc(L(TX.pvT))+'</h3>'+(REC.sc!=null?'<div class="kpvs">♪ '+esc(L(TX.scT))+' <b>'+REC.sc+'</b>'+esc(L(TX.scPt))+'</div>':'')+'<video controls playsinline src="'+REC.url+'"></video><p class="km">'+esc(L(isOwn()?TX.pvN2:TX.pvN))+'</p>'+(isOwn()&&REC.th&&REC.frc?'<button type="button" class="kaib" data-kai="1"><img src="img/kara/kst_theme.png" alt="">'+esc(L(TX.aiMk))+'</button>':'')+'<button type="button" class="kupb" '+(isOwn()?'data-kup="1"':'data-ksoon="1"')+'>'+esc(L(TX.up))+'</button><button type="button" class="krf" data-rt="1">'+esc(L(TX.retk))+'</button><button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
