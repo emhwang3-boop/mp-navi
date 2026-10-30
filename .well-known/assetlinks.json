@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "kr.co.moneypuzzle.navi",
+      "sha256_cert_fingerprints": [
+        "54:4A:F8:ED:B8:D7:75:D5:0C:40:0E:62:A1:D9:F9:DD:40:3E:6C:5E:8F:F4:D4:04:EB:BC:EB:9C:82:EA:3A:D3"
+      ]
+    }
+  }
+]
