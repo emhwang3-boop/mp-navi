@@ -1,6 +1,6 @@
 /* 머니퍼즐 투어 — 구글·애플 로그인 + 내 배지 (사장님 2026-10-26, 10-27 배지 창)
  *  · ⋮ 메뉴 「내 ★배지」(★ = img/rank/star.webp, 10-27 퍼즐골드 창 대체) → 창: 로그인 전 = 구글·애플 로그인 단추 · 로그인 뒤 = 별·큰 별·작은 태양·큰 태양·매일 빙고 1등·주간 1·2·3등·졸업/명예의 전당
- *  · 클라이언트 ID 는 허브 GOOGLE_CLIENT_ID 한 곳(wrangler.toml) — /npg/cfg 로 읽는다. 비어 있으면 단추 「준비 중」
+ *  · 클라이언트 ID 는 허브 GOOGLE_CLIENT_ID 한 곳(wrangler.toml) — /npg/cfg 로 읽는다. 비어 있으면 이 파일의 PG_CID
  *  · 받은 ID 토큰은 허브 /npg/login 이 구글 서명까지 검사 → 허브 세션(30일)만 이 브라우저(mpv_pg_sess)에 둔다. 구글 토큰은 저장 안 함
  *  · 기기 번호 = 앱이 이미 쓰는 mpv_dev (같은 기기 다른 계정 수상 경고용) · 사장님 기기(mp_owner)는 own=1 → MIS 합계에서 빠진다
  */
@@ -31,8 +31,6 @@ var W={
  gradY:{ko:"졸업 — 1·2·3등에 3번 올라 명예의 전당에 올랐습니다.",en:"Graduated — you finished in the top 3 three times and entered the Hall of Fame.",ja:"卒業 — 1〜3位に3回入り、殿堂入りしました。",zhs:"已毕业 — 您已3次进入前三名，进入名人堂。",zht:"已畢業 — 您已3次進入前三名，進入名人堂。",es:"Graduado — ha quedado entre los 3 primeros tres veces y entró en el Salón de la Fama."},
  hofY:{ko:"명예의 전당에 올랐습니다.",en:"You are in the Hall of Fame.",ja:"殿堂入りしました。",zhs:"您已进入名人堂。",zht:"您已進入名人堂。",es:"Está en el Salón de la Fama."},
  gradN:{ko:"졸업(명예의 전당)까지 1·2·3등 {n}번 남았습니다.",en:"{n} more top-3 finishes to graduate into the Hall of Fame.",ja:"卒業（殿堂入り）まで、あと{n}回の1〜3位入りです。",zhs:"再进入前三名{n}次即可毕业（进入名人堂）。",zht:"再進入前三名{n}次即可畢業（進入名人堂）。",es:"Le faltan {n} puestos en el top 3 para graduarse en el Salón de la Fama."},
- prep:{ko:"Google로 로그인 (준비 중)",en:"Sign in with Google (coming soon)",ja:"Googleでログイン（準備中）",zhs:"使用Google登录（准备中）",zht:"使用Google登入（準備中）",es:"Iniciar sesión con Google (próximamente)"},
- prepNote:{ko:"로그인 기능을 준비하고 있습니다. 곧 열립니다.",en:"Sign-in is being prepared and will open soon.",ja:"ログイン機能を準備中です。まもなく開始します。",zhs:"登录功能正在准备中，即将开放。",zht:"登入功能正在準備中，即將開放。",es:"El inicio de sesión se está preparando y abrirá pronto."},
  privLink:{ko:"개인정보 처리방침",en:"Privacy Policy",ja:"個人情報処理方針",zhs:"隐私政策",zht:"隱私政策",es:"Política de Privacidad"},
  times:{ko:"회",en:"",ja:"回",zhs:"次",zht:"次",es:""},
  logout:{ko:"로그아웃",en:"Sign out",ja:"ログアウト",zhs:"退出登录",zht:"登出",es:"Cerrar sesión"},
@@ -86,7 +84,6 @@ function paintLogin(msg){ var I=document.getElementById("pgIn");
   if(natApp()){ natPaint(); rvWire(); return; }   /* 앱(StageSong 등) 안 — 웹 구글·애플 로그인은 WebView 에서 막힘(흰 화면) → 앱 전용 로그인 (10-31) */
   appleBtn(); rvWire();
   cfg().then(function(c){ var g=document.getElementById("pgGbtn"); if(!g) return; c={cid:(c&&c.cid)||PG_CID};
-    if(!c||!c.cid){ g.innerHTML='<button type="button" class="pgbtn" id="pgPrep" disabled><img src="img/menu/mi_globe.png" alt="" style="height:16px;width:16px;vertical-align:-3px;margin-right:6px">'+esc(t("prep"))+'</button><div class="pgp">'+esc(t("prepNote"))+'</div>'; return; }
     gisLoad().then(function(){ var g2=document.getElementById("pgGbtn"); if(!g2) return; g2.innerHTML="";
       google.accounts.id.initialize({client_id:c.cid,callback:onCred,auto_select:false,cancel_on_tap_outside:true,ux_mode:"popup"});
       google.accounts.id.renderButton(g2,{type:"standard",theme:document.documentElement.getAttribute("data-theme")==="dark"?"filled_black":"outline",size:"large",width:240,text:"signin_with",shape:"pill",locale:GLOC[lg()]||"en"});
