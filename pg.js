@@ -42,6 +42,8 @@ var W={
  lerr:{ko:"로그인하지 못했습니다. 다시 해 주세요.",en:"Sign-in failed. Please try again.",ja:"ログインできませんでした。もう一度お試しください。",zhs:"登录失败，请重试。",zht:"登入失敗，請重試。",es:"No se pudo iniciar sesión. Inténtelo de nuevo."},
  sess:{ko:"로그인이 끝났습니다. 다시 로그인해 주세요.",en:"Your session has ended. Please sign in again.",ja:"ログインの有効期限が切れました。もう一度ログインしてください。",zhs:"登录已过期，请重新登录。",zht:"登入已過期，請重新登入。",es:"Su sesión ha terminado. Vuelva a iniciar sesión."}
 };
+/* 다른 사이트(노래방 karaoke.moneypuzzle.co.kr, 10-30)가 같은 pg.js 를 쓸 때 — window.PG_SITE={W:{문구},simple,aredir}. 투어앱엔 PG_SITE 가 없어 그대로 */
+var PGS=window.PG_SITE||null; if(PGS&&PGS.W) for(var _pk in PGS.W) W[_pk]=PGS.W[_pk];
 function lg(){ return window.LANG||"ko"; }
 function t(k,v){ var o=W[k]||{}, s=o[lg()]; if(s==null) s=o.en||""; if(v) for(var x in v) s=s.split("{"+x+"}").join(v[x]); return s; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
@@ -67,7 +69,7 @@ function css(){ if(document.getElementById("pgCss")) return; var s=document.crea
 function box(){ var b=document.getElementById("pgBox"); if(b) return b; css(); b=document.createElement("div"); b.id="pgBox"; b.hidden=true; b.innerHTML='<div id="pgIn"></div>';
   b.addEventListener("click",function(e){ if(e.target===b) close(); var a=e.target.closest&&e.target.closest("[data-pg]"); if(!a) return; var k=a.dataset.pg; if(k==="x") close(); else if(k==="out") logout(); });
   document.body.appendChild(b); return b; }
-function ttl(px){ return esc(t("badge")).split("{s}").join('<img src="img/rank/star.webp" alt="" style="width:'+px+'px;height:'+px+'px;vertical-align:-2px;margin:0 1px">'); }   /* 「내 ★배지」 — ★ = 별 그림 (10-27) */
+function ttl(px){ if(PGS&&PGS.simple) return esc(t("title")); return esc(t("badge")).split("{s}").join('<img src="img/rank/star.webp" alt="" style="width:'+px+'px;height:'+px+'px;vertical-align:-2px;margin:0 1px">'); }   /* 「내 ★배지」 — ★ = 별 그림 (10-27) */
 function head(){ return '<h3><span>'+ttl(20)+'</span><button type="button" class="pgx" data-pg="x">'+esc(t("close"))+' ✕</button></h3>'; }
 function privHtml(){ return '<div class="pgp">'+esc(t("priv"))+' <a href="privacy.html?lang='+esc(lg())+'" target="_blank" rel="noopener">'+esc(t("privLink"))+'</a></div>'; }
 function close(){ var b=document.getElementById("pgBox"); if(b) b.hidden=true; }
@@ -87,7 +89,7 @@ function paintLogin(msg){ var I=document.getElementById("pgIn");
     }).catch(function(){ var g3=document.getElementById("pgGbtn"); if(g3) g3.innerHTML='<div class="pgp" style="color:#c92a2a">'+esc(t("err"))+'</div>'; }); }); }
 // ── Apple로 로그인 (사장님 2026-10-26) — Sign in with Apple JS 공식 스크립트(판 1)·공식 검정 단추·팝업 · state·nonce 는 창 열 때마다 새로 ──
 //   Services ID kr.co.moneypuzzle.navi.web · Return URL https://navi.moneypuzzle.co.kr/ · 허브 /npg/login {prov:"apple"} 가 애플 JWKS 로 검사
-var ACID="kr.co.moneypuzzle.navi.web", AREDIR="https://navi.moneypuzzle.co.kr/", ALOC={ko:"ko_KR",en:"en_US",ja:"ja_JP",zhs:"zh_CN",zht:"zh_TW",es:"es_ES"}, AS=null, AJS=null;
+var ACID="kr.co.moneypuzzle.navi.web", AREDIR=(PGS&&PGS.aredir)||"https://navi.moneypuzzle.co.kr/", ALOC={ko:"ko_KR",en:"en_US",ja:"ja_JP",zhs:"zh_CN",zht:"zh_TW",es:"es_ES"}, AS=null, AJS=null;
 function rnd(n){ return Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(n)),function(v){ return ("0"+v.toString(16)).slice(-2); }).join(""); }
 function appleLoad(){ if(window.AppleID&&AppleID.auth) return Promise.resolve(); if(AJS) return AJS;
   AJS=new Promise(function(ok,no){ var s=document.createElement("script"); s.src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/"+(ALOC[lg()]||"en_US")+"/appleid.auth.js"; s.async=true; s.onload=ok; s.onerror=function(){ AJS=null; no(); }; document.head.appendChild(s); });
@@ -118,7 +120,8 @@ function onCred(r){ login({cred:r&&r.credential}); }
 function logout(){ ls("mpv_pg_sess",null); try{ if(window.google&&google.accounts&&google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){} menuPaint(); paintLogin(); }
 function bdRow(n,lab){ n=n||0; var K=[["bigsun",Math.floor(n/1000)],["sun",Math.floor(n/100)%10],["bigstar",Math.floor(n/10)%10],["star",n%10]];
   return (lab?'<div class="pgsec">'+esc(lab)+'</div>':'')+'<div class="pgbd">'+K.map(function(k){ return '<div'+(k[1]?'':' class="pgdim0"')+'><img src="img/rank/'+k[0]+'.webp" alt=""><b>'+k[1]+'</b>'+esc(t(k[0]))+'</div>'; }).join("")+'</div><div class="pgp" style="text-align:right;margin:2px 0 6px">'+esc(t("wtot",{n:n.toLocaleString()}))+'</div>'; }
-function paintMe(m){ var I=document.getElementById("pgIn"); if(!I||!m) return;   /* 내 배지 (10-27) — /npg/me 의 wins·twins·kwins·dw·fin·gr·hof */
+function paintMe(m){ var I=document.getElementById("pgIn"); if(!I||!m) return;
+  if(PGS&&PGS.simple){ I.innerHTML=head()+'<div class="pgp" style="color:var(--ink)">'+esc(m.name||"")+(m.email?' <span class="pgdim">· '+esc(m.email)+'</span>':'')+'</div><div class="pgp">'+esc(t("intro"))+'</div>'+privHtml()+'<div style="margin-top:10px"><button type="button" class="pgbtn" data-pg="out">'+esc(t("logout"))+'</button></div>'; return; }   /* 노래방 사이트 — 배지 없이 계정만 */   /* 내 배지 (10-27) — /npg/me 의 wins·twins·kwins·dw·fin·gr·hof */
   var fw=(m.wins||0)+(m.twins||0), kw=m.kwins||0, fin=m.fin||0, tm=t("times")?' '+esc(t("times")):'';
   var h=head()+'<div class="pgp" style="color:var(--ink)">'+esc(m.name||"")+(m.email?' <span class="pgdim">· '+esc(m.email)+'</span>':'')+'</div>';
   if(!fw&&!kw) h+='<div class="pgp">'+esc(t("nob"))+'</div>'+bdRow(0,"");
