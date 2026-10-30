@@ -124,8 +124,9 @@ function homeLoad(){ var P=$("pane"), td=kday(0);
 // ── 방문 — 내비 숫자는 토큰 경로(/ntapstats)에서, 허브 공개 화면은 단추로 ──
 function visitLoad(){ var P=$("pane"), td=kday(0);
   P.innerHTML='<div class="card"><b>방문 요약 — 앱 vs 홈피</b><div class="msg">앱 = 투어앱(navi.moneypuzzle.co.kr), 열릴 때 1번 · 홈피 = moneypuzzle.co.kr. 서로 다른 방문입니다 (로봇·사장님 기기 뺌).</div><div id="vsplit"><div class="msg">불러오는 중…</div></div></div>'
-    +'<div class="card"><b>투어앱 방문 (최근 30일)</b><div class="msg">앱이 열릴 때 1번 셉니다. 기기 수 = 그날 처음 연 기기 (사장님 기기 제외)</div><div class="tw"><table id="vt"></table></div></div>'
+    +'<div class="card"><b>노래방 사이트 방문 (karaoke.moneypuzzle.co.kr)</b><div class="msg">세션마다 1번 · 로봇·사장님 기기 뺌 (10-31부터)</div><div id="kvsp"><div class="msg">불러오는 중…</div></div></div>'+'<div class="card"><b>투어앱 방문 (최근 30일)</b><div class="msg">앱이 열릴 때 1번 셉니다. 기기 수 = 그날 처음 연 기기 (사장님 기기 제외)</div><div class="tw"><table id="vt"></table></div></div>'
     +'<div class="card"><b>허브 방문 통계 화면 (자세히)</b><div class="row" style="margin-top:8px"><a href="'+HUB+'/hstats" target="_blank" rel="noopener"><button class="g">홈페이지 방문 (/hstats)</button></a><a href="'+HUB+'/stats" target="_blank" rel="noopener"><button class="g">투자앱 방문 (/stats)</button></a></div><div class="msg">※ /stats 는 투자앱(브리핑·주식·코인) 통계 — 투어앱과 다른 서비스입니다.</div></div>';
+  hc("?s=kara&n=0&geo=1").then(function(K){ $("kvsp").innerHTML='<div class="tiles">'+tile((K.total||0).toLocaleString(),"누적 방문")+tile((K.uniq||0).toLocaleString(),"누적 방문자")+tile((K.tuniq||0).toLocaleString(),"오늘 방문자")+tile((K.today||0).toLocaleString(),"오늘 방문")+tile((K.bot||0).toLocaleString(),"로봇 (안 셈)")+'</div>'; }).catch(function(){ $("kvsp").innerHTML='<div class="msg err">불러오지 못했습니다 (허브 /hc?s=kara)</div>'; });   // 노래방 방문 (10-31)
   Promise.all([api("/ntapstats?from="+kday(-29)+"&to="+td),hc("?sum=1").catch(function(){ return null; })]).then(function(a){
     var j=a[0], H=a[1], appTd=(j.days.filter(function(d){ return d.d===td; })[0]||{}).vis||0;
     $("vsplit").innerHTML='<div class="tiles">'
