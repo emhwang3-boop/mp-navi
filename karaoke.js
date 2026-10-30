@@ -864,7 +864,7 @@ function kptAsk(cost,title,go,note,okL){ /* okL = 마지막 단추 글자 (구�
   var draw=function(msg){ var short=!note&&bal<cost;
     o.innerHTML='<div><h3>'+esc(title)+'</h3><div class="kwuse'+(short?' kwno':'')+'">'+esc(note||tf(L(TX.kwUse),{c:ptS(cost),r:ptS(Math.max(0,bal-cost))}))+'</div>'
       +(short?'<div class="kerr">'+esc(tf(L(TX.kwShort),{h:ptS(bal)}))+'</div>':'')+(msg?'<div class="kerr">'+esc(msg)+'</div>':'')+'<p class="km">'+esc(L(TX.kwRule))+'</p>'
-      +(short?'<button type="button" class="kgo" data-c="1">'+esc(L(TX.kwChg))+'</button>':'<button type="button" class="kgo" data-y="1"'+(busy?' disabled':'')+'>'+esc(okL||L(TX.kwOk))+'</button>')+'<button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+      +(short?'<button type="button" class="kgo" data-c="1">'+esc(L(TX.kwChg))+'</button>':'<button type="button" class="kgo" data-y="1"'+(busy?' disabled':'')+'>'+esc(okL||L(TX.kwOk))+'</button>')+'<button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
     o.querySelector(".kc").onclick=function(){ o.remove(); };
     var y=o.querySelector("[data-y]"); if(y) y.onclick=function(){ if(busy) return; busy=true; draw(); go(function(err){ busy=false; if(err) draw(err); else o.remove(); }); };
     var c=o.querySelector("[data-c]"); if(c) c.onclick=function(){ o.remove(); kwOpen("chg"); }; };
