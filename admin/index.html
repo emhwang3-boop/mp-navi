@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["forms","양식함","계약서·서식 내려받기 (PDF·워드)"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -408,6 +408,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="guide"){ guideLoad(); return; }   // 통역·길안내 가이드 승인 (2026-10-24)
   if(id==="greview"){ grevLoad(); return; }
   if(id==="shop"){ pdLoad(); return; }   // 상품 관리 (2026-10-29)
+  if(id==="forms"){ formsLoad(); return; }   // 양식함 (2026-10-30)
   if(id==="prv"){ prvLoad(); return; }   // 명소 후기 (2026-10-29)   // 가이드 후기 관리 (2026-10-24)
   if(id==="mis"){ misLoad(); return; }   // 가이드 예약·결제 장부 MIS (2026-10-24)
   if(id==="ptn"){ ptnLoad(); return; }   // 제휴 가게 — partner.js (2026-10-16)
@@ -792,6 +793,13 @@ if(TOK) login();
 </script>
 <script src="partner.js?v=1016"></script>
 <script>
+// ── 양식함 (사장님 2026-10-30) — 계약서·서식 내려받기. 파일은 admin/forms/ · 새 양식은 FORMS 배열에 한 줄 추가 ──
+var FORMS=[
+ {nm:"체험 상품 제휴(공급) 계약서",ds:"체험 업체(공급자)와 맺는 계약 — 외국어 진행·판매가/공급가·월 1회 정산·취소·노쇼·안전·직접 거래 금지 · [별표 1] 상품표",f:[["PDF","forms/experience_contract_ko.pdf","체험상품_제휴계약서.pdf"],["워드","forms/experience_contract_ko.docx","체험상품_제휴계약서.docx"]],dt:"2026-10-30"},
+ {nm:"관광가이드 업무위탁 계약서",ds:"관광통역안내사 가이드와 맺는 업무위탁(프리랜서) 계약 — 수당·원천징수·안전·개인정보",f:[["PDF","forms/guide_contract_ko.pdf","관광가이드_업무위탁_계약서.pdf"],["워드","forms/guide_contract_ko.docx","관광가이드_업무위탁_계약서.docx"]],dt:"2026-10-30"}
+];
+function formsLoad(){ $("pane").innerHTML='<div class="card"><b>양식함 ('+FORMS.length+')</b><div class="msg">계약서·서식을 내려받아 출력하거나 고쳐 쓰세요. 빈칸은 계약할 때 채웁니다.</div></div>'
+  +FORMS.map(function(x){ return '<div class="card"><b>'+esc(x.nm)+'</b><div class="msg">'+esc(x.ds)+(x.dt?' · '+esc(x.dt)+' 판':"")+'</div><div class="row" style="margin-top:10px;gap:8px">'+x.f.map(function(f){ return '<a href="'+esc(f[1])+'" download="'+esc(f[2])+'"><button>'+esc(f[0])+' 내려받기</button></a>'; }).join("")+'</div></div>'; }).join(""); }
 // ── 상품 관리 (사장님 2026-10-29) — 체험·입장권 상품 등록·수정·삭제 · 사진은 사장님이 직접 찍어 올린다 ──
 //   허브: GET /shop/admin/products · POST /shop/admin/product · /shop/admin/product/del · /shop/admin/img(사진 바이트) · /shop/admin/lock
 //   고정 상품 8개(토스 카드사 심사 중)는 「심사 중 — 수정 잠금」. 잠금은 맨 위 스위치 하나로 풀고 잠근다
