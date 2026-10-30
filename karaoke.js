@@ -413,14 +413,15 @@ window.addEventListener("resize",function(){ clearTimeout(fitPl._t); fitPl._t=se
 // 노래방 화면 두 손가락 확대 → 확대된 뒤엔 한 손가락으로 이리저리 이동 (투어앱 지도와 같은 방식, 사장님 10-31)
 //  브라우저 자체 확대는 막고(#karBox touch-action) 노래방 화면(.kin)을 우리가 키운다 · 1배로 줄이면 원래대로 · 녹화 중·스테이지 화면에선 안 함
 var KZ={s:1,x:0,y:0,g:null};
-function kzKin(){ var b=box(); return b&&b.querySelector(".kin"); }
-function kzLock(on){ var b=box(); if(!b) return; b.style.touchAction=on?"none":""; [].forEach.call(b.querySelectorAll(".kpl iframe"),function(f){ f.style.pointerEvents=on?"none":""; }); }   // 확대 중엔 유튜브 화면이 손가락을 가져가지 않게 + 브라우저 스크롤이 끼어들지 않게 (사장님 10-31 「확대 후 이동이 안 된다」)
+function kzKin(){ var b=box(); if(!b) return null; var pg=b.querySelectorAll(".kpg"); return pg.length?pg[pg.length-1]:b.querySelector(".kin"); }   // 맨 위 스테이지 화면이 있으면 그것을, 없으면 노래방 화면을 (10-31 스테이지에서도)
+function kzSync(){ var k=kzKin(); if(KZ.el&&KZ.el!==k){ try{ KZ.el.style.transform=""; KZ.el.style.touchAction=""; [].forEach.call(KZ.el.querySelectorAll(".kpgb"),function(x){ x.style.touchAction=""; }); }catch(e){} KZ.s=1; KZ.x=0; KZ.y=0; } KZ.el=k; return k; }
+function kzLock(on){ var b=box(); if(!b) return; b.style.touchAction=on?"none":""; if(KZ.el){ KZ.el.style.touchAction=on?"none":""; [].forEach.call(KZ.el.querySelectorAll(".kpgb"),function(x){ x.style.touchAction=on?"none":""; }); } [].forEach.call(b.querySelectorAll(".kpl iframe"),function(f){ f.style.pointerEvents=on?"none":""; }); }   // 확대 중엔 유튜브 화면이 손가락을 가져가지 않게 + 브라우저 스크롤이 끼어들지 않게 (사장님 10-31 「확대 후 이동이 안 된다」)
 function kzApply(){ var k=kzKin(); if(!k) return; if(KZ.s<=1.02){ KZ.s=1; KZ.x=0; KZ.y=0; k.style.transform=""; kzLock(false); return; } kzLock(true);
   var W=k.offsetWidth, H=k.offsetHeight; KZ.x=Math.min(0,Math.max(W-W*KZ.s,KZ.x)); KZ.y=Math.min(0,Math.max(H-H*KZ.s,KZ.y));
   k.style.transformOrigin="0 0"; k.style.transform="translate("+KZ.x+"px,"+KZ.y+"px) scale("+KZ.s+")"; }
 function kzReset(){ KZ.s=1; KZ.g=null; kzApply(); }
-function kzOk(e){ var b=box(); return b&&b.contains(e.target)&&!b.classList.contains("krecm")&&!b.querySelector(".kpg,.kpm"); }
-document.addEventListener("touchstart",function(e){ if(!kzOk(e)){ KZ.g=null; return; } var k=kzKin(); if(!k) return; var r=k.getBoundingClientRect(), L0=r.left-KZ.x, T0=r.top-KZ.y;
+function kzOk(e){ var b=box(); return b&&b.contains(e.target)&&!b.classList.contains("krecm")&&!b.querySelector(".kpm")&&!(e.target.closest&&e.target.closest("[data-pz]")); }
+document.addEventListener("touchstart",function(e){ if(!kzOk(e)){ KZ.g=null; return; } var k=kzSync(); if(!k) return; var r=k.getBoundingClientRect(), L0=r.left-KZ.x, T0=r.top-KZ.y;
   if(e.touches.length===2){ var a=e.touches[0], c=e.touches[1]; KZ.g={p:1,d:Math.hypot(a.clientX-c.clientX,a.clientY-c.clientY)||1,s:KZ.s,u:((a.clientX+c.clientX)/2-L0-KZ.x)/KZ.s,v:((a.clientY+c.clientY)/2-T0-KZ.y)/KZ.s,L0:L0,T0:T0}; }
   else if(e.touches.length===1&&KZ.s>1){ KZ.g={m:1,px:e.touches[0].clientX,py:e.touches[0].clientY,x:KZ.x,y:KZ.y}; } else KZ.g=null; },{passive:true});
 document.addEventListener("touchmove",function(e){ var g=KZ.g; if(!g) return;
@@ -1204,7 +1205,7 @@ function kImg(src){ return new Promise(function(res,rej){ var im=new Image(); im
 function kCardImg(blob,sc,t){ var u=URL.createObjectURL(blob); return kImg(u).then(function(im){ var c=kCardDraw(im,sc,t,true); try{ URL.revokeObjectURL(u); }catch(e){} return kJpg(c,400*1024); }); }
 // ── 사진 확대·이동 (사장님 10-31 「가」) — 두 손가락 벌리면 확대, 확대된 뒤엔 한 손가락으로 이동, 두 번 톡 = 원래 크기
 //   노래방 화면 전체 확대(KZ)와 같은 셈법 — 사진 뷰어(.kzv) 안에서만. 화면 전체 확대는 kzOk 가 .kpg/.kpm 이 있으면 안 하므로 겹치지 않는다
-function kPz(w){ var im=w&&w.querySelector("img"); if(!im||w._pz) return; w._pz=1; var Z={s:1,x:0,y:0,g:null,t0:0,tap:0};
+function kPz(w){ var im=w&&w.querySelector("img"); if(!im||w._pz) return; w._pz=1; w.setAttribute("data-pz","1"); var Z={s:1,x:0,y:0,g:null,t0:0,tap:0};
   var ap=function(){ if(Z.s<=1.02){ Z.s=1; Z.x=0; Z.y=0; im.style.transform=""; w.classList.remove("on"); return; }
     var W=w.clientWidth, H=w.clientHeight; Z.x=Math.min(0,Math.max(W-W*Z.s,Z.x)); Z.y=Math.min(0,Math.max(H-H*Z.s,Z.y));
     im.style.transform="translate("+Z.x+"px,"+Z.y+"px) scale("+Z.s+")"; w.classList.add("on"); };
