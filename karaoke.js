@@ -621,7 +621,7 @@ function recFx(on){ var b=box(); if(!b) return; var pl=b.querySelector(".kpl"); 
   // 캠코더 뷰파인더 (사장님 10-30 「카메라 효과가 약하다」) — 꺾쇠 4·3등분선·가운데 초점 원(음양 두 반원+십자)·아래 눈금자·왼쪽 소리 막대·HD+배터리 · 화면 위에만 (녹화 영상엔 안 들어감)
   //   업무용 캠코더 화면 표시 참고: 왼쪽 위 ● REC + 타임코드(시:분:초:프레임 30fps) · 오른쪽 위 배터리 4칸·1080/30p·AF · 가운데 초점 꺾쇠(1/4)+십자+옅은 원 · 3×3 안내선 · 세이프 영역 점선(90%)
   //   왼쪽 오디오 미터 CH1·CH2(-40·-20·-12·0, 초록→노랑→빨강, 피크) · 아래 눈금자(가운데 기준 + 소리 크기 따라 움직이는 작은 삼각)
-  v=document.createElement("div"); v.className="kvf"; v.innerHTML='<s class="kg1"></s><s class="kg2"></s><div class="ksa"></div><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i><b><em></em> REC <span>00:00:00:00</span></b>'+(KSC?'<u>♪ 0</u>':'')
+  v=document.createElement("div"); v.className="kvf"; v.innerHTML='<s class="kg1"></s><s class="kg2"></s><div class="ksa"></div><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i><b><em></em> REC <span>00:00:00:00</span></b>'
     +'<div class="kfo"><p></p></div><div class="kru"><p></p></div>'
     +'<div class="klv"><div class="kc"><p></p><a></a><small>1</small></div><div class="kc"><p></p><a></a><small>2</small></div><div class="ksl"><small style="bottom:16.7%">-40</small><small style="bottom:58.3%">-20</small><small style="bottom:75%">-12</small><small style="bottom:100%">0</small></div></div>'
     +'<div class="khd"><var><q></q><q></q><q></q><q></q></var><span>1080/30p</span><span>AF</span></div>'; pl.appendChild(v);
