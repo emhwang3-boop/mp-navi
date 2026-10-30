@@ -828,7 +828,7 @@ function pdList(){ var P=$("pane"), c=PD.cost;
   h+=PD.items.map(function(x){ var th=pdThumb(x), lk=pdLocked(x);
     return '<div class="pdl">'+(th?'<img src="'+esc(th)+'" alt="" loading="lazy">':'<span class="pdn"></span>')+'<div class="pdx"><b>'+esc(pdName(x))+'</b>'
       +'<div class="sub"><span class="pdtag" style="background:'+(PD_STC[x.st]||"#868e96")+'">'+esc(PD_ST[x.st]||x.st)+'</span>'+(x.fixed?'<span class="pdtag pdlock">고정'+(lk?' · 심사 중 — 수정 잠금':'')+'</span>':'')+(x.trw?'<span class="pdtag" style="background:#c92a2a">번역 필요</span>':'')
-      +esc(pdCat(x.c))+' · '+esc(pdPrice(x))+(x.link?' · 외부 예매처':'')+(x.rt?' · 노선도':'')+'</div></div>'
+      +esc(pdCat(x.c))+' · '+esc(pdPrice(x))+(x.link?' · 외부 예매처':'')+(x.rt?' · 노선도':'')+(x.minPax?' · 최소 출발 '+x.minPax+'명':'')+'</div></div>'
       +'<div class="row"><button '+(lk?'disabled title="심사 중 — 수정 잠금"':'')+' data-id="'+esc(x.id)+'" onclick="pdEdit(this.dataset.id)">수정</button>'
       +(x.fixed?(x.ov&&!lk?'<button class="g" data-id="'+esc(x.id)+'" onclick="pdDel(this.dataset.id,1)">원래대로</button>':''):'<button class="g" data-id="'+esc(x.id)+'" onclick="pdDel(this.dataset.id)">삭제</button>')+'</div></div>'; }).join("");
   P.innerHTML=h+'</div>'; }
@@ -857,6 +857,7 @@ function pdEdit(id){ var x=id?PD.items.filter(function(y){ return y.id===id; })[
    +'<div id="pdWhen"><div class="row" style="margin-top:6px">'+PD_WD.map(function(w,i){ return '<label><input type="checkbox" class="pdW" value="'+i+'"'+((x.days||[]).indexOf(i)>=0?' checked':'')+'> '+w+'</label>'; }).join("")+'</div>'
    +'<input type="text" id="pdTm" style="margin-top:6px" placeholder="시작 시간, 쉼표로 (예: 10:00, 14:00)" value="'+esc((x.times||[]).join(", "))+'"></div>'
    +'<label>최대 인원</label><input type="number" id="pdMax" min="1" max="20" value="'+(x.max||20)+'">'
+   +'<label>최소 출발 인원 (비우면 없음 · 2~50명 · 같은 날짜 주문 인원 합계가 모자라면 출발 3일 전·24시간 전에 텔레그램으로 알림)</label><input type="number" id="pdMin" min="2" max="50" placeholder="없음" value="'+(x.minPax||"")+'">'
    +'<label>판매 상태</label><div class="row">'+["sale","prep","stop"].map(function(k){ return '<label><input type="radio" name="pdSt" value="'+k+'"'+(x.st===k?' checked':'')+'> '+PD_ST[k]+'</label>'; }).join("")+'</div>'
    +'<label>외부 예매처 링크 (있으면 앱에서 결제 대신 이 링크로 보냅니다)</label><input type="text" id="pdLk" placeholder="https://" value="'+esc(x.link||"")+'">'
    +'<div class="row" style="margin-top:12px"><label><input type="checkbox" id="pdRt"'+(x.rt?' checked':'')+'> 투어 노선도 연결 (「투어 노선도 보기」 단추)</label></div>'
@@ -923,14 +924,16 @@ function pdSave(){ var x=PD.ed, btn=$("pdSave"), msg=function(s,e){ $("pdMsg").i
   var free=$("pdFree").checked, days=[].filter.call(document.querySelectorAll(".pdW"),function(c){ return c.checked; }).map(function(c){ return +c.value; });
   var times=($("pdTm").value||"").split(/[,\s]+/).filter(Boolean).map(function(s){ var m=s.match(/^(\d{1,2}):(\d{2})$/); return m?("0"+m[1]).slice(-2)+":"+m[2]:""; });
   if(!free&&times.some(function(s){ return !s; })){ msg("시간은 10:00 처럼 써 주세요.",1); return; }
+  var mpS=($("pdMin").value||"").trim(), minPax=mpS===""?0:parseInt(mpS,10);   // 최소 출발 인원 (10-30)
+  if(mpS!==""&&!(/^\d+$/.test(mpS)&&minPax>=2&&minPax<=50)){ msg('최소 출발 인원은 2~50명으로 넣거나 비워 두세요.',1); return; }
   var need=PD.ph.filter(function(p){ return p.file; });
   if(need.length&&!PD.r2){ msg("사진 저장소(R2)가 아직 없어 새 사진은 올릴 수 없습니다. 사진을 빼고 저장해 주세요.",1); return; }
   btn.disabled=true; var k=0;
   var up=need.reduce(function(pr,p){ return pr.then(function(){ k++; p.st="올리는 중"; pdPhPaint(); msg("사진 올리는 중 "+k+" / "+need.length+"…"); return pdUpload(p); }); },Promise.resolve());
   up.then(function(){ pdPhPaint(); msg("저장 중… (한국어가 바뀌었으면 AI 번역까지 몇 초 걸립니다)");
-    var body={id:x.id||"",t:t,d:d,f:f,c:$("pdC").value,imgs:PD.ph.filter(function(p){ return p.id; }).map(function(p){ return p.id; }),price:price,disc:disc,free:free?1:0,days:days,times:times,max:parseInt($("pdMax").value,10)||20,st:st,link:link,rt:$("pdRt").checked?1:0};
+    var body={id:x.id||"",t:t,d:d,f:f,c:$("pdC").value,imgs:PD.ph.filter(function(p){ return p.id; }).map(function(p){ return p.id; }),price:price,disc:disc,free:free?1:0,days:days,times:times,max:parseInt($("pdMax").value,10)||20,st:st,link:link,rt:$("pdRt").checked?1:0,minPax:minPax};
     return api("/shop/admin/product",{method:"POST",body:JSON.stringify(body)}); })
-  .then(function(j){ btn.disabled=false; if(!j||!j.ok){ msg(j&&j.err==="locked"?"심사 중 — 수정 잠금 상태입니다.":j&&j.err==="price"?"판매 중이면 가격이 있어야 합니다.":"저장하지 못했습니다 ("+((j&&j.err)||"x")+")",1); return; }
+  .then(function(j){ btn.disabled=false; if(!j||!j.ok){ msg(j&&j.err==="locked"?"심사 중 — 수정 잠금 상태입니다.":j&&j.err==="price"?"판매 중이면 가격이 있어야 합니다.":j&&j.err==="minpax"?"최소 출발 인원은 2~50명으로 넣거나 비워 두세요.":"저장하지 못했습니다 ("+((j&&j.err)||"x")+")",1); return; }
     var ai=String(j.ai||"");
     alert("저장했습니다."+(ai==="ok"?"\nAI 가 6개 언어로 번역했습니다. 「언어별 고치기」에서 확인·수정할 수 있습니다.":ai.indexOf("fail")===0?"\n번역은 실패했습니다("+ai.slice(5)+"). 다른 언어에는 한국어가 임시로 나옵니다. 다시 저장하면 다시 번역합니다.":""));
     pdLoad(); })
