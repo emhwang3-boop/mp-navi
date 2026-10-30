@@ -87,11 +87,14 @@ var TX={
  dys:T6("진행 요일","Days","開催曜日","开放日","開放日","Días"),
  wd:[T6("일","Sun","日","日","日","dom"),T6("월","Mon","月","一","一","lun"),T6("화","Tue","火","二","二","mar"),T6("수","Wed","水","三","三","mié"),T6("목","Thu","木","四","四","jue"),T6("금","Fri","金","五","五","vie"),T6("토","Sat","土","六","六","sáb")],
  edy:T6("이 상품은 고른 요일에 진행하지 않아요. 진행 요일을 확인해 주세요.","This product doesn't run on that day. Please check the days.","この商品は選んだ曜日には開催しません。開催曜日をご確認ください。","该商品在所选日期不开放，请确认开放日。","該商品在所選日期不開放，請確認開放日。","Este producto no se ofrece ese día. Revisa los días."),
- mx:T6("최대 {n}명","Up to {n} people","最大{n}名","最多{n}人","最多{n}人","Hasta {n} personas")
+ mx:T6("최대 {n}명","Up to {n} people","最大{n}名","最多{n}人","最多{n}人","Hasta {n} personas"),
+ // 최소 출발 인원 (사장님 10-30 — 빅4 4명, 24시간 전 미달이면 회사 취소·전액 환불)
+ mp:T6("최소 출발 인원 {n}명","Minimum {n} people to depart","最少催行人員{n}名","最少成团人数{n}人","最少成團人數{n}人","Mínimo {n} personas para salir"),
+ mpn:T6("같은 날짜 예약이 {n}명이 안 되면 출발 24시간 전에 알려 드리고 전액 환불합니다.","If fewer than {n} people book the same date, we will tell you 24 hours before departure and give you a full refund.","同じ日の予約が{n}名に満たない場合は、出発の24時間前までにお知らせし、全額返金します。","同一日期预约不足{n}人时，我们会在出发前24小时通知您并全额退款。","同一日期預約不足{n}人時，我們會在出發前24小時通知您並全額退款。","Si para esa fecha reservan menos de {n} personas, te avisaremos 24 horas antes de la salida y te devolveremos el importe completo.")
 };
 var CATS=[["all",T6("전체","All","すべて","全部","全部","Todo")],["kpop",T6("K-POP","K-POP","K-POP","K-POP","K-POP","K-POP")],["tour",T6("관광","Sightseeing","観光","观光","觀光","Turismo")],["beauty",T6("미용","Beauty","美容","美容","美容","Belleza")],["hair",T6("헤어","Hair","ヘア","美发","美髮","Peluquería")],["food",T6("음식","Food","グルメ","美食","美食","Comida")],["show",T6("공연","Shows","公演","演出","演出","Espectáculos")],["well",T6("웰니스","Wellness","ウェルネス","养生","養生","Bienestar")]];
 var P=[
- {id:"b4",c:"kpop",img:"kpop",real:"b4",price:89000,
+ {id:"b4",c:"kpop",img:"kpop",real:"b4",price:89000,mp:4,
   t:T6("K-POP 빅4 사옥 투어 (HYBE·SM·JYP·YG)","K-pop Big4 Agency Tour (HYBE·SM·JYP·YG)","K-POP BIG4 社屋ツアー（HYBE・SM・JYP・YG）","K-POP四大社参观团（HYBE·SM·JYP·YG）","K-POP四大社參觀團（HYBE·SM·JYP·YG）","Tour de las Big4 del K-pop (HYBE·SM·JYP·YG)"),
   f:[T6("약 8시간","About 8 h","約8時間","约8小时","約8小時","Unas 8 h"),T6("가이드 동행","With a guide","ガイド同行","向导同行","嚮導同行","Con guía")],rt:1,
   d:T6("HYBE·SM·JYP·YG 사옥 외관과 SM KWANGYA(성수) 굿즈샵을 가이드와 함께 돕니다 (외관 관람·사진).","Visit the HYBE, SM, JYP and YG building exteriors and the SM KWANGYA goods shop in Seongsu with a guide (exterior & photos).","HYBE・SM・JYP・YGの社屋外観とSM KWANGYA（聖水）のグッズショップをガイドと巡ります（外観・写真）。","在向导带领下游览HYBE·SM·JYP·YG大楼外观和SM KWANGYA（圣水）周边店（外观·拍照）。","在嚮導帶領下遊覽HYBE·SM·JYP·YG大樓外觀和SM KWANGYA（聖水）周邊店（外觀·拍照）。","Recorre con guía los exteriores de HYBE, SM, JYP y YG y la tienda SM KWANGYA en Seongsu (exterior y fotos).")},
@@ -127,12 +130,14 @@ var P=[
 // 상품 목록 = 허브 /shop/products (관리자 「상품 관리」, 10-29). 허브가 안 되면 위 P 표 8개 그대로 (대비책)
 //   🔴 고정 상품(P 표 8개)은 허브가 base:1 로 주면 이 파일의 P 를 그대로 쓴다 — 토스 심사 중, 글자·분류·가격·상태 안 바뀜
 var HP=null, PLc=null;
-function hubP(x){ return {id:x.id,c:x.c,imgs:x.imgs||[],img0:x.img||"",t:x.t,d:x.d,f:x.f||[],price:x.price||0,disc:x.disc||[],free:!!x.free,days:x.days||[],times:x.times||[],max:x.max||20,st:x.st,link:x.link||"",rt:x.rt,real:x.real==="perf"?"perf":(x.st==="sale"?"hub":""),hub:1}; }
+function hubP(x){ return {id:x.id,c:x.c,imgs:x.imgs||[],img0:x.img||"",t:x.t,d:x.d,f:x.f||[],price:x.price||0,disc:x.disc||[],free:!!x.free,days:x.days||[],times:x.times||[],max:x.max||20,st:x.st,link:x.link||"",rt:x.rt,mp:x.minPax||0,real:x.real==="perf"?"perf":(x.st==="sale"?"hub":""),hub:1}; }
 function PL(){ if(!HP) return P; if(PLc) return PLc; var o=[]; HP.forEach(function(x){ if(x.base){ var q=P.filter(function(p){ return p.id===x.id; })[0]; if(q) o.push(q); } else if(x&&x.id&&x.t) o.push(hubP(x)); }); PLc=o.length?o:P; return PLc; }
 function loadP(){ return fetch(HUBU+"/shop/products?l="+encodeURIComponent(window.LANG||"en"),{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ if(j&&j.ok&&Array.isArray(j.items)){ HP=j.items; PLc=null; } }).catch(function(){}); }
 function psrc(p,gi){ if(!p.hub) return "img/shop/"+p.img+".webp"; return p.imgs.length?HUBU+"/shop/img/"+p.imgs[Math.min(gi||0,p.imgs.length-1)]:(p.img0||""); }
 function unitOf(p,n){ if(!p.hub) return p.real==="b4"?b4Price(n):p.price; var u=p.price; (p.disc||[]).forEach(function(d){ if(n>=d.n) u=d.p; }); return u; }
 function fmt(o,n){ return L(o).replace("{n}",n); }
+function fchips(p){ return p.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+(p.mp?'<span>'+esc(fmt(TX.mp,p.mp))+'</span>':''); }   // 특징 칩 + 최소 출발 인원 (10-30)
+function mpNote(p){ return p&&p.mp?'<p class="snote">'+esc(fmt(TX.mpn,p.mp))+'</p>':''; }
 function hubPr(p,sm){ if(!p.price) return ""; return '<div class="spr">'+won(p.price)+(sm?' <small>/ '+esc(L(TX.per))+'</small>':' / '+esc(L(TX.per)))+(p.disc||[]).map(function(d){ return ' · '+esc(fmt(TX.dp,d.n))+' '+won(d.p); }).join("")+'</div>'; }
 function noteOf(p){ return p.hub&&!p.real?TX.soon:(p.real?TX.payn:TX.soon2); }
 function dayLine(p){ return p.hub&&!p.free&&p.days.length?'<span>'+esc(L(TX.dys))+': '+p.days.map(function(d){ return esc(L(TX.wd[d])); }).join("·")+'</span>':''; }
@@ -208,14 +213,14 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
    +'<div class="scats">'+CATS.map(function(c){ var n=c[0]==="all"?PA.length:PA.filter(function(p){ return p.c===c[0]; }).length; return '<button type="button" data-cat="'+c[0]+'" class="'+(S.cat===c[0]?"on":"")+'">'+esc(L(c[1]))+' '+n+'</button>'; }).join("")+'</div>'
    +'<p class="scnt">'+L0.length+' '+esc(L(TX.n))+'</p>'
    +'<div class="scards">'+L0.map(function(p){ return '<button type="button" class="scard'+(S.prod===p.id?" on":"")+'" data-p="'+p.id+'"><div class="sph">'+(psrc(p)?'<img src="'+esc(psrc(p))+'" alt="" loading="lazy">':'')+'<span class="stag">'+esc(catName(p.c))+'</span>'+(p.real?'<span class="sreal">'+esc(L(TX.real))+'</span>':'<span class="sex">'+esc(L(TX.ex))+'</span>')+'</div>'
-      +'<div class="scb"><h3>'+esc(L(p.t))+'</h3><div class="sft">'+p.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p.rt?rtBtn():'')+'<p>'+esc(L(p.d))+'</p>'
+      +'<div class="scb"><h3>'+esc(L(p.t))+'</h3><div class="sft">'+fchips(p)+'</div>'+(p.rt?rtBtn():'')+'<p>'+esc(L(p.d))+'</p>'
       +(p.hub?hubPr(p,true):p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':'')+(window.rvMini?rvMini("shop:"+p.id):'')+'</div></button>'; }).join("")+'</div>';
   h+='</div><aside class="sside">';
   h+=selHtml()+sideHtml()+'</aside></div></div>';
   b.innerHTML=h; b.scrollTop=y; try{ if(window.rvMiniLoad) rvMiniLoad(L0.map(function(p){ return "shop:"+p.id; })); }catch(e){} }   // 카드 맨 아래 별점 작은 띠 (10-29)
 // 선택한 상품 칸 — 목록 화면과 상세 화면 왼쪽 기둥이 같이 쓴다 (사장님 10-29 「두 번째 화면을 첫 번째와 같게」)
 function selHtml(){ var p0=prod();   // 선택한 상품
-  return '<section class="shbx" id="shopSel"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel">'+(psrc(p0)?'<img src="'+esc(psrc(p0))+'" alt="">':'')+'<b>'+esc(L(p0.t))+'</b><div class="sft">'+p0.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+(p0.rt?rtBtn():'')+(p0.hub?hubPr(p0):p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>'; }
+  return '<section class="shbx" id="shopSel"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel">'+(psrc(p0)?'<img src="'+esc(psrc(p0))+'" alt="">':'')+'<b>'+esc(L(p0.t))+'</b><div class="sft">'+fchips(p0)+'</div>'+(p0.rt?rtBtn():'')+(p0.hub?hubPr(p0):p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>'; }
 // 가이드 고르기 + 예약·결제 칸 — 목록 화면 왼쪽 기둥과 상세 화면 결제 칸이 같이 쓴다 (10-29)
 function sideHtml(){ var h='';
   // 가이드
@@ -237,7 +242,7 @@ function sideHtml(){ var h='';
        +'<div class="srow"><label>'+esc(L(TX.ppl))+'</label><div class="sstp"><button type="button" data-n="-1" aria-label="-">−</button><b>'+S.n+'</b><button type="button" data-n="1" aria-label="+">+</button></div></div>'
        +'<div class="srow"><label>'+esc(L(TX.gd))+'</label><b>'+(gg?esc(gName(gg)):esc(L(TX.none)))+'</b></div>'
        +'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(unit*S.n)+'</span></div>'
-       +'<button type="button" class="spay" data-s="mock">'+esc(L(TX.pay))+' ›</button><p class="snote">'+esc(L(noteOf(p)))+'</p>'; } }   // 시험 결제창 (사장님 10-27 「결제화면도 띄워줘, 어차피 결제는 안 돼」)
+       +'<button type="button" class="spay" data-s="mock">'+esc(L(TX.pay))+' ›</button><p class="snote">'+esc(L(noteOf(p)))+'</p>'+mpNote(p); } }   // 시험 결제창 (사장님 10-27 「결제화면도 띄워줘, 어차피 결제는 안 돼」)
   return h+'</section>'; }
 function priceHtml(p){ return p.hub?hubPr(p,true):p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':''; }
 // 상품 상세 화면 — 왼쪽 상세 · 오른쪽(폰은 아래) 결제 칸 + 폰 맨 아래 띠 (10-29)
@@ -248,10 +253,10 @@ function paintDet(){ var b=box(), p=prod(); if(!b||!p) return; var y=b.scrollTop
    +'<button type="button" class="sdbk" data-s="bk">← '+esc(L(TX.bk))+'</button><div class="sdg"><div class="sdm">'
    +'<div class="sdph">'+(psrc(p,S.gi)?'<img src="'+esc(psrc(p,S.gi))+'" alt="">':'')+'<span class="stag">'+esc(catName(p.c))+'</span>'+(p.real?'<span class="sreal">'+esc(L(TX.real))+'</span>':'<span class="sex">'+esc(L(TX.ex))+'</span>')+'</div>'
    +(p.hub&&p.imgs.length>1?'<div class="sdth">'+p.imgs.map(function(x,i){ return '<button type="button" data-gi="'+i+'" class="'+(i===(S.gi||0)?"on":"")+'"><img src="'+esc(HUBU+"/shop/img/"+x)+'" alt="" loading="lazy"></button>'; }).join("")+'</div>':'')
-   +'<h1 class="sdh">'+esc(L(p.t))+'</h1><div class="sft">'+p.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+'</div>'+priceHtml(p)+(p.hub&&(dayLine(p)||p.max<20)?'<div class="sft">'+dayLine(p)+(p.max<20?'<span>'+esc(fmt(TX.mx,p.max))+'</span>':'')+'</div>':'')+(p.rt?'<div>'+rtBtn()+'</div>':'')
+   +'<h1 class="sdh">'+esc(L(p.t))+'</h1><div class="sft">'+fchips(p)+'</div>'+priceHtml(p)+(p.hub&&(dayLine(p)||p.max<20)?'<div class="sft">'+dayLine(p)+(p.max<20?'<span>'+esc(fmt(TX.mx,p.max))+'</span>':'')+'</div>':'')+(p.rt?'<div>'+rtBtn()+'</div>':'')
    +'<section class="shbx"><h2>'+esc(L(TX.dIn))+'</h2><p>'+esc(L(p.d))+'</p>'+(noPay?'':'<p class="snote">'+esc(L(noteOf(p)))+'</p>')+'</section>'
-   +'<section class="shbx"><h2>'+esc(L(TX.dFt))+'</h2><ul>'+p.f.map(function(x){ return '<li>'+esc(L(x))+'</li>'; }).join("")+'</ul></section>'
-   +(!noPay?'<section class="shbx"><h2>'+esc(L(TX.dPr))+'</h2>'+priceHtml(p)+'</section>'
+   +'<section class="shbx"><h2>'+esc(L(TX.dFt))+'</h2><ul>'+p.f.map(function(x){ return '<li>'+esc(L(x))+'</li>'; }).join("")+(p.mp?'<li>'+esc(fmt(TX.mp,p.mp))+'</li>':'')+'</ul></section>'
+   +(!noPay?'<section class="shbx"><h2>'+esc(L(TX.dPr))+'</h2>'+priceHtml(p)+(p.mp?'<p class="snote"><b>'+esc(fmt(TX.mp,p.mp))+'</b></p>':'')+'</section>'
      +'<section class="shbx"><h2>'+esc(L(TX.dRf))+'</h2><ul>'+["rf1","rf2","rf3","rf4"].map(function(k){ return '<li>'+esc(L(TX[k]))+'</li>'; }).join("")+'</ul><p>'+esc(L(TX.rf5))+'</p><p>'+esc(L(TX.rf6))+'</p>'
      +'<a class="srfl" href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(L(TX.rfL))+' ›</a></section>':'')
    +(window.rvSlot?'<div class="rvhost" data-rvhost="1">'+rvSlot(rk)+'</div>':'')   // 별점·후기 띠 = 상세 맨 아래 (사장님 10-29)
@@ -295,6 +300,7 @@ function mockPay(res){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySe
      +'<label class="scl">'+esc(L(TX.ce))+'<input type="email" id="spmE" maxlength="100" autocomplete="email" value="'+esc(S.ce)+'"></label>'
      +'<p class="snote">'+esc(L(TX.cpn))+'</p>'
      +'<b>'+esc(L(TX.pm))+'</b><label class="sr"><input type="radio" name="spmm" value="card"'+(S.pm!=="paypal"?" checked":"")+'> '+esc(L(TX.card))+'</label><label class="sr"><input type="radio" name="spmm" value="paypal"'+(S.pm==="paypal"?" checked":"")+'> PayPal</label>'
+     +mpNote(p)
      +'<label class="sr"><input type="checkbox" id="spmAg"> '+esc(L(TX.agr))+'</label>'
      +(err?'<div class="serr">'+esc(err)+'</div>':'')
      +'<button type="button" class="spay" id="spmGo" disabled>'+(busy?esc(L(busy===2?TX.opn:TX.sav)):won(tot)+' '+esc(L(TX.payb)))+'</button>')
