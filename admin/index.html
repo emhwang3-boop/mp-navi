@@ -853,20 +853,35 @@ function pdThumb(x){ if(x.imgs&&x.imgs.length) return HUB+"/shop/img/"+x.imgs[0]
 function pdPrice(x){ if(x.link&&!x.price) return "외부 예매처"; if(!x.price) return x.real==="perf"?"공연 일정·예매처 연결":"가격 없음"; return won(x.price)+" / 1인"+(x.disc||[]).map(function(d){ return " · "+d.n+"인 이상 1인 "+won(d.p); }).join(""); }
 function pdLocked(x){ return x.fixed&&PD.lock; }
 function pdLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>상품 관리</b><div class="msg">불러오는 중…</div></div>';
-  api("/shop/admin/products").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); PD.items=j.items||[]; PD.lock=j.lock; PD.cats=j.cats||[]; PD.r2=!!j.r2; PD.cost=j.cost; PD.stop=j.stop||0; pdList(); })
+  api("/shop/admin/products").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); PD.items=j.items||[]; PD.lock=j.lock; PD.cats=j.cats||[]; PD.r2=!!j.r2; PD.cost=j.cost; PD.stop=j.stop||0;
+    return api("/shop/admin/karc").then(function(k){ PD.karc=k&&k.ok?k:null; },function(){ PD.karc=null; }); }).then(function(){ pdList(); })
   .catch(function(e){ P.innerHTML='<div class="card"><b>상품 관리</b><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div></div>'; }); }
 function pdList(){ var P=$("pane"), c=PD.cost;
   var h='<div class="card"><div class="row" style="justify-content:space-between"><b>상품 관리 ('+PD.items.length+')</b><button onclick="pdEdit()">+ 새 상품</button></div>'
    +'<div class="msg">앱 「체험·입장권」에 이 순서대로 나옵니다. 판매 중지는 앱에서 안 보이고, 준비 중(예시)은 보이지만 주문을 받지 않습니다. 한국어로만 쓰면 저장할 때 AI 가 6개 언어로 번역합니다. 이번 달 번역 비용: '+(c?won(c.krw)+' · '+c.calls+'회':'0원')+(PD.stop?' / 상한 '+won(PD.stop):'')+'</div>'
    +'<div class="inv" style="margin-top:10px"><b>고정 상품 8개 (토스 카드사 심사 중)</b> — '+(PD.lock?'<span class="pdtag pdlock">심사 중 — 수정 잠금</span> 이름·분류·가격·판매 상태가 바뀌면 재심사가 걸려 잠가 두었습니다. <button class="g" onclick="pdLock(0)">잠금 풀기</button>':'<span class="pdtag" style="background:#c92a2a">잠금 풀림</span> 고정 상품을 고칠 수 있습니다. <button onclick="pdLock(1)">다시 잠그기</button>')+'</div>'
-   +(PD.r2?'':'<div class="msg err">사진 저장소(R2)가 아직 연결되지 않아 사진을 올릴 수 없습니다. 사진 없이 저장은 됩니다.</div>');
+   +(PD.r2?'':'<div class="msg err">사진 저장소(R2)가 아직 연결되지 않아 사진을 올릴 수 없습니다. 사진 없이 저장은 됩니다.</div>')
+   +kcHtml();
   h+=PD.items.map(function(x){ var th=pdThumb(x), lk=pdLocked(x);
     return '<div class="pdl">'+(th?'<img src="'+esc(th)+'" alt="" loading="lazy">':'<span class="pdn"></span>')+'<div class="pdx"><b>'+esc(pdName(x))+'</b>'
       +'<div class="sub"><span class="pdtag" style="background:'+(PD_STC[x.st]||"#868e96")+'">'+esc(PD_ST[x.st]||x.st)+'</span>'+(x.fixed?'<span class="pdtag pdlock">고정'+(lk?' · 심사 중 — 수정 잠금':'')+'</span>':'')+(x.trw?'<span class="pdtag" style="background:#c92a2a">번역 필요</span>':'')
       +esc(pdCat(x.c))+' · '+esc(pdPrice(x))+(x.link?' · 외부 예매처':'')+(x.rt?' · 노선도':'')+(x.minPax?' · 최소 출발 '+x.minPax+'명':'')+'</div></div>'
       +'<div class="row"><button '+(lk?'disabled title="심사 중 — 수정 잠금"':'')+' data-id="'+esc(x.id)+'" onclick="pdEdit(this.dataset.id)">수정</button>'
       +(x.fixed?(x.ov&&!lk?'<button class="g" data-id="'+esc(x.id)+'" onclick="pdDel(this.dataset.id,1)">원래대로</button>':''):'<button class="g" data-id="'+esc(x.id)+'" onclick="pdDel(this.dataset.id)">삭제</button>')+'</div></div>'; }).join("");
-  P.innerHTML=h+'</div>'; }
+  P.innerHTML=h+'</div>'; kcCalc(); }
+// ── 노래방 곡 이용권 묶음 (사장님 2026-10-30) — 허브 GET/POST /shop/admin/karc · 앱 노래방 「곡 이용권」 판매 칸과 서버 주문 금액이 이 값을 쓴다 (지금은 시험 결제)
+function kcHtml(){ var k=PD.karc; if(!k) return '<div class="inv" style="margin-top:10px"><b>노래방 곡 이용권</b> — <span class="err">가격표를 불러오지 못했습니다.</span></div>';
+  return '<div class="inv" style="margin-top:10px"><b>노래방 곡 이용권 묶음</b> <span class="sub">(시험 결제 · 곡 수 적립 없음'+(k.at?' · 마지막 수정 '+esc(k.at):' · 기본값')+')</span>'
+   +'<div class="msg">산 곡 + 서비스 곡 = 받는 곡. 금액은 10원 단위. 앱 노래방 「곡 이용권」 판매 칸과 허브 주문 금액이 이 표를 씁니다.</div>'
+   +'<table style="margin-top:6px"><tr><th>칸</th><th>산 곡</th><th>서비스 곡</th><th>금액(원)</th><th>받는 곡 · 곡당</th></tr>'
+   +k.packs.map(function(x,i){ return '<tr><td>'+(i+1)+'</td><td><input type="number" id="kcN'+i+'" min="1" max="200" value="'+x.n+'" style="width:64px" oninput="kcCalc()"></td><td><input type="number" id="kcB'+i+'" min="0" max="200" value="'+x.b+'" style="width:64px" oninput="kcCalc()"></td><td><input type="number" id="kcP'+i+'" min="100" step="10" value="'+x.p+'" style="width:96px" oninput="kcCalc()"></td><td id="kcS'+i+'"></td></tr>'; }).join("")
+   +'</table><div class="row" style="margin-top:8px"><button onclick="kcSave()">가격표 저장</button><button class="g" onclick="kcReset()">기본값으로 (1 · 3+1 · 5+2 · 10+5)</button></div></div>'; }
+function kcCalc(){ for(var i=0;i<4;i++){ var n=+(($("kcN"+i)||{}).value||0), b=+(($("kcB"+i)||{}).value||0), p=+(($("kcP"+i)||{}).value||0), el=$("kcS"+i); if(el) el.textContent=(n+b)+"곡 · 곡당 "+(n+b?Math.round(p/(n+b)).toLocaleString():"-")+"원"; } }
+function kcSave(){ var ps=[]; for(var i=0;i<4;i++) ps.push({n:parseInt($("kcN"+i).value,10),b:parseInt($("kcB"+i).value,10),p:parseInt($("kcP"+i).value,10)});
+  if(!confirm("노래방 곡 이용권 가격표를 이렇게 바꿀까요? — "+ps.map(function(x){ return x.n+(x.b?"+"+x.b:"")+"곡 "+won(x.p); }).join(" · "))) return;
+  api("/shop/admin/karc",{method:"POST",body:JSON.stringify({packs:ps})}).then(function(j){ if(j&&j.ok){ alert("저장했습니다."); pdLoad(); } else alert("저장하지 못했습니다 ("+((j&&j.err)||"")+") — 곡 1~200, 서비스 0~200, 금액 100원 이상 10원 단위"); }).catch(function(){ alert("저장하지 못했습니다."); }); }
+function kcReset(){ if(!confirm("기본값(1곡 1,000원 · 3+1 3,000원 · 5+2 5,000원 · 10+5 10,000원)으로 되돌릴까요?")) return;
+  api("/shop/admin/karc",{method:"POST",body:JSON.stringify({reset:1})}).then(function(j){ if(j&&j.ok) pdLoad(); else alert("되돌리지 못했습니다."); }).catch(function(){ alert("되돌리지 못했습니다."); }); }
 function pdLock(v){ if(!v&&!confirm('고정 상품 8개의 수정 잠금을 풀까요?\n토스 카드사 심사 중에는 이름·분류·가격·판매 상태를 바꾸면 재심사가 걸립니다.')) return;
   api("/shop/admin/lock",{method:"POST",body:JSON.stringify({unlock:v?0:1})}).then(function(j){ if(j&&j.ok) pdLoad(); else alert("바꾸지 못했습니다."); }).catch(function(){ alert("바꾸지 못했습니다."); }); }
 function pdDel(id,rev){ if(!confirm(rev?'이 고정 상품을 처음(코드에 있던) 모습으로 되돌릴까요?':'이 상품을 삭제할까요? 사진도 지워집니다. (되돌릴 수 없습니다)')) return;
