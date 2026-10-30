@@ -79,7 +79,7 @@ var TX={
  left:{ko:"남은 곡",en:"Songs left",ja:"残り曲数",zhs:"剩余歌曲",zht:"剩餘歌曲",es:"Canciones"},
  lgin:{ko:"로그인",en:"Sign in",ja:"ログイン",zhs:"登录",zht:"登入",es:"Entrar"},
  polS:{ko:"곡 이용권은 정식 반주 곡 오픈 시 사용 · 지금 유튜브 노래방은 무료(차감 없음)",en:"Song pass is for licensed accompaniment songs (in preparation) · YouTube karaoke stays free",ja:"曲チケットは正式な伴奏曲の開始後に使用・YouTubeカラオケは無料（消費なし）",zhs:"点歌券用于正式伴奏歌曲（筹备中）· YouTube卡拉OK免费（不扣券）",zht:"點歌券用於正式伴奏歌曲（籌備中）· YouTube卡拉OK免費（不扣券）",es:"El bono es para canciones con acompañamiento con licencia (en preparación) · el karaoke de YouTube sigue gratis"},
- pol:{ko:"금영 노래방 공식 유튜브 노래방 영상은 지금처럼 무료이며 곡 이용권을 쓰지 않습니다. 곡 이용권은 정식 반주 곡(준비 중)이 열리면 그때부터 1곡에 1곡씩 사용됩니다.",en:"Karaoke videos from the official KY (Kumyoung) YouTube channel stay free and never use your song pass. The song pass will be used, one per song, for licensed accompaniment songs once they open (in preparation).",ja:"KY（クミョン）公式YouTubeチャンネルのカラオケ動画はこれまでどおり無料で、曲チケットは使いません。曲チケットは正式な伴奏曲（準備中）が始まってから、1曲ごとに1曲分使います。",zhs:"金永（KY）官方YouTube频道的卡拉OK视频照旧免费，不会扣点歌券。点歌券将在正式伴奏歌曲（筹备中）开放后使用，每唱一首扣一首。",zht:"金永（KY）官方YouTube頻道的卡拉OK影片照舊免費，不會扣點歌券。點歌券將在正式伴奏歌曲（籌備中）開放後使用，每唱一首扣一首。",es:"Los vídeos de karaoke de los canal oficial de KY (Kumyoung) en YouTube siguen siendo gratis y no usan tu bono. El bono se usará, una canción por cada una, en las canciones con acompañamiento con licencia cuando se abran (en preparación)."},
+ pol:{ko:"금영 노래방 공식 유튜브 노래방 영상은 지금처럼 무료이며 곡 이용권을 쓰지 않습니다. 곡 이용권은 정식 반주 곡(준비 중)이 열리면 그때부터 노래 1곡을 부를 때마다 이용권 1곡이 차감됩니다.",en:"Karaoke videos from the official KY (Kumyoung) YouTube channel stay free and never use your song pass. Once licensed accompaniment songs open (in preparation), one song is deducted from your pass for each song you sing.",ja:"KY（クミョン）公式YouTubeチャンネルのカラオケ動画はこれまでどおり無料で、曲チケットは使いません。曲チケットは正式な伴奏曲（準備中）が始まってから、歌うたびに曲チケットが1曲分差し引かれます。",zhs:"金永（KY）官方YouTube频道的卡拉OK视频照旧免费，不会扣点歌券。点歌券将在正式伴奏歌曲（筹备中）开放后，每唱一首扣除一首点歌券。",zht:"金永（KY）官方YouTube頻道的卡拉OK影片照舊免費，不會扣點歌券。點歌券將在正式伴奏歌曲（籌備中）開放後，每唱一首扣除一首點歌券。",es:"Los vídeos de karaoke de los canal oficial de KY (Kumyoung) en YouTube siguen siendo gratis y no usan tu bono. Cuando se abran las canciones con acompañamiento con licencia (en preparación), se descontará una canción del bono por cada canción que cantes."},
  keep:{ko:"남은 곡은 1년 보관, 안 부른 곡은 환불 요청 가능",en:"Unused songs kept for 1 year · refund on request",ja:"残った曲は1年保管・歌っていない曲は返金申請可",zhs:"剩余歌曲保留1年 · 未唱歌曲可申请退款",zht:"剩餘歌曲保留1年 · 未唱歌曲可申請退款",es:"Las canciones sin usar se guardan 1 año · reembolso a petición"},
  svc:{ko:"서비스 {b}곡",en:"+{b} bonus",ja:"サービス{b}曲",zhs:"赠送{b}首",zht:"贈送{b}首",es:"+{b} de regalo"},
  per:{ko:"곡당 {w}",en:"{w} per song",ja:"1曲あたり{w}",zhs:"每首{w}",zht:"每首{w}",es:"{w} por canción"},
@@ -226,6 +226,46 @@ var TX={
   zht:["經營者資訊","Booman Inc.（株式會社 부만）","代表","Jeon Hyeonjin","營業執照號","通信銷售業申報號","即將申報","地址","Rm 707, M Tower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea","電郵"],
   es:["Información del operador","Booman Inc.","Representante","Jeon Hyeonjin","N.º de registro mercantil","N.º de registro de venta a distancia","Pendiente de registro","Dirección","Rm 707, M Tower, 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea","Correo"]}
 };
+// ── 우리끼리 방·영상 공유 문구 (사장님 10-30)
+Object.assign(TX,{
+ vwAll:{ko:"전체",en:"All",ja:"すべて",zhs:"全部",zht:"全部",es:"Todo"},
+ vwFlw:{ko:"팔로잉만",en:"Following",ja:"フォロー中",zhs:"仅关注",zht:"僅追蹤",es:"Siguiendo"},
+ vwRoom:{ko:"우리끼리",en:"Just us",ja:"仲間だけ",zhs:"小圈子",zht:"小圈子",es:"Solo nosotros"},
+ vRoomN:{ko:"고른 우리끼리 방 사람만 볼 수 있어요.",en:"Only people in the Just-us rooms you pick can watch it.",ja:"選んだ「仲間だけ」ルームの人だけが見られます。",zhs:"只有所选小圈子房间的成员可以观看。",zht:"只有所選小圈子房間的成員可以觀看。",es:"Solo las personas de las salas «Solo nosotros» que elijas pueden verlo."},
+ rmPkE:{ko:"올릴 방을 하나 이상 고르세요.",en:"Choose at least one room.",ja:"ルームを1つ以上選んでください。",zhs:"请至少选择一个房间。",zht:"請至少選擇一個房間。",es:"Elige al menos una sala."},
+ rmNone:{ko:"아직 우리끼리 방이 없어요.",en:"No Just-us rooms yet.",ja:"まだ「仲間だけ」ルームがありません。",zhs:"还没有小圈子房间。",zht:"還沒有小圈子房間。",es:"Aún no tienes salas «Solo nosotros»."},
+ rmNew:{ko:"우리끼리 방 만들기",en:"Create a Just-us room",ja:"「仲間だけ」ルームを作る",zhs:"创建小圈子房间",zht:"建立小圈子房間",es:"Crear sala «Solo nosotros»"},
+ rmName:{ko:"방 이름",en:"Room name",ja:"ルーム名",zhs:"房间名称",zht:"房間名稱",es:"Nombre de la sala"},
+ rmDef:{ko:"우리끼리",en:"Just us",ja:"仲間だけ",zhs:"小圈子",zht:"小圈子",es:"Solo nosotros"},
+ rmWho:{ko:"함께할 사람 · 내가 팔로우한 사람 (30명까지)",en:"Members · people you follow (up to 30)",ja:"メンバー・フォロー中の人（30人まで）",zhs:"成员 · 我关注的人（最多30人）",zht:"成員 · 我追蹤的人（最多30人）",es:"Miembros · personas que sigues (hasta 30)"},
+ rmMk:{ko:"만들기",en:"Create",ja:"作成",zhs:"创建",zht:"建立",es:"Crear"},
+ rmN:{ko:"{n}명",en:"{n} people",ja:"{n}人",zhs:"{n}人",zht:"{n}人",es:"{n} personas"},
+ rmOw:{ko:"방장",en:"Host",ja:"ホスト",zhs:"房主",zht:"房主",es:"Anfitrión"},
+ rmAdd:{ko:"사람 더하기",en:"Add people",ja:"メンバーを追加",zhs:"添加成员",zht:"新增成員",es:"Añadir personas"},
+ rmRm:{ko:"사람 빼기",en:"Remove people",ja:"メンバーを外す",zhs:"移除成员",zht:"移除成員",es:"Quitar personas"},
+ rmRen:{ko:"이름 바꾸기",en:"Rename",ja:"名前を変更",zhs:"重命名",zht:"重新命名",es:"Cambiar nombre"},
+ rmDel:{ko:"방 지우기",en:"Delete room",ja:"ルームを削除",zhs:"删除房间",zht:"刪除房間",es:"Eliminar sala"},
+ rmLv:{ko:"방 나가기",en:"Leave room",ja:"ルームを退出",zhs:"退出房间",zht:"退出房間",es:"Salir de la sala"},
+ rmDelQ:{ko:"이 방을 지울까요? 이 방에만 올린 영상은 올린 사람만 보게 됩니다.",en:"Delete this room? Videos posted only to this room will be visible only to the person who posted them.",ja:"このルームを削除しますか？このルームにだけ投稿した動画は投稿者だけが見られるようになります。",zhs:"要删除这个房间吗？只发到此房间的视频将只有上传者能看到。",zht:"要刪除這個房間嗎？只發到此房間的影片將只有上傳者能看到。",es:"¿Eliminar esta sala? Los vídeos publicados solo en ella quedarán visibles solo para quien los subió."},
+ rmLvQ:{ko:"이 방에서 나갈까요?",en:"Leave this room?",ja:"このルームから退出しますか？",zhs:"要退出这个房间吗？",zht:"要退出這個房間嗎？",es:"¿Salir de esta sala?"},
+ rmNmE:{ko:"방 이름은 1~20자로 적어 주세요.",en:"Room name must be 1–20 characters.",ja:"ルーム名は1〜20文字で入力してください。",zhs:"房间名称请输入1~20个字。",zht:"房間名稱請輸入1~20個字。",es:"El nombre debe tener entre 1 y 20 caracteres."},
+ rmMax:{ko:"30명까지 고를 수 있어요.",en:"You can choose up to 30 people.",ja:"30人まで選べます。",zhs:"最多可选30人。",zht:"最多可選30人。",es:"Puedes elegir hasta 30 personas."},
+ rmNoF:{ko:"팔로우한 사람이 없어요. 먼저 팔로우해 주세요.",en:"You aren't following anyone yet. Follow people first.",ja:"フォロー中の人がいません。先にフォローしてください。",zhs:"你还没有关注任何人，请先关注。",zht:"你還沒有追蹤任何人，請先追蹤。",es:"Aún no sigues a nadie. Sigue a alguien primero."},
+ rmNoA:{ko:"더할 수 있는 사람이 없어요.",en:"No one else to add.",ja:"追加できる人がいません。",zhs:"没有可添加的人。",zht:"沒有可新增的人。",es:"No hay nadie más para añadir."},
+ rmE:{ko:"이 방에 아직 영상이 없어요.",en:"No videos in this room yet.",ja:"このルームにはまだ動画がありません。",zhs:"这个房间还没有视频。",zht:"這個房間還沒有影片。",es:"Aún no hay vídeos en esta sala."},
+ rmGone:{ko:"이 방을 볼 수 없어요.",en:"You can't open this room.",ja:"このルームは開けません。",zhs:"无法打开这个房间。",zht:"無法開啟這個房間。",es:"No puedes abrir esta sala."},
+ flwE:{ko:"팔로우한 사람의 영상이 없어요.",en:"No videos from people you follow.",ja:"フォロー中の人の動画はありません。",zhs:"没有你关注的人的视频。",zht:"沒有你追蹤的人的影片。",es:"No hay vídeos de las personas que sigues."},
+ shB:{ko:"공유",en:"Share",ja:"共有",zhs:"分享",zht:"分享",es:"Compartir"},
+ shHd:{ko:"이 영상 공유하기",en:"Share this video",ja:"この動画を共有",zhs:"分享此视频",zht:"分享此影片",es:"Compartir este vídeo"},
+ shT:{ko:"{n}님의 노래 · {t}",en:"{n}'s song · {t}",ja:"{n}さんの歌・{t}",zhs:"{n}的演唱 · {t}",zht:"{n}的演唱 · {t}",es:"Canción de {n} · {t}"},
+ shD:{ko:"StageSong 점수 {s}점 — 들어 보세요",en:"StageSong score {s} pts — have a listen",ja:"StageSong得点 {s}点 — 聴いてみて",zhs:"StageSong 得分 {s} 分 — 来听听",zht:"StageSong 得分 {s} 分 — 來聽聽",es:"Puntuación StageSong {s} pts — escúchala"},
+ shD0:{ko:"StageSong 노래 영상 — 들어 보세요",en:"A StageSong singing video — have a listen",ja:"StageSongの歌の動画 — 聴いてみて",zhs:"StageSong 演唱视频 — 来听听",zht:"StageSong 演唱影片 — 來聽聽",es:"Un vídeo de StageSong — escúchalo"},
+ shDR:{ko:"우리끼리 방 {r}에서만 볼 수 있어요",en:"Only viewable in the Just-us room {r}",ja:"「仲間だけ」ルーム {r} でのみ見られます",zhs:"仅限小圈子房间 {r} 观看",zht:"僅限小圈子房間 {r} 觀看",es:"Solo visible en la sala «Solo nosotros» {r}"},
+ shDF:{ko:"팔로우하면 볼 수 있어요",en:"Follow to watch this video",ja:"フォローすると見られます",zhs:"关注后即可观看",zht:"追蹤後即可觀看",es:"Sigue a esta persona para verlo"},
+ shV:{ko:"영상 보기",en:"Watch video",ja:"動画を見る",zhs:"观看视频",zht:"觀看影片",es:"Ver vídeo"},
+ rmPpE:{ko:"한 명 이상 고르세요.",en:"Choose at least one person.",ja:"1人以上選んでください。",zhs:"请至少选择一人。",zht:"請至少選擇一人。",es:"Elige al menos una persona."},
+ shPrep:{ko:"공유 카드를 만드는 중…",en:"Preparing the share card…",ja:"共有カードを作成中…",zhs:"正在制作分享卡片…",zht:"正在製作分享卡片…",es:"Preparando la tarjeta…"}
+});
 var st=document.createElement("style");
 st.textContent="#karBox{word-break:keep-all;overflow-wrap:break-word;position:fixed;inset:0;z-index:2147483004;background:radial-gradient(ellipse at 20% 0%,#3b0d5c 0%,#12081f 45%,#05030a 100%);color:#f5eaff;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR','Hiragino Sans','PingFang SC','Microsoft YaHei',sans-serif;overflow:hidden}"
  +"#karBox::before{content:'';position:absolute;inset:-20%;pointer-events:none;background:conic-gradient(from 0deg,rgba(255,80,200,.10),rgba(80,160,255,.10),rgba(120,255,180,.08),rgba(255,200,80,.10),rgba(255,80,200,.10));animation:karSpin 14s linear infinite;mix-blend-mode:screen}@keyframes karSpin{to{transform:rotate(360deg)}}"
@@ -270,6 +310,32 @@ st.textContent+="#karBox .kpg{position:absolute;inset:0;display:flex;flex-direct
 st.textContent+="#karBox .ktg.f{border-color:#8fc7ff;color:#8fc7ff}#karBox .kfw{flex:0 0 auto;border:1px solid #ff4fd8;background:#ff4fd8;color:#fff;border-radius:999px;padding:4px 11px;font-weight:900;font-size:12px;cursor:pointer;white-space:nowrap}#karBox .kfw.on{background:none;color:#ffb3ef}#karBox .kfw:disabled{opacity:.6}"
  +"#karBox .kun{border:0;background:none;padding:0;margin:0;font:inherit;color:#ffe066;font-weight:800;cursor:pointer;text-decoration:underline;text-underline-offset:2px;max-width:12em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}#karBox .kdm{display:flex;flex-wrap:wrap;align-items:center;gap:6px}"
  +"#karBox .kpr.kfl2{cursor:pointer}#karBox .kpr.kfl2 b{text-decoration:underline;text-underline-offset:2px}#karBox .kpfv.kro{cursor:default}#karBox .kfls{display:flex;flex-direction:column;gap:6px}#karBox .kfls button{display:flex;align-items:center;gap:8px;text-align:left;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#ffe066;border-radius:12px;padding:10px 12px;font-weight:800;font-size:14px;cursor:pointer}";
+// 우리끼리 방·보기 전환·공개 범위 칩·공유 (10-30) — 한 화면에 단추를 늘어놓지 않게: 작은 3칸 전환 한 줄 · 방 = 이름 한 줄 + 사람 수 + ⋯ · 칩 4개 한 줄
+st.textContent+="#karBox .kseg{display:flex;gap:2px;padding:3px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:999px}"
+ +"#karBox .kseg button{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:4px;border:0;background:none;color:#e9dcff;border-radius:999px;padding:6px 4px;font-weight:800;font-size:12.5px;cursor:pointer;white-space:nowrap;overflow:hidden}"
+ +"#karBox .kseg button span{overflow:hidden;text-overflow:ellipsis}#karBox .kseg button.on{background:#ff4fd8;color:#fff}"
+ +"#karBox .krms{display:flex;flex-direction:column;gap:8px}#karBox .krms>button{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font:inherit}"
+ +"#karBox .krms>button .kic{width:28px;height:28px}#karBox .krms>button b{flex:1;min-width:0;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#karBox .krms>button small{font-size:12px;opacity:.75;white-space:nowrap}"
+ +"#karBox .krms>button.krm0{border-style:dashed;border-color:rgba(255,224,102,.55)}#karBox .krms>button.krm0 b{color:#ffe066;font-size:14px}"
+ +"#karBox .krmh{display:flex;align-items:center;gap:8px}#karBox .krmt{flex:1;min-width:0;display:flex;align-items:center;gap:8px}#karBox .krmt .kic{width:30px;height:30px}"
+ +"#karBox .krmt b{font-size:17px;color:#ffe066;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}"
+ +"#karBox .krmc{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;border-radius:999px;padding:5px 10px;font-weight:800;font-size:12.5px;cursor:pointer;white-space:nowrap}#karBox .krmc.on{border-color:#ff4fd8}"
+ +"#karBox .krmx{flex:0 0 auto;width:38px;height:32px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;border-radius:999px;font-size:18px;font-weight:900;line-height:1;cursor:pointer;padding:0}"
+ +"#karBox .krmm{display:flex;flex-wrap:wrap;gap:6px}#karBox .krmm>span{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:4px 10px;font-size:13px}"
+ +"#karBox .krmm .kme{color:#fff}#karBox .krmm small{font:800 10px/1.3 system-ui,sans-serif;color:#ffb3ef;border:1px solid #ffb3ef;border-radius:5px;padding:0 4px}"
+ +"#karBox .kmn{display:flex;flex-direction:column;gap:6px}#karBox .kmn button{display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;border-radius:12px;padding:10px 12px;font-weight:800;font-size:14px;cursor:pointer;text-align:left}"
+ +"#karBox .kmn button.r{color:#ffb0b0;border-color:rgba(255,120,120,.5)}"
+ +"#karBox .kchk{display:flex;flex-direction:column;gap:4px;max-height:38vh;overflow:auto}#karBox .kchk label{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.05);font-size:14px;font-weight:700;cursor:pointer;min-width:0}"
+ +"#karBox .kchk label span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#karBox .kchk label small{font-size:11.5px;opacity:.7}#karBox .kchk input{width:18px;height:18px;margin:0;accent-color:#ff4fd8;flex:0 0 auto}"
+ +"#karBox .kchips{display:flex;gap:5px}#karBox .kchips button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#fff;border-radius:16px;padding:7px 2px 6px;font-weight:800;font-size:11px;line-height:1.2;cursor:pointer;text-align:center}"
+ +"#karBox .kchips button .kic{width:26px;height:26px}#karBox .kchips button span{max-width:100%;overflow-wrap:anywhere}#karBox .kchips button.on{background:rgba(255,79,216,.28);border-color:#ff4fd8}"
+ +"#karBox .kdr .kshb{margin-left:auto}#karBox .ktg.r{border-color:#ffb3d9;color:#ffb3d9}";
+// 공유창 (노래방 사이트와 투어앱 같이)
+st.textContent+="#karShr{position:fixed;inset:0;z-index:2147483006;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center}"
+ +"#karShr .shin{background:#fff;color:#111827;width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto;box-sizing:border-box}"
+ +"#karShr .shhd{font-size:12px;color:#5b6474;margin:0 2px 8px}#karShr .shgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}"
+ +"#karShr .shgrid a,#karShr .shgrid button{display:flex;align-items:center;gap:6px;padding:9px 10px;border:1px solid #e6e9ef;border-radius:9px;background:#fff;color:#111827;font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;text-align:left;font-family:inherit}"
+ +"#karShr svg{width:17px;height:17px;flex:0 0 auto}#karShr .shmsg{font-size:12.5px;color:#1f5fa8;margin-top:9px;min-height:16px;text-align:center;font-weight:700;word-break:break-all}";
 document.head.appendChild(st);
 var K={code:"",tab:"kpop",items:[],idx:-1,pl:null,q:""};
 function ytApi(cb){ if(window.YT&&YT.Player) return cb(); var prev=window.onYouTubeIframeAPIReady; window.onYouTubeIframeAPIReady=function(){ try{ prev&&prev(); }catch(e){} cb(); };
@@ -543,34 +609,42 @@ function kDate(t){ try{ return new Date(t).toLocaleString(kLoc(),{year:"numeric"
 function upStart(){ if(REC.mr&&REC.mr.state!=="inactive"){ recStop(); return; } if(!REC.blob){ soon(L(TX.needRec)); return; } upOpen(); }
 function upOpen(){ var b=box(); if(!b||!REC.blob) return; var o=b.querySelector(".kupm"); if(o) o.remove();
   o=document.createElement("div"); o.className="kpm kupm"; b.appendChild(o);
-  var vis="pub", busy=false, xhr=null, by0=""; try{ by0=localStorage.getItem("mpv_kst_by")||""; }catch(e){} if(!/^\d{4}$/.test(by0)) by0="";
+  var vis="pub", busy=false, xhr=null, by0="", rms=null, rsel={}; try{ by0=localStorage.getItem("mpv_kst_by")||""; }catch(e){} if(!/^\d{4}$/.test(by0)) by0="";
   var draw=function(msg,pct){ var s=pct!=null;
     o.innerHTML='<div><h3>'+esc(L(TX.up))+'</h3>'
-      +'<b class="kh">'+esc(L(TX.vis))+'</b><div class="kupv"><button type="button" data-v="pub"'+(vis==="pub"?' class="on"':'')+'>'+esc(L(TX.vPub))+'</button><button type="button" data-v="fol"'+(vis==="fol"?' class="on"':'')+'>'+esc(L(TX.vFol))+'</button><button type="button" data-v="me"'+(vis==="me"?' class="on"':'')+'>'+esc(L(TX.vMe))+'</button></div>'
-      +'<p class="km">'+esc(L(vis==="pub"?TX.vPubN:vis==="fol"?TX.vFolN:TX.vMeN))+'</p>'
+      +'<b class="kh">'+esc(L(TX.vis))+'</b><div class="kchips">'+[["pub","pub",TX.vPub],["fol","folonly",TX.vFol],["room","room",TX.vwRoom],["me","lock",TX.vMe]].map(function(c){ return '<button type="button" data-v="'+c[0]+'"'+(vis===c[0]?' class="on"':'')+'>'+kIc(c[1])+'<span>'+esc(L(c[2]))+'</span></button>'; }).join("")+'</div>'
+      +'<p class="km">'+esc(L(vis==="pub"?TX.vPubN:vis==="fol"?TX.vFolN:vis==="room"?TX.vRoomN:TX.vMeN))+'</p>'
+      +(vis!=="room"?'':rms===null?'<p class="km">'+esc(L(TX.lo))+'</p>':!rms.length?'<p class="km">'+esc(L(TX.rmNone))+'</p>'
+        :'<div class="kchk">'+rms.map(function(r,i){ return '<label><input type="checkbox" data-r="'+i+'"'+(rsel[r.rid]?' checked':'')+'>'+kIc("room",1)+'<span>'+esc(r.name)+'</span><small>'+esc(tf(L(TX.rmN),{n:r.count}))+'</small></label>'; }).join("")+'</div>')
       +(by0?'':'<label class="kfl">'+esc(L(TX.by))+'<input type="text" inputmode="numeric" maxlength="4" id="kupBy" autocomplete="bday-year"></label><p class="km">'+esc(L(TX.byN))+'</p>')
       +(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
       +(s?'<div class="kupbar"><i style="width:'+pct+'%"></i></div><div class="kupp">'+esc(tf(L(TX.upIng),{p:pct}))+'</div>':'')
       +'<button type="button" class="kgo" id="kupGo"'+(s?' disabled':'')+'>'+esc(L(TX.upGo))+'</button><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
-    [].forEach.call(o.querySelectorAll("[data-v]"),function(x){ x.onclick=function(){ if(busy) return; vis=x.dataset.v; var by=o.querySelector("#kupBy"), keep=by?by.value:""; draw(); var by2=o.querySelector("#kupBy"); if(by2) by2.value=keep; }; });
+    [].forEach.call(o.querySelectorAll("[data-v]"),function(x){ x.onclick=function(){ if(busy) return; vis=x.dataset.v; re();
+      if(vis==="room"&&rms===null) kGet("/kst/rooms").then(function(j){ rms=(j&&j.ok&&j.items)||[]; if(rms.length===1) rsel[rms[0].rid]=1; if(o.isConnected&&!busy) re(); }).catch(function(){ rms=[]; if(o.isConnected&&!busy) re(); }); }; });
+    [].forEach.call(o.querySelectorAll("[data-r]"),function(c){ c.onchange=function(){ var r=rms&&rms[+c.dataset.r]; if(!r) return; if(c.checked) rsel[r.rid]=1; else delete rsel[r.rid]; }; });
     o.querySelector(".kc").onclick=function(){ if(xhr){ try{ xhr.abort(); }catch(e){} } o.remove(); };
     o.querySelector("#kupGo").onclick=go; };
+  var re=function(){ var by=o.querySelector("#kupBy"), keep=by?by.value:""; draw(); var by2=o.querySelector("#kupBy"); if(by2) by2.value=keep; };   // 생년 칸 값 지키며 다시 그림
   var bar=function(p){ var i=o.querySelector(".kupbar i"), t=o.querySelector(".kupp"); if(!i){ draw("",p); return; } i.style.width=p+"%"; t.textContent=tf(L(TX.upIng),{p:p}); };
   var go=function(){ if(busy) return;
     if(!by0){ var v=String((o.querySelector("#kupBy")||{}).value||"").replace(/\D/g,""), y=new Date().getFullYear();
       if(!/^\d{4}$/.test(v)||+v<1900||+v>y){ draw(L(TX.byE)); return; }
       if(y-(+v)<15){ draw(L(TX.by14)); return; }   // 해만 알므로 생일 전일 수 있다 → 올해 만 14세가 될 사람까지 막는다 (약관 제8조 만 14세 미만)
       by0=v; try{ localStorage.setItem("mpv_kst_by",v); }catch(e){} }
+    var rs=vis!=="room"?[]:Object.keys(rsel).filter(function(k){ return rms&&rms.some(function(r){ return r.rid===k; }); }); if(vis==="room"&&!rs.length){ draw(L(TX.rmPkE)); return; }   // 우리끼리 = 방 하나 이상
     var bl=REC.blob; if(!bl){ o.remove(); soon(L(TX.needRec)); return; }
     var ty=String(bl.type||REC.mt||"video/webm").split(";")[0]; if(ty!=="video/mp4"&&ty!=="video/webm"){ draw(L(TX.upTy)); return; }
     if(bl.size>60*1024*1024){ draw(L(TX.upBig)); return; }
-    var c=K.cur||{}, q="vis="+vis+"&sid="+encodeURIComponent(c.id||"")+"&t="+encodeURIComponent(String(c.t||"").slice(0,120))+"&dur="+(REC.dur||0)+(REC.sc!=null?"&sc="+REC.sc:"")+"&dev="+encodeURIComponent(klDev())+"&sess="+encodeURIComponent(sess());
+    var c=K.cur||{}, q="vis="+vis+"&sid="+encodeURIComponent(c.id||"")+"&t="+encodeURIComponent(String(c.t||"").slice(0,120))+"&dur="+(REC.dur||0)+(REC.sc!=null?"&sc="+REC.sc:"")+(vis==="room"?"&rooms="+rs.join(","):"")+"&dev="+encodeURIComponent(klDev())+"&sess="+encodeURIComponent(sess());
     busy=true; draw("",0);
     xhr=new XMLHttpRequest(); xhr.open("POST",HUB+"/kst/up?"+q); xhr.setRequestHeader("x-kown",KOWN); xhr.setRequestHeader("Content-Type",ty);
     xhr.upload.onprogress=function(e){ if(e.lengthComputable) bar(Math.min(99,Math.floor(e.loaded*100/e.total))); };
     xhr.onload=function(){ busy=false; var j=null; try{ j=JSON.parse(xhr.responseText); }catch(e){} xhr=null;
-      if(j&&j.ok){ try{ ntap("kara_stage","up_"+vis); }catch(e){} o.remove(); var pv=b.querySelector(".kpv"); if(pv) pv.remove(); try{ if(REC.url) URL.revokeObjectURL(REC.url); }catch(e){} REC.url=""; REC.blob=null; REC.sc=null; recExit(); stageOpen("me"); soon(L(TX.upOk)); return; }
-      var er=j&&j.err; draw(er==="big"?L(TX.upBig):er==="type"?L(TX.upTy):L(TX.upF)); };
+      if(j&&j.ok){ try{ ntap("kara_stage","up_"+vis); }catch(e){}
+        if(vis!=="me"&&j.id){ var cu=URL.createObjectURL(bl); kCard(cu,REC.sc,c.t).then(function(jpg){ return kThUp(j.id,jpg); }).catch(function(){}).then(function(){ try{ URL.revokeObjectURL(cu); }catch(e){} }); }   // 공유 카드 그림 — 뒤에서 만들어 올림
+        o.remove(); var pv=b.querySelector(".kpv"); if(pv) pv.remove(); try{ if(REC.url) URL.revokeObjectURL(REC.url); }catch(e){} REC.url=""; REC.blob=null; REC.sc=null; recExit(); stageOpen("me"); soon(L(TX.upOk)); return; }
+      var er=j&&j.err; draw(er==="big"?L(TX.upBig):er==="type"?L(TX.upTy):er==="room"?L(TX.rmPkE):L(TX.upF)); };
     xhr.onerror=function(){ busy=false; xhr=null; draw(L(TX.upNet)); };
     xhr.onabort=function(){ busy=false; xhr=null; };
     xhr.send(bl); };
@@ -596,7 +670,7 @@ function kQs(){ return "dev="+encodeURIComponent(klDev())+"&sess="+encodeURIComp
 function kGet(path){ return fetch(HUB+path+(path.indexOf("?")>=0?"&":"?")+kQs(),{headers:{"x-kown":KOWN}}).then(function(r){ return r.json(); }); }
 function kPost(path,o){ var q={dev:klDev(),sess:sess()}; for(var k in o) q[k]=o[k]; return fetch(HUB+path,{method:"POST",headers:{"Content-Type":"application/json","x-kown":KOWN},body:JSON.stringify(q)}).then(function(r){ return r.json(); }); }
 function kDay(t){ try{ var d=new Date(t); return [d.toLocaleDateString(kLoc(),{month:"short",day:"numeric"}),d.getFullYear()+" · "+d.toLocaleTimeString(kLoc(),{hour:"2-digit",minute:"2-digit"})]; }catch(e){ return ["",""]; } }
-function kVisTag(x){ var f=x.vis==="fol"; return '<span class="ktg'+(x.vis==="pub"?" p":f?" f":"")+'">'+esc(L(x.vis==="pub"?TX.vPub:f?TX.vFol:TX.vMe))+'</span>'; }
+function kVisTag(x){ var f=x.vis==="fol", r=x.vis==="room"; return '<span class="ktg'+(x.vis==="pub"?" p":f?" f":r?" r":"")+'">'+esc(L(x.vis==="pub"?TX.vPub:f?TX.vFol:r?TX.vwRoom:TX.vMe))+(r&&x.rooms&&x.rooms.length?' · '+esc(x.rooms.map(function(q){ return q.name; }).join(", ")):'')+'</span>'; }   // 우리끼리 = 방 이름 작게
 // ── 팔로우 (사장님 10-30) — 사람은 pubid(허브가 만든 무작위 공개 id)로만 부른다 · 내 것엔 단추 없음
 function kUn(x){ var n=esc(x.nick||"guest"); return x.pubid?'<button type="button" class="kun" data-u="'+esc(x.pubid)+'">'+n+'</button>':'<b>'+n+'</b>'; }   // 누르면 그 사람 무대
 function kFwB(on){ return '<button type="button" class="kfw'+(on?' on':'')+'" data-fw="1">'+esc(L(on?TX.flg:TX.flw))+'</button>'; }
@@ -660,11 +734,13 @@ var KS=null;   // 열린 가요무대 페이지 상태 {o,tab,items,err,me,sort,
 function stageOpen(tab0){ var tab=tab0==="me"?"me":"all";
   if(KS&&KS.o&&KS.o.isConnected){ pgTo(PG.indexOf(KS.o)+1); KS.tab=tab; KS.items=null; KS.err=0; KS.draw(); KS.load(); return; }
   var o=pgOpen("kstpg"); if(!o) return; var own=isOwn();
-  var S=KS={o:o,tab:tab,items:null,err:0,me:null,sort:"new",tok:0};
+  var S=KS={o:o,tab:tab,items:null,err:0,me:null,sort:"new",tok:0,view:"all",rooms:null};   // view = all(전체) | flw(팔로잉만) | room(우리끼리 방 목록)
   o._bye=function(){ S.tok++; if(KS===S) KS=null; };
   o._fw=function(){ if(S.tab==="me") S.loadMe(); else S.load(); };   // 팔로우가 바뀌면 — 내 스테이지 = 팔로잉 수 · 가요무대 = 팔로워만 영상이 들어오고 빠진다
   S.load=function(){ if(!own) return; var my=++S.tok; S.items=null; S.err=0;
-    kGet("/kst/list?scope="+(S.tab==="all"?"pub":"me")).then(function(j){ if(my!==S.tok) return; if(j&&j.ok) S.items=j.items||[]; else { S.items=[]; S.err=1; } S.draw(); })
+    if(S.tab==="all"&&S.view==="room"){ S.rooms=null; kGet("/kst/rooms").then(function(j){ if(my!==S.tok) return; if(j&&j.ok) S.rooms=j.items||[]; else { S.rooms=[]; S.err=1; } S.draw(); })
+      .catch(function(){ if(my!==S.tok) return; S.rooms=[]; S.err=1; S.draw(); }); return; }
+    kGet("/kst/list?scope="+(S.tab==="all"?(S.view==="flw"?"following":"pub"):"me")).then(function(j){ if(my!==S.tok) return; if(j&&j.ok) S.items=j.items||[]; else { S.items=[]; S.err=1; } S.draw(); })
       .catch(function(){ if(my!==S.tok) return; S.items=[]; S.err=1; S.draw(); });
     if(S.tab==="me") S.loadMe(); };
   S.loadMe=function(){ var my=S.tok; kGet("/kst/me").then(function(j){ if(my!==S.tok||!(j&&j.ok)) return; S.me=j; S.draw(); }).catch(function(){}); };
@@ -681,23 +757,33 @@ function stageOpen(tab0){ var tab=tab0==="me"?"me":"all";
   var rows=function(){
     if(S.items===null) return '<div class="kstge">'+esc(L(TX.lo))+'</div>';
     if(S.err) return '<div class="kstge">'+esc(L(TX.stF))+'</div>';
-    if(!S.items.length) return '<div class="kstge">'+esc(L(S.tab==="all"?TX.stgE:TX.mstgE))+'</div>';
+    if(!S.items.length) return '<div class="kstge">'+esc(L(S.tab==="all"?(S.view==="flw"?TX.flwE:TX.stgE):TX.mstgE))+'</div>';
     var a=kSortA(S.items,S.sort);
     return '<div class="krows">'+a.map(function(r){ var x=r[0], d=kDay(x.at);
       return '<div class="krow" role="button" tabindex="0" data-i="'+r[1]+'"><div class="krd"><b>'+esc(d[0])+'</b><small>'+esc(d[1])+'</small></div>'+kScC(x)
         +'<div class="krm"><p>'+esc(x.desc||x.t||"-")+'</p><small>'+(S.tab==="me"?kVisTag(x):(x.vis==="fol"?kVisTag(x):'')+(x.pubid?kUn(x).replace('class="kun"','class="kun knk"'):'<b class="knk">'+esc(x.nick||"guest")+'</b>'))
         +'<span class="kst2">'+kIc("up",1)+kNum(x.up)+'</span><span class="kst2">'+kIc("cm",1)+kNum(x.cm)+'</span><span class="kst2">'+kIc("view",1)+kNum(x.views)+'</span></small></div>'
         +kThumb(x.id,"krv")+'</div>'; }).join("")+'</div>'; };
+  var roomsH=function(){ var h='<div class="krms"><button type="button" class="krm0" data-rnew="1">'+kIc("plus")+'<b>'+esc(L(TX.rmNew))+'</b></button>';   // 우리끼리 = 내 방 목록 (맨 위 「+ 방 만들기」)
+    if(S.rooms===null) h+='<div class="kstge">'+esc(L(TX.lo))+'</div>';
+    else if(S.err&&!S.rooms.length) h+='<div class="kstge">'+esc(L(TX.stF))+'</div>';
+    else if(!S.rooms.length) h+='<div class="kstge">'+esc(L(TX.rmNone))+'</div>';
+    else h+=S.rooms.map(function(r,i){ return '<button type="button" data-ri="'+i+'">'+kIc("room")+'<b>'+esc(r.name)+'</b><small>'+esc(tf(L(TX.rmN),{n:r.count}))+(r.owner?' · '+esc(L(TX.rmOw)):'')+'</small></button>'; }).join("");
+    return h+'</div>'; };
   S.draw=function(){ var body;
     if(!own) body='<div class="kstge">'+esc(L(S.tab==="all"?TX.stgE:TX.mstgE))+'<br>'+esc(L(TX.soon2))+'</div>';
     else if(S.tab==="me") body=prof()+'<div class="ksrt"><span>'+esc(L(TX.mstgE))+(S.items&&S.items.length?' · '+S.items.length:'')+'</span><button type="button" data-sort="1">⇅ '+esc(kSortL(S.sort))+'</button></div>'+rows();
-    else body='<div class="ksrt"><span>'+esc(L(TX.stgE))+(S.items&&S.items.length?' · '+S.items.length:'')+'</span><button type="button" data-sort="1">⇅ '+esc(kSortL(S.sort))+'</button></div>'+rows();   // 가요무대 = 프로필 없이 같은 줄 목록 + 최신순/오래된순 (사장님 10-30) · 친구(팔로우) 영상은 팔로우 생기면 같이
+    else body='<div class="kseg">'+[["all",TX.vwAll,"pub"],["flw",TX.vwFlw,"folonly"],["room",TX.vwRoom,"room"]].map(function(b){ return '<button type="button" data-vw="'+b[0]+'"'+(S.view===b[0]?' class="on"':'')+'>'+kIc(b[2],1)+'<span>'+esc(L(b[1]))+'</span></button>'; }).join("")+'</div>'
+      +(S.view==="room"?roomsH():'<div class="ksrt"><span>'+esc(L(S.view==="flw"?TX.vwFlw:TX.stgE))+(S.items&&S.items.length?' · '+S.items.length:'')+'</span><button type="button" data-sort="1">⇅ '+esc(kSortL(S.sort))+'</button></div>'+rows());   // 가요무대 = 프로필 없이 같은 줄 목록 + 최신순/오래된순 (사장님 10-30) · 친구(팔로우) 영상은 팔로우 생기면 같이
     var sc=o.querySelector(".kpgb"), top=sc?sc.scrollTop:0;
     o.innerHTML=kHead('<button type="button" data-st="all"'+(S.tab==="all"?' class="on"':'')+'>'+esc(L(TX.stg))+'</button><button type="button" data-st="me"'+(S.tab==="me"?' class="on"':'')+'>'+esc(L(TX.mstg))+'</button>')+'<div class="kpgb">'+body+'</div>';
     sc=o.querySelector(".kpgb"); if(sc&&top) sc.scrollTop=top;
     o.querySelector(".kpbk").onclick=pgBack;
     [].forEach.call(o.querySelectorAll("[data-st]"),function(x){ x.onclick=function(){ if(S.tab===x.dataset.st) return; S.tab=x.dataset.st; S.items=null; S.err=0; S.draw(); S.load(); var g=o.querySelector(".kpgb"); if(g) g.scrollTop=0; }; });
     var so=o.querySelector("[data-sort]"); if(so) so.onclick=function(){ S.sort=kSortNx(S.sort); S.draw(); };
+    [].forEach.call(o.querySelectorAll("[data-vw]"),function(x){ x.onclick=function(){ if(S.view===x.dataset.vw) return; S.view=x.dataset.vw; S.items=null; S.rooms=null; S.err=0; S.draw(); S.load(); try{ ntap("kara_stage","view_"+S.view); }catch(e){} }; });
+    var rn=o.querySelector("[data-rnew]"); if(rn) rn.onclick=function(){ kRoomNew(S); };
+    [].forEach.call(o.querySelectorAll("[data-ri]"),function(x){ x.onclick=function(){ var r=S.rooms&&S.rooms[+x.dataset.ri]; if(r) kRoom(r.rid,S); }; });
     var pf=o.querySelector("[data-pf]"); if(pf) pf.onclick=function(){ kPick(S); };
     var nk=o.querySelector("[data-nick]"); if(nk) nk.onclick=function(){ kNick(S); };
     [].forEach.call(o.querySelectorAll("[data-fl]"),function(r){ var go=function(){ if(S.me&&S.me.pubid) kFl(S.me.pubid,r.dataset.fl); }; r.onclick=go; r.onkeydown=function(e){ if(e.key==="Enter") go(); }; });
@@ -734,7 +820,7 @@ function kPick(S){ var o=pgOpen("kpick"); if(!o) return; var mine=null, busy=fal
 function kDet(x,S){ var o=pgOpen("kdet"); if(!o) return; var cms=null, edit=false, busy=false, d=kDay(x.at);
   var chg=function(){ if(S&&S.o&&S.o.isConnected){ S.draw(); if(S.tab==="me") S.loadMe(); } };
   o.innerHTML=kHead('<h3>'+esc(x.t||L(TX.stg))+'</h3>')+'<div class="kpgb"><video class="kdv" controls autoplay playsinline preload="metadata" src="'+esc(kVid(x.id))+'"></video>'
-    +'<div class="kdm">'+kUn(x)+'<span class="kfwh"></span><span>'+esc(d[0]+" "+d[1])+'</span>'+(x.mine||x.vis==="fol"?kVisTag(x):'')+'</div><div class="kdr"></div><div class="kbx kdd"></div><div class="kbx kdc"></div>'
+    +'<div class="kdm">'+kUn(x)+'<span class="kfwh"></span><span>'+esc(d[0]+" "+d[1])+'</span>'+(x.mine||x.vis==="fol"||x.vis==="room"?kVisTag(x):'')+'</div><div class="kdr"></div><div class="kbx kdd"></div><div class="kbx kdc"></div>'
     +(x.mine?'<button type="button" class="kbt r kdel2">'+esc(L(TX.del))+'</button>':'')+'</div>';
   o.querySelector(".kpbk").onclick=pgBack; kUnBind(o);
   var fwOn=null, fwH=o.querySelector(".kfwh"), fwDraw=function(){ if(x.mine||!x.pubid||fwOn===null){ fwH.innerHTML=""; return; } fwH.innerHTML=kFwB(fwOn);
@@ -744,7 +830,9 @@ function kDet(x,S){ var o=pgOpen("kdet"); if(!o) return; var cms=null, edit=fals
   var R=o.querySelector(".kdr"), D=o.querySelector(".kdd"), C=o.querySelector(".kdc");
   var rDraw=function(){ R.innerHTML='<button type="button" data-r="up" aria-label="'+esc(L(TX.upB))+'"'+(x.my==="up"?' class="on"':'')+'>'+kIc("up")+'<b>'+kNum(x.up)+'</b></button>'
       +'<button type="button" data-r="down" aria-label="'+esc(L(TX.dnB))+'"'+(x.my==="down"?' class="on"':'')+'>'+kIc("down")+'<b>'+kNum(x.down)+'</b></button>'
-      +'<span class="kvw" title="'+esc(L(TX.vw))+'">'+kIc("view")+'<b>'+kNum(x.views)+'</b></span>';
+      +'<span class="kvw" title="'+esc(L(TX.vw))+'">'+kIc("view")+'<b>'+kNum(x.views)+'</b></span>'
+      +(x.vis!=="me"?'<button type="button" class="kshb" data-sh="1" aria-label="'+esc(L(TX.shB))+'">'+kIc("share")+'<b>'+esc(L(TX.shB))+'</b></button>':'');
+    var sb=R.querySelector("[data-sh]"); if(sb) sb.onclick=function(){ kShareVid(x); };
     [].forEach.call(R.querySelectorAll("[data-r]"),function(btn){ btn.onclick=function(){ if(busy) return; busy=true; var r=x.my===btn.dataset.r?"":btn.dataset.r;
       kPost("/kst/react",{id:x.id,r:r}).then(function(j){ busy=false; if(j&&j.ok){ x.up=j.up; x.down=j.down; x.my=j.my; rDraw(); chg(); } else soon(L(TX.fail)); }).catch(function(){ busy=false; soon(L(TX.upNet)); }); }; }); };
   var dDraw=function(msg){ var h='<h4>'+esc(L(TX.dsc))+'</h4>';
@@ -773,6 +861,153 @@ function kDet(x,S){ var o=pgOpen("kdet"); if(!o) return; var cms=null, edit=fals
   try{ var vm={}, today=new Date(Date.now()+9*3600000).toISOString().slice(0,10); try{ vm=JSON.parse(localStorage.getItem("mpv_kst_vw")||"{}")||{}; }catch(e){ vm={}; }
     if(vm[x.id]!==today){ kPost("/kst/view",{id:x.id}).then(function(j){ if(j&&j.ok){ x.views=j.views; if(o.isConnected) rDraw(); chg(); vm[x.id]=today; var ks=Object.keys(vm); if(ks.length>300) ks.slice(0,ks.length-300).forEach(function(k){ delete vm[k]; }); try{ localStorage.setItem("mpv_kst_vw",JSON.stringify(vm)); }catch(e){} } }).catch(function(){}); } }catch(e){}
 }
+// 공유 단추 그림·문구 (노래방 사이트에서 옮겨 옴 10-30)
+var SHI={"x": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z\"/></svg>", "sms": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#34C759\" d=\"M12 3C6.98 3 3 6.36 3 10.5c0 2.35 1.28 4.43 3.3 5.8-.13 1.02-.5 2.2-1.3 3.2 1.7-.2 3.2-.94 4.3-1.7.85.2 1.75.3 2.7.3 5.02 0 9-3.36 9-7.6S17.02 3 12 3z\"/></svg>", "tg": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#26A5E4\" d=\"M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z\"/></svg>", "line": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#00C300\" d=\"M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314\"/></svg>", "fb": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#1877F2\" d=\"M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z\"/></svg>", "band": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" rx=\"6\" fill=\"#00C73C\"/><text x=\"12\" y=\"17.5\" text-anchor=\"middle\" font-size=\"14\" font-weight=\"700\" fill=\"#fff\" font-family=\"Arial\">B</text></svg>", "wa": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#25D366\" d=\"M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z\"/></svg>", "mail": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>", "kakao": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" rx=\"6\" fill=\"#FEE500\"/><g transform=\"translate(3.2,3.2) scale(0.73)\"><path fill=\"#3C1E1E\" d=\"M22.125 0H1.875C.8394 0 0 .8394 0 1.875v20.25C0 23.1606.8394 24 1.875 24h20.25C23.1606 24 24 23.1606 24 22.125V1.875C24 .8394 23.1606 0 22.125 0zM12 18.75c-.591 0-1.1697-.0413-1.7317-.1209-.5626.3965-3.813 2.6797-4.1198 2.7225 0 0-.1258.0489-.2328-.0141s-.0876-.2282-.0876-.2282c.0322-.2198.8426-3.0183.992-3.5333-2.7452-1.36-4.5701-3.7686-4.5701-6.5135C2.25 6.8168 6.6152 3.375 12 3.375s9.75 3.4418 9.75 7.6875c0 4.2457-4.3652 7.6875-9.75 7.6875zM8.0496 9.8672h-.8777v3.3417c0 .2963-.2523.5372-.5625.5372s-.5625-.2409-.5625-.5372V9.8672h-.8777c-.3044 0-.552-.2471-.552-.5508s.2477-.5508.552-.5508h2.8804c.3044 0 .552.2471.552.5508s-.2477.5508-.552.5508zm10.9879 2.9566a.558.558 0 0 1 .108.4167.5588.5588 0 0 1-.2183.371.5572.5572 0 0 1-.3383.1135.558.558 0 0 1-.4493-.2236l-1.3192-1.7479-.1952.1952v1.2273a.5635.5635 0 0 1-.5627.5628.563.563 0 0 1-.5625-.5625V9.3281c0-.3102.2523-.5625.5625-.5625s.5625.2523.5625.5625v1.209l1.5694-1.5694c.0807-.0807.1916-.1252.312-.1252.1404 0 .2814.0606.3871.1661.0985.0984.1573.2251.1654.3566.0082.1327-.036.2542-.1241.3425l-1.2818 1.2817 1.3845 1.8344zm-8.3502-3.5023c-.095-.2699-.3829-.5475-.7503-.5557-.3663.0083-.6542.2858-.749.5551l-1.3455 3.5415c-.1708.5305-.0217.7272.1333.7988a.8568.8568 0 0 0 .3576.0776c.2346 0 .4139-.0952.4678-.2481l.2787-.7297 1.7152.0001.2785.7292c.0541.1532.2335.2484.4681.2484a.8601.8601 0 0 0 .3576-.0775c.1551-.0713.3041-.2681.1329-.7999l-1.3449-3.5398zm-1.3116 2.4433l.5618-1.5961.5618 1.5961H9.3757zm5.9056 1.3836c0 .2843-.2418.5156-.5391.5156h-1.8047c-.2973 0-.5391-.2314-.5391-.5156V9.3281c0-.3102.2576-.5625.5742-.5625s.5742.2523.5742.5625v3.3047h1.1953c.2974 0 .5392.2314.5392.5156z\"/></g></svg>", "copy": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"#8a93a3\" stroke-width=\"2\" stroke-linecap=\"round\" d=\"M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.54 3.54 0 0 0-5-5l-1.2 1.2M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.54 3.54 0 0 0 5 5l1.2-1.2\"/></svg>", "other": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#5b93ff\" d=\"M18 16.08a2.9 2.9 0 0 0-1.96.77L8.9 12.7a3.3 3.3 0 0 0 0-1.4l7.05-4.11A2.92 2.92 0 1 0 15 5a3 3 0 0 0 .06.6L8.04 9.72a3 3 0 1 0 0 4.56l7.1 4.15c-.04.2-.06.4-.06.6a2.92 2.92 0 1 0 2.92-2.95z\"/></svg>"};
+var SH={hd:{ko:"이 앱 공유하기",en:"Share this app",ja:"このアプリを共有",zhs:"分享此应用",zht:"分享此應用",es:"Compartir esta app"},
+ btn:{ko:"공유",en:"Share",ja:"共有",zhs:"分享",zht:"分享",es:"Compartir"},
+ sms:{ko:"문자",en:"Message",ja:"メッセージ",zhs:"短信",zht:"簡訊",es:"Mensaje"},
+ tg:{ko:"텔레그램",en:"Telegram",ja:"Telegram",zhs:"Telegram",zht:"Telegram",es:"Telegram"},
+ fb:{ko:"페이스북",en:"Facebook",ja:"Facebook",zhs:"Facebook",zht:"Facebook",es:"Facebook"},
+ band:{ko:"밴드",en:"BAND",ja:"BAND",zhs:"BAND",zht:"BAND",es:"BAND"},
+ mail:{ko:"메일",en:"Email",ja:"メール",zhs:"邮件",zht:"郵件",es:"Correo"},
+ kakao:{ko:"카카오톡",en:"KakaoTalk",ja:"カカオトーク",zhs:"KakaoTalk",zht:"KakaoTalk",es:"KakaoTalk"},
+ copy:{ko:"링크 복사",en:"Copy link",ja:"リンクをコピー",zhs:"复制链接",zht:"複製連結",es:"Copiar enlace"},
+ other:{ko:"다른 앱으로",en:"Other apps",ja:"他のアプリ",zhs:"其他应用",zht:"其他應用",es:"Otras apps"},
+ kinst:{"ko": "앱 설치", "en": "Install app", "ja": "アプリを入れる", "zhs": "安装应用", "zht": "安裝應用", "es": "Instalar app"},
+ kopen:{"ko": "노래방 열기", "en": "Open karaoke", "ja": "カラオケを開く", "zhs": "打开练歌房", "zht": "開啟練歌房", "es": "Abrir karaoke"},
+ kdesc:{"ko": "금영 노래방 공식 영상으로 바로 부르는 온라인 노래방", "en": "Sing right away with official KY karaoke videos", "ja": "KY公式カラオケ動画ですぐ歌えるオンラインカラオケ", "zhs": "用金永(KY)官方卡拉OK视频马上开唱", "zht": "用金永(KY)官方卡拉OK影片馬上開唱", "es": "Canta al instante con vídeos oficiales de karaoke KY"},
+ copied:{ko:"링크를 복사했습니다:",en:"Link copied:",ja:"リンクをコピーしました:",zhs:"已复制链接:",zht:"已複製連結:",es:"Enlace copiado:"}};
+// ── 공용 공유창 (사장님 10-30) — 노래방 사이트 「이 앱 공유하기」와 영상 공유가 같이 쓴다 (투어앱에서도 이 파일이 쓰이므로 여기 둔다)
+//   o = {hd, url, iurl(앱 설치 링크), txt, kk:{title,desc,img,w,h,b1(첫 단추 글자)}} · 카카오 = feed(그림+「b1」「앱 설치」 단추), 안 되면 폰 공유창
+var KAKAO_KEY="90a47ca48c2a967dd4d14b3b48de2e3b";
+function kShare(o){ var u=o.url, iu=o.iurl||u, txt=o.txt||"", e=encodeURIComponent, il=L(SH.kinst), kk=o.kk||{};
+  var it=[["X",SHI.x,"https://twitter.com/intent/tweet?text="+e(txt)+"&url="+e(u)],
+    [L(SH.sms),SHI.sms,"sms:?&body="+e(txt+" "+u+"\n"+il+": "+iu)],
+    [L(SH.tg),SHI.tg,"https://t.me/share/url?url="+e(u)+"&text="+e(txt+"\n"+il+": "+iu)],
+    ["LINE",SHI.line,"https://social-plugins.line.me/lineit/share?url="+e(u)],
+    [L(SH.fb),SHI.fb,"https://www.facebook.com/sharer/sharer.php?u="+e(u)],
+    [L(SH.band),SHI.band,"https://band.us/plugin/share?body="+e(txt+"\n"+u+"\n"+il+": "+iu)+"&route="+e(u)],
+    ["WhatsApp",SHI.wa,"https://api.whatsapp.com/send?text="+e(txt+" "+u+"\n"+il+": "+iu)],
+    [L(SH.mail),SHI.mail,"mailto:?subject="+e(kk.title||txt)+"&body="+e(txt+"\n"+u+"\n"+il+": "+iu)],
+    [L(SH.kakao),SHI.kakao,"#kakao"],[L(SH.copy),SHI.copy,"#copy"]];
+  if(navigator.share) it.push([L(SH.other),SHI.other,"#share"]);
+  var sh=function(){ if(navigator.share) navigator.share({title:kk.title||txt,text:txt+"\n"+il+": "+iu,url:u}).catch(function(){}); };
+  var w=document.getElementById("karShr"); if(w) w.remove(); w=document.createElement("div"); w.id="karShr";
+  w.innerHTML='<div class="shin"><div class="shhd">'+esc(o.hd||L(SH.hd))+'</div><div class="shgrid">'+it.map(function(a){ var h=a[2];
+      if(h.charAt(0)==="#") return '<button type="button" data-a="'+h.slice(1)+'">'+a[1]+' '+esc(a[0])+'</button>';
+      return '<a href="'+esc(h)+'"'+(/^(sms|mailto):/.test(h)?'':' target="_blank" rel="noopener"')+'>'+a[1]+' '+esc(a[0])+'</a>'; }).join("")+'</div><div class="shmsg"></div></div>';
+  document.body.appendChild(w);
+  w.onclick=function(ev){ if(ev.target===w){ w.remove(); return; } var b=ev.target.closest&&ev.target.closest("button[data-a]"); if(!b) return; var m=w.querySelector(".shmsg"), a=b.getAttribute("data-a");
+    if(a==="kakao"){ try{ if(!window.Kakao) throw 0; if(!Kakao.isInitialized()) Kakao.init(KAKAO_KEY);
+        var ct={title:kk.title||txt,description:kk.desc||"",imageUrl:kk.img||"https://karaoke.moneypuzzle.co.kr/icon-512.png",link:{webUrl:u,mobileWebUrl:u}}; if(kk.w){ ct.imageWidth=kk.w; ct.imageHeight=kk.h||kk.w; }
+        Kakao.Share.sendDefault({objectType:"feed",content:ct,buttons:[{title:kk.b1||L(SH.kopen),link:{webUrl:u,mobileWebUrl:u}},{title:il,link:{webUrl:iu,mobileWebUrl:iu}}]}); return; }
+      catch(x){ if(navigator.share){ sh(); return; } } }
+    if(a==="share"&&navigator.share){ sh(); return; }
+    try{ navigator.clipboard.writeText(u).then(function(){ m.textContent=L(SH.copied)+" "+u; },function(){ m.textContent=u; }); }catch(x){ m.textContent=u; } }; }
+window.karShare=kShare; window.karSHI=SHI; window.karSH=SH;
+// ── 공유 카드 그림 (사장님 10-30 「영상과 노래방 점수도 크게 해서 보내자」) — 녹화 영상 1초쯤 장면 + 아래 어두운 띠 + 큰 점수(노란 굵은 글씨) + 작은 곡 제목 + 오른쪽 아래 「StageSong」 · 800x800 JPG
+//   그림은 새로 그리지 않는다 — 영상 장면과 글자만
+function kGrab(src,cors){ return new Promise(function(res,rej){ var v=document.createElement("video"), done=false, to=0;
+  v.muted=true; v.playsInline=true; v.setAttribute("playsinline",""); v.setAttribute("muted",""); v.preload="auto"; if(cors) v.crossOrigin="anonymous";
+  var fin=function(ok){ if(done) return; done=true; clearTimeout(to); if(ok&&v.videoWidth) res(v); else rej(new Error("grab")); };
+  v.onloadeddata=function(){ var d=v.duration;
+    if(!(isFinite(d)&&d>0)){ v.ontimeupdate=function(){ if(v.currentTime>=1){ try{ v.pause(); }catch(e){} fin(true); } }; var pp=v.play(); if(pp&&pp.catch) pp.catch(function(){ fin(true); }); return; }   // 길이 모르는 녹화(webm) = 1초까지 소리 없이 돌려서
+    try{ v.currentTime=Math.min(1,d/2); }catch(e){ fin(true); } };
+  v.onseeked=function(){ fin(true); }; v.onerror=function(){ fin(false); };
+  to=setTimeout(function(){ fin(v.readyState>=2); },7000);
+  v.src=src; try{ v.load(); }catch(e){} }); }
+function kFit(g,s,w){ s=String(s||""); if(g.measureText(s).width<=w) return s; var a=Array.from(s); while(a.length&&g.measureText(a.join("")+"…").width>w) a.pop(); return a.join("")+"…"; }
+function kCardDraw(v,sc,t){ var W=800, c=document.createElement("canvas"); c.width=W; c.height=W; var g=c.getContext("2d"), F="system-ui,-apple-system,'Segoe UI','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic','Hiragino Sans','PingFang SC','Microsoft YaHei',sans-serif";
+  g.fillStyle="#12081f"; g.fillRect(0,0,W,W);
+  var vw=v&&v.videoWidth, vh=v&&v.videoHeight; if(vw&&vh){ var s=Math.max(W/vw,W/vh), dw=vw*s, dh=vh*s; g.drawImage(v,(W-dw)/2,(W-dh)/2,dw,dh); }
+  var has=typeof sc==="number", top=has?440:580, gr=g.createLinearGradient(0,top,0,W); gr.addColorStop(0,"rgba(5,3,10,0)"); gr.addColorStop(0.22,"rgba(5,3,10,.86)"); gr.addColorStop(1,"rgba(5,3,10,.96)"); g.fillStyle=gr; g.fillRect(0,top,W,W-top);
+  g.textBaseline="alphabetic"; g.textAlign="left"; g.lineJoin="round";
+  if(has){ g.font="700 34px "+F; g.fillStyle="#f5eaff"; g.fillText(kFit(g,t,W-80),40,580);
+    var num=String(sc), pt=L(TX.scPt); g.font="900 160px "+F; var nw=g.measureText(num).width;
+    g.lineWidth=12; g.strokeStyle="rgba(0,0,0,.6)"; g.strokeText(num,36,742); g.shadowColor="rgba(255,190,40,.7)"; g.shadowBlur=26; g.fillStyle="#ffe066"; g.fillText(num,36,742); g.shadowBlur=0;
+    g.font="900 62px "+F; g.lineWidth=8; g.strokeText(pt,36+nw+14,742); g.fillText(pt,36+nw+14,742); }
+  else { g.font="800 46px "+F; g.fillStyle="#f5eaff"; g.fillText(kFit(g,t,W-80),40,720); }
+  g.font="800 26px "+F; g.textAlign="right"; g.fillStyle="rgba(255,255,255,.88)"; g.fillText("StageSong",W-30,W-28); g.textAlign="left";
+  return c; }
+function kCard(src,sc,t,cors){ return kGrab(src,cors).then(function(v){ var c=kCardDraw(v,sc,t); try{ v.removeAttribute("src"); v.load(); }catch(e){}
+  return new Promise(function(res,rej){ var q=0.86, go=function(){ try{ c.toBlob(function(b){ if(!b) return rej(new Error("blob")); if(b.size>400*1024&&q>0.5){ q-=0.12; go(); return; } res(b); },"image/jpeg",q); }catch(e){ rej(e); } }; go(); }); }); }
+function kThUp(id,jpg){ return fetch(HUB+"/kst/thumb?id="+id+"&"+kQs(),{method:"POST",headers:{"Content-Type":"image/jpeg","x-kown":KOWN},body:jpg}).then(function(r){ return r.json(); }).then(function(j){ return !!(j&&j.ok); }); }
+window.karCard=kCard;   // 시험용
+// 영상 공유 — 링크만 보낸다(영상 파일은 안 감) · 카드 그림이 없는 옛 영상은 그 자리에서 만들어 올린 뒤 공유 · 실패하면 노래방 아이콘
+function kShareVid(x){ if(!x||x.vis==="me") return;
+  var go=function(){ var u="https://karaoke.moneypuzzle.co.kr/?v="+x.id, nm=x.nick||"guest", t=x.t||"StageSong", rn=(x.rooms||[]).map(function(r){ return r.name; }).filter(Boolean).join(", ");
+    var desc=x.vis==="room"?tf(L(TX.shDR),{r:rn||L(TX.rmDef)}):x.vis==="fol"?L(TX.shDF):(typeof x.sc==="number"?tf(L(TX.shD),{s:x.sc}):L(TX.shD0)), title=tf(L(TX.shT),{n:nm,t:t});
+    kShare({hd:L(TX.shHd),url:u,iurl:u+"&install=1",txt:title+" — "+desc,kk:{title:title,desc:desc,img:x.th?HUB+"/kst/t/"+x.id:"https://karaoke.moneypuzzle.co.kr/icon-512.png",w:x.th?800:512,h:x.th?800:512,b1:L(TX.shV)}});
+    try{ ntap("kara_stage","share_"+x.vis); }catch(e){} };
+  if(x.th||!x.mine){ go(); return; }
+  soon(L(TX.shPrep));
+  kCard(kVid(x.id),x.sc,x.t,true).then(function(jpg){ return kThUp(x.id,jpg); }).then(function(ok){ if(ok) x.th=1; go(); }).catch(function(){ go(); }); }
+// ── 「우리끼리」 방 (사장님 10-30) — 방장이 내가 팔로우한 사람 중 골라 만든다(30명까지) · 방 사람만 그 방 영상을 본다
+function kMyFol(){ return kGet("/kst/me").then(function(m){ if(!(m&&m.ok&&m.pubid)) return []; return kGet("/kst/fl?pubid="+m.pubid+"&kind=following").then(function(j){ return (j&&j.ok&&j.items)||[]; }); }); }
+// 고르기 창 (방 만들기·사람 더하기·빼기·이름 바꾸기 같이) — host 페이지 위 작은 창
+//   opt = {title, name(이름 칸 처음 값 · 없으면 이름 칸 없음), sub, list(사람 고르기 있음), items:[{pubid,nick}]|null(불러오는 중), empty, ok, need(한 명 이상), go:function(name,pubids) → Promise(오류 글자 | null=끝)}
+function kPplPick(host,opt){ var w=document.createElement("div"); w.className="kpm"; host.appendChild(w); var sel={}, busy=false, items=opt.items;
+  var draw=function(msg){ var nmv=w.querySelector(".kni"), keep=nmv?nmv.value:opt.name;
+    var lst=!opt.list?'':items===null?'<p class="km">'+esc(L(TX.lo))+'</p>':!items.length?'<p class="km">'+esc(opt.empty)+'</p>'
+      :'<div class="kchk">'+items.map(function(x,i){ return '<label><input type="checkbox" data-i="'+i+'"'+(sel[x.pubid]?' checked':'')+'>'+kIc("id",1)+'<span>'+esc(x.nick||"guest")+'</span></label>'; }).join("")+'</div>';
+    w.innerHTML='<div><h3>'+esc(opt.title)+'</h3>'+(opt.name!=null?'<b class="kh">'+esc(L(TX.rmName))+'</b><input type="text" class="kni" maxlength="20" value="'+esc(keep)+'">':'')
+      +(opt.sub?'<b class="kh">'+esc(opt.sub)+'</b>':'')+lst+(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
+      +'<button type="button" class="kgo"'+(busy||(opt.need&&!(items&&items.length))?' disabled':'')+'>'+esc(opt.ok)+'</button><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+    [].forEach.call(w.querySelectorAll(".kchk input"),function(c){ c.onchange=function(){ var x=items[+c.dataset.i]; if(c.checked&&Object.keys(sel).length>=30){ c.checked=false; draw(L(TX.rmMax)); return; } if(c.checked) sel[x.pubid]=1; else delete sel[x.pubid]; }; });
+    w.querySelector(".kc").onclick=function(){ if(!busy) w.remove(); };
+    w.querySelector(".kgo").onclick=function(){ if(busy) return; var nm=null; if(opt.name!=null){ nm=String(w.querySelector(".kni").value||"").trim(); var n=Array.from(nm).length; if(n<1||n>20){ draw(L(TX.rmNmE)); return; } }
+      var ps=Object.keys(sel); if(opt.need&&!ps.length){ draw(L(TX.rmPpE)); return; }
+      busy=true; draw(); opt.go(nm,ps).then(function(err){ busy=false; if(err==null){ w.remove(); return; } draw(err); }).catch(function(){ busy=false; draw(L(TX.upNet)); }); }; };
+  w.onclick=function(e){ if(e.target===w&&!busy) w.remove(); };
+  w.setItems=function(a){ items=a; draw(); };
+  draw(); return w; }
+function kRoomErr(j){ var e=j&&j.err; return L(e==="many"?TX.rmMax:e==="name"?TX.rmNmE:e==="room"||e==="none"||e==="own"?TX.rmGone:TX.fail); }
+function kRoomNew(S){ var w=kPplPick(S.o,{title:L(TX.rmNew),name:L(TX.rmDef),sub:L(TX.rmWho),list:1,items:null,empty:L(TX.rmNoF),ok:L(TX.rmMk),
+    go:function(nm,ps){ return kPost("/kst/room",{op:"create",name:nm,pubids:ps}).then(function(j){ if(!(j&&j.ok)) return kRoomErr(j); try{ ntap("kara_stage","room_new"); }catch(e){} if(S.load) S.load(); kRoom(j.rid,S); return null; }); }});
+  kMyFol().then(function(a){ if(w.isConnected) w.setItems(a); }).catch(function(){ if(w.isConnected) w.setItems([]); }); }
+function kRoomRow(x,i){ var d=kDay(x.at);
+  return '<div class="krow" role="button" tabindex="0" data-i="'+i+'"><div class="krd"><b>'+esc(d[0])+'</b><small>'+esc(d[1])+'</small></div>'+kScC(x)
+    +'<div class="krm"><p>'+esc(x.desc||x.t||"-")+'</p><small>'+(x.pubid?kUn(x).replace('class="kun"','class="kun knk"'):'<b class="knk">'+esc(x.nick||"guest")+'</b>')
+    +'<span class="kst2">'+kIc("up",1)+kNum(x.up)+'</span><span class="kst2">'+kIc("cm",1)+kNum(x.cm)+'</span><span class="kst2">'+kIc("view",1)+kNum(x.views)+'</span></small></div>'
+    +kThumb(x.id,"krv")+'</div>'; }
+// 방 화면 — 이름 한 줄 + 사람 수(누르면 사람 목록) + 「⋯」(방장 메뉴 / 나가기) + 그 방 영상 목록(날짜·점수 칸, 정렬 3단계)
+function kRoom(rid,S0){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var o=pgOpen("kroom"); if(!o) return;
+  var R={o:o,info:null,items:null,err:0,gone:false,sort:"new",tok:0,mem:false};
+  var up=function(){ if(S0&&S0.o&&S0.o.isConnected&&S0.load) S0.load(); };
+  R.load=function(){ var my=++R.tok; R.items=null; R.err=0; R.draw();
+    kGet("/kst/room?rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok) R.info=j; else R.gone=true; R.draw(); }).catch(function(){ if(my!==R.tok) return; R.err=1; R.draw(); });
+    kGet("/kst/list?scope=room&rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok) R.items=j.items||[]; else { R.items=[]; R.err=1; if(j&&j.err==="room") R.gone=true; } R.draw(); }).catch(function(){ if(my!==R.tok) return; R.items=[]; R.err=1; R.draw(); }); };
+  R.loadMe=function(){};
+  o._bye=function(){ R.tok++; };
+  R.draw=function(){ var m=R.info, body;
+    if(R.gone) body='<div class="kstge">'+esc(L(TX.rmGone))+'</div>';
+    else { body='<div class="krmh"><div class="krmt">'+kIc("room")+'<b>'+esc(m?m.name:"…")+'</b></div>'
+        +'<button type="button" class="krmc'+(R.mem?' on':'')+'" data-mem="1">'+kIc("fol",1)+esc(tf(L(TX.rmN),{n:m?m.count:"…"}))+'</button>'
+        +'<button type="button" class="krmx" data-mn="1" aria-label="menu">⋯</button></div>'
+        +(R.mem&&m?'<div class="krmm">'+m.mem.map(function(p){ return '<span>'+(p.pubid&&!p.me?'<button type="button" class="kun" data-u="'+esc(p.pubid)+'">'+esc(p.nick||"guest")+'</button>':'<b class="kme">'+esc(p.nick||"guest")+'</b>')+(p.owner?'<small>'+esc(L(TX.rmOw))+'</small>':'')+'</span>'; }).join("")+'</div>':'')
+        +'<div class="ksrt"><span>'+esc(L(TX.vids))+(R.items&&R.items.length?' · '+R.items.length:'')+'</span><button type="button" data-sort="1">⇅ '+esc(kSortL(R.sort))+'</button></div>'
+        +(R.items===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':R.err&&!R.items.length?'<div class="kstge">'+esc(L(TX.stF))+'</div>':!R.items.length?'<div class="kstge">'+esc(L(TX.rmE))+'</div>'
+          :'<div class="krows">'+kSortA(R.items,R.sort).map(function(r){ return kRoomRow(r[0],r[1]); }).join("")+'</div>'); }
+    var sc=o.querySelector(".kpgb"), top=sc?sc.scrollTop:0;
+    o.innerHTML=kHead('<h3>'+esc(L(TX.vwRoom))+'</h3>')+'<div class="kpgb">'+body+'</div>';
+    sc=o.querySelector(".kpgb"); if(sc&&top) sc.scrollTop=top;
+    o.querySelector(".kpbk").onclick=pgBack; kUnBind(o);
+    var mb=o.querySelector("[data-mem]"); if(mb) mb.onclick=function(){ R.mem=!R.mem; R.draw(); };
+    var mn=o.querySelector("[data-mn]"); if(mn) mn.onclick=function(){ if(R.info) menu(); };
+    var so=o.querySelector("[data-sort]"); if(so) so.onclick=function(){ R.sort=kSortNx(R.sort); R.draw(); };
+    [].forEach.call(o.querySelectorAll(".krow"),function(c){ var go=function(){ var x=R.items&&R.items[+c.dataset.i]; if(x) kDet(x,R); }; c.onclick=go; c.onkeydown=function(e){ if(e.key==="Enter") go(); }; }); };
+  var op=function(a){ a.rid=rid; return kPost("/kst/room",a).then(function(j){ if(!(j&&j.ok)) return kRoomErr(j); R.load(); up(); return null; }); };
+  var menu=function(){ var m=R.info, w=document.createElement("div"); w.className="kpm"; o.appendChild(w);
+    var bs=m.owner?[["add",TX.rmAdd,"plus",""],["rm",TX.rmRm,"fol",""],["ren",TX.rmRen,"id",""],["del",TX.rmDel,"","r"]]:[["lv",TX.rmLv,"","r"]];
+    w.innerHTML='<div><h3>'+esc(m.name)+'</h3><div class="kmn">'+bs.map(function(b){ return '<button type="button" data-k="'+b[0]+'"'+(b[3]?' class="'+b[3]+'"':'')+'>'+(b[2]?kIc(b[2]):'')+esc(L(b[1]))+'</button>'; }).join("")+'</div><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+    w.querySelector(".kc").onclick=function(){ w.remove(); }; w.onclick=function(e){ if(e.target===w) w.remove(); };
+    [].forEach.call(w.querySelectorAll("[data-k]"),function(b){ b.onclick=function(){ var k=b.dataset.k; w.remove();
+      if(k==="add"){ var have={}; m.mem.forEach(function(p){ have[p.pubid]=1; }); var pw=kPplPick(o,{title:L(TX.rmAdd),list:1,items:null,empty:L(TX.rmNoA),ok:L(TX.rmAdd),need:1,go:function(n,ps){ return op({op:"add",pubids:ps}); }});
+        kMyFol().then(function(a){ if(pw.isConnected) pw.setItems(a.filter(function(x){ return x.pubid&&!have[x.pubid]; })); }).catch(function(){ if(pw.isConnected) pw.setItems([]); }); }
+      else if(k==="rm") kPplPick(o,{title:L(TX.rmRm),list:1,items:m.mem.filter(function(p){ return !p.owner&&p.pubid; }),empty:L(TX.flE),ok:L(TX.rmRm),need:1,go:function(n,ps){ return op({op:"remove",pubids:ps}); }});
+      else if(k==="ren") kPplPick(o,{title:L(TX.rmRen),name:m.name,items:[],ok:L(TX.save),go:function(n){ return op({op:"rename",name:n}); }});
+      else if(k==="del"||k==="lv"){ if(!window.confirm(L(k==="del"?TX.rmDelQ:TX.rmLvQ))) return; kPost("/kst/room",{op:k==="del"?"del":"leave",rid:rid}).then(function(j){ if(j&&j.ok){ up(); pgBack(); return; } soon(kRoomErr(j)); }).catch(function(){ soon(L(TX.upNet)); }); } }; }); };
+  R.load(); try{ ntap("kara_stage","room"); }catch(e){} }
 function ntcOpen(){ var b=box(); if(!b) return; var o=b.querySelector(".kntc"); if(o) o.remove();
   var lg=window.LANG||"en", li=TX.ntcL[lg]||TX.ntcL.en, P=KB.packs, X=P[P.length-1], s=X.n+X.b, u=Math.min(3,s), r1=Math.max(0,Math.floor((X.p-u*1000)/10)*10), r2=Math.floor(r1*9/100)*10;
   var first=tf(L(TX.ntcP0),{list:P.map(function(q){ return (q.b?q.n+"+"+q.b+" ("+won(q.p)+" · "+songsTx(q.n+q.b)+")":songsTx(q.n)+" "+won(q.p)); }).join(" · ")});
