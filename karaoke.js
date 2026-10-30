@@ -451,14 +451,15 @@ function play(i){ var x=K.items&&K.items[i]; if(!x) return; klEnd(); K.cur=x; K.
       onReady:function(){ K.ready=true; if(K.want&&K.pl.getVideoData&&K.pl.getVideoData().video_id!==K.want) K.pl.loadVideoById(K.want); },
       onError:function(){ var c=K.items&&K.items[K.idx]; if(c){ c.e=0; paintList(); blocked(c); } },   // 미리 못 잡은 막힌 곡도 그 자리에서 안내 (다음 곡으로 안 넘김)
       onStateChange:function(ev){ if(ev&&ev.data===1){ ov("","lo"); ov("","up"); } if(ev&&ev.data===0) ov('<div>'+esc(L(TX.upQ))+'</div><button type="button" class="kupb" '+(isOwn()?'data-kup="1"':'data-ksoon="1"')+'>'+esc(L(TX.up))+'</button>',"up"); try{ klState(ev&&ev.data); }catch(e){} } }}); }); }
-function open(code){ try{ if(PG.length) pgTo(0); }catch(e){} var D=window.GU&&GU.d, o=D&&D.kara&&D.kara[code]; K.code=code; K.q=""; K.idx=-1; K.pl=null; K.ready=false; K.want=""; var old=box(); if(old) old.remove();
+function open(code){ K.tab=({ja:"jpop",en:"pop",es:"pop"})[window.LANG]||"kpop";   // 첫 목록 = 언어별 (한·중 K-POP, 일 J-POP, 영·서 팝)
+ try{ if(PG.length) pgTo(0); }catch(e){} var D=window.GU&&GU.d, o=D&&D.kara&&D.kara[code]; K.code=code; K.q=""; K.idx=-1; K.pl=null; K.ready=false; K.want=""; var old=box(); if(old) old.remove();
   var gn=o&&window.LP?LP(o.n):(o?o.g:""), b=document.createElement("div"); b.id="karBox";
   b.innerHTML='<div class="kin"><div class="khd"><div><b>'+esc(L(TX.t))+(gn?' · '+esc(gn):'')+'</b><small>'+esc(L(TX.s))+'</small></div><button type="button" class="kx">✕ '+esc(L(TX.x))+'</button></div>'
     // 채널 단추 줄은 뺐다 (사장님 10-30 「삭제」)
     +'<div class="kpl"><button type="button" class="krec">'+esc(L(TX.rec))+'</button><div class="kmsg">🎤 '+esc(L(TX.pick))+'</div></div>'
     +'<div class="kpay"><div class="kr"><b>'+esc(L(TX.kb))+'</b><small>'+esc(L(TX.kbs))+'</small></div><button type="button" class="kl" id="karLeft">'+esc(L(TX.lgin))+'</button><button type="button" class="kslot" data-kpay="1" aria-label="PAYMENT"><i></i><span>PAYMENT</span><small>'+esc(L(TX.slot))+'</small></button></div>'
     +'<div class="kpol2"><button type="button" class="kntl" data-kntc="1">'+esc(L(TX.ntc))+'</button></div>'   // 「곡 이용권 사기」 단추는 뺐다 — PAYMENT 와 같은 창 (사장님 10-30 「삭제」)
-    +'<div class="ktb">'+TABS.map(function(t){ return '<button type="button" data-t="'+t[0]+'"'+(t[0]===K.tab?' class="on"':'')+'>'+t[1]+'</button>'; }).join("")+'<button type="button" class="kstg">'+esc(L(TX.stgB))+'</button></div>'
+    +'<div class="ktb">'+'<button type="button" class="kstg">'+esc(L(TX.stgB))+'</button></div>'
     +'<form class="ksr"><input type="search" placeholder="'+esc(L(TX.q))+'"><button type="submit">'+esc(L(TX.go))+'</button></form>'
     +'<div class="kls"></div></div>';
   document.body.appendChild(b); document.documentElement.style.overflow="hidden";
