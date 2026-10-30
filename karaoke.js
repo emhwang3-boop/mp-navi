@@ -572,8 +572,8 @@ st.textContent+="#karBox .ktb .kchb{flex:1;display:flex;align-items:center;justi
 // 포인트 지갑 (10-31)
 st.textContent+="#karBox .kwb{display:flex;flex-direction:column;align-items:center;gap:3px;background:#05140c;border:1px solid #1d6b43;border-radius:14px;padding:12px;color:#7CFFB2;text-align:center}#karBox .kwb small{font-size:12px;color:#9fe8bf}#karBox .kwb b{font:900 28px/1.1 ui-monospace,Consolas,monospace;text-shadow:0 0 8px #2bd97d}#karBox .kwb span{font-size:12.5px;color:#cfeedd}"
  +"#karBox .kwbt{display:flex;gap:8px}#karBox .kwbt>*{flex:1;min-width:0}#karBox .kpm .kwg2{background:#7CFFB2}#karBox .kwls{display:flex;flex-direction:column;gap:6px;max-height:34vh;overflow:auto}#karBox .kwls>div{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,.06);border-radius:10px;padding:8px 10px;font-size:13.5px}#karBox .kwls span{display:block;min-width:0}#karBox .kwls small{display:block}#karBox .kwls small{font-size:11.5px;color:#cfc6e8}#karBox .kwls b{white-space:nowrap;font-variant-numeric:tabular-nums}#karBox .kwls .kwp{color:#7CFFB2}#karBox .kwls .kwm{color:#ffb4c8}"
- +"#karBox .kwtg{font-style:normal;font-size:10.5px;font-weight:900;color:#1a1300;background:#ffe066;border-radius:6px;padding:1px 5px;margin-left:4px}#karBox .kwpk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}#karBox .kwpk button{display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;border-radius:12px;padding:10px 4px;cursor:pointer}#karBox .kwpk button.on{border-color:#ffe066;background:rgba(255,224,102,.15)}#karBox .kwpk b{font-size:15px}#karBox .kwpk span{font-size:13px;color:#ffe066;font-weight:800}"
- +"#karBox .kwuse{font:900 19px/1.35 system-ui,sans-serif;text-align:center;background:#05140c;border:1px solid #1d6b43;color:#7CFFB2;border-radius:12px;padding:12px}#karBox .kwuse.kwno{color:#ffb4c8;border-color:#7a2a3a;background:#1a070c}#karBox .kpm.kptq{z-index:7}#karBox .kwtst{border-style:dashed!important;border-color:#ffe066!important;color:#ffe066!important}#karBox .kwac{margin-top:-4px}#karBox .kwsoon{font-size:12.5px;line-height:1.5;background:rgba(255,224,102,.12);border-color:#8a7420;color:#ffe9a6}#karBox .kwbt .krf{padding:9px 4px;font-size:13px}#karBox .kwbt .krf:disabled{opacity:.4;cursor:default}#karBox .kwcap{text-align:center}";
+ +"#karBox .kwtg{font-style:normal;font-size:10.5px;font-weight:900;color:#1a1300;background:#ffe066;border-radius:6px;padding:1px 5px;margin-left:4px}#karBox .kwpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#karBox .kwpk button{display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;border-radius:12px;padding:10px 4px;cursor:pointer}#karBox .kwpk button.on{border-color:#ffe066;background:rgba(255,224,102,.15)}#karBox .kwpk b{font-size:15px}#karBox .kwpk span{font-size:13px;color:#ffe066;font-weight:800}"
+ +"#karBox .kwuse{font:900 19px/1.35 system-ui,sans-serif;text-align:center;background:#05140c;border:1px solid #1d6b43;color:#7CFFB2;border-radius:12px;padding:12px}#karBox .kwuse.kwno{color:#ffb4c8;border-color:#7a2a3a;background:#1a070c}#karBox .kpm.kptq{z-index:7}#karBox .kwtst{border-style:dashed!important;border-color:#ffe066!important;color:#ffe066!important}#karBox .kwac{margin-top:-4px}#karBox .kwlow{align-self:flex-end;border:0;background:none;color:#ffe066;font-weight:800;font-size:13px;text-decoration:underline;cursor:pointer;padding:0}#karBox .kwsoon{font-size:12.5px;line-height:1.5;background:rgba(255,224,102,.12);border-color:#8a7420;color:#ffe9a6}#karBox .kwbt .krf{padding:9px 4px;font-size:13px}#karBox .kwbt .krf:disabled{opacity:.4;cursor:default}#karBox .kwcap{text-align:center}";
 // 우리끼리 방 머리 (사장님 10-31) — 집 아이콘 + 방 이름은 한 줄 전체(길면 줄바꿈, 말줄임 없음) · 「N명」「릴레이」「⋯」은 그 아래 줄 오른쪽
 st.textContent+="#karBox .krmh{flex-wrap:wrap;row-gap:8px}#karBox .krmh .krmt{flex:1 1 100%}#karBox .krmh .krmt b{white-space:normal;overflow:visible;text-overflow:clip;word-break:keep-all;overflow-wrap:anywhere;line-height:1.3}#karBox .krmh .krmt+.krmc{margin-left:auto}";
 document.head.appendChild(st);
@@ -641,7 +641,7 @@ function open(code){ K.tab=({ja:"jpop",en:"pop",es:"pop"})[window.LANG]||"kpop";
     +'<div class="kls"></div></div>';
   document.body.appendChild(b); document.documentElement.style.overflow="hidden";
   b.querySelector(".kx").onclick=close;
-  [].forEach.call(b.querySelectorAll("[data-kpay]"),function(x){ x.onclick=function(){ payOpen(""); }; });
+  [].forEach.call(b.querySelectorAll("[data-kpay]"),function(x){ x.onclick=function(){ payOpen(""); }; /* PAYMENT = 곡 이용권 구매 창 (포인트로 「구매」) · 충전은 내 지갑에만 (사장님 10-31) */ });
   b.querySelector("[data-kntc]").onclick=ntcOpen;
   b.querySelector(".kstg").onclick=function(){ stageOpen("all"); };
   b.querySelector(".kchb").onclick=function(){ kChal(); };   // 챌린지 (10-31)
@@ -697,6 +697,7 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
   var ut='<span class="kut">UNDER TESTING</span>';
   var cur={msg:"",busy:0};
   var draw=function(msg,busy){ cur={msg:msg||"",busy:busy||0}; var sg=karSigned(), left=karLeft(), P=KB.packs, x=P[KB.k]||P[0];
+    if(mode==="co") mode="";   // 돈 결제 창은 닫음 (10-31) — 로그인 뒤·토스 돌아옴도 묶음 창으로
     KB.k_go=mode==="co";
     if(mode==="rq"){   // 환불 요청 확인 — 노래방 안에서
       o.innerHTML='<div><h3>'+esc(L(TX.rfh))+'</h3><p class="kq">'+esc(fmtN(L(TX.rfq),left))+'</p><button type="button" class="kgo" data-rfo="1">'+esc(L(TX.rfo))+'</button><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
@@ -716,14 +717,14 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
         +'<div class="krow"><span>'+esc(L(TX.oid))+'</span><b>'+esc(res.oid)+'</b></div>'
         +'<div class="kt"><span>'+esc(L(TX.tot))+'</span><span>'+won(res.amount)+'</span></div>'
         +'<div class="kdone">'+esc(L(TX.tdone))+'</div><p class="km">'+esc(L(TX.polS))+'</p>'
-        +'<button type="button" class="kgo kcl">'+esc(L(TX.ok))+'</button>'+bizHtml()+'</div>';
+        +'<button type="button" class="kgo kcl">'+esc(L(TX.ok))+'</button>'+'</div>';
       o.querySelector(".kcl").onclick=function(){ o.remove(); KB.redraw=null; }; return; }
     if(mode==="co"){   // 확인·구매자 정보·결제 수단·동의 → 결제하기
       if(!sg){ mode=""; draw(L(TX.sgn)); return; }
       o.innerHTML='<div><div class="kstamp" aria-hidden="true">UNDER TESTING</div><h3>'+esc(L(TX.kb))+' · '+esc(L(TX.pay))+ut+'</h3>'
         +'<div class="krow"><span>'+esc(L(TX.sel))+'</span><b>'+esc(pkName(x))+(x.b?' <em class="ksv">'+esc(tf(L(TX.svc),{b:x.b}))+'</em>':'')+'</b></div>'
         +'<div class="krow"><span>'+esc(L(TX.rcv))+'</span><b>'+esc(songsTx(x.n+x.b))+' · '+esc(tf(L(TX.per),{w:perSong(x)}))+'</b></div>'
-        +'<div class="kt"><span>'+esc(L(TX.tot))+'</span><span>'+won(x.p)+'</span></div>'
+        +(kptOn()?'<div class="kt"><span>'+esc(L(TX.kwUseAmt))+'</span><span>'+ptS(x.n*((KP.d.use&&KP.d.use.song)||1000))+'</span></div>'+(KP.d.bal.total<x.n*((KP.d.use&&KP.d.use.song)||1000)?'<button type="button" class="kwlow" data-kwlow="1">'+esc(L(TX.kwLow))+' ›</button>':''):'<div class="kt"><span>'+esc(L(TX.tot))+'</span><span>'+won(x.p)+'</span></div>')
         +'<p class="km">'+esc(L(TX.polS))+'<br>'+esc(L(TX.keep))+'</p>'
         +'<b class="kh">'+esc(L(TX.cu))+'</b>'
         +'<label class="kfl">'+esc(L(TX.cn))+'<input type="text" id="kbN" maxlength="40" autocomplete="name" value="'+esc(KB.cn)+'"></label>'
@@ -736,7 +737,7 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
         +(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
         +'<p class="ktst">'+esc(L(TX.test))+'</p>'
         +'<button type="button" class="kgo" id="kbGo" disabled>'+(busy?esc(L(busy===2?TX.opn:TX.sav)):won(x.p)+' '+esc(L(TX.pay)))+'</button>'
-        +'<button type="button" class="kc" id="kbX">'+esc(L(TX.back))+'</button>'+bizHtml()+'</div>';
+        +'<button type="button" class="kc" id="kbX">'+esc(L(TX.back))+'</button>'+'</div>';
       ["kbN","kbP","kbE"].forEach(function(id,i){ var el=o.querySelector("#"+id); el.oninput=function(){ KB[["cn","cp","ce"][i]]=el.value; }; });
       var ag=o.querySelector("#kbAg"), go=o.querySelector("#kbGo");
       if(busy){ ag.checked=true; ag.disabled=true; } else { ag.checked=agd; go.disabled=!agd; ag.onchange=function(){ agd=ag.checked; go.disabled=!agd; }; }
@@ -767,16 +768,16 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
     +(sg?'<div class="klf">'+esc(fmtN(L(TX.lftN),left))+'</div>':'<div class="ksg">'+esc(L(TX.sgi))+'<button type="button" class="ksgb">'+esc(L(TX.sgb))+'</button></div>')
     +'<div class="kpks">'+P.map(function(q,i){ return '<button type="button" data-pk="'+i+'" class="kpk'+(i===KB.k?" on":"")+'"><b>'+esc(pkName(q))+'</b>'
       +(q.b?'<em class="ksv">'+esc(tf(L(TX.svc),{b:q.b}))+'</em>':'<em class="ksv ksv0">&nbsp;</em>')
-      +'<span class="kpp1">'+won(q.p)+'</span><small>'+esc(songsTx(q.n+q.b))+' · '+esc(tf(L(TX.per),{w:perSong(q)}))+'</small></button>'; }).join("")+'</div>'
+      +'<span class="kpp1">'+(kptOn()?ptS(q.n*((KP.d.use&&KP.d.use.song)||1000)):won(q.p))+'</span><small>'+esc(songsTx(q.n+q.b))+' · '+esc(tf(L(TX.per),{w:kptOn()?ptPer(q):perSong(q)}))+'</small></button>'; }).join("")+'</div>'
     +'<p class="km">'+esc(L(TX.keep))+'</p>'
-    +'<div class="kt"><span>'+esc(L(TX.tot))+'</span><span>'+won(x.p)+'</span></div>'
+    +(kptOn()?'<div class="kt"><span>'+esc(L(TX.kwUseAmt))+'</span><span>'+ptS(x.n*((KP.d.use&&KP.d.use.song)||1000))+'</span></div>'+(KP.d.bal.total<x.n*((KP.d.use&&KP.d.use.song)||1000)?'<button type="button" class="kwlow" data-kwlow="1">'+esc(L(TX.kwLow))+' ›</button>':''):'<div class="kt"><span>'+esc(L(TX.tot))+'</span><span>'+won(x.p)+'</span></div>')
     +(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
-    +(kptOn()?'<button type="button" class="kgo" id="kbNx">'+esc(tf(L(TX.kwPtBuy),{c:ptS(x.n*((KP.d.use&&KP.d.use.song)||1000))}))+' — '+esc(pkName(x))+'</button><button type="button" class="krf" data-kwc="1">'+esc(L(TX.kwT))+' · '+ptS(KP.d.bal.total)+'</button>':'<button type="button" class="kgo" id="kbNx">'+esc(L(TX.nxt))+' — '+esc(pkName(x))+' · '+won(x.p)+'</button>')   // 포인트 켜지면 포인트로 구매 (10-31)
+    +(kptOn()?'<button type="button" class="kgo" id="kbNx">'+esc(L(TX.kwBuyB))+'</button><button type="button" class="krf" data-kwc="1">'+esc(L(TX.kwT))+' · '+ptS(KP.d.bal.total)+'</button>':'<button type="button" class="kgo kgsoon" id="kbNx">'+esc(L(TX.kwBuyB))+'</button>')   // 손님 — 돈으로 곡 이용권 직접 구매는 없앰 → 준비 중 (10-31)   // 포인트 켜지면 포인트로 구매 (10-31)
     +(sg&&left>=1&&!kptOn()?'<button type="button" class="krf">'+esc(fmtN(L(TX.rfb),left))+'</button>':'')
-    +'<button type="button" class="kpp" data-kntc="1">'+esc(L(TX.ntcP))+'</button><p class="ktst">'+esc(L(TX.test))+'</p><button type="button" class="kc">'+esc(L(TX.cancel))+'</button>'+bizHtml()+'</div>';
+    +'<button type="button" class="kpp" data-kntc="1">'+esc(L(TX.ntcP))+'</button>'+(kptOn()?'':'<p class="ktst">'+esc(L(TX.test))+'</p>')+'<button type="button" class="kc">'+esc(L(TX.cancel))+'</button>'+'</div>';
     [].forEach.call(o.querySelectorAll("[data-pk]"),function(y){ y.onclick=function(){ KB.k=+y.dataset.pk; draw(); }; });
-    o.querySelector("#kbNx").onclick=function(){ if(!karSigned()){ draw(L(TX.sgn)); signIn(); return; } if(kptOn()){ kptSong(KB.k); return; } mode="co"; agd=false; try{ ntap("kara_pay","pick_"+(x.n+x.b)); }catch(e){} draw(); };
-    var sb=o.querySelector(".ksgb"); if(sb) sb.onclick=signIn; var kw=o.querySelector("[data-kwc]"); if(kw) kw.onclick=function(){ kwOpen(""); };
+    o.querySelector("#kbNx").onclick=function(){ if(!karSigned()){ draw(L(TX.sgn)); signIn(); return; } if(kptOn()){ kptSong(KB.k); return; } soon(); return; /* 돈 결제 창(co)은 닫음 — 포인트로만 (10-31) */ mode="co"; agd=false; try{ ntap("kara_pay","pick_"+(x.n+x.b)); }catch(e){} draw(); };
+    var sb=o.querySelector(".ksgb"); if(sb) sb.onclick=signIn; var kw=o.querySelector("[data-kwc]"); if(kw) kw.onclick=function(){ kwOpen(""); }; var kl=o.querySelector("[data-kwlow]"); if(kl) kl.onclick=function(){ kwOpen("chg"); };
     var rb=o.querySelector(".krf"); if(rb) rb.onclick=function(){ mode="rq"; draw(); };
     o.querySelector(".kpp").onclick=ntcOpen;
     o.querySelector(".kc").onclick=function(){ o.remove(); KB.redraw=null; }; };
@@ -798,8 +799,16 @@ if(/[?&]karres=/.test(location.search)){ var _kr=function(){ setTimeout(function
 //   켜짐 = 허브가 지갑을 돌려줄 때만 (손님에게 열기 전엔 사장님 기기 x-kown 만 · 손님은 closed → 예전 화면 그대로)
 //   초록 칸 「잔여 곡 3 · 12,000P」 → 누르면 「내 지갑」(잔여·유료/무료·유효기간·충전·사용 내역·환불 요청) · 돈 드는 일은 늘 「3,000P 사용 → 9,000P 남음」 확인 뒤
 //   충전: 웹 = 웹 가격(시험 충전 · KG이니시스 준비 중) / 앱(Capacitor) = 앱 가격만(구글 플레이 결제) — 앱에는 웹 가격을 절대 보이지 않는다
-var KP={on:0,d:null,redraw:null};
+var KP={on:0,d:null,redraw:null,k:1};   // k = 고른 충전 묶음 (기본 10,000P)
+function ptPer(q){ var v=q.n*((KP.d&&KP.d.use&&KP.d.use.song)||1000)/(q.n+q.b); return (v%1?"≈":"")+ptS(v); }   // 곡당 P
+function wonL(v){ return window.LANG==="ko"?Math.round(v).toLocaleString("ko-KR")+"원":won(v); }   // 결제 단추 — 한국어는 「10,000원」
 Object.assign(TX,{
+ kwPayB:{ko:"결제",en:"Pay",ja:"決済",zhs:"支付",zht:"支付",es:"Pagar"},
+ kwBuyB:{ko:"구매",en:"Buy",ja:"購入",zhs:"购买",zht:"購買",es:"Comprar"},
+ kwBuyPt:{ko:"곡 이용권 구매(포인트)",en:"Buy song pass (points)",ja:"曲チケット購入（ポイント）",zhs:"购买点歌券（积分）",zht:"購買點歌券（點數）",es:"Comprar bono (puntos)"},
+ kwSoonS:{ko:"준비 중",en:"Coming soon",ja:"準備中",zhs:"准备中",zht:"準備中",es:"Próximamente"},
+ kwUseAmt:{ko:"사용 포인트",en:"Points to use",ja:"使用ポイント",zhs:"使用积分",zht:"使用點數",es:"Puntos a usar"},
+ kwLow:{ko:"포인트 부족 → 충전",en:"Not enough points → Top up",ja:"ポイント不足 → チャージ",zhs:"积分不足 → 充值",zht:"點數不足 → 儲值",es:"Puntos insuficientes → Recargar"},
  kwBar:{ko:"잔여 곡 {n} · {p}",en:"Songs {n} · {p}",ja:"残り曲 {n} · {p}",zhs:"剩余歌曲 {n} · {p}",zht:"剩餘歌曲 {n} · {p}",es:"Canciones {n} · {p}"},
  kwT:{ko:"내 지갑",en:"My wallet",ja:"マイウォレット",zhs:"我的钱包",zht:"我的錢包",es:"Mi monedero"},
  kwBal:{ko:"잔여 포인트",en:"Points balance",ja:"残りポイント",zhs:"剩余积分",zht:"剩餘點數",es:"Saldo de puntos"},
@@ -865,11 +874,11 @@ function kptPost(path,o){ var q={sess:sess()}; for(var k in o) q[k]=o[k]; var h=
 function kptLoad(){ if(!sess()){ KP.on=0; KP.d=null; barPaint(); return Promise.resolve(null); }
   return kptPost("me",{}).then(function(j){ if(j&&j.ok&&!j.closed){ KP.on=1; KP.d=j; KB.left=+j.left||0; if(kApp()&&!KP.rec){ KP.rec=1; kGpRecover(); } } else { KP.on=0; KP.d=null; } barPaint(); if(KP.redraw) KP.redraw(); return j; }).catch(function(){ return null; }); }
 // 사용 미리 보기 — 「3,000P 사용 → 9,000P 남음」 · 확인하면 go() (모자라면 충전으로)
-function kptAsk(cost,title,go,note){ var b=box(); if(!b) return; var o=document.createElement("div"); o.className="kpm kptq"; b.appendChild(o); var bal=KP.d?KP.d.bal.total:0, busy=false;   // note = 금액 대신 안내 글 (연장 등 돈 안 드는 확인)
+function kptAsk(cost,title,go,note,okL){ /* okL = 마지막 단추 글자 (구매 등, 없으면 확인) */ var b=box(); if(!b) return; var o=document.createElement("div"); o.className="kpm kptq"; b.appendChild(o); var bal=KP.d?KP.d.bal.total:0, busy=false;   // note = 금액 대신 안내 글 (연장 등 돈 안 드는 확인)
   var draw=function(msg){ var short=!note&&bal<cost;
     o.innerHTML='<div><h3>'+esc(title)+'</h3><div class="kwuse'+(short?' kwno':'')+'">'+esc(note||tf(L(TX.kwUse),{c:ptS(cost),r:ptS(Math.max(0,bal-cost))}))+'</div>'
       +(short?'<div class="kerr">'+esc(tf(L(TX.kwShort),{h:ptS(bal)}))+'</div>':'')+(msg?'<div class="kerr">'+esc(msg)+'</div>':'')+'<p class="km">'+esc(L(TX.kwRule))+'</p>'
-      +(short?'<button type="button" class="kgo" data-c="1">'+esc(L(TX.kwChg))+'</button>':'<button type="button" class="kgo" data-y="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwOk))+'</button>')+'<button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+      +(short?'<button type="button" class="kgo" data-c="1">'+esc(L(TX.kwChg))+'</button>':'<button type="button" class="kgo" data-y="1"'+(busy?' disabled':'')+'>'+esc(okL||L(TX.kwOk))+'</button>')+'<button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
     o.querySelector(".kc").onclick=function(){ o.remove(); };
     var y=o.querySelector("[data-y]"); if(y) y.onclick=function(){ if(busy) return; busy=true; draw(); go(function(err){ busy=false; if(err) draw(err); else o.remove(); }); };
     var c=o.querySelector("[data-c]"); if(c) c.onclick=function(){ o.remove(); kwOpen("chg"); }; };
@@ -884,9 +893,10 @@ function kwOpen(v0){ var b=box(); if(!b) return; var o=b.querySelector(".kwal");
       h+='<b class="kh">'+esc(L(TX.kwChgT))+'</b><div class="kwpk">'+P.pt.map(function(pt,i){ var bo=(d.bonus||[])[i]||0;
         return '<button type="button" data-k="'+i+'"'+(i===(KP.k||0)?' class="on"':'')+'><b>'+ptS(pt)+'</b>'+(bo?'<em class="ksv">'+esc(tf(L(TX.kwBon),{b:ptS(bo)}))+'</em>':'')+'<span>'+won(wonA[i])+'</span></button>'; }).join("")+'</div>'
         +'<p class="km">'+esc(L(TX.kwRule))+(app?'<br>'+esc(L(TX.kwGpN)):'')+'</p>'+(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
-        +(app?'<button type="button" class="kgo" data-gp="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwGp))+' · '+won(wonA[KP.k||0])+'</button>'
-             :'<button type="button" class="kgo" data-pg="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwCard))+' · '+won(wonA[KP.k||0])+'</button>')
+        +(app?'<button type="button" class="kgo" data-gp="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwPayB))+'</button>'
+             :'<button type="button" class="kgo" data-pg="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwPayB))+'</button>')
         +(own?'<button type="button" class="krf kwtst" data-t="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwTst))+' · '+ptS(P.pt[KP.k||0])+'</button><p class="km">'+esc(L(TX.kwTstN))+'</p>':'')
+        +'<button type="button" class="krf" data-buy="1">'+esc(L(TX.kwBuyPt))+'</button>'   // 충전 창 안에서 곡 이용권 구매 (10-31)
         +'<button type="button" class="kc" data-bk="1">'+esc(L(TX.back))+'</button></div>'; }
     else if(v==="rf"){ var f=Math.round((d.fee||0)*1000)/10;
       h+='<b class="kh">'+esc(L(TX.kwRf))+'</b><p class="km">'+esc(tf(L(TX.kwRfN),{f:f}))+'</p>';
@@ -933,7 +943,7 @@ function kwOpen(v0){ var b=box(); if(!b) return; var o=b.querySelector(".kwal");
 function kptSong(k){ var x=KB.packs[k]||KB.packs[0], cost=x.n*((KP.d&&KP.d.use&&KP.d.use.song)||1000), rid=kRid();
   kptAsk(cost,L(TX.kb)+" "+pkName(x)+" · "+songsTx(x.n+x.b),function(done){
     kptPost("use",{what:"song",k:k,rid:rid}).then(function(j){ if(j&&j.ok){ try{ ntap("kara_pt","song_"+(x.n+x.b)); }catch(e){} done(); kptLoad().then(function(){ soon(L(TX.kwDone)+" "+songsTx(x.n+x.b)); }); }
-      else done(j&&j.err==="short"?tf(L(TX.kwShort),{h:ptS(j.have||0)}):L(TX.efail)); }).catch(function(){ done(L(TX.efail)); }); }); }
+      else done(j&&j.err==="short"?tf(L(TX.kwShort),{h:ptS(j.have||0)}):L(TX.efail)); }).catch(function(){ done(L(TX.efail)); }); },"",L(TX.kwBuyB)); }
 // ── 앱 결제 (구글 플레이) — 플러그인 @capgo/native-purchases (Capacitor 8) · 상품 pt_10000·pt_30000·pt_50000 (소모성)
 //   구매 → 허브 /shop/kpt/charge {rail:"gplay", pid, token} 가 확인·충전 → 허브 OK 뒤에만 consumePurchase (실패하면 남겨 두고 다음에 다시 보냄 — 허브는 같은 토큰을 한 번만 충전)
 //   🔴 허브 확인은 서비스 계정(GPLAY_SA) 넣기 전엔 503 nosa → 「구매 확인은 준비 중」 · 플레이 콘솔에 상품을 만들기 전엔 구매 창이 안 뜬다
@@ -1673,7 +1683,7 @@ function kAiOpen(){ var b=box(), th=REC.th, T=kTh(th); if(!b||!REC.frc||!T) retu
     var ap=o.querySelector("[data-ap]"); if(ap) ap.onclick=function(){ var rr=A.res; ap.disabled=true; rr.put.then(function(ok){ if(!ok) throw 0; return kPost("/kst/me",{aip:rr.aid}); }).then(function(j){ ap.disabled=false; soon(L(j&&j.ok?TX.aiPOk:TX.aiF)); }).catch(function(){ ap.disabled=false; soon(L(TX.aiF)); }); };
     var ac=o.querySelector("[data-ac]"); if(ac) ac.onclick=function(){ REC.aiCard={aid:A.res.aid,blob:A.res.blob}; A.used=true; draw(); soon(L(TX.aiCOk)); }; };
   var fail=function(m){ A.busy=false; A.ac=null; A.msg=m||L(TX.aiF); draw(); };
-  var gen=function(k){ if(A.busy) return; if(kptOn()&&!A.pq){ var pc=(KP.d.use&&KP.d.use.ai)||3000; if(KP.d.bal.total>=pc){ kptAsk(pc,Lp(T[1]),function(done){ done(); A.pq={rid:kRid()}; gen(k); }); return; } soon(L(TX.kwAiF)); } gen0(k); };   // 포인트 (10-31)
+  var gen=function(k){ if(A.busy) return; if(kptOn()&&!A.pq){ var pc=(KP.d.use&&KP.d.use.ai)||3000; if(KP.d.bal.total>=pc){ kptAsk(pc,Lp(T[1]),function(done){ done(); A.pq={rid:kRid()}; gen(k); },"",L(TX.kwBuyB)); return; } soon(L(TX.kwAiF)); } gen0(k); };   // 포인트 (10-31)
   var gen0=function(k){ var pq=A.pq; A.pq=null; if(A.busy) return; A.sc=k; A.busy=true; A.msg=""; draw(); try{ ntap("kara_ai",th+"_"+k); }catch(e){}
     var ctl=window.AbortController?new AbortController():null, to=setTimeout(function(){ if(ctl) try{ ctl.abort(); }catch(e){} },60000); A.ac=ctl;
     kJpg(fr,580*1024).then(function(jpg){ return fetch(HUB+"/kst/aiphoto?th="+th+"&sc="+k+"&"+kQs()+(pq?"&pt=1&rid="+pq.rid:""),{method:"POST",headers:{"Content-Type":"image/jpeg","x-kown":KOWN},body:jpg,signal:ctl?ctl.signal:undefined}); })
