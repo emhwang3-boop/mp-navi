@@ -1644,7 +1644,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1027gap2"></script>
 <script src="gift.js?v=1028gift"></script>
-<script src="near.js?v=1027np3"></script>
+<script src="near.js?v=1030mo"></script>
 <script src="shop.js?v=1029pm"></script>
 <script src="tosspay.js?v=1029tw"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
@@ -1948,5 +1948,12 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
   }catch(e){ try{ var o=document.getElementById("mpcrawl"); if(o&&o.parentNode) o.parentNode.removeChild(o); document.documentElement.classList.remove("mpc-lock"); }catch(x){} }
 })();
 </script>
+<script>/* ⋮ 메뉴 순서 (사장님 10-30) — 여러 파일이 항목을 따로 붙여서, 붙을 때마다 이 순서로 다시 줄 세운다 */
+(function(){ var ORD=["mnear_tg","mtrip","mnear_ig","mgift","mnear_am","mnear_st","mnear_em","mpg","mcopy","mref"];
+  function sortM(){ var mm=document.getElementById("mm"); if(!mm) return; var now=[].map.call(mm.children,function(e){ return e.id; }).filter(function(id){ return ORD.indexOf(id)>=0; });
+    var want=ORD.filter(function(id){ return now.indexOf(id)>=0; }); if(now.join()===want.join()) return;
+    want.forEach(function(id){ var e=document.getElementById(id); if(e) mm.appendChild(e); }); [].slice.call(mm.children).forEach(function(e){ if(ORD.indexOf(e.id)<0) mm.appendChild(e); }); }
+  function go(){ var mm=document.getElementById("mm"); if(!mm) return; sortM(); try{ new MutationObserver(sortM).observe(mm,{childList:true}); }catch(e){} }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",go); else go(); })();</script>
 </body>
 </html>
