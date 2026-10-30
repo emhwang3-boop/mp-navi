@@ -611,7 +611,7 @@ function entries(){ css(); var box=document.getElementById("gfchips");
     c.textContent=k==="tg"?LG6(TOURS6):k==="ig"?LG6(IG_CHIP6):T(CHIP[k][0],CHIP[k][1]); });
   var mm=document.getElementById("mm"); if(mm) ["tg","am","em","st","ig"].forEach(function(k){ var id="mnear_"+k, a=document.getElementById(id);
     if(!a){ a=document.createElement("a"); a.id=id; a.href="#"; a.className="mi"; a.dataset.nr=k; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); }
-    a.innerHTML=k==="ig"?'<img class="miic" src="img/menu/mi_guideperson.png" alt="">'+esc(LG6({ko:"통역·길안내",en:"Interpreter & guide",ja:"通訳・ガイド",zhs:"翻译·向导",zht:"翻譯·嚮導",es:"Intérprete y guía"})):miLbl(k); }); }
+    a.innerHTML=k==="ig"?'<img class="miic" src="img/menu/mi_guideperson.png" alt="">'+esc(LG6({ko:"여행가이드",en:"Tour guide",ja:"旅行ガイド",zhs:"导游",zht:"導遊",es:"Guía turístico"})):miLbl(k); }); }
 var f=window.setLang; if(typeof f==="function"&&!f._nr){ var g=function(){ var r=f.apply(this,arguments); try{ entries(); if(document.getElementById("nrBox")) relang(); var bk=document.getElementById("nrBk"); if(bk&&BK) bookOpen(); }catch(e){} return r; }; g._nr=1; g._gf=f._gf; g._tr=f._tr; window.setLang=g; }   // 열린 목록·예약 창은 그 자리에서 (10-18)
 entries();
 // ── 관광 가이드 등록 (공급 측, 사장님 10-24) — 「입점 문의」 빌딩에서 window.GUIDEREG() 로 연다. 별도 전체 화면 · 6개 언어 ──
