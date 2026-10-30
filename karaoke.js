@@ -270,7 +270,8 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
     if(mode==="rq"){   // 환불 요청 확인 — 노래방 안에서
       o.innerHTML='<div><h3>'+esc(L(TX.rfh))+'</h3><p class="kq">'+esc(fmtN(L(TX.rfq),left))+'</p><button type="button" class="kgo" data-rfo="1">'+esc(L(TX.rfo))+'</button><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
       o.querySelector("[data-rfo]").onclick=function(){ try{ ntap("kara_pay","refund_req"); }catch(e){}
-        // TODO 결제 연결되면: 허브에 환불 요청 POST (세션 mpv_pg_sess · 남은 곡 수) 후 접수 결과로 바꾼다. 지금은 허브 호출 없음
+        // 허브 POST /shop/karefund {sess,left,l} → 노래방 관리자 「환불 도구」 목록에 한 줄 (10-30). 카드 취소는 관리자가 처리 — 지금은 결제 연결 전이라 기록만
+        try{ fetch(HUB+"/shop/karefund",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sess:sess(),left:left,l:window.LANG||"en"})}).catch(function(){}); }catch(e){}
         mode="done"; draw(); };
       o.querySelector(".kc").onclick=function(){ mode=""; draw(); }; return; }
     if(mode==="done"){
