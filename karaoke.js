@@ -764,7 +764,7 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
     +(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
     +(kptOn()?'<button type="button" class="kgo" id="kbNx">'+esc(L(TX.kwBuyB))+'</button><button type="button" class="krf" data-kwc="1">'+esc(L(TX.kwT))+' · '+ptS(KP.d.bal.total)+'</button>':'<button type="button" class="kgo kgsoon" id="kbNx">'+esc(L(TX.kwBuyB))+'</button>')   // 로그인 전 — 누르면 로그인 (10-31)   // 포인트 켜지면 포인트로 구매 (10-31)
     +(sg&&left>=1&&!kptOn()?'<button type="button" class="krf">'+esc(fmtN(L(TX.rfb),left))+'</button>':'')
-    +'<button type="button" class="kpp" data-kntc="1">'+esc(L(TX.ntcP))+'</button>'+'<button type="button" class="kc">'+esc(L(TX.cancel))+'</button>'+'</div>';
+    +'<button type="button" class="kpp" data-kntc="1">'+esc(L(TX.ntcP))+'</button>'+'<button type="button" class="kc">'+esc(L(TX.ok))+'</button>'+'</div>';
     [].forEach.call(o.querySelectorAll("[data-pk]"),function(y){ y.onclick=function(){ KB.k=+y.dataset.pk; draw(); }; });
     o.querySelector("#kbNx").onclick=function(){ if(!karSigned()){ draw(L(TX.sgn)); signIn(); return; } if(kptOn()){ kptSong(KB.k); return; } kptLoad().then(function(){ if(kptOn()) kptSong(KB.k); else draw(L(TX.efail)); }); return; /* 돈 결제 창(co)은 닫음 — 포인트로만 (10-31) */ mode="co"; agd=false; try{ ntap("kara_pay","pick_"+(x.n+x.b)); }catch(e){} draw(); };
     var sb=o.querySelector(".ksgb"); if(sb) sb.onclick=signIn; var kw=o.querySelector("[data-kwc]"); if(kw) kw.onclick=function(){ kwOpen(""); }; var kl=o.querySelector("[data-kwlow]"); if(kl) kl.onclick=function(){ kwOpen("chg"); };
