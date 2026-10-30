@@ -320,6 +320,153 @@ Object.assign(TX,{
  rjId:{ko:"내 스테이지 ID를 설정해 주세요. 방 멤버에게 이 ID로 표시됩니다.",en:"Set your Stage ID. Room members will see you by this ID.",ja:"ステージIDを決めてください。ルームのメンバーにはこのIDで表示されます。",zhs:"请设置你的舞台ID，房间成员会看到这个ID。",zht:"請設定你的舞台ID，房間成員會看到這個ID。",es:"Elige tu ID de Stage. Los miembros de la sala te verán con este ID."},
  rjLt:{ko:"나중에",en:"Later",ja:"あとで",zhs:"以后再说",zht:"以後再說",es:"Más tarde"}
 });
+// ── 챌린지·릴레이·위챗/웨이보·이용 안내 문구 (사장님 10-31) — 한국어는 한자어
+Object.assign(TX,{
+ chB:{ko:"챌린지",en:"Challenge",ja:"チャレンジ",zhs:"挑战",zht:"挑戰",es:"Reto"},
+ chT:{ko:"이번 주 챌린지",en:"This week's challenge",ja:"今週のチャレンジ",zhs:"本周挑战",zht:"本週挑戰",es:"Reto de la semana"},
+ chNone:{ko:"진행 중인 챌린지가 없어요.",en:"There is no challenge right now.",ja:"開催中のチャレンジはありません。",zhs:"目前没有进行中的挑战。",zht:"目前沒有進行中的挑戰。",es:"No hay ningún reto en curso."},
+ chLeft:{ko:"{n}일 남음",en:"{n} days left",ja:"残り{n}日",zhs:"剩余{n}天",zht:"剩餘{n}天",es:"Quedan {n} días"},
+ chLeftH:{ko:"{n}시간 남음",en:"{n} hours left",ja:"残り{n}時間",zhs:"剩余{n}小时",zht:"剩餘{n}小時",es:"Quedan {n} horas"},
+ chEnd:{ko:"종료",en:"Ended",ja:"終了",zhs:"已结束",zht:"已結束",es:"Finalizado"},
+ chWait:{ko:"시작 전",en:"Not started",ja:"開始前",zhs:"未开始",zht:"未開始",es:"Aún no empieza"},
+ chN:{ko:"참여 {n}건",en:"{n} entries",ja:"参加 {n}件",zhs:"参与 {n}个",zht:"參與 {n}個",es:"{n} participaciones"},
+ chGo:{ko:"도전",en:"Take the challenge",ja:"挑戦する",zhs:"参加挑战",zht:"參加挑戰",es:"Participar"},
+ chInv:{ko:"친구 초대",en:"Invite friends",ja:"友だちを招待",zhs:"邀请好友",zht:"邀請好友",es:"Invitar amigos"},
+ chList:{ko:"참여 영상",en:"Entries",ja:"参加動画",zhs:"参与视频",zht:"參與影片",es:"Participaciones"},
+ chE:{ko:"아직 참여 영상이 없어요. 첫 도전자가 되어 보세요.",en:"No entries yet. Be the first to take the challenge.",ja:"まだ参加動画がありません。最初の挑戦者になりましょう。",zhs:"还没有参与视频，来当第一个挑战者吧。",zht:"還沒有參與影片，來當第一個挑戰者吧。",es:"Aún no hay participaciones. Sé la primera persona en participar."},
+ chPast:{ko:"지난 챌린지",en:"Past challenges",ja:"過去のチャレンジ",zhs:"往期挑战",zht:"往期挑戰",es:"Retos anteriores"},
+ chJoin:{ko:"챌린지 참여",en:"Join the challenge",ja:"チャレンジに参加",zhs:"参加挑战",zht:"參加挑戰",es:"Unirme al reto"},
+ chVisN:{ko:"챌린지 참여는 전체 공개 영상만 가능해요.",en:"Only videos visible to everyone can join the challenge.",ja:"チャレンジ参加は全体公開の動画のみです。",zhs:"只有公开给所有人的视频才能参加挑战。",zht:"只有公開給所有人的影片才能參加挑戰。",es:"Solo los vídeos públicos pueden participar en el reto."},
+ chErr:{ko:"챌린지 기간이 종료되었거나 곡이 달라요.",en:"The challenge has ended or this is a different song.",ja:"チャレンジ期間が終了したか、曲が違います。",zhs:"挑战已结束，或歌曲不同。",zht:"挑戰已結束，或歌曲不同。",es:"El reto ha terminado o la canción es distinta."},
+ chInvT:{ko:"{n}님이 StageSong 챌린지에 초대했어요 — {t}",en:"{n} invited you to a StageSong challenge — {t}",ja:"{n}さんがStageSongチャレンジに招待しました — {t}",zhs:"{n} 邀请你参加 StageSong 挑战 — {t}",zht:"{n} 邀請你參加 StageSong 挑戰 — {t}",es:"{n} te invita a un reto de StageSong — {t}"},
+ chInvT0:{ko:"StageSong 챌린지 초대 — {t}",en:"StageSong challenge invitation — {t}",ja:"StageSongチャレンジへの招待 — {t}",zhs:"StageSong 挑战邀请 — {t}",zht:"StageSong 挑戰邀請 — {t}",es:"Invitación a un reto de StageSong — {t}"},
+ chInvD:{ko:"같은 노래로 도전하고 점수를 겨뤄 보세요",en:"Sing the same song and compete for the top score",ja:"同じ歌で挑戦して点数を競いましょう",zhs:"唱同一首歌，比一比谁的分数高",zht:"唱同一首歌，比一比誰的分數高",es:"Canta la misma canción y compite por la mejor puntuación"},
+ chRank:{ko:"{n}위",en:"No. {n}",ja:"{n}位",zhs:"第{n}名",zht:"第{n}名",es:"N.º {n}"},
+ rlB:{ko:"릴레이",en:"Relay",ja:"リレー",zhs:"接力",zht:"接力",es:"Relevo"},
+ rlNone:{ko:"진행 중인 릴레이가 없어요.",en:"No relay in progress.",ja:"進行中のリレーはありません。",zhs:"目前没有进行中的接力。",zht:"目前沒有進行中的接力。",es:"No hay ningún relevo en curso."},
+ rlNoneO:{ko:"방장만 릴레이를 시작할 수 있어요.",en:"Only the host can start a relay.",ja:"リレーを始められるのはホストだけです。",zhs:"只有房主可以开始接力。",zht:"只有房主可以開始接力。",es:"Solo el anfitrión puede iniciar un relevo."},
+ rlStart:{ko:"릴레이 시작",en:"Start a relay",ja:"リレーを始める",zhs:"开始接力",zht:"開始接力",es:"Iniciar relevo"},
+ rlSong:{ko:"곡 선택",en:"Choose a song",ja:"曲を選ぶ",zhs:"选择歌曲",zht:"選擇歌曲",es:"Elige una canción"},
+ rlFirst:{ko:"첫 주자 지명",en:"Choose the first singer",ja:"最初の走者を指名",zhs:"指定第一棒",zht:"指定第一棒",es:"Elige quién canta primero"},
+ rlTurn:{ko:"{n}님 차례",en:"{n}'s turn",ja:"{n}さんの番",zhs:"轮到 {n}",zht:"輪到 {n}",es:"Turno de {n}"},
+ rlMine:{ko:"내 차례",en:"Your turn",ja:"あなたの番",zhs:"轮到你了",zht:"輪到你了",es:"Te toca"},
+ rlWait:{ko:"다음 주자 지명 대기",en:"Waiting for the next singer",ja:"次の走者の指名待ち",zhs:"等待指定下一棒",zht:"等待指定下一棒",es:"Esperando al siguiente"},
+ rlGo:{ko:"릴레이 도전",en:"Sing my turn",ja:"リレーに挑戦",zhs:"接力演唱",zht:"接力演唱",es:"Cantar mi turno"},
+ rlNext:{ko:"다음 주자 지명",en:"Pass to the next singer",ja:"次の走者を指名",zhs:"指定下一棒",zht:"指定下一棒",es:"Pasar al siguiente"},
+ rlNextN:{ko:"아직 부르지 않은 사람이 먼저 표시됩니다.",en:"People who haven't sung yet are shown first.",ja:"まだ歌っていない人が先に表示されます。",zhs:"还没唱过的人排在前面。",zht:"還沒唱過的人排在前面。",es:"Primero aparecen quienes aún no han cantado."},
+ rlSung:{ko:"완료",en:"Done",ja:"済み",zhs:"已唱",zht:"已唱",es:"Hecho"},
+ rlChg:{ko:"주자 변경",en:"Change singer",ja:"走者を変更",zhs:"更换接力者",zht:"更換接力者",es:"Cambiar cantante"},
+ rlSkip:{ko:"건너뛰기",en:"Skip",ja:"スキップ",zhs:"跳过",zht:"跳過",es:"Saltar"},
+ rlEnd:{ko:"릴레이 종료",en:"End relay",ja:"リレーを終了",zhs:"结束接力",zht:"結束接力",es:"Terminar relevo"},
+ rlEndQ:{ko:"릴레이를 종료할까요? 게시한 영상은 방에 그대로 남아요.",en:"End this relay? Posted videos stay in the room.",ja:"リレーを終了しますか？投稿した動画はルームに残ります。",zhs:"要结束接力吗？已发布的视频会留在房间里。",zht:"要結束接力嗎？已發布的影片會留在房間裡。",es:"¿Terminar el relevo? Los vídeos publicados se quedan en la sala."},
+ rlTell:{ko:"차례 알림",en:"Tell them",ja:"番を知らせる",zhs:"提醒接力",zht:"提醒接力",es:"Avisar"},
+ rlTellT:{ko:"{n}님, 우리끼리 방 릴레이 차례예요",en:"{n}, it's your turn in the Just-us room relay",ja:"{n}さん、「仲間だけ」ルームのリレーの番です",zhs:"{n}，轮到你在小圈子房间接力了",zht:"{n}，輪到你在小圈子房間接力了",es:"{n}, te toca en el relevo de la sala «Solo nosotros»"},
+ rlTellD:{ko:"곡: {t} · StageSong 우리끼리 방",en:"Song: {t} · StageSong Just-us room",ja:"曲: {t} · StageSong「仲間だけ」ルーム",zhs:"歌曲：{t} · StageSong 小圈子房间",zht:"歌曲：{t} · StageSong 小圈子房間",es:"Canción: {t} · Sala «Solo nosotros» de StageSong"},
+ rlPost:{ko:"릴레이 게시",en:"Post as my relay turn",ja:"リレーとして投稿",zhs:"作为接力发布",zht:"作為接力發布",es:"Publicar como mi turno"},
+ rlPostN:{ko:"릴레이 영상은 이 방(우리끼리)에만 게시됩니다.",en:"Relay videos are posted only to this Just-us room.",ja:"リレー動画はこの「仲間だけ」ルームにだけ投稿されます。",zhs:"接力视频只发布到这个小圈子房间。",zht:"接力影片只發布到這個小圈子房間。",es:"Los vídeos del relevo solo se publican en esta sala."},
+ rlDone:{ko:"게시 완료. 다음 주자를 지명하세요.",en:"Posted. Now pass to the next singer.",ja:"投稿しました。次の走者を指名してください。",zhs:"已发布，请指定下一棒。",zht:"已發布，請指定下一棒。",es:"Publicado. Ahora elige al siguiente."},
+ rlErr:{ko:"지금은 릴레이 차례가 아니에요.",en:"It isn't your relay turn right now.",ja:"いまはリレーの番ではありません。",zhs:"现在还没轮到你接力。",zht:"現在還沒輪到你接力。",es:"Ahora no es tu turno en el relevo."},
+ rlBusy:{ko:"이미 진행 중인 릴레이가 있어요.",en:"A relay is already in progress.",ja:"すでに進行中のリレーがあります。",zhs:"已有进行中的接力。",zht:"已有進行中的接力。",es:"Ya hay un relevo en curso."},
+ rlSeq:{ko:"부른 순서",en:"Singing order",ja:"歌った順番",zhs:"演唱顺序",zht:"演唱順序",es:"Orden de canto"},
+ rlNoS:{ko:"검색 결과가 없어요.",en:"No results.",ja:"検索結果がありません。",zhs:"没有搜索结果。",zht:"沒有搜尋結果。",es:"Sin resultados."},
+ wcB:{ko:"위챗",en:"WeChat",ja:"WeChat",zhs:"微信",zht:"微信",es:"WeChat"},
+ wbB:{ko:"웨이보",en:"Weibo",ja:"Weibo",zhs:"微博",zht:"微博",es:"Weibo"},
+ wcCp:{ko:"링크를 복사했어요 — 위챗 대화방에 붙여 넣으세요",en:"Link copied — paste it into a WeChat chat",ja:"リンクをコピーしました — WeChatのトークに貼り付けてください",zhs:"已复制链接 — 请粘贴到微信聊天中",zht:"已複製連結 — 請貼到微信聊天中",es:"Enlace copiado — pégalo en un chat de WeChat"},
+ wcQr:{ko:"위챗으로 QR 코드를 스캔해도 열 수 있어요.",en:"You can also scan this QR code with WeChat.",ja:"WeChatでこのQRコードを読み取っても開けます。",zhs:"也可以用微信扫描二维码打开。",zht:"也可以用微信掃描 QR 碼開啟。",es:"También puedes escanear este código QR con WeChat."},
+ bkB:{ko:"이용 안내",en:"User guide",ja:"ご利用案内",zhs:"使用指南",zht:"使用指南",es:"Guía de uso"},
+ bkToc:{ko:"목차",en:"Contents",ja:"目次",zhs:"目录",zht:"目錄",es:"Índice"},
+ bkPrev:{ko:"이전",en:"Back",ja:"前へ",zhs:"上一页",zht:"上一頁",es:"Anterior"},
+ bkNext:{ko:"다음",en:"Next",ja:"次へ",zhs:"下一页",zht:"下一頁",es:"Siguiente"},
+ bkSoon:{ko:"곧 오픈 예정",en:"Coming soon",ja:"近日公開",zhs:"即将开放",zht:"即將開放",es:"Próximamente"},
+ bkSw:{ko:"좌우로 밀어 장을 넘길 수 있어요.",en:"Swipe left or right to turn the page.",ja:"左右にスワイプしてページをめくれます。",zhs:"左右滑动即可翻页。",zht:"左右滑動即可翻頁。",es:"Desliza a izquierda o derecha para pasar de página."}
+});
+// 이용 안내 책자 — 장마다 [제목, 문장들] · o = 사장님 기기 전용(손님 기기엔 「곧 오픈 예정」) · ic = 기존 아이콘(kst_*.png) · ui = 단추 모양 재사용
+var BOOK=[
+ {ic:["view"],ui:"srch",t:{ko:"노래 검색·재생",en:"Search and play songs",ja:"曲の検索・再生",zhs:"搜索与播放歌曲",zht:"搜尋與播放歌曲",es:"Buscar y reproducir"},
+  p:{ko:["검색창에 곡명이나 가수명을 입력하세요.","첫 목록은 화면 언어에 맞춰 표시됩니다. 한국어·중국어는 K-POP, 일본어는 J-POP, 영어·스페인어는 Pop입니다.","곡을 누르면 금영 공식 유튜브 영상이 재생됩니다.","두 손가락으로 화면을 확대하고, 확대 후에는 한 손가락으로 이동합니다."],
+   en:["Type a song title or singer in the search box.","The first list follows the screen language: K-POP for Korean and Chinese, J-POP for Japanese, Pop for English and Spanish.","Tap a song to play the official KY Karaoke video on YouTube.","Pinch with two fingers to zoom in, then drag with one finger to move."],
+   ja:["検索欄に曲名や歌手名を入力します。","最初の一覧は画面の言語に合わせて表示されます。韓国語・中国語はK-POP、日本語はJ-POP、英語・スペイン語はPopです。","曲を押すとKY公式YouTube動画が再生されます。","2本の指で拡大し、拡大後は1本の指で移動します。"],
+   zhs:["在搜索框输入歌名或歌手名。","第一个列表按界面语言显示：韩语和中文为 K-POP，日语为 J-POP，英语和西班牙语为 Pop。","点歌曲即播放金永(KY)官方 YouTube 视频。","双指放大画面，放大后单指移动。"],
+   zht:["在搜尋框輸入歌名或歌手名。","第一個列表依介面語言顯示：韓語和中文為 K-POP，日語為 J-POP，英語和西班牙語為 Pop。","點歌曲即播放金永(KY)官方 YouTube 影片。","雙指放大畫面，放大後單指移動。"],
+   es:["Escribe el título o el artista en el buscador.","La primera lista sigue el idioma: K-POP en coreano y chino, J-POP en japonés y Pop en inglés y español.","Toca una canción para reproducir el vídeo oficial de KY Karaoke en YouTube.","Amplía con dos dedos y, después, muévete con un dedo."]}},
+ {ic:[],ui:"pay",t:{ko:"곡 이용권",en:"Song passes",ja:"曲利用券",zhs:"歌曲券",zht:"歌曲券",es:"Bonos de canciones"},
+  p:{ko:["PAYMENT 단추에서 곡 이용권을 구매합니다.","로그인하면 초록 칸에 잔여 곡 수가 표시됩니다.","미사용 곡은 1년간 보관되며 환불을 요청할 수 있습니다.","자세한 기준은 「공지사항」과 환불 규정을 확인하세요."],
+   en:["Buy song passes with the PAYMENT button.","After you sign in, the green box shows how many songs you have left.","Unused songs are kept for one year, and you can request a refund.","See the notice and the refund policy for details."],
+   ja:["PAYMENTボタンから曲利用券を購入します。","ログインすると緑の欄に残りの曲数が表示されます。","未使用の曲は1年間保管され、返金を申請できます。","詳しくは「お知らせ」と返金規定をご確認ください。"],
+   zhs:["通过 PAYMENT 按钮购买歌曲券。","登录后，绿色框中会显示剩余歌曲数。","未使用的歌曲保留一年，可申请退款。","详情请查看公告和退款规定。"],
+   zht:["透過 PAYMENT 按鈕購買歌曲券。","登入後，綠色框中會顯示剩餘歌曲數。","未使用的歌曲保留一年，可申請退款。","詳情請查看公告和退款規定。"],
+   es:["Compra bonos de canciones con el botón PAYMENT.","Al iniciar sesión, el recuadro verde muestra las canciones que te quedan.","Las canciones sin usar se guardan un año y puedes pedir su reembolso.","Consulta el aviso y la política de reembolso."]}},
+ {o:1,ic:["score"],ui:"rec",t:{ko:"녹화",en:"Recording",ja:"録画",zhs:"录像",zht:"錄影",es:"Grabación"},
+  p:{ko:["영상 위 「● 녹화」를 누르면 카메라가 켜지고 녹화가 시작됩니다.","뷰파인더에 녹화 시간과 노래 점수가 표시됩니다.","「■ 녹화 종료」를 누르면 미리 보기와 최종 점수가 표시됩니다."],
+   en:["Tap “● Record” on the video to turn on the camera and start recording.","The viewfinder shows the recording time and your singing score.","Tap “■ Stop” to see a preview and your final score."],
+   ja:["動画の上の「● 録画」を押すとカメラがつき、録画が始まります。","ビューファインダーに録画時間と歌の点数が表示されます。","「■ 停止」を押すとプレビューと最終点数が表示されます。"],
+   zhs:["点视频上的「● 录像」即打开相机并开始录像。","取景画面显示录像时间和演唱分数。","点「■ 停止」即可预览并查看最终分数。"],
+   zht:["點影片上的「● 錄影」即開啟相機並開始錄影。","取景畫面顯示錄影時間和演唱分數。","點「■ 停止」即可預覽並查看最終分數。"],
+   es:["Toca «● Grabar» sobre el vídeo para encender la cámara y grabar.","El visor muestra el tiempo de grabación y tu puntuación.","Toca «■ Parar» para ver la vista previa y la puntuación final."]}},
+ {o:1,ic:["bg","theme"],t:{ko:"배경·테마방·AI 상황 사진",en:"Backgrounds, theme rooms and AI photos",ja:"背景・テーマルーム・AIシーン写真",zhs:"背景、主题房与 AI 场景照",zht:"背景、主題房與 AI 場景照",es:"Fondos, salas temáticas y fotos IA"},
+  p:{ko:["녹화 중 오른쪽 위 단추로 배경을 선택합니다. 흐림·무대·콘서트·해변 등이 있습니다.","테마방을 선택하면 테마 배경으로 녹화됩니다.","테마방 녹화 후에는 AI 상황 사진을 생성할 수 있습니다."],
+   en:["While recording, use the top-right button to pick a background such as blur, stage, concert or beach.","Pick a theme room to record with a theme background.","After a theme-room recording, you can create an AI scene photo."],
+   ja:["録画中は右上のボタンで背景を選びます。ぼかし・ステージ・コンサート・ビーチなどがあります。","テーマルームを選ぶとテーマの背景で録画します。","テーマルームで録画したあとはAIシーン写真を作れます。"],
+   zhs:["录像时用右上角按钮选择背景，有模糊、舞台、演唱会、海滩等。","选择主题房即可用主题背景录像。","主题房录像后可生成 AI 场景照。"],
+   zht:["錄影時用右上角按鈕選擇背景，有模糊、舞台、演唱會、海灘等。","選擇主題房即可用主題背景錄影。","主題房錄影後可生成 AI 場景照。"],
+   es:["Al grabar, usa el botón de arriba a la derecha para elegir fondo: desenfoque, escenario, concierto, playa…","Elige una sala temática para grabar con su fondo.","Tras grabar en una sala temática, puedes crear una foto IA."]}},
+ {o:1,ic:[],ui:"chips",t:{ko:"게시·공개 범위",en:"Posting and who can see",ja:"投稿・公開範囲",zhs:"发布与公开范围",zht:"發布與公開範圍",es:"Publicar y quién lo ve"},
+  p:{ko:["미리 보기에서 「내 노래 게시」를 누릅니다.","공개 범위는 전체 공개·팔로워만·우리끼리·비공개 네 가지입니다.","공개 범위는 게시 전에 선택합니다."],
+   en:["In the preview, tap “Post my song”.","There are four options: everyone, followers only, Just-us rooms, and only me.","Choose who can see it before you post."],
+   ja:["プレビューで「自分の歌を投稿」を押します。","公開範囲は全体公開・フォロワーのみ・仲間だけ・自分だけの4つです。","公開範囲は投稿前に選びます。"],
+   zhs:["在预览中点「发布我的歌」。","公开范围有四种：所有人、仅粉丝、小圈子、仅自己。","发布前选择公开范围。"],
+   zht:["在預覽中點「發布我的歌」。","公開範圍有四種：所有人、僅粉絲、小圈子、僅自己。","發布前選擇公開範圍。"],
+   es:["En la vista previa, toca «Publicar mi canción».","Hay cuatro opciones: todo el mundo, solo seguidores, salas «Solo nosotros» y solo yo.","Elige quién puede verla antes de publicar."]}},
+ {o:1,ic:["vid","grid","list"],t:{ko:"스테이지·내 스테이지",en:"Stage and My Stage",ja:"ステージ・マイステージ",zhs:"舞台与我的舞台",zht:"舞台與我的舞台",es:"Escenario y Mi escenario"},
+  p:{ko:["「스테이지」에서 다른 사람의 노래 영상을 시청합니다.","「내 스테이지」에는 내가 게시한 영상이 모입니다.","목록·바둑판 보기로 전환하고, 최신순·오래된순·점수순으로 정렬합니다."],
+   en:["Watch other people's singing videos on the Stage.","My Stage collects the videos you posted.","Switch between list and grid view, and sort by newest, oldest or top score."],
+   ja:["「ステージ」でほかの人の歌の動画を見ます。","「マイステージ」には自分が投稿した動画が集まります。","一覧・グリッド表示を切り替え、新しい順・古い順・点数順に並べ替えます。"],
+   zhs:["在「舞台」观看其他人的演唱视频。","「我的舞台」汇集你发布的视频。","可切换列表/宫格视图，并按最新、最早、分数排序。"],
+   zht:["在「舞台」觀看其他人的演唱影片。","「我的舞台」匯集你發布的影片。","可切換列表/宮格檢視，並依最新、最早、分數排序。"],
+   es:["En el Escenario ves vídeos de otras personas.","Mi escenario reúne los vídeos que publicaste.","Cambia entre lista y cuadrícula y ordena por recientes, antiguos o puntuación."]}},
+ {o:1,ic:["fol","id","up"],t:{ko:"팔로우·프로필·ID",en:"Follow, profile and ID",ja:"フォロー・プロフィール・ID",zhs:"关注、头像与 ID",zht:"追蹤、頭像與 ID",es:"Seguir, perfil e ID"},
+  p:{ko:["ID를 누르면 그 사람의 스테이지로 이동합니다.","팔로우하면 팔로워 공개 영상도 시청할 수 있습니다.","내 스테이지에서 ID를 설정하고 프로필(영상 또는 AI 사진)을 변경합니다."],
+   en:["Tap an ID to open that person's stage.","Follow someone to also watch their followers-only videos.","On My Stage, set your ID and change your profile (a video or an AI photo)."],
+   ja:["IDを押すとその人のステージに移動します。","フォローするとフォロワー限定の動画も見られます。","マイステージでIDを決め、プロフィール（動画またはAI写真）を変更します。"],
+   zhs:["点 ID 即可进入对方的舞台。","关注后也能观看仅粉丝可见的视频。","在「我的舞台」设置 ID 并更换头像（视频或 AI 照片）。"],
+   zht:["點 ID 即可進入對方的舞台。","追蹤後也能觀看僅粉絲可見的影片。","在「我的舞台」設定 ID 並更換頭像（影片或 AI 照片）。"],
+   es:["Toca un ID para abrir el escenario de esa persona.","Si la sigues, también verás sus vídeos solo para seguidores.","En Mi escenario, elige tu ID y cambia tu perfil (vídeo o foto IA)."]}},
+ {o:1,ic:["room","plus","share"],t:{ko:"우리끼리 방",en:"Just-us rooms",ja:"「仲間だけ」ルーム",zhs:"小圈子房间",zht:"小圈子房間",es:"Salas «Solo nosotros»"},
+  p:{ko:["팔로우한 사람을 선택해 방을 생성합니다. 최대 30명입니다.","방장은 멤버 추가·제외, 이름 변경, 방 삭제 권한이 있습니다.","방장은 카톡 초대 링크(7일간 유효)로 친구를 초대합니다."],
+   en:["Create a room with people you follow, up to 30 people.","The host can add or remove members, rename the room and delete it.","The host can invite friends with a KakaoTalk link that is valid for 7 days."],
+   ja:["フォロー中の人を選んでルームを作ります。最大30人です。","ホストはメンバーの追加・削除、名前の変更、ルームの削除ができます。","ホストはカカオトークの招待リンク（7日間有効）で友だちを招待します。"],
+   zhs:["从你关注的人中选择成员创建房间，最多30人。","房主可添加或移除成员、重命名和删除房间。","房主可用 KakaoTalk 邀请链接（7天有效）邀请好友。"],
+   zht:["從你追蹤的人中選擇成員建立房間，最多30人。","房主可新增或移除成員、重新命名和刪除房間。","房主可用 KakaoTalk 邀請連結（7天有效）邀請好友。"],
+   es:["Crea una sala con personas que sigues, hasta 30.","El anfitrión puede añadir o quitar miembros, renombrar y eliminar la sala.","El anfitrión invita con un enlace de KakaoTalk válido 7 días."]}},
+ {o:1,ic:["relay"],t:{ko:"릴레이",en:"Relay",ja:"リレー",zhs:"接力",zht:"接力",es:"Relevo"},
+  p:{ko:["방장이 곡과 첫 주자를 지정해 릴레이를 시작합니다.","차례인 사람만 「릴레이 도전」으로 녹화·게시할 수 있습니다.","게시 후 다음 주자를 지명합니다. 방장은 주자 변경·건너뛰기·종료가 가능합니다."],
+   en:["The host picks a song and the first singer to start a relay.","Only the person whose turn it is can record and post with “Sing my turn”.","After posting, pass to the next singer. The host can change singers, skip or end the relay."],
+   ja:["ホストが曲と最初の走者を決めてリレーを始めます。","番の人だけが「リレーに挑戦」で録画・投稿できます。","投稿したら次の走者を指名します。ホストは走者の変更・スキップ・終了ができます。"],
+   zhs:["房主选择歌曲和第一棒，开始接力。","只有轮到的人才能用「接力演唱」录像并发布。","发布后指定下一棒。房主可更换接力者、跳过或结束接力。"],
+   zht:["房主選擇歌曲和第一棒，開始接力。","只有輪到的人才能用「接力演唱」錄影並發布。","發布後指定下一棒。房主可更換接力者、跳過或結束接力。"],
+   es:["El anfitrión elige canción y primera persona para iniciar el relevo.","Solo quien tiene el turno puede grabar y publicar con «Cantar mi turno».","Tras publicar, pasa el turno. El anfitrión puede cambiar, saltar o terminar."]}},
+ {o:1,ic:["chal","score"],t:{ko:"챌린지",en:"Challenge",ja:"チャレンジ",zhs:"挑战",zht:"挑戰",es:"Reto"},
+  p:{ko:["운영자가 정한 곡으로 기간 내 누구나 참여합니다.","「도전」을 누르면 곡 재생과 녹화가 시작됩니다.","전체 공개로 게시한 영상만 참여로 인정되며, 점수순으로 순위가 표시됩니다.","「친구 초대」로 카카오톡·LINE·WhatsApp 등에 초대 링크를 보냅니다."],
+   en:["Anyone can join with the song we pick, during the challenge period.","Tap “Take the challenge” to play the song and start recording.","Only videos posted for everyone count, ranked by score.","Use “Invite friends” to send the link via KakaoTalk, LINE, WhatsApp and more."],
+   ja:["運営が決めた曲で、期間中なら誰でも参加できます。","「挑戦する」を押すと曲の再生と録画が始まります。","全体公開で投稿した動画だけが参加となり、点数順に順位が表示されます。","「友だちを招待」でカカオトーク・LINE・WhatsAppなどに招待リンクを送ります。"],
+   zhs:["活动期间任何人都可以用指定歌曲参加。","点「参加挑战」即开始播放歌曲并录像。","只有公开给所有人的视频才算参与，按分数排名。","用「邀请好友」通过 KakaoTalk、LINE、WhatsApp 等发送邀请链接。"],
+   zht:["活動期間任何人都可以用指定歌曲參加。","點「參加挑戰」即開始播放歌曲並錄影。","只有公開給所有人的影片才算參與，依分數排名。","用「邀請好友」透過 KakaoTalk、LINE、WhatsApp 等傳送邀請連結。"],
+   es:["Cualquiera puede participar con la canción elegida durante el reto.","Toca «Participar» para reproducir la canción y grabar.","Solo cuentan los vídeos públicos, ordenados por puntuación.","Con «Invitar amigos» envía el enlace por KakaoTalk, LINE, WhatsApp y más."]}},
+ {ic:["share"],ui:"shr",t:{ko:"공유",en:"Sharing",ja:"共有",zhs:"分享",zht:"分享",es:"Compartir"},
+  p:{ko:["공유 단추에서 카카오톡·X·페이스북·LINE·WhatsApp·텔레그램·위챗·웨이보·문자·메일로 보냅니다.","위챗은 링크를 복사해 대화방에 붙여 넣거나 QR 코드를 스캔합니다.","「다른 앱으로」를 누르면 인스타그램 등 휴대폰의 다른 앱으로 보냅니다."],
+   en:["Share via KakaoTalk, X, Facebook, LINE, WhatsApp, Telegram, WeChat, Weibo, text message or email.","For WeChat, copy the link and paste it into a chat, or scan the QR code.","“Other apps” sends it to other apps on your phone, such as Instagram."],
+   ja:["共有ボタンからカカオトーク・X・Facebook・LINE・WhatsApp・Telegram・WeChat・Weibo・メッセージ・メールで送れます。","WeChatはリンクをコピーしてトークに貼り付けるか、QRコードを読み取ります。","「他のアプリ」を押すとInstagramなどスマホの他のアプリに送れます。"],
+   zhs:["可通过 KakaoTalk、X、Facebook、LINE、WhatsApp、Telegram、微信、微博、短信、邮件分享。","微信：复制链接后粘贴到聊天中，或扫描二维码。","点「其他应用」可发送到 Instagram 等手机上的其他应用。"],
+   zht:["可透過 KakaoTalk、X、Facebook、LINE、WhatsApp、Telegram、微信、微博、簡訊、郵件分享。","微信：複製連結後貼到聊天中，或掃描 QR 碼。","點「其他應用」可傳送到 Instagram 等手機上的其他應用。"],
+   es:["Comparte por KakaoTalk, X, Facebook, LINE, WhatsApp, Telegram, WeChat, Weibo, SMS o correo.","En WeChat, copia el enlace y pégalo en un chat, o escanea el código QR.","«Otras apps» lo envía a otras apps del móvil, como Instagram."]}},
+ {ic:[],ui:"law",t:{ko:"문의·약관",en:"Contact and terms",ja:"お問い合わせ・規約",zhs:"联系与条款",zht:"聯絡與條款",es:"Contacto y condiciones"},
+  p:{ko:["문의는 메일로 보내 주세요: admin@moneypuzzle.co.kr","아래에서 이용약관·환불 규정·개인정보처리방침을 확인할 수 있습니다."],
+   en:["Email us at admin@moneypuzzle.co.kr","See the terms of use, refund policy and privacy policy below."],
+   ja:["お問い合わせはメールで: admin@moneypuzzle.co.kr","下から利用規約・返金規定・個人情報処理方針を確認できます。"],
+   zhs:["如有疑问请发邮件至 admin@moneypuzzle.co.kr","可在下方查看使用条款、退款规定和隐私政策。"],
+   zht:["如有疑問請寄信至 admin@moneypuzzle.co.kr","可在下方查看使用條款、退款規定和隱私權政策。"],
+   es:["Escríbenos a admin@moneypuzzle.co.kr","Abajo puedes ver las condiciones de uso, la política de reembolso y la de privacidad."]}}
+];
 var st=document.createElement("style");
 st.textContent="#karBox{touch-action:pan-x pan-y;word-break:keep-all;overflow-wrap:break-word;position:fixed;inset:0;z-index:2147483004;background:radial-gradient(ellipse at 20% 0%,#3b0d5c 0%,#12081f 45%,#05030a 100%);color:#f5eaff;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR','Hiragino Sans','PingFang SC','Microsoft YaHei',sans-serif;overflow:hidden}"
  +"#karBox::before{content:'';position:absolute;inset:-20%;pointer-events:none;background:conic-gradient(from 0deg,rgba(255,80,200,.10),rgba(80,160,255,.10),rgba(120,255,180,.08),rgba(255,200,80,.10),rgba(255,80,200,.10));animation:karSpin 14s linear infinite;mix-blend-mode:screen}@keyframes karSpin{to{transform:rotate(360deg)}}"
@@ -400,6 +547,28 @@ st.textContent+="#karBox,#karShr{text-wrap:pretty}html:lang(ja) #karBox{word-bre
  +"#karBox .kchips button{justify-content:flex-start}#karBox .kchips button span{flex:1 0 auto;min-height:2.4em;display:flex;align-items:center;justify-content:center;text-wrap:balance}html:lang(ja) #karBox .kchips button span{word-break:auto-phrase}"
  +"#karBox .kpk small{font-size:10.5px;line-height:1.3}#karBox .kpl:has(.kbgr) .kvf .c,#karBox .kpl:has(.kbgr) .kvf .d{display:none}#karBox .kbgr{scrollbar-width:none}#karBox .kbgr::-webkit-scrollbar{display:none}"
  +"#karBox .kpg .kpgb>p.km{margin:0;font-size:14px;line-height:1.5}";
+// 챌린지·릴레이·이용 안내 책자 (10-31) — 아이콘 + 짧은 글자, 단순하게
+st.textContent+="#karBox .ktb .kchb{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;line-height:1.15;border-color:#7CFFB2;color:#7CFFB2}#karBox .ktb .kchb .kic{width:22px;height:22px}#karBox .ktb .kstg{flex:1}"
+ +"#karBox .kpol2 .kbook{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,224,102,.55);background:linear-gradient(180deg,#4a1d6b,#2a0f3d);color:#ffe066;border-radius:6px 10px 10px 6px;box-shadow:inset 4px 0 0 #b0287a,0 2px 0 rgba(0,0,0,.5);padding:3px 10px 3px 6px;font-weight:900;font-size:12.5px;cursor:pointer;white-space:nowrap}#karBox .kpol2 .kbook img{width:26px;height:26px;display:block}"
+ +"#karBox .kchh{display:flex;flex-direction:column;gap:9px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:12px}#karBox .kchn{display:flex;align-items:center;gap:10px;min-width:0}#karBox .kchn>.kic{width:48px;height:48px}#karBox .kchn>div{flex:1;min-width:0}#karBox .kchn b{display:block;font-size:17px;color:#ffe066}#karBox .kchn p{margin:2px 0 0;font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}"
+ +"#karBox .kchm{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px;color:#cfc6e8;font-variant-numeric:tabular-nums}#karBox .kchl{color:#7CFFB2;font-weight:800}#karBox .kchl.x{color:#ffb0b0}"
+ +"#karBox .kchgo{display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:13px;background:#ffe066;color:#1a1300;font-size:17px;font-weight:900;cursor:pointer}#karBox .kchgo .kic{width:24px;height:24px}#karBox .kchiv{display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:9px;background:rgba(255,255,255,.06);color:#fff;font-size:14px;font-weight:800;cursor:pointer}"
+ +"#karBox .kchd{margin-left:auto;font-size:11px;opacity:.7;font-weight:700;color:#cfc6e8}"
+ +"#karBox .krow{position:relative}#karBox .krk{position:absolute;top:4px;left:4px;z-index:2;min-width:22px;height:22px;padding:0 5px;box-sizing:border-box;border-radius:11px;display:flex;align-items:center;justify-content:center;font:900 12px/1 system-ui,sans-serif;background:#ffe066;color:#1a1300;box-shadow:0 1px 3px rgba(0,0,0,.5)}#karBox .krk.r2{background:#d9dde6}#karBox .krk.r3{background:#e0a46a}#karBox .krk.s{background:#ff4fd8;color:#fff}#karBox.kgv .krow>.krk{display:flex!important}"
+ +"#karBox .ktrn{display:flex;align-items:center;gap:7px;border-radius:12px;padding:8px 12px;background:rgba(124,255,178,.12);border:1px solid #1d6b43;cursor:pointer;min-width:0}#karBox .ktrn .kic{width:22px;height:22px}#karBox .ktrn b{color:#7CFFB2;font-size:14px;white-space:nowrap}#karBox .ktrn span{flex:1;min-width:0;font-size:12.5px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#karBox .ktrn.me{background:rgba(255,224,102,.16);border-color:#ffe066}#karBox .ktrn.me b{color:#ffe066}"
+ +"#karBox .ksng{max-height:42vh;overflow:auto}#karBox .ksng button{color:#fff;font-size:13.5px;line-height:1.35}#karBox .kpm .ksr input{font-size:15px}"
+ +"#karBox .kbk{display:flex;flex-direction:column;gap:12px;background:linear-gradient(90deg,#f6eedc 0,#fffaf0 18px,#fffaf0 calc(100% - 18px),#efe4cc 100%);color:#2b1d0e;border-radius:6px 14px 14px 6px;box-shadow:inset 6px 0 0 #b0287a,0 6px 22px rgba(0,0,0,.45);padding:16px 16px 18px 22px;min-height:52vh}"
+ +"#karBox .kbkt{display:flex;align-items:center;gap:10px}#karBox .kbkt .kic{width:56px;height:56px}#karBox .kbkt b{font-size:21px;color:#7a1d55}#karBox .kbtoc{margin:0;font-size:13px;color:#8a6b44;letter-spacing:.12em}"
+ +"#karBox .kbls{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}#karBox .kbls button{width:100%;display:flex;align-items:center;gap:10px;border:0;border-bottom:1px dashed #d8c7a6;background:none;color:#2b1d0e;padding:9px 2px;font-size:14.5px;font-weight:800;text-align:left;cursor:pointer}#karBox .kbls em{flex:0 0 auto;width:24px;font-style:normal;color:#b0287a;font-variant-numeric:tabular-nums;text-align:right}#karBox .kbls span{flex:1;min-width:0}"
+ +"#karBox .kbsoon{flex:0 0 auto;margin-left:6px;font:800 10.5px/1.3 system-ui,sans-serif;color:#b0287a;border:1px solid #b0287a;border-radius:5px;padding:1px 5px;vertical-align:middle;white-space:nowrap}#karBox .kbsw{margin:0;font-size:11.5px;color:#8a6b44;text-align:center}"
+ +"#karBox .kbno{font:800 12px/1 ui-monospace,Consolas,monospace;color:#8a6b44;text-align:right}#karBox .kbh{margin:0;font-size:19px;color:#7a1d55;line-height:1.35}#karBox .kbic{display:flex;gap:10px}#karBox .kbic .kic{width:46px;height:46px}"
+ +"#karBox .kbp{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:1.6}#karBox .kbui{background:#1d1830;border-radius:12px;padding:10px;color:#fff;pointer-events:none}#karBox .kbui .kpay{margin:0}#karBox .kbui .kchips{gap:4px}"
+ +"#karBox .kbrec{display:inline-block;margin-right:8px;border-radius:999px;background:rgba(0,0,0,.6);color:#fff;font-weight:900;font-size:13px;padding:7px 12px;box-shadow:0 0 0 2px rgba(255,255,255,.5)}#karBox .kbrec::first-letter{color:#ff3b3b}#karBox .kbrec.x{background:#ff2b2b}#karBox .kbrec.x::first-letter{color:#fff}"
+ +"#karBox .kbch{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:6px 2px;font-size:10.5px;font-weight:800;text-align:center}#karBox .kbch .kic{width:24px;height:24px}"
+ +"#karBox .kbsh{display:flex;flex-wrap:wrap;gap:8px;background:#fff;color:#111}#karBox .kbsh svg{width:26px;height:26px}#karBox .kblaw{display:flex;flex-direction:column;gap:8px;pointer-events:auto;background:none;padding:0}#karBox .kblaw a{color:#7a1d55;font-weight:800;font-size:14px}"
+ +"#karBox .kbnav{display:flex;gap:6px}#karBox .kbnav button{flex:1;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:10px 4px;font-weight:900;font-size:13.5px;cursor:pointer}#karBox .kbnav button:disabled{opacity:.35;cursor:default}"
+ +"#karBox .kbinr{animation:kbinr .28s ease-out}#karBox .kbinl{animation:kbinl .28s ease-out}@keyframes kbinr{from{transform:translateX(30px) rotateY(-8deg);opacity:.3}to{transform:none;opacity:1}}@keyframes kbinl{from{transform:translateX(-30px) rotateY(8deg);opacity:.3}to{transform:none;opacity:1}}"
+ +"#karBox .kvc{margin:8px 0 0;font-size:11px;color:#8f86a8;text-align:center}#karShr .shqr{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:#5b6474}#karShr .shqr>div{padding:8px;background:#fff;border:1px solid #e6e9ef;border-radius:10px}#karShr .shqr img,#karShr .shqr canvas{display:block;width:160px;height:160px}";
 document.head.appendChild(st);
 var K={code:"",tab:"kpop",items:[],idx:-1,pl:null,q:""};
 function ytApi(cb){ if(window.YT&&YT.Player) return cb(); var prev=window.onYouTubeIframeAPIReady; window.onYouTubeIframeAPIReady=function(){ try{ prev&&prev(); }catch(e){} cb(); };
@@ -459,8 +628,8 @@ function open(code){ K.tab=({ja:"jpop",en:"pop",es:"pop"})[window.LANG]||"kpop";
     // 채널 단추 줄은 뺐다 (사장님 10-30 「삭제」)
     +'<div class="kpl"><button type="button" class="krec">'+esc(L(TX.rec))+'</button><div class="kmsg">🎤 '+esc(L(TX.pick))+'</div></div>'
     +'<div class="kpay"><div class="kr"><b>'+esc(L(TX.kb))+'</b><small>'+esc(L(TX.kbs))+'</small></div><button type="button" class="kl" id="karLeft">'+esc(L(TX.lgin))+'</button><button type="button" class="kslot" data-kpay="1" aria-label="PAYMENT"><i></i><span>PAYMENT</span><small>'+esc(L(TX.slot))+'</small></button></div>'
-    +'<div class="kpol2"><button type="button" class="kntl" data-kntc="1">'+esc(L(TX.ntc))+'</button></div>'   // 「곡 이용권 사기」 단추는 뺐다 — PAYMENT 와 같은 창 (사장님 10-30 「삭제」)
-    +'<div class="ktb">'+'<button type="button" class="kstg">'+esc(L(TX.stgB))+'</button></div>'
+    +'<div class="kpol2"><button type="button" class="kbook" data-kbook="1">'+kIc("book")+'<b>'+esc(L(TX.bkB))+'</b></button><button type="button" class="kntl" data-kntc="1">'+esc(L(TX.ntc))+'</button></div>'   // 「곡 이용권 사기」 단추는 뺐다 — PAYMENT 와 같은 창 (사장님 10-30 「삭제」)
+    +'<div class="ktb"><button type="button" class="kstg">'+esc(L(TX.stgB))+'</button><button type="button" class="kchb">'+kIc("chal")+'<span>'+esc(L(TX.chB))+'</span></button></div>'
     +'<form class="ksr"><input type="search" placeholder="'+esc(L(TX.q))+'"><button type="submit">'+esc(L(TX.go))+'</button></form>'
     +'<div class="kls"></div></div>';
   document.body.appendChild(b); document.documentElement.style.overflow="hidden";
@@ -468,6 +637,9 @@ function open(code){ K.tab=({ja:"jpop",en:"pop",es:"pop"})[window.LANG]||"kpop";
   [].forEach.call(b.querySelectorAll("[data-kpay]"),function(x){ x.onclick=function(){ payOpen(""); }; });
   b.querySelector("[data-kntc]").onclick=ntcOpen;
   b.querySelector(".kstg").onclick=function(){ stageOpen("all"); };
+  b.querySelector(".kchb").onclick=function(){ kChal(); };   // 챌린지 (10-31)
+  b.querySelector("[data-kbook]").onclick=kBook;   // 이용 안내 책자 (10-31)
+  kChGet();
   b.querySelector(".krec").onclick=function(){ var own=false; try{ own=!!localStorage.getItem("mp_owner"); }catch(e){}   // 실제 녹화는 사장님 기기에서만 시험 (10-30) — 손님은 화면 효과 + 「준비 중」
     if(b.classList.contains("krecm")){ if(own) recStop(); else recExit(); return; } kzReset(); b.classList.add("krecm"); this.textContent=L(TX.recX); if(own) recStart(); else { recFx(true); soon(); } };   // 녹화 = 노래방 영상 화면만 테두리째 화면 가득 (사장님 10-30) · 실제 녹화는 준비 중
   b.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest("[data-ksoon]")){ e.preventDefault(); e.stopPropagation(); soon(); } });   // 녹화·올리기 = 아직 준비 중 (10-30)
@@ -502,7 +674,7 @@ function pkName(x){ return x.b?x.n+"+"+x.b:songsTx(x.n); }   // 3+1 · 1곡
 function perSong(x){ var v=x.p/(x.n+x.b); return (v%1?"≈":"")+won(v); }
 function bizHtml(){ var z=TX.bz[window.LANG]||TX.bz.en, lg=TX.bz[window.LANG]?window.LANG:"en";
   return '<div class="kbz"><b>'+esc(z[0])+'</b><br><span class="nw">'+esc(z[1])+'</span> · <span class="nw">'+esc(z[2])+' '+esc(z[3])+'</span><br>'+esc(z[4])+' <span class="nw">297-81-03712</span><br>'+esc(z[5])+': '+esc(z[6])+'<br>'+esc(z[7])+': '+esc(z[8])+'<br>'+esc(z[9])+': admin@moneypuzzle.co.kr'+'<br>'+esc(L(TX.bzh))+': GitHub, Inc. · Cloudflare, Inc.<br>'+esc(L(TX.bzn))
-    +'<div class="kbzl"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a> · <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a> · <a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a>'+(window.KAR_SITE?' · <a href="legal.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.gL))+'</a>':'')+'</div></div>'; }
+    +'<div class="kbzl"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a> · <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a> · <a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a>'+(window.KAR_SITE?' · <a href="legal.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.gL))+'</a>':'')+'</div>'+(window.KAR_VC?'<p class="kvc">'+esc(window.KAR_VC())+'</p>':'')+'</div>'; }   // 노래방 사이트 방문자 수 (site.js, 10-31)
 // 노래방 화면의 곡 이용권 칸 (남은 곡 표시)
 function barPaint(){ var b=box(), el=b&&b.querySelector("#karLeft"); if(!el) return; el.textContent=karSigned()?fmtN(L(TX.lftN),karLeft()):L(TX.lgin); }
 // 로그인 창(pg.js)을 노래방 위에 띄운다 — 닫히면 원래 높이로 돌리고 결제 창을 다시 그린다(로그인하면 남은 곡 표시)
@@ -850,13 +1022,16 @@ function kDate(t){ try{ return new Date(t).toLocaleString(kLoc(),{year:"numeric"
 function upStart(){ if(REC.mr&&REC.mr.state!=="inactive"){ recStop(); return; } if(!REC.blob){ soon(L(TX.needRec)); return; } upOpen(); }
 function upOpen(){ var b=box(); if(!b||!REC.blob) return; var o=b.querySelector(".kupm"); if(o) o.remove();
   o=document.createElement("div"); o.className="kpm kupm"; b.appendChild(o);
-  var vis="pub", busy=false, xhr=null, by0="", rms=null, rsel={}; try{ by0=localStorage.getItem("mpv_kst_by")||""; }catch(e){} if(!/^\d{4}$/.test(by0)) by0="";
+  var vis="pub", busy=false, xhr=null, by0="", rms=null, rsel={};
+  var cc=KCH&&KCH.cur&&KCH.cur.live&&K.cur&&K.cur.id===KCH.cur.sid?KCH.cur:null, chOn=!!cc, rx=K.ctx&&K.ctx.rl&&K.cur&&K.cur.id===K.ctx.sid?K.ctx:null, rlOn=!!rx;   // (10-31) 챌린지 곡이면 「챌린지 참여」 자동 체크 · 릴레이 도전이면 「릴레이 게시」(이 방에만)
+  var rlH=function(){ return rx?'<label class="kfr"><input type="checkbox" id="kupRl"'+(rlOn?' checked':'')+'>'+kIc("relay",1)+'<span>'+esc(L(TX.rlPost))+'</span></label>'+(rlOn?'<p class="km">'+esc(L(TX.rlPostN))+'</p>':''):''; };
+  var chH=function(){ return cc&&!rlOn?'<label class="kfr"><input type="checkbox" id="kupCh"'+(chOn&&vis==="pub"?' checked':'')+(vis!=="pub"?' disabled':'')+'>'+kIc("chal",1)+'<span>'+esc(L(TX.chJoin))+' · '+esc(kChTtl(cc))+'</span></label>'+(vis!=="pub"?'<p class="km">'+esc(L(TX.chVisN))+'</p>':''):''; }; try{ by0=localStorage.getItem("mpv_kst_by")||""; }catch(e){} if(!/^\d{4}$/.test(by0)) by0="";
   var draw=function(msg,pct){ var s=pct!=null;
     o.innerHTML='<div><h3>'+esc(L(TX.up))+'</h3>'
-      +'<b class="kh">'+esc(L(TX.vis))+'</b><div class="kchips">'+[["pub","pub",TX.vPub],["fol","folonly",TX.vFol],["room","room",TX.vwRoom],["me","lock",TX.vMe]].map(function(c){ return '<button type="button" data-v="'+c[0]+'"'+(vis===c[0]?' class="on"':'')+'>'+kIc(c[1])+'<span>'+esc(L(c[2]))+'</span></button>'; }).join("")+'</div>'
+      +rlH()+(rlOn?'':'<b class="kh">'+esc(L(TX.vis))+'</b><div class="kchips">'+[["pub","pub",TX.vPub],["fol","folonly",TX.vFol],["room","room",TX.vwRoom],["me","lock",TX.vMe]].map(function(c){ return '<button type="button" data-v="'+c[0]+'"'+(vis===c[0]?' class="on"':'')+'>'+kIc(c[1])+'<span>'+esc(L(c[2]))+'</span></button>'; }).join("")+'</div>'
       +'<p class="km">'+esc(L(vis==="pub"?TX.vPubN:vis==="fol"?TX.vFolN:vis==="room"?TX.vRoomN:TX.vMeN))+'</p>'
       +(vis!=="room"?'':rms===null?'<p class="km">'+esc(L(TX.lo))+'</p>':!rms.length?'<p class="km">'+esc(L(TX.rmNone))+'</p>'
-        :'<div class="kchk">'+rms.map(function(r,i){ return '<label><input type="checkbox" data-r="'+i+'"'+(rsel[r.rid]?' checked':'')+'>'+kIc("room",1)+'<span>'+esc(r.name)+'</span><small>'+esc(tf(L(TX.rmN),{n:r.count}))+'</small></label>'; }).join("")+'</div>')
+        :'<div class="kchk">'+rms.map(function(r,i){ return '<label><input type="checkbox" data-r="'+i+'"'+(rsel[r.rid]?' checked':'')+'>'+kIc("room",1)+'<span>'+esc(r.name)+'</span><small>'+esc(tf(L(TX.rmN),{n:r.count}))+'</small></label>'; }).join("")+'</div>'))+chH()
       +(by0?'':'<label class="kfl">'+esc(L(TX.by))+'<input type="text" inputmode="numeric" maxlength="4" id="kupBy" autocomplete="bday-year"></label><p class="km">'+esc(L(TX.byN))+'</p>')
       +(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
       +(s?'<div class="kupbar"><i style="width:'+pct+'%"></i></div><div class="kupp">'+esc(tf(L(TX.upIng),{p:pct}))+'</div>':'')
@@ -864,6 +1039,8 @@ function upOpen(){ var b=box(); if(!b||!REC.blob) return; var o=b.querySelector(
     [].forEach.call(o.querySelectorAll("[data-v]"),function(x){ x.onclick=function(){ if(busy) return; vis=x.dataset.v; re();
       if(vis==="room"&&rms===null) kGet("/kst/rooms").then(function(j){ rms=(j&&j.ok&&j.items)||[]; if(rms.length===1) rsel[rms[0].rid]=1; if(o.isConnected&&!busy) re(); }).catch(function(){ rms=[]; if(o.isConnected&&!busy) re(); }); }; });
     [].forEach.call(o.querySelectorAll("[data-r]"),function(c){ c.onchange=function(){ var r=rms&&rms[+c.dataset.r]; if(!r) return; if(c.checked) rsel[r.rid]=1; else delete rsel[r.rid]; }; });
+    var rlc=o.querySelector("#kupRl"); if(rlc) rlc.onchange=function(){ rlOn=rlc.checked; re(); };
+    var chc=o.querySelector("#kupCh"); if(chc) chc.onchange=function(){ chOn=chc.checked; };
     o.querySelector(".kc").onclick=function(){ if(xhr){ try{ xhr.abort(); }catch(e){} } o.remove(); };
     o.querySelector("#kupGo").onclick=go; };
   var re=function(){ var by=o.querySelector("#kupBy"), keep=by?by.value:""; draw(); var by2=o.querySelector("#kupBy"); if(by2) by2.value=keep; };   // 생년 칸 값 지키며 다시 그림
@@ -873,11 +1050,11 @@ function upOpen(){ var b=box(); if(!b||!REC.blob) return; var o=b.querySelector(
       if(!/^\d{4}$/.test(v)||+v<1900||+v>y){ draw(L(TX.byE)); return; }
       if(y-(+v)<15){ draw(L(TX.by14)); return; }   // 해만 알므로 생일 전일 수 있다 → 올해 만 14세가 될 사람까지 막는다 (약관 제8조 만 14세 미만)
       by0=v; try{ localStorage.setItem("mpv_kst_by",v); }catch(e){} }
-    var rs=vis!=="room"?[]:Object.keys(rsel).filter(function(k){ return rms&&rms.some(function(r){ return r.rid===k; }); }); if(vis==="room"&&!rs.length){ draw(L(TX.rmPkE)); return; }   // 우리끼리 = 방 하나 이상
+    var rs=vis!=="room"?[]:Object.keys(rsel).filter(function(k){ return rms&&rms.some(function(r){ return r.rid===k; }); }); var rlq=rlOn&&rx?rx.rl:"", chq=!rlq&&cc&&chOn&&vis==="pub"?cc.id:""; if(vis==="room"&&!rs.length&&!rlq){ draw(L(TX.rmPkE)); return; }   // 우리끼리 = 방 하나 이상
     var bl=REC.blob; if(!bl){ o.remove(); soon(L(TX.needRec)); return; }
     var ty=String(bl.type||REC.mt||"video/webm").split(";")[0]; if(ty!=="video/mp4"&&ty!=="video/webm"){ draw(L(TX.upTy)); return; }
     if(bl.size>60*1024*1024){ draw(L(TX.upBig)); return; }
-    var c=K.cur||{}, q="vis="+vis+"&sid="+encodeURIComponent(c.id||"")+"&t="+encodeURIComponent(String(c.t||"").slice(0,120))+"&dur="+(REC.dur||0)+(REC.sc!=null?"&sc="+REC.sc:"")+(REC.th?"&th="+REC.th:"")+(vis==="room"?"&rooms="+rs.join(","):"")+"&dev="+encodeURIComponent(klDev())+"&sess="+encodeURIComponent(sess());
+    var c=K.cur||{}, q="vis="+(rlq?"room":vis)+"&sid="+encodeURIComponent(c.id||"")+"&t="+encodeURIComponent(String(c.t||"").slice(0,120))+"&dur="+(REC.dur||0)+(REC.sc!=null?"&sc="+REC.sc:"")+(REC.th?"&th="+REC.th:"")+(vis==="room"&&!rlq?"&rooms="+rs.join(","):"")+(rlq?"&rl="+rlq:"")+(chq?"&ch="+chq:"")+"&dev="+encodeURIComponent(klDev())+"&sess="+encodeURIComponent(sess());
     busy=true; draw("",0);
     xhr=new XMLHttpRequest(); xhr.open("POST",HUB+"/kst/up?"+q); xhr.setRequestHeader("x-kown",KOWN); xhr.setRequestHeader("Content-Type",ty);
     xhr.upload.onprogress=function(e){ if(e.lengthComputable) bar(Math.min(99,Math.floor(e.loaded*100/e.total))); };
@@ -885,8 +1062,11 @@ function upOpen(){ var b=box(); if(!b||!REC.blob) return; var o=b.querySelector(
       if(j&&j.ok){ try{ ntap("kara_stage","up_"+vis); }catch(e){}
         if(vis!=="me"&&j.id&&REC.aiCard){ kCardImg(REC.aiCard.blob,REC.sc,c.t).then(function(jpg){ return kThUp(j.id,jpg); }).catch(function(){}); }   // 상황 사진을 공유 카드로 (10-30)
         else if(vis!=="me"&&j.id){ var cu=URL.createObjectURL(bl); kCard(cu,REC.sc,c.t).then(function(jpg){ return kThUp(j.id,jpg); }).catch(function(){}).then(function(){ try{ URL.revokeObjectURL(cu); }catch(e){} }); }   // 공유 카드 그림 — 뒤에서 만들어 올림
-        o.remove(); var pv=b.querySelector(".kpv"); if(pv) pv.remove(); try{ if(REC.url) URL.revokeObjectURL(REC.url); }catch(e){} REC.url=""; REC.blob=null; REC.sc=null; REC.frc=null; REC.th=""; REC.aiCard=null; var am=b.querySelector(".kaim"); if(am) am.remove(); recExit(); stageOpen("me"); soon(L(TX.upOk)); return; }
-      var er=j&&j.err; draw(er==="big"?L(TX.upBig):er==="type"?L(TX.upTy):er==="room"?L(TX.rmPkE):L(TX.upF)); };
+        o.remove(); var pv=b.querySelector(".kpv"); if(pv) pv.remove(); try{ if(REC.url) URL.revokeObjectURL(REC.url); }catch(e){} REC.url=""; REC.blob=null; REC.sc=null; REC.frc=null; REC.th=""; REC.aiCard=null; var am=b.querySelector(".kaim"); if(am) am.remove(); recExit();
+        if(rlq){ var rdd=rx.rid; K.ctx=null; kRelay(rdd,null,function(S2){ var r2=S2.j&&S2.j.relay; if(r2&&r2.cur&&r2.cur.me&&r2.curDone){ soon(L(TX.rlDone)); S2.next(); } }); return; }   // 릴레이 = 그 방 릴레이 화면 + 다음 주자 지명 (10-31)
+        if(chq){ kChGet(); kChal(); soon(L(TX.upOk)); return; }   // 챌린지 = 챌린지 화면 (10-31)
+        stageOpen("me"); soon(L(TX.upOk)); return; }
+      var er=j&&j.err; draw(er==="big"?L(TX.upBig):er==="type"?L(TX.upTy):er==="chvis"?L(TX.chVisN):er==="chal"||er==="song"?L(TX.chErr):er==="turn"||er==="relay"?L(TX.rlErr):er==="room"?L(rlq?TX.rlErr:TX.rmPkE):L(TX.upF)); };
     xhr.onerror=function(){ busy=false; xhr=null; draw(L(TX.upNet)); };
     xhr.onabort=function(){ busy=false; xhr=null; };
     xhr.send(bl); };
@@ -1127,6 +1307,8 @@ function kDet(x,S){ var o=pgOpen("kdet"); if(!o) return; var cms=null, edit=fals
 }
 // 공유 단추 그림·문구 (노래방 사이트에서 옮겨 옴 10-30)
 var SHI={"x": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z\"/></svg>", "sms": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#34C759\" d=\"M12 3C6.98 3 3 6.36 3 10.5c0 2.35 1.28 4.43 3.3 5.8-.13 1.02-.5 2.2-1.3 3.2 1.7-.2 3.2-.94 4.3-1.7.85.2 1.75.3 2.7.3 5.02 0 9-3.36 9-7.6S17.02 3 12 3z\"/></svg>", "tg": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#26A5E4\" d=\"M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z\"/></svg>", "line": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#00C300\" d=\"M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314\"/></svg>", "fb": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#1877F2\" d=\"M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z\"/></svg>", "band": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" rx=\"6\" fill=\"#00C73C\"/><text x=\"12\" y=\"17.5\" text-anchor=\"middle\" font-size=\"14\" font-weight=\"700\" fill=\"#fff\" font-family=\"Arial\">B</text></svg>", "wa": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#25D366\" d=\"M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z\"/></svg>", "mail": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>", "kakao": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" rx=\"6\" fill=\"#FEE500\"/><g transform=\"translate(3.2,3.2) scale(0.73)\"><path fill=\"#3C1E1E\" d=\"M22.125 0H1.875C.8394 0 0 .8394 0 1.875v20.25C0 23.1606.8394 24 1.875 24h20.25C23.1606 24 24 23.1606 24 22.125V1.875C24 .8394 23.1606 0 22.125 0zM12 18.75c-.591 0-1.1697-.0413-1.7317-.1209-.5626.3965-3.813 2.6797-4.1198 2.7225 0 0-.1258.0489-.2328-.0141s-.0876-.2282-.0876-.2282c.0322-.2198.8426-3.0183.992-3.5333-2.7452-1.36-4.5701-3.7686-4.5701-6.5135C2.25 6.8168 6.6152 3.375 12 3.375s9.75 3.4418 9.75 7.6875c0 4.2457-4.3652 7.6875-9.75 7.6875zM8.0496 9.8672h-.8777v3.3417c0 .2963-.2523.5372-.5625.5372s-.5625-.2409-.5625-.5372V9.8672h-.8777c-.3044 0-.552-.2471-.552-.5508s.2477-.5508.552-.5508h2.8804c.3044 0 .552.2471.552.5508s-.2477.5508-.552.5508zm10.9879 2.9566a.558.558 0 0 1 .108.4167.5588.5588 0 0 1-.2183.371.5572.5572 0 0 1-.3383.1135.558.558 0 0 1-.4493-.2236l-1.3192-1.7479-.1952.1952v1.2273a.5635.5635 0 0 1-.5627.5628.563.563 0 0 1-.5625-.5625V9.3281c0-.3102.2523-.5625.5625-.5625s.5625.2523.5625.5625v1.209l1.5694-1.5694c.0807-.0807.1916-.1252.312-.1252.1404 0 .2814.0606.3871.1661.0985.0984.1573.2251.1654.3566.0082.1327-.036.2542-.1241.3425l-1.2818 1.2817 1.3845 1.8344zm-8.3502-3.5023c-.095-.2699-.3829-.5475-.7503-.5557-.3663.0083-.6542.2858-.749.5551l-1.3455 3.5415c-.1708.5305-.0217.7272.1333.7988a.8568.8568 0 0 0 .3576.0776c.2346 0 .4139-.0952.4678-.2481l.2787-.7297 1.7152.0001.2785.7292c.0541.1532.2335.2484.4681.2484a.8601.8601 0 0 0 .3576-.0775c.1551-.0713.3041-.2681.1329-.7999l-1.3449-3.5398zm-1.3116 2.4433l.5618-1.5961.5618 1.5961H9.3757zm5.9056 1.3836c0 .2843-.2418.5156-.5391.5156h-1.8047c-.2973 0-.5391-.2314-.5391-.5156V9.3281c0-.3102.2576-.5625.5742-.5625s.5742.2523.5742.5625v3.3047h1.1953c.2974 0 .5392.2314.5392.5156z\"/></g></svg>", "copy": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"#8a93a3\" stroke-width=\"2\" stroke-linecap=\"round\" d=\"M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.54 3.54 0 0 0-5-5l-1.2 1.2M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.54 3.54 0 0 0 5 5l1.2-1.2\"/></svg>", "other": "<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#5b93ff\" d=\"M18 16.08a2.9 2.9 0 0 0-1.96.77L8.9 12.7a3.3 3.3 0 0 0 0-1.4l7.05-4.11A2.92 2.92 0 1 0 15 5a3 3 0 0 0 .06.6L8.04 9.72a3 3 0 1 0 0 4.56l7.1 4.15c-.04.2-.06.4-.06.6a2.92 2.92 0 1 0 2.92-2.95z\"/></svg>"};
+SHI.wc='<svg class="shi" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#07C160"/><text x="12" y="17" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="sans-serif">微</text></svg>';   // 위챗·웨이보 = 글자 배지 (로고 그림 안 베낌, 10-31)
+SHI.wb='<svg class="shi" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#E6162D"/><text x="12" y="17" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="sans-serif">博</text></svg>';
 var SH={hd:{ko:"이 앱 공유",en:"Share this app",ja:"このアプリを共有",zhs:"分享此应用",zht:"分享此應用",es:"Compartir esta app"},
  btn:{ko:"공유",en:"Share",ja:"共有",zhs:"分享",zht:"分享",es:"Compartir"},
  sms:{ko:"문자",en:"Message",ja:"メッセージ",zhs:"短信",zht:"簡訊",es:"Mensaje"},
@@ -1145,15 +1327,18 @@ var SH={hd:{ko:"이 앱 공유",en:"Share this app",ja:"このアプリを共有
 //   o = {hd, url, iurl(앱 설치 링크), txt, kk:{title,desc,img,w,h,b1(첫 단추 글자)}} · 카카오 = feed(그림+「b1」「앱 설치」 단추), 안 되면 폰 공유창
 var KAKAO_KEY="90a47ca48c2a967dd4d14b3b48de2e3b";
 function kShare(o){ var u=o.url, iu=o.iurl||u, txt=o.txt||"", e=encodeURIComponent, il=L(SH.kinst), kk=o.kk||{};
-  var it=[["X",SHI.x,"https://twitter.com/intent/tweet?text="+e(txt)+"&url="+e(u)],
+  var it=[["X",SHI.x,"https://twitter.com/intent/tweet?text="+e(o.full?txt+"\n"+il+": "+iu:txt)+"&url="+e(u)],
     [L(SH.sms),SHI.sms,"sms:?&body="+e(txt+" "+u+"\n"+il+": "+iu)],
     [L(SH.tg),SHI.tg,"https://t.me/share/url?url="+e(u)+"&text="+e(txt+"\n"+il+": "+iu)],
-    ["LINE",SHI.line,"https://social-plugins.line.me/lineit/share?url="+e(u)],
+    ["LINE",SHI.line,o.full?"https://line.me/R/share?text="+e(txt+"\n"+u+"\n"+il+": "+iu):"https://social-plugins.line.me/lineit/share?url="+e(u)],
     [L(SH.fb),SHI.fb,"https://www.facebook.com/sharer/sharer.php?u="+e(u)],
     [L(SH.band),SHI.band,"https://band.us/plugin/share?body="+e(txt+"\n"+u+"\n"+il+": "+iu)+"&route="+e(u)],
     ["WhatsApp",SHI.wa,"https://api.whatsapp.com/send?text="+e(txt+" "+u+"\n"+il+": "+iu)],
     [L(SH.mail),SHI.mail,"mailto:?subject="+e(kk.title||txt)+"&body="+e(txt+"\n"+u+"\n"+il+": "+iu)],
     [L(SH.kakao),SHI.kakao,"#kakao"],[L(SH.copy),SHI.copy,"#copy"]];
+  // 중국 손님 (10-31) — 위챗 = 링크 복사 + QR · 웨이보 = 공유 창 · 중국어 화면이면 맨 앞, 그 밖엔 「링크 복사」 앞
+  var cn=[[L(TX.wcB),SHI.wc,"#wechat"],[L(TX.wbB),SHI.wb,"https://service.weibo.com/share/share.php?url="+e(u)+"&title="+e(txt+" "+il+": "+iu)]];
+  if(window.LANG==="zhs"||window.LANG==="zht") it=cn.concat(it); else it.splice(it.length-1,0,cn[0],cn[1]);
   if(navigator.share) it.push([L(SH.other),SHI.other,"#share"]);
   var sh=function(){ if(navigator.share) navigator.share({title:kk.title||txt,text:txt+"\n"+il+": "+iu,url:u}).catch(function(){}); };
   var w=document.getElementById("karShr"); if(w) w.remove(); w=document.createElement("div"); w.id="karShr";
@@ -1162,12 +1347,20 @@ function kShare(o){ var u=o.url, iu=o.iurl||u, txt=o.txt||"", e=encodeURICompone
       return '<a href="'+esc(h)+'"'+(/^(sms|mailto):/.test(h)?'':' target="_blank" rel="noopener"')+'>'+a[1]+' '+esc(a[0])+'</a>'; }).join("")+'</div><div class="shmsg"></div></div>';
   document.body.appendChild(w);
   w.onclick=function(ev){ if(ev.target===w){ w.remove(); return; } var b=ev.target.closest&&ev.target.closest("button[data-a]"); if(!b) return; var m=w.querySelector(".shmsg"), a=b.getAttribute("data-a");
+    if(a==="wechat"){ var wt=txt+"\n"+u+"\n"+il+": "+iu; try{ navigator.clipboard.writeText(wt).catch(function(){}); }catch(x){}
+      m.innerHTML=esc(L(TX.wcCp))+'<div class="shqr"><div></div><span>'+esc(L(TX.wcQr))+'</span></div>'; kQr(m.querySelector(".shqr>div"),u); try{ ntap("_app","share_wechat"); }catch(x){} return; }
     if(a==="kakao"){ try{ if(!window.Kakao) throw 0; if(!Kakao.isInitialized()) Kakao.init(KAKAO_KEY);
         var ct={title:kk.title||txt,description:kk.desc||"",imageUrl:kk.img||"https://karaoke.moneypuzzle.co.kr/icon-512.png",link:{webUrl:u,mobileWebUrl:u}}; if(kk.w){ ct.imageWidth=kk.w; ct.imageHeight=kk.h||kk.w; }
         Kakao.Share.sendDefault({objectType:"feed",content:ct,buttons:[{title:kk.b1||L(SH.kopen),link:{webUrl:u,mobileWebUrl:u}},{title:il,link:{webUrl:iu,mobileWebUrl:iu}}]}); return; }
       catch(x){ if(navigator.share){ sh(); return; } } }
     if(a==="share"&&navigator.share){ sh(); return; }
-    try{ navigator.clipboard.writeText(u).then(function(){ m.textContent=L(SH.copied)+" "+u; },function(){ m.textContent=u; }); }catch(x){ m.textContent=u; } }; }
+    var cp=o.full?txt+"\n"+u+"\n"+il+": "+iu:u;   // full = 글 + 링크 + 「앱 설치」 링크 같이 복사 (10-31)
+    try{ navigator.clipboard.writeText(cp).then(function(){ m.textContent=L(SH.copied)+" "+u; },function(){ m.textContent=u; }); }catch(x){ m.textContent=u; } }; }
+// QR 코드 (위챗 스캔용, 10-31) — qrcodejs 1.0.0 (cdnjs, 버전 고정) 를 처음 쓸 때만 불러온다
+var KQR=null; function kQr(el,u){ if(!el) return; var bad=function(){ var p=el.parentNode; if(p) p.remove(); };
+  var go=function(){ try{ el.innerHTML=""; new QRCode(el,{text:u,width:160,height:160,correctLevel:QRCode.CorrectLevel.M}); }catch(e){ bad(); } };
+  if(window.QRCode) return go(); if(!KQR) KQR=new Promise(function(res,rej){ var s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"; s.crossOrigin="anonymous"; s.referrerPolicy="no-referrer"; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+  KQR.then(go).catch(function(){ KQR=null; bad(); }); }
 window.karShare=kShare; window.karSHI=SHI; window.karSH=SH;
 // ── 공유 카드 그림 (사장님 10-30 「영상과 노래방 점수도 크게 해서 보내자」) — 녹화 영상 1초쯤 장면 + 아래 어두운 띠 + 큰 점수(노란 굵은 글씨) + 작은 곡 제목 + 오른쪽 아래 「StageSong」 · 800x800 JPG
 //   그림은 새로 그리지 않는다 — 영상 장면과 글자만
@@ -1334,24 +1527,27 @@ function kRoomErr(j){ var e=j&&j.err; return L(e==="many"?TX.rmMax:e==="name"?TX
 function kRoomNew(S){ var w=kPplPick(S.o,{title:L(TX.rmNew),name:L(TX.rmDef),sub:L(TX.rmWho),list:1,items:null,empty:L(TX.rmNoF),ok:L(TX.rmMk),
     go:function(nm,ps){ return kPost("/kst/room",{op:"create",name:nm,pubids:ps}).then(function(j){ if(!(j&&j.ok)) return kRoomErr(j); try{ ntap("kara_stage","room_new"); }catch(e){} if(S.load) S.load(); kRoom(j.rid,S); return null; }); }});
   kMyFol().then(function(a){ if(w.isConnected) w.setItems(a); }).catch(function(){ if(w.isConnected) w.setItems([]); }); }
-function kRoomRow(x,i){ var d=kDay(x.at);
-  return '<div class="krow" role="button" tabindex="0" data-i="'+i+'"><div class="krd"><b>'+esc(d[0])+'</b><small>'+esc(d[1])+'</small></div>'+kScC(x)
+function kRoomRow(x,i,rk,seq){ var d=kDay(x.at);   // rk = 순위(챌린지 1·2·3) 또는 순번(릴레이, seq) 배지 (10-31)
+  return '<div class="krow" role="button" tabindex="0" data-i="'+i+'">'+(rk?'<b class="krk'+(seq?' s':rk===2?' r2':rk===3?' r3':'')+'">'+rk+'</b>':'')+'<div class="krd"><b>'+esc(d[0])+'</b><small>'+esc(d[1])+'</small></div>'+kScC(x)
     +'<div class="krm"><p>'+esc(x.desc||x.t||"-")+'</p><small>'+(x.pubid?kUn(x).replace('class="kun"','class="kun knk"'):'<b class="knk">'+esc(x.nick||"guest")+'</b>')
     +'<span class="kst2">'+kIc("up",1)+kNum(x.up)+'</span><span class="kst2">'+kIc("cm",1)+kNum(x.cm)+'</span><span class="kst2">'+kIc("view",1)+kNum(x.views)+'</span></small></div>'
     +kThumb(x.id,"krv")+'</div>'; }
 // 방 화면 — 이름 한 줄 + 사람 수(누르면 사람 목록) + 「⋯」(방장 메뉴 / 나가기) + 그 방 영상 목록(날짜·점수 칸, 정렬 3단계)
 function kRoom(rid,S0){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var o=pgOpen("kroom"); if(!o) return;
-  var R={o:o,info:null,items:null,err:0,gone:false,sort:"new",tok:0,mem:false};
+  var R={o:o,info:null,items:null,err:0,gone:false,sort:"new",tok:0,mem:false,rl:null};
+  R.setRl=function(j){ R.rl=j; R.draw(); };   // 릴레이 화면에서 바뀌면 띠도 (10-31)
   var up=function(){ if(S0&&S0.o&&S0.o.isConnected&&S0.load) S0.load(); };
   R.load=function(){ var my=++R.tok; R.items=null; R.err=0; R.draw();
     kGet("/kst/room?rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok) R.info=j; else R.gone=true; R.draw(); }).catch(function(){ if(my!==R.tok) return; R.err=1; R.draw(); });
+    kGet("/kst/relay?rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok){ R.rl=j; R.draw(); } }).catch(function(){});   // 「○○님 차례」 띠 (10-31)
     kGet("/kst/list?scope=room&rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok) R.items=j.items||[]; else { R.items=[]; R.err=1; if(j&&j.err==="room") R.gone=true; } R.draw(); }).catch(function(){ if(my!==R.tok) return; R.items=[]; R.err=1; R.draw(); }); };
   R.loadMe=function(){};
   o._bye=function(){ R.tok++; };
   R.draw=function(){ var m=R.info, body;
     if(R.gone) body='<div class="kstge">'+esc(L(TX.rmGone))+'</div>';
-    else { body='<div class="krmh"><div class="krmt">'+kIc("room")+'<b>'+esc(m?m.name:"…")+'</b></div>'
+    else { body=kTurnBand(R.rl)+'<div class="krmh"><div class="krmt">'+kIc("room")+'<b>'+esc(m?m.name:"…")+'</b></div>'
         +'<button type="button" class="krmc'+(R.mem?' on':'')+'" data-mem="1">'+kIc("fol",1)+esc(tf(L(TX.rmN),{n:m?m.count:"…"}))+'</button>'
+        +'<button type="button" class="krmc" data-rl="1">'+kIc("relay",1)+esc(L(TX.rlB))+'</button>'
         +'<button type="button" class="krmx" data-mn="1" aria-label="menu">⋯</button></div>'
         +(R.mem&&m?'<div class="krmm">'+m.mem.map(function(p){ return '<span>'+(p.pubid&&!p.me?'<button type="button" class="kun" data-u="'+esc(p.pubid)+'">'+esc(p.nick||"guest")+'</button>':'<b class="kme">'+esc(p.nick||"guest")+'</b>')+(p.owner?'<small>'+esc(L(TX.rmOw))+'</small>':'')+'</span>'; }).join("")+(m.owner?'<button type="button" class="krmi" data-inv="1">'+kIc("share",1)+esc(L(TX.rmInv))+'</button>':'')+'</div>':'')
         +'<div class="ksrt"><span>'+esc(L(TX.vids))+(R.items&&R.items.length?' · '+R.items.length:'')+'</span><button type="button" data-sort="1">⇅ '+esc(kSortL(R.sort))+'</button>'+kVwBtn()+'</div>'
@@ -1362,6 +1558,7 @@ function kRoom(rid,S0){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var 
     sc=o.querySelector(".kpgb"); if(sc&&top) sc.scrollTop=top;
     o.querySelector(".kpbk").onclick=pgBack; kUnBind(o);
     var mb=o.querySelector("[data-mem]"); if(mb) mb.onclick=function(){ R.mem=!R.mem; R.draw(); };
+    [].forEach.call(o.querySelectorAll("[data-rl],[data-trn]"),function(x){ x.onclick=function(){ kRelay(rid,R); }; });   // 릴레이 (10-31)
     var mn=o.querySelector("[data-mn]"); if(mn) mn.onclick=function(){ if(R.info) menu(); };
     var iv=o.querySelector("[data-inv]"); if(iv) iv.onclick=function(){ if(R.info) kRoomInv(R.info,rid); };
     var so=o.querySelector("[data-sort]"); if(so) so.onclick=function(){ R.sort=kSortNx(R.sort); R.draw(); };
@@ -1417,6 +1614,147 @@ function ntcOpen(){ var b=box(); if(!b) return; var o=b.querySelector(".kntc"); 
     +'<button type="button" class="kc">'+esc(L(TX.ok))+'</button></div>';
   o.querySelector(".kc").onclick=function(){ o.remove(); };
   o.onclick=function(e){ if(e.target===o) o.remove(); }; }
+// ── 도전 공통 (10-31) — 그 곡을 노래방 화면에서 틀고 녹화 화면으로. ctx = {ch:챌린지} | {rl:릴레이id, rid, sid} → 게시 창이 보고 자동으로 챌린지 참여·릴레이 게시
+function kSing(sid,t,ctx){ var b=box(); if(!b||!/^[A-Za-z0-9_-]{11}$/.test(String(sid||""))) return; try{ pgTo(0); }catch(e){}
+  K.ctx=ctx||null; K.q=String(t||""); var inp=b.querySelector(".ksr input"); if(inp) inp.value=K.q;
+  K.items=[{id:sid,t:String(t||""),ch:"ky"}]; K.idx=-1; paintList(); play(0);
+  setTimeout(function(){ var bb=box(), r=bb&&bb.querySelector(".krec"); if(bb&&r&&!bb.classList.contains("krecm")) r.click(); },400); }
+// ── 챌린지 (사장님 10-31 「전체가 다 하는 거로」) — 지금 챌린지는 KCH 에 기억(게시 창이 곡을 보고 「챌린지 참여」 자동 체크)
+var KCH=null;
+function kChGet(){ if(!isOwn()) return Promise.resolve(null); return kGet("/kst/chal").then(function(j){ KCH=j&&j.ok?j:null; return KCH; }).catch(function(){ return null; }); }
+function kChTtl(c){ return !c?"":(!c.ttl||c.ttl==="이번 주 챌린지")?L(TX.chT):c.ttl; }   // 기본 제목은 화면 언어로
+function kChLeft(c){ var now=Date.now(); if(!c) return ""; if(c.end||now>=c.e) return L(TX.chEnd); if(now<c.s) return L(TX.chWait); var h=Math.ceil((c.e-now)/3600000); return h>=48?tf(L(TX.chLeft),{n:Math.ceil(h/24)}):tf(L(TX.chLeftH),{n:h}); }
+function kChDay(t){ try{ return new Date(t).toLocaleDateString(kLoc(),{month:"short",day:"numeric"}); }catch(e){ return ""; } }
+function kChal(id0){ var o=pgOpen("kchal"); if(!o) return; var own=isOwn();
+  var C={o:o,j:null,c:null,id:id0||"",items:null,err:0,sort:"score",tok:0};
+  o._bye=function(){ C.tok++; };
+  C.load=function(){ if(!own){ C.draw(); return; } var my=++C.tok; C.items=null; C.err=0; C.draw();
+    var go=function(id){ if(!id){ C.items=[]; C.draw(); return; }
+      kGet("/kst/chal/list?id="+id+"&sort="+C.sort).then(function(j){ if(my!==C.tok) return; if(j&&j.ok){ C.items=j.items||[]; if(!C.c||C.c.id===j.chal.id) C.c=j.chal; } else { C.items=[]; C.err=1; } C.draw(); })
+        .catch(function(){ if(my!==C.tok) return; C.items=[]; C.err=1; C.draw(); }); };
+    if(C.j){ go(C.c&&C.c.id); return; }
+    kChGet().then(function(j){ if(my!==C.tok) return; C.j=j||{cur:null,hist:[]}; var h=(C.j.hist||[]).filter(function(x){ return x.id===C.id; })[0]; C.c=h||C.j.cur||null; go(C.c&&C.c.id); }); };
+  C.draw=function(){ var c=C.c, body;
+    if(!own) body='<div class="kstge">'+kIc("chal")+'<br>'+esc(L(TX.chB))+'<br>'+esc(L(TX.soon2))+'</div>';
+    else if(!C.j) body='<div class="kstge">'+esc(L(TX.lo))+'</div>';
+    else if(!c) body='<div class="kstge">'+esc(L(TX.chNone))+'</div>';
+    else { var live=c.live;
+      body='<div class="kchh"><div class="kchn">'+kIc("chal")+'<div><b>'+esc(kChTtl(c))+'</b><p>'+esc(c.t||"-")+'</p></div></div>'
+        +'<div class="kchm"><span>'+esc(kChDay(c.s)+" ~ "+kChDay(c.e))+'</span><span class="kchl'+(live?'':' x')+'">'+esc(kChLeft(c))+'</span><span>'+esc(tf(L(TX.chN),{n:kNum(c.n)}))+'</span></div>'
+        +(live?'<button type="button" class="kchgo" data-go="1">'+kIc("vid",1)+esc(L(TX.chGo))+'</button><button type="button" class="kchiv" data-inv="1">'+kIc("share",1)+esc(L(TX.chInv))+'</button>':'')+'</div>'
+        +'<div class="ksrt"><span>'+esc(L(TX.chList))+(C.items&&C.items.length?' · '+C.items.length:'')+'</span><button type="button" data-sort="1">⇅ '+esc(L(C.sort==="score"?TX.sScore:TX.sNew))+'</button>'+kVwBtn()+'</div>'
+        +(C.items===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':C.err?'<div class="kstge">'+esc(L(TX.stF))+'</div>':!C.items.length?'<div class="kstge">'+esc(L(TX.chE))+'</div>'
+          :'<div class="krows">'+C.items.map(function(x,i){ return kRoomRow(x,i,C.sort==="score"&&i<3&&typeof x.sc==="number"?i+1:0); }).join("")+'</div>');
+      var hs=(C.j.hist||[]).filter(function(h){ return h.id!==c.id; }).concat(C.j.cur&&C.j.cur.id!==c.id?[C.j.cur]:[]);
+      if(hs.length) body+='<div class="kbx"><h4>'+esc(L(TX.chPast))+'</h4><div class="kfls">'+hs.slice(0,10).map(function(h){ return '<button type="button" data-h="'+esc(h.id)+'">'+kIc("chal",1)+esc(kChTtl(h)+" · "+(h.t||""))+'<small class="kchd">'+esc(kChDay(h.s))+'</small></button>'; }).join("")+'</div></div>'; }
+    var sc=o.querySelector(".kpgb"), top=sc?sc.scrollTop:0;
+    o.innerHTML=kHead('<h3>'+esc(L(TX.chB))+'</h3>')+'<div class="kpgb">'+body+'</div>';
+    sc=o.querySelector(".kpgb"); if(sc&&top) sc.scrollTop=top;
+    o.querySelector(".kpbk").onclick=pgBack; kUnBind(o);
+    var g=o.querySelector("[data-go]"); if(g) g.onclick=function(){ try{ ntap("kara_stage","chal_try"); }catch(e){} kSing(c.sid,c.t,{ch:c.id}); };
+    var iv=o.querySelector("[data-inv]"); if(iv) iv.onclick=function(){ kChInv(c); };
+    var so=o.querySelector("[data-sort]"); if(so) so.onclick=function(){ C.sort=C.sort==="score"?"new":"score"; C.load(); };
+    [].forEach.call(o.querySelectorAll("[data-h]"),function(x){ x.onclick=function(){ kChal(x.dataset.h); }; });
+    [].forEach.call(o.querySelectorAll(".krow"),function(r){ var go=function(){ var x=C.items&&C.items[+r.dataset.i]; if(x) kDet(x,C); }; r.onclick=go; r.onkeydown=function(e){ if(e.key==="Enter") go(); }; }); };
+  C.draw(); C.load(); try{ ntap("kara_stage","chal"); }catch(e){} }
+// 챌린지 친구 초대 — 공용 공유창 전체(카카오톡·X·페이스북·WhatsApp·LINE·텔레그램·위챗·웨이보·문자·메일·링크 복사·다른 앱으로) · 모든 글에 ?chal= 링크 + 「앱 설치」 링크
+function kChInv(c){ if(!c) return;
+  kGet("/kst/me").then(function(m){ return m&&m.ok?m.nick||"":""; }).catch(function(){ return ""; }).then(function(nk){
+    var u=RINV_U+"?chal="+c.id, ttl=nk?tf(L(TX.chInvT),{n:nk,t:c.t||""}):tf(L(TX.chInvT0),{t:c.t||""});
+    kShare({hd:L(TX.chInv)+" · StageSong "+L(TX.chB),url:u,iurl:u+"&install=1",txt:ttl+"\n"+L(TX.chInvD),full:1,kk:{title:ttl,desc:L(TX.chInvD),img:RINV_U+"icon-512.png",b1:L(TX.chJoin)}});
+    try{ ntap("kara_stage","chal_inv"); }catch(e){} }); }
+window.karChal=function(id){ if(!box()) return; kChal(/^[0-9a-f]{12}$/.test(String(id||""))?id:""); };
+// ── 우리끼리 방 릴레이 (사장님 10-31 「방장에게 권한」) — 방마다 진행 중 1개 · 지금 주자만 도전 · 게시 뒤 다음 주자 지명 · 방장 = 주자 변경·건너뛰기·종료
+function kTurnBand(j){ var r=j&&j.relay; if(!r) return ""; var c=r.cur;
+  return '<div class="ktrn'+(c&&c.me?' me':'')+'" data-trn="1">'+kIc("relay",1)+'<b>'+esc(c?(c.me?L(TX.rlMine):tf(L(TX.rlTurn),{n:c.nick||"guest"})):L(TX.rlWait))+'</b><span>'+esc(r.t||"")+'</span></div>'; }
+// 곡 고르기 창 — 지금 노래방 목록 + 금영 곡 검색(허브 /kara?q=)
+function kSongPick(host,title,cb){ var w=document.createElement("div"); w.className="kpm"; host.appendChild(w); var items=(K.items||[]).filter(function(x){ return x&&x.e!==0; }).slice(0,30), q="", busy=false;
+  var draw=function(){ w.innerHTML='<div><h3>'+esc(title)+'</h3><form class="ksr"><input type="search" placeholder="'+esc(L(TX.q))+'" value="'+esc(q)+'"><button type="submit">'+esc(L(TX.go))+'</button></form>'
+      +(busy?'<p class="km">'+esc(L(TX.lo))+'</p>':!items.length?'<p class="km">'+esc(L(TX.rlNoS))+'</p>':'<div class="kfls ksng">'+items.map(function(x,i){ return '<button type="button" data-i="'+i+'">'+esc(x.t)+'</button>'; }).join("")+'</div>')
+      +'<button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+    w.querySelector("form").onsubmit=function(e){ e.preventDefault(); q=String(w.querySelector("input").value||"").trim(); if(!q) return; busy=true; draw();
+      fetch(HUB+"/kara?q="+encodeURIComponent(q)).then(function(r){ return r.json(); }).then(function(j){ busy=false; items=((j&&j.ok&&j.items)||[]).filter(function(x){ return x.e!==0; }); if(w.isConnected) draw(); }).catch(function(){ busy=false; items=[]; if(w.isConnected) draw(); }); };
+    w.querySelector(".kc").onclick=function(){ w.remove(); };
+    [].forEach.call(w.querySelectorAll("[data-i]"),function(x){ x.onclick=function(){ var s=items[+x.dataset.i]; if(!s) return; w.remove(); cb({id:s.id,t:s.t}); }; }); };
+  w.onclick=function(e){ if(e.target===w) w.remove(); }; draw(); }
+// 주자 고르기 창 — 아직 안 부른 사람 먼저 · noMe = 나 빼기(주자가 다음 사람 지명할 때)
+function kMemPick(host,title,mem,noMe,cb){ var w=document.createElement("div"); w.className="kpm"; host.appendChild(w);
+  var a=(mem||[]).filter(function(p){ return p.pubid&&!(noMe&&p.me); }).slice().sort(function(x,y){ return (x.sung?1:0)-(y.sung?1:0); });
+  w.innerHTML='<div><h3>'+esc(title)+'</h3><p class="km">'+esc(L(TX.rlNextN))+'</p><div class="kfls">'+a.map(function(p,i){ return '<button type="button" data-i="'+i+'">'+kIc("id")+esc(p.nick||"guest")+(p.owner?'<small class="kchd">'+esc(L(TX.rmOw))+'</small>':'')+(p.sung?'<small class="kchd">'+esc(L(TX.rlSung))+'</small>':'')+'</button>'; }).join("")+'</div><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+  w.querySelector(".kc").onclick=function(){ w.remove(); }; w.onclick=function(e){ if(e.target===w) w.remove(); };
+  [].forEach.call(w.querySelectorAll("[data-i]"),function(x){ x.onclick=function(){ var p=a[+x.dataset.i]; if(!p) return; w.remove(); cb(p); }; }); }
+function kRlErr(j){ var e=j&&j.err; return L(e==="busy"?TX.rlBusy:e==="turn"||e==="own"?TX.rlErr:e==="room"||e==="none"?TX.rmGone:TX.fail); }
+function kRelay(rid,R0,after){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var o=pgOpen("krelay"); if(!o) return;
+  var S={o:o,j:null,err:0,tok:0};
+  o._bye=function(){ S.tok++; };
+  var tell=function(j){ if(R0&&R0.o&&R0.o.isConnected&&R0.setRl) R0.setRl(j); };
+  S.load=function(cb){ var my=++S.tok; kGet("/kst/relay?rid="+rid).then(function(j){ if(my!==S.tok) return; if(j&&j.ok){ S.j=j; S.err=0; tell(j); } else S.err=j&&j.err==="room"?2:1; S.draw(); if(cb) cb(); })
+    .catch(function(){ if(my!==S.tok) return; S.err=1; S.draw(); }); };
+  var post=function(a){ a.rid=rid; return kPost("/kst/relay",a).then(function(j){ if(j&&j.ok){ S.j=j; tell(j); S.draw(); try{ ntap("kara_stage","relay_"+a.op); }catch(e){} return; } soon(kRlErr(j)); }).catch(function(){ soon(L(TX.upNet)); }); };
+  var start=function(){ kSongPick(o,L(TX.rlSong),function(s){ kMemPick(o,L(TX.rlFirst),S.j.mem,false,function(p){ post({op:"start",sid:s.id,t:s.t,pubid:p.pubid}); }); }); };
+  var next=function(title){ kMemPick(o,title||L(TX.rlNext),S.j.mem,!S.j.owner,function(p){ post({op:"next",pubid:p.pubid}); }); };
+  S.next=next;
+  var tellShare=function(){ var r=S.j&&S.j.relay, c=r&&r.cur; if(!c) return; var u=RINV_U+"?room="+rid, ttl=tf(L(TX.rlTellT),{n:c.nick||"guest"}), d=tf(L(TX.rlTellD),{t:r.t||""});
+    kShare({hd:L(TX.rlTell),url:u,iurl:u+"&install=1",txt:ttl+"\n"+d,full:1,kk:{title:ttl,desc:d,img:RINV_U+"icon-512.png",b1:L(TX.rmInvB)}}); try{ ntap("kara_stage","relay_tell"); }catch(e){} };
+  var menu=function(){ var w=document.createElement("div"); w.className="kpm"; o.appendChild(w);
+    w.innerHTML='<div><h3>'+esc(L(TX.rlB))+'</h3><div class="kmn"><button type="button" data-k="chg">'+kIc("id")+esc(L(TX.rlChg))+'</button><button type="button" data-k="skip">'+kIc("relay")+esc(L(TX.rlSkip))+'</button><button type="button" data-k="end" class="r">'+esc(L(TX.rlEnd))+'</button></div><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+    w.querySelector(".kc").onclick=function(){ w.remove(); }; w.onclick=function(e){ if(e.target===w) w.remove(); };
+    [].forEach.call(w.querySelectorAll("[data-k]"),function(b){ b.onclick=function(){ var k=b.dataset.k; w.remove();
+      if(k==="chg") next(L(TX.rlChg)); else if(k==="skip") post({op:"skip"}); else if(k==="end"&&window.confirm(L(TX.rlEndQ))) post({op:"end"}); }; }); };
+  S.draw=function(){ var j=S.j, r=j&&j.relay, body;
+    if(S.err===2) body='<div class="kstge">'+esc(L(TX.rmGone))+'</div>';
+    else if(!j) body='<div class="kstge">'+esc(L(S.err?TX.stF:TX.lo))+'</div>';
+    else if(!r) body='<div class="kstge">'+kIc("relay")+'<br>'+esc(L(TX.rlNone))+(j.owner?'':'<br><small>'+esc(L(TX.rlNoneO))+'</small>')+'</div>'+(j.owner?'<button type="button" class="kchgo" data-st="1">'+kIc("relay",1)+esc(L(TX.rlStart))+'</button>':'');
+    else { var c=r.cur, mine=c&&c.me;
+      body=kTurnBand(j)
+        +'<div class="kchh"><div class="kchn">'+kIc("relay")+'<div><b>'+esc(r.t||"-")+'</b><p>'+esc((j.name||"")+" · "+tf(L(TX.rmN),{n:(j.mem||[]).length}))+'</p></div>'+(j.owner?'<button type="button" class="krmx" data-mn="1" aria-label="menu">⋯</button>':'')+'</div>'
+        +(mine&&!r.curDone?'<button type="button" class="kchgo" data-go="1">'+kIc("vid",1)+esc(L(TX.rlGo))+'</button>':'')
+        +((mine&&r.curDone)||(j.owner&&(!c||r.curDone))?'<button type="button" class="kchgo" data-nx="1">'+kIc("fol",1)+esc(L(TX.rlNext))+'</button>':'')
+        +(c&&!c.me?'<button type="button" class="kchiv" data-tl="1">'+kIc("share",1)+esc(L(TX.rlTell))+'</button>':'')+'</div>'
+        +'<div class="ksrt"><span>'+esc(L(TX.rlSeq))+(j.items&&j.items.length?' · '+j.items.length:'')+'</span>'+kVwBtn()+'</div>'
+        +(!j.items.length?'<div class="kstge">'+esc(L(TX.rmE))+'</div>':'<div class="krows">'+j.items.map(function(x,i){ return kRoomRow(x,i,x.no||i+1,1); }).join("")+'</div>'); }
+    var sc=o.querySelector(".kpgb"), top=sc?sc.scrollTop:0;
+    o.innerHTML=kHead('<h3>'+esc(L(TX.rlB))+'</h3>')+'<div class="kpgb">'+body+'</div>';
+    sc=o.querySelector(".kpgb"); if(sc&&top) sc.scrollTop=top;
+    o.querySelector(".kpbk").onclick=pgBack; kUnBind(o);
+    var q=function(s){ return o.querySelector(s); };
+    if(q("[data-st]")) q("[data-st]").onclick=start;
+    if(q("[data-mn]")) q("[data-mn]").onclick=menu;
+    if(q("[data-nx]")) q("[data-nx]").onclick=function(){ next(); };
+    if(q("[data-tl]")) q("[data-tl]").onclick=tellShare;
+    if(q("[data-go]")) q("[data-go]").onclick=function(){ try{ ntap("kara_stage","relay_try"); }catch(e){} kSing(r.sid,r.t,{rl:r.id,rid:rid,sid:r.sid}); };
+    [].forEach.call(o.querySelectorAll(".krow"),function(c2){ var go=function(){ var x=j&&j.items&&j.items[+c2.dataset.i]; if(x) kDet(x,S); }; c2.onclick=go; c2.onkeydown=function(e){ if(e.key==="Enter") go(); }; }); };
+  S.draw(); S.load(after?function(){ after(S); }:null); try{ ntap("kara_stage","relay"); }catch(e){} return S; }
+// 카톡 「차례」 알림 링크 ?room=<rid> — 이미 방 사람이니 그 방을 바로 연다 (site.js 가 부른다, 사장님 기기만)
+window.karRoomOpen=function(rid){ if(!box()||!/^[0-9a-f]{12}$/.test(String(rid||""))) return; stageOpen("all"); var S=KS; if(S){ S.view="room"; S.rooms=null; S.items=null; S.err=0; S.draw(); S.load(); } kRoom(rid,S); };
+// ── 이용 안내 책자 (사장님 10-31 「노래방 책자인 척」) — 목차 → 장 넘기기(좌우 단추 + 손가락 밀기) · 사장님 기기 전용 장은 손님 기기에서 「곧 오픈 예정」
+function kBookUi(k){ var lg=window.LANG||"en";
+  if(k==="srch") return '<div class="kbui"><form class="ksr" onsubmit="return false"><input type="search" placeholder="'+esc(L(TX.q))+'" tabindex="-1" readonly><button type="button" tabindex="-1">'+esc(L(TX.go))+'</button></form></div>';
+  if(k==="pay") return '<div class="kbui"><div class="kpay"><div class="kr"><b>'+esc(L(TX.kb))+'</b><small>'+esc(L(TX.kbs))+'</small></div><span class="kl">'+esc(L(TX.lgin))+'</span><span class="kslot"><i></i><span>PAYMENT</span><small>'+esc(L(TX.slot))+'</small></span></div></div>';
+  if(k==="rec") return '<div class="kbui"><span class="kbrec">'+esc(L(TX.rec))+'</span><span class="kbrec x">'+esc(L(TX.recX))+'</span></div>';
+  if(k==="chips") return '<div class="kbui"><div class="kchips">'+[["pub",TX.vPub],["folonly",TX.vFol],["room",TX.vwRoom],["lock",TX.vMe]].map(function(c){ return '<span class="kbch">'+kIc(c[0])+'<span>'+esc(L(c[1]))+'</span></span>'; }).join("")+'</div></div>';
+  if(k==="shr") return '<div class="kbui kbsh">'+["kakao","x","fb","line","wa","tg","wc","wb","sms","mail"].map(function(n){ return SHI[n]||""; }).join("")+'</div>';
+  if(k==="law") return '<div class="kbui kblaw"><a href="mailto:admin@moneypuzzle.co.kr">admin@moneypuzzle.co.kr</a><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a><a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a><a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a></div>';
+  return ""; }
+function kBook(){ var o=pgOpen("kbook"); if(!o) return; var pg=-1, own=isOwn(), N=BOOK.length;
+  var soonT=function(c){ return c.o&&!own?'<small class="kbsoon">'+esc(L(TX.bkSoon))+'</small>':''; };
+  var draw=function(dir){ var body;
+    if(pg<0) body='<div class="kbk"><div class="kbkt">'+kIc("book")+'<b>'+esc(L(TX.bkB))+'</b></div><h4 class="kbtoc">'+esc(L(TX.bkToc))+'</h4><ol class="kbls">'+BOOK.map(function(c,i){ return '<li><button type="button" data-p="'+i+'"><em>'+(i+1)+'</em><span>'+esc(L(c.t))+'</span>'+soonT(c)+'</button></li>'; }).join("")+'</ol><p class="kbsw">'+esc(L(TX.bkSw))+'</p></div>';
+    else { var c=BOOK[pg], ps=c.p[window.LANG]||c.p.en;
+      body='<div class="kbk kbpg'+(dir?' kbin'+(dir>0?'r':'l'):'')+'"><div class="kbno">'+(pg+1)+' / '+N+'</div><h3 class="kbh">'+esc(L(c.t))+soonT(c)+'</h3>'
+        +(c.ic&&c.ic.length?'<div class="kbic">'+c.ic.map(function(n){ return kIc(n); }).join("")+'</div>':'')+(c.ui?kBookUi(c.ui):'')
+        +'<ul class="kbp">'+ps.map(function(t){ return '<li>'+esc(t)+'</li>'; }).join("")+'</ul></div>'; }
+    var nav='<div class="kbnav"><button type="button" data-nv="-1"'+(pg<0?' disabled':'')+'>‹ '+esc(L(TX.bkPrev))+'</button><button type="button" data-nv="toc"'+(pg<0?' disabled':'')+'>'+esc(L(TX.bkToc))+'</button><button type="button" data-nv="1"'+(pg>=N-1?' disabled':'')+'>'+esc(L(TX.bkNext))+' ›</button></div>';
+    o.innerHTML=kHead('<h3>'+esc(L(TX.bkB))+'</h3>')+'<div class="kpgb">'+body+nav+'</div>';
+    o.querySelector(".kpbk").onclick=pgBack;
+    [].forEach.call(o.querySelectorAll("[data-p]"),function(x){ x.onclick=function(){ pg=+x.dataset.p; draw(1); }; });
+    [].forEach.call(o.querySelectorAll("[data-nv]"),function(x){ x.onclick=function(){ var v=x.dataset.nv; if(v==="toc"){ pg=-1; draw(-1); return; } go(+v); }; });
+    var g=o.querySelector(".kpgb"); if(g) g.scrollTop=0; };
+  var go=function(d){ var n=pg+d; if(n<-1||n>N-1) return; pg=n; draw(d); };
+  var sx=null, sy=0;   // 손가락 좌우 밀기 = 장 넘기기 (확대 중엔 안 함)
+  o.addEventListener("touchstart",function(e){ if(e.touches.length!==1||KZ.s>1){ sx=null; return; } sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
+  o.addEventListener("touchend",function(e){ if(sx==null) return; var t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy; sx=null; if(Math.abs(dx)>60&&Math.abs(dy)<50) go(dx<0?1:-1); },{passive:true});
+  draw(0); try{ ntap("kara_site","book"); }catch(e){} }
 var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ barPaint(); if(KB.redraw) KB.redraw(); }catch(e){} return r; };   // 언어 바꾸면 곡 이용권 창도 바로
 try{ localStorage.removeItem("mpv_kbg"); localStorage.removeItem("mpv_kth"); }catch(e){}   // 녹화 배경·테마는 이번 노래방 안에서만 기억 — 다시 들어오면 기본(사장님 10-31)
 function close(){ try{ kzReset(); sessionStorage.removeItem("mpv_kbg"); sessionStorage.removeItem("mpv_kth"); }catch(e){} try{ pgTo(0); }catch(e){} try{ klEnd(); }catch(e){} try{ if(REC.mr&&REC.mr.state!=="inactive"){ REC.mr.onstop=null; REC.mr.stop(); } camOff(); }catch(e){} K.cur=null; var b=box(); if(b){ try{ K.pl&&K.pl.destroy&&K.pl.destroy(); }catch(e){} b.remove(); } K.pl=null; K.ready=false; document.documentElement.style.overflow=""; mpPaid.end(); }
