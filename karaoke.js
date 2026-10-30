@@ -926,8 +926,8 @@ function kUnBind(root){ [].forEach.call(root.querySelectorAll(".kun[data-u]"),fu
 function kScC(x){ var v=x&&typeof x.sc==="number"?x.sc:null; return '<div class="krs">'+(v==null?'<b class="kna">–</b>':'<b>'+v+'</b><small>'+esc(L(TX.scPt))+'</small>')+'</div>'; }
 // 목록 보기 방식 — 줄 목록 ↔ 바둑판(3열, 사진만) (사장님 10-31) · 스테이지·내 스테이지·그 사람 무대·우리끼리 방 공통, 기기에 기억
 var KGV=false; try{ KGV=localStorage.getItem("mpv_kgv")==="1"; }catch(e){}
-function kVwBtn(){ return '<button type="button" class="kvw" data-view="1" aria-label="view">'+(KGV?'&#9776;':'<img class="kgvi" src="img/kara/kst_grid.png" alt="">')+'</button>'; }
-function kGvApply(){ var b=box(); if(b) b.classList.toggle("kgv",KGV); [].forEach.call(document.querySelectorAll("#karBox .kvw"),function(x){ x.innerHTML=KGV?'&#9776;':'<img class="kgvi" src="img/kara/kst_grid.png" alt="">'; }); }
+function kVwBtn(){ return '<button type="button" class="kvw" data-view="1" aria-label="view">'+(KGV?'<img class="kgvi" src="img/kara/kst_list.png" alt="">':'<img class="kgvi" src="img/kara/kst_grid.png" alt="">')+'</button>'; }
+function kGvApply(){ var b=box(); if(b) b.classList.toggle("kgv",KGV); [].forEach.call(document.querySelectorAll("#karBox .kvw"),function(x){ x.innerHTML=KGV?'<img class="kgvi" src="img/kara/kst_list.png" alt="">':'<img class="kgvi" src="img/kara/kst_grid.png" alt="">'; }); }
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("#karBox [data-view]"); if(!t) return; e.preventDefault(); e.stopPropagation(); KGV=!KGV; try{ localStorage.setItem("mpv_kgv",KGV?"1":"0"); }catch(x){} kGvApply(); },true);
 new MutationObserver(function(){ var b=box(); if(b&&b.classList.contains("kgv")!==KGV) b.classList.toggle("kgv",KGV); }).observe(document.body,{childList:true});
 function kSortNx(s){ return s==="new"?"old":s==="old"?"score":"new"; }
