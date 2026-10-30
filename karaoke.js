@@ -695,12 +695,12 @@ var KTH_LIST=[
  ["xmas","크리스마스 특집|Christmas Special|クリスマス特集|圣诞特辑|聖誕特輯|Especial de Navidad",[["tree","트리 앞 열창|Singing by the tree|ツリーの前で熱唱|圣诞树前高歌|聖誕樹前高歌|Cantando junto al árbol"],["gift","선물 열기|Opening presents|プレゼントを開ける|拆礼物|拆禮物|Abriendo regalos"],["snow","눈 오는 창가|Snowy window|雪の窓辺|雪夜窗边|雪夜窗邊|Ventana nevada"],["santa","산타 변신|Santa makeover|サンタに変身|变身圣诞老人|變身聖誕老人|Disfrazado de Papá Noel"],["party","가족 파티|Family party|家族パーティー|家庭派对|家庭派對|Fiesta familiar"],["sled","눈썰매|Snow sled|雪そり|雪橇|雪橇|Trineo"]]]];
 function Lp(t){ var a=String(t).split("|"), i=["ko","en","ja","zhs","zht","es"].indexOf(window.LANG); return a[i<0?1:i]||a[1]; }
 function kTh(k){ for(var i=0;i<KTH_LIST.length;i++) if(KTH_LIST[i][0]===k) return KTH_LIST[i]; return null; }
-function kThGet(){ var t=""; try{ t=localStorage.getItem("mpv_kth")||""; }catch(e){} return kTh(t)?t:""; }
-function kThSet(t){ try{ if(t) localStorage.setItem("mpv_kth",t); else localStorage.removeItem("mpv_kth"); }catch(e){} }
+function kThGet(){ var t=""; try{ t=sessionStorage.getItem("mpv_kth")||""; }catch(e){} return kTh(t)?t:""; }
+function kThSet(t){ try{ if(t) sessionStorage.setItem("mpv_kth",t); else sessionStorage.removeItem("mpv_kth"); }catch(e){} }
 function kEff(){ var t=kThGet(); return t?"th:"+t:kBgGet(); }   // 실제로 깔 배경 — 테마를 골랐으면 테마 그림   // KBGW = 처리·녹화 긴 쪽 픽셀 (10-31 640 → 1280 · 사장님 「사람이 흐릿하다」)
 var KCV=null;   // 합성 중인 판
-function kBgGet(){ var k="none"; try{ k=localStorage.getItem("mpv_kbg")||"none"; }catch(e){} return KBG_TX[k]?k:"none"; }
-function kBgSet(k){ try{ localStorage.setItem("mpv_kbg",k); }catch(e){} }
+function kBgGet(){ var k="none"; try{ k=sessionStorage.getItem("mpv_kbg")||"none"; }catch(e){} return KBG_TX[k]?k:"none"; }
+function kBgSet(k){ try{ sessionStorage.setItem("mpv_kbg",k); }catch(e){} }
 // 🔴 10-30 폰 버그: GPU 로 돌면 사람 마스크가 비어 배경만 녹화되고 얼굴이 안 나옴 → CPU 먼저 (dl="CPU1" = CPU 만)
 function kSegLoad(dl){ if(KSEG) return Promise.resolve(KSEG); if(KSEGP) return KSEGP;
   var mk=function(m,fs,dl){ return m.ImageSegmenter.createFromOptions(fs,{baseOptions:{modelAssetPath:KMP_M,delegate:dl},runningMode:"VIDEO",outputCategoryMask:false,outputConfidenceMasks:true}); };
@@ -1416,7 +1416,8 @@ function ntcOpen(){ var b=box(); if(!b) return; var o=b.querySelector(".kntc"); 
   o.querySelector(".kc").onclick=function(){ o.remove(); };
   o.onclick=function(e){ if(e.target===o) o.remove(); }; }
 var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ barPaint(); if(KB.redraw) KB.redraw(); }catch(e){} return r; };   // 언어 바꾸면 곡 이용권 창도 바로
-function close(){ try{ kzReset(); }catch(e){} try{ pgTo(0); }catch(e){} try{ klEnd(); }catch(e){} try{ if(REC.mr&&REC.mr.state!=="inactive"){ REC.mr.onstop=null; REC.mr.stop(); } camOff(); }catch(e){} K.cur=null; var b=box(); if(b){ try{ K.pl&&K.pl.destroy&&K.pl.destroy(); }catch(e){} b.remove(); } K.pl=null; K.ready=false; document.documentElement.style.overflow=""; mpPaid.end(); }
+try{ localStorage.removeItem("mpv_kbg"); localStorage.removeItem("mpv_kth"); }catch(e){}   // 녹화 배경·테마는 이번 노래방 안에서만 기억 — 다시 들어오면 기본(사장님 10-31)
+function close(){ try{ kzReset(); sessionStorage.removeItem("mpv_kbg"); sessionStorage.removeItem("mpv_kth"); }catch(e){} try{ pgTo(0); }catch(e){} try{ klEnd(); }catch(e){} try{ if(REC.mr&&REC.mr.state!=="inactive"){ REC.mr.onstop=null; REC.mr.stop(); } camOff(); }catch(e){} K.cur=null; var b=box(); if(b){ try{ K.pl&&K.pl.destroy&&K.pl.destroy(); }catch(e){} b.remove(); } K.pl=null; K.ready=false; document.documentElement.style.overflow=""; mpPaid.end(); }
 window.karOpen=open; window.karClose=close; window.karState=K;
 var _hc=window.hitClick; window.hitClick=function(k){ var m=/^__kara_([a-z]+)$/.exec(k||""); if(m){ open(m[1]); return; } return _hc.apply(this,arguments); };
 var _gb=window.guBack; window.guBack=function(){ if(box()){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };   // 뒤로가기 = 노래방 나가기
