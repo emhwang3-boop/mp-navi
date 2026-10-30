@@ -40,7 +40,10 @@ var W={
  load:{ko:"불러오는 중…",en:"Loading…",ja:"読み込み中…",zhs:"加载中…",zht:"載入中…",es:"Cargando…"},
  err:{ko:"불러오지 못했습니다. 잠시 뒤 다시 해 주세요.",en:"Could not load. Please try again shortly.",ja:"読み込めませんでした。しばらくしてからもう一度お試しください。",zhs:"无法加载，请稍后再试。",zht:"無法載入，請稍後再試。",es:"No se pudo cargar. Inténtelo de nuevo en un momento."},
  lerr:{ko:"로그인하지 못했습니다. 다시 해 주세요.",en:"Sign-in failed. Please try again.",ja:"ログインできませんでした。もう一度お試しください。",zhs:"登录失败，请重试。",zht:"登入失敗，請重試。",es:"No se pudo iniciar sesión. Inténtelo de nuevo."},
- sess:{ko:"로그인이 끝났습니다. 다시 로그인해 주세요.",en:"Your session has ended. Please sign in again.",ja:"ログインの有効期限が切れました。もう一度ログインしてください。",zhs:"登录已过期，请重新登录。",zht:"登入已過期，請重新登入。",es:"Su sesión ha terminado. Vuelva a iniciar sesión."}
+ sess:{ko:"로그인이 끝났습니다. 다시 로그인해 주세요.",en:"Your session has ended. Please sign in again.",ja:"ログインの有効期限が切れました。もう一度ログインしてください。",zhs:"登录已过期，请重新登录。",zht:"登入已過期，請重新登入。",es:"Su sesión ha terminado. Vuelva a iniciar sesión."},
+ gNat:{ko:"Google로 로그인",en:"Sign in with Google",ja:"Googleでログイン",zhs:"使用Google登录",zht:"使用Google登入",es:"Iniciar sesión con Google"},
+ aNat:{ko:"앱에서는 Apple 로그인을 지원하지 않습니다. Google로 로그인하거나, 웹 브라우저의 사이트에서 Apple로 로그인해 주세요.",en:"Sign in with Apple is not available in the app. Please sign in with Google, or use Apple sign-in on the website in your web browser.",ja:"アプリではAppleでのログインはご利用いただけません。Googleでログインするか、ウェブブラウザのサイトでAppleでログインしてください。",zhs:"应用内不支持Apple登录。请使用Google登录，或在网页浏览器的网站上使用Apple登录。",zht:"App 內不支援 Apple 登入。請使用 Google 登入，或在網頁瀏覽器的網站上使用 Apple 登入。",es:"El inicio de sesión con Apple no está disponible en la app. Inicia sesión con Google o usa Apple en el sitio web desde tu navegador."},
+ natUpd:{ko:"이 앱 버전에서는 로그인을 지원하지 않습니다. 앱을 최신 버전으로 업데이트해 주세요.",en:"Sign-in is not supported in this app version. Please update the app to the latest version.",ja:"このアプリのバージョンではログインできません。アプリを最新バージョンに更新してください。",zhs:"此应用版本不支持登录，请将应用更新到最新版本。",zht:"此 App 版本不支援登入，請將 App 更新到最新版本。",es:"Esta versión de la app no admite el inicio de sesión. Actualiza la app a la última versión."}
 };
 /* 다른 사이트(노래방 karaoke.moneypuzzle.co.kr, 10-30)가 같은 pg.js 를 쓸 때 — window.PG_SITE={W:{문구},simple,aredir}. 투어앱엔 PG_SITE 가 없어 그대로 */
 var PGS=window.PG_SITE||null; if(PGS&&PGS.W) for(var _pk in PGS.W) W[_pk]=PGS.W[_pk];
@@ -80,6 +83,7 @@ var GLOC={ko:"ko",en:"en",ja:"ja",zhs:"zh_CN",zht:"zh_TW",es:"es"};
 function paintLogin(msg){ var I=document.getElementById("pgIn");
   I.innerHTML=head()+'<div class="pgp">'+esc(t("intro"))+'</div><div class="pgp" style="color:var(--ink)">'+esc(t("ask"))+'</div>'+(msg?'<div class="pgp" style="color:#c92a2a">'+esc(msg)+'</div>':'')
     +'<div id="pgGbtn"><button type="button" class="pgbtn" disabled>'+esc(t("load"))+'</button></div><div id="pgAbtn"></div>'+rvHtml()+privHtml();
+  if(natApp()){ natPaint(); rvWire(); return; }   /* 앱(StageSong 등) 안 — 웹 구글·애플 로그인은 WebView 에서 막힘(흰 화면) → 앱 전용 로그인 (10-31) */
   appleBtn(); rvWire();
   cfg().then(function(c){ var g=document.getElementById("pgGbtn"); if(!g) return; c={cid:(c&&c.cid)||PG_CID};
     if(!c||!c.cid){ g.innerHTML='<button type="button" class="pgbtn" id="pgPrep" disabled><img src="img/menu/mi_globe.png" alt="" style="height:16px;width:16px;vertical-align:-3px;margin-right:6px">'+esc(t("prep"))+'</button><div class="pgp">'+esc(t("prepNote"))+'</div>'; return; }
@@ -87,6 +91,24 @@ function paintLogin(msg){ var I=document.getElementById("pgIn");
       google.accounts.id.initialize({client_id:c.cid,callback:onCred,auto_select:false,cancel_on_tap_outside:true,ux_mode:"popup"});
       google.accounts.id.renderButton(g2,{type:"standard",theme:document.documentElement.getAttribute("data-theme")==="dark"?"filled_black":"outline",size:"large",width:240,text:"signin_with",shape:"pill",locale:GLOC[lg()]||"en"});
     }).catch(function(){ var g3=document.getElementById("pgGbtn"); if(g3) g3.innerHTML='<div class="pgp" style="color:#c92a2a">'+esc(t("err"))+'</div>'; }); }); }
+// ── 앱 안 로그인 (10-31) — 구글은 WebView 안 OAuth 를 막는다(disallowed_useragent → 흰 화면) · 웹판(브라우저)은 위 그대로
+//   안드로이드 앱 = 플러그인 @capgo/capacitor-social-login (Credential Manager) · webClientId = 웹 클라이언트 ID → ID 토큰 aud 가 웹과 같아 허브 /npg/login 그대로 = 같은 계정·같은 지갑
+//   애플은 앱 안에서 안내만 · 플러그인이 없는 옛 앱 판·iOS 는 업데이트 안내 (멈추지 않게)
+function natApp(){ try{ var C=window.Capacitor; return !!(C&&C.isNativePlatform&&C.isNativePlatform()); }catch(e){ return false; } }
+function natSL(){ try{ var C=window.Capacitor; return C.getPlatform&&C.getPlatform()==="android"&&C.Plugins&&C.Plugins.SocialLogin||null; }catch(e){ return null; } }
+var GSV='<svg viewBox="0 0 48 48" width="18" height="18" style="vertical-align:-4px;margin-right:8px"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
+var SLI=null;
+function natPaint(){ var g=document.getElementById("pgGbtn"), a=document.getElementById("pgAbtn"), P=natSL();
+  if(a) a.innerHTML=P?'<div class="pgp">'+esc(t("aNat"))+'</div>':"";
+  if(!g) return;
+  if(!P){ g.innerHTML='<div class="pgp" style="color:#c92a2a">'+esc(t("natUpd"))+'</div>'; return; }
+  g.innerHTML='<button type="button" class="pgbtn" id="pgGnat" style="min-width:240px;font-weight:600">'+GSV+esc(t("gNat"))+'</button>';
+  document.getElementById("pgGnat").onclick=function(){ var b=this; b.disabled=true;
+    cfg().then(function(c){ var cid=(c&&c.cid)||PG_CID;
+      if(!SLI) SLI=P.initialize({google:{webClientId:cid,mode:"online"}}).catch(function(e){ SLI=null; throw e; });
+      return SLI; }).then(function(){ return P.login({provider:"google",options:{}}); })
+    .then(function(r){ var tk=r&&r.result&&r.result.idToken; if(!tk){ paintLogin(t("lerr")); return; } login({cred:tk}); })
+    .catch(function(e){ var m=String(e&&(e.message||e.code)||e||""); if(/cancel/i.test(m)){ paintLogin(); return; } paintLogin(t("lerr")); }); }; }
 // ── Apple로 로그인 (사장님 2026-10-26) — Sign in with Apple JS 공식 스크립트(판 1)·공식 검정 단추·팝업 · state·nonce 는 창 열 때마다 새로 ──
 //   Services ID kr.co.moneypuzzle.navi.web · Return URL https://navi.moneypuzzle.co.kr/ · 허브 /npg/login {prov:"apple"} 가 애플 JWKS 로 검사
 var ACID="kr.co.moneypuzzle.navi.web", AREDIR=(PGS&&PGS.aredir)||"https://navi.moneypuzzle.co.kr/", ALOC={ko:"ko_KR",en:"en_US",ja:"ja_JP",zhs:"zh_CN",zht:"zh_TW",es:"es_ES"}, AS=null, AJS=null;
@@ -117,7 +139,7 @@ function login(b){ var I=document.getElementById("pgIn"); if(I) I.innerHTML=head
   post("/npg/login",b).then(function(j){ if(!j||!j.ok||!j.sess){ paintLogin(t("lerr")); return; } ls("mpv_pg_sess",j.sess); paintMe(j.me); menuPaint(); })
     .catch(function(){ paintLogin(t("lerr")); }); }
 function onCred(r){ login({cred:r&&r.credential}); }
-function logout(){ ls("mpv_pg_sess",null); try{ if(window.google&&google.accounts&&google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){} menuPaint(); paintLogin(); }
+function logout(){ ls("mpv_pg_sess",null); try{ if(window.google&&google.accounts&&google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){} try{ var P=natSL(); if(P&&SLI) P.logout({provider:"google"}).catch(function(){}); }catch(e){} menuPaint(); paintLogin(); }
 function bdRow(n,lab){ n=n||0; var K=[["bigsun",Math.floor(n/1000)],["sun",Math.floor(n/100)%10],["bigstar",Math.floor(n/10)%10],["star",n%10]];
   return (lab?'<div class="pgsec">'+esc(lab)+'</div>':'')+'<div class="pgbd">'+K.map(function(k){ return '<div'+(k[1]?'':' class="pgdim0"')+'><img src="img/rank/'+k[0]+'.webp" alt=""><b>'+k[1]+'</b>'+esc(t(k[0]))+'</div>'; }).join("")+'</div><div class="pgp" style="text-align:right;margin:2px 0 6px">'+esc(t("wtot",{n:n.toLocaleString()}))+'</div>'; }
 function paintMe(m){ var I=document.getElementById("pgIn"); if(!I||!m) return;
