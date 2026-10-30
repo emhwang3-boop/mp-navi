@@ -131,6 +131,29 @@ var TX={
  soon2:{"ko": "곧 열립니다.", "en": "Coming soon.", "ja": "近日公開。", "zhs": "即将开放。", "zht": "即將開放。", "es": "Próximamente."},
  stgE:{"ko": "다른 사람 노래 영상", "en": "Other people's singing videos", "ja": "ほかの人の歌の動画", "zhs": "其他人的唱歌视频", "zht": "其他人的唱歌影片", "es": "Vídeos de otras personas cantando"},
  mstgE:{"ko": "내 노래 영상", "en": "My singing videos", "ja": "自分の歌の動画", "zhs": "我的唱歌视频", "zht": "我的唱歌影片", "es": "Mis vídeos cantando"},
+ // 내 노래 올리기·가요무대 목록 (10-30 사장님 기기 시험판)
+ pvN2:{ko:"올리기 전에는 이 기기에만 있습니다. 올리지 않고 닫으면 지워집니다.",en:"Until you post it, the recording stays only on this device. If you close without posting, it is deleted.",ja:"投稿するまでは、この端末にのみ保存されます。投稿せずに閉じると削除されます。",zhs:"发布前录像只保存在本设备上。不发布就关闭，录像会被删除。",zht:"發布前錄影只存在本裝置上。不發布就關閉，錄影會被刪除。",es:"Hasta que la publiques, la grabación solo está en este dispositivo. Si cierras sin publicar, se borra."},
+ vis:{ko:"공개 범위",en:"Who can see it",ja:"公開範囲",zhs:"公开范围",zht:"公開範圍",es:"Quién puede verla"},
+ vPub:{ko:"전체 공개",en:"Everyone",ja:"全体に公開",zhs:"所有人可见",zht:"所有人可見",es:"Todos"},
+ vMe:{ko:"나만 보기",en:"Only me",ja:"自分だけ",zhs:"仅自己可见",zht:"僅自己可見",es:"Solo yo"},
+ vPubN:{ko:"가요무대에 올라가 누구나 볼 수 있어요.",en:"It goes on the Public Stage where anyone can watch it.",ja:"ステージに載り、誰でも見られます。",zhs:"会发布到舞台，所有人都能观看。",zht:"會發布到舞台，所有人都能觀看。",es:"Se publica en el Escenario y cualquiera puede verla."},
+ vMeN:{ko:"내 가요무대에만 있고 나만 볼 수 있어요.",en:"It stays on My Stage and only you can see it.",ja:"マイステージにだけあり、自分だけが見られます。",zhs:"只在我的舞台上，仅自己可以观看。",zht:"只在我的舞台上，僅自己可以觀看。",es:"Se queda en Mi escenario y solo tú puedes verla."},
+ by:{ko:"태어난 해 (4자리)",en:"Year of birth (4 digits)",ja:"生まれた年（4桁）",zhs:"出生年份（4位数）",zht:"出生年份（4位數）",es:"Año de nacimiento (4 cifras)"},
+ byN:{ko:"처음 올릴 때 한 번만 물어요. 만 14세 미만은 노래를 올릴 수 없어요.",en:"We ask only once, the first time you post. Users under 14 cannot post songs.",ja:"初めて投稿するときに一度だけ確認します。14歳未満は歌を投稿できません。",zhs:"仅在首次发布时询问一次。未满14周岁不能发布歌曲。",zht:"僅在首次發布時詢問一次。未滿14歲不能發布歌曲。",es:"Solo lo preguntamos la primera vez. Los menores de 14 años no pueden publicar canciones."},
+ byE:{ko:"태어난 해를 4자리 숫자로 넣어 주세요.",en:"Please enter your year of birth as 4 digits.",ja:"生まれた年を4桁の数字で入力してください。",zhs:"请用4位数字填写出生年份。",zht:"請用4位數字填寫出生年份。",es:"Escribe tu año de nacimiento con 4 cifras."},
+ by14:{ko:"만 14세 미만은 노래를 올릴 수 없어요.",en:"Users under 14 cannot post songs.",ja:"14歳未満は歌を投稿できません。",zhs:"未满14周岁不能发布歌曲。",zht:"未滿14歲不能發布歌曲。",es:"Los menores de 14 años no pueden publicar canciones."},
+ upGo:{ko:"올리기",en:"Post",ja:"投稿する",zhs:"发布",zht:"發布",es:"Publicar"},
+ upIng:{ko:"올리는 중… {p}%",en:"Posting… {p}%",ja:"投稿中… {p}%",zhs:"发布中… {p}%",zht:"發布中… {p}%",es:"Publicando… {p}%"},
+ upOk:{ko:"올렸어요.",en:"Posted.",ja:"投稿しました。",zhs:"已发布。",zht:"已發布。",es:"Publicada."},
+ upF:{ko:"올리지 못했어요. 잠시 뒤 다시 해 주세요.",en:"Could not post. Please try again shortly.",ja:"投稿できませんでした。しばらくしてからもう一度お試しください。",zhs:"发布失败，请稍后再试。",zht:"發布失敗，請稍後再試。",es:"No se pudo publicar. Inténtalo de nuevo en un momento."},
+ upBig:{ko:"영상이 너무 커요(60MB까지). 조금 짧게 다시 찍어 주세요.",en:"The video is too large (60 MB max). Please record a shorter one.",ja:"動画が大きすぎます（60MBまで）。少し短く撮り直してください。",zhs:"视频太大（最多60MB），请录短一点再试。",zht:"影片太大（最多60MB），請錄短一點再試。",es:"El vídeo es demasiado grande (máx. 60 MB). Graba uno más corto."},
+ upTy:{ko:"이 기기의 녹화 형식은 올릴 수 없어요.",en:"This device's recording format cannot be posted.",ja:"この端末の録画形式は投稿できません。",zhs:"无法发布此设备的录像格式。",zht:"無法發布此裝置的錄影格式。",es:"No se puede publicar el formato de grabación de este dispositivo."},
+ upNet:{ko:"인터넷 연결을 확인하고 다시 해 주세요.",en:"Please check your internet connection and try again.",ja:"インターネット接続を確認して、もう一度お試しください。",zhs:"请检查网络连接后再试。",zht:"請檢查網路連線後再試。",es:"Revisa tu conexión a internet e inténtalo de nuevo."},
+ needRec:{ko:"먼저 ● 녹화로 노래를 찍어 주세요.",en:"First record your song with ● Record.",ja:"まず ● 録画で歌を撮ってください。",zhs:"请先用 ● 录像录下你的歌。",zht:"請先用 ● 錄影錄下你的歌。",es:"Primero graba tu canción con ● Grabar."},
+ del:{ko:"지우기",en:"Delete",ja:"削除",zhs:"删除",zht:"刪除",es:"Borrar"},
+ delQ:{ko:"이 노래 영상을 지울까요? 지우면 되돌릴 수 없어요.",en:"Delete this video? This cannot be undone.",ja:"この動画を削除しますか？元に戻せません。",zhs:"要删除这个视频吗？删除后无法恢复。",zht:"要刪除這個影片嗎？刪除後無法復原。",es:"¿Borrar este vídeo? No se puede deshacer."},
+ delF:{ko:"지우지 못했어요. 잠시 뒤 다시 해 주세요.",en:"Could not delete. Please try again shortly.",ja:"削除できませんでした。しばらくしてからもう一度お試しください。",zhs:"删除失败，请稍后再试。",zht:"刪除失敗，請稍後再試。",es:"No se pudo borrar. Inténtalo de nuevo en un momento."},
+ stF:{ko:"목록을 불러오지 못했어요.",en:"Could not load the list.",ja:"一覧を読み込めませんでした。",zhs:"无法加载列表。",zht:"無法載入列表。",es:"No se pudo cargar la lista."},
  ntc:{ko:"공지사항",en:"Notice",ja:"お知らせ",zhs:"公告",zht:"公告",es:"Aviso"},
  ntcP0:{ko:"곡 이용권: {list}",en:"Song pass: {list}",ja:"曲チケット：{list}",zhs:"点歌券：{list}",zht:"點歌券：{list}",es:"Bono de canciones: {list}"},
  ntcL:{
@@ -195,6 +218,12 @@ st.textContent+="#karBox .kpol2{display:flex;align-items:center;gap:8px;margin:6
  +"#karBox .krow{display:flex;justify-content:space-between;gap:10px;font-size:14px}#karBox .krow span{opacity:.8}#karBox .kh{font-size:14px;margin-top:4px}#karBox .kfl{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:#cfc6e8}#karBox .kfl input{border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.35);color:#fff;padding:9px 10px;font-size:15px}"
  +"#karBox .kfr{display:flex;align-items:flex-start;gap:6px;font-size:13px;line-height:1.4}#karBox .klk a{color:#ffe066;font-size:12.5px;margin-right:12px}#karBox .kerr{background:rgba(201,42,42,.25);border:1px solid #c92a2a;border-radius:10px;padding:8px;font-size:13px}#karBox .ktst{margin:0;font-size:11.5px;color:#ff9b9b;font-weight:700}"
  +"#karBox .kdone{background:rgba(124,255,178,.12);border:1px solid #1d6b43;border-radius:10px;padding:10px;font-size:13px;line-height:1.5}#karBox .kgo:disabled{opacity:.45;cursor:default}#karBox .kpol{background:rgba(255,255,255,.06);border-radius:10px;padding:8px}";
+// 내 노래 올리기 창·가요무대 목록 (10-30)
+st.textContent+="#karBox .kpm.kupm{z-index:7}#karBox .kpm.kplay{z-index:8}#karBox .kpm.kstgp>div{max-height:100%;overflow:auto}#karBox .kupv{display:flex;gap:6px}#karBox .kupv button{flex:1;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;border-radius:10px;padding:9px 4px;font-weight:900;cursor:pointer}#karBox .kupv button.on{background:#ff4fd8;border-color:#ff4fd8}"
+ +"#karBox .kupbar{height:10px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden}#karBox .kupbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff4fd8,#ffe066);transition:width .2s}#karBox .kupp{font-size:13px;font-weight:800;color:#ffe066;text-align:center}"
+ +"#karBox .kstgl{display:grid;grid-template-columns:1fr 1fr;gap:8px}#karBox .kstc{position:relative;display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:5px;cursor:pointer;min-width:0}#karBox .kstc video{width:100%;aspect-ratio:3/4;object-fit:cover;background:#000;border-radius:7px;pointer-events:none}"
+ +"#karBox .kstc b{font-size:12.5px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#karBox .kstc small{font-size:11px;opacity:.7}#karBox .kstc .kvt{position:absolute;top:9px;left:9px;font:800 10.5px/1 system-ui,sans-serif;background:rgba(0,0,0,.65);color:#fff;padding:3px 6px;border-radius:5px}"
+ +"#karBox .kstc .kdel{border:1px solid rgba(255,120,120,.6);background:rgba(201,42,42,.18);color:#ffb0b0;border-radius:8px;padding:5px;font-size:12px;font-weight:800;cursor:pointer}#karBox .kplay video{width:100%;max-height:65vh;background:#000;border-radius:10px}";
 document.head.appendChild(st);
 var K={code:"",tab:"kpop",items:[],idx:-1,pl:null,q:""};
 function ytApi(cb){ if(window.YT&&YT.Player) return cb(); var prev=window.onYouTubeIframeAPIReady; window.onYouTubeIframeAPIReady=function(){ try{ prev&&prev(); }catch(e){} cb(); };
@@ -222,7 +251,7 @@ function play(i){ var x=K.items&&K.items[i]; if(!x) return; klEnd(); K.cur=x; K.
     K.pl=new YT.Player("karYt",{videoId:x.id,playerVars:{autoplay:1,playsinline:1,rel:0},events:{
       onReady:function(){ K.ready=true; if(K.want&&K.pl.getVideoData&&K.pl.getVideoData().video_id!==K.want) K.pl.loadVideoById(K.want); },
       onError:function(){ var c=K.items&&K.items[K.idx]; if(c){ c.e=0; paintList(); blocked(c); } },   // 미리 못 잡은 막힌 곡도 그 자리에서 안내 (다음 곡으로 안 넘김)
-      onStateChange:function(ev){ if(ev&&ev.data===1){ ov("","lo"); ov("","up"); } if(ev&&ev.data===0) ov('<div>'+esc(L(TX.upQ))+'</div><button type="button" class="kupb" data-ksoon="1">'+esc(L(TX.up))+'</button>',"up"); try{ klState(ev&&ev.data); }catch(e){} } }}); }); }
+      onStateChange:function(ev){ if(ev&&ev.data===1){ ov("","lo"); ov("","up"); } if(ev&&ev.data===0) ov('<div>'+esc(L(TX.upQ))+'</div><button type="button" class="kupb" '+(isOwn()?'data-kup="1"':'data-ksoon="1"')+'>'+esc(L(TX.up))+'</button>',"up"); try{ klState(ev&&ev.data); }catch(e){} } }}); }); }
 function open(code){ var D=window.GU&&GU.d, o=D&&D.kara&&D.kara[code]; K.code=code; K.q=""; K.idx=-1; K.pl=null; K.ready=false; K.want=""; var old=box(); if(old) old.remove();
   var gn=o&&window.LP?LP(o.n):(o?o.g:""), b=document.createElement("div"); b.id="karBox";
   b.innerHTML='<div class="kin"><div class="khd"><div><b>'+esc(L(TX.t))+(gn?' · '+esc(gn):'')+'</b><small>'+esc(L(TX.s))+'</small></div><button type="button" class="kx">✕ '+esc(L(TX.x))+'</button></div>'
@@ -237,10 +266,11 @@ function open(code){ var D=window.GU&&GU.d, o=D&&D.kara&&D.kara[code]; K.code=co
   b.querySelector(".kx").onclick=close;
   [].forEach.call(b.querySelectorAll("[data-kpay]"),function(x){ x.onclick=function(){ payOpen(""); }; });
   b.querySelector("[data-kntc]").onclick=ntcOpen;
-  b.querySelector(".kstg").onclick=stageOpen;
+  b.querySelector(".kstg").onclick=function(){ stageOpen("all"); };
   b.querySelector(".krec").onclick=function(){ var own=false; try{ own=!!localStorage.getItem("mp_owner"); }catch(e){}   // 실제 녹화는 사장님 기기에서만 시험 (10-30) — 손님은 화면 효과 + 「준비 중」
     if(b.classList.contains("krecm")){ if(own) recStop(); else recExit(); return; } b.classList.add("krecm"); this.textContent=L(TX.recX); if(own) recStart(); else { recFx(true); soon(); } };   // 녹화 = 노래방 영상 화면만 테두리째 화면 가득 (사장님 10-30) · 실제 녹화는 준비 중
   b.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest("[data-ksoon]")){ e.preventDefault(); e.stopPropagation(); soon(); } });   // 녹화·올리기 = 아직 준비 중 (10-30)
+  b.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest("[data-kup]")){ e.preventDefault(); e.stopPropagation(); upStart(); } });   // 내 노래 올리기 — 사장님 기기 시험판 (10-30)
   b.querySelector("#karLeft").onclick=signIn;   // 초록 칸 = 로그인 전엔 로그인 창, 로그인 뒤엔 계정 창(로그아웃) (사장님 10-30)
   [].forEach.call(b.querySelectorAll("[data-kch]"),function(a){ a.addEventListener("click",function(){ mpPaid.out(); }); });
   [].forEach.call(b.querySelectorAll(".ktb button[data-t]"),function(t){ t.onclick=function(){ K.tab=t.dataset.t; K.q=""; b.querySelector(".ksr input").value=""; [].forEach.call(b.querySelectorAll(".ktb button[data-t]"),function(x){ x.classList.toggle("on",x===t); }); load(); }; });
@@ -393,7 +423,7 @@ function recFx(on){ var b=box(); if(!b) return; var pl=b.querySelector(".kpl"); 
 // 「준비 중」 잠깐 안내 (10-30)
 function soon(msg){ var b=box(); if(!b) return; var o=b.querySelector(".ksoon"); if(o) o.remove(); o=document.createElement("div"); o.className="ksoon"; o.textContent=typeof msg==="string"?msg:L(TX.soon); b.appendChild(o); setTimeout(function(){ if(o.parentNode) o.remove(); },typeof msg==="string"?4000:2200); }
 // ── 녹화 (10-30) — 앞카메라+마이크(반주 소리도 함께 담기게 에코 제거 끔) → MediaRecorder · 이 기기 안에서만, 회사로 안 보냄
-var REC={st:null,mr:null,ch:[],mt:"",url:""};
+var REC={st:null,mr:null,ch:[],mt:"",url:"",blob:null,t0:0,dur:0};   // blob = 미리 보기 창을 닫기 전까지 보관 (올리기용, 10-30)
 function camOff(){ try{ if(REC.st) REC.st.getTracks().forEach(function(t){ t.stop(); }); }catch(e){} REC.st=null; var b=box(), v=b&&b.querySelector(".kcam"); if(v) v.remove(); }
 function recExit(){ camOff(); recFx(false); var b=box(); if(!b) return; b.classList.remove("krecm"); var k=b.querySelector(".krec"); if(k) k.textContent=L(TX.rec); }
 function recStart(){ var b=box(), pl=b&&b.querySelector(".kpl"); if(!pl) return;
@@ -403,26 +433,91 @@ function recStart(){ var b=box(), pl=b&&b.querySelector(".kpl"); if(!pl) return;
     REC.st=st; var v=document.createElement("video"); v.className="kcam"; v.muted=true; v.autoplay=true; v.playsInline=true; v.setAttribute("playsinline",""); v.srcObject=st; pl.insertBefore(v,pl.firstChild); try{ v.play(); }catch(e){}
     var mt=["video/mp4","video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"].filter(function(x){ try{ return MediaRecorder.isTypeSupported(x); }catch(e){ return false; } })[0]||"";
     REC.ch=[]; REC.mt=mt; try{ REC.mr=mt?new MediaRecorder(st,{mimeType:mt}):new MediaRecorder(st); }catch(e){ soon(L(TX.recNo)); recExit(); return; }
-    REC.mr.ondataavailable=function(e){ if(e.data&&e.data.size) REC.ch.push(e.data); }; REC.mr.onstop=recDone; REC.mr.start(1000);
+    REC.mr.ondataavailable=function(e){ if(e.data&&e.data.size) REC.ch.push(e.data); }; REC.mr.onstop=recDone; REC.mr.start(1000); REC.t0=Date.now();
     recFx(true); try{ ntap("kara_rec","tap"); }catch(e){}
   }).catch(function(){ soon(L(TX.recNo)); recExit(); }); }
-function recStop(){ if(REC.mr&&REC.mr.state!=="inactive") REC.mr.stop(); else recExit(); }
-function recDone(){ var blob=new Blob(REC.ch,{type:(REC.mt||"video/webm").split(";")[0]}); REC.mr=null; REC.ch=[]; camOff(); recFx(false); var b=box(); if(!b) return;
+function recStop(){ try{ K.pl&&K.pl.pauseVideo&&K.pl.pauseVideo(); }catch(e){}   // 녹화 끝 = 노래도 멈춤 (사장님 10-30)
+ if(REC.mr&&REC.mr.state!=="inactive") REC.mr.stop(); else recExit(); }
+function recDone(){ var blob=new Blob(REC.ch,{type:(REC.mt||"video/webm").split(";")[0]}); REC.blob=blob; REC.dur=REC.t0?Math.round((Date.now()-REC.t0)/1000):0; REC.t0=0; REC.mr=null; REC.ch=[]; camOff(); recFx(false); var b=box(); if(!b) return;
   if(REC.url) try{ URL.revokeObjectURL(REC.url); }catch(e){} REC.url=URL.createObjectURL(blob);
   var o=document.createElement("div"); o.className="kpm kpv"; b.appendChild(o);
-  o.innerHTML='<div><h3>'+esc(L(TX.pvT))+'</h3><video controls playsinline src="'+REC.url+'"></video><p class="km">'+esc(L(TX.pvN))+'</p><button type="button" class="kupb" data-ksoon="1">'+esc(L(TX.up))+'</button><button type="button" class="krf" data-rt="1">'+esc(L(TX.retk))+'</button><button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
-  var bye=function(){ o.remove(); try{ URL.revokeObjectURL(REC.url); }catch(e){} REC.url=""; };
+  o.innerHTML='<div><h3>'+esc(L(TX.pvT))+'</h3><video controls playsinline src="'+REC.url+'"></video><p class="km">'+esc(L(isOwn()?TX.pvN2:TX.pvN))+'</p><button type="button" class="kupb" '+(isOwn()?'data-kup="1"':'data-ksoon="1"')+'>'+esc(L(TX.up))+'</button><button type="button" class="krf" data-rt="1">'+esc(L(TX.retk))+'</button><button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
+  var bye=function(){ o.remove(); try{ URL.revokeObjectURL(REC.url); }catch(e){} REC.url=""; REC.blob=null; var u=b.querySelector(".kupm"); if(u) u.remove(); };
   o.querySelector(".kc").onclick=function(){ bye(); recExit(); };
   o.querySelector("[data-rt]").onclick=function(){ bye(); b.classList.add("krecm"); recStart(); }; }
 window.addEventListener("pagehide",function(){ try{ if(REC.mr&&REC.mr.state!=="inactive") REC.mr.stop(); }catch(e){} camOff(); });
-// 가요무대(모두의 노래 피드) · 내 가요무대(내가 올린 노래) — 자리만, 곧 열림 (사장님 10-30 「노래방의 페이스북·유튜브」)
-function stageOpen(){ var b=box(); if(!b) return; var o=b.querySelector(".kstgp"); if(o) o.remove(); var tab="all";
+// 가요무대(모두의 노래 피드) · 내 가요무대(내가 올린 노래) (사장님 10-30 「노래방의 페이스북·유튜브」)
+//   손님 기기 = 자리만(「곧 열립니다」) · 사장님 기기(mp_owner) = 시험판: 허브 /kst/list 목록·크게 재생·지우기(내 것)·내 노래 올리기
+var KOWN="EM2410";   // 시험 기간 사장님 기기 열쇠 (허브 KST_KEY 와 같음)
+function isOwn(){ try{ return !!localStorage.getItem("mp_owner"); }catch(e){ return false; } }
+function kLoc(){ return {ko:"ko-KR",en:"en-US",ja:"ja-JP",zhs:"zh-CN",zht:"zh-TW",es:"es-ES"}[window.LANG]||"en-US"; }
+function kDate(t){ try{ return new Date(t).toLocaleString(kLoc(),{year:"numeric",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"}); }catch(e){ return ""; } }
+// 「내 노래 올리기」 — 녹화 중이면 녹화를 끝내 미리 보기부터 · 방금 찍은 녹화가 있으면 올리기 창 · 없으면 안내
+function upStart(){ if(REC.mr&&REC.mr.state!=="inactive"){ recStop(); return; } if(!REC.blob){ soon(L(TX.needRec)); return; } upOpen(); }
+function upOpen(){ var b=box(); if(!b||!REC.blob) return; var o=b.querySelector(".kupm"); if(o) o.remove();
+  o=document.createElement("div"); o.className="kpm kupm"; b.appendChild(o);
+  var vis="pub", busy=false, xhr=null, by0=""; try{ by0=localStorage.getItem("mpv_kst_by")||""; }catch(e){} if(!/^\d{4}$/.test(by0)) by0="";
+  var draw=function(msg,pct){ var s=pct!=null;
+    o.innerHTML='<div><h3>'+esc(L(TX.up))+'</h3>'
+      +'<b class="kh">'+esc(L(TX.vis))+'</b><div class="kupv"><button type="button" data-v="pub"'+(vis==="pub"?' class="on"':'')+'>'+esc(L(TX.vPub))+'</button><button type="button" data-v="me"'+(vis==="me"?' class="on"':'')+'>'+esc(L(TX.vMe))+'</button></div>'
+      +'<p class="km">'+esc(L(vis==="pub"?TX.vPubN:TX.vMeN))+'</p>'
+      +(by0?'':'<label class="kfl">'+esc(L(TX.by))+'<input type="text" inputmode="numeric" maxlength="4" id="kupBy" autocomplete="bday-year"></label><p class="km">'+esc(L(TX.byN))+'</p>')
+      +(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
+      +(s?'<div class="kupbar"><i style="width:'+pct+'%"></i></div><div class="kupp">'+esc(tf(L(TX.upIng),{p:pct}))+'</div>':'')
+      +'<button type="button" class="kgo" id="kupGo"'+(s?' disabled':'')+'>'+esc(L(TX.upGo))+'</button><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+    [].forEach.call(o.querySelectorAll("[data-v]"),function(x){ x.onclick=function(){ if(busy) return; vis=x.dataset.v; var by=o.querySelector("#kupBy"), keep=by?by.value:""; draw(); var by2=o.querySelector("#kupBy"); if(by2) by2.value=keep; }; });
+    o.querySelector(".kc").onclick=function(){ if(xhr){ try{ xhr.abort(); }catch(e){} } o.remove(); };
+    o.querySelector("#kupGo").onclick=go; };
+  var bar=function(p){ var i=o.querySelector(".kupbar i"), t=o.querySelector(".kupp"); if(!i){ draw("",p); return; } i.style.width=p+"%"; t.textContent=tf(L(TX.upIng),{p:p}); };
+  var go=function(){ if(busy) return;
+    if(!by0){ var v=String((o.querySelector("#kupBy")||{}).value||"").replace(/\D/g,""), y=new Date().getFullYear();
+      if(!/^\d{4}$/.test(v)||+v<1900||+v>y){ draw(L(TX.byE)); return; }
+      if(y-(+v)<15){ draw(L(TX.by14)); return; }   // 해만 알므로 생일 전일 수 있다 → 올해 만 14세가 될 사람까지 막는다 (약관 제8조 만 14세 미만)
+      by0=v; try{ localStorage.setItem("mpv_kst_by",v); }catch(e){} }
+    var bl=REC.blob; if(!bl){ o.remove(); soon(L(TX.needRec)); return; }
+    var ty=String(bl.type||REC.mt||"video/webm").split(";")[0]; if(ty!=="video/mp4"&&ty!=="video/webm"){ draw(L(TX.upTy)); return; }
+    if(bl.size>60*1024*1024){ draw(L(TX.upBig)); return; }
+    var c=K.cur||{}, q="vis="+vis+"&sid="+encodeURIComponent(c.id||"")+"&t="+encodeURIComponent(String(c.t||"").slice(0,120))+"&dur="+(REC.dur||0)+"&dev="+encodeURIComponent(klDev())+"&sess="+encodeURIComponent(sess());
+    busy=true; draw("",0);
+    xhr=new XMLHttpRequest(); xhr.open("POST",HUB+"/kst/up?"+q); xhr.setRequestHeader("x-kown",KOWN); xhr.setRequestHeader("Content-Type",ty);
+    xhr.upload.onprogress=function(e){ if(e.lengthComputable) bar(Math.min(99,Math.floor(e.loaded*100/e.total))); };
+    xhr.onload=function(){ busy=false; var j=null; try{ j=JSON.parse(xhr.responseText); }catch(e){} xhr=null;
+      if(j&&j.ok){ try{ ntap("kara_stage","up_"+vis); }catch(e){} o.remove(); var pv=b.querySelector(".kpv"); if(pv) pv.remove(); try{ if(REC.url) URL.revokeObjectURL(REC.url); }catch(e){} REC.url=""; REC.blob=null; recExit(); stageOpen("me"); soon(L(TX.upOk)); return; }
+      var er=j&&j.err; draw(er==="big"?L(TX.upBig):er==="type"?L(TX.upTy):L(TX.upF)); };
+    xhr.onerror=function(){ busy=false; xhr=null; draw(L(TX.upNet)); };
+    xhr.onabort=function(){ busy=false; xhr=null; };
+    xhr.send(bl); };
+  o.onclick=function(e){ if(e.target===o&&!busy) o.remove(); };
+  draw(); }
+// 가요무대 카드 크게 재생
+function kstPlay(x){ var b=box(); if(!b) return; var o=b.querySelector(".kplay"); if(o) o.remove();
+  o=document.createElement("div"); o.className="kpm kplay"; b.appendChild(o);
+  o.innerHTML='<div><h3>'+esc(x.t||L(TX.stg))+'</h3><video controls autoplay playsinline src="'+esc(HUB+"/kst/v/"+x.id)+'"></video><p class="km">'+esc(kDate(x.at))+'</p><button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
+  var bye=function(){ var v=o.querySelector("video"); try{ v.pause(); v.removeAttribute("src"); v.load(); }catch(e){} o.remove(); };
+  o.querySelector(".kc").onclick=bye; o.onclick=function(e){ if(e.target===o) bye(); }; }
+function stageOpen(tab0){ var b=box(); if(!b) return; var o=b.querySelector(".kstgp"); if(o) o.remove(); var own=isOwn(), tab=tab0==="me"?"me":"all", tok=0, items=null, err=0;
   o=document.createElement("div"); o.className="kpm kstgp"; b.appendChild(o);
+  var load=function(){ if(!own) return; var my=++tok; items=null; err=0;
+    fetch(HUB+"/kst/list?scope="+(tab==="all"?"pub":"me")+"&dev="+encodeURIComponent(klDev())+"&sess="+encodeURIComponent(sess()),{headers:{"x-kown":KOWN}})
+      .then(function(r){ return r.json(); }).then(function(j){ if(my!==tok||!o.isConnected) return; if(j&&j.ok){ items=j.items||[]; } else { items=[]; err=1; } draw(); })
+      .catch(function(){ if(my!==tok||!o.isConnected) return; items=[]; err=1; draw(); }); };
+  var list=function(){
+    if(items===null) return '<div class="kstge">'+esc(L(TX.lo))+'</div>';
+    if(err) return '<div class="kstge">'+esc(L(TX.stF))+'</div>';
+    if(!items.length) return '<div class="kstge">'+esc(L(tab==="all"?TX.stgE:TX.mstgE))+'</div>';
+    return '<div class="kstgl">'+items.map(function(x,i){ return '<div class="kstc" data-i="'+i+'">'+(tab==="me"?'<span class="kvt">'+esc(L(x.vis==="pub"?TX.vPub:TX.vMe))+'</span>':'')
+      +'<video preload="metadata" playsinline muted src="'+esc(HUB+"/kst/v/"+x.id)+'#t=0.1"></video><b>'+esc(x.t||"-")+'</b><small>'+esc(kDate(x.at))+'</small>'
+      +(tab==="me"&&x.mine?'<button type="button" class="kdel" data-del="'+i+'">'+esc(L(TX.del))+'</button>':'')+'</div>'; }).join("")+'</div>'; };
   var draw=function(){ o.innerHTML='<div><h3>'+esc(L(TX.stg))+'</h3><div class="kstgt"><button type="button" data-st="all"'+(tab==="all"?' class="on"':'')+'>'+esc(L(TX.stg))+'</button><button type="button" data-st="me"'+(tab==="me"?' class="on"':'')+'>'+esc(L(TX.mstg))+'</button></div>'
-      +'<div class="kstge">'+esc(L(tab==="all"?TX.stgE:TX.mstgE))+'<br>'+esc(L(TX.soon2))+'</div><button type="button" class="kupb" data-ksoon="1">'+esc(L(TX.up))+'</button><button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
-    [].forEach.call(o.querySelectorAll("[data-st]"),function(x){ x.onclick=function(){ tab=x.dataset.st; draw(); }; });
-    o.querySelector(".kc").onclick=function(){ o.remove(); }; };
-  o.onclick=function(e){ if(e.target===o) o.remove(); }; draw(); try{ ntap("kara_stage","tap"); }catch(e){} }
+      +(own?list():'<div class="kstge">'+esc(L(tab==="all"?TX.stgE:TX.mstgE))+'<br>'+esc(L(TX.soon2))+'</div>')
+      +'<button type="button" class="kupb" '+(own?'data-kup="1"':'data-ksoon="1"')+'>'+esc(L(TX.up))+'</button><button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
+    [].forEach.call(o.querySelectorAll("[data-st]"),function(x){ x.onclick=function(){ if(tab===x.dataset.st) return; tab=x.dataset.st; if(own) items=null; draw(); load(); }; });
+    [].forEach.call(o.querySelectorAll(".kstc"),function(c){ c.onclick=function(e){ if(e.target.closest("[data-del]")) return; var x=items&&items[+c.dataset.i]; if(x) kstPlay(x); }; });
+    [].forEach.call(o.querySelectorAll("[data-del]"),function(d){ d.onclick=function(e){ e.stopPropagation(); var x=items&&items[+d.dataset.del]; if(!x||!window.confirm(L(TX.delQ))) return; d.disabled=true;
+      fetch(HUB+"/kst/del",{method:"POST",headers:{"Content-Type":"application/json","x-kown":KOWN},body:JSON.stringify({id:x.id,dev:klDev(),sess:sess()})})
+        .then(function(r){ return r.json(); }).then(function(j){ if(j&&j.ok){ load(); } else { d.disabled=false; soon(L(TX.delF)); } }).catch(function(){ d.disabled=false; soon(L(TX.delF)); }); }; });
+    o.querySelector(".kc").onclick=function(){ tok++; o.remove(); }; };
+  o.onclick=function(e){ if(e.target===o){ tok++; o.remove(); } }; draw(); load(); try{ ntap("kara_stage","tap"); }catch(e){} }
 function ntcOpen(){ var b=box(); if(!b) return; var o=b.querySelector(".kntc"); if(o) o.remove();
   var lg=window.LANG||"en", li=TX.ntcL[lg]||TX.ntcL.en, P=KB.packs, X=P[P.length-1], s=X.n+X.b, u=Math.min(3,s), r1=Math.max(0,Math.floor((X.p-u*1000)/10)*10), r2=Math.floor(r1*9/100)*10;
   var first=tf(L(TX.ntcP0),{list:P.map(function(q){ return (q.b?q.n+"+"+q.b+" ("+won(q.p)+" · "+songsTx(q.n+q.b)+")":songsTx(q.n)+" "+won(q.p)); }).join(" · ")});
