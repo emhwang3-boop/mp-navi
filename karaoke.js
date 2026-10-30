@@ -211,8 +211,8 @@ function open(code){ var D=window.GU&&GU.d, o=D&&D.kara&&D.kara[code]; K.code=co
   b.innerHTML='<div class="kin"><div class="khd"><div><b>'+esc(L(TX.t))+(gn?' · '+esc(gn):'')+'</b><small>'+esc(L(TX.s))+'</small></div><button type="button" class="kx">✕ '+esc(L(TX.x))+'</button></div>'
     // 채널 단추 줄은 뺐다 (사장님 10-30 「삭제」)
     +'<div class="kpl"><div class="kmsg">🎤 '+esc(L(TX.pick))+'</div></div>'
-    +'<div class="kpay"><div class="kr"><b>'+esc(L(TX.kb))+'</b><small>'+esc(L(TX.kbs))+'</small></div><div class="kl" id="karLeft">'+esc(L(TX.lgin))+'</div><button type="button" class="kbuyb" data-kpay="1">'+esc(L(TX.kbuy))+'</button><button type="button" class="kslot" data-kpay="1" aria-label="PAYMENT"><i></i><span>PAYMENT</span><small>'+esc(L(TX.slot))+'</small></button></div>'
-    +'<div class="kpol2"><span>'+esc(L(TX.polS))+'</span></div>'   // 곡 이용권 사기 단추는 반주기 줄 PAYMENT 옆으로 (사장님 10-30 「이동」)
+    +'<div class="kpay"><div class="kr"><b>'+esc(L(TX.kb))+'</b><small>'+esc(L(TX.kbs))+'</small></div><div class="kl" id="karLeft">'+esc(L(TX.lgin))+'</div><button type="button" class="kslot" data-kpay="1" aria-label="PAYMENT"><i></i><span>PAYMENT</span><small>'+esc(L(TX.slot))+'</small></button></div>'
+    +'<div class="kpol2"><span>'+esc(L(TX.polS))+'</span></div>'   // 「곡 이용권 사기」 단추는 뺐다 — PAYMENT 와 같은 창 (사장님 10-30 「삭제」)
     +'<button type="button" class="kntl" data-kntc="1">'+esc(L(TX.ntc))+'</button>'   // 남은 곡·환불 공지 (10-27) — 기계의 돈 넣는 곳 = 결제 단추 (10-27)
     +'<div class="ktb">'+TABS.map(function(t){ return '<button type="button" data-t="'+t[0]+'"'+(t[0]===K.tab?' class="on"':'')+'>'+t[1]+'</button>'; }).join("")+'</div>'
     +'<form class="ksr"><input type="search" placeholder="'+esc(L(TX.q))+'"><button type="submit">'+esc(L(TX.go))+'</button></form>'
