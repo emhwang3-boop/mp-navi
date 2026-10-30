@@ -131,7 +131,7 @@ var P=[
 //   🔴 고정 상품(P 표 8개)은 허브가 base:1 로 주면 이 파일의 P 를 그대로 쓴다 — 토스 심사 중, 글자·분류·가격·상태 안 바뀜
 var HP=null, PLc=null;
 function hubP(x){ return {id:x.id,c:x.c,imgs:x.imgs||[],img0:x.img||"",t:x.t,d:x.d,f:x.f||[],price:x.price||0,disc:x.disc||[],free:!!x.free,days:x.days||[],times:x.times||[],max:x.max||20,st:x.st,link:x.link||"",rt:x.rt,mp:x.minPax||0,real:x.real==="perf"?"perf":(x.st==="sale"?"hub":""),hub:1}; }
-function PL(){ if(!HP) return P; if(PLc) return PLc; var o=[]; HP.forEach(function(x){ if(x.base){ var q=P.filter(function(p){ return p.id===x.id; })[0]; if(q) o.push(q); } else if(x&&x.id&&x.t) o.push(hubP(x)); }); PLc=o.length?o:P; return PLc; }
+function PL(){ if(!HP) return P; if(PLc) return PLc; var o=[]; HP.forEach(function(x){ if(x.base){ var q=P.filter(function(p){ return p.id===x.id; })[0]; if(q) o.push(typeof x.minPax==="number"&&x.minPax!==(q.mp||0)?Object.assign({},q,{mp:x.minPax}):q); } else if(x&&x.id&&x.t) o.push(hubP(x)); }); PLc=o.length?o:P; return PLc; }
 function loadP(){ return fetch(HUBU+"/shop/products?l="+encodeURIComponent(window.LANG||"en"),{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ if(j&&j.ok&&Array.isArray(j.items)){ HP=j.items; PLc=null; } }).catch(function(){}); }
 function psrc(p,gi){ if(!p.hub) return "img/shop/"+p.img+".webp"; return p.imgs.length?HUBU+"/shop/img/"+p.imgs[Math.min(gi||0,p.imgs.length-1)]:(p.img0||""); }
 function unitOf(p,n){ if(!p.hub) return p.real==="b4"?b4Price(n):p.price; var u=p.price; (p.disc||[]).forEach(function(d){ if(n>=d.n) u=d.p; }); return u; }
