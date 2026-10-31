@@ -492,6 +492,13 @@ var BOOK=[
    zhs:["在小圈子K歌房或 Doran-doran 房间点「装扮」，打开商店和收纳箱。", "场所(房间背景)只有房主可以更换，道具房间里任何人都可以摆放。", "零食、烟花、荧光棒等消耗品每摆放一次用掉一个；永久道具购买一次即留在收纳箱中持续使用。", "「花束」页的花束是永久装饰，购买一次即留在收纳箱中，可像礼物一样摆放在任何房间。", "套装只需支付尚未拥有的永久道具的金额。房主可以移除所有摆放的道具。"],
    zht:["在小圈子K歌房或 Doran-doran 房間點「裝扮」，打開商店和收納箱。", "場所(房間背景)只有房主可以更換，道具房間裡任何人都可以擺放。", "零食、煙火、螢光棒等消耗品每擺放一次用掉一個；永久道具購買一次即留在收納箱中持續使用。", "「花束」頁的花束是永久裝飾，購買一次即留在收納箱中，可像禮物一樣擺放在任何房間。", "套裝只需支付尚未擁有的永久道具的金額。房主可以移除所有擺放的道具。"],
    es:["Toca «Decorar» en una sala Solo nosotros Karaoke o Doran-doran para abrir la tienda y tu almacén.", "Solo el anfitrión cambia el lugar (fondo de la sala); cualquiera en la sala puede colocar objetos.", "Los consumibles como comida, fuegos artificiales y barras luminosas se gastan al colocarlos; los objetos permanentes quedan en el almacén tras comprarlos.", "Los ramos de la pestaña «Ramos» son decoración permanente: se compran una vez, quedan en tu almacén y puedes colocarlos en cualquier sala como regalo.", "Los sets solo cuestan los objetos permanentes que aún no tienes. El anfitrión puede quitar cualquier objeto colocado."]}},
+ {o:1,ic:["theme","share"],t:{ko:"단체 AI 사진",en:"Group AI photo",ja:"AI集合写真",zhs:"AI 合影",zht:"AI 合影",es:"Foto de grupo con IA"},
+  p:{ko:["우리끼리 노래 방·도란도란 방의 「단체 사진」 단추로 시작합니다. 시작한 사람이 테마와 장면을 고르고 3초 뒤 얼굴을 촬영합니다.","방 사람에게 「참여」 안내가 표시되며, 도란도란은 60초, 우리끼리 노래는 10분 동안 참여를 받습니다. 「참여」를 누른 사람만 사진에 나오며(2~9명), 얼굴 사진은 생성 직후 삭제됩니다.","참여가 마감되면 시작한 사람이 「만들기」를 눌러 5,000P로 생성합니다. 실패하면 포인트는 자동으로 환불됩니다.","완성된 사진은 참여한 사람 모두의 「AI 사진 모음」에 저장되고, 「AI 생성」이 표시되며, 공유할 수 있습니다."],
+   en:["Start it with the “Group photo” button in a Just Us Karaoke or Doran-doran room. The person who starts picks a theme and scene, and the camera takes their photo after 3 seconds.","Everyone in the room sees a “Join” prompt: 60 seconds in Doran-doran, 10 minutes in Just Us Karaoke. Only people who tap “Join” appear (2–9 people), and face photos are deleted right after creation.","When joining closes, the person who started taps “Create” to make it for 5,000P. If it fails, the points are refunded automatically.","The finished photo is saved to every participant's “AI photos”, labeled “AI-generated”, and can be shared."],
+   ja:["仲間だけカラオケ部屋・ドランドランの「集合写真」ボタンで始めます。始めた人がテーマと場面を選び、3秒後に顔を撮影します。","部屋の人に「参加」の案内が表示され、ドランドランは60秒、仲間だけカラオケは10分間参加を受け付けます。「参加」を押した人だけが写り(2〜9人)、顔写真は作成後すぐ削除されます。","参加が締め切られたら、始めた人が「作成」を押して5,000Pで作成します。失敗するとポイントは自動で返金されます。","完成した写真は参加した全員の「AI写真」に保存され、「AI生成」と表示され、共有できます。"],
+   zhs:["在小圈子K歌房或 Doran-doran 房间点「合影」开始。发起人选择主题和场景，3秒后拍摄面部。","房间里的人会看到「参加」提示：Doran-doran 为60秒，小圈子K歌房为10分钟。只有点了「参加」的人才会出现在照片里(2~9人)，面部照片在生成后立即删除。","报名截止后，发起人点「生成」，使用5,000P生成。生成失败时积分会自动退还。","完成的照片会保存到所有参加者的「AI 照片」，标注「AI生成」，并可分享。"],
+   zht:["在小圈子K歌房或 Doran-doran 房間點「合影」開始。發起人選擇主題和場景，3秒後拍攝臉部。","房間裡的人會看到「參加」提示：Doran-doran 為60秒，小圈子K歌房為10分鐘。只有點了「參加」的人才會出現在照片裡(2~9人)，臉部照片在生成後立即刪除。","報名截止後，發起人點「生成」，使用5,000P生成。生成失敗時點數會自動退還。","完成的照片會儲存到所有參加者的「AI 照片」，標註「AI生成」，並可分享。"],
+   es:["Empieza con el botón «Foto de grupo» en una sala Solo nosotros Karaoke o Doran-doran. Quien la inicia elige tema y escena, y la cámara le hace una foto a los 3 segundos.","Todos en la sala ven el aviso «Unirme»: 60 segundos en Doran-doran y 10 minutos en Solo nosotros Karaoke. Solo salen quienes tocan «Unirme» (2 a 9 personas), y las fotos de las caras se borran justo después de crearla.","Al cerrarse la inscripción, quien la inició toca «Crear» y la crea por 5.000P. Si falla, los puntos se devuelven automáticamente.","La foto terminada se guarda en «Fotos IA» de todos los participantes, lleva la etiqueta «Generado por IA» y se puede compartir."]}},
  {o:1,ic:["fol"],t:{"ko": "주변 노래 친구", "en": "Singers nearby", "ja": "近くの歌友", "zhs": "附近歌友", "zht": "附近歌友", "es": "Cantantes cerca"},
   p:{ko:["로그인하면 이용할 수 있습니다. 성인 인증(만 19세 이상)은 StageSong을 처음 열 때 한 번 진행합니다.", "「내 위치 보이기」를 켠 사람끼리만 서로 보이며, 거리는 1km·3km·10km 이내로만 표시됩니다. 24시간이 지나면 자동으로 꺼집니다.", "「같이 노래해요」로 우리끼리 노래 방 또는 도란도란 방에 초대합니다. 상대가 수락하면 방이 만들어지고 초대한 사람이 3,000P를 사용합니다.", "받은 초대는 수락·거절·차단할 수 있습니다. 차단하면 서로 보이지 않습니다.", "방 안의 「근처 친구 찾기」로 지금 있는 방에 추가 요금 없이 부를 수 있습니다(10분 안에 수락)."],
    en:["Sign in to use it. Adult verification (19 and over) is done once, when you first open StageSong.", "Only people who turn on “Show my location” see each other, and distance is shown only as within 1, 3 or 10 km. It turns off automatically after 24 hours.", "Use “Sing together” to invite someone to a Just Us Karaoke or Doran-doran room. When they accept, the room is created and the inviter uses 3,000P.", "You can accept, decline or block an invitation. Blocked people cannot see each other.", "Inside a room, “Find nearby friends” invites people to that room at no extra charge (accept within 10 minutes)."],
@@ -941,7 +948,7 @@ Object.assign(TX,{
  kwR5:{ko:"{d}까지 90% 환불 가능",en:"90% refundable until {d}",ja:"{d}まで90%返金可",zhs:"{d}前可退90%",zht:"{d}前可退90%",es:"90% reembolsable hasta {d}"},
  kwPtBuy:{ko:"{c}로 구매",en:"Buy with {c}",ja:"{c}で購入",zhs:"用 {c} 购买",zht:"用 {c} 購買",es:"Comprar con {c}"},
  kwH:{ko:"충전|무료 지급|사용|사용 취소|환불 요청|환불|환불 거절|스토어 환불|기간 연장|이용권 구매|이용권 환불",en:"Top-up|Free points|Used|Use cancelled|Refund requested|Refunded|Refund declined|Store refund|Extended|Pass bought|Pass refunded",ja:"チャージ|無料付与|使用|使用取消|返金申請|返金|返金却下|ストア返金|期間延長|利用券購入|利用券返金",zhs:"充值|免费赠送|使用|取消使用|申请退款|退款|拒绝退款|商店退款|延长有效期|购买畅唱券|畅唱券退款",zht:"儲值|免費贈送|使用|取消使用|申請退款|退款|拒絕退款|商店退款|延長有效期|購買暢唱券|暢唱券退款",es:"Recarga|Puntos gratis|Uso|Uso cancelado|Reembolso solicitado|Reembolsado|Reembolso rechazado|Reembolso de tienda|Ampliado|Bono comprado|Bono reembolsado"},
- kwW:{ko:"곡 이용권|상황 사진|AI 영상|도란도란|도란도란 연장|우리끼리 노래 방|방 꾸미기",en:"Song pass|AI photo|AI video|Doran-doran|Doran-doran extension|Just Us Karaoke room|Room decor",ja:"曲チケット|シーン写真|AI動画|ドランドラン|ドランドラン延長|仲間だけカラオケ|ルームデコ",zhs:"点歌券|情景照片|AI视频|Doran-doran|Doran-doran 延长|小圈子K歌房|房间装扮",zht:"點歌券|情境照片|AI影片|Doran-doran|Doran-doran 延長|小圈子K歌房|房間裝扮",es:"Bono de canciones|Foto IA|Video IA|Doran-doran|Ampliación Doran-doran|Sala Solo nosotros Karaoke|Decorar la sala"}
+ kwW:{ko:"곡 이용권|상황 사진|AI 영상|도란도란|도란도란 연장|우리끼리 노래 방|방 꾸미기|단체 AI 사진",en:"Song pass|AI photo|AI video|Doran-doran|Doran-doran extension|Just Us Karaoke room|Room decor|Group AI photo",ja:"曲チケット|シーン写真|AI動画|ドランドラン|ドランドラン延長|仲間だけカラオケ|ルームデコ|AI集合写真",zhs:"点歌券|情景照片|AI视频|Doran-doran|Doran-doran 延长|小圈子K歌房|房间装扮|AI 合影",zht:"點歌券|情境照片|AI影片|Doran-doran|Doran-doran 延長|小圈子K歌房|房間裝扮|AI 合影",es:"Bono de canciones|Foto IA|Video IA|Doran-doran|Ampliación Doran-doran|Sala Solo nosotros Karaoke|Decorar la sala|Foto de grupo IA"}
 });
 // ── 웹 포인트 충전 = 토스페이먼츠 결제창 (10-31 토스 PG 재심사) — 웹만 · 앱은 구글 플레이 그대로
 //   내 지갑 → 충전: 묶음 · 결제 수단(카드·토스페이·카카오페이·네이버페이·계좌이체·휴대폰) · 「50,000원 결제」 → 토스 결제창(API 개별 연동 키 TCK, requestPayment)
@@ -1497,7 +1504,7 @@ function kPost(path,o){ if(!sess()&&path!=="/kst/view"){ kLogin(); return Promis
 function kDay(t){ try{ var d=new Date(t); return [d.toLocaleDateString(kLoc(),{month:"short",day:"numeric"}),d.getFullYear()+" · "+d.toLocaleTimeString(kLoc(),{hour:"2-digit",minute:"2-digit"})]; }catch(e){ return ["",""]; } }
 function kVisTag(x){ var f=x.vis==="fol", r=x.vis==="room"; return '<span class="ktg'+(x.vis==="pub"?" p":f?" f":r?" r":"")+'">'+esc(L(x.vis==="pub"?TX.vPub:f?TX.vFol:r?TX.vwRoom:TX.vMe).replace(/\n/g," "))+(r&&x.rooms&&x.rooms.length?' · '+esc(x.rooms.map(function(q){ return q.name; }).join(", ")):'')+'</span>'; }   // 우리끼리 노래 = 방 이름 작게
 // ── 팔로우 (사장님 10-30) — 사람은 pubid(허브가 만든 무작위 공개 id)로만 부른다 · 내 것엔 단추 없음
-function kUn(x){ var n=esc(x.nick||"guest"); return x.pubid?'<button type="button" class="kun" data-u="'+esc(x.pubid)+'">'+n+'</button>':'<b>'+n+'</b>'; }   // 누르면 그 사람 무대
+function kUn(x){ var n=esc(x.nick||"guest"); return x.pubid?'<button type="button" class="kun'+kFtN(x.ft)+'" data-u="'+esc(x.pubid)+'">'+n+'</button>':'<b'+(x.ft?' class="'+kFtN(x.ft).trim()+'"':'')+'>'+n+'</b>'; }   // ft = 팔로워 테두리 (10-31)   // 누르면 그 사람 무대
 function kFwB(on){ return '<button type="button" class="kfw'+(on?' on':'')+'" data-fw="1">'+esc(L(on?TX.flg:TX.flw))+'</button>'; }
 function kFollow(pub,on,btn){ if(btn) btn.disabled=true;
   return kPost("/kst/follow",{pubid:pub,on:!!on}).then(function(j){ if(btn) btn.disabled=false; if(!(j&&j.ok)){ soon(L(TX.fail)); return null; }
@@ -1527,8 +1534,8 @@ function kUser(pub){ if(!/^[0-9a-f]{12}$/.test(String(pub||""))) return; var o=p
   o._bye=function(){ U.tok++; };
   o._fw=function(p2,j){ if(p2===pub&&U.info){ U.info.iFollow=j.iFollow; U.info.followers=j.followers; U.load(); } else if(U.info&&U.info.isMe){ U.info.following=j.following; U.draw(); } };
   U.draw=function(){ var m=U.info, dash="…", body;
-    var head='<div class="kpf"><div class="kpfv kro">'+(m&&m.aip?kAiPf(m.aip):m&&m.pid?kThumb(m.pid,"kpfm"):'<span class="kpfe">'+kIc("vid")+'</span>')+'</div><div class="kpfi">'
-      +'<div class="kpr kpn">'+kIc("id")+'<b>'+esc(m?(m.nick||"guest"):dash)+'</b>'+(m&&!m.isMe?kFwB(m.iFollow):'')+'</div>'
+    var head='<div class="kpf"><div class="kpfv kro'+kFtC(m&&m.ft)+'">'+(m&&m.aip?kAiPf(m.aip):m&&m.pid?kThumb(m.pid,"kpfm"):'<span class="kpfe">'+kIc("vid")+'</span>')+'</div><div class="kpfi">'
+      +'<div class="kpr kpn">'+kIc("id")+'<b>'+esc(m?(m.nick||"guest"):dash)+'</b>'+kFtTag(m&&m.ft)+(m&&!m.isMe?kFwB(m.iFollow):'')+'</div>'
       +'<div class="kpr kfl2" role="button" tabindex="0" data-fl="followers">'+kIc("fol")+'<span>'+esc(L(TX.fol))+'</span><b>'+(m?kNum(m.followers):dash)+'</b></div>'
       +'<div class="kpr kfl2" role="button" tabindex="0" data-fl="following">'+kIc("fol")+'<span>'+esc(L(TX.fing))+'</span><b>'+(m?kNum(m.following):dash)+'</b></div>'
       +'<div class="kpr">'+kIc("vid")+'<span>'+esc(L(TX.vids))+'</span><b>'+(m?kNum(m.count):dash)+'</b></div>'
@@ -1555,7 +1562,7 @@ function kUser(pub){ if(!/^[0-9a-f]{12}$/.test(String(pub||""))) return; var o=p
 // 팔로워·팔로잉 목록 — ID 를 누르면 그 사람 무대
 function kFl(pub,kind){ var o=pgOpen("kfl"); if(!o) return; var items=null, err=0, ttl=L(kind==="following"?TX.fing:TX.fol);
   var draw=function(){ var body=items===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':err?'<div class="kstge">'+esc(L(TX.stF))+'</div>':!items.length?'<div class="kstge">'+esc(L(TX.flE))+'</div>'
-      :'<div class="kfls">'+items.map(function(x,i){ return '<button type="button" data-i="'+i+'">'+kIc("id")+esc(x.nick||"guest")+'</button>'; }).join("")+'</div>';
+      :'<div class="kfls">'+items.map(function(x,i){ return '<button type="button" data-i="'+i+'">'+kIc("id")+'<span class="'+kFtN(x.ft).trim()+'">'+esc(x.nick||"guest")+'</span></button>'; }).join("")+'</div>';
     o.innerHTML=kHead('<h3>'+esc(ttl)+(items&&items.length?' · '+kNum(items.length):'')+'</h3>')+'<div class="kpgb">'+body+'</div>';
     o.querySelector(".kpbk").onclick=pgBack;
     [].forEach.call(o.querySelectorAll(".kfls button"),function(c){ c.onclick=function(){ var x=items[+c.dataset.i]; if(x&&x.pubid) kUser(x.pubid); }; }); };
@@ -1576,9 +1583,9 @@ function stageOpen(tab0){ var tab=tab0==="me"?"me":"all";
     if(S.tab==="me") S.loadMe(); };
   S.loadMe=function(){ var my=S.tok; kGet("/kst/me").then(function(j){ if(my!==S.tok||!(j&&j.ok)) return; S.me=j; S.draw(); }).catch(function(){}); };
   var prof=function(){ var m=S.me, pid=m&&m.pid, dash="…";
-    return '<div class="kpf"><button type="button" class="kpfv" data-pf="1" aria-label="'+esc(L(TX.pfT))+'">'+(m&&m.aip?kAiPf(m.aip):pid?kThumb(pid,"kpfm"):'<span class="kpfe">'+kIc("vid")+'</span>')+'<span class="kpfc">'+esc(L(TX.chg))+'</span></button>'
+    return '<div class="kpf"><button type="button" class="kpfv'+kFtC(m&&m.ft)+'" data-pf="1" aria-label="'+esc(L(TX.pfT))+'">'+(m&&m.aip?kAiPf(m.aip):pid?kThumb(pid,"kpfm"):'<span class="kpfe">'+kIc("vid")+'</span>')+'<span class="kpfc">'+esc(L(TX.chg))+'</span></button>'
       +'<div class="kpfi">'
-      +'<div class="kpr kpn">'+kIc("id")+(m&&m.nick?'<b>'+esc(m.nick)+'</b><button type="button" class="kln" data-nick="1">'+esc(L(TX.chg))+'</button>':'<button type="button" class="kln" data-nick="1">'+esc(L(TX.idSet))+'</button>')+'</div>'
+      +'<div class="kpr kpn">'+kIc("id")+(m&&m.nick?'<b>'+esc(m.nick)+'</b>'+kFtTag(m.ft)+'<button type="button" class="kln" data-nick="1">'+esc(L(TX.chg))+'</button>':'<button type="button" class="kln" data-nick="1">'+esc(L(TX.idSet))+'</button>')+'</div>'
       +'<div class="kpr'+(m&&m.pubid?' kfl2" role="button" tabindex="0" data-fl="followers':'')+'">'+kIc("fol")+'<span>'+esc(L(TX.fol))+'</span><b>'+(m?kNum(m.followers):dash)+'</b></div>'
       +'<div class="kpr'+(m&&m.pubid?' kfl2" role="button" tabindex="0" data-fl="following':'')+'">'+kIc("fol")+'<span>'+esc(L(TX.fing))+'</span><b>'+(m?kNum(m.following):dash)+'</b></div>'
       +'<div class="kpr">'+kIc("view")+'<span>'+esc(L(TX.vw))+'</span><b>'+(m?kNum(m.views):dash)+'</b></div>'
@@ -1593,7 +1600,7 @@ function stageOpen(tab0){ var tab=tab0==="me"?"me":"all";
     var a=kSortA(S.items,S.sort);
     return '<div class="krows">'+a.map(function(r){ var x=r[0], d=kDay(x.at);
       return '<div class="krow" role="button" tabindex="0" data-i="'+r[1]+'"><div class="krd"><b>'+esc(d[0])+'</b><small>'+esc(d[1])+'</small></div>'+kScC(x)
-        +'<div class="krm"><p>'+esc(x.desc||x.t||"-")+'</p><small>'+(S.tab==="me"?kVisTag(x):(x.vis==="fol"?kVisTag(x):'')+(x.pubid?kUn(x).replace('class="kun"','class="kun knk"'):'<b class="knk">'+esc(x.nick||"guest")+'</b>'))
+        +'<div class="krm"><p>'+esc(x.desc||x.t||"-")+'</p><small>'+(S.tab==="me"?kVisTag(x):(x.vis==="fol"?kVisTag(x):'')+(x.pubid?kUn(x).replace('class="kun','class="kun knk'):'<b class="knk">'+esc(x.nick||"guest")+'</b>'))
         +'<span class="kst2">'+kIc("up",1)+kNum(x.up)+'</span><span class="kst2">'+kIc("cm",1)+kNum(x.cm)+'</span><span class="kst2">'+kIc("view",1)+kNum(x.views)+'</span></small></div>'
         +kThumb(x.id,"krv")+'</div>'; }).join("")+'</div>'; };
   var roomsH=function(){ var h='<div class="krms"><button type="button" class="krm0" data-rnew="1">'+kIc("plus")+'<b>'+esc(L(TX.rmNew))+'</b></button>';   // 우리끼리 노래 = 내 방 목록 (맨 위 「+ 방 만들기」)
@@ -2089,7 +2096,7 @@ function kRoomNew(S){ var w=kPplPick(S.o,{title:L(TX.rmNew),name:L(TX.rmDef),sub
   kMyFol().then(function(a){ if(w.isConnected) w.setItems(a); }).catch(function(){ if(w.isConnected) w.setItems([]); }); }
 function kRoomRow(x,i,rk,seq){ var d=kDay(x.at);   // rk = 순위(챌린지 1·2·3) 또는 순번(릴레이, seq) 배지 (10-31)
   return '<div class="krow" role="button" tabindex="0" data-i="'+i+'">'+(rk?'<b class="krk'+(seq?' s':rk===2?' r2':rk===3?' r3':'')+'">'+rk+'</b>':'')+'<div class="krd"><b>'+esc(d[0])+'</b><small>'+esc(d[1])+'</small></div>'+kScC(x)
-    +'<div class="krm"><p>'+esc(x.desc||x.t||"-")+'</p><small>'+(x.pubid?kUn(x).replace('class="kun"','class="kun knk"'):'<b class="knk">'+esc(x.nick||"guest")+'</b>')
+    +'<div class="krm"><p>'+esc(x.desc||x.t||"-")+'</p><small>'+(x.pubid?kUn(x).replace('class="kun','class="kun knk'):'<b class="knk">'+esc(x.nick||"guest")+'</b>')
     +'<span class="kst2">'+kIc("up",1)+kNum(x.up)+'</span><span class="kst2">'+kIc("cm",1)+kNum(x.cm)+'</span><span class="kst2">'+kIc("view",1)+kNum(x.views)+'</span></small></div>'
     +kThumb(x.id,"krv")+'</div>'; }
 // 방 화면 — 이름 한 줄 + 사람 수(누르면 사람 목록) + 「⋯」(방장 메뉴 / 나가기) + 그 방 영상 목록(날짜·점수 칸, 정렬 3단계)
@@ -2099,20 +2106,22 @@ function kRoom(rid,S0){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var 
   var up=function(){ if(S0&&S0.o&&S0.o.isConnected&&S0.load) S0.load(); };
   R.load=function(){ var my=++R.tok; R.items=null; R.err=0; R.draw();
     kGet("/kst/room?rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok){ R.info=j; dcKstNews(rid,j.deco); } else R.gone=true; R.draw(); }).catch(function(){ if(my!==R.tok) return; R.err=1; R.draw(); });
-    kGet("/kst/relay?rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok){ R.rl=j; R.draw(); } }).catch(function(){});   // 「○○님 차례」 띠 (10-31)
+    kGet("/kst/relay?rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok){ R.rl=j; R.draw(); } }).catch(function(){});
+    if(sess()){ gpCfg(); gpRoomChk(R,rid); }   // 단체 AI 사진 — 참여 받는 중이면 띠 (10-31)   // 「○○님 차례」 띠 (10-31)
     kGet("/kst/list?scope=room&rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok) R.items=j.items||[]; else { R.items=[]; R.err=1; if(j&&j.err==="room") R.gone=true; } R.draw(); }).catch(function(){ if(my!==R.tok) return; R.items=[]; R.err=1; R.draw(); }); };
   R.loadMe=function(){};
   o._bye=function(){ R.tok++; };
   R.draw=function(){ var m=R.info, body;
     if(R.gone) body='<div class="kstge">'+esc(L(TX.rmGone))+'</div>';
-    else { body=kTurnBand(R.rl)+'<div class="krmh"><div class="krmt">'+kIc("!krm_song")+'<b>'+esc(m?m.name:"…")+'</b></div>'
+    else { body=kTurnBand(R.rl)+gpBand(R)+'<div class="krmh"><div class="krmt">'+kIc("!krm_song")+'<b>'+esc(m?m.name:"…")+'</b></div>'
         +'<button type="button" class="krmc'+(R.mem?' on':'')+'" data-mem="1">'+kIc("fol",1)+esc(tf(L(TX.rmN),{n:m?m.count:"…"}))+'</button>'
         +'<button type="button" class="krmc" data-rl="1">'+kIc("relay",1)+esc(L(TX.rlB))+'</button>'
         +'<button type="button" class="kdrb" data-dor="1"><img src="img/kara/dor.png" alt="">'+esc(L(TX.dorB))+'</button>'
         +'<button type="button" class="kdcb" data-deco="1"><img src="img/deco/pr_balloons.webp" alt="">'+esc(L(TX.dcB))+'</button>'
+        +'<button type="button" class="kdcb kgpb" data-grp="1"><img src="img/kara/kst_theme.png" alt="">'+esc(L(TX.gpB))+'</button>'   // 단체 AI 사진 (10-31)
         +'<button type="button" class="krmx" data-mn="1" aria-label="menu">⋯</button></div>'+(m?'<div class="kddeco kdk"></div>':'')
-        +(R.mem&&m?'<div class="krmm">'+m.mem.map(function(p){ return '<span>'+(p.pubid&&!p.me?'<button type="button" class="kun" data-u="'+esc(p.pubid)+'">'+esc(p.nick||"guest")+'</button>':'<b class="kme">'+esc(p.nick||"guest")+'</b>')+(p.owner?'<small>'+esc(L(TX.rmOw))+'</small>':'')+'</span>'; }).join("")+(m.owner?'<button type="button" class="krmi" data-inv="1">'+kIc("share",1)+esc(L(TX.rmInv))+'</button><button type="button" class="krmi" data-nr="1">'+kIc("fol",1)+esc(L(NT.nrFind))+'</button>':'')+'</div>':'')
-        +'<div class="ksrt"><span>'+esc(L(TX.vids))+(R.items&&R.items.length?' · '+R.items.length:'')+'</span><button type="button" data-sort="1">⇅ '+esc(kSortL(R.sort))+'</button>'+kVwBtn()+'</div>'
+        +(R.mem&&m?'<div class="krmm">'+m.mem.map(function(p){ return '<span>'+(p.pubid&&!p.me?'<button type="button" class="kun'+kFtN(p.ft)+'" data-u="'+esc(p.pubid)+'">'+esc(p.nick||"guest")+'</button>':'<b class="kme'+kFtN(p.ft)+'">'+esc(p.nick||"guest")+'</b>')+(p.owner?'<small>'+esc(L(TX.rmOw))+'</small>':'')+'</span>'; }).join("")+(m.owner?'<button type="button" class="krmi" data-inv="1">'+kIc("share",1)+esc(L(TX.rmInv))+'</button><button type="button" class="krmi" data-nr="1">'+kIc("fol",1)+esc(L(NT.nrFind))+'</button>':'')+'</div>':'')
+        +gpStrip(m)+'<div class="ksrt"><span>'+esc(L(TX.vids))+(R.items&&R.items.length?' · '+R.items.length:'')+'</span><button type="button" data-sort="1">⇅ '+esc(kSortL(R.sort))+'</button>'+kVwBtn()+'</div>'
         +(R.items===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':R.err&&!R.items.length?'<div class="kstge">'+esc(L(TX.stF))+'</div>':!R.items.length?'<div class="kstge">'+esc(L(TX.rmE))+'</div>'
           :'<div class="krows">'+kSortA(R.items,R.sort).map(function(r){ return kRoomRow(r[0],r[1]); }).join("")+'</div>'); }
     var sc=o.querySelector(".kpgb"), top=sc?sc.scrollTop:0;
@@ -2126,6 +2135,9 @@ function kRoom(rid,S0){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var 
     var dr=o.querySelector("[data-dor]"); if(dr) dr.onclick=function(){ dorOpen(R.info&&R.info.name||""); };   // 방 이름으로 도란도란 (10-31 밤)
     var iv=o.querySelector("[data-inv]"); if(iv) iv.onclick=function(){ if(R.info) kRoomInv(R.info,rid); };
     var nrb=o.querySelector("[data-nr]"); if(nrb) nrb.onclick=function(){ if(R.info) nrOpen({type:"song",room:rid,name:R.info.name}); };   // 근처 친구 찾기 (10-31)
+    var gpb=o.querySelector("[data-grp]"); if(gpb) gpb.onclick=function(){ if(R.info) gpOpen(gpRoomCtx(R,rid)); };   // 단체 AI 사진 (10-31)
+    var gpd=o.querySelector("[data-gpb]"); if(gpd) gpd.onclick=function(){ gpOpen(gpRoomCtx(R,rid),1); };
+    [].forEach.call(o.querySelectorAll("[data-gp]"),function(b){ b.onclick=function(){ var x=m&&m.gp&&m.gp[+b.dataset.gp]; if(x) gpView(x); }; });
     var so=o.querySelector("[data-sort]"); if(so) so.onclick=function(){ R.sort=kSortNx(R.sort); R.draw(); };
     [].forEach.call(o.querySelectorAll(".krow"),function(c){ var go=function(){ var x=R.items&&R.items[+c.dataset.i]; if(x) kDet(x,R); }; c.onclick=go; c.onkeydown=function(e){ if(e.key==="Enter") go(); }; }); };
   var op=function(a){ a.rid=rid; return kPost("/kst/room",a).then(function(j){ if(!(j&&j.ok)) return kRoomErr(j); R.load(); up(); return null; }); };
@@ -2499,9 +2511,9 @@ function dorEnter(tok){ var b=box(); if(!b||!/^[A-Za-z0-9]{16}$/.test(String(tok
   try{ if(REC.nat) kNatOff(); var P=kNat(); if(P&&P.close) P.close().catch(function(){}); }catch(e){}   // 앱 녹화 카메라(StageCam)는 끄고 들어간다 — 같은 카메라를 둘이 못 쓴다
   try{ if(K.pl&&K.pl.pauseVideo) K.pl.pauseVideo(); }catch(e){}
   var o=pgOpen("kdor"); if(!o) return;
-  DR.tok=tok; DR.o=o; DR.alive=true; DR.st=null; DR.me=""; DR.own=0; DR.rmap={}; DR.pulled={}; DR.el={}; DR.au={}; DR.spot=""; DR.warned=0; DR.pend={}; DR.q=Promise.resolve();
+  DR.tok=tok; DR.o=o; DR.alive=true; DR.gph=0; DR.st=null; DR.me=""; DR.own=0; DR.rmap={}; DR.pulled={}; DR.el={}; DR.au={}; DR.spot=""; DR.warned=0; DR.pend={}; DR.q=Promise.resolve();
   try{ DR.lay=sessionStorage.getItem("kdor_lay")||""; }catch(e){ DR.lay=""; }
-  o.innerHTML=kHead('<h3 class="kdtt">'+esc(L(TX.dorB))+'</h3><span class="kdtm" data-tm="1"></span><button type="button" class="kddb" data-deco="1"><img src="img/deco/pr_balloons.webp" alt="">'+esc(L(TX.dcB))+'</button>')
+  o.innerHTML=kHead('<h3 class="kdtt">'+esc(L(TX.dorB))+'</h3><span class="kdtm" data-tm="1"></span><button type="button" class="kddb" data-deco="1"><img src="img/deco/pr_balloons.webp" alt="">'+esc(L(TX.dcB))+'</button><button type="button" class="kddb kgpb" data-grp="1"><img src="img/kara/kst_theme.png" alt="">'+esc(L(TX.gpB))+'</button>')
     +'<div class="kdbar"><span class="kdn">0/9</span><button type="button" data-lay="1">'+esc(L(TX.dorGrid))+'</button><button type="button" data-inv="1">'+kIc("share",1)+esc(L(TX.dorInv))+'</button><button type="button" class="kdmn" data-mn="1" aria-label="menu">⋯</button></div>'
     +'<div class="kdwrap"><div class="kdstage"></div></div><div class="kddeco"></div><div class="kdsong" hidden></div>'
     +'<div class="kdctl"><button type="button" data-c="mic"><i class="kdg kdgm"></i><span>'+esc(L(TX.dorMic))+'</span></button><button type="button" data-c="cam"><i class="kdg kdgc"></i><span>'+esc(L(TX.dorCam))+'</span></button><button type="button" data-c="flip"><i class="kdg kdgf"></i><span>'+esc(L(TX.dorFlip))+'</span></button>'
@@ -2513,6 +2525,7 @@ function dorEnter(tok){ var b=box(); if(!b||!/^[A-Za-z0-9]{16}$/.test(String(tok
   o.querySelector("[data-mn]").onclick=dMenu;
   o.querySelector("[data-tm]").onclick=function(){ dExtAsk(); };
   o.querySelector("[data-deco]").onclick=function(){ dcOpen(dcDorCtx(),0); };   // 방 꾸미기 (10-31)
+  o.querySelector("[data-grp]").onclick=function(){ gpOpen(gpDorCtx()); };   // 단체 AI 사진 (10-31)
   [].forEach.call(o.querySelectorAll(".kdctl [data-c]"),function(x){ x.onclick=function(){ dCtl(x.dataset.c); }; });
   window.addEventListener("resize",dFit);
   dDraw(); dWs(); DR.nlk=false; dNAc("enter").then(function(){ if(DR.alive&&DR.tok===tok) dMedia(); }); DR.timer=setInterval(dTick,1000); try{ ntap("kara_dor","enter"); }catch(e){} }
@@ -2528,8 +2541,9 @@ function dWs(){ if(!DR.alive) return; var u=HUB.replace(/^http/,"ws")+"/dor/ws?t
 function dSend(m){ if(DR.ws&&DR.ws.readyState===1) DR.ws.send(JSON.stringify(m)); }
 function dMsg(m){ if(!DR.alive) return;
   if(m.t==="pong"){ var rt=Date.now()-m.c; if(rt<DR.rtt){ DR.rtt=rt; DR.off=m.s+rt/2-Date.now(); } return; }
-  if(m.t==="hi"){ DR.me=m.me; DR.own=m.own; if(DR.rtt>5000) DR.off=m.now-Date.now(); dDraw(); dSync(); return; }
-  if(m.t==="deco"){ dcDorMsg(m); return; }   // 방 꾸미기 소식 (10-31) — 놓음·치움·장소
+  if(m.t==="hi"){ DR.me=m.me; DR.own=m.own; if(DR.rtt>5000) DR.off=m.now-Date.now(); dDraw(); dSync(); if(!DR.gph){ DR.gph=1; gpDorHi(); } return; }
+  if(m.t==="deco"){ dcDorMsg(m); return; }
+  if(m.t==="grp"){ gpDorMsg(m.g); return; }   // 단체 AI 사진 소식 (10-31)   // 방 꾸미기 소식 (10-31) — 놓음·치움·장소
   if(m.t==="st"){ DR.st=m; if(DR.rtt>5000) DR.off=m.now-Date.now(); dDraw(); dcDorPaint(); dSong(); dSync(); dVol(); var my=dMy(); if(DR.own||(my&&my.tok===DR.tok)) dMy({tok:DR.tok,exp:m.room.exp,name:m.room.name}); return; }
   if(m.t==="warn"){ dWarn(); return; }
   if(m.t==="ext"){ DR.warned=0; var w=DR.o&&DR.o.querySelector(".kdwarn"); if(w) w.remove(); soon(tf(L(TX.dorExtBy),{n:m.nick||"guest"})); return; }
@@ -2585,7 +2599,7 @@ function dSpotMid(){ var s=DR.st&&DR.st.room.song; return s&&s.by?s.by:DR.spot; 
 function dTile(p,cls){ var me=p&&p.mid===DR.me;
   if(!p) return '<div class="kdt kde'+(cls||"")+'" data-inv="1">'+dIc("dor_seat","kdsi")+'<small>'+esc(L(TX.dorSeat))+'</small></div>';
   return '<div class="kdt'+(cls||"")+(me?' kdme':'')+(p.cam?'':' kdnc')+'" data-m="'+esc(p.mid)+'"><video autoplay playsinline muted></video><b class="kdav">'+esc(Array.from(p.nick||"?")[0]||"?")+'</b>'
-    +'<span class="kdnm2">'+(p.own?'<em>'+esc(L(TX.dorHost))+'</em>':'')+esc(me?(p.nick||L(TX.dorMe)):(p.nick||"guest"))+'</span>'+(p.mic?'':'<i class="kdmu" aria-hidden="true"></i>')
+    +'<span class="kdnm2'+kFtN(p.ft)+'">'+(p.own?'<em>'+esc(L(TX.dorHost))+'</em>':'')+esc(me?(p.nick||L(TX.dorMe)):(p.nick||"guest"))+'</span>'+(p.mic?'':'<i class="kdmu" aria-hidden="true"></i>')
     +(me?'':'<button type="button" class="kdtm2" data-tm="'+esc(p.mid)+'" aria-label="menu">⋯</button>')+'</div>'; }
 function dDraw(){ var o=DR.o; if(!o||!o.isConnected) return; var stg=o.querySelector(".kdstage"); if(!stg) return;
   var mem=dOrder(), n=mem.length, lay=dLay(), sp=dSpotMid(), spP=sp&&mem.filter(function(p){ return p.mid===sp; })[0], h="", rect={};
@@ -2859,7 +2873,7 @@ function nrOpen(ctx){ var b=box(); if(!b) return; if(!sess()){ kMsg(dHost(),L(TX
         var it=(S.list||[]).filter(function(x){ return !NR.f||x.d<=NR.f; });
         body+=S.list===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':!it.length?'<div class="kstge">'+esc(NL("none"))+'</div>'
           :'<div class="knrls">'+it.map(function(x){ var i=S.list.indexOf(x), dn=!!S.done[x.pubid];
-            return '<div class="knrw"><button type="button" class="knrp" data-pf="'+i+'" aria-label="'+esc(NL("prof"))+'">'+nrPic(x)+'</button><div class="knri"><b>'+esc(x.nick)+'</b><small>'+(x.song?esc(NL("song"))+' · '+esc(x.song):'&nbsp;')+'</small><span class="knrd">'+esc(tf(NL("km"),{k:x.d}))+'</span></div>'
+            return '<div class="knrw"><button type="button" class="knrp'+kFtC(x.ft)+'" data-pf="'+i+'" aria-label="'+esc(NL("prof"))+'">'+nrPic(x)+'</button><div class="knri"><b>'+esc(x.nick)+'</b><small>'+(x.song?esc(NL("song"))+' · '+esc(x.song):'&nbsp;')+'</small><span class="knrd">'+esc(tf(NL("km"),{k:x.d}))+'</span></div>'
               +'<button type="button" class="knrg'+(dn?' dn':'')+'" data-inv="'+i+'"'+(dn||S.busy?' disabled':'')+'>'+esc(dn?NL("invd"):ctx?NL("invR"):NL("invB"))+'</button><button type="button" class="knrm" data-mn="'+i+'" aria-label="menu">⋯</button></div>'; }).join("")+'</div>'; }
       else body+='<div class="kstge">'+esc(NL("offL"))+'</div>';
       body+='<div class="knrft">'+(m.consent?'<button type="button" data-wd="1">'+esc(NL("wd"))+'</button>':'')+'<small>'+esc(NL("ft"))+'</small></div>'; }
@@ -3320,6 +3334,206 @@ window.addEventListener("message",function(e){ if(!e||!e.data||e.data.t!=="kidv"
 (function(){ var m=/[?&]kidv=(ok|fail|minor)/.exec(location.search); if(!m) return; AGS.msg=m[1]==="ok"?"":m[1];
   try{ var keep=location.search.slice(1).split("&").filter(function(x){ return !/^kidv=/.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(keep?"?"+keep:"")+location.hash); }catch(e){}
   var p=agPend(); if(!window.KAR_SITE&&p&&p.code){ var go=function(){ setTimeout(function(){ gOpen(p.code); },900); }; if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",go); else go(); } })();
+// ── 단체 AI 사진 (사장님 10-31 「실행해」) — 우리끼리 노래 방·도란도란 방 「단체 사진」 단추 · 허브 /kst/grp/* (grp.js)
+//   시작한 사람 = 테마·장면 → 3·2·1 얼굴 촬영 → 참여 접수(도란도란 60초 · 우리끼리 노래 10분) · 다른 사람 = 「참여」 → 3·2·1 촬영 (누른 사람만 사진에 나옴)
+//   만들기 = 시작한 사람이 「5,000P 사용 → N P 남음」 확인 뒤 · 실패하면 허브가 환불 · 결과 = 「AI 생성」 덧그려 /kst/aiput · 참여자 모두의 AI 사진 모음 · 공유창
+//   프로필 테두리 (10-31) — 팔로워 10만 실버 · 50만 골드 · 100만 플래티넘 (허브가 ft 1·2·3 로 내려줌, CSS 만)
+Object.assign(TX,{
+ gpB:{ko:"단체 사진",en:"Group photo",ja:"集合写真",zhs:"合影",zht:"合影",es:"Foto de grupo"},
+ gpT:{ko:"단체 AI 사진",en:"Group AI photo",ja:"AI集合写真",zhs:"AI 合影",zht:"AI 合影",es:"Foto de grupo con IA"},
+ gpPick:{ko:"테마와 장면을 선택하세요",en:"Choose a theme and a scene",ja:"テーマと場面を選んでください",zhs:"请选择主题和场景",zht:"請選擇主題和場景",es:"Elige un tema y una escena"},
+ gpSeas:{ko:"계절",en:"Seasonal",ja:"季節",zhs:"季节",zht:"季節",es:"Temporada"},
+ gpN1:{ko:"「참여」를 누른 사람만 사진에 나옵니다. 시작한 사람을 포함해 2~9명입니다.",en:"Only people who tap “Join” appear in the photo: 2–9 people, including the person who starts.",ja:"「参加」を押した人だけが写真に写ります。始めた人を含めて2〜9人です。",zhs:"只有点了「参加」的人才会出现在照片里，包括发起人在内共2~9人。",zht:"只有點了「參加」的人才會出現在照片裡，包括發起人在內共2~9人。",es:"Solo salen en la foto quienes tocan «Unirme»: de 2 a 9 personas, incluida quien la inicia."},
+ gpN2:{ko:"참여 접수는 {m} 동안 열리며, 시작한 사람이 {c}를 사용해 생성합니다.",en:"Joining stays open for {m}. The person who starts uses {c} to create it.",ja:"参加受付は{m}開き、始めた人が{c}を使って作成します。",zhs:"参加报名开放{m}，由发起人使用{c}生成。",zht:"參加報名開放{m}，由發起人使用{c}生成。",es:"La inscripción está abierta {m}. Quien la inicia usa {c} para crearla."},
+ gpN3:{ko:"「참여」를 누르면 3초 뒤 카메라로 얼굴을 촬영합니다. 얼굴 사진은 이 단체 사진 생성에만 사용하며, 생성이 끝나면 바로 삭제됩니다. 결과에는 「AI 생성」이 표시됩니다.",en:"When you tap “Join”, the camera takes a photo of your face after 3 seconds. It is used only to create this group photo and is deleted right after. The result is labeled “AI-generated”.",ja:"「参加」を押すと3秒後にカメラで顔を撮影します。顔写真はこの集合写真の作成にだけ使い、作成が終わるとすぐ削除します。結果には「AI生成」と表示されます。",zhs:"点「参加」后，相机将在3秒后拍摄你的面部。面部照片仅用于生成这张合影，生成结束后立即删除。结果会标注「AI生成」。",zht:"點「參加」後，相機將在3秒後拍攝你的臉部。臉部照片僅用於生成這張合影，生成結束後立即刪除。結果會標註「AI生成」。",es:"Al tocar «Unirme», la cámara te hará una foto de la cara a los 3 segundos. Solo se usa para crear esta foto de grupo y se borra justo después. El resultado lleva la etiqueta «Generado por IA»."},
+ gpMin:{ko:"{n}분",en:"{n} min",ja:"{n}分",zhs:"{n}分钟",zht:"{n}分鐘",es:"{n} min"},
+ gpSec:{ko:"{n}초",en:"{n} s",ja:"{n}秒",zhs:"{n}秒",zht:"{n}秒",es:"{n} s"},
+ gpStart:{ko:"시작 (내 얼굴 촬영)",en:"Start (take my photo)",ja:"開始（自分の顔を撮影）",zhs:"开始（拍摄我的面部）",zht:"開始（拍攝我的臉部）",es:"Empezar (hacer mi foto)"},
+ gpBy:{ko:"{n}님의 단체 사진",en:"{n}'s group photo",ja:"{n}さんの集合写真",zhs:"{n} 发起的合影",zht:"{n} 發起的合影",es:"Foto de grupo de {n}"},
+ gpLeft:{ko:"참여 마감까지 {t}",en:"{t} left to join",ja:"参加締切まで {t}",zhs:"距离截止还有 {t}",zht:"距離截止還有 {t}",es:"Quedan {t} para unirse"},
+ gpClosed:{ko:"참여 마감",en:"Joining closed",ja:"参加締切",zhs:"报名已截止",zht:"報名已截止",es:"Inscripción cerrada"},
+ gpN:{ko:"참여 {n}명",en:"{n} joined",ja:"参加 {n}人",zhs:"已参加 {n} 人",zht:"已參加 {n} 人",es:"{n} se unieron"},
+ gpJoin:{ko:"참여",en:"Join",ja:"参加",zhs:"参加",zht:"參加",es:"Unirme"},
+ gpRe:{ko:"다시 촬영",en:"Retake",ja:"撮り直す",zhs:"重拍",zht:"重拍",es:"Repetir foto"},
+ gpLeave:{ko:"참여 취소",en:"Leave",ja:"参加を取り消す",zhs:"取消参加",zht:"取消參加",es:"Salir"},
+ gpMake:{ko:"만들기",en:"Create",ja:"作成",zhs:"生成",zht:"生成",es:"Crear"},
+ gpCloseMk:{ko:"마감하고 만들기",en:"Close and create",ja:"締め切って作成",zhs:"截止并生成",zht:"截止並生成",es:"Cerrar y crear"},
+ gpCloseQ:{ko:"참여를 마감하고 만들까요?",en:"Close joining and create it now?",ja:"参加を締め切って作成しますか？",zhs:"要截止报名并生成吗？",zht:"要截止報名並生成嗎？",es:"¿Cerrar la inscripción y crearla ahora?"},
+ gpCancel:{ko:"단체 사진 취소",en:"Cancel group photo",ja:"集合写真を取り消す",zhs:"取消合影",zht:"取消合影",es:"Cancelar foto de grupo"},
+ gpCancelQ:{ko:"단체 사진을 취소할까요? 올라온 얼굴 사진은 모두 삭제됩니다.",en:"Cancel this group photo? All uploaded face photos will be deleted.",ja:"集合写真を取り消しますか？アップロードされた顔写真はすべて削除されます。",zhs:"要取消这张合影吗？已上传的面部照片将全部删除。",zht:"要取消這張合影嗎？已上傳的臉部照片將全部刪除。",es:"¿Cancelar esta foto de grupo? Se borrarán todas las fotos de caras subidas."},
+ gpWait:{ko:"시작한 사람이 「만들기」를 누르면 생성됩니다.",en:"It is created when the person who started taps “Create”.",ja:"始めた人が「作成」を押すと作成されます。",zhs:"发起人点「生成」后即开始生成。",zht:"發起人點「生成」後即開始生成。",es:"Se crea cuando quien la inició toca «Crear»."},
+ gpFew:{ko:"2명 이상 참여해야 만들 수 있습니다.",en:"At least 2 people must join to create it.",ja:"2人以上が参加すると作成できます。",zhs:"至少需要2人参加才能生成。",zht:"至少需要2人參加才能生成。",es:"Deben unirse al menos 2 personas."},
+ gpIng:{ko:"단체 사진 생성 중… (최대 1분)",en:"Creating the group photo… (up to 1 min)",ja:"集合写真を作成中…（最大1分）",zhs:"正在生成合影…（最多1分钟）",zht:"正在生成合影…（最多1分鐘）",es:"Creando la foto de grupo… (hasta 1 min)"},
+ gpDone:{ko:"단체 사진이 완성되었습니다",en:"Your group photo is ready",ja:"集合写真が完成しました",zhs:"合影已完成",zht:"合影已完成",es:"La foto de grupo está lista"},
+ gpFail:{ko:"생성에 실패했습니다. 사용한 포인트는 환불되었으며, 다시 만들 수 있습니다.",en:"Creation failed. Your points were refunded, and you can try again.",ja:"作成に失敗しました。使用したポイントは返金されました。もう一度作成できます。",zhs:"生成失败，所用积分已退还，可以重新生成。",zht:"生成失敗，所用點數已退還，可以重新生成。",es:"No se pudo crear. Te devolvimos los puntos y puedes intentarlo de nuevo."},
+ gpMine:{ko:"참여 완료",en:"You're in",ja:"参加済み",zhs:"已参加",zht:"已參加",es:"Ya estás dentro"},
+ gpAsk:{ko:"{n}님이 단체 사진을 시작했습니다",en:"{n} started a group photo",ja:"{n}さんが集合写真を始めました",zhs:"{n} 发起了合影",zht:"{n} 發起了合影",es:"{n} inició una foto de grupo"},
+ gpOk:{ko:"참여했습니다",en:"You joined",ja:"参加しました",zhs:"已参加",zht:"已參加",es:"Te uniste"},
+ gpCam:{ko:"카메라를 보세요",en:"Look at the camera",ja:"カメラを見てください",zhs:"请看镜头",zht:"請看鏡頭",es:"Mira a la cámara"},
+ gpCamE:{ko:"카메라를 사용할 수 없습니다. 카메라 권한을 확인해 주세요.",en:"The camera isn't available. Please check camera permission.",ja:"カメラを使用できません。カメラの許可を確認してください。",zhs:"无法使用相机，请检查相机权限。",zht:"無法使用相機，請檢查相機權限。",es:"La cámara no está disponible. Revisa el permiso de cámara."},
+ gpFull:{ko:"참여 인원이 가득 찼습니다 (최대 9명).",en:"It's full (up to 9 people).",ja:"参加人数がいっぱいです（最大9人）。",zhs:"参加人数已满（最多9人）。",zht:"參加人數已滿（最多9人）。",es:"Está completo (máximo 9 personas)."},
+ gpBusy:{ko:"이 방에서 이미 단체 사진을 진행 중입니다.",en:"A group photo is already in progress in this room.",ja:"このルームではすでに集合写真が進行中です。",zhs:"此房间已有合影正在进行。",zht:"此房間已有合影正在進行。",es:"Ya hay una foto de grupo en curso en esta sala."},
+ gpCap:{ko:"오늘 만들 수 있는 단체 사진을 모두 사용했습니다. 내일 다시 이용해 주세요.",en:"You've reached today's group photo limit. Please try again tomorrow.",ja:"本日作成できる集合写真の上限に達しました。明日またご利用ください。",zhs:"今天可生成的合影已用完，请明天再来。",zht:"今天可生成的合影已用完，請明天再來。",es:"Has llegado al límite de fotos de grupo de hoy. Vuelve mañana."},
+ gpEnd:{ko:"단체 사진이 종료되었습니다.",en:"This group photo has ended.",ja:"この集合写真は終了しました。",zhs:"这张合影已结束。",zht:"這張合影已結束。",es:"Esta foto de grupo ha terminado."},
+ gpNew:{ko:"새 단체 사진",en:"New group photo",ja:"新しい集合写真",zhs:"新的合影",zht:"新的合影",es:"Nueva foto de grupo"},
+ gpSh:{ko:"공유",en:"Share",ja:"共有",zhs:"分享",zht:"分享",es:"Compartir"},
+ gpSv:{ko:"저장",en:"Save",ja:"保存",zhs:"保存",zht:"儲存",es:"Guardar"},
+ gpGal:{ko:"참여한 사람 모두의 「AI 사진 모음」에 저장되었습니다.",en:"Saved to everyone's “AI photos”.",ja:"参加した全員の「AI写真」に保存されました。",zhs:"已保存到所有参加者的「AI 照片」。",zht:"已儲存到所有參加者的「AI 照片」。",es:"Guardada en «Fotos IA» de todos los participantes."},
+ gpShT:{ko:"StageSong 단체 AI 사진 · {t}",en:"StageSong group AI photo · {t}",ja:"StageSong AI集合写真 · {t}",zhs:"StageSong AI 合影 · {t}",zht:"StageSong AI 合影 · {t}",es:"Foto de grupo IA de StageSong · {t}"},
+ gpShD:{ko:"우리끼리 모여 AI로 만든 단체 사진",en:"A group photo we made together with AI",ja:"仲間で集まってAIで作った集合写真",zhs:"大家一起用 AI 做的合影",zht:"大家一起用 AI 做的合影",es:"Una foto de grupo que hicimos juntos con IA"},
+ gpGo:{ko:"지금 참여",en:"Join now",ja:"今すぐ参加",zhs:"立即参加",zht:"立即參加",es:"Unirme ya"},
+ ftL:{ko:"실버|골드|플래티넘",en:"Silver|Gold|Platinum",ja:"シルバー|ゴールド|プラチナ",zhs:"白银|黄金|铂金",zht:"白銀|黃金|鉑金",es:"Plata|Oro|Platino"}
+});
+KWW.push("grp");   // 사용 내역 「단체 AI 사진」 (10-31)
+function kFtC(n){ n=+n||0; return n>=1&&n<=3?" kft kft"+n:""; }   // 사진 테두리 (원·네모 둘 다)
+function kFtN(n){ n=+n||0; return n>=1&&n<=3?" kftn kft"+n:""; }   // 이름 앞 작은 고리
+function kFtTag(n){ n=+n||0; return n>=1&&n<=3?'<em class="kftl kft'+n+'">'+esc(kTx(TX.ftL,n-1))+'</em>':""; }
+var GP={cfg:null,ld:null,pan:null};
+function gpCfg(force){ if(GP.cfg&&!force) return Promise.resolve(GP.cfg); if(GP.ld) return GP.ld;
+  GP.ld=fetch(HUB+"/kst/grp/cfg?sess="+encodeURIComponent(sess())).then(function(r){ return r.json(); }).then(function(j){ GP.ld=null; if(j&&j.ok) GP.cfg=j; return GP.cfg; }).catch(function(){ GP.ld=null; return GP.cfg; }); return GP.ld; }
+function gpTh(k){ return ((GP.cfg&&GP.cfg.th)||[]).filter(function(x){ return x.k===k; })[0]||null; }
+function gpName(th,sc){ var t=gpTh(th); if(!t) return ""; var s=t.sc.filter(function(x){ return x.k===sc; })[0]; return L(t.n)+(s?" · "+L(s.n):""); }
+function gpJ(r){ return r.json().catch(function(){ return {ok:false,err:"http"}; }); }
+function gpPost(path,o){ var q={sess:sess()}; for(var k in o) q[k]=o[k]; return fetch(HUB+"/kst/grp/"+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(q)}).then(gpJ).catch(function(){ return {ok:false,err:"net"}; }); }
+function gpImg(path,qs,blob){ return fetch(HUB+"/kst/grp/"+path+"?"+qs+"&sess="+encodeURIComponent(sess()),{method:"POST",headers:{"Content-Type":"image/jpeg"},body:blob}).then(gpJ).catch(function(){ return {ok:false,err:"net"}; }); }
+function gpSt(ctx){ return fetch(HUB+"/kst/grp/st?kind="+ctx.kind+"&room="+encodeURIComponent(ctx.room)+"&sess="+encodeURIComponent(sess())).then(gpJ).catch(function(){ return {ok:false,err:"net"}; }); }
+function gpErr(j){ var e=j&&j.err; return L(e==="full"?TX.gpFull:e==="busy"?TX.gpBusy:e==="cap"||e==="ucap"?TX.gpCap:e==="few"?TX.gpFew:e==="closed"||e==="none"?TX.gpEnd:e==="pt"?TX.kwShort:e==="gen"||e==="safe"||e==="face"||e==="save"?TX.gpFail:TX.efail).replace("{h}",ptS(j&&j.have||0)); }
+function gpT(ms){ var s=Math.max(0,Math.ceil(ms/1000)); return s>=60?tf(L(TX.gpMin),{n:Math.ceil(s/60)}):tf(L(TX.gpSec),{n:s}); }
+function gpClock(ms){ var s=Math.max(0,Math.ceil(ms/1000)); return Math.floor(s/60)+":"+("0"+s%60).slice(-2); }
+// 3·2·1 얼굴 촬영 — 도란도란은 지금 방 카메라(DR.stream), 그 밖엔 getUserMedia(앞 카메라) · 정사각형 640 · JPEG 280KB 이하
+function gpShot(host,stream0){ return new Promise(function(res,rej){ if(!host) return rej(new Error("host"));
+  var w=document.createElement("div"); w.className="kpm kgpcam"; host.appendChild(w); var own=null, done=false, tm=0;
+  w.innerHTML='<div><h3>'+esc(L(TX.gpCam))+'</h3><div class="kgpv"><video autoplay playsinline muted></video><b class="kgpcd"></b></div><p class="km">'+esc(L(TX.gpN3))+'</p><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+  var v=w.querySelector("video"), cd=w.querySelector(".kgpcd");
+  var end=function(e,b){ if(done) return; done=true; clearInterval(tm); if(own) own.getTracks().forEach(function(t){ t.stop(); }); try{ v.srcObject=null; }catch(z){} w.remove(); if(e) rej(e); else res(b); };
+  w.querySelector(".kc").onclick=function(){ end(new Error("cancel")); };
+  var live=stream0&&stream0.getVideoTracks&&stream0.getVideoTracks().some(function(t){ return t.readyState==="live"&&t.enabled; });
+  var get=live?Promise.resolve(stream0):(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia?navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:720},height:{ideal:720}},audio:false}).then(function(s){ own=s; return s; }):Promise.reject(new Error("nomd")));
+  get.then(function(s){ if(done){ if(own) own.getTracks().forEach(function(t){ t.stop(); }); return; } v.srcObject=s; try{ v.play(); }catch(z){}
+    var n=3; cd.textContent=n; tm=setInterval(function(){ n--; if(n>0){ cd.textContent=n; return; } clearInterval(tm); cd.textContent="";
+      var vw=v.videoWidth, vh=v.videoHeight; if(!vw||!vh){ end(new Error("cam")); return; } var sd=Math.min(vw,vh), c=mkc0(640,640), g=c.getContext("2d");
+      g.drawImage(v,(vw-sd)/2,(vh-sd)/2,sd,sd,0,0,640,640); w.classList.add("kgpfl"); kJpg(c,280*1024).then(function(b){ setTimeout(function(){ end(null,b); },180); }).catch(function(e){ end(e); }); },1000); })
+    .catch(function(){ end(new Error("cam")); }); }); }
+// 패널 — ctx = {kind:"dor"|"room", room, host(), stream()}
+function gpOpen(ctx,join){ var h=ctx.host(); if(!h) return; if(!sess()){ kLogin(function(){ gpOpen(ctx,join); }); return; }
+  var old=h.querySelector(".kgpp"); if(old) old.remove(); var o=document.createElement("div"); o.className="kpm kgpp"; h.appendChild(o);
+  var P={g:null,me:"",th:"",sc:"",busy:false,msg:"",res:null,ld:true,poll:0,tick:0,ctx:ctx}; GP.pan=P;
+  var close=function(){ clearInterval(P.poll); clearInterval(P.tick); if(GP.pan===P) GP.pan=null; o.remove(); if(ctx.after) ctx.after(); };
+  var mine=function(){ var g=P.g; return !!(g&&g.mem.some(function(m){ return m.id===P.me; })); };
+  var isBy=function(){ return !!(P.g&&P.g.by===P.me); };
+  P.set=function(j){ if(j&&j.g!==undefined) P.g=j.g; if(j&&j.me) P.me=j.me; if(P.g&&P.g.st==="done"&&!P.res&&P.g.aid) P.res={aid:P.g.aid}; draw(); };
+  var load=function(){ return gpSt(ctx).then(function(j){ P.ld=false; if(j&&j.ok) P.set(j); else { P.msg=j&&j.err==="room"?L(TX.gpEnd):""; draw(); } }); };
+  var shot=function(){ return gpShot(ctx.host()||o,ctx.stream&&ctx.stream()); };
+  var act=function(f){ if(P.busy) return; P.busy=true; P.msg=""; draw(); f().then(function(j){ P.busy=false; if(j&&j.ok){ P.set(j); return; } if(j&&j.g) P.g=j.g; if(j&&j.err!=="cancel") P.msg=gpErr(j); draw(); }); };
+  var start=function(){ act(function(){ return shot().then(function(b){ return gpImg("start","kind="+ctx.kind+"&room="+encodeURIComponent(ctx.room)+"&th="+P.th+"&sc="+P.sc,b); },function(e){ if(!(e&&e.message==="cancel")) P.msg2=L(TX.gpCamE); return {ok:false,err:"cancel"}; })
+      .then(function(j){ if(P.msg2){ P.msg=P.msg2; P.msg2=""; } if(j&&j.ok){ try{ ntap("kara_grp","start_"+ctx.kind+"_"+P.th); }catch(e){} } return j; }); }); };
+  var joinF=function(){ var g=P.g; if(!g) return; act(function(){ return shot().then(function(b){ return gpImg("join","gid="+g.gid+"&kind="+ctx.kind+"&room="+encodeURIComponent(ctx.room),b); },function(e){ if(!(e&&e.message==="cancel")) P.msg2=L(TX.gpCamE); return {ok:false,err:"cancel"}; })
+      .then(function(j){ if(P.msg2){ P.msg=P.msg2; P.msg2=""; } if(j&&j.ok){ soon(L(TX.gpOk)); try{ ntap("kara_grp","join_"+ctx.kind); }catch(e){} } return j; }); }); };
+  var make=function(closeIt){ var g=P.g, pc=(GP.cfg&&GP.cfg.price)||5000; if(!g) return;
+    var go=function(){ var run=function(){ kptAsk(pc,L(TX.gpT)+" · "+gpName(g.th,g.sc),function(done){ done(); P.busy=true; P.msg=""; P.g.st="gen"; draw(); var rid=kRid();
+        gpPost("make",{gid:g.gid,kind:ctx.kind,room:ctx.room,rid:rid,close:closeIt?1:0}).then(function(j){ P.busy=false; kptLoad();
+          if(!(j&&j.ok&&j.b64)){ if(j&&j.g) P.g=j.g; else if(P.g) P.g.st="ready"; P.msg=gpErr(j); draw(); return; }
+          try{ ntap("kara_grp","make_"+g.th+"_"+(j.g&&j.g.n)); }catch(e){}
+          kImg("data:"+(j.mime||"image/jpeg")+";base64,"+j.b64).then(function(im){ var s=Math.min(1,1600/Math.max(im.naturalWidth,im.naturalHeight)), w=Math.round(im.naturalWidth*s), hh=Math.round(im.naturalHeight*s), c=mkc0(w,hh), gg=c.getContext("2d");
+            gg.drawImage(im,0,0,w,hh); kAiTag(gg,w,hh,KF,true); return kJpg(c,580*1024); }).then(function(bl){
+            var put=function(n){ fetch(HUB+"/kst/aiput?aid="+j.aid+"&"+kQs(),{method:"POST",headers:{"Content-Type":"image/jpeg"},body:bl}).then(function(r){ return r.json(); }).then(function(x){ if(!(x&&x.ok)&&n<3) setTimeout(function(){ put(n+1); },1500*n); }).catch(function(){ if(n<3) setTimeout(function(){ put(n+1); },1500*n); }); }; put(1);   // 「AI 생성」 덧그린 판 — 안 되면 두 번 더
+            P.res={aid:j.aid,blob:bl,url:URL.createObjectURL(bl)}; P.g=j.g; draw(); }).catch(function(){ P.res={aid:j.aid}; P.g=j.g; draw(); }); }); },"",L(TX.gpMake)); };
+      if(kptOn()) run(); else kptLoad().then(function(){ if(kptOn()) run(); else { P.msg=L(TX.efail); draw(); } }); };
+    if(closeIt) kMsg(ctx.host()||o,L(TX.gpCloseQ),[[L(TX.gpCloseMk),go],[L(TX.cancel),null,"kc"]]); else go(); };
+  var picker=function(){ var C=GP.cfg; if(!C) return '<div class="kaiw"><i></i>'+esc(L(TX.lo))+'</div>';
+    var t=gpTh(P.th);
+    return '<b class="kh">'+esc(L(TX.gpPick))+'</b><div class="kaic kgpth">'+C.th.map(function(x){ return '<button type="button" data-th="'+x.k+'"'+(x.k===P.th?' class="on"':'')+'>'+esc(L(x.n))+(x.s?'<small>'+esc(L(TX.gpSeas))+'</small>':'')+'</button>'; }).join("")+'</div>'
+      +(t?'<div class="kaic kgpsc">'+t.sc.map(function(x){ return '<button type="button" data-sc="'+x.k+'"'+(x.k===P.sc?' class="on"':'')+'>'+esc(L(x.n))+'</button>'; }).join("")+'</div>':'')
+      +'<ul class="kdnote"><li>'+esc(L(TX.gpN1))+'</li><li>'+esc(tf(L(TX.gpN2),{m:gpT(C.win[ctx.kind]*1000),c:ptS(C.price)}))+'</li><li>'+esc(L(TX.gpN3))+'</li></ul>'
+      +'<button type="button" class="kgo" data-go="1"'+(P.th&&P.sc&&!P.busy?'':' disabled')+'>'+esc(L(TX.gpStart))+'</button>'; };
+  var memH=function(g){ return '<div class="kgpm">'+g.mem.map(function(m){ return '<span'+(m.id===P.me?' class="me"':'')+'>'+(m.f?'✓ ':'')+esc(m.nick||"guest")+(m.id===g.by?'<small>★</small>':'')+'</span>'; }).join("")+'</div>'; };
+  function draw(){ if(!o.isConnected) return; var g=P.g, st=g&&g.st, h='<div><h3><img class="kaih" src="img/kara/kst_theme.png" alt="">'+esc(L(TX.gpT))+'</h3>';
+    if(P.ld) h+='<div class="kaiw"><i></i>'+esc(L(TX.lo))+'</div>';
+    else if(P.res&&(st==="done"||!g)){ h+='<b class="kh">'+esc(L(TX.gpDone))+(g?' · '+esc(gpName(g.th,g.sc)):'')+'</b><div class="kzv"><img src="'+esc(P.res.url||kAiSrc(P.res.aid))+'" alt=""></div><p class="km">'+esc(L(TX.gpGal))+'</p>'
+        +'<div class="kaib"><button type="button" class="kbt" data-sh="1">'+kIc("share",1)+esc(L(TX.gpSh))+'</button><button type="button" class="kbt g" data-sv="1">'+esc(L(TX.gpSv))+'</button><button type="button" class="kbt g" data-nw="1">'+esc(L(TX.gpNew))+'</button></div>'; }
+    else if(!g||st==="cancel"||st==="exp"||st==="done") h+=picker();
+    else { var left=g.until-Date.now(), open=st==="open"&&left>0;
+      h+='<b class="kh">'+esc(tf(L(TX.gpBy),{n:g.byNick||"guest"}))+'</b><p class="kgpn">'+esc(gpName(g.th,g.sc))+'</p>'
+        +'<div class="kgptm'+(open?'':' off')+'" data-tm="1">'+esc(open?tf(L(TX.gpLeft),{t:gpClock(left)}):L(TX.gpClosed))+' · '+esc(tf(L(TX.gpN),{n:g.n}))+' / '+(g.max||9)+'</div>'+memH(g);
+      if(st==="gen") h+='<div class="kaiw"><i></i>'+esc(L(TX.gpIng))+'</div>';
+      else if(isBy()){ h+=(g.n<(g.min||2)?'<p class="km">'+esc(L(TX.gpFew))+'</p>':'')
+          +'<button type="button" class="kgo" data-mk="'+(open?2:1)+'"'+(P.busy||g.n<(g.min||2)?' disabled':'')+'>'+esc(L(open?TX.gpCloseMk:TX.gpMake))+' · '+esc(ptS((GP.cfg&&GP.cfg.price)||5000))+'</button>'
+          +'<button type="button" class="krf" data-re="1"'+(P.busy||!open?' disabled':'')+'>'+esc(L(TX.gpRe))+'</button><button type="button" class="krf r" data-cx="1"'+(P.busy?' disabled':'')+'>'+esc(L(TX.gpCancel))+'</button>'; }
+      else if(mine()) h+='<p class="kgpok">✓ '+esc(L(TX.gpMine))+'</p><p class="km">'+esc(L(TX.gpWait))+'</p>'+(open?'<button type="button" class="krf" data-re="1"'+(P.busy?' disabled':'')+'>'+esc(L(TX.gpRe))+'</button><button type="button" class="krf r" data-lv="1"'+(P.busy?' disabled':'')+'>'+esc(L(TX.gpLeave))+'</button>':'');
+      else if(open) h+='<p class="km">'+esc(L(TX.gpN3))+'</p><button type="button" class="kgo" data-jn="1"'+(P.busy||g.n>=(g.max||9)?' disabled':'')+'>'+esc(L(TX.gpJoin))+'</button>';
+      else h+='<p class="km">'+esc(L(TX.gpEnd))+'</p>'; }
+    h+=(P.msg?'<div class="kerr">'+esc(P.msg)+'</div>':'')+(g&&g.err&&st!=="done"&&isBy()&&!P.msg?'<div class="kerr">'+esc(L(TX.gpFail))+'</div>':'')+'<button type="button" class="kc" data-x="1">'+esc(L(TX.ok))+'</button></div>';
+    o.innerHTML=h;
+    var zv=o.querySelector(".kzv"); if(zv) kPz(zv);
+    var q=function(s,f){ var e=o.querySelector(s); if(e) e.onclick=f; };
+    q("[data-x]",close);
+    [].forEach.call(o.querySelectorAll("[data-th]"),function(b){ b.onclick=function(){ P.th=b.dataset.th; var t=gpTh(P.th); P.sc=t&&t.sc[0]?t.sc[0].k:""; draw(); }; });
+    [].forEach.call(o.querySelectorAll("[data-sc]"),function(b){ b.onclick=function(){ P.sc=b.dataset.sc; draw(); }; });
+    q("[data-go]",start); q("[data-jn]",joinF); q("[data-re]",joinF);
+    q("[data-mk]",function(){ make(o.querySelector("[data-mk]").dataset.mk==="2"); });
+    q("[data-lv]",function(){ act(function(){ return gpPost("leave",{gid:P.g.gid,kind:ctx.kind,room:ctx.room}); }); });
+    q("[data-cx]",function(){ kMsg(ctx.host()||o,L(TX.gpCancelQ),[[L(TX.gpCancel),function(){ act(function(){ return gpPost("cancel",{gid:P.g.gid,kind:ctx.kind,room:ctx.room}); }); }],[L(TX.cancel),null,"kc"]]); });
+    q("[data-nw]",function(){ P.res=null; P.g=null; P.th=""; P.sc=""; draw(); });
+    q("[data-sh]",function(){ gpShare(P.res.aid,P.g); });
+    q("[data-sv]",function(){ gpSave(P.res); }); }
+  P.tick=setInterval(function(){ var g=P.g, e=o.querySelector("[data-tm]"); if(!g||!e||g.st!=="open") return; var left=g.until-Date.now(); if(left<=0){ draw(); return; } e.textContent=tf(L(TX.gpLeft),{t:gpClock(left)})+" · "+tf(L(TX.gpN),{n:g.n})+" / "+(g.max||9); },1000);
+  P.poll=setInterval(function(){ if(!o.isConnected){ close(); return; } if(P.busy) return; var g=P.g; if(g&&(g.st==="open"||g.st==="ready"||g.st==="gen")) load(); },ctx.kind==="dor"?5000:3000);
+  o.onclick=function(e){ if(e.target===o&&!P.busy) close(); };
+  draw(); gpCfg().then(function(){ return load(); }).then(function(){ if(join&&P.g&&P.g.st==="open"&&!mine()) joinF(); }); return P; }
+function gpSave(r){ if(!r) return; var go=function(bl){ var u=URL.createObjectURL(bl), a=document.createElement("a"); a.href=u; a.download="StageSong_group_"+r.aid+".jpg"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); },4000); };
+  if(r.blob){ go(r.blob); return; } fetch(kAiSrc(r.aid)).then(function(x){ return x.blob(); }).then(go).catch(function(){ soon(L(TX.efail)); }); }
+function gpShare(aid,g){ var u=RINV_U+"?gp="+aid, t=g?gpName(g.th,g.sc):L(TX.gpT), ttl=tf(L(TX.gpShT),{t:t});
+  kShare({hd:L(TX.gpSh)+" · "+L(TX.gpT),url:u,iurl:u+"&install=1",txt:ttl,kk:{title:ttl,desc:L(TX.gpShD),img:kAiSrc(aid),w:1200,h:900,b1:L(SH.kopen)}}); try{ ntap("kara_grp","share"); }catch(e){} }
+// 도란도란 — 방 칸 소식 {t:"grp", g} · 패널이 열려 있으면 갱신, 아니면 「○○님이 단체 사진을 시작했습니다 · 참여」 띠
+function gpDorCtx(){ return {kind:"dor",room:DR.tok,host:function(){ return DR.o; },stream:function(){ return DR.stream; }}; }
+function gpDorMsg(g){ if(!g||!DR.o) return; var P=GP.pan; if(P&&P.ctx.kind==="dor"&&P.ctx.room===DR.tok){ P.set({g:g,me:DR.me}); return; }
+  var q=DR.o.querySelector(".kgpq"); if(q) q.remove();
+  var inM=g.mem.some(function(m){ return m.id===DR.me; });
+  if(g.st==="done"&&inM){ soon(L(TX.gpDone)); var p=gpOpen(gpDorCtx()); return; }
+  if(g.st!=="open"||inM||Date.now()>=g.until) return;
+  q=document.createElement("div"); q.className="kgpq"; q.innerHTML='<b>'+esc(tf(L(TX.gpAsk),{n:g.byNick||"guest"}))+'</b><small>'+esc(gpName(g.th,g.sc))+'</small><button type="button" class="kgo" data-j="1">'+esc(L(TX.gpGo))+'</button><button type="button" class="kc" data-n="1">✕</button>';
+  DR.o.appendChild(q); q.querySelector("[data-j]").onclick=function(){ q.remove(); gpOpen(gpDorCtx(),1); }; q.querySelector("[data-n]").onclick=function(){ q.remove(); };
+  setTimeout(function(){ if(q.isConnected) q.remove(); },Math.max(3000,g.until-Date.now())); }
+function gpDorHi(){ if(!DR.tok) return; gpCfg(); gpSt(gpDorCtx()).then(function(j){ if(j&&j.ok&&j.g&&j.g.st==="open") gpDorMsg(j.g); }); }
+// 우리끼리 노래 — 방 화면 띠(참여 받는 중) + 「단체 사진」 줄(최근 결과)
+function gpRoomCtx(R,rid){ return {kind:"room",room:rid,host:function(){ return R.o; },stream:function(){ return null; },after:function(){ gpRoomChk(R,rid); if(R.load) R.load(); }}; }
+function gpRoomChk(R,rid){ gpSt({kind:"room",room:rid}).then(function(j){ R.gpg=j&&j.ok?j.g:null; R.gpme=j&&j.me||""; if(R.o&&R.o.isConnected) R.draw(); }); }
+function gpBand(R){ var g=R.gpg; if(!g||(g.st!=="open"&&g.st!=="ready"&&g.st!=="gen")) return ""; var inM=g.mem.some(function(m){ return m.id===R.gpme; }), open=g.st==="open"&&Date.now()<g.until;
+  return '<div class="kgpbd" data-gpb="1">'+kIc("!dor_seat",1)+'<b>'+esc(tf(L(TX.gpAsk),{n:g.byNick||"guest"}))+'</b><span>'+esc(gpName(g.th,g.sc))+' · '+esc(tf(L(TX.gpN),{n:g.n}))+(open?' · '+esc(tf(L(TX.gpLeft),{t:gpT(g.until-Date.now())})):'')+'</span><em>'+esc(L(inM?TX.gpMine:open?TX.gpJoin:TX.gpClosed))+'</em></div>'; }
+function gpStrip(m){ var a=m&&m.gp||[]; if(!a.length) return ""; return '<div class="ksrt"><span>'+esc(L(TX.gpT))+' · '+a.length+'</span></div><div class="kgpst">'+a.map(function(x,i){ return '<button type="button" data-gp="'+i+'"><img src="'+esc(kAiSrc(x.aid))+'" alt="" loading="lazy"><small>'+esc(kDay(x.at)[0])+' · '+x.n+'</small></button>'; }).join("")+'</div>'; }
+function gpView(x){ var o=pgOpen("kgpv"); if(!o) return; var nm=gpName(x.th,x.sc);
+  o.innerHTML=kHead('<h3>'+esc(L(TX.gpT))+'</h3>')+'<div class="kpgb"><div class="kzv"><img src="'+esc(kAiSrc(x.aid))+'" alt=""></div><p class="km">'+esc(nm)+' · '+esc(kDay(x.at)[0])+(x.by?' · '+esc(tf(L(TX.gpBy),{n:x.by})):'')+'</p>'
+    +'<div class="kaib"><button type="button" class="kbt" data-sh="1">'+kIc("share",1)+esc(L(TX.gpSh))+'</button><button type="button" class="kbt g" data-sv="1">'+esc(L(TX.gpSv))+'</button></div></div>';
+  o.querySelector(".kpbk").onclick=pgBack; kPz(o.querySelector(".kzv"));
+  o.querySelector("[data-sh]").onclick=function(){ gpShare(x.aid,{th:x.th,sc:x.sc}); }; o.querySelector("[data-sv]").onclick=function(){ gpSave({aid:x.aid}); }; gpCfg().then(function(){ var p=o.querySelector(".km"); if(p) p.textContent=gpName(x.th,x.sc)+" · "+kDay(x.at)[0]+(x.by?" · "+tf(L(TX.gpBy),{n:x.by}):""); }); }
+(function(){ var s=document.createElement("style"); s.textContent=""
+ +"#karBox .kgpth button{display:inline-flex;align-items:center;gap:4px}#karBox .kgpth small{font-size:10px;font-weight:800;color:#7ff0c0;border:1px solid rgba(127,240,192,.5);border-radius:8px;padding:0 4px}"
+ +"#karBox .kgpsc{margin-top:-2px;padding-top:8px;border-top:1px dashed rgba(255,255,255,.18)}#karBox .kgpsc button.on{background:#ffe066;border-color:#ffe066;color:#2a1146}"
+ +"#karBox .kgpn{margin:-6px 0 0;font-weight:800;color:#ffd2f5}#karBox .kgptm{font-weight:900;color:#ffe066;font-variant-numeric:tabular-nums}#karBox .kgptm.off{color:#c9b8e8}"
+ +"#karBox .kgpm{display:flex;flex-wrap:wrap;gap:6px}#karBox .kgpm span{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:4px 10px;font-size:13px;font-weight:800}#karBox .kgpm span.me{border-color:#ffe066;color:#ffe066}#karBox .kgpm small{margin-left:3px;color:#ffe066}"
+ +"#karBox .kgpok{margin:0;font-weight:900;color:#7ff0c0}"
+ +"#karBox .kgpcam>div{gap:8px}#karBox .kgpv{position:relative;width:100%;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:#000;border:2px solid #ffe066}#karBox .kgpv video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block}"
+ +"#karBox .kgpcd{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:110px;font-weight:900;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.7);pointer-events:none}#karBox .kgpfl .kgpv::after{content:'';position:absolute;inset:0;background:#fff;animation:kgpfl .35s ease-out forwards}@keyframes kgpfl{from{opacity:.95}to{opacity:0}}"
+ +"#karBox .kgpz{position:relative}#karBox .kgpz::after{content:attr(data-ai);position:absolute;right:8px;top:8px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;font-weight:800;padding:2px 7px;border-radius:7px;pointer-events:none}"
+ +"#karBox .kgpq{position:absolute;left:10px;right:10px;top:64px;z-index:4;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;background:linear-gradient(90deg,#3b0d5c,#5a1a7a);border:1px solid #ffe066;border-radius:14px;padding:10px 12px;box-shadow:0 8px 24px rgba(0,0,0,.5)}#karBox .kgpq b{flex:1 1 0;min-width:0;color:#ffe066}#karBox .kgpq small{flex:1 1 100%;order:3;opacity:.85}#karBox .kgpq button{flex:0 0 auto;margin:0;border:0;border-radius:12px;font:inherit;font-weight:900;cursor:pointer}#karBox .kgpq .kgo{background:#ffe066;color:#2a1146;padding:9px 16px}#karBox .kgpq .kc{background:rgba(255,255,255,.12);color:#fff;padding:7px 11px}"
+ +"#karBox .kgpbd{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:8px 0;padding:10px 12px;border-radius:14px;background:linear-gradient(90deg,rgba(255,79,216,.22),rgba(255,224,102,.16));border:1px solid rgba(255,224,102,.6);cursor:pointer}#karBox .kgpbd b{color:#ffe066}#karBox .kgpbd span{flex:1 1 100%;font-size:12.5px;opacity:.9}#karBox .kgpbd em{font-style:normal;font-weight:900;background:#ff4fd8;color:#fff;border-radius:10px;padding:3px 10px;margin-left:auto}"
+ +"#karBox .kgpst{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px}#karBox .kgpst button{flex:0 0 auto;width:132px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);border-radius:12px;padding:4px;color:#fff;cursor:pointer}#karBox .kgpst img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:9px;display:block}#karBox .kgpst small{display:block;font-size:11px;padding-top:3px;opacity:.85}"
+ +"#karBox .kgpb{display:inline-flex;align-items:center;gap:4px}"
+ // 프로필 테두리 — 금속 고리 + 은은한 빛 · 플래티넘은 천천히 빛이 지나감 (움직임 줄이기 설정이면 멈춤)
+ +"#karBox .kft{border-color:transparent!important;border-width:3px!important;border-style:solid!important;background-origin:border-box;background-clip:padding-box,border-box}"
+ +"#karBox .kft.kft1{background-image:linear-gradient(#000,#000),conic-gradient(from 200deg,#f6f8fb,#9aa3ad,#eef1f4,#7d8691,#dfe4ea,#f6f8fb)!important;box-shadow:0 0 0 1px rgba(255,255,255,.25),0 0 10px rgba(210,220,235,.35)}"
+ +"#karBox .kft.kft2{background-image:linear-gradient(#000,#000),conic-gradient(from 200deg,#fff4b8,#c8961e,#ffe27a,#8f600b,#f6cf55,#fff4b8)!important;box-shadow:0 0 0 1px rgba(255,236,150,.35),0 0 14px rgba(255,200,60,.45)}"
+ +"#karBox .kft.kft3{background-image:linear-gradient(#000,#000),conic-gradient(from 200deg,#ffffff,#b9c7d8,#f1f6ff,#93a6c2,#dff3ff,#c9b8ff,#ffffff)!important;box-shadow:0 0 0 1px rgba(255,255,255,.45),0 0 18px rgba(190,220,255,.6)}"
+ +"#karBox .kft::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(125deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.22) 48%,rgba(255,255,255,0) 60%)}"
+ +"#karBox .kft.kft3::after{background:linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.42) 47%,rgba(220,240,255,.18) 53%,rgba(255,255,255,0) 66%);background-size:250% 100%;animation:kftsh 3.6s ease-in-out infinite}"
+ +"@keyframes kftsh{0%{background-position:120% 0}60%,100%{background-position:-120% 0}}"
+ +"#karBox .knrp.kft,#karBox .kpfv.kft{position:relative}"
+ +"#karBox .kftn::before{content:'';display:inline-block;width:.82em;height:.82em;margin-right:4px;border-radius:50%;vertical-align:-.08em;-webkit-mask:radial-gradient(circle,transparent 46%,#000 50%);mask:radial-gradient(circle,transparent 46%,#000 50%)}"
+ +"#karBox .kftn.kft1::before{background:conic-gradient(#f6f8fb,#8d96a1,#eef1f4,#7d8691,#f6f8fb)}#karBox .kftn.kft2::before{background:conic-gradient(#fff4b8,#c8961e,#ffe27a,#8f600b,#fff4b8)}#karBox .kftn.kft3::before{background:conic-gradient(#fff,#a9bbd3,#f1f6ff,#c9b8ff,#dff3ff,#fff);box-shadow:0 0 6px rgba(200,225,255,.9)}"
+ +"#karBox .kftl{display:inline-block;margin-left:6px;font-style:normal;font-size:11px;font-weight:900;letter-spacing:.3px;padding:1px 8px;border-radius:9px;color:#1a1424;vertical-align:middle}"
+ +"#karBox .kftl.kft1{background:linear-gradient(135deg,#f6f8fb,#9aa3ad 55%,#e6eaef)}#karBox .kftl.kft2{background:linear-gradient(135deg,#fff4b8,#d6a12a 55%,#ffe27a)}#karBox .kftl.kft3{background:linear-gradient(135deg,#fff,#b9c7d8 45%,#e9e0ff 70%,#dff3ff)}"
+ +"@media (prefers-reduced-motion:reduce){#karBox .kft.kft3::after{animation:none}}";
+ document.head.appendChild(s); })();
 function gOpen(code){ kGate(function(){ open(code); },code); }
 window.karGate=function(go){ kGate(go||function(){},""); };
 window.karOpen=gOpen; window.karClose=close; window.karState=K;   // karOpen = 성인 인증 관문을 거쳐 연다 (10-31)
