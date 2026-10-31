@@ -521,12 +521,7 @@ var BOOK=[
    zht:["可透過 KakaoTalk、X、Facebook、LINE、WhatsApp、Telegram、微信、微博、簡訊、郵件分享。","微信：複製連結後貼到聊天中，或掃描 QR 碼。","點「其他應用」可傳送到 Instagram 等手機上的其他應用。"],
    es:["Comparte por KakaoTalk, X, Facebook, LINE, WhatsApp, Telegram, WeChat, Weibo, SMS o correo.","En WeChat, copia el enlace y pégalo en un chat, o escanea el código QR.","«Otras apps» lo envía a otras apps del móvil, como Instagram."]}},
  {ic:[],ui:"law",t:{ko:"문의·약관",en:"Contact and terms",ja:"お問い合わせ・規約",zhs:"联系与条款",zht:"聯絡與條款",es:"Contacto y condiciones"},
-  p:{ko:["문의는 메일로 보내 주세요: admin@moneypuzzle.co.kr","아래에서 이용약관·환불 규정·개인정보처리방침을 확인할 수 있습니다."],
-   en:["Email us at admin@moneypuzzle.co.kr","See the terms of use, refund policy and privacy policy below."],
-   ja:["お問い合わせはメールで: admin@moneypuzzle.co.kr","下から利用規約・返金規定・個人情報処理方針を確認できます。"],
-   zhs:["如有疑问请发邮件至 admin@moneypuzzle.co.kr","可在下方查看使用条款、退款规定和隐私政策。"],
-   zht:["如有疑問請寄信至 admin@moneypuzzle.co.kr","可在下方查看使用條款、退款規定和隱私權政策。"],
-   es:["Escríbenos a admin@moneypuzzle.co.kr","Abajo puedes ver las condiciones de uso, la política de reembolso y la de privacidad."]}}
+  p:{ko:[],en:[],ja:[],zhs:[],zht:[],es:[]}}
 ];
 var st=document.createElement("style");
 st.textContent="#karBox{touch-action:pan-x pan-y;word-break:keep-all;overflow-wrap:break-word;position:fixed;inset:0;z-index:2147483004;background:radial-gradient(ellipse at 20% 0%,#3b0d5c 0%,#12081f 45%,#05030a 100%);color:#f5eaff;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR','Hiragino Sans','PingFang SC','Microsoft YaHei',sans-serif;overflow:hidden}"
@@ -2305,7 +2300,7 @@ function kBookUi(k){ var lg=window.LANG||"en";
   if(k==="rec") return '<div class="kbui"><span class="kbrec">'+esc(L(TX.rec))+'</span><span class="kbrec x">'+esc(L(TX.recX))+'</span></div>';
   if(k==="chips") return '<div class="kbui"><div class="kchips">'+[["pub",TX.vPub],["folonly",TX.vFol],["!krm_song",TX.vwRoom],["lock",TX.vMe]].map(function(c){ return '<span class="kbch">'+kIc(c[0])+'<span>'+esc(L(c[1]))+'</span></span>'; }).join("")+'</div></div>';
   if(k==="shr") return '<div class="kbui kbsh">'+["kakao","x","fb","line","wa","tg","wc","wb","sms","mail"].map(function(n){ return SHI[n]||""; }).join("")+'</div>';
-  if(k==="law") return '<div class="kbui kblaw"><a href="mailto:admin@moneypuzzle.co.kr">admin@moneypuzzle.co.kr</a><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a><a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a><a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a></div>';
+  if(k==="law") return '<div class="kbui kblaw"><a href="mailto:admin@moneypuzzle.co.kr">admin@moneypuzzle.co.kr</a><a href="tel:01042217066">010-4221-7066</a><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a><a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a><a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a></div>';
   return ""; }
 function kBook(){ var o=pgOpen("kbook"); if(!o) return; var pg=-1, N=BOOK.length;
   var soonT=function(){ return ""; };   // (10-31 출시판) 장마다 붙던 「곧 오픈 예정」 없음 — 모두 열림
