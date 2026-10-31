@@ -237,6 +237,8 @@ var TX={
  dscN:{ko:"설명이 없어요.",en:"No description.",ja:"説明はありません。",zhs:"暂无简介。",zht:"暫無簡介。",es:"Sin descripción."},
  cmT:{ko:"댓글",en:"Comments",ja:"コメント",zhs:"评论",zht:"留言",es:"Comentarios"},
  cmP:{ko:"댓글 작성 (최대 200자)",en:"Write a comment (up to 200 characters)",ja:"コメントを書く（200文字まで）",zhs:"写评论（最多200字）",zht:"寫留言（最多200字）",es:"Escribe un comentario (hasta 200 caracteres)"},
+ cmSlow:{ko:"댓글은 30초에 1개까지 작성할 수 있습니다.",en:"You can post one comment every 30 seconds.",ja:"コメントは30秒に1件まで投稿できます。",zhs:"每30秒只能发表1条评论。",zht:"每30秒只能發表1則留言。",es:"Puedes publicar un comentario cada 30 segundos."},
+ cmDay:{ko:"이 영상에는 오늘 댓글 5개를 모두 작성했습니다.",en:"You've reached today's limit of 5 comments on this video.",ja:"この動画への本日のコメント5件をすべて投稿しました。",zhs:"今天已在此视频发表5条评论，已达上限。",zht:"今天已在此影片發表5則留言，已達上限。",es:"Ya has publicado hoy los 5 comentarios permitidos en este vídeo."},
  cmGo:{ko:"등록",en:"Post",ja:"送信",zhs:"发表",zht:"發表",es:"Publicar"},
  cmE:{ko:"첫 댓글을 작성해 보세요.",en:"Be the first to comment.",ja:"最初のコメントを書いてみましょう。",zhs:"来发表第一条评论吧。",zht:"來發表第一則留言吧。",es:"Sé el primero en comentar."},
  cmDQ:{ko:"이 댓글을 삭제할까요?",en:"Delete this comment?",ja:"このコメントを削除しますか？",zhs:"要删除这条评论吗？",zht:"要刪除這則留言嗎？",es:"¿Borrar este comentario?"},
@@ -257,6 +259,8 @@ var TX={
  dnB:{ko:"싫어요",en:"Dislike",ja:"よくないね",zhs:"踩",zht:"倒讚",es:"No me gusta"},
  ntc:{ko:"공지사항",en:"Notice",ja:"お知らせ",zhs:"公告",zht:"公告",es:"Aviso"},
   ntcP0:{ko:"이용권: {list} (포인트로 구매 · 자동 연장 없음)",en:"Passes: {list} (bought with points · no auto-renewal)",ja:"利用券：{list}（ポイントで購入・自動更新なし）",zhs:"畅唱券：{list}（用积分购买 · 不自动续费）",zht:"暢唱券：{list}（用點數購買 · 不自動續費）",es:"Bonos: {list} (con puntos · sin renovación automática)"},
+  ntcS1:{ko:"스테이지 전체 화면에는 한 사람당 최근 영상 3개까지 표시되며, 같은 사람의 영상이 연속으로 나오지 않게 섞어서 보여 줍니다. 나머지 영상은 그 사람의 스테이지에서 볼 수 있습니다.",en:"The main Stage shows up to 3 recent videos per person, mixed so the same person doesn't appear twice in a row. Their other videos are on that person's stage.",ja:"ステージ全体画面には1人につき最新の動画3本まで表示され、同じ人の動画が続かないように混ぜて表示します。残りの動画はその人のステージで見られます。",zhs:"舞台全部页面每人最多显示3个最新视频，并穿插排列，避免同一人的视频连续出现。其余视频可在此人的舞台观看。",zht:"舞台全部頁面每人最多顯示3部最新影片，並穿插排列，避免同一人的影片連續出現。其餘影片可在此人的舞台觀看。",es:"El Escenario principal muestra hasta 3 vídeos recientes por persona, mezclados para que la misma persona no salga dos veces seguidas. Sus demás vídeos están en su escenario."},
+  ntcS2:{ko:"댓글은 같은 사람이 30초에 1개, 영상 하나에 하루 5개까지 작성할 수 있습니다.",en:"Each person can post one comment every 30 seconds and up to 5 a day on one video.",ja:"コメントは同じ人が30秒に1件、1つの動画に1日5件まで投稿できます。",zhs:"同一人每30秒可发表1条评论，同一视频每天最多5条。",zht:"同一人每30秒可發表1則留言，同一影片每天最多5則。",es:"Cada persona puede publicar un comentario cada 30 segundos y hasta 5 al día en un mismo vídeo."},
   ntcL:{
    ko:["이용권 기간에는 노래를 무제한으로 부를 수 있습니다. 이용 중에 다시 구매하면 지금 끝나는 날부터 기간이 이어집니다.","환불: 구매일로부터 7일 이내이고 노래를 부르지 않았으면 이용권 구매에 사용한 유료 포인트 몫 전액을, 그 밖에는 남은 일수에 해당하는 금액에서 10%를 공제한 금액을 결제한 수단으로 환불합니다(1P = 1원, 10원 미만 버림). 무료 포인트로 산 몫은 환불하지 않으며, 포인트 환불 수수료를 다시 공제하지 않습니다. 환불을 요청하면 이용권은 바로 끝납니다.","이전에 구매한 곡 이용권(잔여 곡)은 그대로 유효합니다.","문의: 앱의 문의 메뉴 또는 admin@moneypuzzle.co.kr"],
    en:["During the pass you can sing as much as you like. If you buy again while a pass is active, the new period starts from the current end date.","Refunds: within 7 days of purchase and if you have not sung, the full paid-point share you used for the pass; otherwise the amount for the remaining days minus 10%. Refunds go to your original payment method (1P = ₩1, rounded down to ₩10). The share bought with free points is not refunded, and no points refund fee is deducted again. The pass ends as soon as you request the refund.","Song credits you bought before (songs left) remain valid.","Contact: the app's inquiry menu or admin@moneypuzzle.co.kr"],
@@ -1716,7 +1720,7 @@ function kDet(x,S){ var o=pgOpen("kdet"); if(!o) return; var cms=null, edit=fals
       +'<textarea maxlength="200" placeholder="'+esc(L(TX.cmP))+'"></textarea><div class="kbr"><small class="kcn"></small><button type="button" class="kbt" data-cw="1">'+esc(L(TX.cmGo))+'</button></div>';
     var ta=C.querySelector("textarea"), cn=C.querySelector(".kcn"), cnt=function(){ cn.textContent=Array.from(ta.value).length+"/200"; }; ta.value=kv; ta.oninput=cnt; cnt();
     C.querySelector("[data-cw]").onclick=function(){ var t=String(ta.value||"").trim(); if(!t||busy) return; busy=true;
-      kPost("/kst/cm",{id:x.id,text:Array.from(t).slice(0,200).join("")}).then(function(j){ busy=false; if(j&&j.ok){ x.cm=j.cm; ta.value=""; cLoad(); chg(); } else cDraw(L(TX.fail)); }).catch(function(){ busy=false; cDraw(L(TX.upNet)); }); };
+      kPost("/kst/cm",{id:x.id,text:Array.from(t).slice(0,200).join("")}).then(function(j){ busy=false; if(j&&j.ok){ x.cm=j.cm; ta.value=""; cLoad(); chg(); } else cDraw(L(j&&j.err==="slow"?TX.cmSlow:j&&j.err==="day"?TX.cmDay:TX.fail)); }).catch(function(){ busy=false; cDraw(L(TX.upNet)); }); };
     [].forEach.call(C.querySelectorAll("[data-cd]"),function(b2){ b2.onclick=function(){ var c=cms&&cms[+b2.dataset.cd]; if(!c||busy||!window.confirm(L(TX.cmDQ))) return; busy=true;
       kPost("/kst/cm",{id:x.id,del:c.k}).then(function(j){ busy=false; if(j&&j.ok){ x.cm=j.cm; cLoad(); chg(); } else cDraw(L(TX.delF)); }).catch(function(){ busy=false; cDraw(L(TX.upNet)); }); }; }); };
   var cLoad=function(){ kGet("/kst/cm?id="+x.id).then(function(j){ if(!o.isConnected) return; if(j&&j.ok){ cms=j.items||[]; if(j.cm!=null) x.cm=j.cm; cDraw(); } else { cms=[]; cDraw(L(TX.stF)); } }).catch(function(){ if(!o.isConnected) return; cms=[]; cDraw(L(TX.stF)); }); };
@@ -2194,7 +2198,7 @@ function ntcOpen(){ var b=box(); if(!b) return; var o=b.querySelector(".kntc"); 
   var lg=window.LANG||"en", li=TX.ntcL[lg]||TX.ntcL.en, PP=kPassP(), X=PP[0], span=30, u=10, dl=span-u, a=Math.floor(X.p*dl/span), r=Math.floor(X.p*dl/span*0.9/10)*10;   // 예: 1개월(30일)을 10일째 환불
   var first=tf(L(TX.ntcP0),{list:PP.map(function(q){ return kMon(q.m)+" "+ptS(q.p); }).join(" · ")});
   var ex=tf(L(TX.ntcEx),{m:kMon(X.m),w:ptS(X.p),u:u,d:dl,a:wonL(a),r:wonL(r)});
-  var all=[first,li[0],li[1],ex,li[2],li[3]];
+  var all=[first,li[0],li[1],ex,li[2],L(TX.ntcS1),L(TX.ntcS2),li[3]];
   o=document.createElement("div"); o.className="kpm kntc"; b.appendChild(o);
   o.innerHTML='<div><h3>'+esc(L(TX.ntc))+'</h3><ul>'+all.map(function(t){ return '<li>'+esc(t)+'</li>'; }).join("")+'</ul>'
     +'<a class="kra" href="refund.html?lang='+encodeURIComponent(TX.ntcL[lg]?lg:"en")+'" target="_blank" rel="noopener">'+esc(L(TX.ntcR))+' ›</a>'
