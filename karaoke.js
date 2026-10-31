@@ -138,6 +138,36 @@ var TX={
  aiPOk:{"ko": "프로필 사진으로 저장했어요", "en": "Saved as your profile photo", "ja": "プロフィール写真に保存しました", "zhs": "已保存为头像", "zht": "已儲存為頭像", "es": "Guardada como foto de perfil"},
  aiCOk:{"ko": "노래를 게시하면 이 사진이 공유 카드로 사용돼요", "en": "This photo becomes the share card when you post", "ja": "投稿するとこの写真が共有カードになります", "zhs": "发布后此照片将作为分享卡片", "zht": "發布後此照片將作為分享卡片", "es": "Esta foto será la tarjeta al publicar"},
  aiG:{ko:"AI 사진",en:"AI photos",ja:"AI写真",zhs:"AI照片",zht:"AI照片",es:"Fotos IA"},
+ aivMk:{ko:"AI 영상 생성",en:"Make an AI video",ja:"AI動画を作る",zhs:"生成AI视频",zht:"產生AI影片",es:"Crear video IA"},
+ aivT:{ko:"AI 영상",en:"AI video",ja:"AI動画",zhs:"AI视频",zht:"AI影片",es:"Video IA"},
+ aivTh:{ko:"테마 선택",en:"Choose a theme",ja:"テーマを選ぶ",zhs:"选择主题",zht:"選擇主題",es:"Elige un tema"},
+ aivScH:{ko:"장면 선택",en:"Choose a scene",ja:"シーンを選ぶ",zhs:"选择场景",zht:"選擇場景",es:"Elige una escena"},
+ aivSeg:{ko:"구간 선택 (최대 {n}초)",en:"Choose the clip (up to {n} s)",ja:"区間を選ぶ（最大{n}秒）",zhs:"选择片段（最长{n}秒）",zht:"選擇片段（最長{n}秒）",es:"Elige el fragmento (hasta {n} s)"},
+ aivSecs:{ko:"{n}초",en:"{n} s",ja:"{n}秒",zhs:"{n}秒",zht:"{n}秒",es:"{n} s"},
+ aivSegN:{ko:"음량이 가장 큰 구간을 자동 선택했습니다. 막대를 움직여 변경할 수 있습니다.",en:"The loudest part is selected. Move the slider to change it.",ja:"音量がいちばん大きい区間を自動で選びました。バーを動かして変更できます。",zhs:"已自动选择音量最大的片段，拖动滑块即可更改。",zht:"已自動選擇音量最大的片段，拖動滑桿即可變更。",es:"Se eligió la parte con más volumen. Mueve el control para cambiarla."},
+ aivPv:{ko:"구간 미리 보기",en:"Preview clip",ja:"区間をプレビュー",zhs:"预览片段",zht:"預覽片段",es:"Vista previa"},
+ aivPrep:{ko:"구간 준비 중… {p}%",en:"Preparing clip… {p}%",ja:"区間を準備中… {p}%",zhs:"正在准备片段… {p}%",zht:"正在準備片段… {p}%",es:"Preparando fragmento… {p}%"},
+ aivSend:{ko:"전송 중…",en:"Uploading…",ja:"送信中…",zhs:"正在上传…",zht:"正在上傳…",es:"Subiendo…"},
+ aivIng:{ko:"생성 중… 1~3분",en:"Generating… 1–3 min",ja:"生成中… 1〜3分",zhs:"生成中… 1~3分钟",zht:"產生中… 1~3分鐘",es:"Generando… 1–3 min"},
+ aivBg:{ko:"화면을 닫아도 생성은 계속되며, 완성되면 「내 AI 사진」 모음의 AI 영상에 저장됩니다. 실패하면 포인트는 자동 환불됩니다.",en:"You can close this screen; generation continues and the video is saved under AI videos in \u201cMy AI photos\u201d. If it fails, your points are refunded automatically.",ja:"画面を閉じても生成は続き、完成すると「自分のAI写真」のAI動画に保存されます。失敗した場合、ポイントは自動で返金されます。",zhs:"关闭此画面也会继续生成，完成后保存在「我的AI照片」的AI视频中。生成失败时积分会自动退还。",zht:"關閉此畫面也會繼續產生，完成後儲存在「我的AI照片」的AI影片中。產生失敗時點數會自動退還。",es:"Puedes cerrar esta pantalla: la generación sigue y el video se guarda en Videos IA de \u201cMis fotos IA\u201d. Si falla, los puntos se reembolsan automáticamente."},
+ aivOk:{ko:"완성되었습니다. 재생하면 녹화한 노래 소리가 함께 나옵니다.",en:"Done! Your recorded singing plays along with the video.",ja:"完成しました。再生すると録画した歌声も一緒に流れます。",zhs:"完成了！播放时会同时播放您录制的歌声。",zht:"完成了！播放時會同時播放您錄製的歌聲。",es:"¡Listo! Al reproducir se oye tu canto grabado."},
+ aivPost:{ko:"게시 영상으로 사용",en:"Use as my post video",ja:"投稿動画に使う",zhs:"用作发布视频",zht:"用作發布影片",es:"Usar como video para publicar"},
+ aivSave:{ko:"저장/공유",en:"Save / Share",ja:"保存/共有",zhs:"保存/分享",zht:"儲存/分享",es:"Guardar / Compartir"},
+ aivSv:{ko:"저장",en:"Save",ja:"保存",zhs:"保存",zht:"儲存",es:"Guardar"},
+ aivSh:{ko:"공유",en:"Share",ja:"共有",zhs:"分享",zht:"分享",es:"Compartir"},
+ aivMix:{ko:"영상 합성 중… {p}%",en:"Combining video… {p}%",ja:"動画を合成中… {p}%",zhs:"正在合成视频… {p}%",zht:"正在合成影片… {p}%",es:"Combinando video… {p}%"},
+ aivMixF:{ko:"영상 합성에 실패했습니다. 다시 시도해 주세요.",en:"Couldn't combine the video. Please try again.",ja:"動画を合成できませんでした。もう一度お試しください。",zhs:"视频合成失败，请重试。",zht:"影片合成失敗，請重試。",es:"No se pudo combinar el video. Inténtalo de nuevo."},
+ aivPostOk:{ko:"AI 영상을 게시 영상으로 설정했습니다.",en:"The AI video is set as your post video.",ja:"AI動画を投稿動画に設定しました。",zhs:"已将AI视频设为发布视频。",zht:"已將AI影片設為發布影片。",es:"El video IA quedó como video para publicar."},
+ aivF:{ko:"영상 생성에 실패했습니다. 포인트는 자동 환불되었습니다.",en:"The video couldn't be generated. Your points have been refunded.",ja:"動画を生成できませんでした。ポイントは自動で返金されました。",zhs:"视频生成失败，积分已自动退还。",zht:"影片產生失敗，點數已自動退還。",es:"No se pudo generar el video. Los puntos se reembolsaron."},
+ aivF0:{ko:"영상 생성을 시작하지 못했습니다. 포인트는 차감되지 않았습니다. 잠시 후 다시 시도해 주세요.",en:"Couldn't start the video. No points were used. Please try again shortly.",ja:"動画の生成を開始できませんでした。ポイントは使われていません。しばらくしてからお試しください。",zhs:"无法开始生成视频，未扣除积分。请稍后再试。",zht:"無法開始產生影片，未扣除點數。請稍後再試。",es:"No se pudo iniciar el video. No se usaron puntos. Inténtalo en un momento."},
+ aivCapU:{ko:"오늘 AI 영상 생성 한도(1인 {n}편)에 도달했습니다. 내일 다시 이용해 주세요.",en:"You've reached today's AI video limit ({n} per person). Please try again tomorrow.",ja:"本日のAI動画の上限（1人{n}本）に達しました。また明日ご利用ください。",zhs:"已达到今天的AI视频上限（每人{n}个），请明天再试。",zht:"已達到今天的AI影片上限（每人{n}支），請明天再試。",es:"Llegaste al límite de videos IA de hoy ({n} por persona). Vuelve mañana."},
+ aivShort:{ko:"녹화가 너무 짧습니다 (최소 3초).",en:"The recording is too short (at least 3 s).",ja:"録画が短すぎます（3秒以上）。",zhs:"录像太短（至少3秒）。",zht:"錄影太短（至少3秒）。",es:"La grabación es muy corta (mínimo 3 s)."},
+ aivLong:{ko:"구간이 너무 깁니다. 15초 이하로 선택해 주세요.",en:"The clip is too long. Please choose 15 s or less.",ja:"区間が長すぎます。15秒以下にしてください。",zhs:"片段太长，请选择15秒以内。",zht:"片段太長，請選擇15秒以內。",es:"El fragmento es muy largo. Elige 15 s o menos."},
+ aivNo:{ko:"이 기기에서는 구간 준비를 지원하지 않습니다. 다른 브라우저에서 이용해 주세요.",en:"This device can't prepare the clip. Please try another browser.",ja:"この端末では区間の準備に対応していません。別のブラウザでお試しください。",zhs:"此设备不支持准备片段，请换用其他浏览器。",zht:"此裝置不支援準備片段，請改用其他瀏覽器。",es:"Este dispositivo no puede preparar el fragmento. Prueba con otro navegador."},
+ aivN:{ko:"녹화한 본인의 얼굴·입 모양·동작은 그대로 두고 배경·의상·조명만 테마 장면으로 변경합니다. 결과 영상에는 「AI 생성」 표시가 붙습니다.",en:"Your face, mouth movements and motion stay as recorded; only the background, outfit and lighting change to the theme scene. The result is labeled \u201cAI-generated\u201d.",ja:"録画したご本人の顔・口の動き・動作はそのままに、背景・衣装・照明だけをテーマのシーンに変えます。結果の動画には「AI生成」と表示されます。",zhs:"保留您录像中的脸、口型和动作，只把背景、服装和灯光换成主题场景。生成的视频会标注「AI生成」。",zht:"保留您錄影中的臉、口型和動作，只把背景、服裝和燈光換成主題場景。產生的影片會標註「AI生成」。",es:"Tu cara, el movimiento de la boca y tus gestos se mantienen; solo cambian el fondo, la ropa y la luz según la escena. El resultado lleva la etiqueta \u201cGenerado por IA\u201d."},
+ aivAgain:{ko:"다시 선택",en:"Choose again",ja:"選び直す",zhs:"重新选择",zht:"重新選擇",es:"Elegir de nuevo"},
+ aivDelQ:{ko:"이 AI 영상을 삭제할까요?",en:"Delete this AI video?",ja:"このAI動画を削除しますか？",zhs:"要删除这个AI视频吗？",zht:"要刪除這支AI影片嗎？",es:"¿Eliminar este video IA?"},
+ aivRun:{ko:"생성 중",en:"Generating",ja:"生成中",zhs:"生成中",zht:"產生中",es:"Generando"},
  aiGT:{ko:"내 AI 사진",en:"My AI photos",ja:"自分のAI写真",zhs:"我的AI照片",zht:"我的AI照片",es:"Mis fotos IA"},
  aiGE:{ko:"아직 생성한 AI 사진이 없어요. 테마방에서 노래를 녹화한 뒤 「상황 사진 생성」으로 생성할 수 있어요.",en:"No AI photos yet. Record a song in a theme room, then tap \u201cMake a scene photo\u201d.",ja:"まだAI写真がありません。テーマルームで歌を録画してから「シーン写真を作る」で作れます。",zhs:"还没有AI照片。在主题房录制歌曲后，点击「制作情景照片」即可生成。",zht:"還沒有AI照片。在主題房錄製歌曲後，點選「製作情境照片」即可產生。",es:"Aún no tienes fotos IA. Graba una canción en una sala temática y toca \u201cCrear foto temática\u201d."},
  aiUse:{ko:"프로필로 사용",en:"Use as profile",ja:"プロフィールに使う",zhs:"用作头像",zht:"用作頭像",es:"Usar como perfil"},
@@ -846,9 +876,9 @@ Object.assign(TX,{
  kwR5:{ko:"{d}까지 90% 환불 가능",en:"90% refundable until {d}",ja:"{d}まで90%返金可",zhs:"{d}前可退90%",zht:"{d}前可退90%",es:"90% reembolsable hasta {d}"},
  kwPtBuy:{ko:"{c}로 구매",en:"Buy with {c}",ja:"{c}で購入",zhs:"用 {c} 购买",zht:"用 {c} 購買",es:"Comprar con {c}"},
  kwH:{ko:"충전|무료 지급|사용|사용 취소|환불 요청|환불|환불 거절|스토어 환불|기간 연장",en:"Top-up|Free points|Used|Use cancelled|Refund requested|Refunded|Refund declined|Store refund|Extended",ja:"チャージ|無料付与|使用|使用取消|返金申請|返金|返金却下|ストア返金|期間延長",zhs:"充值|免费赠送|使用|取消使用|申请退款|退款|拒绝退款|商店退款|延长有效期",zht:"儲值|免費贈送|使用|取消使用|申請退款|退款|拒絕退款|商店退款|延長有效期",es:"Recarga|Puntos gratis|Uso|Uso cancelado|Reembolso solicitado|Reembolsado|Reembolso rechazado|Reembolso de tienda|Ampliado"},
- kwW:{ko:"곡 이용권|상황 사진",en:"Song pass|AI photo",ja:"曲チケット|シーン写真",zhs:"点歌券|情景照片",zht:"點歌券|情境照片",es:"Bono de canciones|Foto IA"}
+ kwW:{ko:"곡 이용권|상황 사진|AI 영상",en:"Song pass|AI photo|AI video",ja:"曲チケット|シーン写真|AI動画",zhs:"点歌券|情景照片|AI视频",zht:"點歌券|情境照片|AI影片",es:"Bono de canciones|Foto IA|Video IA"}
 });
-var KWH=["charge","bonus","use","undo","refreq","refund","refrej","void","ext"], KWW=["song","ai"];
+var KWH=["charge","bonus","use","undo","refreq","refund","refrej","void","ext"], KWW=["song","ai","aiv"];
 function kTx(o,i){ return String(L(o)).split("|")[i]||""; }
 function ptS(n){ return Math.round(n||0).toLocaleString("ko-KR")+"P"; }
 function kYmd(ms){ return new Date(ms+9*3600e3).toISOString().slice(0,10); }
@@ -1191,10 +1221,11 @@ function recStop(){ try{ K.pl&&K.pl.pauseVideo&&K.pl.pauseVideo(); }catch(e){}  
 function recDone(){ var blob=new Blob(REC.ch,{type:(REC.mt||"video/webm").split(";")[0]}); REC.blob=blob; clearTimeout(REC.frt); if(!REC.frc) kFrGrab(); var _ek=KCV?KCV.k:(REC.nat&&REC.nk||""); REC.th=/^th:/.test(_ek)&&kTh(_ek.slice(3))?_ek.slice(3):"";   /* 앱 녹화 = REC.nk (10-31) */ REC.aiCard=null; REC.dur=REC.t0?Math.round((Date.now()-REC.t0)/1000):0; REC.sc=KSC?kScCalc(KSC,REC.dur):null; REC.t0=0; REC.mr=null; REC.ch=[]; camOff(); recFx(false); var b=box(); if(!b) return;
   if(REC.url) try{ URL.revokeObjectURL(REC.url); }catch(e){} REC.url=URL.createObjectURL(blob);
   var o=document.createElement("div"); o.className="kpm kpv"; b.appendChild(o);
-  o.innerHTML='<div><h3>'+esc(L(TX.pvT))+'</h3>'+(REC.sc!=null?'<div class="kpvs">♪ '+esc(L(TX.scT))+' <b>'+REC.sc+'</b>'+esc(L(TX.scPt))+'</div>':'')+'<video controls playsinline src="'+REC.url+'"></video><p class="km">'+esc(L(TX.pvN2))+'</p>'+(REC.th&&REC.frc?'<button type="button" class="kaib" data-kai="1"><img src="img/kara/kst_theme.png" alt="">'+esc(L(TX.aiMk))+'</button>':'')+'<button type="button" class="kupb" data-kup="1">'+esc(L(TX.up))+'</button><button type="button" class="krf" data-rt="1">'+esc(L(TX.retk))+'</button><button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
+  o.innerHTML='<div><h3>'+esc(L(TX.pvT))+'</h3>'+(REC.sc!=null?'<div class="kpvs">♪ '+esc(L(TX.scT))+' <b>'+REC.sc+'</b>'+esc(L(TX.scPt))+'</div>':'')+'<video controls playsinline src="'+REC.url+'"></video><p class="km">'+esc(L(TX.pvN2))+'</p>'+(REC.th&&REC.frc?'<button type="button" class="kaib" data-kai="1"><img src="img/kara/kst_theme.png" alt="">'+esc(L(TX.aiMk))+'</button>':'')+'<button type="button" class="kaib kaiv" data-kaiv="1"><img src="img/kara/kst_vid.png" alt="">'+esc(L(TX.aivMk))+'</button><button type="button" class="kupb" data-kup="1">'+esc(L(TX.up))+'</button><button type="button" class="krf" data-rt="1">'+esc(L(TX.retk))+'</button><button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
   var pvV=o.querySelector("video"); if(pvV) try{ pvV.poster=REC.frc&&REC.frc.toDataURL?REC.frc.toDataURL("image/jpeg",0.85):"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"; }catch(e){}   // 회색 재생 그림(늘어나 찌그러짐) 대신 녹화 때 찍어 둔 장면, 없으면 검은 1점 그림 (사장님 10-31)
-  var bye=function(){ o.remove(); try{ URL.revokeObjectURL(REC.url); }catch(e){} REC.url=""; REC.blob=null; REC.sc=null; REC.frc=null; REC.th=""; REC.aiCard=null; [].forEach.call(b.querySelectorAll(".kupm,.kaim"),function(u){ u.remove(); }); };
+  var bye=function(){ o.remove(); try{ URL.revokeObjectURL(REC.url); }catch(e){} REC.url=""; REC.blob=null; REC.sc=null; REC.frc=null; REC.th=""; REC.aiCard=null; REC.aiv=""; [].forEach.call(b.querySelectorAll(".kupm,.kaim"),function(u){ u.remove(); }); };
   var ab=o.querySelector("[data-kai]"); if(ab) ab.onclick=kAiOpen;
+  var avb=o.querySelector("[data-kaiv]"); if(avb){ kAivCss(); avb.onclick=kAivOpen; }   // AI 영상 (10-31)
   o.querySelector(".kc").onclick=function(){ bye(); recExit(); };
   o.querySelector("[data-rt]").onclick=function(){ bye(); kzReset(); b.classList.add("krecm"); recStart(); };
   if(REC.sc!=null) kScShow(b,REC.sc); }
@@ -1242,7 +1273,7 @@ function upOpen(){ var b=box(); if(!b||!REC.blob) return; var o=b.querySelector(
     var bl=REC.blob; if(!bl){ o.remove(); soon(L(TX.needRec)); return; }
     var ty=String(bl.type||REC.mt||"video/webm").split(";")[0]; if(ty!=="video/mp4"&&ty!=="video/webm"){ draw(L(TX.upTy)); return; }
     if(bl.size>60*1024*1024){ draw(L(TX.upBig)); return; }
-    var c=K.cur||{}, q="vis="+(rlq?"room":vis)+"&sid="+encodeURIComponent(c.id||"")+"&t="+encodeURIComponent(String(c.t||"").slice(0,120))+"&dur="+(REC.dur||0)+(REC.sc!=null?"&sc="+REC.sc:"")+(REC.th?"&th="+REC.th:"")+(vis==="room"&&!rlq?"&rooms="+rs.join(","):"")+(rlq?"&rl="+rlq:"")+(chq?"&ch="+chq:"")+"&dev="+encodeURIComponent(klDev())+"&sess="+encodeURIComponent(sess());
+    var c=K.cur||{}, q="vis="+(rlq?"room":vis)+"&sid="+encodeURIComponent(c.id||"")+"&t="+encodeURIComponent(String(c.t||"").slice(0,120))+"&dur="+(REC.dur||0)+(REC.sc!=null?"&sc="+REC.sc:"")+(REC.th?"&th="+REC.th:"")+(REC.aiv?"&aiv="+REC.aiv:"")+(vis==="room"&&!rlq?"&rooms="+rs.join(","):"")+(rlq?"&rl="+rlq:"")+(chq?"&ch="+chq:"")+"&dev="+encodeURIComponent(klDev())+"&sess="+encodeURIComponent(sess());
     busy=true; draw("",0);
     xhr=new XMLHttpRequest(); xhr.open("POST",HUB+"/kst/up?"+q); xhr.setRequestHeader("Content-Type",ty);
     xhr.upload.onprogress=function(e){ if(e.lengthComputable) bar(Math.min(99,Math.floor(e.loaded*100/e.total))); };
@@ -1610,19 +1641,21 @@ function kPz(w){ var im=w&&w.querySelector("img"); if(!im||w._pz) return; w._pz=
   w._pzReset=function(){ Z.s=1; ap(); }; }
 function kAiSrc(aid){ return HUB+"/kst/ai/"+aid; }
 // ── 내 AI 사진 모음 (사장님 10-31 「AI 사진을 영상으로 바꿨더니 사라졌다」) — 만든 사진은 허브 목록에 모두 남는다 · 3열 격자 · 누르면 크게
-function kAiGal(S){ var o=pgOpen("kaig"); if(!o) return; var G={o:o,items:null,err:0,aip:""};
+function kAiGal(S){ var o=pgOpen("kaig"); if(!o) return; kAivCss(); var G={o:o,items:null,err:0,aip:"",vids:[]};
+  kGet("/kst/aivlist").then(function(j){ if(j&&j.ok){ G.vids=j.items||[]; if(o.isConnected&&G.items!==null) G.draw(); } }).catch(function(){});   // AI 영상 (10-31)
   G.load=function(){ kGet("/kst/ailist").then(function(j){ if(!o.isConnected) return; if(j&&j.ok){ G.items=j.items||[]; G.aip=j.aip||""; G.err=0; } else { G.items=G.items||[]; G.err=1; } G.draw(); })
     .catch(function(){ if(!o.isConnected) return; G.items=G.items||[]; G.err=1; G.draw(); }); };
   G.chg=function(){ if(S&&S.o&&S.o.isConnected&&S.loadMe) S.loadMe(); };
   G.draw=function(){ var body, n=G.items?G.items.length:0;
     if(G.items===null) body='<div class="kstge">'+esc(L(TX.lo))+'</div>';
     else if(G.err&&!n) body='<div class="kstge">'+esc(L(TX.stF))+'</div>';
-    else if(!n) body='<div class="kstge">'+esc(L(TX.aiGE))+'</div>';
-    else body='<div class="kpkp kaigd">'+G.items.map(function(x,i){ var cur=x.aid===G.aip;
-      return '<button type="button" data-i="'+i+'"'+(cur?' class="on"':'')+'><img src="'+esc(kAiSrc(x.aid))+'" alt="" loading="lazy"><small>'+esc(cur?L(TX.aiNow):kDay(x.at)[0])+'</small></button>'; }).join("")+'</div>';
+    else if(!n&&!G.vids.length) body='<div class="kstge">'+esc(L(TX.aiGE))+'</div>';
+    else body=(G.vids.length?'<b class="kh">'+esc(L(TX.aivT))+' · '+kNum(G.vids.length)+'</b><div class="kpkp kaivg">'+G.vids.map(function(x,i){ return '<button type="button" data-v="'+i+'"><video muted playsinline preload="metadata" src="'+esc(x.url)+'#t=0.5"></video><em>'+esc(L(TX.aiLb))+'</em><small>'+esc(kDay(x.at)[0])+'</small></button>'; }).join("")+'</div>'+(n?'<b class="kh">'+esc(L(TX.aiG))+' · '+kNum(n)+'</b>':''):'')+(!n?'':'<div class="kpkp kaigd">'+G.items.map(function(x,i){ var cur=x.aid===G.aip;
+      return '<button type="button" data-i="'+i+'"'+(cur?' class="on"':'')+'><img src="'+esc(kAiSrc(x.aid))+'" alt="" loading="lazy"><small>'+esc(cur?L(TX.aiNow):kDay(x.at)[0])+'</small></button>'; }).join("")+'</div>');
     o.innerHTML=kHead('<h3>'+esc(L(TX.aiGT))+(n?' · '+kNum(n):'')+'</h3>')+'<div class="kpgb">'+body+'</div>';
     o.querySelector(".kpbk").onclick=pgBack;
-    [].forEach.call(o.querySelectorAll(".kaigd button"),function(c){ c.onclick=function(){ var x=G.items[+c.dataset.i]; if(x) kAiView(G,x,S); }; }); };
+    [].forEach.call(o.querySelectorAll(".kaigd button"),function(c){ c.onclick=function(){ var x=G.items[+c.dataset.i]; if(x) kAiView(G,x,S); }; });
+    [].forEach.call(o.querySelectorAll(".kaivg button"),function(c){ c.onclick=function(){ var x=G.vids[+c.dataset.v]; if(x) kAivView(G,x); }; }); };
   G.draw(); G.load(); try{ ntap("kara_stage","aigal"); }catch(e){} }
 // AI 사진 크게 보기 — 확대·이동 + 프로필로 쓰기 · 공유 카드로 쓰기 · 지우기
 function kAiView(G,x,S){ var o=pgOpen("kaiv"); if(!o) return; var busy=false, d=kDay(x.at);
@@ -1688,6 +1721,153 @@ function kAiOpen(){ var b=box(), th=REC.th, T=kTh(th); if(!b||!REC.frc||!T) retu
       .catch(function(){ clearTimeout(to); if(o.isConnected) fail(); }); };
   o.onclick=function(e){ if(e.target===o&&!A.busy) o.remove(); };
   draw(); }
+// ── AI 영상 (사장님 10-31) — 녹화 구간(최대 15초) → 허브 /kst/aivid (Runway Aleph 2.0) → 테마 장면 영상 · 로그인 + 포인트(가격은 허브 설정, 관리자에서 변경)
+//   흐름: 테마·장면 칩 → 구간 막대(처음 = 음량이 가장 큰 구간, 못 재면 처음부터) → 포인트 확인(kptAsk) → 구간을 기기에서 다시 녹화(kMix: 캔버스+소리 → mp4/webm) → 올리기 → 5초마다 상태 → 결과
+//   구간 자르기 = 기기에서 — <video> 를 캔버스에 그려 captureStream(30fps) + WebAudio 소리로 MediaRecorder (웹·앱 같은 길, 서버 ffmpeg 없음)
+//   결과 영상은 얼굴·동작만 바꾼 그림이라 재생·게시·저장 때 원본 구간 소리를 맞춰 붙인다 · 게시·저장 파일 = 「AI 생성」 글자 덧그림
+var KAV={cfg:null,css:0};
+function kAivCss(){ if(KAV.css) return; KAV.css=1; var s=document.createElement("style");
+  s.textContent="#karBox .kpv .kaib.kaiv{background:#6c4cff}#karBox .kaivp{position:relative;border-radius:12px;overflow:hidden;background:#000}#karBox .kaivp video{display:block;width:100%;max-height:50vh;background:#000}"
+   +"#karBox .kaivb{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.62);color:#fff;font-size:12px;font-weight:800;padding:3px 8px;border-radius:8px;pointer-events:none}"
+   +"#karBox .kaivs video{display:block;width:100%;max-height:30vh;border-radius:10px;background:#000}#karBox .kaivs input[type=range]{width:100%;accent-color:#ff4fd8;margin:8px 0 2px}"
+   +"#karBox .kaivt{display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:#ffe066}#karBox .kaivpv{margin-top:6px;width:100%}#karBox .kaiwp{font-size:12px;opacity:.75;font-weight:700}"
+   +"#karBox .kaivg{margin-bottom:12px}#karBox .kaivg button em{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.62);color:#fff;font-size:10px;font-style:normal;font-weight:800;padding:1px 5px;border-radius:6px}"
+   +"#karBox .kaivsh .kgo{display:block;width:100%;box-sizing:border-box}#karBox .kaivsv{display:flex;gap:8px}#karBox .kaivsv>*{flex:1;text-align:center;text-decoration:none}";
+  document.head.appendChild(s); }
+function kAivCfg(){ return kGet("/kst/aivcfg").then(function(j){ if(j&&j.ok) KAV.cfg=j; return KAV.cfg; }).catch(function(){ return KAV.cfg; }); }
+function kMt(){ if(!window.MediaRecorder) return ""; return ["video/mp4;codecs=avc1,mp4a.40.2","video/mp4","video/webm;codecs=vp8,opus","video/webm"].filter(function(x){ try{ return MediaRecorder.isTypeSupported(x); }catch(e){ return false; } })[0]||""; }
+function kSec(t){ t=Math.max(0,Math.round(t||0)); return Math.floor(t/60)+":"+("0"+(t%60)).slice(-2); }
+// 음량이 가장 큰 len 초의 시작(초) — 소리를 풀지 못하면 0
+function kLoud(blob,len){ var AC=window.AudioContext||window.webkitAudioContext; if(!AC||!blob||!blob.arrayBuffer||blob.size>150*1048576) return Promise.resolve(0);
+  return blob.arrayBuffer().then(function(ab){ var ac=new AC(); return new Promise(function(res,rej){ var p=ac.decodeAudioData(ab,res,rej); if(p&&p.catch) p.catch(rej); }).then(function(bf){ try{ ac.close(); }catch(e){}
+    var d=bf.getChannelData(0), sr=Math.round(bf.sampleRate), n=Math.floor(d.length/sr), e=[], i, k, s;
+    for(i=0;i<n;i++){ s=0; for(k=i*sr;k<(i+1)*sr;k+=16) s+=d[k]*d[k]; e.push(s); }
+    var ln=Math.min(len,n); if(n<=ln) return 0; var w=0; for(i=0;i<ln;i++) w+=e[i]; var best=w, bi=0;
+    for(i=ln;i<n;i++){ w+=e[i]-e[i-ln]; if(w>best){ best=w; bi=i-ln+1; } } return bi; }); }).catch(function(){ return 0; }); }
+// 다시 녹화 — o = {v: 그림 영상 주소, a: 소리 영상 주소(없으면 v), t0, a0, len, tag(「AI 생성」 덧그림), onP(%)} → Promise(Blob)
+//   🔴 손 누름 안에서 바로 불러야 한다(아이폰 소리 재생 허락) · 주소는 blob: 이어야 캔버스가 막히지 않는다
+function kMix(o){ return new Promise(function(res,rej){ var AC=window.AudioContext||window.webkitAudioContext, mt=kMt(), cv=document.createElement("canvas");
+    if(!AC||!mt||!cv.captureStream){ rej(new Error("nosup")); return; }
+    var mk=function(src,mute){ var v=document.createElement("video"); v.playsInline=true; v.setAttribute("playsinline",""); v.preload="auto"; v.muted=!!mute; v.src=src; v.style.cssText="position:fixed;left:-9999px;top:0;width:2px;height:2px;opacity:0;pointer-events:none"; document.body.appendChild(v); return v; };
+    var same=!o.a||o.a===o.v, V=mk(o.v,!same), A=same?V:mk(o.a,false), ac=new AC(), dst=ac.createMediaStreamDestination(), done=false, mr=null, ch=[], raf=0, tmo=0;
+    try{ ac.createMediaElementSource(A).connect(dst); }catch(e){}
+    var end=function(err,bl){ if(done) return; done=true; cancelAnimationFrame(raf); clearTimeout(tmo); [V,A].forEach(function(x){ try{ x.pause(); x.removeAttribute("src"); x.load(); x.remove(); }catch(e){} }); try{ ac.close(); }catch(e){} if(err) rej(err); else res(bl); };
+    var ready=function(v){ return new Promise(function(r){ if(v.readyState>=1) r(); else { v.addEventListener("loadedmetadata",function(){ r(); },{once:true}); v.addEventListener("error",function(){ r(); },{once:true}); } }); };
+    var seek=function(v,t){ return new Promise(function(r){ if(Math.abs((v.currentTime||0)-t)<0.05){ r(); return; } v.addEventListener("seeked",function(){ r(); },{once:true}); try{ v.currentTime=t; }catch(e){ r(); } setTimeout(r,4000); }); };
+    tmo=setTimeout(function(){ end(new Error("time")); },(o.len+45)*1000);
+    try{ ac.resume(); }catch(e){} [V,A].forEach(function(x){ try{ var p=x.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} });
+    Promise.all([ready(V),ready(A)]).then(function(){ V.pause(); A.pause(); return Promise.all([seek(V,o.t0||0),same?null:seek(A,o.a0||0)]); }).then(function(){
+      var w=V.videoWidth||720, h=V.videoHeight||1280, s=Math.min(1,1280/Math.max(w,h)); w=Math.max(2,Math.round(w*s/2)*2); h=Math.max(2,Math.round(h*s/2)*2); cv.width=w; cv.height=h; var g=cv.getContext("2d");
+      var draw=function(){ try{ g.drawImage(V,0,0,w,h); }catch(e){} if(o.tag) kAiTag(g,w,h,KF,true); };
+      draw();
+      mr=new MediaRecorder(new MediaStream(cv.captureStream(30).getVideoTracks().concat(dst.stream.getAudioTracks())),{mimeType:mt,videoBitsPerSecond:3000000,audioBitsPerSecond:128000});
+      mr.ondataavailable=function(e){ if(e.data&&e.data.size) ch.push(e.data); };
+      mr.onstop=function(){ end(null,new Blob(ch,{type:mt.split(";")[0]})); };
+      mr.onerror=function(){ end(new Error("rec")); };
+      var t1=(o.t0||0)+o.len, w0=performance.now(), loop=function(){ if(done) return; draw(); if(o.onP) o.onP(Math.max(0,Math.min(99,Math.round((V.currentTime-(o.t0||0))*100/o.len))));
+        if(V.currentTime>=t1-0.05||V.ended||performance.now()-w0>=o.len*1000-80){ V.pause(); A.pause(); if(mr.state!=="inactive") mr.stop(); return; } raf=requestAnimationFrame(loop); };
+      return Promise.all([V.play(),same?null:A.play()]).then(function(){ mr.start(500); w0=performance.now(); raf=requestAnimationFrame(loop); });   // 재생이 시작된 뒤에 녹화 — 앞에 빈 시간이 붙지 않게
+    }).catch(function(e){ end(e||new Error("play")); }); }); }
+// 결과 재생 — AI 영상(소리 끔) + 원본 구간 소리를 맞춰 튼다 · 오른쪽 위 「AI 생성」
+function kAivPlayer(host,url,src){ host.innerHTML='<div class="kaivp"><video class="kaivv" playsinline controls loop muted preload="auto" src="'+esc(url)+'"></video><span class="kaivb">'+esc(L(TX.aiLb))+'</span></div>';
+  var V=host.querySelector("video"), A=null; if(!src) return V;
+  A=document.createElement("audio"); A.preload="auto"; A.src=src; host.appendChild(A);
+  var sync=function(){ try{ if(Math.abs(A.currentTime-V.currentTime)>0.3) A.currentTime=V.currentTime; }catch(e){} };
+  V.addEventListener("play",function(){ sync(); var p=A.play(); if(p&&p.catch) p.catch(function(){}); });
+  V.addEventListener("pause",function(){ A.pause(); });
+  V.addEventListener("seeked",sync); V.addEventListener("timeupdate",sync);
+  V.addEventListener("ended",function(){ A.pause(); });
+  return V; }
+function kBlobUrl(u){ return fetch(u).then(function(r){ if(!r.ok) throw 0; return r.blob(); }).then(function(b){ return URL.createObjectURL(b); }); }
+// 저장/공유 — 합성(소리+「AI 생성」) 뒤 「저장」 링크·「공유」 단추 (공유는 새 손 누름이 있어야 열린다)
+function kAivSave(host,S){ /* S = {ai: blob 주소 약속, src: blob 주소 약속, len, file:null} */
+  var paint=function(msg){ if(S.file){ var u=URL.createObjectURL(S.file), ext=/mp4/.test(S.file.type)?"mp4":"webm";
+      host.innerHTML='<div class="kaivsv"><a class="kgo" href="'+u+'" download="StageSong_AI.'+ext+'">'+esc(L(TX.aivSv))+'</a>'+(navigator.canShare&&navigator.canShare({files:[S.file]})?'<button type="button" class="kgo kg2" data-sh="1">'+esc(L(TX.aivSh))+'</button>':'')+'</div>';
+      var sh=host.querySelector("[data-sh]"); if(sh) sh.onclick=function(){ navigator.share({files:[S.file],title:"StageSong"}).catch(function(){}); }; return; }
+    host.innerHTML=(msg?'<div class="kerr">'+esc(msg)+'</div>':'')+'<button type="button" class="kgo kg2" data-sv="1"'+(S.busy?' disabled':'')+'>'+esc(S.busy?tf(L(TX.aivMix),{p:S.p||0}):L(TX.aivSave))+'</button>';
+    var b=host.querySelector("[data-sv]"); if(b) b.onclick=go; };
+  var go=function(){ if(S.busy) return; S.busy=true; S.p=0; paint();
+    Promise.all([S.ai,S.src]).then(function(a){ return kMix({v:a[0],a:a[1]||a[0],t0:0,a0:0,len:S.len,tag:true,onP:function(p){ S.p=p; var bt=host.querySelector("[data-sv]"); if(bt) bt.textContent=tf(L(TX.aivMix),{p:p}); }}); })
+      .then(function(bl){ S.busy=false; S.file=new File([bl],"StageSong_AI."+(/mp4/.test(bl.type)?"mp4":"webm"),{type:bl.type}); paint(); })
+      .catch(function(){ S.busy=false; paint(L(TX.aivMixF)); }); };
+  paint(""); }
+function kAivOpen(){ var b=box(); if(!b||!REC.blob) return; kAivCss(); var o=b.querySelector(".kaivm"); if(o) o.remove();
+  o=document.createElement("div"); o.className="kpm kaim kaivm"; b.appendChild(o);
+  var A={th:REC.th||"",sc:"",st:"pick",t0:0,len:0,dur:0,msg:"",p:0,vid:"",res:null,clip:null,auto:0,pt:0}, pv=null, pvT=0;
+  var T=function(){ return A.th?kTh(A.th):null; };
+  var scN=function(){ var t=T(); if(!t) return ""; var x=t[2].filter(function(y){ return y[0]===A.sc; })[0]; return x?Lp(x[1]):""; };
+  var setDur=function(d){ var mx=(KAV.cfg&&KAV.cfg.max)||15; A.dur=d; A.len=Math.min(mx,Math.floor(d)); if(A.t0>A.dur-A.len) A.t0=Math.max(0,A.dur-A.len); };
+  var segH=function(){ var mx=(KAV.cfg&&KAV.cfg.max)||15, span=Math.max(0,A.dur-A.len);
+    return '<b class="kh">'+esc(tf(L(TX.aivSeg),{n:mx}))+'</b><div class="kaivs"><video playsinline preload="auto" src="'+REC.url+'"></video>'
+      +(A.len>=3?'<input type="range" min="0" max="'+span.toFixed(1)+'" step="0.5" value="'+A.t0.toFixed(1)+'"'+(span<=0?' disabled':'')+'><div class="kaivt"><span>'+kSec(A.t0)+' ~ '+kSec(A.t0+A.len)+'</span><span>'+esc(tf(L(TX.aivSecs),{n:A.len}))+'</span></div><p class="km">'+esc(L(TX.aivSegN))+'</p><button type="button" class="krf kaivpv" data-pv="1">'+esc(L(TX.aivPv))+'</button>'
+        :A.dur?'<div class="kerr">'+esc(L(TX.aivShort))+'</div>':'<p class="km">'+esc(L(TX.lo))+'</p>')+'</div>'; };
+  var draw=function(){ var t=T(), h='<div><h3><img class="kaih" src="img/kara/kst_vid.png" alt="">'+esc(L(TX.aivT))+(t?' · '+esc(Lp(t[1])):'')+'</h3>';
+    if(A.st==="pick"){
+      if(!REC.th) h+='<b class="kh">'+esc(L(TX.aivTh))+'</b><div class="kaic">'+KTH_LIST.map(function(x){ return '<button type="button" data-th="'+x[0]+'"'+(x[0]===A.th?' class="on"':'')+'>'+esc(Lp(x[1]))+'</button>'; }).join("")+'</div>';
+      if(t) h+='<b class="kh">'+esc(L(TX.aivScH))+'</b><div class="kaic">'+t[2].map(function(x){ return '<button type="button" data-sc="'+x[0]+'"'+(x[0]===A.sc?' class="on"':'')+'>'+esc(Lp(x[1]))+'</button>'; }).join("")+'</div>';
+      h+=segH()+'<p class="km">'+esc(L(TX.aivN))+'</p>'+(A.msg?'<div class="kerr">'+esc(A.msg)+'</div>':'')
+        +'<button type="button" class="kgo" data-go="1"'+(!t||A.len<3?' disabled':'')+'>'+esc(L(TX.aivMk))+(KAV.cfg?' · '+ptS(KAV.cfg.price):'')+'</button>'; }
+    else if(A.st==="prep"||A.st==="send"||A.st==="ing"){ var tx=A.st==="prep"?tf(L(TX.aivPrep),{p:A.p}):A.st==="send"?L(TX.aivSend):L(TX.aivIng)+(A.p>0?' · '+Math.round(A.p*100)+'%':'');
+      h+='<div class="kaiw"><i></i><span class="kaiwt">'+esc(tx)+'</span></div><p class="km">'+esc(L(TX.aivBg))+'</p>'; }
+    else if(A.st==="res"){ h+='<div class="kaivr"></div><p class="km">'+esc(L(TX.aivOk))+'</p><button type="button" class="kgo" data-post="1">'+esc(L(TX.aivPost))+'</button><div class="kaivsh"></div>'; }
+    else if(A.st==="fail"){ h+='<div class="kerr">'+esc(A.msg||L(TX.aivF))+'</div><button type="button" class="krf" data-again="1">'+esc(L(TX.aivAgain))+'</button>'; }
+    h+='<button type="button" class="kc" data-x="1">'+esc(L(TX.aiX))+'</button></div>'; o.innerHTML=h; wire(); };
+  var wire=function(){ var q=function(s){ return o.querySelector(s); };
+    [].forEach.call(o.querySelectorAll("[data-th]"),function(x){ x.onclick=function(){ A.th=x.dataset.th; A.sc=kTh(A.th)[2][0][0]; A.msg=""; draw(); }; });
+    [].forEach.call(o.querySelectorAll("[data-sc]"),function(x){ x.onclick=function(){ A.sc=x.dataset.sc; A.msg=""; [].forEach.call(o.querySelectorAll("[data-sc]"),function(y){ y.classList.toggle("on",y===x); }); }; });
+    pv=q(".kaivs video");
+    if(pv){ var meta=function(){ if(!A.dur){ var d=isFinite(pv.duration)&&pv.duration>0?pv.duration:(REC.dur||0); if(d){ setDur(d); A.auto=1; draw(); kLoud(REC.blob,A.len).then(function(s){ if(A.st!=="pick"||A.t0) return; A.t0=Math.min(s,Math.max(0,A.dur-A.len)); if(o.isConnected) draw(); }); } return; } try{ pv.currentTime=A.t0+0.05; }catch(e){} };
+      if(pv.readyState>=1) meta(); else pv.addEventListener("loadedmetadata",meta,{once:true}); }
+    var rg=q(".kaivs input[type=range]"); if(rg) rg.oninput=function(){ A.t0=+rg.value||0; var sp=q(".kaivt span"); if(sp) sp.textContent=kSec(A.t0)+" ~ "+kSec(A.t0+A.len); try{ pv.pause(); pv.currentTime=A.t0; }catch(e){} };
+    var pb=q("[data-pv]"); if(pb) pb.onclick=function(){ if(!pv) return; clearTimeout(pvT); try{ pv.currentTime=A.t0; pv.play(); }catch(e){} var st=function(){ if(pv.currentTime>=A.t0+A.len){ pv.pause(); return; } pvT=setTimeout(st,200); }; st(); };
+    var gb=q("[data-go]"); if(gb) gb.onclick=go;
+    var ag=q("[data-again]"); if(ag) ag.onclick=function(){ A.st="pick"; A.msg=""; draw(); };
+    q("[data-x]").onclick=function(){ A.gone=1; clearTimeout(A.pt); clearTimeout(pvT); o.remove(); };
+    if(A.st==="res"&&A.res){ var host=q(".kaivr"); kAivPlayer(host,A.res.url,A.res.audio);
+      kAivSave(q(".kaivsh"),A.res.S);
+      q("[data-post]").onclick=post; } };
+  var errM=function(j){ var e=j&&j.err; return e==="pt"?tf(L(TX.kwShort),{h:ptS(j.have||0)}):e==="ucap"?tf(L(TX.aivCapU),{n:(KAV.cfg&&KAV.cfg.ucap)||3}):e==="cap"||e==="rate"?L(TX.aiCap):e==="dur"||e==="long"?L(TX.aivLong):e==="big"?L(TX.upBig):L(TX.aivF0); };
+  var go=function(){ if(!A.th||A.len<3) return; if(!sess()){ soon(L(TX.lgReq)); kLogin(go); return; }
+    var ask=function(){ var c=KAV.cfg; if(!c){ A.msg=L(TX.aivF0); draw(); return; } if(!c.left||!c.uleft){ A.msg=c.left?tf(L(TX.aivCapU),{n:c.ucap}):L(TX.aiCap); draw(); return; }
+      if(!kMt()){ A.msg=L(TX.aivNo); draw(); return; }
+      kptAsk(c.price,L(TX.aivT)+" · "+Lp(T()[1])+" · "+scN(),function(done){ done(); start(kRid()); },"",L(TX.aivMk)); };
+    var pre=function(){ if(kptOn()) ask(); else kptLoad().then(function(){ if(kptOn()) ask(); else { A.msg=L(TX.aivF0); draw(); } }); };
+    kAivCfg().then(pre); };
+  var start=function(rid){ A.st="prep"; A.p=0; A.msg=""; draw(); try{ ntap("kara_aiv",A.th+"_"+A.sc); }catch(e){}
+    kMix({v:REC.url,t0:A.t0,len:A.len,onP:function(p){ A.p=p; var s=o.querySelector(".kaiwt"); if(s) s.textContent=tf(L(TX.aivPrep),{p:p}); }}).then(function(clip){ if(A.gone) return;
+      if(clip.size>32*1048576){ A.st="fail"; A.msg=L(TX.upBig); draw(); return; }
+      A.clip=clip; A.st="send"; draw();
+      return fetch(HUB+"/kst/aivid?th="+A.th+"&sc="+A.sc+"&rid="+rid+"&dur="+A.len+"&"+kQs(),{method:"POST",headers:{"Content-Type":clip.type.split(";")[0]},body:clip}).then(function(r){ return r.json(); }).then(function(j){ kptLoad();
+        if(j&&j.ok&&j.vid){ A.vid=j.vid; A.st="ing"; A.p=0; draw(); poll(Date.now()); return; }
+        if(j&&j.err==="login"){ try{ localStorage.removeItem("mpv_pg_sess"); }catch(e){} kLogin(); }
+        A.st="fail"; A.msg=j&&j.err==="login"?L(TX.lgReq):errM(j); draw(); }); })
+      .catch(function(e){ if(A.gone) return; A.st="fail"; A.msg=e&&e.message==="nosup"?L(TX.aivNo):L(TX.aivF0); draw(); }); };
+  var poll=function(t0){ clearTimeout(A.pt); A.pt=setTimeout(function(){ if(A.gone||!o.isConnected) return;
+      kGet("/kst/aivst?vid="+A.vid).then(function(j){ if(A.gone||!o.isConnected) return;
+        if(j&&j.ok&&j.st==="ok"){ var srcB=A.clip?URL.createObjectURL(A.clip):null; A.res={url:j.url,audio:srcB||j.src,S:{ai:kBlobUrl(j.url),src:srcB?Promise.resolve(srcB):kBlobUrl(j.src),len:A.len}}; A.st="res"; draw(); return; }
+        if(j&&j.ok&&j.st==="fail"){ kptLoad(); A.st="fail"; A.msg=L(TX.aivF); draw(); return; }
+        if(j&&j.ok){ A.p=j.p||0; var s=o.querySelector(".kaiwt"); if(s) s.textContent=L(TX.aivIng)+(A.p>0?' · '+Math.round(A.p*100)+'%':''); }
+        if(Date.now()-t0<25*60000) poll(t0); })
+        .catch(function(){ if(Date.now()-t0<25*60000) poll(t0); }); },5000); };
+  var post=function(){ var bt=o.querySelector("[data-post]"), S=A.res.S; if(!bt||S.busy) return; bt.disabled=true; S.busy=true;
+    Promise.all([S.ai,S.src]).then(function(a){ return kMix({v:a[0],a:a[1],t0:0,a0:0,len:A.len,tag:true,onP:function(p){ bt.textContent=tf(L(TX.aivMix),{p:p}); }}); })
+      .then(function(bl){ S.busy=false; S.file=new File([bl],"StageSong_AI."+(/mp4/.test(bl.type)?"mp4":"webm"),{type:bl.type});
+        if(REC.url) try{ URL.revokeObjectURL(REC.url); }catch(e){} REC.blob=bl; REC.url=URL.createObjectURL(bl); REC.dur=A.len; REC.aiv=A.vid; REC.mt=bl.type;
+        var pvv=b.querySelector(".kpv video"); if(pvv){ pvv.src=REC.url; }
+        A.gone=1; o.remove(); soon(L(TX.aivPostOk)); upStart(); })
+      .catch(function(){ S.busy=false; bt.disabled=false; bt.textContent=L(TX.aivPost); soon(L(TX.aivMixF)); }); };
+  o.onclick=function(e){ if(e.target===o&&A.st==="pick"){ A.gone=1; o.remove(); } };
+  if(!A.th) A.th=""; if(A.th) A.sc=kTh(A.th)[2][0][0];
+  draw(); kAivCfg().then(function(){ if(o.isConnected&&A.st==="pick"){ if(A.dur) setDur(A.dur); draw(); } }); }
+// 내 AI 영상 크게 보기 — 재생(원본 소리 맞춤) · 저장/공유 · 삭제
+function kAivView(G,x){ kAivCss(); var o=pgOpen("kaivv"); if(!o) return; var d=kDay(x.at), busy=false;
+  o.innerHTML=kHead('<h3>'+esc(L(TX.aivT))+' · '+esc(d[0])+'</h3>')+'<div class="kpgb"><div class="kaivr"></div><div class="kaivsh" style="margin-top:10px"></div><button type="button" class="kbt r" data-ad="1" style="margin-top:8px;width:100%">'+esc(L(TX.del))+'</button></div>';
+  o.querySelector(".kpbk").onclick=pgBack;
+  kAivPlayer(o.querySelector(".kaivr"),x.url,x.src);
+  kAivSave(o.querySelector(".kaivsh"),{ai:kBlobUrl(x.url),src:x.src?kBlobUrl(x.src):Promise.resolve(null),len:x.dur||15});
+  var dl=o.querySelector("[data-ad]"); dl.onclick=function(){ if(busy||!window.confirm(L(TX.aivDelQ))) return; busy=true; dl.disabled=true;
+    kPost("/kst/aivdel",{vid:x.vid}).then(function(j){ busy=false; if(j&&j.ok){ G.vids=(G.vids||[]).filter(function(y){ return y.vid!==x.vid; }); G.draw(); pgBack(); soon(L(TX.aiDelOk)); return; } dl.disabled=false; soon(L(TX.delF)); })
+      .catch(function(){ busy=false; dl.disabled=false; soon(L(TX.delF)); }); }; }
 function kThUp(id,jpg){ return fetch(HUB+"/kst/thumb?id="+id+"&"+kQs(),{method:"POST",headers:{"Content-Type":"image/jpeg"},body:jpg}).then(function(r){ return r.json(); }).then(function(j){ return !!(j&&j.ok); }); }
 window.karCard=kCard;   // 시험용
 // 영상 공유 — 링크만 보낸다(영상 파일은 안 감) · 카드 그림이 없는 옛 영상은 그 자리에서 만들어 올린 뒤 공유 · 실패하면 노래방 아이콘
