@@ -72,8 +72,8 @@ var TX={
  x:{ko:"퇴장",en:"Leave",ja:"出る",zhs:"离开",zht:"離開",es:"Salir"},
  // 노래방 곡 이용권 판매 (사장님 10-27 「1,000원당 1곡, 기계의 돈 넣는 곳에 PAYMENT」 → 10-30 「카드사 심사에 보여 줄 판매 화면」 · 묶음 1 / 3+1 / 5+2 / 10+5)
  //  곡 이용권 = 정식 반주 곡용 · 결제는 시험(UNDER TESTING, 토스 시험 키)
- kb:{ko:"곡 이용권",en:"Song pass",ja:"曲チケット",zhs:"点歌券",zht:"點歌券",es:"Bono de canciones"},
- kbs:{ko:"1곡 1,000원 · 묶음은 서비스 곡 증정",en:"₩1,000 per song · bonus songs in bundles",ja:"1曲1,000ウォン・まとめ買いでサービス曲",zhs:"每首 ₩1,000 · 套餐赠送歌曲",zht:"每首 ₩1,000 · 套餐贈送歌曲",es:"₩1,000 por canción · canciones extra en packs"},
+  kb:{ko:"이용권",en:"Karaoke pass",ja:"利用券",zhs:"畅唱券",zht:"暢唱券",es:"Bono de karaoke"},   // (10-31) 곡 이용권 → 기간 이용권
+  kbs:{ko:"1·3·6·12개월 · 기간 안에는 노래 무제한",en:"1, 3, 6 or 12 months · unlimited singing",ja:"1・3・6・12か月・期間中は歌い放題",zhs:"1·3·6·12个月 · 有效期内无限畅唱",zht:"1·3·6·12個月 · 有效期內無限暢唱",es:"1, 3, 6 o 12 meses · canta sin límite"},
  kbuy:{ko:"곡 이용권 구매",en:"Buy song pass",ja:"曲チケットを買う",zhs:"购买点歌券",zht:"購買點歌券",es:"Comprar bono"},
  slot:{ko:"충전",en:"Insert here",ja:"投入口",zhs:"投币口",zht:"投幣口",es:"Introduce aquí"},
  left:{ko:"잔여 곡",en:"Songs left",ja:"残り曲数",zhs:"剩余歌曲",zht:"剩餘歌曲",es:"Canciones"},
@@ -91,7 +91,7 @@ var TX={
  back:{ko:"이전",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Volver"},
  sel:{ko:"선택한 묶음",en:"Selected pack",ja:"選んだパック",zhs:"所选套餐",zht:"所選套餐",es:"Pack elegido"},
  rcv:{ko:"지급 곡",en:"Songs you get",ja:"受け取る曲数",zhs:"获得歌曲",zht:"獲得歌曲",es:"Canciones que recibes"},
- sgn:{ko:"곡 이용권은 로그인한 계정에 적립되므로, 구매하려면 로그인이 필요해요.",en:"Song passes are saved to your account, so please sign in to buy.",ja:"曲チケットはアカウントに保存されるため、購入にはログインが必要です。",zhs:"点歌券保存在您的账户中，购买前请先登录。",zht:"點歌券保存在您的帳戶中，購買前請先登入。",es:"El bono se guarda en tu cuenta, así que inicia sesión para comprar."},
+  sgn:{ko:"이용권은 로그인한 계정에 적용되므로, 구매하려면 로그인이 필요합니다.",en:"The pass is linked to your account, so please sign in to buy.",ja:"利用券はアカウントに適用されるため、購入にはログインが必要です。",zhs:"畅唱券绑定您的账户，购买前请先登录。",zht:"暢唱券綁定您的帳戶，購買前請先登入。",es:"El bono se vincula a tu cuenta, así que inicia sesión para comprar."},
  cu:{ko:"구매자 정보",en:"Your details",ja:"ご購入者情報",zhs:"购买人信息",zht:"購買人資訊",es:"Tus datos"},
  cn:{ko:"이름 (필수)",en:"Name (required)",ja:"お名前（必須）",zhs:"姓名（必填）",zht:"姓名（必填）",es:"Nombre (obligatorio)"},
  cp:{ko:"휴대폰 (필수)",en:"Mobile phone (required)",ja:"携帯電話（必須）",zhs:"手机（必填）",zht:"手機（必填）",es:"Móvil (obligatorio)"},
@@ -256,20 +256,20 @@ var TX={
  ustE:{ko:"시청 가능한 영상이 없어요.",en:"No videos to show.",ja:"表示できる動画がありません。",zhs:"没有可观看的视频。",zht:"沒有可觀看的影片。",es:"No hay vídeos para mostrar."},
  dnB:{ko:"싫어요",en:"Dislike",ja:"よくないね",zhs:"踩",zht:"倒讚",es:"No me gusta"},
  ntc:{ko:"공지사항",en:"Notice",ja:"お知らせ",zhs:"公告",zht:"公告",es:"Aviso"},
- ntcP0:{ko:"곡 이용권: {list}",en:"Song pass: {list}",ja:"曲チケット：{list}",zhs:"点歌券：{list}",zht:"點歌券：{list}",es:"Bono de canciones: {list}"},
- ntcL:{
-  ko:["산 곡은 내 계정(구글·애플 로그인)에 구매일부터 1년간 보관됩니다.","환불: 구매일로부터 7일 이내에는 결제 금액에서 사용한 곡을 1곡 1,000원으로 계산해 뺀 금액을, 7일이 지난 뒤(보관 기간 1년 안)에는 그 금액에서 환불 수수료 10%를 뺀 금액을 환불합니다. 서비스로 받은 곡은 환불 대상이 아니며, 계산 결과가 0원 이하면 환불 금액은 없습니다(10원 미만 버림).","환불은 결제한 수단으로 영업일 3~7일 안에 처리됩니다. 문의: 앱의 문의 메뉴 또는 admin@moneypuzzle.co.kr"],
-  en:["Songs you buy stay in your account (Google or Apple sign-in) for 1 year from purchase.","Refunds: within 7 days of purchase, we refund the amount paid minus the songs used at ₩1,000 per song; after 7 days (within the 1-year storage period), that amount minus a 10% refund fee. Bonus songs are not refundable, and if the result is ₩0 or less there is no refund (rounded down to ₩10).","Refunds go to your original payment method within 3–7 business days. Contact: the app's inquiry menu or admin@moneypuzzle.co.kr"],
-  ja:["購入した曲はご自身のアカウント（Google・Appleログイン）に購入日から1年間保管されます。","返金：購入日から7日以内は支払額から使った曲を1曲1,000ウォンとして差し引いた金額を、7日を過ぎた後（保管期間1年以内）はその金額から返金手数料10%を差し引いた金額を返金します。サービス曲は返金対象外で、計算結果が0ウォン以下の場合は返金額はありません（10ウォン未満切り捨て）。","返金はお支払い方法へ3〜7営業日以内に行います。お問い合わせ：アプリのお問い合わせメニューまたは admin@moneypuzzle.co.kr"],
-  zhs:["购买的歌曲保存在您的账户（Google·Apple 登录）中，自购买日起保留1年。","退款：购买后7天内退还支付金额减去已用歌曲（每首₩1,000）后的金额；超过7天后（1年保存期内）再扣除10%退款手续费后退还。赠送歌曲不在退款范围内，计算结果为₩0或以下时不予退款（不足₩10舍去）。","退款将在3–7个工作日内退回原支付方式。咨询：应用内的咨询菜单或 admin@moneypuzzle.co.kr"],
-  zht:["購買的歌曲保存在您的帳戶（Google·Apple 登入）中，自購買日起保留1年。","退款：購買後7天內退還付款金額減去已用歌曲（每首₩1,000）後的金額；超過7天後（1年保存期內）再扣除10%退款手續費後退還。贈送歌曲不在退款範圍內，計算結果為₩0或以下時不予退款（不足₩10捨去）。","退款將在3–7個工作天內退回原付款方式。諮詢：App 內的諮詢選單或 admin@moneypuzzle.co.kr"],
-  es:["Las canciones que compras se guardan en tu cuenta (inicio de sesión con Google o Apple) durante 1 año desde la compra.","Reembolsos: en los 7 días siguientes a la compra, el importe pagado menos las canciones usadas a ₩1,000 cada una; pasados 7 días (dentro del año de conservación), ese importe menos una comisión de reembolso del 10%. Las canciones de regalo no son reembolsables y, si el resultado es ₩0 o menos, no hay reembolso (redondeo a la baja a ₩10).","El reembolso se hace al método de pago original en 3–7 días hábiles. Contacto: menú de consultas de la app o admin@moneypuzzle.co.kr"]},
- ntcEx:{ko:"예: {pk} 묶음({w}·{s}곡)을 사고 {u}곡을 쓴 경우 — 7일 이내: {w} − {c} = {r} 환불 / 8일째: {r}에서 수수료 10% 뺀 {r2} 환불",en:"Example: buy the {pk} pack ({w}, {s} songs) and use {u} songs — within 7 days: {w} − {c} = {r} refunded / on day 8: {r} minus the 10% fee = {r2} refunded.",ja:"例：{pk}パック（{w}・{s}曲）を購入し{u}曲使った場合 — 7日以内：{w} − {c} = {r} を返金／8日目：{r} から手数料10%を引いた {r2} を返金。",zhs:"例：购买{pk}套餐（{w}·{s}首）并用了{u}首 — 7天内：{w} − {c} = {r} 退款 / 第8天：{r} 扣除10%手续费后退款 {r2}。",zht:"例：購買{pk}套餐（{w}·{s}首）並用了{u}首 — 7天內：{w} − {c} = {r} 退款 / 第8天：{r} 扣除10%手續費後退款 {r2}。",es:"Ejemplo: compras el pack {pk} ({w}, {s} canciones) y usas {u} — en 7 días: {w} − {c} = {r} de reembolso / el día 8: {r} menos la comisión del 10% = {r2} de reembolso."},   // 환불 새 규칙 10-30: 7일 이내 = 결제 금액 − 쓴 곡×1,000원 · 7일 뒤 = 거기서 수수료 10% 더 뺌
+  ntcP0:{ko:"이용권: {list} (포인트로 구매 · 자동 연장 없음)",en:"Passes: {list} (bought with points · no auto-renewal)",ja:"利用券：{list}（ポイントで購入・自動更新なし）",zhs:"畅唱券：{list}（用积分购买 · 不自动续费）",zht:"暢唱券：{list}（用點數購買 · 不自動續費）",es:"Bonos: {list} (con puntos · sin renovación automática)"},
+  ntcL:{
+   ko:["이용권 기간에는 노래를 무제한으로 부를 수 있습니다. 이용 중에 다시 구매하면 지금 끝나는 날부터 기간이 이어집니다.","환불: 구매일로부터 7일 이내이고 노래를 부르지 않았으면 이용권 구매에 사용한 유료 포인트 몫 전액을, 그 밖에는 남은 일수에 해당하는 금액에서 10%를 공제한 금액을 결제한 수단으로 환불합니다(1P = 1원, 10원 미만 버림). 무료 포인트로 산 몫은 환불하지 않으며, 포인트 환불 수수료를 다시 공제하지 않습니다. 환불을 요청하면 이용권은 바로 끝납니다.","이전에 구매한 곡 이용권(잔여 곡)은 그대로 유효합니다.","문의: 앱의 문의 메뉴 또는 admin@moneypuzzle.co.kr"],
+   en:["During the pass you can sing as much as you like. If you buy again while a pass is active, the new period starts from the current end date.","Refunds: within 7 days of purchase and if you have not sung, the full paid-point share you used for the pass; otherwise the amount for the remaining days minus 10%. Refunds go to your original payment method (1P = ₩1, rounded down to ₩10). The share bought with free points is not refunded, and no points refund fee is deducted again. The pass ends as soon as you request the refund.","Song credits you bought before (songs left) remain valid.","Contact: the app's inquiry menu or admin@moneypuzzle.co.kr"],
+   ja:["利用券の期間中は歌い放題です。利用中にもう一度購入すると、今の終了日から期間が続きます。","返金：購入日から7日以内でまだ歌っていなければ、利用券の購入に使った有料ポイント分を全額、それ以外は残り日数分の金額から10%を差し引いた金額を、決済した手段で返金します（1P＝1ウォン、10ウォン未満切り捨て）。無料ポイントで購入した分は返金せず、ポイントの返金手数料を再び差し引くことはありません。返金を申請すると利用券はすぐに終了します。","以前に購入した曲チケット（残り曲）はそのまま有効です。","お問い合わせ：アプリのお問い合わせメニューまたは admin@moneypuzzle.co.kr"],
+   zhs:["畅唱券有效期内可无限唱歌。使用中再次购买，新期间从当前到期日起接续。","退款：购买之日起7天内且未唱歌的，全额退还购买时使用的付费积分部分；其他情况退还剩余天数对应金额扣除10%后的金额，退回原支付方式（1P = 1韩元，不足10韩元舍去）。用免费积分购买的部分不予退款，也不会再次扣除积分退款手续费。申请退款后畅唱券立即结束。","此前购买的点歌券（剩余歌曲）继续有效。","咨询：应用内的咨询菜单或 admin@moneypuzzle.co.kr"],
+   zht:["暢唱券有效期內可無限唱歌。使用中再次購買，新期間從目前到期日起接續。","退款：購買之日起7天內且未唱歌者，全額退還購買時使用的付費點數部分；其他情況退還剩餘天數對應金額扣除10%後的金額，退回原付款方式（1P = 1韓元，不足10韓元捨去）。以免費點數購買的部分不予退款，亦不會再次扣除點數退款手續費。申請退款後暢唱券立即結束。","此前購買的點歌券（剩餘歌曲）繼續有效。","諮詢：App 內的諮詢選單或 admin@moneypuzzle.co.kr"],
+   es:["Durante el bono puedes cantar sin límite. Si compras otro mientras uno está activo, el nuevo periodo empieza en la fecha de fin actual.","Reembolsos: en los 7 días siguientes a la compra y si no has cantado, toda la parte pagada con puntos de pago; si no, el importe de los días restantes menos un 10%. Se devuelve a tu método de pago original (1P = ₩1, redondeo a la baja a ₩10). La parte comprada con puntos gratuitos no se reembolsa y no se vuelve a descontar la comisión de reembolso de puntos. El bono termina en cuanto pides el reembolso.","Las canciones que compraste antes (canciones restantes) siguen siendo válidas.","Contacto: menú de consultas de la app o admin@moneypuzzle.co.kr"]},
+  ntcEx:{ko:"예: {m} 이용권({w})을 사고 노래를 부른 뒤 {u}일째 환불하면 — 남은 {d}일 금액 {a}에서 10%를 공제한 {r}을 환불합니다.",en:"Example: buy a {m} pass ({w}), sing, and ask for a refund on day {u} — you get {r} back ({a} for the remaining {d} days minus 10%) to your payment method.",ja:"例：{m}の利用券（{w}）を購入して歌い、{u}日目に返金すると — 残り{d}日分 {a} から10%を差し引いた {r} を返金します。",zhs:"例：购买{m}畅唱券（{w}）并唱歌后，第{u}天申请退款 — 退还剩余{d}天金额 {a} 扣除10%后的 {r}。",zht:"例：購買{m}暢唱券（{w}）並唱歌後，第{u}天申請退款 — 退還剩餘{d}天金額 {a} 扣除10%後的 {r}。",es:"Ejemplo: compras un bono de {m} ({w}), cantas y pides el reembolso el día {u} — te devolvemos {r} ({a} por los {d} días restantes menos el 10%)."},   // (10-31) 이용권 환불 = 7일 이내·미사용 전액 / 그 밖 = 잔여 일수 금액 − 10%
  ntcR:{ko:"환불 규정 전체 보기",en:"View full refund policy",ja:"返金規定の全文を見る",zhs:"查看完整退款规定",zht:"查看完整退款規定",es:"Ver la política de reembolso completa"},
- ntcP:{ko:"잔여 곡은 1년간 보관 · 미사용 곡은 환불 가능 — 공지사항",en:"Unused songs kept 1 year · refundable — Notice",ja:"残り曲は1年保管・未使用分は返金可能 — お知らせ",zhs:"剩余歌曲保留1年 · 未唱可退款 — 公告",zht:"剩餘歌曲保留1年 · 未唱可退款 — 公告",es:"Canciones sin usar: 1 año guardadas · reembolsables — Aviso"},
+  ntcP:{ko:"이용권 안내 · 환불 규정 — 공지사항",en:"Pass guide · refund policy — Notice",ja:"利用券のご案内・返金規定 — お知らせ",zhs:"畅唱券说明 · 退款规定 — 公告",zht:"暢唱券說明 · 退款規定 — 公告",es:"Guía del bono · reembolsos — Aviso"},
  ok:{ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"},
  lftN:{ko:"잔여 곡: {n}곡",en:"Songs left: {n}",ja:"残り曲数: {n}曲",zhs:"剩余歌曲：{n}首",zht:"剩餘歌曲：{n}首",es:"Canciones restantes: {n}"},
- sgi:{ko:"로그인하면 잔여 곡이 1년간 보관됩니다",en:"Sign in to keep unused songs for 1 year",ja:"ログインすると残り曲が1年間保管されます",zhs:"登录后剩余歌曲可保留1年",zht:"登入後剩餘歌曲可保留1年",es:"Inicia sesión para guardar tus canciones 1 año"},
+  sgi:{ko:"로그인 후 이용권을 구매할 수 있습니다",en:"Sign in to buy a pass",ja:"ログインすると利用券を購入できます",zhs:"登录后即可购买畅唱券",zht:"登入後即可購買暢唱券",es:"Inicia sesión para comprar un bono"},
  sgb:{ko:"로그인",en:"Sign in",ja:"ログイン",zhs:"登录",zht:"登入",es:"Iniciar sesión"},
  rfb:{ko:"잔여 곡 환불 요청 ({n}곡)",en:"Request refund for unused songs ({n})",ja:"残り曲の返金を申請（{n}曲）",zhs:"申请退还剩余歌曲（{n}首）",zht:"申請退還剩餘歌曲（{n}首）",es:"Solicitar reembolso de canciones ({n})"},
  rfh:{ko:"환불 요청",en:"Refund request",ja:"返金申請",zhs:"退款申请",zht:"退款申請",es:"Solicitud de reembolso"},
@@ -413,13 +413,13 @@ var BOOK=[
    zhs:["在搜索框输入歌名或歌手名。","第一个列表按界面语言显示：韩语和中文为 K-POP，日语为 J-POP，英语和西班牙语为 Pop。","点歌曲即播放金永(KY)官方 YouTube 视频。","双指放大画面，放大后单指移动。"],
    zht:["在搜尋框輸入歌名或歌手名。","第一個列表依介面語言顯示：韓語和中文為 K-POP，日語為 J-POP，英語和西班牙語為 Pop。","點歌曲即播放金永(KY)官方 YouTube 影片。","雙指放大畫面，放大後單指移動。"],
    es:["Escribe el título o el artista en el buscador.","La primera lista sigue el idioma: K-POP en coreano y chino, J-POP en japonés y Pop en inglés y español.","Toca una canción para reproducir el vídeo oficial de KY Karaoke en YouTube.","Amplía con dos dedos y, después, muévete con un dedo."]}},
- {ic:[],ui:"pay",t:{ko:"곡 이용권",en:"Song passes",ja:"曲利用券",zhs:"歌曲券",zht:"歌曲券",es:"Bonos de canciones"},
-  p:{ko:["PAYMENT 단추에서 곡 이용권을 구매합니다.","로그인하면 초록 칸에 잔여 곡 수가 표시됩니다.","미사용 곡은 1년간 보관되며 환불을 요청할 수 있습니다.","자세한 기준은 「공지사항」과 환불 규정을 확인하세요."],
-   en:["Buy song passes with the PAYMENT button.","After you sign in, the green box shows how many songs you have left.","Unused songs are kept for one year, and you can request a refund.","See the notice and the refund policy for details."],
-   ja:["PAYMENTボタンから曲利用券を購入します。","ログインすると緑の欄に残りの曲数が表示されます。","未使用の曲は1年間保管され、返金を申請できます。","詳しくは「お知らせ」と返金規定をご確認ください。"],
-   zhs:["通过 PAYMENT 按钮购买歌曲券。","登录后，绿色框中会显示剩余歌曲数。","未使用的歌曲保留一年，可申请退款。","详情请查看公告和退款规定。"],
-   zht:["透過 PAYMENT 按鈕購買歌曲券。","登入後，綠色框中會顯示剩餘歌曲數。","未使用的歌曲保留一年，可申請退款。","詳情請查看公告和退款規定。"],
-   es:["Compra bonos de canciones con el botón PAYMENT.","Al iniciar sesión, el recuadro verde muestra las canciones que te quedan.","Las canciones sin usar se guardan un año y puedes pedir su reembolso.","Consulta el aviso y la política de reembolso."]}},
+  {ic:[],ui:"pay",t:{ko:"이용권",en:"Karaoke pass",ja:"利用券",zhs:"畅唱券",zht:"暢唱券",es:"Bono de karaoke"},
+   p:{ko:["PAYMENT 단추에서 이용권(1·3·6·12개월)을 포인트로 구매합니다.","이용권 기간에는 노래를 무제한으로 부를 수 있으며, 자동 연장되지 않습니다.","이용 중에 다시 구매하면 지금 끝나는 날부터 기간이 이어집니다.","초록 칸에 이용권 끝나는 날과 잔여 포인트가 표시됩니다.","자세한 기준은 「공지사항」과 환불 규정을 확인하세요."],
+    en:["Buy a pass (1, 3, 6 or 12 months) with points from the PAYMENT button.","During the pass you can sing without limit. It does not renew automatically.","If you buy again while a pass is active, the period continues from the current end date.","The green box shows when your pass ends and your points balance.","See the notice and the refund policy for details."],
+    ja:["PAYMENTボタンから利用券（1・3・6・12か月）をポイントで購入します。","利用券の期間中は歌い放題で、自動更新はありません。","利用中にもう一度購入すると、今の終了日から期間が続きます。","緑の欄に利用券の終了日と残りポイントが表示されます。","詳しくは「お知らせ」と返金規定をご確認ください。"],
+    zhs:["通过 PAYMENT 按钮用积分购买畅唱券（1·3·6·12个月）。","畅唱券有效期内可无限唱歌，不会自动续费。","使用中再次购买，期间从当前到期日起接续。","绿色框中显示畅唱券到期日和剩余积分。","详情请查看公告和退款规定。"],
+    zht:["透過 PAYMENT 按鈕用點數購買暢唱券（1·3·6·12個月）。","暢唱券有效期內可無限唱歌，不會自動續費。","使用中再次購買，期間從目前到期日起接續。","綠色框中顯示暢唱券到期日和剩餘點數。","詳情請查看公告和退款規定。"],
+    es:["Compra un bono (1, 3, 6 o 12 meses) con puntos desde el botón PAYMENT.","Durante el bono puedes cantar sin límite. No se renueva automáticamente.","Si compras otro mientras uno está activo, el periodo sigue desde la fecha de fin actual.","El recuadro verde muestra cuándo termina tu bono y tus puntos.","Consulta el aviso y la política de reembolso."]}},
  {o:1,ic:["score"],ui:"rec",t:{ko:"녹화",en:"Recording",ja:"録画",zhs:"录像",zht:"錄影",es:"Grabación"},
   p:{ko:["영상 위 「● 녹화」를 누르면 카메라가 켜지고 녹화가 시작됩니다.","뷰파인더에 녹화 시간과 노래 점수가 표시됩니다.","「■ 녹화 종료」를 누르면 미리 보기와 최종 점수가 표시됩니다."],
    en:["Tap “● Record” on the video to turn on the camera and start recording.","The viewfinder shows the recording time and your singing score.","Tap “■ Stop” to see a preview and your final score."],
@@ -649,6 +649,7 @@ function blocked(x){ try{ K.pl&&K.pl.pauseVideo&&K.pl.pauseVideo(); }catch(e){}
   var a=box()&&box().querySelector("[data-kyt]"); if(a) a.addEventListener("click",function(){ mpPaid.out(); klYt(x); }); }
 function play(i){ var x=K.items&&K.items[i]; if(!x) return; klEnd(); K.cur=x; K.idx=i; paintList(); var b=box(); if(!b) return; var pl=b.querySelector(".kpl");
   try{ ntap("kara_"+K.code,"tap"); }catch(e){}
+  try{ kPassUse(); }catch(e){}   // 이용권 기간이면 사용 표시 (10-31) — 노래 차감은 없음
   var m0=pl.querySelector(".kmsg"); if(m0) m0.remove();
   if(x.e===0){ blocked(x); return; }   // 퍼가기 막힌 곡 — 앱 안에서 안 틀고 유튜브로 (허브가 oEmbed 로 미리 확인)
   ov('<div>'+esc(L(TX.lo))+'</div>',"lo"); K.want=x.id;
@@ -672,7 +673,7 @@ function open(code){ K.tab=({ja:"jpop",en:"pop",es:"pop"})[window.LANG]||"kpop";
     +'<div class="kls"></div></div>';
   document.body.appendChild(b); document.documentElement.style.overflow="hidden";
   b.querySelector(".kx").onclick=close;
-  [].forEach.call(b.querySelectorAll("[data-kpay]"),function(x){ x.onclick=function(){ payOpen(""); }; /* PAYMENT = 곡 이용권 구매 창 (포인트로 「구매」) · 충전은 내 지갑에만 (사장님 10-31) */ });
+  [].forEach.call(b.querySelectorAll("[data-kpay]"),function(x){ x.onclick=function(){ payOpen(""); }; /* PAYMENT = 이용권 구매 창 (1·3·6·12개월, 포인트로 「구매」 · 10-31) · 충전은 내 지갑에만 */ });
   b.querySelector("[data-kntc]").onclick=ntcOpen;
   b.querySelector(".kstg").onclick=function(){ stageOpen("all"); };
   b.querySelector(".kchb").onclick=function(){ kChal(); };   // 챌린지 (10-31)
@@ -715,7 +716,7 @@ function bizHtml(){ var z=TX.bz[window.LANG]||TX.bz.en, lg=TX.bz[window.LANG]?wi
   return '<div class="kbz"><b>'+esc(z[0])+'</b><br><span class="nw">'+esc(z[1])+'</span> · <span class="nw">'+esc(z[2])+' '+esc(z[3])+'</span><br>'+esc(z[4])+' <span class="nw">297-81-03712</span><br>'+esc(z[5])+': '+esc(z[6])+'<br>'+esc(z[7])+': '+esc(z[8])+'<br>'+esc(z[9])+': admin@moneypuzzle.co.kr'+'<br>'+esc(L(TX.bzh))+': GitHub, Inc. · Cloudflare, Inc.<br>'+esc(L(TX.bzn))
     +'<div class="kbzl"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a> · <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a> · <a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a>'+(window.KAR_SITE?' · <a href="legal.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.gL))+'</a>':'')+'</div>'+(window.KAR_VC?'<p class="kvc">'+esc(window.KAR_VC())+'</p>':'')+'</div>'; }   // 노래방 사이트 방문자 수 (site.js, 10-31)
 // 노래방 화면의 곡 이용권 칸 (남은 곡 표시)
-function barPaint(){ var b=box(), el=b&&b.querySelector("#karLeft"); if(!el) return; el.textContent=karSigned()?(kptOn()?tf(L(TX.kwBar),{n:karLeft(),p:ptS(KP.d.bal.total)}):fmtN(L(TX.lftN),karLeft())):L(TX.lgin); }   // 포인트 켜지면 「잔여 곡 3 · 12,000P」 (10-31)
+function barPaint(){ var b=box(), el=b&&b.querySelector("#karLeft"); if(!el) return; el.textContent=karSigned()?(kptOn()?kBarTx():(karLeft()>0?fmtN(L(TX.lftN),karLeft()):L(TX.kwT))):L(TX.lgin); }   // (10-31) 「이용권 ~11.30 · 12,000P」 · 이용권 없으면 「잔여 곡 3 · 12,000P」(잔여 곡 있을 때만) · 「12,000P」
 // 로그인 창(pg.js)을 노래방 위에 띄운다 — 닫히면 원래 높이로 돌리고 결제 창을 다시 그린다(로그인하면 남은 곡 표시)
 function signIn(){ if(!window.mpPG||!mpPG.open) return; mpPG.open(); var p=document.getElementById("pgBox"); if(!p) return; p.style.zIndex="2147483006";
   if(!p._karMo&&window.MutationObserver){ p._karMo=new MutationObserver(function(){ if(!p.hidden) return; p.style.zIndex=""; KB.sess=-1; karcLoad(); var b=box(); if(b&&b.querySelector(".kpm:not(.kntc)")) payOpen(KB.k_go?"co":""); }); p._karMo.observe(p,{attributes:true,attributeFilter:["hidden"]}); } }
@@ -791,22 +792,26 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
              .catch(function(e){ window.__karTossErr=String((e&&e.code||"")+" "+(e&&e.message||e)); ss(KPK,null); draw((e&&e.code==="USER_CANCEL")?L(TX.pfT):((e&&e.message)||L(TX.pfT))); }); })
          .catch(function(){ draw(L(TX.efail)); }); };
       return; }
-    // 묶음 고르기 (누구나 볼 수 있음 · 사려면 로그인)
-    o.innerHTML='<div><h3>'+esc(L(TX.kb))+ut+'</h3>'
-    +(sg?'<div class="klf">'+esc(fmtN(L(TX.lftN),left))+'</div>':'<div class="ksg">'+esc(L(TX.sgi))+'<button type="button" class="ksgb">'+esc(L(TX.sgb))+'</button></div>')
-    +'<div class="kpks">'+P.map(function(q,i){ return '<button type="button" data-pk="'+i+'" class="kpk'+(i===KB.k?" on":"")+'"><b>'+esc(pkName(q))+'</b>'
-      +(q.b?'<em class="ksv">'+esc(tf(L(TX.svc),{b:q.b}))+'</em>':'<em class="ksv ksv0">&nbsp;</em>')
-      +'<span class="kpp1">'+(kptOn()?ptS(q.n*((KP.d.use&&KP.d.use.song)||1000)):won(q.p))+'</span><small>'+esc(songsTx(q.n+q.b))+' · '+esc(tf(L(TX.per),{w:kptOn()?ptPer(q):perSong(q)}))+'</small></button>'; }).join("")+'</div>'
-    +'<p class="km">'+esc(L(TX.keep))+'</p>'
-    +(kptOn()?'<div class="kt"><span>'+esc(L(TX.kwUseAmt))+'</span><span>'+ptS(x.n*((KP.d.use&&KP.d.use.song)||1000))+'</span></div>'+(KP.d.bal.total<x.n*((KP.d.use&&KP.d.use.song)||1000)?'<button type="button" class="kwlow" data-kwlow="1">'+esc(L(TX.kwLow))+' ›</button>':''):'<div class="kt"><span>'+esc(L(TX.tot))+'</span><span>'+won(x.p)+'</span></div>')
+    // 이용권 고르기 (사장님 10-31 「곡당 판매 → 기간 이용권」) — 누구나 볼 수 있음 · 사려면 로그인 · 포인트로 「구매」 → 「7,000P 사용 → N P 남음」 확인
+    var PP=kPassP(), q0=PP[KP.pk]||PP[0], on=kptOn(), bal=on?KP.d.bal.total:0, ps=(on&&KP.d.pass)||{};
+    o.innerHTML='<div><h3>'+esc(L(TX.kb))+'</h3>'
+    +(sg?'<div class="klf">'+esc(on?kBarTx():(left>0?fmtN(L(TX.lftN),left):L(TX.kwT)))+'</div>':'<div class="ksg">'+esc(L(TX.sgi))+'<button type="button" class="ksgb">'+esc(L(TX.sgb))+'</button></div>')
+    +'<div class="kpks">'+PP.map(function(q,i){ return '<button type="button" data-pk="'+i+'" class="kpk'+(i===KP.pk?" on":"")+'"><b>'+esc(kMon(q.m))+'</b>'
+      +(q.m>1?'<em class="ksv">'+esc(tf(L(TX.psPer),{w:ptS(Math.round(q.p/q.m/10)*10)}))+'</em>':'<em class="ksv ksv0">&nbsp;</em>')
+      +'<span class="kpp1">'+ptS(q.p)+'</span><small>'+esc(L(TX.psUnl))+'</small></button>'; }).join("")+'</div>'
+    +'<p class="km">'+esc(L(TX.psNo))+(ps.on?'<br>'+esc(tf(L(TX.psExt),{d:kMd(ps.end,1)})):'')+'</p>'
+    +'<div class="kt"><span>'+esc(L(TX.kwUseAmt))+'</span><span>'+ptS(q0.p)+'</span></div>'+(on&&bal<q0.p?'<button type="button" class="kwlow" data-kwlow="1">'+esc(L(TX.kwLow))+' ›</button>':'')
     +(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
-    +(kptOn()?'<button type="button" class="kgo" id="kbNx">'+esc(L(TX.kwBuyB))+'</button><button type="button" class="krf" data-kwc="1">'+esc(L(TX.kwT))+' · '+ptS(KP.d.bal.total)+'</button>':'<button type="button" class="kgo kgsoon" id="kbNx">'+esc(L(TX.kwBuyB))+'</button>')   // 로그인 전 — 누르면 로그인 (10-31)   // 포인트 켜지면 포인트로 구매 (10-31)
-    +(sg&&left>=1&&!kptOn()?'<button type="button" class="krf">'+esc(fmtN(L(TX.rfb),left))+'</button>':'')
+    +'<button type="button" class="kgo" id="kbNx">'+esc(L(TX.kwBuyB))+'</button>'
+    +(on?'<button type="button" class="krf" data-kwc="1">'+esc(L(TX.kwT))+' · '+ptS(bal)+'</button>':'')
+    +(on&&ps.on?'<button type="button" class="krf" data-psrf="1">'+esc(L(TX.psRf))+'</button>':'')
+    +(sg&&left>=1?'<button type="button" class="krf krfs">'+esc(fmtN(L(TX.rfb),left))+'</button>':'')   // 이전에 산 잔여 곡 환불 (그대로)
     +'<button type="button" class="kpp" data-kntc="1">'+esc(L(TX.ntcP))+'</button>'+'<button type="button" class="kc">'+esc(L(TX.ok))+'</button>'+'</div>';
-    [].forEach.call(o.querySelectorAll("[data-pk]"),function(y){ y.onclick=function(){ KB.k=+y.dataset.pk; draw(); }; });
-    o.querySelector("#kbNx").onclick=function(){ if(!karSigned()){ draw(L(TX.sgn)); signIn(); return; } if(kptOn()){ kptSong(KB.k); return; } kptLoad().then(function(){ if(kptOn()) kptSong(KB.k); else draw(L(TX.efail)); }); return; /* 돈 결제 창(co)은 닫음 — 포인트로만 (10-31) */ mode="co"; agd=false; try{ ntap("kara_pay","pick_"+(x.n+x.b)); }catch(e){} draw(); };
+    [].forEach.call(o.querySelectorAll("[data-pk]"),function(y){ y.onclick=function(){ KP.pk=+y.dataset.pk; draw(); }; });
+    o.querySelector("#kbNx").onclick=function(){ if(!karSigned()){ draw(L(TX.sgn)); signIn(); return; } if(kptOn()){ kPassBuy(KP.pk); return; } kptLoad().then(function(){ if(kptOn()) kPassBuy(KP.pk); else draw(L(TX.efail)); }); };
     var sb=o.querySelector(".ksgb"); if(sb) sb.onclick=signIn; var kw=o.querySelector("[data-kwc]"); if(kw) kw.onclick=function(){ kwOpen(""); }; var kl=o.querySelector("[data-kwlow]"); if(kl) kl.onclick=function(){ kwOpen("chg"); };
-    var rb=o.querySelector(".krf"); if(rb) rb.onclick=function(){ mode="rq"; draw(); };
+    var pr=o.querySelector("[data-psrf]"); if(pr) pr.onclick=kPassRf;
+    var rb=o.querySelector(".krfs"); if(rb) rb.onclick=function(){ mode="rq"; draw(); };
     o.querySelector(".kpp").onclick=ntcOpen;
     o.querySelector(".kc").onclick=function(){ o.remove(); KB.redraw=null; }; };
   KB.redraw=function(){ if(o.isConnected&&!cur.busy) draw(cur.msg); };   // 언어 바꿈·가격표 받아 옴 → 다시 그림 (결제창 여는 중엔 안 건드림)
@@ -828,13 +833,30 @@ if(/[?&]karres=/.test(location.search)){ var _kr=function(){ setTimeout(function
 //   초록 칸 「잔여 곡 3 · 12,000P」 → 누르면 「내 지갑」(잔여·유료/무료·유효기간·충전·사용 내역·환불 요청) · 돈 드는 일은 늘 「3,000P 사용 → 9,000P 남음」 확인 뒤
 //   충전: 웹 = 웹 가격(KG이니시스) / 앱(Capacitor) = 앱 가격만(구글 플레이 결제) — 앱에는 웹 가격을 절대 보이지 않는다
 //   (10-31 출시판) 「결제」 단추 하나 — 허브 d.live 에 진짜 결제 길(inicis·gplay)이 있으면 그 길, 없으면 같은 단추가 조용히 시험 충전(덩어리 test:1, 「시험」 표시만)
-var KP={on:0,d:null,redraw:null,k:1};   // k = 고른 충전 묶음 (기본 10,000P)
+var KP={on:0,d:null,redraw:null,k:1,pk:0};   // pk = 고른 이용권 (기본 1개월)   // k = 고른 충전 묶음 (기본 10,000P)
 function ptPer(q){ var v=q.n*((KP.d&&KP.d.use&&KP.d.use.song)||1000)/(q.n+q.b); return (v%1?"≈":"")+ptS(v); }   // 곡당 P
 function wonL(v){ return window.LANG==="ko"?Math.round(v).toLocaleString("ko-KR")+"원":won(v); }   // 결제 단추 — 한국어는 「10,000원」
 Object.assign(TX,{
  kwPayB:{ko:"결제",en:"Pay",ja:"決済",zhs:"支付",zht:"支付",es:"Pagar"},
  kwBuyB:{ko:"구매",en:"Buy",ja:"購入",zhs:"购买",zht:"購買",es:"Comprar"},
- kwBuyPt:{ko:"곡 이용권 구매(포인트)",en:"Buy song pass (points)",ja:"曲チケット購入（ポイント）",zhs:"购买点歌券（积分）",zht:"購買點歌券（點數）",es:"Comprar bono (puntos)"},
+ kwBuyPt:{ko:"이용권 구매",en:"Buy a pass",ja:"利用券を購入",zhs:"购买畅唱券",zht:"購買暢唱券",es:"Comprar bono"},
+ psM:{ko:"{n}개월",en:"{n} months",ja:"{n}か月",zhs:"{n}个月",zht:"{n}個月",es:"{n} meses"},
+ psM1:{ko:"{n}개월",en:"{n} month",ja:"{n}か月",zhs:"{n}个月",zht:"{n}個月",es:"{n} mes"},
+ psUnl:{ko:"기간 안에는 노래 무제한",en:"Unlimited singing",ja:"期間中は歌い放題",zhs:"有效期内无限畅唱",zht:"有效期內無限暢唱",es:"Canta sin límite"},
+ psPer:{ko:"월 {w}",en:"{w}/month",ja:"月 {w}",zhs:"每月 {w}",zht:"每月 {w}",es:"{w}/mes"},
+ psNo:{ko:"포인트로 구매 · 자동 연장 없음",en:"Bought with points · no auto-renewal",ja:"ポイントで購入・自動更新なし",zhs:"用积分购买 · 不自动续费",zht:"用點數購買 · 不自動續費",es:"Con puntos · sin renovación automática"},
+ psExt:{ko:"이용 중 — 지금 끝나는 날({d})부터 이어집니다",en:"Active — adds on from the current end date ({d})",ja:"利用中 — 今の終了日（{d}）から続きます",zhs:"使用中 — 从当前到期日（{d}）起接续",zht:"使用中 — 從目前到期日（{d}）起接續",es:"Activo — se suma desde la fecha de fin actual ({d})"},
+ psEnd:{ko:"이용권 ~{d}",en:"Pass ~{d}",ja:"利用券 ~{d}",zhs:"畅唱券 ~{d}",zht:"暢唱券 ~{d}",es:"Bono ~{d}"},
+ kwSongN:{ko:"잔여 곡 {n}",en:"Songs {n}",ja:"残り曲 {n}",zhs:"剩余歌曲 {n}",zht:"剩餘歌曲 {n}",es:"Canciones {n}"},
+ psRf:{ko:"이용권 환불",en:"Pass refund",ja:"利用券の返金",zhs:"畅唱券退款",zht:"暢唱券退款",es:"Reembolso del bono"},
+ psRfB:{ko:"환불",en:"Refund",ja:"返金",zhs:"退款",zht:"退款",es:"Reembolsar"},
+ psRfN:{ko:"구매일로부터 7일 이내이고 노래를 부르지 않았으면 유료 포인트 몫 전액, 그 밖에는 남은 일수 금액에서 10%를 공제한 금액을 결제한 수단으로 환불합니다. 무료 포인트로 산 몫은 환불하지 않습니다. 환불을 요청하면 이용권은 바로 끝납니다.",en:"Within 7 days of purchase and if you have not sung, the full paid-point share; otherwise the amount for the remaining days minus 10%, refunded to your payment method. The share bought with free points is not refunded. The pass ends as soon as you request the refund.",ja:"購入日から7日以内でまだ歌っていなければ有料ポイント分を全額、それ以外は残り日数分の金額から10%を差し引いた金額を、決済した手段で返金します。無料ポイントで購入した分は返金しません。返金を申請すると利用券はすぐに終了します。",zhs:"购买之日起7天内且未唱歌的全额退还付费积分部分，其他情况退还剩余天数金额扣除10%后的金额，退回原支付方式。用免费积分购买的部分不予退款。申请退款后畅唱券立即结束。",zht:"購買之日起7天內且未唱歌者全額退還付費點數部分，其他情況退還剩餘天數金額扣除10%後的金額，退回原付款方式。以免費點數購買的部分不予退款。申請退款後暢唱券立即結束。",es:"En los 7 días siguientes a la compra y si no has cantado, toda la parte pagada con puntos de pago; si no, el importe de los días restantes menos un 10%, devuelto a tu método de pago. La parte comprada con puntos gratuitos no se reembolsa. El bono termina en cuanto pides el reembolso."},
+ psRfFull:{ko:"7일 이내 · 미사용 · 전액",en:"Within 7 days · unused · full",ja:"7日以内・未使用・全額",zhs:"7天内 · 未使用 · 全额",zht:"7天內 · 未使用 · 全額",es:"En 7 días · sin usar · completo"},
+ psRfPro:{ko:"잔여 {n}일 − 10%",en:"{n} days left − 10%",ja:"残り{n}日 − 10%",zhs:"剩余{n}天 − 10%",zht:"剩餘{n}天 − 10%",es:"{n} días restantes − 10%"},
+ psRfOk:{ko:"환불 요청이 접수되었습니다. 확인 후 결제한 수단으로 {w}을 환불해 드립니다.",en:"Your refund request was received. After review, {w} will be refunded to your payment method.",ja:"返金申請を受け付けました。確認後、決済した手段で{w}を返金します。",zhs:"已收到退款申请。确认后将 {w} 退回原支付方式。",zht:"已收到退款申請。確認後將 {w} 退回原付款方式。",es:"Recibimos tu solicitud. Tras revisarla, reembolsaremos {w} a tu método de pago."},
+ psRfAmt:{ko:"환불 예정 금액 {w} (영업일 기준 처리)",en:"Estimated refund {w} (processed on business days)",ja:"返金予定額 {w}（営業日に処理）",zhs:"预计退款金额 {w}（按工作日处理）",zht:"預計退款金額 {w}（依工作天處理）",es:"Reembolso estimado {w} (se tramita en días hábiles)"},
+ psRfFx:{ko:"무료 {n} 몫 제외",en:"{n} free-point share excluded",ja:"無料 {n} 分は対象外",zhs:"免费 {n} 部分除外",zht:"免費 {n} 部分除外",es:"excluida la parte de {n} gratis"},
+ psRfNo:{ko:"환불할 이용권이 없습니다.",en:"No pass to refund.",ja:"返金できる利用券がありません。",zhs:"没有可退款的畅唱券。",zht:"沒有可退款的暢唱券。",es:"No hay ningún bono que reembolsar."},
  kwUseAmt:{ko:"사용 포인트",en:"Points to use",ja:"使用ポイント",zhs:"使用积分",zht:"使用點數",es:"Puntos a usar"},
  kwLow:{ko:"포인트 부족 → 충전",en:"Not enough points → Top up",ja:"ポイント不足 → チャージ",zhs:"积分不足 → 充值",zht:"點數不足 → 儲值",es:"Puntos insuficientes → Recargar"},
  kwBar:{ko:"잔여 곡 {n} · {p}",en:"Songs {n} · {p}",ja:"残り曲 {n} · {p}",zhs:"剩余歌曲 {n} · {p}",zht:"剩餘歌曲 {n} · {p}",es:"Canciones {n} · {p}"},
@@ -843,7 +865,7 @@ Object.assign(TX,{
  kwPaid:{ko:"유료",en:"Paid",ja:"有料",zhs:"付费",zht:"付費",es:"De pago"},
  kwFree:{ko:"무료",en:"Free",ja:"無料",zhs:"免费",zht:"免費",es:"Gratis"},
  kwChg:{ko:"충전",en:"Top up",ja:"チャージ",zhs:"充值",zht:"儲值",es:"Recargar"},
- kwBuy:{ko:"곡 이용권 구매",en:"Buy song pass",ja:"曲チケット購入",zhs:"购买点歌券",zht:"購買點歌券",es:"Comprar bono"},
+ kwBuy:{ko:"이용권 구매",en:"Buy a pass",ja:"利用券を購入",zhs:"购买畅唱券",zht:"購買暢唱券",es:"Comprar bono"},
  kwHist:{ko:"사용 내역",en:"History",ja:"利用履歴",zhs:"使用记录",zht:"使用記錄",es:"Historial"},
  kwRf:{ko:"환불 요청",en:"Request refund",ja:"返金申請",zhs:"申请退款",zht:"申請退款",es:"Solicitar reembolso"},
  kwAcct:{ko:"계정",en:"Account",ja:"アカウント",zhs:"账户",zht:"帳戶",es:"Cuenta"},
@@ -883,10 +905,10 @@ Object.assign(TX,{
  kwSoonC:{ko:"{p}가 {d}에 만료됩니다. 충전일로부터 5년까지 연장되어 더 연장할 수 없으며, 만료 뒤에는 환불 기간도 끝납니다. 필요하면 만료 전에 사용하거나 환불을 요청해 주세요.",en:"{p} expire on {d}. They have reached the 5-year limit from top-up, so they cannot be extended and the refund window ends at expiry. Please use them or request a refund before then.",ja:"{p}が{d}に期限切れになります。チャージ日から5年まで延長済みのためこれ以上延長できず、期限後は返金期間も終わります。必要なら期限前に使うか返金を申請してください。",zhs:"{p}将于{d}到期。已延长至充值日起5年，无法再延长，到期后退款期限也随之结束。如有需要，请在到期前使用或申请退款。",zht:"{p}將於{d}到期。已延長至儲值日起5年，無法再延長，到期後退款期限也隨之結束。如有需要，請在到期前使用或申請退款。",es:"{p} caducan el {d}. Han llegado al límite de 5 años desde la recarga: no se pueden ampliar y el plazo de reembolso termina al caducar. Úsalos o pide el reembolso antes."},
  kwR5:{ko:"{d}까지 90% 환불 가능",en:"90% refundable until {d}",ja:"{d}まで90%返金可",zhs:"{d}前可退90%",zht:"{d}前可退90%",es:"90% reembolsable hasta {d}"},
  kwPtBuy:{ko:"{c}로 구매",en:"Buy with {c}",ja:"{c}で購入",zhs:"用 {c} 购买",zht:"用 {c} 購買",es:"Comprar con {c}"},
- kwH:{ko:"충전|무료 지급|사용|사용 취소|환불 요청|환불|환불 거절|스토어 환불|기간 연장",en:"Top-up|Free points|Used|Use cancelled|Refund requested|Refunded|Refund declined|Store refund|Extended",ja:"チャージ|無料付与|使用|使用取消|返金申請|返金|返金却下|ストア返金|期間延長",zhs:"充值|免费赠送|使用|取消使用|申请退款|退款|拒绝退款|商店退款|延长有效期",zht:"儲值|免費贈送|使用|取消使用|申請退款|退款|拒絕退款|商店退款|延長有效期",es:"Recarga|Puntos gratis|Uso|Uso cancelado|Reembolso solicitado|Reembolsado|Reembolso rechazado|Reembolso de tienda|Ampliado"},
+ kwH:{ko:"충전|무료 지급|사용|사용 취소|환불 요청|환불|환불 거절|스토어 환불|기간 연장|이용권 구매|이용권 환불",en:"Top-up|Free points|Used|Use cancelled|Refund requested|Refunded|Refund declined|Store refund|Extended|Pass bought|Pass refunded",ja:"チャージ|無料付与|使用|使用取消|返金申請|返金|返金却下|ストア返金|期間延長|利用券購入|利用券返金",zhs:"充值|免费赠送|使用|取消使用|申请退款|退款|拒绝退款|商店退款|延长有效期|购买畅唱券|畅唱券退款",zht:"儲值|免費贈送|使用|取消使用|申請退款|退款|拒絕退款|商店退款|延長有效期|購買暢唱券|暢唱券退款",es:"Recarga|Puntos gratis|Uso|Uso cancelado|Reembolso solicitado|Reembolsado|Reembolso rechazado|Reembolso de tienda|Ampliado|Bono comprado|Bono reembolsado"},
  kwW:{ko:"곡 이용권|상황 사진|AI 영상|도란도란|도란도란 연장|우리끼리 노래 방",en:"Song pass|AI photo|AI video|Doran-doran|Doran-doran extension|Just Us Karaoke room",ja:"曲チケット|シーン写真|AI動画|ドランドラン|ドランドラン延長|仲間だけカラオケ",zhs:"点歌券|情景照片|AI视频|Doran-doran|Doran-doran 延长|小圈子K歌房",zht:"點歌券|情境照片|AI影片|Doran-doran|Doran-doran 延長|小圈子K歌房",es:"Bono de canciones|Foto IA|Video IA|Doran-doran|Ampliación Doran-doran|Sala Solo nosotros Karaoke"}
 });
-var KWH=["charge","bonus","use","undo","refreq","refund","refrej","void","ext"], KWW=["song","ai","aiv","dor","dorx","room"];
+var KWH=["charge","bonus","use","undo","refreq","refund","refrej","void","ext","pass","passrf"], KWW=["song","ai","aiv","dor","dorx","room"];
 function kTx(o,i){ return String(L(o)).split("|")[i]||""; }
 function ptS(n){ return Math.round(n||0).toLocaleString("ko-KR")+"P"; }
 function kYmd(ms){ return new Date(ms+9*3600e3).toISOString().slice(0,10); }
@@ -896,7 +918,7 @@ function kptOn(){ return !!(KP.on&&KP.d&&karSigned()); }
 function kptPost(path,o){ var q={sess:sess()}; for(var k in o) q[k]=o[k]; var h={"Content-Type":"application/json"};
   return fetch(HUB+"/shop/kpt/"+path,{method:"POST",headers:h,body:JSON.stringify(q)}).then(function(r){ return r.json().catch(function(){ return {ok:false,err:"http"}; }); }); }
 function kptLoad(){ if(!sess()){ KP.on=0; KP.d=null; barPaint(); return Promise.resolve(null); }
-  return kptPost("me",{}).then(function(j){ if(j&&j.ok&&!j.closed){ KP.on=1; KP.d=j; KB.left=+j.left||0; if(kApp()&&!KP.rec){ KP.rec=1; kGpRecover(); } if(!KP.pr){ KP.pr=1; kPromoWait(0); } } else { KP.on=0; KP.d=null; } barPaint(); if(KP.redraw) KP.redraw(); return j; }).catch(function(){ return null; }); }
+  return kptPost("me",{}).then(function(j){ if(j&&j.ok&&!j.closed){ KP.on=1; KP.d=j; KB.left=+j.left||0; if(kApp()&&!KP.rec){ KP.rec=1; kGpRecover(); } if(!KP.pr){ KP.pr=1; kPromoWait(0); } } else { KP.on=0; KP.d=null; } barPaint(); if(KP.redraw) KP.redraw(); if(KB.redraw) KB.redraw(); return j; }).catch(function(){ return null; }); }
 // 사용 미리 보기 — 「3,000P 사용 → 9,000P 남음」 · 확인하면 go() (모자라면 충전으로)
 function kptAsk(cost,title,go,note,okL,onX){ /* okL = 마지막 단추 글자 (구매 등, 없으면 확인) */ var b=box(); if(!b) return; var o=document.createElement("div"); o.className="kpm kptq"; b.appendChild(o); var bal=KP.d?KP.d.bal.total:0, busy=false;   // note = 금액 대신 안내 글 (연장 등 돈 안 드는 확인)
   var draw=function(msg){ var short=!note&&bal<cost;
@@ -932,8 +954,8 @@ function kwOpen(v0){ var b=box(); if(!b) return; var o=b.querySelector(".kwal");
         +(msg?'<div class="kerr">'+esc(msg)+'</div>':'')+'<button type="button" class="kgo" data-rq="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwRf))+' · '+won(rf.total)+'</button>';
       h+='<div class="klk"><a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+' ›</a></div><button type="button" class="kc" data-bk="1">'+esc(L(TX.back))+'</button></div>'; }
     else if(v==="hist"){ h+='<b class="kh">'+esc(L(TX.kwHist))+'</b><div class="kwls kwhs">'+((d.hist||[]).map(function(x){ var i=KWH.indexOf(x.op), w=KWW.indexOf(x.what);
-        return '<div><span>'+esc(kTx(TX.kwH,i<0?2:i))+(w>=0?' · '+esc(kTx(TX.kwW,w)):'')+(x.songs?' · '+esc(songsTx(x.songs)):'')+'<small>'+esc(new Date(x.at+9*3600e3).toISOString().slice(0,16).replace("T"," "))+'</small></span><b class="'+(x.pt>0?'kwp':x.pt<0?'kwm':'')+'">'+(x.pt>0?'+':'')+(x.pt?ptS(x.pt):x.won?won(x.won):'')+'</b></div>'; }).join("")||'<p class="km">'+esc(L(TX.kwNone))+'</p>')+'</div><button type="button" class="kc" data-bk="1">'+esc(L(TX.back))+'</button></div>'; }
-    else { h+='<div class="kwb"><small>'+esc(L(TX.kwBal))+'</small><b>'+ptS(B.total)+'</b><span>'+esc(L(TX.kwPaid))+' '+ptS(B.paid)+' · '+esc(L(TX.kwFree))+' '+ptS(B.free)+'</span><span>'+esc(fmtN(L(TX.lftN),d.left||0))+'</span></div>'
+        return '<div><span>'+esc(kTx(TX.kwH,i<0?2:i))+(w>=0?' · '+esc(kTx(TX.kwW,w)):'')+(x.songs?' · '+esc(songsTx(x.songs)):'')+(x.op==="pass"&&x.m?' · '+esc(kMon(x.m)):'')+'<small>'+esc(new Date(x.at+9*3600e3).toISOString().slice(0,16).replace("T"," "))+'</small></span><b class="'+(x.pt>0?'kwp':x.pt<0?'kwm':'')+'">'+(x.pt>0?'+':'')+(x.pt?ptS(x.pt):x.won?won(x.won):'')+'</b></div>'; }).join("")||'<p class="km">'+esc(L(TX.kwNone))+'</p>')+'</div><button type="button" class="kc" data-bk="1">'+esc(L(TX.back))+'</button></div>'; }
+    else { h+='<div class="kwb"><small>'+esc(L(TX.kwBal))+'</small><b>'+ptS(B.total)+'</b><span>'+esc(L(TX.kwPaid))+' '+ptS(B.paid)+' · '+esc(L(TX.kwFree))+' '+ptS(B.free)+'</span>'+(d.pass&&d.pass.on?'<span>'+esc(tf(L(TX.psEnd),{d:kMd(d.pass.end)}))+'</span>':'')+(d.left>0?'<span>'+esc(fmtN(L(TX.lftN),d.left))+'</span>':'')+'</div>'
         +'<div class="kwbt"><button type="button" class="kgo" data-v="chg">'+esc(L(TX.kwChg))+'</button><button type="button" class="kgo kwg2" data-buy="1">'+esc(L(TX.kwBuy))+'</button></div>'
         +((d.soon||[]).length?'<div class="kerr kwsoon">'+esc(tf(L(d.soon.every(function(l){ return l.cap; })?TX.kwSoonC:TX.kwSoon),{p:ptS(d.soon.reduce(function(a,l){ return a+l.left; },0)),d:kYmd(Math.min.apply(null,d.soon.map(function(l){ return l.exp; })))}))+'</div>':'')   // 만료 30일 안 알림 (10-31)
         +'<b class="kh">'+esc(L(TX.kwLots))+'</b><div class="kwls">'+((d.lots||[]).map(function(l){ var ex=l.exp<=now;
@@ -962,11 +984,30 @@ function kwOpen(v0){ var b=box(); if(!b) return; var o=b.querySelector(".kwal");
   KP.redraw=function(){ if(o.isConnected&&!busy) draw(); };
   o.onclick=function(e){ if(e.target===o&&!busy){ o.remove(); KP.redraw=null; } };
   draw(); if(v==="rf") rfLoad(); kptLoad(); }
-// 곡 이용권을 포인트로 — 묶음 = 산 곡 × 1,000P (서비스 곡은 덤) · 미리 보기 뒤 허브 /shop/kpt/use
-function kptSong(k){ var x=KB.packs[k]||KB.packs[0], cost=x.n*((KP.d&&KP.d.use&&KP.d.use.song)||1000), rid=kRid();
-  kptAsk(cost,L(TX.kb)+" "+pkName(x)+" · "+songsTx(x.n+x.b),function(done){
-    kptPost("use",{what:"song",k:k,rid:rid}).then(function(j){ if(j&&j.ok){ try{ ntap("kara_pt","song_"+(x.n+x.b)); }catch(e){} done(); kptLoad().then(function(){ soon(L(TX.kwDone)+" "+songsTx(x.n+x.b)); }); }
+// ── 이용권 (사장님 10-31 「곡당 판매 → 기간 이용권」) — 허브 /shop/kpt/pass {k} · 가격 = 허브 passP (관리자 「이용권」) · 기간 안에는 노래 무제한 · 자동 연장 없음 · 이용 중에 사면 끝나는 날부터 이어 붙임
+function kPassP(){ var d=KP.d; return d&&d.passP&&d.passP.length?d.passP:[{m:1,p:7000},{m:3,p:17000},{m:6,p:30000},{m:12,p:50000}]; }
+function kMon(m){ return tf(L(m===1?TX.psM1:TX.psM),{n:m}); }
+function kMd(ms){ var s=kYmd(ms), md=(+s.slice(5,7))+"."+s.slice(8,10); return s.slice(0,4)!==kYmd(Date.now()).slice(0,4)?s.slice(0,4)+"."+md:md; }   // 「11.30」 · 해가 다르면 「2027.2.28」
+function kBarTx(){ var d=KP.d, ps=d&&d.pass, n=karLeft(), a=[]; if(ps&&ps.on) a.push(tf(L(TX.psEnd),{d:kMd(ps.end)})); else if(n>0) a.push(fmtN(L(TX.kwSongN),n)); if(d) a.push(ptS(d.bal.total)); return a.join(" · ")||L(TX.kwT); }
+function kPassBuy(k){ var q=kPassP()[k]||kPassP()[0], rid=kRid();
+  kptAsk(q.p,L(TX.kb)+" "+kMon(q.m),function(done){
+    kptPost("pass",{k:k,rid:rid}).then(function(j){ if(j&&j.ok){ try{ ntap("kara_pt","pass_"+q.m); }catch(e){} done(); kptLoad().then(function(){ soon(L(TX.kwDone)+" "+tf(L(TX.psEnd),{d:kMd(j.to)})); }); }
       else done(j&&j.err==="short"?tf(L(TX.kwShort),{h:ptS(j.have||0)}):L(TX.efail)); }).catch(function(){ done(L(TX.efail)); }); },"",L(TX.kwBuyB)); }
+// 노래를 틀 때 — 이용권 기간이면 「사용」 표시 한 번 (7일 이내 전액 환불 기준) · 차감 없음
+function kPassUse(){ var d=KP.d, ps=d&&d.pass; if(!kptOn()||!ps||!ps.on||ps.used||KP.pu) return; KP.pu=1;
+  kptPost("passuse",{rid:kRid()}).then(function(j){ KP.pu=0; if(j&&j.ok&&j.n>=0&&KP.d&&KP.d.pass) KP.d.pass.used=1; }).catch(function(){ KP.pu=0; }); }
+function kPassRf(){ var b=box(); if(!b) return; var o=document.createElement("div"); o.className="kpm kptq kpsrf"; b.appendChild(o); var c=null, busy=false, msg="", done=0, rid=kRid(), lg=esc(window.LANG||"en");
+  var draw=function(){ var h='<div><h3>'+esc(L(TX.psRf))+'</h3><p class="km">'+esc(L(TX.psRfN))+'</p>';
+    if(done) h+='<div class="kdone">'+esc(tf(L(TX.psRfOk),{w:wonL(done)}))+'</div>';
+    else if(!c) h+='<p class="km">'+esc(L(TX.lo))+'</p>';
+    else if(!c.rows||!c.rows.length) h+='<div class="kerr">'+esc(L(TX.psRfNo))+'</div>';
+    else h+='<div class="kwls">'+c.rows.map(function(r){ return '<div><span>'+esc(kMon(r.m))+' · '+esc(kMd(r.from))+'~'+esc(kMd(r.to))+'<small>'+esc(r.kind==="d7"?L(TX.psRfFull):tf(L(TX.psRfPro),{n:r.remD}))+(r.free?' · '+esc(tf(L(TX.psRfFx),{n:ptS(r.free)})):'')+'</small></span><b>'+wonL(r.refund)+'</b></div>'; }).join("")+'</div>'
+      +'<div class="kwuse">'+esc(tf(L(TX.psRfAmt),{w:wonL(c.total)}))+'</div>'+(c.store?'<p class="km">'+esc(L(TX.kwGpN))+'</p>':'')+(msg?'<div class="kerr">'+esc(msg)+'</div>':'')+'<button type="button" class="kgo" data-rq="1"'+(busy?' disabled':'')+'>'+esc(L(TX.psRfB))+'</button>';
+    h+='<div class="klk"><a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+' ›</a></div><button type="button" class="kc">'+esc(L(done?TX.ok:TX.back))+'</button></div>';
+    o.innerHTML=h; o.querySelector(".kc").onclick=function(){ if(!busy) o.remove(); };
+    var y=o.querySelector("[data-rq]"); if(y) y.onclick=function(){ if(busy) return; busy=true; draw();
+      kptPost("passrf",{rid:rid}).then(function(j){ busy=false; if(j&&j.ok){ done=String(j.total||0); try{ ntap("kara_pt","pass_rf"); }catch(e){} kptLoad(); } else msg=L(TX.efail); if(o.isConnected) draw(); }).catch(function(){ busy=false; msg=L(TX.efail); draw(); }); }; };
+  draw(); kptPost("passrf",{preview:true,rid:kRid()}).then(function(j){ c=j&&j.calc?j.calc:{rows:[]}; draw(); }).catch(function(){ c={rows:[]}; draw(); }); }
 // ── 앱 결제 (구글 플레이) — 플러그인 @capgo/native-purchases (Capacitor 8) · 상품 pt_50000·pt_100000·pt_150000·pt_200000 (소모성, 10-31 밤) · 옛 pt_5000·pt_10000·pt_30000 은 복구만 (허브 KPT_GP_OLD)
 //   구매 → 허브 /shop/kpt/charge {rail:"gplay", pid, token} 가 확인·충전 → 허브 OK 뒤에만 consumePurchase (실패하면 남겨 두고 다음에 다시 보냄 — 허브는 같은 토큰을 한 번만 충전)
 //   허브 확인은 서비스 계정(GPLAY_SA) 넣기 전엔 d.live.gplay 0 → 「결제」 = 시험 충전(kGpTest) · 넣으면 자동으로 진짜 구매 창 (플레이 콘솔 상품도 있어야 함)
@@ -1991,10 +2032,10 @@ function kRoomJoin(tok){ var b=box(); if(!b||!/^[A-Za-z0-9]{16}$/.test(String(to
     .catch(function(){ var sk=b.querySelector(".ksoon"); if(sk) sk.remove(); kMsg(b,L(TX.upNet),[[L(TX.ok),null]]); }); }
 window.karRoomJoin=kRoomJoin;
 function ntcOpen(){ var b=box(); if(!b) return; var o=b.querySelector(".kntc"); if(o) o.remove();
-  var lg=window.LANG||"en", li=TX.ntcL[lg]||TX.ntcL.en, P=KB.packs, X=P[P.length-1], s=X.n+X.b, u=Math.min(3,s), r1=Math.max(0,Math.floor((X.p-u*1000)/10)*10), r2=Math.floor(r1*9/100)*10;
-  var first=tf(L(TX.ntcP0),{list:P.map(function(q){ return (q.b?q.n+"+"+q.b+" ("+won(q.p)+" · "+songsTx(q.n+q.b)+")":songsTx(q.n)+" "+won(q.p)); }).join(" · ")});
-  var ex=tf(L(TX.ntcEx),{pk:pkName(X),w:won(X.p),s:s,u:u,c:won(u*1000),r:won(r1),r2:won(r2)});
-  var all=[first,li[0],li[1],ex,li[2]];
+  var lg=window.LANG||"en", li=TX.ntcL[lg]||TX.ntcL.en, PP=kPassP(), X=PP[0], span=30, u=10, dl=span-u, a=Math.floor(X.p*dl/span), r=Math.floor(X.p*dl/span*0.9/10)*10;   // 예: 1개월(30일)을 10일째 환불
+  var first=tf(L(TX.ntcP0),{list:PP.map(function(q){ return kMon(q.m)+" "+ptS(q.p); }).join(" · ")});
+  var ex=tf(L(TX.ntcEx),{m:kMon(X.m),w:ptS(X.p),u:u,d:dl,a:wonL(a),r:wonL(r)});
+  var all=[first,li[0],li[1],ex,li[2],li[3]];
   o=document.createElement("div"); o.className="kpm kntc"; b.appendChild(o);
   o.innerHTML='<div><h3>'+esc(L(TX.ntc))+'</h3><ul>'+all.map(function(t){ return '<li>'+esc(t)+'</li>'; }).join("")+'</ul>'
     +'<a class="kra" href="refund.html?lang='+encodeURIComponent(TX.ntcL[lg]?lg:"en")+'" target="_blank" rel="noopener">'+esc(L(TX.ntcR))+' ›</a>'
@@ -2171,7 +2212,7 @@ function close(){ try{ kzReset(); sessionStorage.removeItem("mpv_kbg"); sessionS
  +"#karBox .kdring .kdt{position:absolute;width:26%;height:26%;border-radius:50%}#karBox .kdring .kdt.kdc0{width:31%;height:31%;left:34.5%;top:34.5%;border:2px solid #ffe066}"
  +"#karBox .kdring .kdt .kdnm2{left:50%;transform:translateX(-50%);bottom:8%;max-width:80%;font-size:10px}#karBox .kdring .kdt .kdtm2{right:auto;left:50%;transform:translateX(-50%);top:6%;bottom:auto;font-size:11px;padding:2px 5px}#karBox .kdring .kdt .kdmu{right:14%;top:12%}#karBox .kdring .kde small{font-size:9.5px}"
  + [0,1,2,3,4,5,6,7].map(function(i){ var a=(-90+i*45)*Math.PI/180, x=50+37*Math.cos(a)-13, y=50+37*Math.sin(a)-13; return "#karBox .kdring .kdr"+i+"{left:"+x.toFixed(2)+"%;top:"+y.toFixed(2)+"%}"; }).join("")
- +"#karBox .kdsong{flex:0 0 auto;padding:6px 10px 0}#karBox .kdyt{position:relative;width:100%;max-width:520px;margin:0 auto;aspect-ratio:16/9;max-height:28vh;border-radius:10px;overflow:hidden;background:#000}#karBox .kdyt iframe,#karBox .kdyt>div{position:absolute;inset:0;width:100%;height:100%}"
+ +"#karBox .kdsong{flex:0 0 auto;padding:6px 10px 0}#karBox .kdyt{position:relative;z-index:2;width:100%;max-width:520px;margin:0 auto;aspect-ratio:16/9;max-height:28vh;background:#000;isolation:isolate;transform:translateZ(0)}#karBox .kdyt iframe,#karBox .kdyt>div{position:absolute;inset:0;width:100%;height:100%}"
  +"#karBox .kdsb{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:6px 0 0}#karBox .kdsb>b{flex:1 1 160px;min-width:0;display:flex;align-items:center;gap:6px;font-size:13px;color:#ffe066}#karBox .kdsb>b span{display:flex;flex-direction:column;min-width:0}#karBox .kdsb small{color:#cfc6e8;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#karBox .kdsbi{width:30px;height:30px;flex:0 0 auto}"
  +"#karBox .kdsb button{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;border-radius:999px;padding:6px 11px;font-weight:800;font-size:12.5px;cursor:pointer}#karBox .kdsb .kdduck.on{border-color:#7CFFB2;color:#7CFFB2}#karBox .kdsb .kdstop{border-color:#ff7a9a;color:#ff9ab3}"
  +"#karBox .kdctl{flex:0 0 auto;display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:8px 8px max(10px,env(safe-area-inset-bottom))}"
@@ -2181,7 +2222,7 @@ function close(){ try{ kzReset(); sessionStorage.removeItem("mpv_kbg"); sessionS
  +"#karBox .kdgm::before{content:'';position:absolute;left:8px;top:2px;width:8px;height:13px;border-radius:5px;background:#fff}#karBox .kdgm::after{content:'';position:absolute;left:5px;top:9px;width:12px;height:8px;border:2px solid #fff;border-top:0;border-radius:0 0 8px 8px}"
  +"#karBox .kdgc::before{content:'';position:absolute;left:1px;top:6px;width:15px;height:12px;border-radius:3px;background:#fff}#karBox .kdgc::after{content:'';position:absolute;left:16px;top:8px;border-left:7px solid #fff;border-top:4px solid transparent;border-bottom:4px solid transparent}"
  +"#karBox .kdgf::before{content:'';position:absolute;inset:3px;border:3px solid #fff;border-radius:50%;border-right-color:transparent}#karBox .kdgf::after{content:'';position:absolute;right:2px;top:3px;border-left:6px solid #fff;border-top:4px solid transparent;border-bottom:4px solid transparent;transform:rotate(60deg)}"
- +"#karBox .kdgx::before,#karBox .kdgx::after{content:'';position:absolute;left:2px;top:10px;width:20px;height:4px;border-radius:2px;background:#ff9ab3;transform:rotate(45deg)}#karBox .kdgx::after{transform:rotate(-45deg)}"
+ +"#karBox .kdgx::before,#karBox .kdgx::after{content:'';position:absolute;left:2px;top:10px;width:20px;height:4px;border-radius:2px;background:#ff9ab3;transform:rotate(45deg)}#karBox .kdx span{white-space:pre-line;line-height:1.15;text-align:center}#karBox .kdgx::after{transform:rotate(-45deg)}"
  +"#karBox .kdctl button.off{background:rgba(255,85,119,.16);border-color:#ff7a9a;color:#ffb3c4}#karBox .kdctl button.off .kdg::after,#karBox .kdctl button.off .kdg{opacity:.85}#karBox .kdctl button.off .kdgm,#karBox .kdctl button.off .kdgc{background:linear-gradient(45deg,transparent 46%,#ff5577 46%,#ff5577 56%,transparent 56%)}"
  +"#karBox .kdwarn{position:absolute;left:10px;right:10px;top:96px;z-index:7;background:rgba(29,24,48,.97);border:1px solid #ffe066;border-radius:14px;padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}#karBox .kdwarn p{flex:1 1 100%;margin:0;font-weight:800;color:#ffe066;line-height:1.5}#karBox .kdwarn .kgo,#karBox .kdwarn .kc{flex:1;border:0;border-radius:10px;padding:10px;font-weight:900;font-size:14px;cursor:pointer}#karBox .kdwarn .kgo{background:#ffe066;color:#1a1300}#karBox .kdwarn .kc{background:rgba(255,255,255,.1);color:#fff}"
  +"#karBox .kdrm{min-height:64px;resize:vertical}"
@@ -2223,7 +2264,7 @@ Object.assign(TX,{
  dorRtE:{ko:"연결하지 못했습니다. 잠시 후 다시 시도해 주세요.",en:"We couldn't connect. Please try again in a moment.",ja:"接続できませんでした。しばらくしてからもう一度お試しください。",zhs:"无法连接，请稍后再试。",zht:"無法連線，請稍後再試。",es:"No pudimos conectar. Inténtalo de nuevo en un momento."},
  dorRf:{ko:"사용한 포인트는 되돌려 드렸습니다.",en:"Your points have been returned.",ja:"使用したポイントはお返ししました。",zhs:"已退还所用积分。",zht:"已退還所用點數。",es:"Te devolvimos los puntos."},
  dorFull:{ko:"방 인원이 가득 찼어요 (최대 9명).",en:"This room is full (up to 9 people).",ja:"ルームが満員です（最大9人）。",zhs:"房间已满（最多9人）。",zht:"房間已滿（最多9人）。",es:"La sala está llena (máximo 9 personas)."},
- dorKick:{ko:"방장이 이 방에서 내보냈어요.",en:"The host removed you from this room.",ja:"ホストによりこのルームから退出させられました。",zhs:"房主已将你移出此房间。",zht:"房主已將你移出此房間。",es:"El anfitrión te sacó de esta sala."},
+ dorKick:{ko:"방장이 이 방에서 강퇴했어요.",en:"The host kicked you out of this room.",ja:"ホストによりこのルームから強制退室させられました。",zhs:"房主已将你踢出此房间。",zht:"房主已將你踢出此房間。",es:"El anfitrión te expulsó de esta sala."},
  dorEnd:{ko:"방이 종료되었어요.",en:"The room has ended.",ja:"ルームは終了しました。",zhs:"房间已结束。",zht:"房間已結束。",es:"La sala ha terminado."},
  dorEndT:{ko:"사용 시간이 끝나 방이 종료되었어요.",en:"Time is up, so the room has ended.",ja:"使用時間が終わり、ルームは終了しました。",zhs:"使用时间已到，房间已结束。",zht:"使用時間已到，房間已結束。",es:"Se acabó el tiempo y la sala terminó."},
  dorNo:{ko:"유효하지 않은 초대 링크예요. 방이 종료되었을 수 있어요.",en:"This invitation link isn't valid. The room may have ended.",ja:"無効な招待リンクです。ルームが終了した可能性があります。",zhs:"邀请链接无效，房间可能已结束。",zht:"邀請連結無效，房間可能已結束。",es:"Este enlace no es válido. Puede que la sala haya terminado."},
@@ -2231,7 +2272,7 @@ Object.assign(TX,{
  dorMic:{ko:"마이크",en:"Mic",ja:"マイク",zhs:"麦克风",zht:"麥克風",es:"Micro"},
  dorCam:{ko:"카메라",en:"Camera",ja:"カメラ",zhs:"摄像头",zht:"相機",es:"Cámara"},
  dorFlip:{ko:"전환",en:"Flip",ja:"切替",zhs:"切换",zht:"切換",es:"Girar"},
- dorOut:{ko:"퇴장",en:"Leave",ja:"退室",zhs:"退出",zht:"退出",es:"Salir"},
+ dorOut:{ko:"나갔다\n오기",en:"Step\nout",ja:"ちょっと\n外へ",zhs:"暂时\n离开",zht:"暫時\n離開",es:"Salir\nun rato"},
  dorSing:{ko:"노래하기",en:"Sing",ja:"歌う",zhs:"唱歌",zht:"唱歌",es:"Cantar"},
  dorDance:{ko:"춤추기",en:"Dance",ja:"踊る",zhs:"跳舞",zht:"跳舞",es:"Bailar"},
  dorSingT:{ko:"노래할 곡 선택",en:"Choose a song to sing",ja:"歌う曲を選ぶ",zhs:"选择要唱的歌",zht:"選擇要唱的歌",es:"Elige una canción"},
@@ -2240,6 +2281,7 @@ Object.assign(TX,{
  dorSingBy:{ko:"{n}님 노래 중",en:"{n} is singing",ja:"{n}さんが歌っています",zhs:"{n} 正在唱歌",zht:"{n} 正在唱歌",es:"{n} está cantando"},
  dorDanceBy:{ko:"{n}님 춤추는 중",en:"{n} is dancing",ja:"{n}さんが踊っています",zhs:"{n} 正在跳舞",zht:"{n} 正在跳舞",es:"{n} está bailando"},
  dorStop:{ko:"멈춤",en:"Stop",ja:"停止",zhs:"停止",zht:"停止",es:"Parar"},
+ dorReload:{ko:"화면 다시 불러오기",en:"Reload video",ja:"映像を再読み込み",zhs:"重新加载画面",zht:"重新載入畫面",es:"Recargar vídeo"},
  dorPause:{ko:"일시정지",en:"Pause",ja:"一時停止",zhs:"暂停",zht:"暫停",es:"Pausa"},
  dorPlay:{ko:"재생",en:"Play",ja:"再生",zhs:"播放",zht:"播放",es:"Reproducir"},
  dorDuck:{ko:"다른 마이크 줄이기",en:"Lower other mics",ja:"他のマイクを下げる",zhs:"调低其他麦克风",zht:"調低其他麥克風",es:"Bajar otros micros"},
@@ -2251,8 +2293,8 @@ Object.assign(TX,{
  dorExtBy:{ko:"{n}님이 2시간 연장했어요",en:"{n} extended the room by 2 hours",ja:"{n}さんが2時間延長しました",zhs:"{n} 延长了2小时",zht:"{n} 延長了2小時",es:"{n} amplió la sala 2 horas"},
  dorExtDup:{ko:"이미 연장되었어요.",en:"It has already been extended.",ja:"すでに延長されています。",zhs:"已经延长过了。",zht:"已經延長過了。",es:"Ya se amplió."},
  dorExtEarly:{ko:"종료 30분 전부터 연장할 수 있어요.",en:"You can extend from 30 minutes before the end.",ja:"終了30分前から延長できます。",zhs:"结束前30分钟起可以延长。",zht:"結束前30分鐘起可以延長。",es:"Puedes ampliar desde 30 minutos antes del final."},
- dorKickB:{ko:"내보내기",en:"Remove",ja:"退出させる",zhs:"移出",zht:"移出",es:"Sacar"},
- dorKickQ:{ko:"{n}님을 이 방에서 내보낼까요? 다시 입장할 수 없습니다.",en:"Remove {n} from this room? They can't come back in.",ja:"{n}さんをこのルームから退出させますか？再入室はできません。",zhs:"要将 {n} 移出此房间吗？对方无法再进入。",zht:"要將 {n} 移出此房間嗎？對方無法再進入。",es:"¿Sacar a {n} de la sala? No podrá volver a entrar."},
+ dorKickB:{ko:"강퇴",en:"Kick out",ja:"強制退室",zhs:"踢出",zht:"踢出",es:"Expulsar"},
+ dorKickQ:{ko:"{n}님을 강퇴할까요? 다시 입장할 수 없습니다.",en:"Kick {n} out of this room? They can't come back in.",ja:"{n}さんを強制退室させますか？再入室はできません。",zhs:"要将 {n} 踢出此房间吗？对方无法再进入。",zht:"要將 {n} 踢出此房間嗎？對方無法再進入。",es:"¿Expulsar a {n} de la sala? No podrá volver a entrar."},
  dorClose:{ko:"방 종료",en:"End room",ja:"ルームを終了",zhs:"结束房间",zht:"結束房間",es:"Cerrar sala"},
  dorCloseQ:{ko:"방을 종료할까요? 모두 퇴장합니다.",en:"End the room for everyone?",ja:"ルームを終了しますか？全員が退室します。",zhs:"要结束房间吗？所有人都会退出。",zht:"要結束房間嗎？所有人都會退出。",es:"¿Cerrar la sala para todos?"},
  dorRep:{ko:"신고",en:"Report",ja:"通報",zhs:"举报",zht:"檢舉",es:"Denunciar"},
@@ -2275,14 +2317,14 @@ var DR={tok:"",ws:null,me:"",own:0,st:null,pc:null,stream:null,face:"user",cam:1
 function dPost(path,o){ var q={sess:sess()}; for(var k in o) q[k]=o[k]; return fetch(HUB+"/dor/"+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(q)}).then(function(r){ return r.json().catch(function(){ return {ok:false,err:"http"}; }); }).catch(function(){ return {ok:false,err:"net"}; }); }
 function dCost(k){ var d=KP.d&&KP.d.dor; return d&&d[k]!=null?+d[k]:1000; }
 function dNow(){ return Date.now()+DR.off; }   // 칸 시계
-function dMy(v){ try{ if(v===null){ localStorage.removeItem("kdor_my"); return null; } if(v){ localStorage.setItem("kdor_my",JSON.stringify(v)); return v; } var x=JSON.parse(localStorage.getItem("kdor_my")||"null"); return x&&/^[A-Za-z0-9]{16}$/.test(x.tok||"")&&x.exp>Date.now()?x:null; }catch(e){ return null; } }
+function dMy(v){ try{ if(v===null){ localStorage.removeItem("kdor_my"); return null; } if(v){ localStorage.setItem("kdor_my",JSON.stringify(v)); if(v.name) localStorage.setItem("kdor_last",String(v.name)); return v; } var x=JSON.parse(localStorage.getItem("kdor_my")||"null"); return x&&/^[A-Za-z0-9]{16}$/.test(x.tok||"")&&x.exp>Date.now()?x:null; }catch(e){ return null; } }
 function dIc(n,c){ return '<img class="'+(c||"kdic")+'" src="img/kara/'+n+'.png" alt="" aria-hidden="true">'; }
 // 결제 확인 — 로그인·지갑부터 (1,000P 사용 → N P 남음)
 function dPay(cost,title,run,onX){ if(!sess()){ kLogin(function(){ dPay(cost,title,run,onX); }); if(onX) onX(); return; }
   var go=function(){ kptAsk(cost,title,run,"",L(TX.kwOk),onX); };
   if(KP.d) go(); else kptLoad().then(function(){ if(KP.d) go(); else { soon(L(TX.efail)); if(onX) onX(); } }); }
 // 첫 화면 (만들기·내 방)
-function dorOpen(name0){ var b=box(); if(!b) return; var o=pgOpen("kdorh"); if(!o) return; var busy=false, msg="";
+function dorOpen(name0){ var b=box(); if(!b) return; if(!name0) try{ name0=localStorage.getItem("kdor_last")||""; }catch(e){}   // 10-31 지난 방 이름을 미리 채움 var o=pgOpen("kdorh"); if(!o) return; var busy=false, msg="";
   var draw=function(){ var my=dMy();
     o.innerHTML=kHead('<h3>'+esc(L(TX.dorB))+'</h3>')+'<div class="kpgb"><div class="kdhero">'+dIc("dor_l","kdhi")+'<b>'+esc(L(TX.dorB))+'</b><p>'+esc(L(TX.dorS))+'</p></div>'
       +(my?'<div class="kdmy"><span>'+esc(L(TX.dorMine))+'<b>'+esc(my.name||L(TX.dorB))+'</b></span><button type="button" class="kgo" data-my="1">'+esc(L(TX.dorIn))+'</button></div>':'')
@@ -2303,12 +2345,16 @@ function dorJoin(tok){ var b=dHost(); if(!b||!/^[A-Za-z0-9]{16}$/.test(String(to
   if(!sess()){ kMsg(b,L(TX.lgReq),[[L(TX.lgin),function(){ kLogin(function(){ dorJoin(tok); }); }],[L(TX.cancel),null,"kc"]]); return; }
   soon(L(TX.dorIng));
   dPost("info",{tok:tok}).then(function(j){ var sk=b.querySelector(".ksoon"); if(sk) sk.remove();
-    if(!(j&&j.ok)){ kMsg(b,j&&(j.err==="none"||j.err==="tok")?L(TX.dorNo):L(TX.dorRtE),[[L(TX.ok),null]]); return; }
-    if(j.closed){ kMsg(b,L(j.closed==="exp"?TX.dorEndT:TX.dorEnd),[[L(TX.ok),null]]); return; }
+    if(!(j&&j.ok)){ if(j&&(j.err==="none"||j.err==="tok")&&dMy()&&dMy().tok===tok) dMy(null); kMsg(b,j&&(j.err==="none"||j.err==="tok")?L(TX.dorNo):L(TX.dorRtE),[[L(TX.ok),null]]); return; }
+    if(j.closed){ if(dMy()&&dMy().tok===tok) dMy(null); kMsg(b,L(j.closed==="exp"?TX.dorEndT:TX.dorEnd),[[L(TX.ok),null]]); return; }
     if(j.kick){ kMsg(b,L(TX.dorKick),[[L(TX.ok),null]]); return; }
     if(j.full){ kMsg(b,L(TX.dorFull),[[L(TX.ok),null]]); return; }
     if(j.own){ dMy({tok:tok,exp:j.exp,name:j.name}); dorEnter(tok); return; }
     kMsg(b,tf(L(TX.dorJoinQ),{r:j.name||L(TX.dorB),h:j.host||"guest"}),[[L(TX.dorIn),function(){ dorEnter(tok); }],[L(TX.cancel),null,"kc"]]); }); }
+// 전용 앱(StageAudio, 10-31) — 방에 있는 동안 오디오를 통화 모드·스피커 한 가지로 고정, 노래 중엔 잠가 바뀌면 되돌린다 (유튜브 반주 「오디오 렌더기 오류」 막기) · 브라우저는 그대로
+function dNA(){ try{ var C=window.Capacitor; return C&&C.isNativePlatform&&C.isNativePlatform()&&C.Plugins&&C.Plugins.StageAudio||null; }catch(e){ return null; } }
+function dNAc(f,a){ var P=dNA(); if(!P||!P[f]) return Promise.resolve(); return Promise.race([Promise.resolve().then(function(){ return P[f](a||{}); }).catch(function(){}),new Promise(function(r){ setTimeout(r,800); })]); }
+function dNLk(on){ on=!!on; if(!dNA()||DR.nlk===on) return; DR.nlk=on; dNAc("lock",{on:on}); }
 // 사랑방 화면
 function dorEnter(tok){ var b=box(); if(!b||!/^[A-Za-z0-9]{16}$/.test(String(tok||""))) return; if(DR.alive) dorBye(1);
   try{ if(REC.nat) kNatOff(); var P=kNat(); if(P&&P.close) P.close().catch(function(){}); }catch(e){}   // 앱 녹화 카메라(StageCam)는 끄고 들어간다 — 같은 카메라를 둘이 못 쓴다
@@ -2329,7 +2375,7 @@ function dorEnter(tok){ var b=box(); if(!b||!/^[A-Za-z0-9]{16}$/.test(String(tok
   o.querySelector("[data-tm]").onclick=function(){ dExtAsk(); };
   [].forEach.call(o.querySelectorAll(".kdctl [data-c]"),function(x){ x.onclick=function(){ dCtl(x.dataset.c); }; });
   window.addEventListener("resize",dFit);
-  dDraw(); dWs(); dMedia(); DR.timer=setInterval(dTick,1000); try{ ntap("kara_dor","enter"); }catch(e){} }
+  dDraw(); dWs(); DR.nlk=false; dNAc("enter").then(function(){ if(DR.alive&&DR.tok===tok) dMedia(); }); DR.timer=setInterval(dTick,1000); try{ ntap("kara_dor","enter"); }catch(e){} }
 function dLay(){ return DR.lay||(DR.st&&DR.st.room.lay)||"grid"; }
 // WebSocket — 끊기면 3초 뒤 다시(방이 살아 있으면)
 function dWs(){ if(!DR.alive) return; var u=HUB.replace(/^http/,"ws")+"/dor/ws?tok="+DR.tok+"&sess="+encodeURIComponent(sess()), ws;
@@ -2356,7 +2402,8 @@ function dorBye(leave){ if(!DR.alive) return; DR.alive=false; clearInterval(DR.t
   try{ if(DR.stream) DR.stream.getTracks().forEach(function(t){ t.stop(); }); }catch(e){} DR.stream=null;
   try{ if(DR.sil) DR.sil.close(); }catch(e){} DR.sil=null;
   try{ if(DR.yt&&DR.yt.destroy) DR.yt.destroy(); }catch(e){} DR.yt=null; DR.ytId=""; DR.ytOk=false;
-  for(var k in DR.au){ try{ DR.au[k].srcObject=null; DR.au[k].remove(); }catch(e){} } DR.au={}; DR.el={}; }
+  for(var k in DR.au){ try{ DR.au[k].srcObject=null; DR.au[k].remove(); }catch(e){} } DR.au={}; DR.el={};
+  if(dNA()){ DR.nlk=false; dNAc("lock",{on:false}); dNAc("leave"); } }   // 앱: 원래 모드(MODE_NORMAL)·스피커 상태로
 // 내 카메라·마이크 → SFU 올리기 (에코 제거 켬 — 각자 트는 반주가 두 번 들리지 않게)
 function dMedia(){ var A={echoCancellation:true,noiseSuppression:true,autoGainControl:true}, V={facingMode:DR.face,width:{ideal:480},height:{ideal:480},frameRate:{ideal:20,max:24}};
   var md=navigator.mediaDevices, get=function(c){ return md&&md.getUserMedia?md.getUserMedia(c):Promise.reject(new Error("nomd")); };
@@ -2447,18 +2494,21 @@ function dCtl(c){ var s=DR.stream;
     w.querySelector("[data-mu]").onclick=function(){ w.remove(); kSongPick(DR.o,L(TX.dorDanceT),function(x){ dSend({t:"song",op:"start",vid:x.id,title:x.t,mode:"dance"}); try{ ntap("kara_dor","dance_mu"); }catch(e){} }); }; } }
 // 노래·춤 띠 + 유튜브 맞춤 (모두가 각자 같은 영상 · 칸 시계 t0 기준)
 function dSong(){ var o=DR.o; if(!o) return; var bar=o.querySelector(".kdsong"), s=DR.st&&DR.st.room.song; o.classList.toggle("kdsongon",!!s);
+  dNLk(!!s);   // 앱: 노래·춤 중엔 오디오 모드 잠금
   if(!s){ bar.hidden=true; bar.innerHTML=""; DR.songId=""; try{ if(DR.yt&&DR.yt.destroy) DR.yt.destroy(); }catch(e){} DR.yt=null; DR.ytId=""; DR.ytOk=false; dFit(); return; }
   var by=(DR.st.mem.filter(function(p){ return p.mid===s.by; })[0]||{}).nick||s.byNick||"guest";
-  if(DR.songId!==s.id){ DR.songId=s.id; bar.hidden=false;
+  if(DR.songId!==s.id){ if(DR.ytRid!==s.id){ DR.ytRid=s.id; DR.ytRe=0; } DR.songId=s.id; bar.hidden=false;
     bar.innerHTML=(s.vid?'<div class="kdyt"><div id="dorYt"></div></div>':'')+'<div class="kdsb"><b>'+dIc(s.mode==="dance"?"dor_dance":"dor_sing","kdsbi")+'<span>'+esc(tf(L(s.mode==="dance"?TX.dorDanceBy:TX.dorSingBy),{n:by}))+(s.title?'<small>'+esc(s.title)+'</small>':'')+'</span></b>'
-      +(s.vid?'<button type="button" data-pp="1"></button>':'')+(s.mode==="sing"?'<button type="button" class="kdduck'+(DR.duck?' on':'')+'" data-dk="1">'+esc(L(TX.dorDuck))+'</button>':'')+'<button type="button" class="kdstop" data-sp="1">'+esc(L(TX.dorStop))+'</button></div>';
+      +(s.vid?'<button type="button" data-pp="1"></button>':'')+(s.mode==="sing"?'<button type="button" class="kdduck'+(DR.duck?' on':'')+'" data-dk="1">'+esc(L(TX.dorDuck))+'</button>':'')+'<button type="button" class="kdstop" data-sp="1">'+esc(L(TX.dorStop))+'</button>'+(s.vid?'<button type="button" data-rl="1" title="'+esc(L(TX.dorReload))+'">'+esc(L(TX.dorReload))+'</button>':'')+'</div>';
+    var rl=bar.querySelector("[data-rl]"); if(rl) rl.onclick=function(){ DR.songId=""; dSong(); };   // 반주 화면이 까맣게 남으면 다시 불러오기 (10-31)
     bar.querySelector("[data-sp]").onclick=function(){ dSend({t:"song",op:"stop",id:s.id}); };
     var dk=bar.querySelector("[data-dk]"); if(dk) dk.onclick=function(){ DR.duck=DR.duck?0:1; dk.classList.toggle("on",!!DR.duck); dVol(); };
     var pp=bar.querySelector("[data-pp]"); if(pp) pp.onclick=function(){ var c=DR.st&&DR.st.room.song; if(!c) return; if(c.st==="play"){ var pos=0; try{ pos=DR.yt.getCurrentTime(); }catch(e){} dSend({t:"song",op:"pause",id:c.id,pos:pos}); } else dSend({t:"song",op:"resume",id:c.id}); };
     try{ if(DR.yt&&DR.yt.destroy) DR.yt.destroy(); }catch(e){} DR.yt=null; DR.ytOk=false; DR.ytId=s.vid;
     if(s.vid) ytApi(function(){ if(!DR.alive||DR.songId!==s.id||!document.getElementById("dorYt")) return;
       DR.yt=new YT.Player("dorYt",{videoId:s.vid,playerVars:{autoplay:0,playsinline:1,rel:0,controls:0,disablekb:1},events:{
-        onReady:function(){ DR.ytOk=true; dYtSync(true); },
+        onReady:function(){ DR.ytOk=true; try{ DR.yt.setPlaybackQuality("medium"); }catch(e){} dYtSync(true); },
+        onError:function(){ if((DR.ytRe||0)<3){ DR.ytRe=(DR.ytRe||0)+1; setTimeout(function(){ DR.songId=""; dSong(); },800); } },
         onStateChange:function(ev){ if(ev&&ev.data===0){ var c=DR.st&&DR.st.room.song; if(c&&c.id===s.id&&c.by===DR.me) dSend({t:"song",op:"end",id:c.id}); } } }}); });
     dFit(); }
   var pb=bar.querySelector("[data-pp]"); if(pb) pb.textContent=L(s.st==="play"?TX.dorPause:TX.dorPlay);
@@ -2467,7 +2517,7 @@ function dYtSync(hard){ var s=DR.st&&DR.st.room.song, p=DR.yt; if(!s||!p||!DR.yt
   try{ if(s.st==="pause"){ p.pauseVideo(); if(Math.abs((p.getCurrentTime()||0)-s.pos)>0.5) p.seekTo(s.pos,true); return; }
     var want=(dNow()-s.t0)/1000;
     if(want<0){ p.seekTo(0,true); p.pauseVideo(); DR.ytT=setTimeout(function(){ dYtSync(true); },Math.min(-want*1000,5000)); return; }
-    var cur=p.getCurrentTime()||0, stt=p.getPlayerState(); if(hard||Math.abs(cur-want)>0.8) p.seekTo(want,true); if(stt!==1) p.playVideo(); }catch(e){}
+    var cur=p.getCurrentTime()||0, stt=p.getPlayerState(); if(hard||Math.abs(cur-want)>0.8) p.seekTo(want,true); if(stt!==1) p.playVideo(); var L0=DR.ytL; if(!hard&&want>3&&L0&&L0.id===s.id&&Math.abs(cur-L0.c)<0.2){ L0.n=(L0.n||0)+1; if(L0.n>=2&&(DR.ytRe||0)<3){ DR.ytRe=(DR.ytRe||0)+1; DR.ytL=null; DR.songId=""; dSong(); return; } } else DR.ytL={id:s.id,c:cur,n:0}; }catch(e){}   // 10-31 「오디오 렌더기 오류」 등으로 멈추면(재생 시간이 안 늘면) 반주 화면을 새로 띄운다 — 최대 3번
   DR.ytT=setTimeout(function(){ dYtSync(false); },3000); }
 // 사람 메뉴 — 신고 · (방장) 내보내기
 function dMemMenu(mid){ var p=(DR.st&&DR.st.mem||[]).filter(function(x){ return x.mid===mid; })[0]; if(!p) return; var w=document.createElement("div"); w.className="kpm"; DR.o.appendChild(w);
@@ -2489,7 +2539,7 @@ function dMenu(){ var w=document.createElement("div"); w.className="kpm"; DR.o.a
   w.querySelector(".kc").onclick=function(){ w.remove(); }; w.onclick=function(e){ if(e.target===w) w.remove(); };
   w.querySelector("[data-x]").onclick=function(){ w.remove(); dExtAsk(); };
   w.querySelector("[data-i]").onclick=function(){ w.remove(); dInv(); };
-  var c=w.querySelector("[data-c]"); if(c) c.onclick=function(){ w.remove(); kMsg(DR.o,L(TX.dorCloseQ),[[L(TX.dorClose),function(){ dSend({t:"close"}); }],[L(TX.cancel),null,"kc"]]); }; }
+  var c=w.querySelector("[data-c]"); if(c) c.onclick=function(){ w.remove(); kMsg(DR.o,L(TX.dorCloseQ),[[L(TX.dorClose),function(){ if(DR.own||dMy()&&dMy().tok===DR.tok) dMy(null); dSend({t:"close"}); }],[L(TX.cancel),null,"kc"]]); }; }
 // 초대 — 공용 공유창(카카오톡·LINE·X·WeChat·Weibo·복사)
 function dInv(){ if(!DR.tok) return; var u=RINV_U+"?dor="+DR.tok, iu=u+"&install=1", nm=(DR.st&&DR.st.room.name)||L(TX.dorB), me=(DR.st&&DR.st.mem||[]).filter(function(p){ return p.mid===DR.me; })[0], on=me&&me.nick||"";
   var ttl=on?tf(L(TX.dorInvT),{n:on,r:nm}):tf(L(TX.dorInvT),{n:"StageSong",r:nm});
