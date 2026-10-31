@@ -681,6 +681,10 @@ function ov(html,t){ var b=box(); if(!b) return; var pl=b.querySelector(".kpl"),
 function blocked(x){ try{ K.pl&&K.pl.pauseVideo&&K.pl.pauseVideo(); }catch(e){}
   ov('<div>'+esc(L(TX.yt))+'</div><a href="https://www.youtube.com/watch?v='+encodeURIComponent(x.id)+'" target="_blank" rel="noopener" data-kyt="1">▶ '+esc(L(TX.ytb))+'</a>');
   var a=box()&&box().querySelector("[data-kyt]"); if(a) a.addEventListener("click",function(){ mpPaid.out(); klYt(x); }); }
+// 노래가 끝나면(녹화 중이 아닐 때) 처음 빈 화면·처음 목록으로 (사장님 10-31)
+function kEndReset(){ var b=box(); if(!b||b.classList.contains("krecm")) return; try{ klEnd(); }catch(e){} try{ if(K.pl&&K.pl.destroy) K.pl.destroy(); }catch(e){} K.pl=null; K.ready=false; K.want=""; K.cur=null; K.idx=-1; K.ctx=null;
+  var pl=b.querySelector(".kpl"); if(pl){ var y=pl.querySelector("#karYt,iframe"); if(y) y.remove(); [].forEach.call(pl.querySelectorAll(".kov"),function(o){ o.remove(); }); if(!pl.querySelector(".kmsg")){ var m=document.createElement("div"); m.className="kmsg"; m.textContent="🎤 "+L(TX.pick); pl.appendChild(m); } }
+  K.q=""; var inp=b.querySelector(".ksr input"); if(inp) inp.value=""; load(); }
 function play(i){ var x=K.items&&K.items[i]; if(!x) return; klEnd(); K.cur=x; K.idx=i; paintList(); var b=box(); if(!b) return; var pl=b.querySelector(".kpl");
   try{ ntap("kara_"+K.code,"tap"); }catch(e){}
   try{ kPassUse(); }catch(e){}   // 이용권 기간이면 사용 표시 (10-31) — 노래 차감은 없음
@@ -693,7 +697,7 @@ function play(i){ var x=K.items&&K.items[i]; if(!x) return; klEnd(); K.cur=x; K.
     K.pl=new YT.Player("karYt",{videoId:x.id,playerVars:{autoplay:1,playsinline:1,rel:0},events:{
       onReady:function(){ K.ready=true; if(K.want&&K.pl.getVideoData&&K.pl.getVideoData().video_id!==K.want) K.pl.loadVideoById(K.want); },
       onError:function(){ var c=K.items&&K.items[K.idx]; if(c){ c.e=0; paintList(); blocked(c); } },   // 미리 못 잡은 막힌 곡도 그 자리에서 안내 (다음 곡으로 안 넘김)
-      onStateChange:function(ev){ if(ev&&ev.data===1){ ov("","lo"); ov("","up"); } if(ev&&ev.data===0) ov('<div>'+esc(L(TX.upQ))+'</div><button type="button" class="kupb" data-kup="1">'+esc(L(TX.up))+'</button>',"up"); try{ klState(ev&&ev.data); }catch(e){} } }}); }); }
+      onStateChange:function(ev){ if(ev&&ev.data===1){ ov("","lo"); ov("","up"); } if(ev&&ev.data===0){ var bx=box(); if(bx&&bx.classList.contains("krecm")) ov('<div>'+esc(L(TX.upQ))+'</div><button type="button" class="kupb" data-kup="1">'+esc(L(TX.up))+'</button>',"up"); else setTimeout(kEndReset,600); } try{ klState(ev&&ev.data); }catch(e){} } }}); }); }
 function open(code){ K.tab=({ja:"jpop",en:"pop",es:"pop"})[window.LANG]||"kpop";   // 첫 목록 = 언어별 (한·중 K-POP, 일 J-POP, 영·서 팝)
  try{ if(PG.length) pgTo(0); }catch(e){} var D=window.GU&&GU.d, o=D&&D.kara&&D.kara[code]; K.code=code; K.q=""; K.idx=-1; K.pl=null; K.ready=false; K.want=""; var old=box(); if(old) old.remove();
   var gn=o&&window.LP?LP(o.n):(o?o.g:""), b=document.createElement("div"); b.id="karBox";
