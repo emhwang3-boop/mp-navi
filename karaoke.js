@@ -298,7 +298,7 @@ Object.assign(TX,{
  rmNew:{ko:"우리끼리 노래 방 생성",en:"Create a Just Us Karaoke room",ja:"「仲間だけカラオケ」ルームを作る",zhs:"创建小圈子K歌房",zht:"建立小圈子K歌房",es:"Crear sala «Solo nosotros Karaoke»"},
  rmName:{ko:"방 이름",en:"Room name",ja:"ルーム名",zhs:"房间名称",zht:"房間名稱",es:"Nombre de la sala"},
  rmDef:{ko:"우리끼리 노래",en:"Just Us Karaoke",ja:"仲間だけカラオケ",zhs:"小圈子K歌",zht:"小圈子K歌",es:"Solo nosotros Karaoke"},
- rmWho:{ko:"참여자 · 내가 팔로우한 사람 (최대 30명)",en:"Members · people you follow (up to 30)",ja:"メンバー・フォロー中の人（30人まで）",zhs:"成员 · 我关注的人（最多30人）",zht:"成員 · 我追蹤的人（最多30人）",es:"Miembros · personas que sigues (hasta 30)"},
+ rmWho:{ko:"참여자 · 맞팔 친구 (최대 30명)",en:"Members · mutual friends (up to 30)",ja:"メンバー・相互フォローの友だち（30人まで）",zhs:"成员 · 互关好友（最多30人）",zht:"成員 · 互追好友（最多30人）",es:"Miembros · amigos mutuos (hasta 30)"},
  rmMk:{ko:"생성",en:"Create",ja:"作成",zhs:"创建",zht:"建立",es:"Crear"},
  rmN:{ko:"{n}명",en:"{n} people",ja:"{n}人",zhs:"{n}人",zht:"{n}人",es:"{n} personas"},
  rmOw:{ko:"방장",en:"Host",ja:"ホスト",zhs:"房主",zht:"房主",es:"Anfitrión"},
@@ -311,8 +311,8 @@ Object.assign(TX,{
  rmLvQ:{ko:"이 방에서 퇴장할까요?",en:"Leave this room?",ja:"このルームから退出しますか？",zhs:"要退出这个房间吗？",zht:"要退出這個房間嗎？",es:"¿Salir de esta sala?"},
  rmNmE:{ko:"방 이름은 1~20자로 입력해 주세요.",en:"Room name must be 1–20 characters.",ja:"ルーム名は1〜20文字で入力してください。",zhs:"房间名称请输入1~20个字。",zht:"房間名稱請輸入1~20個字。",es:"El nombre debe tener entre 1 y 20 caracteres."},
  rmMax:{ko:"최대 30명까지 선택할 수 있어요.",en:"You can choose up to 30 people.",ja:"30人まで選べます。",zhs:"最多可选30人。",zht:"最多可選30人。",es:"Puedes elegir hasta 30 personas."},
- rmNoF:{ko:"팔로우한 사람이 없어요. 먼저 팔로우해 주세요.",en:"You aren't following anyone yet. Follow people first.",ja:"フォロー中の人がいません。先にフォローしてください。",zhs:"你还没有关注任何人，请先关注。",zht:"你還沒有追蹤任何人，請先追蹤。",es:"Aún no sigues a nadie. Sigue a alguien primero."},
- rmNoA:{ko:"추가할 수 있는 사람이 없어요.",en:"No one else to add.",ja:"追加できる人がいません。",zhs:"没有可添加的人。",zht:"沒有可新增的人。",es:"No hay nadie más para añadir."},
+ rmNoF:{ko:"맞팔 친구가 없어요. 서로 팔로우하면 방에 넣을 수 있어요.",en:"No mutual friends yet. People who follow each other with you can be added.",ja:"相互フォローの友だちがいません。お互いにフォローすると部屋に追加できます。",zhs:"还没有互关好友。互相关注后即可加入房间。",zht:"還沒有互追好友。互相追蹤後即可加入房間。",es:"Aún no tienes amigos mutuos. Puedes añadir a quienes os seguís mutuamente."},
+ rmNoA:{ko:"추가할 수 있는 맞팔 친구가 없어요.",en:"No other mutual friends to add.",ja:"追加できる相互フォローの友だちがいません。",zhs:"没有可添加的互关好友。",zht:"沒有可新增的互追好友。",es:"No hay más amigos mutuos para añadir."},
  rmE:{ko:"이 방에 아직 영상이 없어요.",en:"No videos in this room yet.",ja:"このルームにはまだ動画がありません。",zhs:"这个房间还没有视频。",zht:"這個房間還沒有影片。",es:"Aún no hay vídeos en esta sala."},
  rmGone:{ko:"이 방에 입장할 수 없어요.",en:"You can't open this room.",ja:"このルームは開けません。",zhs:"无法打开这个房间。",zht:"無法開啟這個房間。",es:"No puedes abrir esta sala."},
  flwE:{ko:"팔로우한 사람의 영상이 없어요.",en:"No videos from people you follow.",ja:"フォロー中の人の動画はありません。",zhs:"没有你关注的人的视频。",zht:"沒有你追蹤的人的影片。",es:"No hay vídeos de las personas que sigues."},
@@ -423,12 +423,12 @@ var BOOK=[
    zht:["在綠色框的「我的錢包」中儲值點數並查看餘額。1P 等於1韓元。", "儲值方案為50,000P·100,000P·150,000P·200,000P，在應用程式內儲值按應用商店價格計算。", "使用前會顯示「使用點數 → 使用後餘額」。儲值和使用紀錄在「使用記錄」中。", "點數自儲值日起有效1年，可透過「延長有效期」每次延長3個月(最長至儲值日起5年)。", "「申請退款」：7天內未使用的付費點數全額退款，之後扣除手續費退款。免費點數不予退款。"],
    es:["Recarga puntos y consulta tu saldo en «Mi monedero» desde el recuadro verde. 1P equivale a 1 won.", "Los paquetes son 50.000P, 100.000P, 150.000P y 200.000P. En la app se aplican los precios de la tienda.", "Antes de usar ves «puntos usados → saldo después». Las recargas y usos están en «Historial».", "Los puntos valen 1 año desde la recarga; «Ampliar» suma 3 meses cada vez (hasta 5 años desde la recarga).", "«Solicitar reembolso»: los puntos pagados sin usar en 7 días se devuelven completos; después se descuenta una comisión. Los puntos gratuitos no se reembolsan."]}},
  {ic:[],ui:"pay",t:{ko:"이용권",en:"Karaoke pass",ja:"利用券",zhs:"畅唱券",zht:"暢唱券",es:"Bono de karaoke"},
-   p:{ko:["PAYMENT 단추에서 이용권(1·3·6·12개월)을 포인트로 구매합니다.","이용권 기간에는 노래를 무제한으로 부를 수 있으며, 자동 연장되지 않습니다.","이용 중에 다시 구매하면 지금 끝나는 날부터 기간이 이어집니다.","초록 칸에 이용권 끝나는 날과 잔여 포인트가 표시됩니다.","자세한 기준은 「공지사항」과 환불 규정을 확인하세요."],
-    en:["Buy a pass (1, 3, 6 or 12 months) with points from the PAYMENT button.","During the pass you can sing without limit. It does not renew automatically.","If you buy again while a pass is active, the period continues from the current end date.","The green box shows when your pass ends and your points balance.","See the notice and the refund policy for details."],
-    ja:["PAYMENTボタンから利用券（1・3・6・12か月）をポイントで購入します。","利用券の期間中は歌い放題で、自動更新はありません。","利用中にもう一度購入すると、今の終了日から期間が続きます。","緑の欄に利用券の終了日と残りポイントが表示されます。","詳しくは「お知らせ」と返金規定をご確認ください。"],
-    zhs:["通过 PAYMENT 按钮用积分购买畅唱券（1·3·6·12个月）。","畅唱券有效期内可无限唱歌，不会自动续费。","使用中再次购买，期间从当前到期日起接续。","绿色框中显示畅唱券到期日和剩余积分。","详情请查看公告和退款规定。"],
-    zht:["透過 PAYMENT 按鈕用點數購買暢唱券（1·3·6·12個月）。","暢唱券有效期內可無限唱歌，不會自動續費。","使用中再次購買，期間從目前到期日起接續。","綠色框中顯示暢唱券到期日和剩餘點數。","詳情請查看公告和退款規定。"],
-    es:["Compra un bono (1, 3, 6 o 12 meses) con puntos desde el botón PAYMENT.","Durante el bono puedes cantar sin límite. No se renueva automáticamente.","Si compras otro mientras uno está activo, el periodo sigue desde la fecha de fin actual.","El recuadro verde muestra cuándo termina tu bono y tus puntos.","Consulta el aviso y la política de reembolso."]}},
+   p:{ko:["PAYMENT 단추에서 이용권(1·3·6·12개월)을 포인트로 구매합니다.","이용권 기간에는 노래를 무제한으로 부를 수 있으며, 자동 연장되지 않습니다.","이용 중에 다시 구매하면 지금 끝나는 날부터 기간이 이어집니다.","초록 칸에 이용권 끝나는 날과 잔여 포인트가 표시됩니다.","자세한 기준은 「공지사항」과 환불 규정을 확인하세요.","만 15~18세는 한 달에 100,000원까지 포인트를 충전할 수 있으며, 법정대리인은 관련 법령에 따라 결제를 취소할 수 있습니다."],
+    en:["Buy a pass (1, 3, 6 or 12 months) with points from the PAYMENT button.","During the pass you can sing without limit. It does not renew automatically.","If you buy again while a pass is active, the period continues from the current end date.","The green box shows when your pass ends and your points balance.","See the notice and the refund policy for details.","Users aged 15–18 can top up points up to KRW 100,000 per month, and a legal guardian may cancel their payments as provided by law."],
+    ja:["PAYMENTボタンから利用券（1・3・6・12か月）をポイントで購入します。","利用券の期間中は歌い放題で、自動更新はありません。","利用中にもう一度購入すると、今の終了日から期間が続きます。","緑の欄に利用券の終了日と残りポイントが表示されます。","詳しくは「お知らせ」と返金規定をご確認ください。","満15〜18歳のポイントチャージは月100,000ウォンまでで、法定代理人は関連法令に基づき決済を取り消すことができます。"],
+    zhs:["通过 PAYMENT 按钮用积分购买畅唱券（1·3·6·12个月）。","畅唱券有效期内可无限唱歌，不会自动续费。","使用中再次购买，期间从当前到期日起接续。","绿色框中显示畅唱券到期日和剩余积分。","详情请查看公告和退款规定。","15~18周岁用户每月最多可充值100,000韩元积分，法定代理人可依相关法律取消其支付。"],
+    zht:["透過 PAYMENT 按鈕用點數購買暢唱券（1·3·6·12個月）。","暢唱券有效期內可無限唱歌，不會自動續費。","使用中再次購買，期間從目前到期日起接續。","綠色框中顯示暢唱券到期日和剩餘點數。","詳情請查看公告和退款規定。","15~18歲使用者每月最多可儲值100,000韓元點數，法定代理人可依相關法令取消其付款。"],
+    es:["Compra un bono (1, 3, 6 o 12 meses) con puntos desde el botón PAYMENT.","Durante el bono puedes cantar sin límite. No se renueva automáticamente.","Si compras otro mientras uno está activo, el periodo sigue desde la fecha de fin actual.","El recuadro verde muestra cuándo termina tu bono y tus puntos.","Consulta el aviso y la política de reembolso.","Los usuarios de 15 a 18 años pueden recargar hasta 100.000 KRW en puntos al mes, y su representante legal puede cancelar sus pagos según la ley."]}},
  {o:1,ic:["score"],ui:"rec",t:{ko:"녹화",en:"Recording",ja:"録画",zhs:"录像",zht:"錄影",es:"Grabación"},
   p:{ko:["영상 위 「● 녹화」를 누르면 카메라가 켜지고 녹화가 시작됩니다.","뷰파인더에 녹화 시간과 노래 점수가 표시됩니다.","「■ 녹화 종료」를 누르면 미리 보기와 최종 점수가 표시됩니다."],
    en:["Tap “● Record” on the video to turn on the camera and start recording.","The viewfinder shows the recording time and your singing score.","Tap “■ Stop” to see a preview and your final score."],
@@ -465,26 +465,26 @@ var BOOK=[
    zht:["在「舞台」觀看其他人的演唱影片。","「我的舞台」匯集你發布的影片。","可切換列表/宮格檢視，並依最新、最早、分數排序。"],
    es:["En el Escenario ves vídeos de otras personas.","Mi escenario reúne los vídeos que publicaste.","Cambia entre lista y cuadrícula y ordena por recientes, antiguos o puntuación."]}},
  {o:1,ic:["fol","id","up"],t:{ko:"팔로우·프로필·ID",en:"Follow, profile and ID",ja:"フォロー・プロフィール・ID",zhs:"关注、头像与 ID",zht:"追蹤、頭像與 ID",es:"Seguir, perfil e ID"},
-  p:{ko:["ID를 누르면 그 사람의 스테이지로 이동합니다.","팔로우하면 팔로워 공개 영상도 시청할 수 있습니다.","내 스테이지에서 ID를 설정하고 프로필(영상 또는 AI 사진)을 변경합니다."],
-   en:["Tap an ID to open that person's stage.","Follow someone to also watch their followers-only videos.","On My Stage, set your ID and change your profile (a video or an AI photo)."],
-   ja:["IDを押すとその人のステージに移動します。","フォローするとフォロワー限定の動画も見られます。","マイステージでIDを決め、プロフィール（動画またはAI写真）を変更します。"],
-   zhs:["点 ID 即可进入对方的舞台。","关注后也能观看仅粉丝可见的视频。","在「我的舞台」设置 ID 并更换头像（视频或 AI 照片）。"],
-   zht:["點 ID 即可進入對方的舞台。","追蹤後也能觀看僅粉絲可見的影片。","在「我的舞台」設定 ID 並更換頭像（影片或 AI 照片）。"],
-   es:["Toca un ID para abrir el escenario de esa persona.","Si la sigues, también verás sus vídeos solo para seguidores.","En Mi escenario, elige tu ID y cambia tu perfil (vídeo o foto IA)."]}},
+  p:{ko:["ID를 누르면 그 사람의 스테이지로 이동합니다.", "팔로우하면 팔로워 공개 영상도 시청할 수 있습니다.", "내 스테이지에서 ID를 설정하고 프로필(영상 또는 AI 사진)을 변경합니다.", "서로 팔로우하면 이름 옆에 「맞팔」이 표시되며, 내 스테이지의 「맞팔 친구」에서 모아 볼 수 있습니다. 누가 나를 팔로우하면 알림이 오고 「맞팔하기」로 바로 팔로우할 수 있습니다. 15~18세와 성인은 서로 팔로우할 수 없습니다."],
+   en:["Tap an ID to open that person's stage.", "Follow someone to also watch their followers-only videos.", "On My Stage, set your ID and change your profile (a video or an AI photo).", "When you follow each other, “Mutual” appears next to the name, and you can see them together under “Mutual friends” in My Stage. When someone follows you, you get a notice and can follow back at once with “Follow back”. Ages 15–18 and adults can't follow each other."],
+   ja:["IDを押すとその人のステージに移動します。", "フォローするとフォロワー限定の動画も見られます。", "マイステージでIDを決め、プロフィール（動画またはAI写真）を変更します。", "お互いにフォローすると名前の横に「相互」と表示され、マイステージの「相互フォローの友だち」でまとめて見られます。誰かにフォローされるとお知らせが届き、「フォローバック」ですぐにフォローできます。15〜18歳と成人はお互いにフォローできません。"],
+   zhs:["点 ID 即可进入对方的舞台。", "关注后也能观看仅粉丝可见的视频。", "在「我的舞台」设置 ID 并更换头像（视频或 AI 照片）。", "互相关注后，名字旁会显示「互关」，可在我的舞台的「互关好友」中查看。有人关注你时会收到通知，可点「回关」立即关注。15~18岁与成年人不能互相关注。"],
+   zht:["點 ID 即可進入對方的舞台。", "追蹤後也能觀看僅粉絲可見的影片。", "在「我的舞台」設定 ID 並更換頭像（影片或 AI 照片）。", "互相追蹤後，名字旁會顯示「互追」，可在我的舞台的「互追好友」中查看。有人追蹤你時會收到通知，可點「回追」立即追蹤。15~18歲與成年人不能互相追蹤。"],
+   es:["Toca un ID para abrir el escenario de esa persona.", "Si la sigues, también verás sus vídeos solo para seguidores.", "En Mi escenario, elige tu ID y cambia tu perfil (vídeo o foto IA).", "Si os seguís mutuamente, aparece «Mutuo» junto al nombre y podéis veros en «Amigos mutuos» de Mi escenario. Cuando alguien te sigue, recibes un aviso y puedes seguirle con «Seguir también». Las personas de 15 a 18 años y los adultos no pueden seguirse entre sí."]}},
  {o:1,ic:["!krm_song","plus","share"],t:{ko:"우리끼리 노래 방",en:"Just Us Karaoke rooms",ja:"「仲間だけカラオケ」ルーム",zhs:"小圈子K歌房",zht:"小圈子K歌房",es:"Salas «Solo nosotros Karaoke»"},
-  p:{ko:["팔로우한 사람을 선택해 방을 생성합니다. 최대 30명이며, 방장이 생성할 때 3,000P를 한 번 사용합니다.","방장은 멤버 추가·제외, 이름 변경, 방 삭제 권한이 있습니다.","방장은 카톡 초대 링크(7일간 유효)로 친구를 초대합니다."],
-   en:["Create a room with people you follow, up to 30 people. The host uses 3,000P once to create it.","The host can add or remove members, rename the room and delete it.","The host can invite friends with a KakaoTalk link that is valid for 7 days."],
-   ja:["フォロー中の人を選んでルームを作ります。最大30人で、作成時にホストが3,000Pを1回使用します。","ホストはメンバーの追加・削除、名前の変更、ルームの削除ができます。","ホストはカカオトークの招待リンク（7日間有効）で友だちを招待します。"],
-   zhs:["从你关注的人中选择成员创建房间，最多30人，房主创建时一次性使用3,000P。","房主可添加或移除成员、重命名和删除房间。","房主可用 KakaoTalk 邀请链接（7天有效）邀请好友。"],
-   zht:["從你追蹤的人中選擇成員建立房間，最多30人，房主建立時一次性使用3,000P。","房主可新增或移除成員、重新命名和刪除房間。","房主可用 KakaoTalk 邀請連結（7天有效）邀請好友。"],
-   es:["Crea una sala con personas que sigues, hasta 30. El anfitrión usa 3.000P una vez al crearla.","El anfitrión puede añadir o quitar miembros, renombrar y eliminar la sala.","El anfitrión invita con un enlace de KakaoTalk válido 7 días."]}},
+  p:{ko:["맞팔 친구(서로 팔로우한 사람)를 선택해 방을 생성합니다. 최대 30명이며, 방장이 생성할 때 3,000P를 한 번 사용합니다.", "방장은 멤버 추가·제외, 이름 변경, 방 삭제 권한이 있습니다.", "방장은 카톡 초대 링크(7일간 유효)로 친구를 초대합니다.", "앱 안에서 멤버를 추가하는 것은 맞팔 친구만 가능합니다. 카톡 등으로 보내는 초대 링크는 아는 사람에게 직접 보내는 것이라 그대로 이용할 수 있습니다."],
+   en:["Create a room by choosing mutual friends (people who follow each other with you). Up to 30 people; the host uses 3,000P once when creating it.", "The host can add or remove members, rename the room and delete it.", "The host can invite friends with a KakaoTalk link that is valid for 7 days.", "In the app, only mutual friends can be added as members. Invitation links you send yourself (KakaoTalk etc.) to people you know work as before."],
+   ja:["相互フォローの友だち(お互いにフォローしている人)を選んで部屋を作ります。最大30人で、作成時にホストが3,000Pを一度使います。", "ホストはメンバーの追加・削除、名前の変更、ルームの削除ができます。", "ホストはカカオトークの招待リンク（7日間有効）で友だちを招待します。", "アプリ内でメンバーを追加できるのは相互フォローの友だちだけです。カカオトークなどで知り合いに直接送る招待リンクはこれまでどおり使えます。"],
+   zhs:["选择互关好友(互相关注的人)创建房间。最多30人，房主创建时使用一次3,000P。", "房主可添加或移除成员、重命名和删除房间。", "房主可用 KakaoTalk 邀请链接（7天有效）邀请好友。", "在应用内只能添加互关好友为成员。通过 KakaoTalk 等直接发给熟人的邀请链接照常可用。"],
+   zht:["選擇互追好友(互相追蹤的人)建立房間。最多30人，房主建立時使用一次3,000P。", "房主可新增或移除成員、重新命名和刪除房間。", "房主可用 KakaoTalk 邀請連結（7天有效）邀請好友。", "在應用程式內只能新增互追好友為成員。透過 KakaoTalk 等直接傳給熟人的邀請連結照常可用。"],
+   es:["Crea una sala eligiendo amigos mutuos (personas que se siguen contigo). Hasta 30 personas; el anfitrión usa 3.000P una vez al crearla.", "El anfitrión puede añadir o quitar miembros, renombrar y eliminar la sala.", "El anfitrión invita con un enlace de KakaoTalk válido 7 días.", "Dentro de la app solo puedes añadir como miembros a amigos mutuos. Los enlaces de invitación que envías tú mismo (KakaoTalk, etc.) a conocidos siguen funcionando."]}},
  {o:1,ic:["!dor","!dor_sing","!dor_dance"],t:{ko:"도란도란",en:"Doran-doran video room",ja:"ドランドラン",zhs:"Doran-doran 视频聊天室",zht:"Doran-doran 視訊聊天室",es:"Sala de video Doran-doran"},
-  p:{ko:["방장이 3,000P로 방을 생성해 2시간 사용합니다. 참여자는 무료이며 최대 9명이고, 초대 링크로만 입장합니다.", "화면은 「바둑판」 또는 「둥글게」로 바꾸며, 두 번 누르면 그 사람이 크게 보입니다. 마이크·카메라는 아래 단추로 끕니다.", "「노래하기」·「춤추기」를 누르면 모두의 화면에 같은 반주가 맞춰 재생되고 그 사람이 크게 보입니다.", "끝나기 30분 전부터 누구나 3,000P로 2시간 연장할 수 있습니다(10분 전 알림).", "「나갔다 오기」는 나만 나가고 방은 그대로입니다. 「방 종료」는 방장이 방을 끝냅니다. 방장은 「강퇴」할 수 있고, 누구나 ⋯에서 신고할 수 있습니다.", "화면이 멈추면 「화면 다시 불러오기」를 누르세요. 영상과 소리는 녹화·저장하지 않습니다."],
-   en:["The host creates a room for 3,000P and uses it for 2 hours. Guests join free, up to 9 people, by invitation link only.", "Switch between “Grid” and “Circle”; double-tap someone to see them large. Turn your mic or camera off with the buttons below.", "Tap “Sing” or “Dance” and the same backing track plays in sync for everyone, with that person shown large.", "From 30 minutes before the end, anyone can extend 2 hours for 3,000P (notice at 10 minutes).", "“Step out” leaves only you; the room stays. “End room” lets the host close it. The host can “Kick out” someone, and anyone can report from ⋯.", "If the screen freezes, tap “Reload video”. Video and audio are never recorded or stored."],
-   ja:["ホストが3,000Pでルームを作り、2時間使用します。参加者は無料で最大9人、招待リンクでのみ入室します。", "「グリッド」と「円形」を切り替え、ダブルタップするとその人が大きく表示されます。マイク・カメラは下のボタンでオフにします。", "「歌う」「踊る」を押すと全員の画面で同じ伴奏が同期して流れ、その人が大きく表示されます。", "終了30分前から誰でも3,000Pで2時間延長できます(10分前にお知らせ)。", "「ちょっと外へ」は自分だけ退出し、部屋はそのままです。「ルームを終了」はホストが部屋を終えます。ホストは「強制退室」ができ、誰でも⋯から通報できます。", "画面が止まったら「映像を再読み込み」を押してください。映像と音声は録画・保存しません。"],
-   zhs:["房主用3,000P创建房间，可使用2小时。参与者免费，最多9人，仅凭邀请链接进入。", "可切换「九宫格」和「围坐」，双击某人即可放大。用下方按钮关闭麦克风或摄像头。", "点「唱歌」「跳舞」后，所有人的画面会同步播放同一伴奏，并放大显示此人。", "结束前30分钟起，任何人都可用3,000P延长2小时(结束前10分钟提醒)。", "「暂时离开」只有自己离开，房间保留；「结束房间」由房主结束房间。房主可以「踢出」成员，任何人都可在⋯中举报。", "画面卡住时请点「重新加载画面」。不录制、不保存视频和声音。"],
-   zht:["房主用3,000P建立房間，可使用2小時。參與者免費，最多9人，僅憑邀請連結進入。", "可切換「九宮格」和「圍坐」，雙擊某人即可放大。用下方按鈕關閉麥克風或攝影機。", "點「唱歌」「跳舞」後，所有人的畫面會同步播放同一伴奏，並放大顯示此人。", "結束前30分鐘起，任何人都可用3,000P延長2小時(結束前10分鐘提醒)。", "「暫時離開」只有自己離開，房間保留；「結束房間」由房主結束房間。房主可以「踢出」成員，任何人都可在⋯中檢舉。", "畫面卡住時請點「重新載入畫面」。不錄製、不保存影像和聲音。"],
-   es:["El anfitrión crea una sala por 3.000P y la usa 2 horas. Los invitados entran gratis, hasta 9, solo con enlace de invitación.", "Cambia entre «Cuadrícula» y «Círculo»; toca dos veces a alguien para verlo en grande. Apaga micrófono o cámara con los botones de abajo.", "Toca «Cantar» o «Bailar» y la misma pista suena sincronizada para todos, con esa persona en grande.", "Desde 30 minutos antes del final, cualquiera puede ampliar 2 horas por 3.000P (aviso a los 10 minutos).", "«Salir un rato» te saca solo a ti; la sala sigue. «Cerrar sala» la termina el anfitrión. El anfitrión puede «Expulsar», y cualquiera puede denunciar desde ⋯.", "Si la pantalla se congela, toca «Recargar vídeo». El video y el audio no se graban ni se guardan."]}},
+  p:{ko:["방장이 3,000P로 방을 생성해 2시간 사용합니다. 참여자는 무료이며 최대 9명이고, 초대 링크로만 입장합니다.", "화면은 「바둑판」 또는 「둥글게」로 바꾸며, 두 번 누르면 그 사람이 크게 보입니다. 마이크·카메라는 아래 단추로 끕니다.", "「노래하기」·「춤추기」를 누르면 모두의 화면에 같은 반주가 맞춰 재생되고 그 사람이 크게 보입니다.", "끝나기 30분 전부터 누구나 3,000P로 2시간 연장할 수 있습니다(10분 전 알림).", "「나갔다 오기」는 나만 나가고 방은 그대로입니다. 「방 종료」는 방장이 방을 끝냅니다. 방장은 「강퇴」할 수 있고, 누구나 ⋯에서 신고할 수 있습니다.", "화면이 멈추면 「화면 다시 불러오기」를 누르세요. 영상과 소리는 녹화·저장하지 않습니다.", "방 메뉴의 「맞팔 친구 초대」로 맞팔 친구를 지금 방으로 초대할 수 있습니다(10분 안에 수락). 모르는 사람은 앱 안에서 초대할 수 없으며, 초대 링크는 그대로 이용할 수 있습니다."],
+   en:["The host creates a room for 3,000P and uses it for 2 hours. Guests join free, up to 9 people, by invitation link only.", "Switch between “Grid” and “Circle”; double-tap someone to see them large. Turn your mic or camera off with the buttons below.", "Tap “Sing” or “Dance” and the same backing track plays in sync for everyone, with that person shown large.", "From 30 minutes before the end, anyone can extend 2 hours for 3,000P (notice at 10 minutes).", "“Step out” leaves only you; the room stays. “End room” lets the host close it. The host can “Kick out” someone, and anyone can report from ⋯.", "If the screen freezes, tap “Reload video”. Video and audio are never recorded or stored.", "Use “Invite mutual friends” in the room menu to invite mutual friends to the current room (accept within 10 minutes). Strangers can't be invited in the app; invitation links work as before."],
+   ja:["ホストが3,000Pでルームを作り、2時間使用します。参加者は無料で最大9人、招待リンクでのみ入室します。", "「グリッド」と「円形」を切り替え、ダブルタップするとその人が大きく表示されます。マイク・カメラは下のボタンでオフにします。", "「歌う」「踊る」を押すと全員の画面で同じ伴奏が同期して流れ、その人が大きく表示されます。", "終了30分前から誰でも3,000Pで2時間延長できます(10分前にお知らせ)。", "「ちょっと外へ」は自分だけ退出し、部屋はそのままです。「ルームを終了」はホストが部屋を終えます。ホストは「強制退室」ができ、誰でも⋯から通報できます。", "画面が止まったら「映像を再読み込み」を押してください。映像と音声は録画・保存しません。", "部屋メニューの「相互フォローの友だちを招待」で、相互フォローの友だちを今の部屋に招待できます(10分以内に承諾)。アプリ内で知らない人は招待できず、招待リンクはこれまでどおり使えます。"],
+   zhs:["房主用3,000P创建房间，可使用2小时。参与者免费，最多9人，仅凭邀请链接进入。", "可切换「九宫格」和「围坐」，双击某人即可放大。用下方按钮关闭麦克风或摄像头。", "点「唱歌」「跳舞」后，所有人的画面会同步播放同一伴奏，并放大显示此人。", "结束前30分钟起，任何人都可用3,000P延长2小时(结束前10分钟提醒)。", "「暂时离开」只有自己离开，房间保留；「结束房间」由房主结束房间。房主可以「踢出」成员，任何人都可在⋯中举报。", "画面卡住时请点「重新加载画面」。不录制、不保存视频和声音。", "可通过房间菜单的「邀请互关好友」把互关好友邀请到当前房间(需在10分钟内接受)。应用内不能邀请陌生人，邀请链接照常可用。"],
+   zht:["房主用3,000P建立房間，可使用2小時。參與者免費，最多9人，僅憑邀請連結進入。", "可切換「九宮格」和「圍坐」，雙擊某人即可放大。用下方按鈕關閉麥克風或攝影機。", "點「唱歌」「跳舞」後，所有人的畫面會同步播放同一伴奏，並放大顯示此人。", "結束前30分鐘起，任何人都可用3,000P延長2小時(結束前10分鐘提醒)。", "「暫時離開」只有自己離開，房間保留；「結束房間」由房主結束房間。房主可以「踢出」成員，任何人都可在⋯中檢舉。", "畫面卡住時請點「重新載入畫面」。不錄製、不保存影像和聲音。", "可透過房間選單的「邀請互追好友」把互追好友邀請到目前房間(需在10分鐘內接受)。應用程式內不能邀請陌生人，邀請連結照常可用。"],
+   es:["El anfitrión crea una sala por 3.000P y la usa 2 horas. Los invitados entran gratis, hasta 9, solo con enlace de invitación.", "Cambia entre «Cuadrícula» y «Círculo»; toca dos veces a alguien para verlo en grande. Apaga micrófono o cámara con los botones de abajo.", "Toca «Cantar» o «Bailar» y la misma pista suena sincronizada para todos, con esa persona en grande.", "Desde 30 minutos antes del final, cualquiera puede ampliar 2 horas por 3.000P (aviso a los 10 minutos).", "«Salir un rato» te saca solo a ti; la sala sigue. «Cerrar sala» la termina el anfitrión. El anfitrión puede «Expulsar», y cualquiera puede denunciar desde ⋯.", "Si la pantalla se congela, toca «Recargar vídeo». El video y el audio no se graban ni se guardan.", "Con «Invitar a amigos mutuos» en el menú de la sala puedes invitar a amigos mutuos a la sala actual (aceptar en 10 minutos). En la app no se puede invitar a desconocidos; los enlaces de invitación siguen funcionando."]}},
  {o:1,ic:[],t:{"ko": "방 꾸미기", "en": "Room decor", "ja": "ルームデコ", "zhs": "房间装饰", "zht": "房間裝飾", "es": "Decorar la sala"},
   p:{ko:["우리끼리 노래 방·도란도란 방의 「꾸미기」 단추로 상점과 보관함을 엽니다.", "장소(방 배경)는 방장만 바꾸고, 소품은 방 사람 누구나 놓을 수 있습니다.", "먹거리·폭죽·야광봉 같은 소모품은 놓을 때 하나씩 사용되고, 영구 아이템은 한 번 구매하면 보관함에 남아 계속 사용합니다.", "「꽃다발」 탭의 꽃다발은 영구 장식이라 한 번 구매하면 보관함에 남고 어느 방에든 선물처럼 놓을 수 있습니다.", "세트는 이미 보유한 영구 아이템을 뺀 금액만 냅니다. 방장은 놓인 소품을 모두 치울 수 있습니다."],
    en:["Tap “Decorate” in a Just Us Karaoke or Doran-doran room to open the shop and your storage.", "Only the host changes the place (room background); anyone in the room can place props.", "Consumables such as snacks, fireworks and glow sticks are used up when placed; permanent items stay in storage once bought.", "Bouquets in the “Bouquets” tab are permanent decor: buy once, keep them in storage and place them in any room as a gift.", "Sets cost only the permanent items you do not own yet. The host can remove any placed prop."],
@@ -500,12 +500,12 @@ var BOOK=[
    zht:["在小圈子K歌房或 Doran-doran 房間點「合影」開始。發起人選擇主題和場景，3秒後拍攝臉部。","房間裡的人會看到「參加」提示：Doran-doran 為60秒，小圈子K歌房為10分鐘。只有點了「參加」的人才會出現在照片裡(2~9人)，臉部照片在生成後立即刪除。","報名截止後，發起人點「生成」，使用5,000P生成。生成失敗時點數會自動退還。","完成的照片會儲存到所有參加者的「AI 照片」，標註「AI生成」，並可分享。"],
    es:["Empieza con el botón «Foto de grupo» en una sala Solo nosotros Karaoke o Doran-doran. Quien la inicia elige tema y escena, y la cámara le hace una foto a los 3 segundos.","Todos en la sala ven el aviso «Unirme»: 60 segundos en Doran-doran y 10 minutos en Solo nosotros Karaoke. Solo salen quienes tocan «Unirme» (2 a 9 personas), y las fotos de las caras se borran justo después de crearla.","Al cerrarse la inscripción, quien la inició toca «Crear» y la crea por 5.000P. Si falla, los puntos se devuelven automáticamente.","La foto terminada se guarda en «Fotos IA» de todos los participantes, lleva la etiqueta «Generado por IA» y se puede compartir."]}},
  {o:1,ic:["fol"],t:{"ko": "주변 노래 친구", "en": "Singers nearby", "ja": "近くの歌友", "zhs": "附近歌友", "zht": "附近歌友", "es": "Cantantes cerca"},
-  p:{ko:["로그인하면 이용할 수 있습니다. 성인 인증(만 19세 이상)은 StageSong을 처음 열 때 한 번 진행합니다.", "「내 위치 보이기」를 켠 사람끼리만 서로 보이며, 거리는 1km·3km·10km 이내로만 표시됩니다. 24시간이 지나면 자동으로 꺼집니다.", "「같이 노래해요」로 우리끼리 노래 방 또는 도란도란 방에 초대합니다. 상대가 수락하면 방이 만들어지고 초대한 사람이 3,000P를 사용합니다.", "받은 초대는 수락·거절·차단할 수 있습니다. 차단하면 서로 보이지 않습니다.", "방 안의 「근처 친구 찾기」로 지금 있는 방에 추가 요금 없이 부를 수 있습니다(10분 안에 수락)."],
-   en:["Sign in to use it. Adult verification (19 and over) is done once, when you first open StageSong.", "Only people who turn on “Show my location” see each other, and distance is shown only as within 1, 3 or 10 km. It turns off automatically after 24 hours.", "Use “Sing together” to invite someone to a Just Us Karaoke or Doran-doran room. When they accept, the room is created and the inviter uses 3,000P.", "You can accept, decline or block an invitation. Blocked people cannot see each other.", "Inside a room, “Find nearby friends” invites people to that room at no extra charge (accept within 10 minutes)."],
-   ja:["ログインすると利用できます。成人認証(満19歳以上)はStageSongを最初に開くときに一度だけ行います。", "「自分の位置を表示」をオンにした人同士だけが表示され、距離は1km・3km・10km以内でのみ表示されます。24時間で自動的にオフになります。", "「一緒に歌おう」で仲間だけカラオケ部屋またはドランドランに招待します。相手が承諾すると部屋が作られ、招待した人が3,000Pを使います。", "届いた招待は承諾・辞退・ブロックできます。ブロックするとお互いに表示されません。", "部屋の中の「近くの友だちを探す」で、今の部屋に追加料金なしで呼べます(10分以内に承諾)。"],
-   zhs:["登录后即可使用。成人认证(年满19周岁)在首次打开 StageSong 时进行一次。", "只有开启「显示我的位置」的人才能互相看到，距离仅显示为1公里·3公里·10公里以内。24小时后自动关闭。", "用「一起唱吧」邀请对方进入小圈子K歌房或 Doran-doran 房间。对方接受后创建房间，由邀请人使用3,000P。", "收到的邀请可以接受、拒绝或屏蔽。屏蔽后彼此看不到对方。", "在房间内用「查找附近的朋友」可免费邀请对方进入当前房间(需在10分钟内接受)。"],
-   zht:["登入後即可使用。成人認證(年滿19歲)在首次開啟 StageSong 時進行一次。", "只有開啟「顯示我的位置」的人才能互相看到，距離僅顯示為1公里·3公里·10公里以內。24小時後自動關閉。", "用「一起唱吧」邀請對方進入小圈子K歌房或 Doran-doran 房間。對方接受後建立房間，由邀請人使用3,000P。", "收到的邀請可以接受、拒絕或封鎖。封鎖後彼此看不到對方。", "在房間內用「尋找附近的朋友」可免費邀請對方進入目前房間(需在10分鐘內接受)。"],
-   es:["Inicia sesión para usarlo. La verificación de edad (19 años o más) se hace una sola vez, al abrir StageSong por primera vez.", "Solo se ven entre sí quienes activan «Mostrar mi ubicación», y la distancia se muestra solo como a menos de 1, 3 o 10 km. Se desactiva sola a las 24 horas.", "Con «Cantemos juntos» invitas a una sala Solo nosotros Karaoke o Doran-doran. Si acepta, se crea la sala y quien invita usa 3.000P.", "Puedes aceptar, rechazar o bloquear una invitación. Las personas bloqueadas no se ven entre sí.", "Dentro de una sala, «Buscar amigos cerca» invita a esa sala sin coste extra (aceptar en 10 minutos)."]}},
+  p:{ko:["로그인하면 이용할 수 있습니다. 본인인증(만 15세 이상)은 StageSong을 처음 열 때 한 번 진행합니다.", "「내 위치 보이기」를 켠 사람끼리만 서로 보입니다. 거리는 1km·3km·10km 이내로만 표시되며, 24시간이 지나면 자동으로 꺼집니다.", "목록에서 근처 사람의 최근 전체 공개 노래를 보고 좋아요·댓글·팔로우를 할 수 있습니다. 노래를 올린 사람이 위쪽에, 아직 올리지 않은 사람은 아래쪽에 보입니다.", "목록에는 본인인증 결과로 나이대와 성별이 함께 표시됩니다(예: 「20대 · 남」, 15~18세는 「10대」). 정확한 나이와 생일은 표시하지 않습니다.", "15~18세는 15~18세끼리만, 성인(19세 이상)은 성인끼리만 서로 보이고 팔로우할 수 있습니다.", "「전체 / 같은 나이대 / 여성만 / 남성만」으로 목록을 거를 수 있습니다. 본인인증한 여성은 「여성에게만 내 위치 보이기」를 켤 수 있으며, 켜면 남성과는 서로 목록에 보이지 않습니다.", "주변 노래 친구에서는 모르는 사람을 방에 초대하지 않습니다. 방 초대는 서로 팔로우한 「맞팔 친구」끼리만 할 수 있습니다.", "차단하면 서로 보이지 않으며, ⋯ 단추로 신고할 수 있습니다."],
+   en:["Sign in to use it. Identity verification (age 15 and over) is done once, when you first open StageSong.", "Only people who turn on “Show my location” see each other. Distance is shown only as within 1, 3 or 10 km, and it turns off automatically after 24 hours.", "Browse nearby people's latest public songs and like, comment on or follow them. People who have posted songs are listed first, and people who haven't yet are listed below.", "Each person shows an age group and gender from identity verification (e.g. “20s · Male”; ages 15–18 show as “Teens”). Exact age and birthday are never shown.", "Ages 15–18 can see and follow only ages 15–18, and adults (19 and over) only adults.", "Filter the list by “All / Same age group / Women only / Men only”. Verified women can turn on “Show my location to women only”; she and men then don't see each other in the list.", "Singers nearby never invites strangers into rooms. Room invitations are only possible between “mutual friends” who follow each other.", "Blocked people can't see each other, and you can report someone from the ⋯ button."],
+   ja:["ログインすると利用できます。本人認証(満15歳以上)はStageSongを最初に開くときに一度だけ行います。", "「自分の位置を表示」をオンにした人同士だけが表示されます。距離は1km・3km・10km以内でのみ表示され、24時間で自動的にオフになります。", "一覧で近くの人の最近の全体公開の歌を見て、いいね・コメント・フォローができます。歌を投稿した人が上に、まだ投稿していない人は下に表示されます。", "一覧には本人認証の結果で年代と性別が表示されます(例:「20代・男性」、15〜18歳は「10代」)。正確な年齢や誕生日は表示しません。", "15〜18歳は15〜18歳同士だけ、成人(19歳以上)は成人同士だけが互いに表示され、フォローできます。", "「すべて/同じ年代/女性のみ/男性のみ」で一覧を絞り込めます。本人認証した女性は「女性にだけ自分の位置を表示」をオンにでき、オンにすると男性とはお互いに一覧に表示されません。", "近くの歌友では知らない人を部屋に招待しません。部屋への招待は、お互いにフォローしている「相互フォローの友だち」同士だけです。", "ブロックするとお互いに表示されず、⋯ボタンから通報できます。"],
+   zhs:["登录后即可使用。实名认证(年满15周岁)在首次打开 StageSong 时进行一次。", "只有开启「显示我的位置」的人才能互相看到。距离仅显示为1公里·3公里·10公里以内，24小时后自动关闭。", "在列表中可以观看附近用户最近公开的歌曲，并点赞、评论、关注。已发布歌曲的人显示在上方，尚未发布的人显示在下方。", "列表中会根据实名认证结果显示年龄段和性别(例如「20多岁 · 男」，15~18岁显示为「10多岁」)。不显示确切年龄和生日。", "15~18岁的用户只能看到并关注15~18岁的用户，成年人(19岁以上)只能看到并关注成年人。", "可按「全部 / 同龄段 / 仅女性 / 仅男性」筛选列表。完成实名认证的女性可开启「仅向女性显示我的位置」，开启后她与男性在列表中互相看不到。", "附近歌友不会邀请陌生人进入房间。房间邀请只能在互相关注的「互关好友」之间进行。", "屏蔽后彼此看不到对方，也可以通过 ⋯ 按钮举报。"],
+   zht:["登入後即可使用。實名認證(年滿15歲)在首次開啟 StageSong 時進行一次。", "只有開啟「顯示我的位置」的人才能互相看到。距離僅顯示為1公里·3公里·10公里以內，24小時後自動關閉。", "在列表中可以觀看附近使用者最近公開的歌曲，並按讚、留言、追蹤。已發布歌曲的人顯示在上方，尚未發布的人顯示在下方。", "列表中會依實名認證結果顯示年齡層和性別(例如「20多歲 · 男」，15~18歲顯示為「10多歲」)。不顯示確切年齡和生日。", "15~18歲的使用者只能看到並追蹤15~18歲的使用者，成年人(19歲以上)只能看到並追蹤成年人。", "可依「全部 / 同齡層 / 僅女性 / 僅男性」篩選列表。完成實名認證的女性可開啟「僅向女性顯示我的位置」，開啟後她與男性在列表中互相看不到。", "附近歌友不會邀請陌生人進入房間。房間邀請只能在互相追蹤的「互追好友」之間進行。", "封鎖後彼此看不到對方，也可以透過 ⋯ 按鈕檢舉。"],
+   es:["Inicia sesión para usarlo. La verificación de identidad (15 años o más) se hace una sola vez, al abrir StageSong por primera vez.", "Solo se ven entre sí quienes activan «Mostrar mi ubicación». La distancia se muestra solo como a menos de 1, 3 o 10 km, y se desactiva sola a las 24 horas.", "Mira las últimas canciones públicas de la gente cercana y dales me gusta, coméntalas o sigue a sus autores. Quienes han publicado canciones aparecen primero y quienes aún no, debajo.", "Cada persona muestra su franja de edad y su sexo según la verificación de identidad (p. ej. «20-29 años · Hombre»; de 15 a 18 años aparece «Adolescentes»). Nunca se muestran la edad exacta ni el cumpleaños.", "Las personas de 15 a 18 años solo ven y siguen a personas de 15 a 18, y los adultos (19 años o más) solo a adultos.", "Filtra la lista por «Todos / Misma edad / Solo mujeres / Solo hombres». Las mujeres verificadas pueden activar «Mostrar mi ubicación solo a mujeres»; así ella y los hombres no se ven en la lista.", "Cantantes cerca nunca invita a desconocidos a salas. Las invitaciones a salas solo son posibles entre «amigos mutuos» que se siguen mutuamente.", "Las personas bloqueadas no se ven entre sí, y puedes denunciar desde el botón ⋯."]}},
  {o:1,ic:["relay"],t:{ko:"릴레이",en:"Relay",ja:"リレー",zhs:"接力",zht:"接力",es:"Relevo"},
   p:{ko:["방장이 곡과 첫 주자를 지정해 릴레이를 시작합니다.","차례인 사람만 「릴레이 도전」으로 녹화·게시할 수 있습니다.","게시 후 다음 주자를 지명합니다. 방장은 주자 변경·건너뛰기·종료가 가능합니다."],
    en:["The host picks a song and the first singer to start a relay.","Only the person whose turn it is can record and post with “Sing my turn”.","After posting, pass to the next singer. The host can change singers, skip or end the relay."],
@@ -718,7 +718,7 @@ function open(code){ K.tab=({ja:"jpop",en:"pop",es:"pop"})[window.LANG]||"kpop";
   b.querySelector(".kstg").onclick=function(){ stageOpen("all"); };
   b.querySelector(".kchb").onclick=function(){ kChal(); };   // 챌린지 (10-31)
   b.querySelector(".kdorb").onclick=function(){ dorOpen(""); };   // 도란도란 (10-31 밤)
-  b.querySelector(".knrb").onclick=function(){ nrOpen(); }; nrPoll();   // 주변 노래 친구 (10-31) — 받은 초대 배지
+  b.querySelector(".knrb").onclick=function(){ nrOpen(); }; nrPoll(); kfnPoll();   // 팔로우 알림 (10-31 밤)   // 주변 노래 친구 (10-31) — 받은 초대 배지
   b.querySelector("[data-kbook]").onclick=kBook;   // 이용 안내 책자 (10-31)
   kChGet();
   b.querySelector(".krec").onclick=function(){   // 녹화 = 누구나 (10-31 출시판) — 올리기만 로그인
@@ -988,13 +988,17 @@ function kTossUi(amt,busy,guest){ var m=KP.tm||"card", lg=esc(window.LANG||"en")
     +'<p class="km">'+esc(L(TX.tsAgr))+'</p><div class="klk"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+' ›</a> <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+' ›</a></div>'
     +(guest?'<div class="ktgst">'+esc(L(TX.tsGst))+'<button type="button" data-tlg="1">'+esc(L(TX.sgb))+'</button></div>':'')
     +'<button type="button" class="kgo" data-pg="1"'+(busy?' disabled':'')+'>'+esc(busy?L(TX.opn):tf(L(TX.tsPay),{w:wonL(amt)}))+'</button>'; }
+// 15~18세 한 달 충전 한도 (10-31 밤) — 허브가 err "mcap" {cap,used,left} 로 거절 · /shop/kpt/me 의 mcap 도 같은 모양 (15~18세 계정만)
+var KMC={t:{ko:"만 15~18세는 한 달에 {c}까지 충전할 수 있습니다. 이번 달 남은 한도는 {l}입니다.",en:"Users aged 15–18 can top up up to {c} per month. Remaining this month: {l}.",ja:"満15〜18歳のチャージは月{c}までです。今月の残り枠は{l}です。",zhs:"15~18周岁用户每月最多可充值{c}。本月剩余额度为{l}。",zht:"15~18歲使用者每月最多可儲值{c}。本月剩餘額度為{l}。",es:"De 15 a 18 años se puede recargar hasta {c} al mes. Te quedan {l} este mes."},
+ n:{ko:"만 15~18세 한 달 충전 한도 {c} · 이번 달 남은 한도 {l}",en:"Ages 15–18 monthly top-up limit {c} · {l} left this month",ja:"満15〜18歳の月間チャージ上限 {c}・今月の残り {l}",zhs:"15~18周岁每月充值上限 {c} · 本月剩余 {l}",zht:"15~18歲每月儲值上限 {c} · 本月剩餘 {l}",es:"Límite mensual de recarga (15 a 18 años): {c} · quedan {l} este mes"}};
+function kMcapTx(j,k){ j=j||{}; return tf(L(KMC[k||"t"]),{c:wonL(j.cap||0),l:wonL(j.left!=null?j.left:Math.max(0,(j.cap||0)-(j.used||0)))}); }
 // 토스 결제창 열기 — 돌려주는 값: null(결제창으로 감) · 문자열(화면에 보일 오류)
 function kTossGo(k){ var m=KP.tm||"card", guest=!kptOn(), base=location.origin+location.pathname, G=kGuestD();
   var od=guest?Promise.resolve({ok:true,orderId:"SG"+kYmd(Date.now()).replace(/-/g,"")+"_"+kRid().slice(1),amount:G.packs.web[k],pt:G.packs.pt[k],orderName:"StageSong 포인트 "+G.packs.pt[k].toLocaleString("ko-KR")+"P"})
     :kptPost("toss/order",{k:k,rid:kRid()});
   var me=guest?Promise.resolve(null):fetch(HUB+"/npg/me",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sess:sess()})}).then(function(r){ return r.json(); }).catch(function(){ return null; });
   return Promise.all([od,me]).then(function(a){ var j=a[0], u=(a[1]&&a[1].me)||{};
-    if(!(j&&j.ok&&j.orderId&&j.amount)){ if(j&&j.err==="sess"){ KB.sess=0; barPaint(); return L(TX.esess); } return L(TX.kwPgN); }
+    if(!(j&&j.ok&&j.orderId&&j.amount)){ if(j&&j.err==="sess"){ KB.sess=0; barPaint(); return L(TX.esess); } if(j&&j.err==="mcap") return kMcapTx(j); return L(TX.kwPgN); }
     try{ ntap("kara_pt","toss_"+m+"_"+k); }catch(e){}
     ss(KTK,{oid:j.orderId,amount:j.amount,pt:j.pt,k:k,m:m,g:guest?1:0,code:K.code,at:Date.now()});   // 돌아왔을 때 이 탭에서만 맞춰 본다
     var req={amount:{currency:"KRW",value:j.amount},orderId:j.orderId,orderName:String(j.orderName||"StageSong").slice(0,100),successUrl:base+"?kptres=ok",failUrl:base+"?kptres=fail"};
@@ -1043,7 +1047,7 @@ function kptReturn(){ var sp=new URLSearchParams(location.search), r=sp.get("kpt
   kptPost("toss/confirm",{rid:kRid(),paymentKey:pk,orderId:oid,amount:amt}).then(function(j){
     if(j&&j.ok){ kptLoad(); fin("ok",{pt:j.pt||base.pt,won:j.won||base.won,test:j.test?1:0,bal:j.bal}); return; }
     if(j&&j.err==="nosk"){ fin("wait"); return; }
-    fin("fail",{msg:j&&j.err==="sess"?L(TX.esess):(j&&j.msg)||""}); }).catch(function(){ fin("fail"); }); }
+    fin("fail",{msg:j&&j.err==="sess"?L(TX.esess):j&&j.err==="mcap"?kMcapTx(j):(j&&j.msg)||""}); }).catch(function(){ fin("fail"); }); }
 if(/[?&]kptres=/.test(location.search)){ var _kt=function(){ setTimeout(function(){ try{ kptReturn(); }catch(e){ window.__kptRetErr=String(e); } },700); }; if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",_kt); else _kt(); }
 var KWH=["charge","bonus","use","undo","refreq","refund","refrej","void","ext","pass","passrf"], KWW=["song","ai","aiv","dor","dorx","room","deco"];   // deco = 방 꾸미기 (10-31)
 function kTx(o,i){ return String(L(o)).split("|")[i]||""; }
@@ -1075,7 +1079,7 @@ function kwOpen(v0){ var b=box(); if(!b) return; var o=b.querySelector(".kwal");
     if(v==="chg"){ var P=d.packs, wonA=app?P.app:P.web;
       h+='<b class="kh">'+esc(L(TX.kwChgT))+'</b><div class="kwpk">'+P.pt.map(function(pt,i){ var bo=(d.bonus||[])[i]||0;
         return '<button type="button" data-k="'+i+'"'+(i===(KP.k||0)?' class="on"':'')+'><b>'+ptS(pt)+'</b>'+(bo?'<em class="ksv">'+esc(tf(L(TX.kwBon),{b:ptS(bo)}))+'</em>':'')+'<span>'+won(wonA[i])+'</span></button>'; }).join("")+'</div>'
-        +'<p class="km">'+esc(L(TX.kwRule))+(app?'<br>'+esc(L(TX.kwGpN)):'')+'</p>'+(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
+        +'<p class="km">'+esc(L(TX.kwRule))+(app?'<br>'+esc(L(TX.kwGpN)):'')+'</p>'+(d.mcap?'<p class="km kmcap"><b>'+esc(kMcapTx(d.mcap,"n"))+'</b></p>':'')+(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
         +(app?'<button type="button" class="kgo" data-gp="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwPayB))+'</button>'
              :kTossUi(wonA[KP.k||0],busy,!!d.guest))   // 웹 = 토스페이먼츠 결제창 (10-31)
         +'<button type="button" class="krf" data-buy="1">'+esc(L(TX.kwBuyPt))+'</button>'   // 충전 창 안에서 곡 이용권 구매 (10-31)
@@ -1112,7 +1116,7 @@ function kwOpen(v0){ var b=box(); if(!b) return; var o=b.querySelector(".kwal");
     if(q("[data-buy]")) q("[data-buy]").onclick=function(){ o.remove(); KP.redraw=null; payOpen(""); };
     var live=d.live||{}, tst=function(){ if(busy) return; busy=true; draw(); var k=KP.k||0;   // 진짜 결제 길이 아직 없을 때 = 같은 「결제」 단추가 시험 충전 (10-31 출시판)
       var p=app?kGpTest(k):kptPost("charge",{rail:"test",k:k,rid:kRid()});
-      p.then(function(j){ busy=false; if(j&&j.ok){ try{ ntap("kara_pt","test_"+k); }catch(e){} v=""; msg=""; kptLoad().then(function(){ soon(L(TX.kwDone)); }); } else { msg=L(TX.kwPgN); draw(); } }).catch(function(){ busy=false; msg=L(TX.kwPgN); draw(); }); };
+      p.then(function(j){ busy=false; if(j&&j.ok){ try{ ntap("kara_pt","test_"+k); }catch(e){} v=""; msg=""; kptLoad().then(function(){ soon(L(TX.kwDone)); }); } else { msg=j&&j.err==="mcap"?kMcapTx(j):L(TX.kwPgN); draw(); } }).catch(function(){ busy=false; msg=L(TX.kwPgN); draw(); }); };
     if(q("[data-pg]")) q("[data-pg]").onclick=function(){ if(busy) return; busy=true; msg=""; draw();
       if(!live.inicis){ kTossGo(KP.k||0).then(function(e){ busy=false; if(e) msg=e; if(o.isConnected) draw(); }); return; }   // 웹 = 토스페이먼츠 결제창 (10-31) · 이니시스 계약이 생기면 아래 길
       kptPost("charge",{rail:"inicis",k:KP.k||0,rid:kRid()}).then(function(j){ busy=false; msg=j&&j.ok?"":L(TX.kwPgN); draw(); }).catch(function(){ busy=false; msg=L(TX.kwPgN); draw(); }); };
@@ -1154,10 +1158,11 @@ function kPassRf(){ var b=box(); if(!b) return; var o=document.createElement("di
 function kGp(){ try{ var C=window.Capacitor; return C&&C.Plugins&&C.Plugins.NativePurchases||null; }catch(e){ return null; } }
 function kGpSend(k,pid,tr,test){ return kptPost("charge",{rail:"gplay",k:k,pid:pid,token:tr.purchaseToken||"",rid:"g"+String(tr.purchaseToken||"").replace(/[^A-Za-z0-9]/g,"").slice(-24)+"x",test:!!test}); }
 function kGpBuy(k){ var P=kGp(), d=KP.d, pid=d&&d.packs.gp[k]; if(!P||!pid) return Promise.resolve({ok:false,msg:L(TX.kwGpX)});
+  if(d.mcap&&d.mcap.left<(d.packs.app[k]||0)) return Promise.resolve({ok:false,msg:kMcapTx(d.mcap)});   // 15~18세 한 달 한도 — 구글 결제창 열기 전에
   return P.purchaseProduct({productIdentifier:pid,productType:"inapp",appAccountToken:d.acct,isConsumable:false,autoAcknowledgePurchases:false}).then(function(tr){
     if(!tr||!tr.purchaseToken) return {ok:false};
     return kGpSend(k,pid,tr,false).then(function(j){ if(j&&j.ok){ P.consumePurchase({purchaseToken:tr.purchaseToken}).catch(function(){}); return {ok:true}; }
-      return {ok:false,msg:j&&j.err==="nosa"?L(TX.kwGpX):L(TX.efail)}; }); }).catch(function(e){ return {ok:false,msg:String(e&&e.message||"").indexOf("cancel")>=0?"":L(TX.efail)}; }); }
+      return {ok:false,msg:j&&j.err==="nosa"?L(TX.kwGpX):j&&j.err==="mcap"?kMcapTx(j):L(TX.efail)}; }); }).catch(function(e){ return {ok:false,msg:String(e&&e.message||"").indexOf("cancel")>=0?"":L(TX.efail)}; }); }
 function kGpTest(k){ var d=KP.d; return kptPost("charge",{rail:"gplay",k:k,pid:d.packs.gp[k],token:"test."+kRid()+kRid(),rid:kRid(),test:true}); }   // 앱 시험 충전 — 가짜 토큰 · test:1 덩어리 (허브 cfg.test 켜져 있을 때만)
 // 앱을 켤 때 — 허브에 못 보낸 구매(소비 안 된 것)를 다시 보낸다
 function kGpRecover(){ var P=kGp(); if(!P||!kptOn()) return; var d=KP.d;
@@ -1243,7 +1248,12 @@ var KTH_LIST=[
  ["trot","트로트 여왕|Trot Queen|トロットの女王|Trot女王|Trot女王|Reina del trot",[["crown","왕관·꽃다발|Tiara & bouquet|ティアラと花束|皇冠与花束|皇冠與花束|Tiara y ramo"],["stairs","계단 등장|Grand staircase entrance|階段から登場|阶梯登场|階梯登場|Entrada por la escalera"],["confetti","우승 꽃가루|Winner's confetti|優勝の紙吹雪|夺冠彩带|奪冠彩帶|Confeti de campeón"],["fans","팬클럽 응원|Fan club cheering|ファンクラブの応援|粉丝团应援|粉絲團應援|Club de fans animando"],["duet","듀엣 무대|Duet stage|デュエットステージ|二重唱舞台|二重唱舞台|Dúo en el escenario"],["encore","앙코르 피날레|Encore finale|アンコールのフィナーレ|安可谢幕|安可謝幕|Final con bis"]]],
  ["sunny","학부모 뒤풀이|Parents' Reunion Party|保護者の打ち上げ|家长聚会|家長聚會|Fiesta de padres",[["shoulder","어깨동무 떼창|Arm-in-arm singalong|肩を組んで大合唱|搭肩大合唱|搭肩大合唱|Cantando abrazados"],["denim","청재킷 단체 포즈|Denim jacket group pose|デニムジャケットで集合ポーズ|牛仔夹克合体造型|牛仔夾克合體造型|Pose grupal con chaquetas vaqueras"],["dance","복고 댄스|Retro dance|レトロダンス|复古舞|復古舞|Baile retro"],["tears","웃다 울다|Laughing to tears|笑い泣き|笑出眼泪|笑出眼淚|Reír hasta llorar"],["selfie","단체 셀카|Group selfie|みんなで自撮り|集体自拍|團體自拍|Selfi de grupo"],["school","교복 추억|School uniform memories|制服の思い出|校服回忆|制服回憶|Recuerdos del uniforme"]]],
  ["roller","롤라장|Roller Rink|ローラースケート場|旱冰场|溜冰場|Pista de patinaje",[["skate","스케이트 열창|Skating & singing|滑りながら熱唱|边溜边唱|邊溜邊唱|Patinando y cantando"],["couple","손잡고 커플 타기|Couple skate|手をつないでカップル滑り|牵手双人滑|牽手雙人滑|Patinaje en pareja"],["dj","DJ 박스|DJ booth|DJブース|DJ台|DJ台|Cabina del DJ"],["train","기차놀이|Skating train|列車ごっこ|开火车|開火車|Trenecito"],["fall","꽈당!|Wipeout!|ずってん！|摔倒啦！|摔倒啦！|¡Caída!"],["pose","네온 포즈|Neon pose|ネオンでポーズ|霓虹造型|霓虹造型|Pose de neón"]]],
- ["xmas","크리스마스 특집|Christmas Special|クリスマス特集|圣诞特辑|聖誕特輯|Especial de Navidad",[["tree","트리 앞 열창|Singing by the tree|ツリーの前で熱唱|圣诞树前高歌|聖誕樹前高歌|Cantando junto al árbol"],["gift","선물 열기|Opening presents|プレゼントを開ける|拆礼物|拆禮物|Abriendo regalos"],["snow","눈 오는 창가|Snowy window|雪の窓辺|雪夜窗边|雪夜窗邊|Ventana nevada"],["santa","산타 변신|Santa makeover|サンタに変身|变身圣诞老人|變身聖誕老人|Disfrazado de Papá Noel"],["party","가족 파티|Family party|家族パーティー|家庭派对|家庭派對|Fiesta familiar"],["sled","눈썰매|Snow sled|雪そり|雪橇|雪橇|Trineo"]]]];
+ ["xmas","크리스마스 특집|Christmas Special|クリスマス特集|圣诞特辑|聖誕特輯|Especial de Navidad",[["tree","트리 앞 열창|Singing by the tree|ツリーの前で熱唱|圣诞树前高歌|聖誕樹前高歌|Cantando junto al árbol"],["gift","선물 열기|Opening presents|プレゼントを開ける|拆礼物|拆禮物|Abriendo regalos"],["snow","눈 오는 창가|Snowy window|雪の窓辺|雪夜窗边|雪夜窗邊|Ventana nevada"],["santa","산타 변신|Santa makeover|サンタに変身|变身圣诞老人|變身聖誕老人|Disfrazado de Papá Noel"],["party","가족 파티|Family party|家族パーティー|家庭派对|家庭派對|Fiesta familiar"],["sled","눈썰매|Snow sled|雪そり|雪橇|雪橇|Trineo"]]],
+ // (10-31 밤) 15세 이상 이용가 — 10대도 즐길 테마 4개 · 장면 키는 허브 KST_TH 와 같게
+ ["kpop","K-팝 연습생|K-pop Trainee|K-POP練習生|K-pop练习生|K-pop練習生|Aprendiz de K-pop",[["hood","오버핏 후드 댄스|Oversized hoodie dance|オーバーサイズパーカーでダンス|宽松卫衣舞蹈|寬鬆帽T舞蹈|Baile con sudadera oversize"],["blonde","금발 가발·헤드폰|Blonde wig & headphones|金髪ウィッグ・ヘッドホン|金色假发·耳机|金色假髮·耳機|Peluca rubia y auriculares"],["varsity","바시티 재킷 단체 포즈|Varsity jacket group pose|スタジャンで集合ポーズ|棒球夹克团体造型|棒球外套團體造型|Pose de grupo con chaqueta universitaria"]]],
+ ["street","스트리트 패션|Street Fashion|ストリートファッション|街头时尚|街頭時尚|Moda urbana",[["blonde","금발 가발·스포츠 모자|Blonde wig & sports cap|金髪ウィッグ・キャップ|金色假发·运动帽|金色假髮·運動帽|Peluca rubia y gorra"],["bucket","버킷햇·바람막이|Bucket hat & windbreaker|バケットハット・ウインドブレーカー|渔夫帽·风衣|漁夫帽·風衣|Gorro de pescador y cortavientos"],["skate","청재킷·스케이트보드|Denim jacket & skateboard|デニムジャケット・スケボー|牛仔夹克·滑板|牛仔外套·滑板|Chaqueta vaquera y monopatín"]]],
+ ["fest","학교 축제|School Festival|学園祭|校园庆典|校園慶典|Festival escolar",[["tee","반 티셔츠 응원|Class T-shirt cheering|クラスTシャツで応援|班服应援|班服應援|Animando con la camiseta de clase"],["stage","축제 무대 열창|Singing on the festival stage|学園祭のステージで熱唱|庆典舞台高歌|慶典舞台高歌|Cantando en el escenario del festival"],["photo","풍선 포토존|Balloon photo zone|風船のフォトスポット|气球拍照区|氣球拍照區|Photocall con globos"]]],
+ ["park","놀이공원|Amusement Park|遊園地|游乐园|遊樂園|Parque de atracciones",[["ears","동물 귀 머리띠|Animal-ears headband|動物の耳カチューシャ|动物耳朵发箍|動物耳朵髮箍|Diadema de orejas de animal"],["candy","회전목마 앞 솜사탕|Cotton candy by the carousel|メリーゴーランドと綿あめ|旋转木马前的棉花糖|旋轉木馬前的棉花糖|Algodón de azúcar junto al tiovivo"],["castle","성 앞 단체사진|Group photo by the castle|お城の前で集合写真|城堡前合影|城堡前合照|Foto de grupo frente al castillo"]]]];
 function Lp(t){ var a=String(t).split("|"), i=["ko","en","ja","zhs","zht","es"].indexOf(window.LANG); return a[i<0?1:i]||a[1]; }
 function kTh(k){ for(var i=0;i<KTH_LIST.length;i++) if(KTH_LIST[i][0]===k) return KTH_LIST[i]; return null; }
 function kThGet(){ var t=""; try{ t=sessionStorage.getItem("mpv_kth")||""; }catch(e){} return kTh(t)?t:""; }
@@ -1504,10 +1514,10 @@ function kPost(path,o){ if(!sess()&&path!=="/kst/view"){ kLogin(); return Promis
 function kDay(t){ try{ var d=new Date(t); return [d.toLocaleDateString(kLoc(),{month:"short",day:"numeric"}),d.getFullYear()+" · "+d.toLocaleTimeString(kLoc(),{hour:"2-digit",minute:"2-digit"})]; }catch(e){ return ["",""]; } }
 function kVisTag(x){ var f=x.vis==="fol", r=x.vis==="room"; return '<span class="ktg'+(x.vis==="pub"?" p":f?" f":r?" r":"")+'">'+esc(L(x.vis==="pub"?TX.vPub:f?TX.vFol:r?TX.vwRoom:TX.vMe).replace(/\n/g," "))+(r&&x.rooms&&x.rooms.length?' · '+esc(x.rooms.map(function(q){ return q.name; }).join(", ")):'')+'</span>'; }   // 우리끼리 노래 = 방 이름 작게
 // ── 팔로우 (사장님 10-30) — 사람은 pubid(허브가 만든 무작위 공개 id)로만 부른다 · 내 것엔 단추 없음
-function kUn(x){ var n=esc(x.nick||"guest"); return x.pubid?'<button type="button" class="kun'+kFtN(x.ft)+'" data-u="'+esc(x.pubid)+'">'+n+'</button>':'<b'+(x.ft?' class="'+kFtN(x.ft).trim()+'"':'')+'>'+n+'</b>'; }   // ft = 팔로워 테두리 (10-31)   // 누르면 그 사람 무대
+function kUn(x){ var n=esc(x.nick||"guest"); return (x.pubid?'<button type="button" class="kun'+kFtN(x.ft)+'" data-u="'+esc(x.pubid)+'">'+n+'</button>':'<b'+(x.ft?' class="'+kFtN(x.ft).trim()+'"':'')+'>'+n+'</b>')+(x.mu?kMuB():''); }   // mu = 맞팔 (10-31 밤)   // ft = 팔로워 테두리 (10-31)   // 누르면 그 사람 무대
 function kFwB(on){ return '<button type="button" class="kfw'+(on?' on':'')+'" data-fw="1">'+esc(L(on?TX.flg:TX.flw))+'</button>'; }
 function kFollow(pub,on,btn){ if(btn) btn.disabled=true;
-  return kPost("/kst/follow",{pubid:pub,on:!!on}).then(function(j){ if(btn) btn.disabled=false; if(!(j&&j.ok)){ soon(L(TX.fail)); return null; }
+  return kPost("/kst/follow",{pubid:pub,on:!!on}).then(function(j){ if(btn) btn.disabled=false; if(!(j&&j.ok)){ soon(j&&j.err==="age"?NL("e_age"):L(TX.fail)); return null; }
     try{ ntap("kara_stage",on?"follow":"unfollow"); }catch(e){}
     PG.forEach(function(o){ if(o._fw) try{ o._fw(pub,j); }catch(e){} });   // 열린 페이지들(그 사람 무대·상세·내 스테이지)에 알림
     return j; }).catch(function(){ if(btn) btn.disabled=false; soon(L(TX.upNet)); return null; }); }
@@ -1532,10 +1542,10 @@ function kUser(pub){ if(!/^[0-9a-f]{12}$/.test(String(pub||""))) return; var o=p
     kGet("/kst/ulist?pubid="+pub+"&sort="+U.sort).then(function(j){ if(my!==U.tok) return; if(j&&j.ok) U.items=j.items||[]; else { U.items=[]; U.err=1; } U.draw(); }).catch(function(){ if(my!==U.tok) return; U.items=[]; U.err=1; U.draw(); }); };
   U.loadMe=function(){};
   o._bye=function(){ U.tok++; };
-  o._fw=function(p2,j){ if(p2===pub&&U.info){ U.info.iFollow=j.iFollow; U.info.followers=j.followers; U.load(); } else if(U.info&&U.info.isMe){ U.info.following=j.following; U.draw(); } };
+  o._fw=function(p2,j){ if(p2===pub&&U.info){ U.info.iFollow=j.iFollow; U.info.mu=j.mu?1:0; U.info.followers=j.followers; U.load(); } else if(U.info&&U.info.isMe){ U.info.following=j.following; U.draw(); } };
   U.draw=function(){ var m=U.info, dash="…", body;
     var head='<div class="kpf"><div class="kpfv kro'+kFtC(m&&m.ft)+'">'+(m&&m.aip?kAiPf(m.aip):m&&m.pid?kThumb(m.pid,"kpfm"):'<span class="kpfe">'+kIc("vid")+'</span>')+'</div><div class="kpfi">'
-      +'<div class="kpr kpn">'+kIc("id")+'<b>'+esc(m?(m.nick||"guest"):dash)+'</b>'+kFtTag(m&&m.ft)+(m&&!m.isMe?kFwB(m.iFollow):'')+'</div>'
+      +'<div class="kpr kpn">'+kIc("id")+'<b>'+esc(m?(m.nick||"guest"):dash)+'</b>'+(m&&m.mu?kMuB():'')+kFtTag(m&&m.ft)+(m&&!m.isMe?kFwB(m.iFollow):'')+'</div>'
       +'<div class="kpr kfl2" role="button" tabindex="0" data-fl="followers">'+kIc("fol")+'<span>'+esc(L(TX.fol))+'</span><b>'+(m?kNum(m.followers):dash)+'</b></div>'
       +'<div class="kpr kfl2" role="button" tabindex="0" data-fl="following">'+kIc("fol")+'<span>'+esc(L(TX.fing))+'</span><b>'+(m?kNum(m.following):dash)+'</b></div>'
       +'<div class="kpr">'+kIc("vid")+'<span>'+esc(L(TX.vids))+'</span><b>'+(m?kNum(m.count):dash)+'</b></div>'
@@ -1560,13 +1570,13 @@ function kUser(pub){ if(!/^[0-9a-f]{12}$/.test(String(pub||""))) return; var o=p
     [].forEach.call(o.querySelectorAll(".krow"),function(c){ var go=function(){ var x=U.items&&U.items[+c.dataset.i]; if(x) kDet(x,U); }; c.onclick=go; c.onkeydown=function(e){ if(e.key==="Enter") go(); }; }); };
   U.load(); try{ ntap("kara_stage","user"); }catch(e){} }
 // 팔로워·팔로잉 목록 — ID 를 누르면 그 사람 무대
-function kFl(pub,kind){ var o=pgOpen("kfl"); if(!o) return; var items=null, err=0, ttl=L(kind==="following"?TX.fing:TX.fol);
+function kFl(pub,kind){ var o=pgOpen("kfl"); if(!o) return; var items=null, err=0, ttl=kind==="mutual"?NL("mutF"):L(kind==="following"?TX.fing:TX.fol);   // mutual = 맞팔 친구 (10-31 밤)
   var draw=function(){ var body=items===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':err?'<div class="kstge">'+esc(L(TX.stF))+'</div>':!items.length?'<div class="kstge">'+esc(L(TX.flE))+'</div>'
-      :'<div class="kfls">'+items.map(function(x,i){ return '<button type="button" data-i="'+i+'">'+kIc("id")+'<span class="'+kFtN(x.ft).trim()+'">'+esc(x.nick||"guest")+'</span></button>'; }).join("")+'</div>';
+      :'<div class="kfls">'+items.map(function(x,i){ return '<button type="button" data-i="'+i+'">'+kIc("id")+'<span class="'+kFtN(x.ft).trim()+'">'+esc(x.nick||"guest")+'</span>'+(x.mu?kMuB():'')+'</button>'; }).join("")+'</div>';
     o.innerHTML=kHead('<h3>'+esc(ttl)+(items&&items.length?' · '+kNum(items.length):'')+'</h3>')+'<div class="kpgb">'+body+'</div>';
     o.querySelector(".kpbk").onclick=pgBack;
     [].forEach.call(o.querySelectorAll(".kfls button"),function(c){ c.onclick=function(){ var x=items[+c.dataset.i]; if(x&&x.pubid) kUser(x.pubid); }; }); };
-  draw(); kGet("/kst/fl?pubid="+pub+"&kind="+(kind==="following"?"following":"followers")).then(function(j){ if(!o.isConnected) return; if(j&&j.ok) items=j.items||[]; else { items=[]; err=1; } draw(); })
+  draw(); kGet("/kst/fl?pubid="+pub+"&kind="+(kind==="following"||kind==="mutual"?kind:"followers")).then(function(j){ if(!o.isConnected) return; if(j&&j.ok) items=j.items||[]; else { items=[]; err=1; } draw(); })
     .catch(function(){ if(!o.isConnected) return; items=[]; err=1; draw(); }); }
 var KS=null;   // 열린 가요무대 페이지 상태 {o,tab,items,err,me,sort,tok,draw,load}
 function stageOpen(tab0){ var tab=tab0==="me"?"me":"all";
@@ -1588,6 +1598,7 @@ function stageOpen(tab0){ var tab=tab0==="me"?"me":"all";
       +'<div class="kpr kpn">'+kIc("id")+(m&&m.nick?'<b>'+esc(m.nick)+'</b>'+kFtTag(m.ft)+'<button type="button" class="kln" data-nick="1">'+esc(L(TX.chg))+'</button>':'<button type="button" class="kln" data-nick="1">'+esc(L(TX.idSet))+'</button>')+'</div>'
       +'<div class="kpr'+(m&&m.pubid?' kfl2" role="button" tabindex="0" data-fl="followers':'')+'">'+kIc("fol")+'<span>'+esc(L(TX.fol))+'</span><b>'+(m?kNum(m.followers):dash)+'</b></div>'
       +'<div class="kpr'+(m&&m.pubid?' kfl2" role="button" tabindex="0" data-fl="following':'')+'">'+kIc("fol")+'<span>'+esc(L(TX.fing))+'</span><b>'+(m?kNum(m.following):dash)+'</b></div>'
+      +(m&&m.pubid?'<div class="kpr kfl2" role="button" tabindex="0" data-fl="mutual">'+kIc("fol")+'<span>'+esc(NL("mutF"))+'</span><b>›</b></div>':'')
       +'<div class="kpr">'+kIc("view")+'<span>'+esc(L(TX.vw))+'</span><b>'+(m?kNum(m.views):dash)+'</b></div>'
       +'<div class="kpr">'+kIc("vid")+'<span>'+esc(L(TX.vids))+'</span><b>'+(m?kNum(m.count):dash)+'</b></div>'
       +'<div class="kpr">'+kIc("up")+'<span>'+esc(L(TX.lks))+'</span><b>'+(m?kNum(m.likes):dash)+'</b></div>'
@@ -2088,12 +2099,12 @@ function kPplPick(host,opt){ var w=document.createElement("div"); w.className="k
   w.onclick=function(e){ if(e.target===w&&!busy) w.remove(); };
   w.setItems=function(a){ items=a; draw(); };
   draw(); return w; }
-function kRoomErr(j){ var e=j&&j.err; return L(e==="many"?TX.rmMax:e==="name"?TX.rmNmE:e==="room"||e==="none"||e==="own"?TX.rmGone:TX.fail); }
+function kRoomErr(j){ var e=j&&j.err; if(e==="mu") return NL("e_mu"); return L(e==="many"?TX.rmMax:e==="name"?TX.rmNmE:e==="room"||e==="none"||e==="own"?TX.rmGone:TX.fail); }
 function kRoomNew(S){ var w=kPplPick(S.o,{title:L(TX.rmNew),name:L(TX.rmDef),sub:L(TX.rmWho),list:1,items:null,empty:L(TX.rmNoF),ok:L(TX.rmMk),
     go:function(nm,ps){ return new Promise(function(res){ var rid=kRid(), cost=dCost("room");   // (10-31 밤) 방장이 1,000P 1회 — 「1,000P 사용 → N P 남음」 확인 뒤 생성 · 실패하면 허브가 되돌림
       dPay(cost,L(TX.rmNew),function(done){ kPost("/kst/room",{op:"create",name:nm,pubids:ps,rid:rid}).then(function(j){ if(!(j&&j.ok)){ var e=j&&j.err, t=e==="short"?tf(L(TX.kwShort),{h:ptS(j.have||0)}):kRoomErr(j); done(t); kptLoad(); return; }
         done(); kptLoad(); try{ ntap("kara_stage","room_new"); }catch(e){} if(S.load) S.load(); res(null); kRoom(j.rid,S); }).catch(function(){ done(L(TX.upNet)); }); },function(){ res(""); }); }); }});
-  kMyFol().then(function(a){ if(w.isConnected) w.setItems(a); }).catch(function(){ if(w.isConnected) w.setItems([]); }); }
+  kMyMut().then(function(a){ if(w.isConnected) w.setItems(a); }).catch(function(){ if(w.isConnected) w.setItems([]); }); }
 function kRoomRow(x,i,rk,seq){ var d=kDay(x.at);   // rk = 순위(챌린지 1·2·3) 또는 순번(릴레이, seq) 배지 (10-31)
   return '<div class="krow" role="button" tabindex="0" data-i="'+i+'">'+(rk?'<b class="krk'+(seq?' s':rk===2?' r2':rk===3?' r3':'')+'">'+rk+'</b>':'')+'<div class="krd"><b>'+esc(d[0])+'</b><small>'+esc(d[1])+'</small></div>'+kScC(x)
     +'<div class="krm"><p>'+esc(x.desc||x.t||"-")+'</p><small>'+(x.pubid?kUn(x).replace('class="kun','class="kun knk'):'<b class="knk">'+esc(x.nick||"guest")+'</b>')
@@ -2120,7 +2131,7 @@ function kRoom(rid,S0){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var 
         +'<button type="button" class="kdcb" data-deco="1"><img src="img/deco/pr_balloons.webp" alt="">'+esc(L(TX.dcB))+'</button>'
         +'<button type="button" class="kdcb kgpb" data-grp="1"><img src="img/kara/kst_theme.png" alt="">'+esc(L(TX.gpB))+'</button>'   // 단체 AI 사진 (10-31)
         +'<button type="button" class="krmx" data-mn="1" aria-label="menu">⋯</button></div>'+(m?'<div class="kddeco kdk"></div>':'')
-        +(R.mem&&m?'<div class="krmm">'+m.mem.map(function(p){ return '<span>'+(p.pubid&&!p.me?'<button type="button" class="kun'+kFtN(p.ft)+'" data-u="'+esc(p.pubid)+'">'+esc(p.nick||"guest")+'</button>':'<b class="kme'+kFtN(p.ft)+'">'+esc(p.nick||"guest")+'</b>')+(p.owner?'<small>'+esc(L(TX.rmOw))+'</small>':'')+'</span>'; }).join("")+(m.owner?'<button type="button" class="krmi" data-inv="1">'+kIc("share",1)+esc(L(TX.rmInv))+'</button><button type="button" class="krmi" data-nr="1">'+kIc("fol",1)+esc(L(NT.nrFind))+'</button>':'')+'</div>':'')
+        +(R.mem&&m?'<div class="krmm">'+m.mem.map(function(p){ return '<span>'+(p.pubid&&!p.me?'<button type="button" class="kun'+kFtN(p.ft)+'" data-u="'+esc(p.pubid)+'">'+esc(p.nick||"guest")+'</button>':'<b class="kme'+kFtN(p.ft)+'">'+esc(p.nick||"guest")+'</b>')+(p.mu?kMuB():'')+(p.owner?'<small>'+esc(L(TX.rmOw))+'</small>':'')+'</span>'; }).join("")+(m.owner?'<button type="button" class="krmi" data-inv="1">'+kIc("share",1)+esc(L(TX.rmInv))+'</button>':'')+'</div>':'')
         +gpStrip(m)+'<div class="ksrt"><span>'+esc(L(TX.vids))+(R.items&&R.items.length?' · '+R.items.length:'')+'</span><button type="button" data-sort="1">⇅ '+esc(kSortL(R.sort))+'</button>'+kVwBtn()+'</div>'
         +(R.items===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':R.err&&!R.items.length?'<div class="kstge">'+esc(L(TX.stF))+'</div>':!R.items.length?'<div class="kstge">'+esc(L(TX.rmE))+'</div>'
           :'<div class="krows">'+kSortA(R.items,R.sort).map(function(r){ return kRoomRow(r[0],r[1]); }).join("")+'</div>'); }
@@ -2134,7 +2145,6 @@ function kRoom(rid,S0){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var 
     var mn=o.querySelector("[data-mn]"); if(mn) mn.onclick=function(){ if(R.info) menu(); };
     var dr=o.querySelector("[data-dor]"); if(dr) dr.onclick=function(){ dorOpen(R.info&&R.info.name||""); };   // 방 이름으로 도란도란 (10-31 밤)
     var iv=o.querySelector("[data-inv]"); if(iv) iv.onclick=function(){ if(R.info) kRoomInv(R.info,rid); };
-    var nrb=o.querySelector("[data-nr]"); if(nrb) nrb.onclick=function(){ if(R.info) nrOpen({type:"song",room:rid,name:R.info.name}); };   // 근처 친구 찾기 (10-31)
     var gpb=o.querySelector("[data-grp]"); if(gpb) gpb.onclick=function(){ if(R.info) gpOpen(gpRoomCtx(R,rid)); };   // 단체 AI 사진 (10-31)
     var gpd=o.querySelector("[data-gpb]"); if(gpd) gpd.onclick=function(){ gpOpen(gpRoomCtx(R,rid),1); };
     [].forEach.call(o.querySelectorAll("[data-gp]"),function(b){ b.onclick=function(){ var x=m&&m.gp&&m.gp[+b.dataset.gp]; if(x) gpView(x); }; });
@@ -2142,14 +2152,13 @@ function kRoom(rid,S0){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var 
     [].forEach.call(o.querySelectorAll(".krow"),function(c){ var go=function(){ var x=R.items&&R.items[+c.dataset.i]; if(x) kDet(x,R); }; c.onclick=go; c.onkeydown=function(e){ if(e.key==="Enter") go(); }; }); };
   var op=function(a){ a.rid=rid; return kPost("/kst/room",a).then(function(j){ if(!(j&&j.ok)) return kRoomErr(j); R.load(); up(); return null; }); };
   var menu=function(){ var m=R.info, w=document.createElement("div"); w.className="kpm"; o.appendChild(w);
-    var bs=m.owner?[["inv",TX.rmInv,"share",""],["near",NT.nrFind,"fol",""],["add",TX.rmAdd,"plus",""],["rm",TX.rmRm,"fol",""],["ren",TX.rmRen,"id",""],["del",TX.rmDel,"","r"]]:[["lv",TX.rmLv,"","r"]];
+    var bs=m.owner?[["inv",TX.rmInv,"share",""],["add",TX.rmAdd,"plus",""],["rm",TX.rmRm,"fol",""],["ren",TX.rmRen,"id",""],["del",TX.rmDel,"","r"]]:[["lv",TX.rmLv,"","r"]];
     w.innerHTML='<div><h3>'+esc(m.name)+'</h3><div class="kmn">'+bs.map(function(b){ return '<button type="button" data-k="'+b[0]+'"'+(b[3]?' class="'+b[3]+'"':'')+'>'+(b[2]?kIc(b[2]):'')+esc(L(b[1]))+'</button>'; }).join("")+'</div><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
     w.querySelector(".kc").onclick=function(){ w.remove(); }; w.onclick=function(e){ if(e.target===w) w.remove(); };
     [].forEach.call(w.querySelectorAll("[data-k]"),function(b){ b.onclick=function(){ var k=b.dataset.k; w.remove();
       if(k==="inv"){ kRoomInv(m,rid); return; }
-      if(k==="near"){ nrOpen({type:"song",room:rid,name:m.name}); return; }   // 근처 친구 찾기 (10-31)
       if(k==="add"){ var have={}; m.mem.forEach(function(p){ have[p.pubid]=1; }); var pw=kPplPick(o,{title:L(TX.rmAdd),list:1,items:null,empty:L(TX.rmNoA),ok:L(TX.rmAdd),need:1,go:function(n,ps){ return op({op:"add",pubids:ps}); }});
-        kMyFol().then(function(a){ if(pw.isConnected) pw.setItems(a.filter(function(x){ return x.pubid&&!have[x.pubid]; })); }).catch(function(){ if(pw.isConnected) pw.setItems([]); }); }
+        kMyMut().then(function(a){ if(pw.isConnected) pw.setItems(a.filter(function(x){ return x.pubid&&!have[x.pubid]; })); }).catch(function(){ if(pw.isConnected) pw.setItems([]); }); }
       else if(k==="rm") kPplPick(o,{title:L(TX.rmRm),list:1,items:m.mem.filter(function(p){ return !p.owner&&p.pubid; }),empty:L(TX.flE),ok:L(TX.rmRm),need:1,go:function(n,ps){ return op({op:"remove",pubids:ps}); }});
       else if(k==="ren") kPplPick(o,{title:L(TX.rmRen),name:m.name,items:[],ok:L(TX.save),go:function(n){ return op({op:"rename",name:n}); }});
       else if(k==="del"||k==="lv"){ if(!window.confirm(L(k==="del"?TX.rmDelQ:TX.rmLvQ))) return; kPost("/kst/room",{op:k==="del"?"del":"leave",rid:rid}).then(function(j){ if(j&&j.ok){ up(); pgBack(); return; } soon(kRoomErr(j)); }).catch(function(){ soon(L(TX.upNet)); }); } }; }); };
@@ -2694,11 +2703,11 @@ function dReport(p){ var w=document.createElement("div"); w.className="kpm"; DR.
   draw(""); }
 // ⋯ 메뉴 — 연장 · (방장) 방 종료
 function dMenu(){ var w=document.createElement("div"); w.className="kpm"; DR.o.appendChild(w);
-  w.innerHTML='<div><h3>'+esc((DR.st&&DR.st.room.name)||L(TX.dorB))+'</h3><div class="kmn"><button type="button" data-x="1">'+esc(L(TX.dorExt))+'</button><button type="button" data-i="1">'+kIc("share")+esc(L(TX.dorInv))+'</button><button type="button" data-nr="1">'+kIc("fol")+esc(L(NT.nrFind))+'</button>'+(DR.own?'<button type="button" class="r" data-c="1">'+esc(L(TX.dorClose))+'</button>':'')+'</div><p class="km">'+esc(L(TX.dorN3))+'</p><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+  w.innerHTML='<div><h3>'+esc((DR.st&&DR.st.room.name)||L(TX.dorB))+'</h3><div class="kmn"><button type="button" data-x="1">'+esc(L(TX.dorExt))+'</button><button type="button" data-i="1">'+kIc("share")+esc(L(TX.dorInv))+'</button><button type="button" data-nr="1">'+kIc("fol")+esc(NL("mfInv"))+'</button>'+(DR.own?'<button type="button" class="r" data-c="1">'+esc(L(TX.dorClose))+'</button>':'')+'</div><p class="km">'+esc(L(TX.dorN3))+'</p><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
   w.querySelector(".kc").onclick=function(){ w.remove(); }; w.onclick=function(e){ if(e.target===w) w.remove(); };
   w.querySelector("[data-x]").onclick=function(){ w.remove(); dExtAsk(); };
   w.querySelector("[data-i]").onclick=function(){ w.remove(); dInv(); };
-  w.querySelector("[data-nr]").onclick=function(){ w.remove(); nrOpen({type:"dor",tok:DR.tok,name:(DR.st&&DR.st.room.name)||""}); };   // 근처 친구 찾기 (10-31) — 지금 방으로
+  w.querySelector("[data-nr]").onclick=function(){ w.remove(); kDorMut(); };   // 맞팔 친구 초대 (10-31 밤 — 모르는 사람 초대 없앰) — 지금 방으로
   var c=w.querySelector("[data-c]"); if(c) c.onclick=function(){ w.remove(); kMsg(DR.o,L(TX.dorCloseQ),[[L(TX.dorClose),function(){ if(DR.own||dMy()&&dMy().tok===DR.tok) dMy(null); dSend({t:"close"}); }],[L(TX.cancel),null,"kc"]]); }; }
 // 초대 — 공용 공유창(카카오톡·LINE·X·WeChat·Weibo·복사)
 function dInv(){ if(!DR.tok) return; var u=RINV_U+"?dor="+DR.tok, iu=u+"&install=1", nm=(DR.st&&DR.st.room.name)||L(TX.dorB), me=(DR.st&&DR.st.mem||[]).filter(function(p){ return p.mid===DR.me; })[0], on=me&&me.nick||"";
@@ -2712,26 +2721,39 @@ function dInv(){ if(!DR.tok) return; var u=RINV_U+"?dor="+DR.tok, iu=u+"&install
 var NT={
  nrB:{ko:"주변 노래 친구",en:"Singers nearby",ja:"近くの歌友",zhs:"附近歌友",zht:"附近歌友",es:"Cantantes cerca"},
  nrFind:{ko:"근처 친구 찾기",en:"Find nearby friends",ja:"近くの友だちを探す",zhs:"查找附近的朋友",zht:"尋找附近的朋友",es:"Buscar amigos cerca"},
- nrS:{ko:"위치를 켠 근처 친구와 같이 노래해요",en:"Sing together with nearby friends who share their location",ja:"位置情報をオンにした近くの友だちと一緒に歌おう",zhs:"和开启位置的附近朋友一起唱歌",zht:"和開啟位置的附近朋友一起唱歌",es:"Canta con amigos cercanos que comparten su ubicación"},
+ mu:{ko:"맞팔",en:"Mutual",ja:"相互",zhs:"互关",zht:"互追",es:"Mutuo"},
+ mutF:{ko:"맞팔 친구",en:"Mutual friends",ja:"相互フォローの友だち",zhs:"互关好友",zht:"互追好友",es:"Amigos mutuos"},
+ mfInv:{ko:"맞팔 친구 초대",en:"Invite mutual friends",ja:"相互フォローの友だちを招待",zhs:"邀请互关好友",zht:"邀請互追好友",es:"Invitar a amigos mutuos"},
+ mfSend:{ko:"초대 보내기",en:"Send invitation",ja:"招待を送る",zhs:"发送邀请",zht:"發送邀請",es:"Enviar invitación"},
+ mfNo:{ko:"맞팔 친구가 없습니다. 서로 팔로우하면 초대할 수 있습니다.",en:"No mutual friends yet. You can invite people who follow each other with you.",ja:"相互フォローの友だちがいません。お互いにフォローすると招待できます。",zhs:"还没有互关好友。互相关注后即可邀请。",zht:"還沒有互追好友。互相追蹤後即可邀請。",es:"Aún no tienes amigos mutuos. Puedes invitar a quienes os seguís mutuamente."},
+ e_mu:{ko:"맞팔 친구만 초대할 수 있습니다",en:"Only mutual friends can be invited",ja:"相互フォローの友だちだけ招待できます",zhs:"只能邀请互关好友",zht:"只能邀請互追好友",es:"Solo puedes invitar a amigos mutuos"},
+ e_age:{ko:"15~18세와 성인은 서로 팔로우할 수 없습니다",en:"Ages 15–18 and adults can't follow each other",ja:"15〜18歳と成人はお互いにフォローできません",zhs:"15~18岁与成年人不能互相关注",zht:"15~18歲與成年人不能互相追蹤",es:"Las personas de 15 a 18 años y los adultos no pueden seguirse entre sí"},
+ fnT:{ko:"{n}님이 나를 팔로우했어요",en:"{n} followed you",ja:"{n}さんがあなたをフォローしました",zhs:"{n} 关注了你",zht:"{n} 追蹤了你",es:"{n} empezó a seguirte"},
+ fnMore:{ko:"외 {k}명",en:"and {k} more",ja:"ほか{k}人",zhs:"等{k}人",zht:"等{k}人",es:"y {k} más"},
+ fnB:{ko:"맞팔하기",en:"Follow back",ja:"フォローバック",zhs:"回关",zht:"回追",es:"Seguir también"},
+ fnDone:{ko:"맞팔이 되었습니다",en:"You now follow each other",ja:"相互フォローになりました",zhs:"已互相关注",zht:"已互相追蹤",es:"Ahora os seguís mutuamente"},
+ noSong:{ko:"아직 올린 노래가 없어요",en:"No songs posted yet",ja:"まだ投稿した歌はありません",zhs:"还没有发布歌曲",zht:"還沒有發布歌曲",es:"Aún no ha publicado canciones"},
+ nudge:{ko:"노래를 올리면 목록 위쪽에 보입니다",en:"Post a song to appear near the top of the list",ja:"歌を投稿すると一覧の上の方に表示されます",zhs:"发布歌曲后会显示在列表上方",zht:"發布歌曲後會顯示在列表上方",es:"Publica una canción para aparecer más arriba en la lista"},
+ nrS:{ko:"위치를 켠 근처 사람의 노래를 둘러봐요",en:"Browse songs from nearby people who share their location",ja:"位置をオンにした近くの人の歌を見てみよう",zhs:"浏览开启位置的附近用户的歌曲",zht:"瀏覽開啟位置的附近使用者的歌曲",es:"Explora canciones de gente cercana que comparte su ubicación"},
  vis:{ko:"내 위치 보이기",en:"Show my location",ja:"自分の位置を表示",zhs:"显示我的位置",zht:"顯示我的位置",es:"Mostrar mi ubicación"},
  visOn:{ko:"{t}까지 근처 친구에게 보입니다",en:"Visible to nearby friends until {t}",ja:"{t}まで近くの友だちに表示されます",zhs:"在{t}之前对附近朋友可见",zht:"在{t}之前對附近朋友可見",es:"Visible para amigos cercanos hasta {t}"},
  visOff:{ko:"켜면 근처 친구와 서로 보입니다 · 대략 위치(약 1km)만 사용",en:"Turn on to see each other · approximate location only (about 1 km)",ja:"オンにするとお互いに表示されます・おおよその位置(約1km)のみ使用",zhs:"开启后可互相看到 · 仅使用大致位置(约1公里)",zht:"開啟後可互相看到 · 僅使用大致位置(約1公里)",es:"Actívalo para veros mutuamente · solo ubicación aproximada (unos 1 km)"},
  renew:{ko:"24시간 연장",en:"Extend 24 h",ja:"24時間延長",zhs:"延长24小时",zht:"延長24小時",es:"Ampliar 24 h"},
  all:{ko:"전체",en:"All",ja:"すべて",zhs:"全部",zht:"全部",es:"Todos"},
  km:{ko:"{k}km 이내",en:"Within {k} km",ja:"{k}km以内",zhs:"{k}公里以内",zht:"{k}公里以內",es:"A menos de {k} km"},
- none:{ko:"근처에 위치를 켠 친구가 없습니다",en:"No nearby friends are sharing their location",ja:"近くに位置情報をオンにした友だちはいません",zhs:"附近没有开启位置的朋友",zht:"附近沒有開啟位置的朋友",es:"No hay amigos cerca compartiendo su ubicación"},
+ none:{ko:"근처에 위치를 켠 사람이 아직 없어요",en:"No one nearby is sharing their location yet",ja:"近くに位置をオンにした人はまだいません",zhs:"附近还没有开启位置的人",zht:"附近還沒有開啟位置的人",es:"Todavía no hay nadie cerca compartiendo su ubicación"},
  offL:{ko:"「내 위치 보이기」를 켜면 근처 친구 목록이 보입니다",en:"Turn on “Show my location” to see nearby friends",ja:"「自分の位置を表示」をオンにすると近くの友だちが表示されます",zhs:"开启「显示我的位置」即可看到附近朋友",zht:"開啟「顯示我的位置」即可看到附近朋友",es:"Activa «Mostrar mi ubicación» para ver amigos cercanos"},
  song:{ko:"최근 노래",en:"Latest song",ja:"最近の歌",zhs:"最近演唱",zht:"最近演唱",es:"Última canción"},
  invB:{ko:"같이 노래해요",en:"Sing together",ja:"一緒に歌おう",zhs:"一起唱吧",zht:"一起唱吧",es:"Cantemos juntos"},
  invR:{ko:"초대",en:"Invite",ja:"招待",zhs:"邀请",zht:"邀請",es:"Invitar"},
  invd:{ko:"초대함",en:"Invited",ja:"招待済み",zhs:"已邀请",zht:"已邀請",es:"Invitado"},
  csT:{ko:"위치정보 이용 동의",en:"Consent to use location information",ja:"位置情報の利用への同意",zhs:"位置信息使用同意",zht:"位置資訊使用同意",es:"Consentimiento para usar la ubicación"},
- csL:{ko:"이용 목적: 주변 노래 친구 찾기(거리 표시)와 같이 노래하기 초대|수집 항목: 기기의 대략 위치 — 약 1km 단위로 줄여 저장하며 정확한 좌표는 저장하지 않습니다|공개 범위: 위치를 켠 성인 이용자에게 거리 구간(1km·3km·10km 이내)만 보이며 좌표·주소는 보이지 않습니다|보유 기간: 켜 둔 동안만 보관하고, 끄거나 24시간이 지나면 바로 삭제합니다. 위치정보 이용·제공 사실 확인자료는 「위치정보의 보호 및 이용 등에 관한 법률」에 따라 6개월 보관 뒤 삭제합니다|끄는 방법: 「내 위치 보이기」를 끄면 바로 보이지 않으며, 「위치정보 동의 철회」로 언제든 동의를 철회할 수 있습니다|동의하지 않아도 다른 노래방 기능은 그대로 이용할 수 있습니다",
-  en:"Purpose: finding singers nearby (distance display) and invitations to sing together|Collected: your device's approximate location — rounded to about 1 km before saving; exact coordinates are never stored|Who sees it: other verified adults who turned on their location see only a distance range (within 1, 3 or 10 km), never coordinates or addresses|Retention: kept only while turned on and deleted as soon as you turn it off or after 24 hours. Records of location use and provision are kept for 6 months as required by Korea's Act on the Protection, Use, etc. of Location Information, then deleted|How to stop: turn off “Show my location” to disappear at once, or withdraw consent any time with “Withdraw location consent”|You can keep using all other karaoke features without consenting",
-  ja:"利用目的：近くの歌友探し(距離表示)と一緒に歌う招待|収集項目：端末のおおよその位置 — 約1km単位に丸めて保存し、正確な座標は保存しません|公開範囲：位置をオンにした成人利用者に距離の区分(1km・3km・10km以内)のみ表示され、座標・住所は表示されません|保有期間：オンの間のみ保管し、オフにするか24時間が過ぎるとすぐ削除します。位置情報の利用・提供事実の確認資料は韓国「位置情報の保護及び利用等に関する法律」により6か月保管後に削除します|オフにする方法：「自分の位置を表示」をオフにするとすぐ表示されなくなり、「位置情報の同意撤回」でいつでも同意を撤回できます|同意しなくても他のカラオケ機能はそのまま利用できます",
-  zhs:"使用目的：查找附近歌友(显示距离)和邀请一起唱歌|收集项目：设备的大致位置 — 保存前约按1公里取整，不保存精确坐标|公开范围：仅向开启位置的成年用户显示距离区间(1公里·3公里·10公里以内)，不显示坐标和地址|保存期限：仅在开启期间保存，关闭或满24小时后立即删除。位置信息使用·提供事实确认资料依韩国《位置信息保护及利用法》保存6个月后删除|关闭方法：关闭「显示我的位置」即刻不再显示，也可随时通过「撤回位置信息同意」撤回同意|不同意也可以照常使用其他练歌房功能",
-  zht:"使用目的：尋找附近歌友(顯示距離)和邀請一起唱歌|收集項目：裝置的大致位置 — 儲存前約按1公里取整，不儲存精確座標|公開範圍：僅向開啟位置的成年使用者顯示距離區間(1公里·3公里·10公里以內)，不顯示座標和地址|保存期限：僅在開啟期間保存，關閉或滿24小時後立即刪除。位置資訊使用·提供事實確認資料依韓國《位置資訊保護及利用法》保存6個月後刪除|關閉方法：關閉「顯示我的位置」即刻不再顯示，也可隨時透過「撤回位置資訊同意」撤回同意|不同意也可以照常使用其他練歌房功能",
-  es:"Finalidad: buscar cantantes cerca (mostrar distancia) e invitaciones para cantar juntos|Datos: la ubicación aproximada del dispositivo, redondeada a unos 1 km antes de guardarla; nunca se guardan coordenadas exactas|Quién la ve: otros adultos verificados con la ubicación activada ven solo un rango de distancia (a menos de 1, 3 o 10 km), nunca coordenadas ni direcciones|Conservación: solo mientras esté activada; se borra al desactivarla o a las 24 horas. Los registros de uso y cesión de la ubicación se guardan 6 meses según la ley coreana de protección de la información de ubicación y luego se borran|Cómo desactivarla: desactiva «Mostrar mi ubicación» para dejar de aparecer al instante, o retira el consentimiento cuando quieras con «Retirar consentimiento de ubicación»|Puedes seguir usando las demás funciones del karaoke sin dar tu consentimiento"},
+ csL:{ko:"이용 목적: 위치를 켠 근처 사람끼리 노래 둘러보기(거리 표시) — 모르는 사람을 방에 초대하지 않습니다|수집 항목: 기기의 대략 위치 — 약 1km 단위로 줄여 저장하며 정확한 좌표는 저장하지 않습니다|공개 범위: 위치를 켠 같은 구분(15~18세 또는 성인)의 이용자에게 거리 구간(1km·3km·10km 이내)만 보이며 좌표·주소는 보이지 않습니다|함께 표시: 나이대와 성별(본인인증 결과)이 함께 표시됩니다 — 정확한 나이·생일은 표시하지 않으며, 본인인증한 여성은 「여성에게만 내 위치 보이기」를 켤 수 있습니다|보유 기간: 켜 둔 동안만 보관하고, 끄거나 24시간이 지나면 바로 삭제합니다. 위치정보 이용·제공 사실 확인자료는 「위치정보의 보호 및 이용 등에 관한 법률」에 따라 6개월 보관 뒤 삭제합니다|끄는 방법: 「내 위치 보이기」를 끄면 바로 보이지 않으며, 「위치정보 동의 철회」로 언제든 동의를 철회할 수 있습니다|동의하지 않아도 다른 노래방 기능은 그대로 이용할 수 있습니다",
+  en:"Purpose: browsing songs among nearby people who turned on their location (distance display) — no invitations from strangers|Collected: your device's approximate location — rounded to about 1 km before saving; exact coordinates are never stored|Who sees it: other users in the same group (ages 15–18 or adults) who turned on their location see only a distance range (within 1, 3 or 10 km), never coordinates or addresses|Also shown: your age group and gender (from identity verification) are shown with you — never your exact age or birthday. Verified women can turn on “Show my location to women only”|Retention: kept only while turned on and deleted as soon as you turn it off or after 24 hours. Records of location use and provision are kept for 6 months as required by Korea's Act on the Protection, Use, etc. of Location Information, then deleted|How to stop: turn off “Show my location” to disappear at once, or withdraw consent any time with “Withdraw location consent”|You can keep using all other karaoke features without consenting",
+  ja:"利用目的：位置をオンにした近くの人同士で歌を見ること(距離表示) — 知らない人からの招待はありません|収集項目：端末のおおよその位置 — 約1km単位に丸めて保存し、正確な座標は保存しません|公開範囲：位置をオンにした同じ区分(15〜18歳または成人)の利用者に距離の区分(1km・3km・10km以内)のみ表示され、座標・住所は表示されません|あわせて表示：年代と性別(本人認証の結果)があわせて表示されます — 正確な年齢・誕生日は表示しません。本人認証した女性は「女性にだけ自分の位置を表示」をオンにできます|保有期間：オンの間のみ保管し、オフにするか24時間が過ぎるとすぐ削除します。位置情報の利用・提供事実の確認資料は韓国「位置情報の保護及び利用等に関する法律」により6か月保管後に削除します|オフにする方法：「自分の位置を表示」をオフにするとすぐ表示されなくなり、「位置情報の同意撤回」でいつでも同意を撤回できます|同意しなくても他のカラオケ機能はそのまま利用できます",
+  zhs:"使用目的：开启位置的附近用户之间浏览歌曲(显示距离) — 不会收到陌生人的邀请|收集项目：设备的大致位置 — 保存前约按1公里取整，不保存精确坐标|公开范围：仅向开启位置的同一组别(15~18岁或成年人)用户显示距离区间(1公里·3公里·10公里以内)，不显示坐标和地址|同时显示：年龄段和性别(实名认证结果)会一并显示 — 不显示确切年龄和生日。完成实名认证的女性可开启「仅向女性显示我的位置」|保存期限：仅在开启期间保存，关闭或满24小时后立即删除。位置信息使用·提供事实确认资料依韩国《位置信息保护及利用法》保存6个月后删除|关闭方法：关闭「显示我的位置」即刻不再显示，也可随时通过「撤回位置信息同意」撤回同意|不同意也可以照常使用其他练歌房功能",
+  zht:"使用目的：開啟位置的附近使用者之間瀏覽歌曲(顯示距離) — 不會收到陌生人的邀請|收集項目：裝置的大致位置 — 儲存前約按1公里取整，不儲存精確座標|公開範圍：僅向開啟位置的同一組別(15~18歲或成年人)使用者顯示距離區間(1公里·3公里·10公里以內)，不顯示座標和地址|同時顯示：年齡層和性別(實名認證結果)會一併顯示 — 不顯示確切年齡和生日。完成實名認證的女性可開啟「僅向女性顯示我的位置」|保存期限：僅在開啟期間保存，關閉或滿24小時後立即刪除。位置資訊使用·提供事實確認資料依韓國《位置資訊保護及利用法》保存6個月後刪除|關閉方法：關閉「顯示我的位置」即刻不再顯示，也可隨時透過「撤回位置資訊同意」撤回同意|不同意也可以照常使用其他練歌房功能",
+  es:"Finalidad: ver canciones entre personas cercanas con la ubicación activada (mostrar distancia), sin invitaciones de desconocidos|Datos: la ubicación aproximada del dispositivo, redondeada a unos 1 km antes de guardarla; nunca se guardan coordenadas exactas|Quién la ve: otros usuarios del mismo grupo (15 a 18 años o adultos) con la ubicación activada ven solo un rango de distancia (a menos de 1, 3 o 10 km), nunca coordenadas ni direcciones|También se muestra: tu franja de edad y tu sexo (según la verificación de identidad), nunca tu edad exacta ni tu cumpleaños. Las mujeres verificadas pueden activar «Mostrar mi ubicación solo a mujeres»|Conservación: solo mientras esté activada; se borra al desactivarla o a las 24 horas. Los registros de uso y cesión de la ubicación se guardan 6 meses según la ley coreana de protección de la información de ubicación y luego se borran|Cómo desactivarla: desactiva «Mostrar mi ubicación» para dejar de aparecer al instante, o retira el consentimiento cuando quieras con «Retirar consentimiento de ubicación»|Puedes seguir usando las demás funciones del karaoke sin dar tu consentimiento"},
  csOp:{ko:"주식회사 부만 · 위치기반서비스사업 신고 제1866호 · 위치정보관리책임자 황의만",en:"Booman Inc. · Location-based service business report No. 1866 · Location information officer: Hwang Euiman",ja:"Booman Inc.(株式会社 부만) · 位置基盤サービス事業申告 第1866号 · 位置情報管理責任者 Hwang Euiman",zhs:"Booman Inc.(株式会社 부만) · 位置服务业务申报 第1866号 · 位置信息管理负责人 Hwang Euiman",zht:"Booman Inc.(株式会社 부만) · 位置服務業務申報 第1866號 · 位置資訊管理負責人 Hwang Euiman",es:"Booman Inc. · Registro de servicio basado en ubicación n.º 1866 · Responsable de información de ubicación: Hwang Euiman"},
  csOk:{ko:"동의하고 켜기",en:"Agree and turn on",ja:"同意してオンにする",zhs:"同意并开启",zht:"同意並開啟",es:"Aceptar y activar"},
  csTm:{ko:"이용약관 보기",en:"View terms",ja:"利用規約を見る",zhs:"查看使用条款",zht:"查看使用條款",es:"Ver términos"},
@@ -2746,7 +2768,18 @@ var NT={
  invS:{ko:"초대 보내기",en:"Send invitation",ja:"招待を送る",zhs:"发送邀请",zht:"發送邀請",es:"Enviar invitación"},
  invAsk:{ko:"{r} · 수락 시 사용",en:"{r} · charged on acceptance",ja:"{r}・承諾時に使用",zhs:"{r} · 接受时扣除",zht:"{r} · 接受時扣除",es:"{r} · se cobra al aceptar"},
  sent:{ko:"초대를 보냈습니다",en:"Invitation sent",ja:"招待を送りました",zhs:"邀请已发送",zht:"邀請已發送",es:"Invitación enviada"},
- e_adult:{ko:"성인 인증이 필요합니다. StageSong을 다시 열어 본인인증을 진행해 주세요",en:"Adult verification is required. Please reopen StageSong and verify your identity.",ja:"成人認証が必要です。StageSongを開き直して本人認証を行ってください",zhs:"需要成人认证。请重新打开 StageSong 并完成实名认证",zht:"需要成人認證。請重新開啟 StageSong 並完成實名認證",es:"Se requiere verificación de edad. Vuelve a abrir StageSong y verifica tu identidad."},
+ e_adult:{ko:"본인인증이 필요합니다. StageSong을 다시 열어 본인인증을 진행해 주세요",en:"Identity verification is required. Please reopen StageSong and verify your identity.",ja:"本人認証が必要です。StageSongを開き直して本人認証を行ってください",zhs:"需要实名认证。请重新打开 StageSong 并完成实名认证",zht:"需要實名認證。請重新開啟 StageSong 並完成實名認證",es:"Se requiere verificación de identidad. Vuelve a abrir StageSong y verifica tu identidad."},
+ e_sx:{ko:"본인인증한 여성만 켤 수 있습니다",en:"Only verified women can turn this on",ja:"本人認証した女性のみオンにできます",zhs:"仅限完成实名认证的女性开启",zht:"僅限完成實名認證的女性開啟",es:"Solo las mujeres verificadas pueden activarlo"},
+ fBand:{ko:"같은 나이대",en:"Same age group",ja:"同じ年代",zhs:"同龄段",zht:"同齡層",es:"Misma edad"},
+ fF:{ko:"여성만",en:"Women only",ja:"女性のみ",zhs:"仅女性",zht:"僅女性",es:"Solo mujeres"},
+ fM:{ko:"남성만",en:"Men only",ja:"男性のみ",zhs:"仅男性",zht:"僅男性",es:"Solo hombres"},
+ band:{ko:"{b}대",en:"{b}s",ja:"{b}代",zhs:"{b}多岁",zht:"{b}多歲",es:"{b}-{e} años"},
+ band10:{ko:"10대",en:"Teens",ja:"10代",zhs:"10多岁",zht:"10多歲",es:"Adolescentes"},
+ sxM:{ko:"남",en:"Male",ja:"男性",zhs:"男",zht:"男",es:"Hombre"},
+ sxF:{ko:"여",en:"Female",ja:"女性",zhs:"女",zht:"女",es:"Mujer"},
+ wo:{ko:"여성에게만 내 위치 보이기",en:"Show my location to women only",ja:"女性にだけ自分の位置を表示",zhs:"仅向女性显示我的位置",zht:"僅向女性顯示我的位置",es:"Mostrar mi ubicación solo a mujeres"},
+ woD:{ko:"켜면 남성과는 서로 목록에 보이지 않습니다",en:"When on, you and men don't see each other in the list",ja:"オンにすると男性とはお互いに一覧に表示されません",zhs:"开启后你与男性在列表中互相看不到",zht:"開啟後你與男性在列表中互相看不到",es:"Activado, tú y los hombres no os veis en la lista"},
+ segN:{ko:"15~18세는 15~18세끼리, 성인은 성인끼리만 보입니다 · 나이대·성별은 본인인증 결과입니다",en:"Ages 15–18 see only ages 15–18, and adults only adults · Age group and gender come from identity verification",ja:"15〜18歳は15〜18歳同士、成人は成人同士だけが表示されます・年代と性別は本人認証の結果です",zhs:"15~18岁只能看到15~18岁，成年人只能看到成年人 · 年龄段和性别来自实名认证",zht:"15~18歲只能看到15~18歲，成年人只能看到成年人 · 年齡層和性別來自實名認證",es:"De 15 a 18 años solo ven a personas de 15 a 18, y los adultos solo a adultos · La edad y el sexo vienen de la verificación de identidad"},
  e_day:{ko:"오늘 보낼 수 있는 초대를 모두 사용했습니다 (하루 20번)",en:"You've used all of today's invitations (20 per day)",ja:"本日の招待をすべて使いました(1日20回)",zhs:"今天的邀请次数已用完(每天20次)",zht:"今天的邀請次數已用完(每天20次)",es:"Ya usaste todas las invitaciones de hoy (20 al día)"},
  e_pend:{ko:"대기 중인 초대는 3개까지입니다",en:"You can have up to 3 pending invitations",ja:"保留中の招待は3件までです",zhs:"待回复的邀请最多3个",zht:"待回覆的邀請最多3個",es:"Puedes tener hasta 3 invitaciones pendientes"},
  e_dup:{ko:"이미 초대를 보냈습니다",en:"You've already invited this person",ja:"すでに招待を送っています",zhs:"已经发送过邀请",zht:"已經發送過邀請",es:"Ya enviaste una invitación"},
@@ -2795,7 +2828,9 @@ var NT={
  ctxN:{ko:"지금 이 방으로 부릅니다 · 추가 요금 없음 · 10분 안에 수락하면 바로 들어옵니다",en:"Invite to this room · no extra charge · they join right away if they accept within 10 minutes",ja:"今この部屋に呼びます・追加料金なし・10分以内に承諾するとすぐ入れます",zhs:"邀请到当前房间 · 不另收费 · 10分钟内接受即可直接进入",zht:"邀請到目前房間 · 不另收費 · 10分鐘內接受即可直接進入",es:"Invitar a esta sala · sin coste extra · entran al momento si aceptan en 10 minutos"}
 };
 function NL(k){ return L(NT[k]); }
-var NR={me:null,ib:null,seen:{},tm:0,f:0,pg:null};
+var NR={me:null,ib:null,seen:{},tm:0,f:0,g:"all",pg:null};   // g = 나이대·성별 거르기 all|band|f|m (허브가 거름, 10-31 밤)
+// 나이대·성별 글 — 「20대 · 남」 (15~18세 = 10대) · 인증 결과가 없으면 빈 글
+function nrAge(x){ var b=+x.b||0, t=b?(b===10?NL("band10"):tf(NL("band"),{b:b,e:b+9})):"", g=x.sx==="M"?NL("sxM"):x.sx==="F"?NL("sxF"):""; return t&&g?t+" · "+g:t||g; }
 function nrPost(path,o){ var q={sess:sess()}; for(var k in o) q[k]=o[k]; return fetch(HUB+"/near/"+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(q)}).then(function(r){ return r.json().catch(function(){ return {ok:false,err:"http"}; }); }).catch(function(){ return {ok:false,err:"net"}; }); }
 function nrErr(j){ var e=j&&j.err; return NT["e_"+e]?NL("e_"+e):e==="net"?L(TX.upNet):e==="loc"?NL("locX"):e==="nick"?NL("nick"):L(TX.efail); }
 function nrKind(x){ return x.mode==="room"?tf(NL(x.type==="dor"?"kRD":"kRS"),{r:x.name||(x.type==="dor"?L(TX.dorB):NL("tSong"))}):NL(x.type==="dor"?"kND":"kNS"); }
@@ -2804,7 +2839,16 @@ function nrPic(x){ return x.aip?'<img class="knrpm" src="'+esc(HUB+"/kst/ai/"+x.
 function nrTime(t){ try{ return new Date(t).toLocaleString(kLoc(),{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"}); }catch(e){ return ""; } }
 // 받은 함 — 노래방을 연 뒤 30초마다 (로그인·동의한 계정만) · 새 초대 = 배지 + 알림창 한 번 · 결과 알림(수락·다음에·만료·실패)
 function nrPoll(){ clearInterval(NR.tm); NR.tm=0; if(!sess()) return; var tick=function(){ if(!box()){ clearInterval(NR.tm); NR.tm=0; return; } if(document.hidden) return; nrInbox(); };
-  nrPost("me",{}).then(function(j){ if(!(j&&j.ok)) return; NR.me=j; nrBadge(j.inN||0); if(j.consent){ tick(); NR.tm=setInterval(tick,30000); } }); }
+  nrPost("me",{}).then(function(j){ if(!(j&&j.ok)) return; NR.me=j; nrBadge(j.inN||0); tick(); NR.tm=setInterval(tick,30000); }); }   // (10-31 밤) 맞팔 친구의 도란도란 초대 — 위치 동의와 상관없이
+// 팔로우 알림 (10-31 밤 사장님 「맞팔」) — 노래방을 열 때 + 30초마다(열려 있는 동안) 허브 /kst/fnotes · 새 알림 = 「내 스테이지」 단추 배지 + 알림창 한 번 「○○님이 나를 팔로우했어요 · 맞팔하기」
+var KFN={tm:0,shown:{}};
+function kfnPoll(){ clearInterval(KFN.tm); KFN.tm=0; if(!sess()) return; var tick=function(){ if(!box()){ clearInterval(KFN.tm); KFN.tm=0; return; } if(document.hidden) return; kfnCheck(); }; tick(); KFN.tm=setInterval(tick,30000); }
+function kfnBadge(n){ var b=box(), x=b&&b.querySelector(".kstg"); if(!x) return; var d=x.querySelector(".kfnbd"); if(n>0){ if(!d){ d=document.createElement("i"); d.className="kfnbd"; x.appendChild(d); } d.textContent=n>9?"9+":String(n); } else if(d) d.remove(); }
+function kfnCheck(){ return kGet("/kst/fnotes").then(function(j){ if(!(j&&j.ok)) return; kfnBadge(j.n||0);
+    var nw=(j.items||[]).filter(function(x){ return x.nw&&!KFN.shown[x.pubid+x.at]; }); if(!nw.length) return; nw.forEach(function(x){ KFN.shown[x.pubid+x.at]=1; });
+    var b=box(); if(!b||b.classList.contains("krecm")) return; var x=nw[0], more=nw.length-1, t=tf(NL("fnT"),{n:x.nick||"guest"})+(more>0?" "+tf(NL("fnMore"),{k:more}):"");
+    var seen=function(){ kPost("/kst/fnseen",{}).then(function(){ kfnBadge(0); }).catch(function(){}); };
+    kMsg(dHost(),t,x.mu?[[L(TX.ok),seen]]:[[NL("fnB"),function(){ kFollow(x.pubid,true).then(function(r){ if(r&&r.mu) soon(NL("fnDone")); }); seen(); }],[L(TX.ok),seen,"kc"]]); }).catch(function(){}); }
 function nrBadge(n){ var b=box(), x=b&&b.querySelector(".knrb"); if(!x) return; var d=x.querySelector(".knrbd"); if(n>0){ if(!d){ d=document.createElement("i"); d.className="knrbd"; x.appendChild(d); } d.textContent=n>9?"9+":String(n); } else if(d) d.remove(); }
 function nrInbox(){ return nrPost("inbox",{}).then(function(j){ if(!(j&&j.ok)) return null; NR.ib=j; nrBadge(j.inv.length); var b=box();
     (j.notes||[]).forEach(function(n){ nrNote(n); });
@@ -2820,15 +2864,17 @@ function nrConsent(host,go){ var w=document.createElement("div"); w.className="k
   w.innerHTML='<div><h3>'+esc(NL("csT"))+'</h3><ul class="knrcl">'+NL("csL").split("|").map(function(s){ return '<li>'+esc(s)+'</li>'; }).join("")+'</ul><p class="km">'+esc(NL("csOp"))+'</p>'
     +'<a class="knrtm" href="terms.html?lang='+esc(window.LANG||"ko")+'" target="_blank" rel="noopener">'+esc(NL("csTm"))+'</a><button type="button" class="kgo" data-y="1">'+esc(NL("csOk"))+'</button><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
   w.querySelector(".kc").onclick=function(){ w.remove(); };
-  w.querySelector("[data-y]").onclick=function(){ if(busy) return; busy=true; this.disabled=true; nrPost("consent",{lang:window.LANG||"ko",v:1}).then(function(j){ w.remove(); if(j&&j.ok){ try{ ntap("kara_near","consent"); }catch(e){} go(); } else soon(nrErr(j)); }); }; }
+  w.querySelector("[data-y]").onclick=function(){ if(busy) return; busy=true; this.disabled=true; nrPost("consent",{lang:window.LANG||"ko",v:2}).then(function(j){ w.remove(); if(j&&j.ok){ try{ ntap("kara_near","consent"); }catch(e){} go(); } else soon(nrErr(j)); }); }; }
 function nrGeo(){ return new Promise(function(res,rej){ var g=navigator.geolocation; if(!g||!g.getCurrentPosition){ rej(); return; }
   g.getCurrentPosition(function(p){ res({la:Math.round(p.coords.latitude*100)/100,lo:Math.round(p.coords.longitude*100)/100}); },function(){ rej(); },{enableHighAccuracy:false,timeout:15000,maximumAge:600000}); }); }   // 대략 위치만 · 약 1km 로 줄여 보냄
-// 화면 — ctx 없음 = 첫 화면 「주변 노래 친구」 · ctx {type:"song",room,name} / {type:"dor",tok,name} = 방 안 「근처 친구 찾기」(지금 방으로 부르기)
-function nrOpen(ctx){ var b=box(); if(!b) return; if(!sess()){ kMsg(dHost(),L(TX.lgReq),[[L(TX.lgin),function(){ kLogin(function(){ nrOpen(ctx); }); }],[L(TX.cancel),null,"kc"]]); return; }
-  var o=pgOpen("knear"); if(!o) return; NR.pg=o; var S={me:null,list:null,busy:false,done:{},err:""};
+// 화면 — 「주변 노래 친구」 = 둘러보기 (10-31 밤 사장님) · 서로 보기: 「내 위치 보이기」를 켠 동안만 남을 본다(몰래 구경 없음)
+//   목록 = 노래를 올린 사람(최근 전체 공개 영상 3개) 먼저 → 아직 안 올린 사람 · 닉네임·맞팔 표·나이대·성별·거리 · 영상 보기·좋아요·댓글(kDet)·팔로우
+//   모르는 사람 방 초대(「같이 노래해요」·방 안 「근처 친구 찾기」)는 없앰 — 앱 안 방 초대는 맞팔 친구만(kMutPick) · 받은 초대 = 맞팔 친구의 도란도란 초대
+function nrOpen(){ var b=box(); if(!b) return; if(!sess()){ kMsg(dHost(),L(TX.lgReq),[[L(TX.lgin),function(){ kLogin(function(){ nrOpen(); }); }],[L(TX.cancel),null,"kc"]]); return; }
+  var o=pgOpen("knear"); if(!o) return; NR.pg=o; var S={me:null,list:null,busy:false,err:""};
   var load=function(){ kAdSync(); nrPost("me",{}).then(function(j){ if(!o.isConnected) return; if(!(j&&j.ok)){ S.err=nrErr(j); draw(); return; } S.me=j; NR.me=j; draw();
-      if(j.consent) nrInbox(); if(j.vis&&j.vis.on) list(); }); };
-  var list=function(){ nrPost("list",{}).then(function(j){ if(!o.isConnected) return; S.list=j&&j.ok?j.items:[]; if(j&&j.err==="off"&&S.me) S.me.vis={on:0,exp:0}; draw(); }); };
+      nrInbox(); if(j.vis&&j.vis.on) list(); }); };
+  var list=function(){ nrPost("list",{f:NR.g||"all"}).then(function(j){ if(!o.isConnected) return; S.list=j&&j.ok?j.items:[]; if(j&&j.err==="off"&&S.me) S.me.vis={on:0,exp:0}; draw(); }); };
   var turnOn=function(){ var go=function(){ soon(NL("geoIng")); S.busy=true; draw();
       nrGeo().then(function(p){ return nrPost("on",p); },function(){ return {ok:false,err:"geo"}; }).then(function(j){ S.busy=false; var sk=box()&&box().querySelector(".ksoon"); if(sk) sk.remove();
         if(j&&j.ok){ S.me.vis={on:1,exp:j.exp}; S.me.consent=S.me.consent||{at:Date.now()}; try{ ntap("kara_near","on"); }catch(e){} draw(); list(); return; }
@@ -2837,20 +2883,9 @@ function nrOpen(ctx){ var b=box(); if(!b) return; if(!sess()){ kMsg(dHost(),L(TX
         draw(); soon(nrErr(j)); }); };
     if(S.me.consent) go(); else nrConsent(o,function(){ S.me.consent={at:Date.now()}; go(); }); };
   var turnOff=function(){ S.busy=true; draw(); nrPost("off",{}).then(function(){ S.busy=false; S.me.vis={on:0,exp:0}; S.list=null; draw(); }); };
-  var invite=function(x){ if(ctx){ S.busy=true; draw(); nrPost("inv",{to:x.pubid,type:ctx.type,mode:"room",room:ctx.room||"",tok:ctx.tok||""}).then(function(j){ S.busy=false; if(j&&j.ok){ S.done[x.pubid]=1; soon(NL("sent")); try{ ntap("kara_near","inv_room"); }catch(e){} } else soon(nrErr(j)); draw(); }); return; }
-    var w=document.createElement("div"); w.className="kpm knrin"; o.appendChild(w); var ty="song", nm=String((S.me&&S.me.nick||"")+" · "+(x.nick||"")).slice(0,20);
-    var cost=function(){ return dCost(ty==="dor"?"dor":"room"); };
-    var dr=function(){ w.innerHTML='<div><h3>'+esc(tf(NL("invT"),{n:x.nick||"guest"}))+'</h3><div class="knrty">'
-        +'<button type="button" data-t="song"'+(ty==="song"?' class="on"':'')+'>'+kIc("!krm_song")+'<b>'+esc(NL("tSong"))+'</b><small>'+esc(NL("tSongD"))+'</small><em>'+esc(ptS(dCost("room")))+'</em></button>'
-        +'<button type="button" data-t="dor"'+(ty==="dor"?' class="on"':'')+'><img class="kic" src="img/kara/dor.png" alt=""><b>'+esc(L(TX.dorB))+'</b><small>'+esc(L(TX.dorS))+'</small><em>'+esc(ptS(dCost("dor")))+'</em></button></div>'
-        +'<b class="kh">'+esc(L(TX.rmName))+'</b><input type="text" class="kni knrnm" maxlength="20" value="'+esc(nm)+'"><p class="km">'+esc(tf(NL("invN"),{n:x.nick||"guest",c:ptS(cost())}))+'</p>'
-        +'<button type="button" class="kgo" data-go="1">'+esc(NL("invS"))+'</button><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
-      w.querySelector(".kc").onclick=function(){ w.remove(); };
-      [].forEach.call(w.querySelectorAll("[data-t]"),function(t){ t.onclick=function(){ nm=w.querySelector(".knrnm").value; ty=t.dataset.t; dr(); }; });
-      w.querySelector("[data-go]").onclick=function(){ nm=String(w.querySelector(".knrnm").value||"").trim(); var rid=kRid(); w.remove();
-        dPay(cost(),tf(NL("invAsk"),{r:ty==="dor"?L(TX.dorB):NL("tSong")}),function(done){ nrPost("inv",{to:x.pubid,type:ty,mode:"new",rid:rid,name:nm}).then(function(j){
-          if(j&&j.ok){ done(); S.done[x.pubid]=1; soon(NL("sent")); try{ ntap("kara_near","inv_"+ty); }catch(e){} nrInbox(); draw(); return; } done(nrErr(j)); }); }); }; };
-    dr(); if(!KP.d) kptLoad().then(function(){ if(w.isConnected) dr(); }); };
+  var woSet=function(on){ S.busy=true; draw(); nrPost("wo",{on:on?1:0}).then(function(j){ S.busy=false; if(j&&j.ok){ S.me.wo=j.wo?1:0; try{ ntap("kara_near",on?"wo_on":"wo_off"); }catch(e){} list(); } else soon(nrErr(j)); draw(); }); };   // 여성에게만 내 위치 보이기 (인증된 여성만)
+  var follow=function(x,bt){ kFollow(x.pubid,!x.fo,bt).then(function(j){ if(!j) return; x.fo=j.iFollow?1:0; x.mu=j.mu?1:0; if(j.iFollow&&j.mu) soon(NL("fnDone")); draw(); }); };
+  var play=function(x,v){ kDet({id:v.id,at:v.at,t:v.t,desc:v.desc||"",up:v.up||0,down:v.down||0,cm:v.cm||0,views:v.views||0,vis:"pub",my:"",mine:false,pubid:x.pubid,nick:x.nick,ft:x.ft,mu:x.mu},{o:o,tab:"all",draw:function(){},load:function(){},loadMe:function(){}}); try{ ntap("kara_near","play"); }catch(e){} };
   var rowMenu=function(x){ var w=document.createElement("div"); w.className="kpm"; o.appendChild(w);
     w.innerHTML='<div><h3>'+esc(x.nick||"guest")+'</h3><div class="kmn"><button type="button" data-k="pf">'+kIc("id")+esc(NL("prof"))+'</button><button type="button" data-k="rp">'+esc(NL("rep"))+'</button><button type="button" class="r" data-k="bk">'+esc(NL("blk"))+'</button></div><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
     w.querySelector(".kc").onclick=function(){ w.remove(); }; w.onclick=function(e){ if(e.target===w) w.remove(); };
@@ -2863,22 +2898,27 @@ function nrOpen(ctx){ var b=box(); if(!b) return; if(!sess()){ kMsg(dHost(),L(TX
     if(S.err&&!m) body='<div class="kstge">'+esc(S.err)+'</div>';
     else if(!m) body='<div class="kstge">'+esc(L(TX.lo))+'</div>';
     else { var on=m.vis&&m.vis.on, ib=NR.ib||{inv:[],sent:[]};
-      if(ctx) body+='<div class="knrctx"><b>'+esc(ctx.name||(ctx.type==="dor"?L(TX.dorB):NL("tSong")))+'</b><small>'+esc(NL("ctxN"))+'</small></div>';
       body+='<div class="knrvis"><div><b>'+esc(NL("vis"))+'</b><small>'+esc(on?tf(NL("visOn"),{t:nrTime(m.vis.exp)}):NL("visOff"))+'</small></div>'+(on?'<button type="button" class="knrrn" data-rn="1"'+(S.busy?' disabled':'')+'>'+esc(NL("renew"))+'</button>':'')
         +'<button type="button" class="knrsw'+(on?' on':'')+'" role="switch" aria-checked="'+(on?"true":"false")+'" aria-label="'+esc(NL("vis"))+'" data-sw="1"'+(S.busy?' disabled':'')+'><i></i></button></div>';
-      if(!ctx&&ib.inv.length) body+='<b class="kh">'+esc(NL("inT"))+'</b>'+ib.inv.map(function(x,i){ return '<div class="knriv"><div class="knrp">'+nrPic(x)+'</div><div class="knri"><b>'+esc(tf(NL("inQ"),{n:x.nick||"guest"}))+'</b><small>'+esc(nrKind(x))+' · '+esc(nrLeft(x,now))+'</small>'
+      if(on&&!m.pubv) body+='<p class="km knrnud">'+esc(NL("nudge"))+'</p>';   // 아직 올린 노래가 없는 사람 — 부드러운 안내만
+      if(m.adult&&m.sx==="F") body+='<div class="knrvis knrwo"><div><b>'+esc(NL("wo"))+'</b><small>'+esc(NL("woD"))+'</small></div><button type="button" class="knrsw'+(m.wo?' on':'')+'" role="switch" aria-checked="'+(m.wo?"true":"false")+'" aria-label="'+esc(NL("wo"))+'" data-wo="1"'+(S.busy?' disabled':'')+'><i></i></button></div>';
+      if(ib.inv.length) body+='<b class="kh">'+esc(NL("inT"))+'</b>'+ib.inv.map(function(x,i){ return '<div class="knriv"><div class="knrp">'+nrPic(x)+'</div><div class="knri"><b>'+esc(tf(NL("inQ"),{n:x.nick||"guest"}))+'</b><small>'+esc(nrKind(x))+' · '+esc(nrLeft(x,now))+'</small>'
         +'<div class="knrab"><button type="button" class="kgo" data-a="acc" data-i="'+i+'"'+(S.busy?' disabled':'')+'>'+esc(NL("acc"))+'</button><button type="button" data-a="dec" data-i="'+i+'"'+(S.busy?' disabled':'')+'>'+esc(NL("dec"))+'</button><button type="button" class="r" data-a="blk" data-i="'+i+'"'+(S.busy?' disabled':'')+'>'+esc(NL("blk"))+'</button></div></div></div>'; }).join("");
-      if(!ctx&&ib.sent.length) body+='<b class="kh">'+esc(NL("sentT"))+'</b>'+ib.sent.map(function(x,i){ return '<div class="knrsn"><span><b>'+esc(x.nick||"guest")+'</b><small>'+esc(nrKind(x))+' · '+esc(nrLeft(x,now))+'</small></span><button type="button" data-cx="'+i+'">'+esc(L(TX.cancel))+'</button></div>'; }).join("");
-      if(on){ body+='<div class="knrf">'+[0].concat(NEARKM).map(function(k){ return '<button type="button" data-f="'+k+'"'+(NR.f===k?' class="on"':'')+'>'+esc(k?tf(NL("km"),{k:k}):NL("all"))+'</button>'; }).join("")+'</div>';
+      if(ib.sent.length) body+='<b class="kh">'+esc(NL("sentT"))+'</b>'+ib.sent.map(function(x,i){ return '<div class="knrsn"><span><b>'+esc(x.nick||"guest")+'</b><small>'+esc(nrKind(x))+' · '+esc(nrLeft(x,now))+'</small></span><button type="button" data-cx="'+i+'">'+esc(L(TX.cancel))+'</button></div>'; }).join("");
+      if(on){ body+='<div class="knrf knrfg">'+[["all","all"],["band","fBand"],["f","fF"],["m","fM"]].map(function(g){ var dis=g[0]==="band"&&!m.band; return '<button type="button" data-g="'+g[0]+'"'+((NR.g||"all")===g[0]?' class="on"':'')+(dis?' disabled':'')+'>'+esc(NL(g[1]))+'</button>'; }).join("")+'</div>'   // 나이대·성별 거르기 (허브가 거름)
+          +'<div class="knrf">'+[0].concat(NEARKM).map(function(k){ return '<button type="button" data-f="'+k+'"'+(NR.f===k?' class="on"':'')+'>'+esc(k?tf(NL("km"),{k:k}):NL("all"))+'</button>'; }).join("")+'</div>';
         var it=(S.list||[]).filter(function(x){ return !NR.f||x.d<=NR.f; });
         body+=S.list===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':!it.length?'<div class="kstge">'+esc(NL("none"))+'</div>'
-          :'<div class="knrls">'+it.map(function(x){ var i=S.list.indexOf(x), dn=!!S.done[x.pubid];
-            return '<div class="knrw"><button type="button" class="knrp'+kFtC(x.ft)+'" data-pf="'+i+'" aria-label="'+esc(NL("prof"))+'">'+nrPic(x)+'</button><div class="knri"><b>'+esc(x.nick)+'</b><small>'+(x.song?esc(NL("song"))+' · '+esc(x.song):'&nbsp;')+'</small><span class="knrd">'+esc(tf(NL("km"),{k:x.d}))+'</span></div>'
-              +'<button type="button" class="knrg'+(dn?' dn':'')+'" data-inv="'+i+'"'+(dn||S.busy?' disabled':'')+'>'+esc(dn?NL("invd"):ctx?NL("invR"):NL("invB"))+'</button><button type="button" class="knrm" data-mn="'+i+'" aria-label="menu">⋯</button></div>'; }).join("")+'</div>'; }
+          :'<div class="knrls">'+it.map(function(x){ var i=S.list.indexOf(x), vs=x.vids||[];
+            return '<div class="knrw'+(vs.length?' knrsg':'')+'"><div class="knrtop"><button type="button" class="knrp'+kFtC(x.ft)+'" data-pf="'+i+'" aria-label="'+esc(NL("prof"))+'">'+nrPic(x)+'</button><div class="knri"><b>'+esc(x.nick)+(x.mu?kMuB():'')+'</b>'
+              +'<span class="knrd">'+esc(tf(NL("km"),{k:x.d}))+'</span>'+(nrAge(x)?'<span class="knrag'+(x.sx==="F"?' f':x.sx==="M"?' m':'')+'">'+esc(nrAge(x))+'</span>':'')+(vs.length?'':'<small class="knrnv">'+esc(NL("noSong"))+'</small>')+'</div>'
+              +'<button type="button" class="kfw'+(x.fo?' on':'')+'" data-fo="'+i+'">'+esc(L(x.fo?TX.flg:TX.flw))+'</button><button type="button" class="knrm" data-mn="'+i+'" aria-label="menu">⋯</button></div>'
+              +(vs.length?'<div class="knrvs">'+vs.map(function(v,k){ return '<button type="button" class="knrv" data-v="'+i+'.'+k+'">'+kThumb(v.id,"knrvt")+'<small>'+esc(v.t||"-")+'</small><span>'+kIc("up",1)+kNum(v.up)+' '+kIc("cm",1)+kNum(v.cm)+'</span></button>'; }).join("")+'</div>':'')+'</div>'; }).join("")+'</div>';
+        body+='<p class="km knrseg">'+esc(NL("segN"))+'</p>'; }
       else body+='<div class="kstge">'+esc(NL("offL"))+'</div>';
       body+='<div class="knrft">'+(m.consent?'<button type="button" data-wd="1">'+esc(NL("wd"))+'</button>':'')+'<small>'+esc(NL("ft"))+'</small></div>'; }
     var sc=o.querySelector(".kpgb"), top=sc?sc.scrollTop:0;
-    o.innerHTML=kHead('<h3>'+esc(ctx?NL("nrFind"):NL("nrB"))+'</h3>'+(m?'<button type="button" class="knrbl" data-bl="1">'+esc(NL("bkT"))+'</button>':''))+'<div class="kpgb">'+(m?'':'<p class="knrs">'+esc(NL("nrS"))+'</p>')+body+'</div>';
+    o.innerHTML=kHead('<h3>'+esc(NL("nrB"))+'</h3>'+(m?'<button type="button" class="knrbl" data-bl="1">'+esc(NL("bkT"))+'</button>':''))+'<div class="kpgb">'+(m?'':'<p class="knrs">'+esc(NL("nrS"))+'</p>')+body+'</div>';
     sc=o.querySelector(".kpgb"); if(sc&&top) sc.scrollTop=top;
     o.querySelector(".kpbk").onclick=pgBack;
     var q=function(s,f){ [].forEach.call(o.querySelectorAll(s),f); };
@@ -2887,13 +2927,24 @@ function nrOpen(ctx){ var b=box(); if(!b) return; if(!sess()){ kMsg(dHost(),L(TX
     q("[data-bl]",function(x){ x.onclick=function(){ nrBlocks(o,function(){ list(); }); }; });
     q("[data-wd]",function(x){ x.onclick=function(){ kMsg(o,NL("wdQ"),[[NL("wd"),function(){ nrPost("withdraw",{}).then(function(j){ if(j&&j.ok){ S.me.consent=null; S.me.vis={on:0,exp:0}; S.list=null; soon(NL("wdOk")); draw(); } else soon(nrErr(j)); }); },"kgo r"],[L(TX.cancel),null,"kc"]]); }; });
     q("[data-f]",function(x){ x.onclick=function(){ NR.f=+x.dataset.f; draw(); }; });
-    q("[data-inv]",function(x){ x.onclick=function(){ var y=S.list&&S.list[+x.dataset.inv]; if(y&&!S.busy) invite(y); }; });
+    q("[data-g]",function(x){ x.onclick=function(){ if(x.disabled||NR.g===x.dataset.g) return; NR.g=x.dataset.g; S.list=null; draw(); list(); }; });
+    q("[data-wo]",function(x){ x.onclick=function(){ if(!S.busy) woSet(!m.wo); }; });
+    q("[data-fo]",function(x){ x.onclick=function(){ var y=S.list&&S.list[+x.dataset.fo]; if(y) follow(y,x); }; });
+    q("[data-v]",function(x){ x.onclick=function(){ var a=x.dataset.v.split("."), y=S.list&&S.list[+a[0]], v=y&&(y.vids||[])[+a[1]]; if(v) play(y,v); }; });
     q("[data-pf]",function(x){ x.onclick=function(){ var y=S.list&&S.list[+x.dataset.pf]; if(y) kUser(y.pubid); }; });
     q("[data-mn]",function(x){ x.onclick=function(){ var y=S.list&&S.list[+x.dataset.mn]; if(y) rowMenu(y); }; });
     q("[data-a]",function(x){ x.onclick=function(){ var y=NR.ib&&NR.ib.inv[+x.dataset.i]; if(y&&!S.busy) answer(y,x.dataset.a); }; });
     q("[data-cx]",function(x){ x.onclick=function(){ var y=NR.ib&&NR.ib.sent[+x.dataset.cx]; if(!y) return; nrPost("cancel",{id:y.id}).then(function(){ NR.ib.sent=NR.ib.sent.filter(function(z){ return z.id!==y.id; }); draw(); }); }; }); };
   o._draw=draw; o._bye=function(){ if(NR.pg===o) NR.pg=null; };
-  draw(); load(); try{ ntap("kara_near",ctx?"open_"+ctx.type:"open"); }catch(e){} }
+  o._fw=function(p2,j){ (S.list||[]).forEach(function(y){ if(y.pubid===p2){ y.fo=j.iFollow?1:0; y.mu=j.mu?1:0; } }); draw(); };
+  draw(); load(); try{ ntap("kara_near","open"); }catch(e){} }
+// 맞팔 친구 고르기 — 방 초대 (10-31 밤 사장님 「방 초대는 맞팔만」) · 허브 /kst/fl?kind=mutual
+function kMyMut(){ return kGet("/kst/me").then(function(m){ if(!(m&&m.ok&&m.pubid)) return []; return kGet("/kst/fl?pubid="+m.pubid+"&kind=mutual").then(function(j){ return (j&&j.ok&&j.items)||[]; }); }); }
+// 도란도란 지금 방으로 맞팔 친구 초대 — /near/inv {to,tok} (맞팔 아니면 허브가 err mu) · 받은 사람 = 받은 초대(수락·거절·차단, 10분)
+function kDorMut(){ if(!DR.tok||!DR.o) return; var tok=DR.tok, pw=kPplPick(DR.o,{title:NL("mfInv"),list:1,items:null,empty:NL("mfNo"),ok:NL("mfSend"),need:1,go:function(n,ps){ var bad="";
+    return Promise.all(ps.map(function(p){ return nrPost("inv",{to:p,type:"dor",mode:"room",tok:tok}).then(function(j){ if(!(j&&j.ok)) bad=nrErr(j); }); })).then(function(){ if(bad) return bad; soon(NL("sent")); try{ ntap("kara_near","inv_mut_dor"); }catch(e){} return null; }); }});
+  kMyMut().then(function(a){ if(pw.isConnected) pw.setItems(a); }).catch(function(){ if(pw.isConnected) pw.setItems([]); }); }
+function kMuB(){ return '<i class="kmu">'+esc(NL("mu"))+'</i>'; }   // 「맞팔」 표
 var NEARKM=[1,3,10];
 function nrBlock(host,x,after){ kMsg(host,tf(NL("bkQ"),{n:x.nick||"guest"}),[[NL("blk"),function(){ nrPost("block",{pubid:x.pubid}).then(function(j){ if(j&&j.ok){ soon(NL("bkOk")); if(after) after(); } else soon(nrErr(j)); }); },"kgo r"],[L(TX.cancel),null,"kc"]]); }
 function nrReport(host,x){ var w=document.createElement("div"); w.className="kpm"; host.appendChild(w); var why=-1, busy=false, ws=["abuse","sexual","violence","spam","minor","other"];
@@ -2923,6 +2974,10 @@ function nrBlocks(host,after){ var w=document.createElement("div"); w.className=
  +"#karBox .knrls{display:flex;flex-direction:column;gap:8px}#karBox .knrw,#karBox .knriv{display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);border-radius:14px;padding:9px 10px}#karBox .knriv{align-items:flex-start;margin:0 0 8px;border-color:rgba(255,224,102,.45);background:rgba(255,224,102,.07)}"
  +"#karBox .knrp{flex:0 0 auto;width:48px;height:48px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.25);background:#2a1146;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center}#karBox .knrpm{width:100%;height:100%;object-fit:cover;display:block}#karBox .knrpe .kic{width:28px;height:28px}"
  +"#karBox .knri{flex:1;min-width:0}#karBox .knri b{display:block;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#karBox .knriv .knri b{white-space:normal}#karBox .knri small{display:block;color:#cfc6e8;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#karBox .knriv .knri small{white-space:normal}"
+ +"#karBox .kmu{display:inline-block;vertical-align:middle;margin-left:5px;font-style:normal;font-size:10.5px;font-weight:900;color:#10203a;background:#7dffb0;border-radius:999px;padding:1px 6px;line-height:1.4;white-space:nowrap}#karBox .kstg{position:relative}#karBox .kfnbd{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:#ff3b6b;color:#fff;font-size:11px;font-weight:900;font-style:normal;display:flex;align-items:center;justify-content:center;padding:0 4px;box-sizing:border-box}"
+ +"#karBox .knrls .knrw{flex-direction:column;align-items:stretch;gap:8px}#karBox .knrtop{display:flex;align-items:center;gap:10px}#karBox .knrnv{color:#a99fc4 !important}#karBox .knrnud{margin:-4px 2px 10px;color:#ffe066}"
+ +"#karBox .knrvs{display:flex;gap:6px}#karBox .knrv{flex:0 0 calc((100% - 12px) / 3);min-width:0;border:0;background:rgba(0,0,0,.25);border-radius:10px;padding:0 0 5px;color:#f5eaff;cursor:pointer;text-align:left;overflow:hidden}#karBox .knrvt{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#1a0d2e}#karBox .knrv small{display:block;font-size:11px;padding:3px 6px 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#karBox .knrv span{display:flex;gap:6px;align-items:center;font-size:10.5px;padding:1px 6px 0;color:#cfc6e8}#karBox .knrv span .kic{width:12px;height:12px}"
+ +"#karBox .knrag{display:inline-block;margin:3px 0 0 5px;font-size:11.5px;font-weight:900;color:#2a1640;background:#e4d6ff;border-radius:999px;padding:1px 8px}#karBox .knrag.f{background:#ffc9e6}#karBox .knrag.m{background:#c9e4ff}#karBox .knrfg{margin-bottom:4px}#karBox .knrfg button:disabled{opacity:.4}#karBox .knrwo{margin-top:-4px}#karBox .knrseg{margin:2px 2px 10px;font-size:11.5px;opacity:.75}"
  +"#karBox .knrd{display:inline-block;margin-top:3px;font-size:11.5px;font-weight:900;color:#10203a;background:#8fd3ff;border-radius:999px;padding:1px 8px}"
  +"#karBox .knrg{flex:0 0 auto;border:0;background:linear-gradient(90deg,#ff4fd8,#7a5cff);color:#fff;border-radius:999px;padding:8px 11px;font-weight:900;font-size:12.5px;cursor:pointer;white-space:nowrap}#karBox .knrg.dn{background:rgba(255,255,255,.15);color:#ccc}#karBox .knrg:disabled{opacity:.7}"
  +"#karBox .knrm{flex:0 0 auto;border:0;background:none;color:#ccc;font-size:20px;padding:2px 4px;cursor:pointer}"
@@ -3252,15 +3307,17 @@ function kPromoWait(n){ setTimeout(function(){ var b=box(); if(!b||!KP.d) return
 //   결과 = 이 기기 localStorage "kadult_v1" {ok,exp(1년),dv} + 로그인 계정(허브 칸 near "ad:<who>") — 한 번만 묻는다 · 나중에 로그인하면 기기 결과를 계정으로(kAdSync)
 //   본인인증 = 허브 /idv/start → 업체 화면(새 창 · 앱은 같은 화면) → /idv/cb → 돌아오면 /idv/check · 저장은 태어난 해·성인 여부만
 var AG={
- t:{ko:"StageSong은 만 19세 이상 이용가입니다",en:"StageSong is for ages 19 and over",ja:"StageSongは満19歳以上の方がご利用いただけます",zhs:"StageSong 仅限年满19周岁者使用",zht:"StageSong 僅限年滿19歲者使用",es:"StageSong es solo para mayores de 19 años"},
- d:{ko:"처음 한 번 본인인증으로 성인 여부를 확인합니다. 태어난 해와 성인 여부만 저장합니다.",en:"Verify your identity once to confirm you are an adult. We keep only your birth year and adult status.",ja:"最初に一度だけ本人認証で成人かどうかを確認します。生まれ年と成人かどうかのみ保存します。",zhs:"首次使用时通过一次实名认证确认是否成年。仅保存出生年份和是否成年。",zht:"首次使用時透過一次實名認證確認是否成年。僅儲存出生年份和是否成年。",es:"Verifica tu identidad una sola vez para confirmar que eres mayor de edad. Solo guardamos tu año de nacimiento y si eres adulto."},
+ t:{ko:"StageSong은 만 15세 이상 이용가입니다",en:"StageSong is for ages 15 and over",ja:"StageSongは満15歳以上の方がご利用いただけます",zhs:"StageSong 仅限年满15周岁者使用",zht:"StageSong 僅限年滿15歲者使用",es:"StageSong es para mayores de 15 años"},
+ d:{ko:"처음 한 번 본인인증으로 만 15세 이상인지 확인합니다. 태어난 해와 성별만 저장하며, 주변 노래 친구에는 나이대와 성별만 표시됩니다.",en:"Verify your identity once to confirm you are 15 or older. We keep only your birth year and gender; Singers nearby shows only your age group and gender.",ja:"最初に一度だけ本人認証で満15歳以上かを確認します。生まれ年と性別のみ保存し、近くの歌友には年代と性別だけが表示されます。",zhs:"首次使用时通过一次实名认证确认是否年满15周岁。仅保存出生年份和性别，附近歌友只显示年龄段和性别。",zht:"首次使用時透過一次實名認證確認是否年滿15歲。僅儲存出生年份和性別，附近歌友只顯示年齡層和性別。",es:"Verifica tu identidad una sola vez para confirmar que tienes 15 años o más. Solo guardamos tu año de nacimiento y tu sexo; en Cantantes cerca solo se ven tu franja de edad y tu sexo."},
  b:{ko:"본인인증(PASS·휴대폰)",en:"Verify identity (PASS · mobile)",ja:"本人認証(PASS・携帯電話)",zhs:"实名认证(PASS·手机)",zht:"實名認證(PASS·手機)",es:"Verificar identidad (PASS · móvil)"},
  x:{ko:"나가기",en:"Exit",ja:"終了",zhs:"退出",zht:"離開",es:"Salir"},
  ing:{ko:"본인인증 화면을 여는 중입니다…",en:"Opening identity verification…",ja:"本人認証画面を開いています…",zhs:"正在打开实名认证页面…",zht:"正在開啟實名認證頁面…",es:"Abriendo la verificación de identidad…"},
  wait:{ko:"본인인증을 마치면 자동으로 이어집니다",en:"You'll continue automatically once verification is done",ja:"本人認証が終わると自動で続きます",zhs:"完成实名认证后将自动继续",zht:"完成實名認證後將自動繼續",es:"Continuarás automáticamente al terminar la verificación"},
- no:{ko:"본인인증을 진행할 수 없습니다. 고객센터로 문의해 주세요",en:"Identity verification cannot be completed. Please contact customer support.",ja:"本人認証を進められません。カスタマーセンターにお問い合わせください",zhs:"无法进行实名认证，请联系客服",zht:"無法進行實名認證，請聯絡客服",es:"No se puede completar la verificación de identidad. Contacta con atención al cliente."},
+ no:{ko:"지금은 본인인증을 진행할 수 없습니다. 고객센터로 문의해 주세요",en:"Identity verification isn't available right now. Please contact customer support.",ja:"現在、本人認証を行うことができません。カスタマーセンターにお問い合わせください",zhs:"目前无法进行实名认证，请联系客服",zht:"目前無法進行實名認證，請聯絡客服",es:"Ahora mismo no se puede hacer la verificación de identidad. Contacta con atención al cliente."},
+ lg:{ko:"로그인하고 입장",en:"Sign in to enter",ja:"ログインして入場",zhs:"登录后进入",zht:"登入後進入",es:"Inicia sesión para entrar"},
+ acct:{ko:"이 계정은 아직 본인인증이 되지 않았습니다",en:"This account hasn't been verified yet",ja:"このアカウントはまだ本人認証されていません",zhs:"该账号尚未完成实名认证",zht:"此帳號尚未完成實名認證",es:"Esta cuenta todavía no está verificada"},
  fail:{ko:"본인인증을 완료하지 못했습니다. 다시 시도해 주세요",en:"Verification wasn't completed. Please try again.",ja:"本人認証を完了できませんでした。もう一度お試しください",zhs:"实名认证未完成，请重试",zht:"實名認證未完成，請重試",es:"No se completó la verificación. Inténtalo de nuevo."},
- minor:{ko:"만 19세 미만은 StageSong을 이용할 수 없습니다",en:"StageSong is not available to people under 19",ja:"満19歳未満の方はStageSongをご利用いただけません",zhs:"未满19周岁者不能使用 StageSong",zht:"未滿19歲者不能使用 StageSong",es:"StageSong no está disponible para menores de 19 años"},
+ minor:{ko:"이용 불가 — 만 15세 미만은 StageSong을 이용할 수 없습니다",en:"Not available — StageSong cannot be used by people under 15",ja:"ご利用いただけません — 満15歳未満の方はStageSongをご利用いただけません",zhs:"无法使用 — 未满15周岁者不能使用 StageSong",zht:"無法使用 — 未滿15歲者不能使用 StageSong",es:"No disponible: StageSong no se puede usar con menos de 15 años"},
  ok:{ko:"본인인증이 완료되었습니다",en:"Identity verified",ja:"本人認証が完了しました",zhs:"实名认证已完成",zht:"實名認證已完成",es:"Identidad verificada"}
 };
 var AGK="kadult_v1", AGS={cfg:null,pass:false,go:null,code:"",tm:0,t0:0,msg:""};
@@ -3270,6 +3327,7 @@ function agPend(v){ try{ if(v===undefined) return JSON.parse(localStorage.getIte
 // 관문 켜짐 여부 — 이 화면을 연 동안 한 번만 묻는다 · 허브가 안 답하면 마지막으로 본 값
 function agCfg(){ if(AGS.cfg) return AGS.cfg; var last="0"; try{ last=localStorage.getItem("kadult_cfg")||"0"; }catch(e){}
   var to=new Promise(function(r){ setTimeout(function(){ r(null); },5000); });
+  if(last!=="0") last="1";   // (10-31 밤) 기본 켜짐 — 허브가 안 답하면 켜진 것으로
   AGS.cfg=Promise.race([fetch(HUB+"/idv/cfg",{cache:"no-store"}).then(function(r){ return r.json(); }),to]).catch(function(){ return null; }).then(function(j){
     if(j&&j.ok){ try{ localStorage.setItem("kadult_cfg",j.gate?"1":"0"); }catch(e){} return j; } AGS.cfg=null; return {ok:false,gate:last==="1"?1:0}; });
   return AGS.cfg; }
@@ -3280,7 +3338,8 @@ function kAdSync(){ var g=agGet(), s=sess(); if(!g||!g.dv||!s) return; var mk=s.
 function agDone(){ AGS.pass=true; clearInterval(AGS.tm); AGS.tm=0; var e=document.getElementById("karAG"); if(e) e.remove(); var f=AGS.go; AGS.go=null; if(f) try{ f(); }catch(e2){} kAdSync(); }
 function agOk(j,dv){ if(!(j&&j.ok)) return false; if(j.dev&&j.dev.adult){ agPend(null); agSet(j.dev.exp,dv); return true; } if(j.acct){ agPend(null); agSet(0,""); return true; } return false; }
 // go = 통과하면 할 일 (노래방 열기 등) · code = 투어앱 노래방 건물 코드(돌아왔을 때 다시 열기)
-function kGate(go,code){ if(AGS.pass||agGet()){ AGS.pass=true; kAdSync(); go(); return; }
+function agOwn(){ try{ return !!localStorage.getItem("mp_owner"); }catch(e){ return false; } }   // 사장님 기기 (?me=EM2410 로 표시) — 관문 통과 (10-31 밤)
+function kGate(go,code){ if(AGS.pass||agGet()||agOwn()){ AGS.pass=true; kAdSync(); go(); return; }
   AGS.go=go; AGS.code=code||AGS.code||""; if(document.getElementById("karAG")||AGS.ck) return; AGS.ck=1;
   agCfg().then(function(c){ if(!c||!c.gate){ AGS.ck=0; agDone(); return; }
     var p=agPend(), dv=p&&p.dv||"";
@@ -3296,6 +3355,7 @@ function agCss(){ if(document.getElementById("karAGcss")) return; var s=document
  +"#karAG .agt{margin:10px 0 0;font-size:19px;font-weight:900;line-height:1.45;word-break:keep-all}#karAG .agd{margin:0;font-size:13.5px;line-height:1.6;opacity:.78;word-break:keep-all}"
  +"#karAG .aggo{display:block;width:100%;margin-top:14px;border:0;border-radius:14px;padding:18px 12px;background:#ff4fd8;color:#fff;font-size:18px;font-weight:900;font-family:inherit;cursor:pointer;box-shadow:0 6px 20px rgba(255,79,216,.35)}#karAG .aggo:disabled{opacity:.6}"
  +"#karAG .agm{min-height:1.3em;margin:0;font-size:13.5px;line-height:1.5;color:#ffe066;word-break:keep-all}#karAG .agm.r{color:#ff9db5}"
+ +"#karAG .aglg2{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;border-radius:12px;padding:10px 18px;font-size:14.5px;font-weight:800;font-family:inherit;cursor:pointer}"
  +"#karAG .agx{border:0;background:none;color:#cfc6e8;font-size:14px;font-family:inherit;padding:8px 16px;text-decoration:underline;cursor:pointer}"
  +"#karAG .agft{width:100%;max-width:440px;margin:0 auto;padding:0 16px 18px;box-sizing:border-box}#karAG .kbz{word-break:keep-all;overflow-wrap:break-word;margin:8px 2px 0;padding:10px 12px;border-top:1px solid rgba(255,255,255,.15);font-size:11px;line-height:1.6;color:#b9b0d4;text-wrap:balance}#karAG .kbz .nw{white-space:nowrap}#karAG .kbz b{color:#efe6ff}#karAG .kbz a{color:#ffe066}#karAG .kbzl{margin-top:4px}#karAG .kvc{display:none}";
  document.head.appendChild(s); }
@@ -3305,12 +3365,14 @@ function agShow(msg){ agCss(); var o=document.getElementById("karAG"); if(!o){ o
   o.innerHTML=(window.KAR_SITE&&typeof window.setLang==="function"?'<div class="agl">'+LS.map(function(l){ return '<button type="button" data-l="'+l+'"'+(l===window.LANG?' class="on"':'')+'>'+LN[l]+'</button>'; }).join("")+'</div>':'')
     +'<div class="agin"><img class="aglg" src="'+esc(agLogo())+'" alt=""><h1>StageSong</h1><p class="agt">'+esc(L(AG.t))+'</p><p class="agd">'+esc(L(AG.d))+'</p>'
     +'<button type="button" class="aggo"'+(m==="minor"?' disabled':'')+'>'+esc(L(AG.b))+'</button><p class="agm'+(m==="minor"||m==="no"||m==="fail"?' r':'')+'" aria-live="polite">'+esc(mt)+'</p>'
+    +(!sess()&&window.mpPG&&mpPG.open?'<button type="button" class="aglg2">'+esc(L(AG.lg))+'</button>':'')   // 관리자 수동 인증 계정 = 로그인하면 허브가 확인하고 들여보냄 (10-31 밤)
     +'<button type="button" class="agx">'+esc(L(AG.x))+'</button></div><div class="agft">'+bizHtml()+'</div>';
   [].forEach.call(o.querySelectorAll("[data-l]"),function(b){ b.onclick=function(){ try{ window.setLang(b.dataset.l); }catch(e){} agShow(AGS.msg); }; });
   o.querySelector(".aggo").onclick=agStart;
+  var lgb=o.querySelector(".aglg2"); if(lgb) lgb.onclick=function(){ kLogin(function(){ var p=agPend(), dv=p&&p.dv||""; agCheck(dv).then(function(j){ if(j&&j.ok&&!j.gate){ agDone(); return; } if(agOk(j,dv)){ try{ ntap("kara_gate","acct_ok"); }catch(e){} agDone(); return; } agShow("acct"); }); }); };
   o.querySelector(".agx").onclick=agExit;
   try{ ntap("kara_gate",m||"show"); }catch(e){} }
-function agMsg(k){ AGS.msg=k; var e=document.querySelector("#karAG .agm"); if(e){ e.textContent=k?L(AG[k]):""; e.className="agm"+(k==="minor"||k==="no"||k==="fail"?" r":""); } }
+function agMsg(k){ AGS.msg=k; var e=document.querySelector("#karAG .agm"); if(e){ e.textContent=k?L(AG[k]):""; e.className="agm"+(k==="minor"||k==="no"||k==="fail"||k==="acct"?" r":""); } }
 // 나가기 — 투어앱: 노래방을 안 연다 · 노래방 사이트·앱: 이전 화면으로(없으면 창 닫기 · 화면은 그대로)
 function agExit(){ clearInterval(AGS.tm); AGS.tm=0; try{ ntap("kara_gate","exit"); }catch(e){}
   if(!window.KAR_SITE){ AGS.go=null; var e=document.getElementById("karAG"); if(e) e.remove(); return; }
