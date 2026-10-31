@@ -906,9 +906,9 @@ Object.assign(TX,{
  kwR5:{ko:"{d}까지 90% 환불 가능",en:"90% refundable until {d}",ja:"{d}まで90%返金可",zhs:"{d}前可退90%",zht:"{d}前可退90%",es:"90% reembolsable hasta {d}"},
  kwPtBuy:{ko:"{c}로 구매",en:"Buy with {c}",ja:"{c}で購入",zhs:"用 {c} 购买",zht:"用 {c} 購買",es:"Comprar con {c}"},
  kwH:{ko:"충전|무료 지급|사용|사용 취소|환불 요청|환불|환불 거절|스토어 환불|기간 연장|이용권 구매|이용권 환불",en:"Top-up|Free points|Used|Use cancelled|Refund requested|Refunded|Refund declined|Store refund|Extended|Pass bought|Pass refunded",ja:"チャージ|無料付与|使用|使用取消|返金申請|返金|返金却下|ストア返金|期間延長|利用券購入|利用券返金",zhs:"充值|免费赠送|使用|取消使用|申请退款|退款|拒绝退款|商店退款|延长有效期|购买畅唱券|畅唱券退款",zht:"儲值|免費贈送|使用|取消使用|申請退款|退款|拒絕退款|商店退款|延長有效期|購買暢唱券|暢唱券退款",es:"Recarga|Puntos gratis|Uso|Uso cancelado|Reembolso solicitado|Reembolsado|Reembolso rechazado|Reembolso de tienda|Ampliado|Bono comprado|Bono reembolsado"},
- kwW:{ko:"곡 이용권|상황 사진|AI 영상|도란도란|도란도란 연장|우리끼리 노래 방",en:"Song pass|AI photo|AI video|Doran-doran|Doran-doran extension|Just Us Karaoke room",ja:"曲チケット|シーン写真|AI動画|ドランドラン|ドランドラン延長|仲間だけカラオケ",zhs:"点歌券|情景照片|AI视频|Doran-doran|Doran-doran 延长|小圈子K歌房",zht:"點歌券|情境照片|AI影片|Doran-doran|Doran-doran 延長|小圈子K歌房",es:"Bono de canciones|Foto IA|Video IA|Doran-doran|Ampliación Doran-doran|Sala Solo nosotros Karaoke"}
+ kwW:{ko:"곡 이용권|상황 사진|AI 영상|도란도란|도란도란 연장|우리끼리 노래 방|방 꾸미기",en:"Song pass|AI photo|AI video|Doran-doran|Doran-doran extension|Just Us Karaoke room|Room decor",ja:"曲チケット|シーン写真|AI動画|ドランドラン|ドランドラン延長|仲間だけカラオケ|ルームデコ",zhs:"点歌券|情景照片|AI视频|Doran-doran|Doran-doran 延长|小圈子K歌房|房间装扮",zht:"點歌券|情境照片|AI影片|Doran-doran|Doran-doran 延長|小圈子K歌房|房間裝扮",es:"Bono de canciones|Foto IA|Video IA|Doran-doran|Ampliación Doran-doran|Sala Solo nosotros Karaoke|Decorar la sala"}
 });
-var KWH=["charge","bonus","use","undo","refreq","refund","refrej","void","ext","pass","passrf"], KWW=["song","ai","aiv","dor","dorx","room"];
+var KWH=["charge","bonus","use","undo","refreq","refund","refrej","void","ext","pass","passrf"], KWW=["song","ai","aiv","dor","dorx","room","deco"];   // deco = 방 꾸미기 (10-31)
 function kTx(o,i){ return String(L(o)).split("|")[i]||""; }
 function ptS(n){ return Math.round(n||0).toLocaleString("ko-KR")+"P"; }
 function kYmd(ms){ return new Date(ms+9*3600e3).toISOString().slice(0,10); }
@@ -954,7 +954,7 @@ function kwOpen(v0){ var b=box(); if(!b) return; var o=b.querySelector(".kwal");
         +(msg?'<div class="kerr">'+esc(msg)+'</div>':'')+'<button type="button" class="kgo" data-rq="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwRf))+' · '+won(rf.total)+'</button>';
       h+='<div class="klk"><a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+' ›</a></div><button type="button" class="kc" data-bk="1">'+esc(L(TX.back))+'</button></div>'; }
     else if(v==="hist"){ h+='<b class="kh">'+esc(L(TX.kwHist))+'</b><div class="kwls kwhs">'+((d.hist||[]).map(function(x){ var i=KWH.indexOf(x.op), w=KWW.indexOf(x.what);
-        return '<div><span>'+esc(kTx(TX.kwH,i<0?2:i))+(w>=0?' · '+esc(kTx(TX.kwW,w)):'')+(x.songs?' · '+esc(songsTx(x.songs)):'')+(x.op==="pass"&&x.m?' · '+esc(kMon(x.m)):'')+'<small>'+esc(new Date(x.at+9*3600e3).toISOString().slice(0,16).replace("T"," "))+'</small></span><b class="'+(x.pt>0?'kwp':x.pt<0?'kwm':'')+'">'+(x.pt>0?'+':'')+(x.pt?ptS(x.pt):x.won?won(x.won):'')+'</b></div>'; }).join("")||'<p class="km">'+esc(L(TX.kwNone))+'</p>')+'</div><button type="button" class="kc" data-bk="1">'+esc(L(TX.back))+'</button></div>'; }
+        return '<div><span>'+esc(kTx(TX.kwH,i<0?2:i))+(w>=0?' · '+esc(kTx(TX.kwW,w)):'')+(x.what==="deco"&&x.key?' · '+esc(dcHN(x.key)):'')+(x.songs?' · '+esc(songsTx(x.songs)):'')+(x.op==="pass"&&x.m?' · '+esc(kMon(x.m)):'')+'<small>'+esc(new Date(x.at+9*3600e3).toISOString().slice(0,16).replace("T"," "))+'</small></span><b class="'+(x.pt>0?'kwp':x.pt<0?'kwm':'')+'">'+(x.pt>0?'+':'')+(x.pt?ptS(x.pt):x.won?won(x.won):'')+'</b></div>'; }).join("")||'<p class="km">'+esc(L(TX.kwNone))+'</p>')+'</div><button type="button" class="kc" data-bk="1">'+esc(L(TX.back))+'</button></div>'; }
     else { h+='<div class="kwb"><small>'+esc(L(TX.kwBal))+'</small><b>'+ptS(B.total)+'</b><span>'+esc(L(TX.kwPaid))+' '+ptS(B.paid)+' · '+esc(L(TX.kwFree))+' '+ptS(B.free)+'</span>'+(d.pass&&d.pass.on?'<span>'+esc(tf(L(TX.psEnd),{d:kMd(d.pass.end)}))+'</span>':'')+(d.left>0?'<span>'+esc(fmtN(L(TX.lftN),d.left))+'</span>':'')+'</div>'
         +'<div class="kwbt"><button type="button" class="kgo" data-v="chg">'+esc(L(TX.kwChg))+'</button><button type="button" class="kgo kwg2" data-buy="1">'+esc(L(TX.kwBuy))+'</button></div>'
         +((d.soon||[]).length?'<div class="kerr kwsoon">'+esc(tf(L(d.soon.every(function(l){ return l.cap; })?TX.kwSoonC:TX.kwSoon),{p:ptS(d.soon.reduce(function(a,l){ return a+l.left; },0)),d:kYmd(Math.min.apply(null,d.soon.map(function(l){ return l.exp; })))}))+'</div>':'')   // 만료 30일 안 알림 (10-31)
@@ -1964,7 +1964,7 @@ function kRoom(rid,S0){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var 
   R.setRl=function(j){ R.rl=j; R.draw(); };   // 릴레이 화면에서 바뀌면 띠도 (10-31)
   var up=function(){ if(S0&&S0.o&&S0.o.isConnected&&S0.load) S0.load(); };
   R.load=function(){ var my=++R.tok; R.items=null; R.err=0; R.draw();
-    kGet("/kst/room?rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok) R.info=j; else R.gone=true; R.draw(); }).catch(function(){ if(my!==R.tok) return; R.err=1; R.draw(); });
+    kGet("/kst/room?rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok){ R.info=j; dcKstNews(rid,j.deco); } else R.gone=true; R.draw(); }).catch(function(){ if(my!==R.tok) return; R.err=1; R.draw(); });
     kGet("/kst/relay?rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok){ R.rl=j; R.draw(); } }).catch(function(){});   // 「○○님 차례」 띠 (10-31)
     kGet("/kst/list?scope=room&rid="+rid).then(function(j){ if(my!==R.tok) return; if(j&&j.ok) R.items=j.items||[]; else { R.items=[]; R.err=1; if(j&&j.err==="room") R.gone=true; } R.draw(); }).catch(function(){ if(my!==R.tok) return; R.items=[]; R.err=1; R.draw(); }); };
   R.loadMe=function(){};
@@ -1975,7 +1975,8 @@ function kRoom(rid,S0){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var 
         +'<button type="button" class="krmc'+(R.mem?' on':'')+'" data-mem="1">'+kIc("fol",1)+esc(tf(L(TX.rmN),{n:m?m.count:"…"}))+'</button>'
         +'<button type="button" class="krmc" data-rl="1">'+kIc("relay",1)+esc(L(TX.rlB))+'</button>'
         +'<button type="button" class="kdrb" data-dor="1"><img src="img/kara/dor.png" alt="">'+esc(L(TX.dorB))+'</button>'
-        +'<button type="button" class="krmx" data-mn="1" aria-label="menu">⋯</button></div>'
+        +'<button type="button" class="kdcb" data-deco="1"><img src="img/deco/pr_balloons.webp" alt="">'+esc(L(TX.dcB))+'</button>'
+        +'<button type="button" class="krmx" data-mn="1" aria-label="menu">⋯</button></div>'+(m?'<div class="kddeco kdk"></div>':'')
         +(R.mem&&m?'<div class="krmm">'+m.mem.map(function(p){ return '<span>'+(p.pubid&&!p.me?'<button type="button" class="kun" data-u="'+esc(p.pubid)+'">'+esc(p.nick||"guest")+'</button>':'<b class="kme">'+esc(p.nick||"guest")+'</b>')+(p.owner?'<small>'+esc(L(TX.rmOw))+'</small>':'')+'</span>'; }).join("")+(m.owner?'<button type="button" class="krmi" data-inv="1">'+kIc("share",1)+esc(L(TX.rmInv))+'</button>':'')+'</div>':'')
         +'<div class="ksrt"><span>'+esc(L(TX.vids))+(R.items&&R.items.length?' · '+R.items.length:'')+'</span><button type="button" data-sort="1">⇅ '+esc(kSortL(R.sort))+'</button>'+kVwBtn()+'</div>'
         +(R.items===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':R.err&&!R.items.length?'<div class="kstge">'+esc(L(TX.stF))+'</div>':!R.items.length?'<div class="kstge">'+esc(L(TX.rmE))+'</div>'
@@ -1984,6 +1985,7 @@ function kRoom(rid,S0){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var 
     o.innerHTML=kHead('<h3 class="k2l">'+esc(L(TX.vwRoom))+'</h3>')+'<div class="kpgb">'+body+'</div>';
     sc=o.querySelector(".kpgb"); if(sc&&top) sc.scrollTop=top;
     o.querySelector(".kpbk").onclick=pgBack; kUnBind(o);
+    var dct=dcKstCtx(R,rid); dcBg(o,!R.gone&&m&&m.deco&&m.deco.pl||""); dcStrip(o.querySelector(".kddeco"),dct); var dcb=o.querySelector("[data-deco]"); if(dcb) dcb.onclick=function(){ if(R.info) dcOpen(dct,0); };   // 방 꾸미기 — 배경·아래 띠 (10-31)
     var mb=o.querySelector("[data-mem]"); if(mb) mb.onclick=function(){ R.mem=!R.mem; R.draw(); };
     [].forEach.call(o.querySelectorAll("[data-rl],[data-trn]"),function(x){ x.onclick=function(){ kRelay(rid,R); }; });   // 릴레이 (10-31)
     var mn=o.querySelector("[data-mn]"); if(mn) mn.onclick=function(){ if(R.info) menu(); };
@@ -2324,7 +2326,7 @@ function dPay(cost,title,run,onX){ if(!sess()){ kLogin(function(){ dPay(cost,tit
   var go=function(){ kptAsk(cost,title,run,"",L(TX.kwOk),onX); };
   if(KP.d) go(); else kptLoad().then(function(){ if(KP.d) go(); else { soon(L(TX.efail)); if(onX) onX(); } }); }
 // 첫 화면 (만들기·내 방)
-function dorOpen(name0){ var b=box(); if(!b) return; if(!name0) try{ name0=localStorage.getItem("kdor_last")||""; }catch(e){}   // 10-31 지난 방 이름을 미리 채움 var o=pgOpen("kdorh"); if(!o) return; var busy=false, msg="";
+function dorOpen(name0){ var b=box(); if(!b) return; if(!name0) try{ name0=localStorage.getItem("kdor_last")||""; }catch(e){}   /* 10-31 지난 방 이름을 미리 채움 */ var o=pgOpen("kdorh"); if(!o) return; var busy=false, msg="";
   var draw=function(){ var my=dMy();
     o.innerHTML=kHead('<h3>'+esc(L(TX.dorB))+'</h3>')+'<div class="kpgb"><div class="kdhero">'+dIc("dor_l","kdhi")+'<b>'+esc(L(TX.dorB))+'</b><p>'+esc(L(TX.dorS))+'</p></div>'
       +(my?'<div class="kdmy"><span>'+esc(L(TX.dorMine))+'<b>'+esc(my.name||L(TX.dorB))+'</b></span><button type="button" class="kgo" data-my="1">'+esc(L(TX.dorIn))+'</button></div>':'')
@@ -2362,9 +2364,9 @@ function dorEnter(tok){ var b=box(); if(!b||!/^[A-Za-z0-9]{16}$/.test(String(tok
   var o=pgOpen("kdor"); if(!o) return;
   DR.tok=tok; DR.o=o; DR.alive=true; DR.st=null; DR.me=""; DR.own=0; DR.rmap={}; DR.pulled={}; DR.el={}; DR.au={}; DR.spot=""; DR.warned=0; DR.pend={}; DR.q=Promise.resolve();
   try{ DR.lay=sessionStorage.getItem("kdor_lay")||""; }catch(e){ DR.lay=""; }
-  o.innerHTML=kHead('<h3 class="kdtt">'+esc(L(TX.dorB))+'</h3><span class="kdtm" data-tm="1"></span>')
+  o.innerHTML=kHead('<h3 class="kdtt">'+esc(L(TX.dorB))+'</h3><span class="kdtm" data-tm="1"></span><button type="button" class="kddb" data-deco="1"><img src="img/deco/pr_balloons.webp" alt="">'+esc(L(TX.dcB))+'</button>')
     +'<div class="kdbar"><span class="kdn">0/9</span><button type="button" data-lay="1">'+esc(L(TX.dorGrid))+'</button><button type="button" data-inv="1">'+kIc("share",1)+esc(L(TX.dorInv))+'</button><button type="button" class="kdmn" data-mn="1" aria-label="menu">⋯</button></div>'
-    +'<div class="kdwrap"><div class="kdstage"></div></div><div class="kdsong" hidden></div>'
+    +'<div class="kdwrap"><div class="kdstage"></div></div><div class="kddeco"></div><div class="kdsong" hidden></div>'
     +'<div class="kdctl"><button type="button" data-c="mic"><i class="kdg kdgm"></i><span>'+esc(L(TX.dorMic))+'</span></button><button type="button" data-c="cam"><i class="kdg kdgc"></i><span>'+esc(L(TX.dorCam))+'</span></button><button type="button" data-c="flip"><i class="kdg kdgf"></i><span>'+esc(L(TX.dorFlip))+'</span></button>'
     +'<button type="button" data-c="sing">'+dIc("dor_sing")+'<span>'+esc(L(TX.dorSing))+'</span></button><button type="button" data-c="dance">'+dIc("dor_dance")+'<span>'+esc(L(TX.dorDance))+'</span></button><button type="button" class="kdx" data-c="out"><i class="kdg kdgx"></i><span>'+esc(L(TX.dorOut))+'</span></button></div>';
   o._bye=function(){ dorBye(1); };
@@ -2373,6 +2375,7 @@ function dorEnter(tok){ var b=box(); if(!b||!/^[A-Za-z0-9]{16}$/.test(String(tok
   o.querySelector("[data-inv]").onclick=dInv;
   o.querySelector("[data-mn]").onclick=dMenu;
   o.querySelector("[data-tm]").onclick=function(){ dExtAsk(); };
+  o.querySelector("[data-deco]").onclick=function(){ dcOpen(dcDorCtx(),0); };   // 방 꾸미기 (10-31)
   [].forEach.call(o.querySelectorAll(".kdctl [data-c]"),function(x){ x.onclick=function(){ dCtl(x.dataset.c); }; });
   window.addEventListener("resize",dFit);
   dDraw(); dWs(); DR.nlk=false; dNAc("enter").then(function(){ if(DR.alive&&DR.tok===tok) dMedia(); }); DR.timer=setInterval(dTick,1000); try{ ntap("kara_dor","enter"); }catch(e){} }
@@ -2389,7 +2392,8 @@ function dSend(m){ if(DR.ws&&DR.ws.readyState===1) DR.ws.send(JSON.stringify(m))
 function dMsg(m){ if(!DR.alive) return;
   if(m.t==="pong"){ var rt=Date.now()-m.c; if(rt<DR.rtt){ DR.rtt=rt; DR.off=m.s+rt/2-Date.now(); } return; }
   if(m.t==="hi"){ DR.me=m.me; DR.own=m.own; if(DR.rtt>5000) DR.off=m.now-Date.now(); dDraw(); dSync(); return; }
-  if(m.t==="st"){ DR.st=m; if(DR.rtt>5000) DR.off=m.now-Date.now(); dDraw(); dSong(); dSync(); dVol(); var my=dMy(); if(DR.own||(my&&my.tok===DR.tok)) dMy({tok:DR.tok,exp:m.room.exp,name:m.room.name}); return; }
+  if(m.t==="deco"){ dcDorMsg(m); return; }   // 방 꾸미기 소식 (10-31) — 놓음·치움·장소
+  if(m.t==="st"){ DR.st=m; if(DR.rtt>5000) DR.off=m.now-Date.now(); dDraw(); dcDorPaint(); dSong(); dSync(); dVol(); var my=dMy(); if(DR.own||(my&&my.tok===DR.tok)) dMy({tok:DR.tok,exp:m.room.exp,name:m.room.name}); return; }
   if(m.t==="warn"){ dWarn(); return; }
   if(m.t==="ext"){ DR.warned=0; var w=DR.o&&DR.o.querySelector(".kdwarn"); if(w) w.remove(); soon(tf(L(TX.dorExtBy),{n:m.nick||"guest"})); return; }
   if(m.t==="kick"){ dEnd(L(TX.dorKick)); return; }
@@ -2544,6 +2548,286 @@ function dMenu(){ var w=document.createElement("div"); w.className="kpm"; DR.o.a
 function dInv(){ if(!DR.tok) return; var u=RINV_U+"?dor="+DR.tok, iu=u+"&install=1", nm=(DR.st&&DR.st.room.name)||L(TX.dorB), me=(DR.st&&DR.st.mem||[]).filter(function(p){ return p.mid===DR.me; })[0], on=me&&me.nick||"";
   var ttl=on?tf(L(TX.dorInvT),{n:on,r:nm}):tf(L(TX.dorInvT),{n:"StageSong",r:nm});
   kShare({hd:L(TX.dorInv)+" · "+L(TX.dorInvH),url:u,iurl:iu,txt:ttl,kk:{title:ttl,desc:L(TX.dorInvD),img:RINV_U+"img/kara/dor_l.png",b1:L(TX.dorIn)}}); try{ ntap("kara_dor","inv"); }catch(e){} }
+// 방 꾸미기 모양 (10-31) — 상점·보관함(게임 상점식) · 방 배경 · 아래 띠 8칸 · 알림
+(function(){ var s=document.createElement("style"); s.textContent=""
+ +"#karBox .kpg.kdhasbg{background-size:cover;background-position:center;background-repeat:no-repeat}"
+ +"#karBox .kdor .kpgt .kddb,#karBox .krmh .kdcb{flex:0 0 auto;display:flex;align-items:center;gap:3px;border:1px solid #ff8be6;background:rgba(255,79,216,.14);color:#ffc2f1;border-radius:999px;padding:3px 10px 3px 4px;font-weight:900;font-size:12.5px;cursor:pointer}#karBox .kddb img,#karBox .krmh .kdcb img{width:22px;height:22px}"
+ +"#karBox .kddeco{flex:0 0 auto;display:grid;grid-template-columns:repeat(8,1fr);gap:3px;padding:2px 8px 0;height:clamp(44px,12vw,64px);box-sizing:border-box}#karBox .kddeco.kdk{padding:0;height:clamp(46px,12vw,64px)}"
+ +"#karBox .kdsl{border:1px dashed rgba(255,255,255,.12);background:none;padding:0;min-width:0;height:100%;border-radius:10px;cursor:pointer}#karBox .kdsl.on{border:0;animation:kprIn .45s cubic-bezier(.2,1.4,.4,1)}#karBox .kdsl img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 3px 5px rgba(0,0,0,.6))}"
+ +"#karBox .kpm.kdeco{z-index:30;padding:0;align-items:stretch;background:rgba(5,3,10,.6)}#karBox .kpm.kdeco>.kdsh{margin:0 auto;width:100%;max-width:560px;height:100%;padding:0;gap:0;border-radius:0;border:0;background:linear-gradient(180deg,#2a1146,#160f28 42%);display:flex;flex-direction:column;position:relative;overflow:hidden}"
+ +"#karBox .kdmain{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}"
+ +"#karBox .kdhd{display:flex;align-items:center;gap:8px;padding:12px 12px 8px}#karBox .kdhd>b{flex:1;min-width:0;font-size:19px;font-weight:900;color:#ffe066}#karBox .kdbal{border:1px solid #7CFFB2;background:rgba(124,255,178,.1);color:#bfffd9;border-radius:999px;padding:5px 11px;font-weight:900;font-size:13px;cursor:pointer}#karBox .kdx0{border:0;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:50%;font-size:15px;cursor:pointer}"
+ +"#karBox .kdtabs{flex:0 0 auto;display:flex;gap:6px;overflow-x:auto;padding:2px 12px 10px;scrollbar-width:none}#karBox .kdtabs::-webkit-scrollbar{display:none}#karBox .kdtabs button{flex:0 0 auto;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#e9dcff;border-radius:999px;padding:7px 13px;font-weight:800;font-size:13.5px;white-space:nowrap;cursor:pointer}#karBox .kdtabs button.on{background:linear-gradient(90deg,#ff4fd8,#7a5cff);border-color:transparent;color:#fff}"
+ +"#karBox .kdbody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 12px max(16px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px}"
+ +"#karBox .kdgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}#karBox .kdcd{display:flex;flex-direction:column;align-items:stretch;gap:4px;padding:6px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);border-radius:14px;color:#fff;cursor:pointer;text-align:center;min-width:0}#karBox .kdcd.kdown{border-color:rgba(124,255,178,.55);background:rgba(124,255,178,.06)}"
+ +"#karBox .kdim{display:block;aspect-ratio:1;border-radius:10px;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.16),rgba(255,255,255,.02) 70%);overflow:hidden}#karBox .kdim img{width:100%;height:100%;object-fit:contain;display:block}#karBox .kdcpl .kdim{aspect-ratio:3/4}#karBox .kdcpl .kdim img{object-fit:cover}"
+ +"#karBox .kdcd b{font-size:12.5px;font-weight:800;line-height:1.25;min-height:2.5em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all;overflow-wrap:anywhere}#karBox .kdpr{display:flex;flex-wrap:wrap;justify-content:center;gap:3px;font-size:12px;font-weight:900;color:#ffe066}"
+ +"#karBox .kdok{font-style:normal;color:#7CFFB2;font-weight:900}#karBox .kdnow{font-style:normal;color:#1a1300;background:#ffe066;border-radius:999px;padding:0 7px}"
+ +"#karBox .kdban{position:relative;display:block;border:0;padding:0;border-radius:16px;overflow:hidden;cursor:pointer;flex:0 0 auto;background:#000}#karBox .kdban img{width:100%;display:block;aspect-ratio:1376/768;object-fit:cover}#karBox .kdban2 img{aspect-ratio:16/5}#karBox .kdban b{position:absolute;left:0;right:0;bottom:0;padding:18px 12px 9px;background:linear-gradient(transparent,rgba(10,4,20,.88));color:#ffe066;font-size:15px;font-weight:900;text-align:left}"
+ +"#karBox .kdsts{display:flex;flex-direction:column;gap:8px}#karBox .kdst{display:flex;gap:10px;align-items:center;padding:8px;border:1px solid rgba(255,179,107,.55);background:rgba(255,179,107,.08);border-radius:14px;color:#fff;cursor:pointer;text-align:left}"
+ +"#karBox .kdsti{flex:0 0 92px;display:grid;grid-template-columns:1fr 1fr;gap:2px;width:92px;height:92px;border-radius:10px;overflow:hidden;background:rgba(255,255,255,.06)}#karBox .kdsti img{width:100%;height:100%;object-fit:cover;min-width:0;min-height:0}"
+ +"#karBox .kdstx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}#karBox .kdstx>b{font-size:16px;font-weight:900}#karBox .kdstx small{color:#cfc6e8;font-size:12px}#karBox .kdstp{font-size:13px;color:#cfc6e8}#karBox .kdstp s{opacity:.7}#karBox .kdstp b{font-size:17px;color:#ffe066}"
+ +"#karBox .kdemp{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}#karBox .kdemp img{width:min(200px,56%);border-radius:16px}#karBox .kdemp p{margin:0;color:#e9dcff;font-size:13.5px;line-height:1.5}"
+ +"#karBox .kdit{position:absolute;inset:0;z-index:3;background:rgba(5,3,10,.72);display:flex;align-items:flex-end;justify-content:center}"
+ +"#karBox .kdib{width:100%;max-width:520px;max-height:100%;box-sizing:border-box;overflow-y:auto;background:#1d1830;border:1px solid rgba(255,255,255,.18);border-bottom:0;border-radius:20px 20px 0 0;padding:14px 14px max(16px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:9px;animation:kdUp .25s ease-out}@keyframes kdUp{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}"
+ +"#karBox .kdiim{display:flex;justify-content:center;background:radial-gradient(circle at 50% 45%,rgba(255,255,255,.16),rgba(255,255,255,0) 65%);border-radius:14px}#karBox .kdiim img{width:min(190px,52vw);height:auto;display:block}#karBox .kdiplc img{width:auto;max-width:100%;height:min(42vh,340px);border-radius:12px;object-fit:cover}"
+ +"#karBox .kdin{font-size:18px;font-weight:900;text-align:center}#karBox .kdipr{text-align:center;font-size:22px;font-weight:900;color:#ffe066}#karBox .kdipr s{font-size:15px;color:#cfc6e8;opacity:.75;font-weight:700}"
+ +"#karBox .kdit .kgo{border:0;border-radius:12px;padding:13px;background:#ffe066;color:#1a1300;font-size:16px;font-weight:900;cursor:pointer}#karBox .kdit .kgo:disabled{opacity:.5}#karBox .kdit .kdgo2{background:linear-gradient(90deg,#ff4fd8,#7a5cff);color:#fff}#karBox .kdit .kc{border:0;background:none;color:#cfc6e8;font-weight:700;cursor:pointer;padding:6px}"
+ +"#karBox .kdit .krf{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.06);color:#fff;border-radius:12px;padding:9px;font-size:14px;font-weight:800;cursor:pointer}#karBox .kdit .km{margin:0;font-size:12.5px;color:#cfc6e8;line-height:1.5;text-align:center}"
+ +"#karBox .kdpv{position:relative;width:min(230px,60vw);aspect-ratio:9/14;margin:0 auto;box-sizing:border-box;border-radius:14px;overflow:hidden;background:radial-gradient(ellipse at 20% 0%,#3b0d5c 0%,#12081f 55%);background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:10px 8px;border:1px solid rgba(255,255,255,.2)}"
+ +"#karBox .kdpvg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;aspect-ratio:1}#karBox .kdpvg i{background:rgba(29,24,48,.85);border:1px solid rgba(255,255,255,.14);border-radius:6px}#karBox .kdpvs{display:grid;grid-template-columns:repeat(8,1fr);gap:1px;height:30px}#karBox .kdpvs span{min-width:0}#karBox .kdpvs img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}#karBox .kdpvn img{animation:kdPop .8s ease-in-out infinite alternate}@keyframes kdPop{from{transform:scale(1)}to{transform:scale(1.2)}}"
+ +"#karBox .kdsli{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}#karBox .kdsli span{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;border-radius:10px;background:rgba(255,255,255,.05);min-width:0}#karBox .kdsli img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}#karBox .kdsli small{font-size:10.5px;line-height:1.2;text-align:center;color:#e9dcff;word-break:keep-all;overflow-wrap:anywhere}#karBox .kdsli em{position:absolute;right:4px;top:4px;font-style:normal;background:#7CFFB2;color:#063;border-radius:50%;width:18px;height:18px;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:900}#karBox .kdsli .kdhv img{opacity:.55}"
+ +"#karBox .kdsm .kdsmi{display:flex;align-items:center;gap:10px}#karBox .kdsmi img{width:64px;height:64px;object-fit:contain}#karBox .kdsmi span{display:flex;flex-direction:column;gap:2px;min-width:0}#karBox .kdsmi small{color:#cfc6e8}"
+ +"#karBox .kdtq{position:absolute;left:0;right:0;top:64px;z-index:58;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;padding:0 12px}"
+ +"#karBox .kdtst{display:flex;align-items:center;gap:8px;max-width:100%;box-sizing:border-box;background:rgba(29,18,52,.96);border:1.5px solid #ff4fd8;border-radius:16px;padding:7px 14px 7px 7px;color:#fff;font-weight:800;font-size:14px;line-height:1.35;box-shadow:0 6px 20px rgba(0,0,0,.5);animation:kprIn .45s cubic-bezier(.2,1.4,.4,1);transition:opacity .4s,transform .4s}#karBox .kdtst img{width:40px;height:40px;object-fit:contain;flex:0 0 auto}#karBox .kdtst.out{opacity:0;transform:translateY(-10px)}"
+ +"#karBox .kdbst{position:absolute;inset:0;z-index:57;pointer-events:none;overflow:hidden}"
+ +"@media (prefers-reduced-motion:reduce){#karBox .kdsl.on,#karBox .kdtst,#karBox .kdpvn img,#karBox .kdib{animation:none}}";
+ document.head.appendChild(s); })();
+// ── 방 꾸미기 (사장님 10-31 「실행하고 배포해」) ─────────────────────────────────────────────
+//   도란도란·우리끼리 노래 방 「꾸미기」 → 상점(장소·가구·장식·먹거리·노래방·야외·동물·세트) + 보관함 · 포인트로 구매(「N P 사용 → M P 남음」 → 구매)
+//   장소 = 한 번 구매하면 영구 보관 · 방 배경은 방장만 · 소품 = 방 사람 누구나 구매해 놓음 (먹거리·폭죽·야광봉 = 놓으면 사용 / 나머지 = 영구, 치우면 보관함에 그대로) · 방 아래 띠 8칸(영상 칸을 가리지 않음)
+//   허브: /shop/kpt/inv (보관함·가격) · /shop/kpt/deco (구매) · /dor/deco (도란도란 놓기·치우기·장소, 모두에게 실시간) · /kst/room op dput·drm·dpl (우리끼리 노래)
+Object.assign(TX,{
+ dcB:{ko:"꾸미기",en:"Decorate",ja:"デコる",zhs:"装扮",zht:"裝扮",es:"Decorar"},
+ dcT:{ko:"방 꾸미기",en:"Room decor",ja:"ルームデコ",zhs:"房间装扮",zht:"房間裝扮",es:"Decorar la sala"},
+ dcTabs:{ko:"장소|가구|장식|먹거리|노래방|야외·동물|세트|보관함",en:"Places|Furniture|Decor|Food|Karaoke|Outdoor·Pets|Sets|My items",ja:"場所|家具|インテリア|フード|カラオケ|アウトドア·動物|セット|アイテム箱",zhs:"场景|家具|装饰|美食|K歌|户外·宠物|套装|我的物品",zht:"場景|家具|裝飾|美食|K歌|戶外·寵物|套裝|我的物品",es:"Lugares|Muebles|Decoración|Comida|Karaoke|Aire libre·Mascotas|Packs|Mis artículos"},
+ dcFree:{ko:"무료",en:"Free",ja:"無料",zhs:"免费",zht:"免費",es:"Gratis"},
+ dcOwn:{ko:"보유",en:"Owned",ja:"所持",zhs:"已拥有",zht:"已擁有",es:"Tuyo"},
+ dcCnt:{ko:"{n}개 보유",en:"{n} owned",ja:"{n}個所持",zhs:"拥有 {n} 个",zht:"擁有 {n} 個",es:"Tienes {n}"},
+ dcNow:{ko:"사용 중",en:"In use",ja:"使用中",zhs:"使用中",zht:"使用中",es:"En uso"},
+ dcPrev:{ko:"놓아 보기",en:"Preview",ja:"置いてみる",zhs:"预览",zht:"預覽",es:"Vista previa"},
+ dcPrevX:{ko:"그림 보기",en:"Picture",ja:"画像を見る",zhs:"查看图片",zht:"查看圖片",es:"Ver imagen"},
+ dcPut:{ko:"방에 놓기",en:"Place in room",ja:"ルームに置く",zhs:"放进房间",zht:"放進房間",es:"Poner en la sala"},
+ dcUse:{ko:"이 장소로 바꾸기",en:"Use this place",ja:"この場所にする",zhs:"换成这个场景",zht:"換成這個場景",es:"Usar este lugar"},
+ dcOff:{ko:"기본 배경으로",en:"Back to default",ja:"標準の背景に戻す",zhs:"恢复默认背景",zht:"恢復預設背景",es:"Fondo predeterminado"},
+ dcHost:{ko:"장소는 방장만 바꿀 수 있습니다.",en:"Only the host can change the place.",ja:"場所はホストだけが変更できます。",zhs:"只有房主可以更换场景。",zht:"只有房主可以更換場景。",es:"Solo el anfitrión puede cambiar el lugar."},
+ dcPlN:{ko:"한 번 구매하면 계속 사용합니다. 방장이 방 배경으로 고릅니다.",en:"Buy once and keep it. The host picks it as the room background.",ja:"一度購入すればずっと使えます。ホストがルームの背景に選びます。",zhs:"购买一次即可一直使用，由房主选作房间背景。",zht:"購買一次即可一直使用，由房主選作房間背景。",es:"Cómpralo una vez y es tuyo. El anfitrión lo elige como fondo."},
+ dcKeepN:{ko:"한 번 구매하면 보관함에 계속 남고, 어느 방에든 놓을 수 있습니다.",en:"Buy once: it stays in My items and can go in any room.",ja:"一度購入するとアイテム箱に残り、どのルームにも置けます。",zhs:"购买一次即永久保存在我的物品中，可放进任何房间。",zht:"購買一次即永久保存在我的物品中，可放進任何房間。",es:"Cómpralo una vez: queda en Mis artículos y puedes ponerlo en cualquier sala."},
+ dcConsN:{ko:"먹거리·폭죽·야광봉은 방에 놓으면 사용됩니다.",en:"Food, poppers and glow sticks are used up when placed.",ja:"フード・クラッカー・ペンライトはルームに置くと使用済みになります。",zhs:"美食、拉炮、荧光棒放进房间后即用掉。",zht:"美食、拉炮、螢光棒放進房間後即用掉。",es:"La comida, los lanzaconfeti y las barras luminosas se gastan al ponerlos."},
+ dcFull:{ko:"자리가 모두 찼습니다. 놓인 소품을 치운 뒤 놓아 주세요.",en:"All spots are taken. Remove an item first.",ja:"置き場所がいっぱいです。置いた小物を片付けてから置いてください。",zhs:"位置已满，请先移除一件物品。",zht:"位置已滿，請先移除一件物品。",es:"No quedan sitios. Quita un artículo primero."},
+ dcSame:{ko:"이미 이 방에 놓았습니다.",en:"Already placed in this room.",ja:"すでにこのルームに置いています。",zhs:"已经放在这个房间了。",zht:"已經放在這個房間了。",es:"Ya está en esta sala."},
+ dcBusy:{ko:"그 자리에 방금 다른 소품이 놓였습니다. 다시 놓아 주세요.",en:"Someone just used that spot. Please try again.",ja:"その場所にちょうど別の小物が置かれました。もう一度置いてください。",zhs:"该位置刚被占用，请再试一次。",zht:"該位置剛被占用，請再試一次。",es:"Alguien acaba de usar ese sitio. Inténtalo de nuevo."},
+ dcNoInv:{ko:"보관함에 없습니다. 먼저 구매해 주세요.",en:"Not in My items. Please buy it first.",ja:"アイテム箱にありません。先に購入してください。",zhs:"我的物品中没有，请先购买。",zht:"我的物品中沒有，請先購買。",es:"No está en Mis artículos. Cómpralo primero."},
+ dcPrice:{ko:"가격이 바뀌었습니다. 다시 확인해 주세요.",en:"The price has changed. Please check again.",ja:"価格が変わりました。もう一度ご確認ください。",zhs:"价格已变动，请重新确认。",zht:"價格已變動，請重新確認。",es:"El precio ha cambiado. Revísalo de nuevo."},
+ dcRm:{ko:"치우기",en:"Remove",ja:"片付ける",zhs:"移除",zht:"移除",es:"Quitar"},
+ dcRmNo:{ko:"직접 놓은 소품만 치울 수 있습니다.",en:"You can only remove items you placed.",ja:"自分で置いた小物だけ片付けられます。",zhs:"只能移除自己放的物品。",zht:"只能移除自己放的物品。",es:"Solo puedes quitar lo que pusiste tú."},
+ dcBack:{ko:"{i} 보관함으로 돌아갔습니다.",en:"{i} went back to My items.",ja:"「{i}」がアイテム箱に戻りました。",zhs:"「{i}」已回到我的物品。",zht:"「{i}」已回到我的物品。",es:"{i} volvió a Mis artículos."},
+ dcBy:{ko:"{n}님이 놓음",en:"Placed by {n}",ja:"{n}さんが置きました",zhs:"{n} 放置",zht:"{n} 放置",es:"Puesto por {n}"},
+ dcEmpty:{ko:"보관함이 비어 있습니다. 상점에서 장소와 소품을 구매해 보세요.",en:"My items is empty. Buy places and items in the shop.",ja:"アイテム箱は空です。ショップで場所や小物を購入してみましょう。",zhs:"我的物品是空的，去商店买场景和物品吧。",zht:"我的物品是空的，去商店買場景和物品吧。",es:"Mis artículos está vacío. Compra lugares y objetos en la tienda."},
+ dcSetN:{ko:"구성 {n}개",en:"{n} items",ja:"{n}点セット",zhs:"共 {n} 件",zht:"共 {n} 件",es:"{n} artículos"},
+ dcSetOwn:{ko:"이미 보유한 {n}개를 뺀 가격입니다.",en:"Price excludes the {n} you already own.",ja:"すでに所持している{n}点を除いた価格です。",zhs:"已扣除你已拥有的 {n} 件。",zht:"已扣除你已擁有的 {n} 件。",es:"Precio sin los {n} que ya tienes."},
+ dcSetAll:{ko:"세트 구성품을 모두 보유하고 있습니다.",en:"You already own everything in this set.",ja:"セットの中身をすべて所持しています。",zhs:"你已拥有该套装的全部物品。",zht:"你已擁有該套裝的全部物品。",es:"Ya tienes todo lo de este pack."},
+ dcBan:{ko:"세트로 구매하면 더 저렴합니다",en:"Sets cost less than buying one by one",ja:"セットで買うともっとお得",zhs:"买套装更划算",zht:"買套裝更划算",es:"Los packs salen más baratos"},
+ dcBuyOk:{ko:"구매했습니다. 보관함에 넣었습니다.",en:"Purchased! Added to My items.",ja:"購入しました。アイテム箱に入れました。",zhs:"购买成功，已放入我的物品。",zht:"購買成功，已放入我的物品。",es:"¡Comprado! Añadido a Mis artículos."},
+ dcPutT:{ko:"{n}님이 {i} 놓았어요 {e}",en:"{n} placed {i} {e}",ja:"{n}さんが{i}を置きました {e}",zhs:"{n} 放了{i} {e}",zht:"{n} 放了{i} {e}",es:"{n} puso {i} {e}"},
+ dcTreatT:{ko:"{n}님이 {i} 쐈어요! 다 같이 먹어요 {e}",en:"{n} treated everyone to {i}! {e}",ja:"{n}さんが{i}をおごりました！みんなで食べよう {e}",zhs:"{n} 请大家吃{i}！{e}",zht:"{n} 請大家吃{i}！{e}",es:"¡{n} invita a todos a {i}! {e}"},
+ dcPopT:{ko:"{n}님이 폭죽을 터뜨렸어요! 🎉",en:"{n} popped a party popper! 🎉",ja:"{n}さんがクラッカーを鳴らしました！🎉",zhs:"{n} 拉响了派对拉炮！🎉",zht:"{n} 拉響了派對拉炮！🎉",es:"¡{n} lanzó confeti! 🎉"},
+ dcGlowT:{ko:"{n}님이 야광봉을 흔들어요! ✨",en:"{n} is waving glow sticks! ✨",ja:"{n}さんがペンライトを振っています！✨",zhs:"{n} 挥起了荧光棒！✨",zht:"{n} 揮起了螢光棒！✨",es:"¡{n} agita barras luminosas! ✨"},
+ dcPlT:{ko:"장소가 바뀌었어요 · {i}",en:"The place is now {i}",ja:"場所が「{i}」に変わりました",zhs:"场景换成了「{i}」",zht:"場景換成了「{i}」",es:"El lugar ahora es {i}"},
+ dcSet1:{ko:"세트",en:"set",ja:"セット",zhs:"套装",zht:"套裝",es:"(pack)"},
+ dcPl0:{ko:"기본 배경으로 바뀌었어요",en:"Back to the default background",ja:"標準の背景に戻りました",zhs:"已恢复默认背景",zht:"已恢復預設背景",es:"Fondo predeterminado"}
+});
+// 아이템 표 — [키, 분류, 소모품, ko, en, ja, zhs, zht, es, 기본 가격(허브 값이 오면 그것), 이모지]
+var DCI=[
+ ["pl_living","place",0,"우리 집 거실","Cozy Living Room","うちのリビング","温馨客厅","溫馨客廳","Salón acogedor",3000],
+ ["pl_noraebang","place",0,"노래방 룸","Karaoke Room","カラオケルーム","KTV包厢","KTV包廂","Sala de karaoke",0],
+ ["pl_pyeongsang","place",0,"동네 평상(여름밤)","Summer Night Pyeongsang","夏の夜の縁台","夏夜乘凉木榻","夏夜乘涼木榻","Tarima de noche de verano",3000],
+ ["pl_rooftop","place",0,"옥상 테라스","Rooftop Terrace","屋上テラス","屋顶露台","屋頂露台","Terraza en la azotea",3000],
+ ["pl_campfire","place",0,"캠핑장 모닥불","Campfire","キャンプファイヤー","露营篝火","露營營火","Fogata de campamento",3000],
+ ["pl_hangang","place",0,"한강 둔치 돗자리","Han River Picnic","漢江ピクニック","汉江野餐","漢江野餐","Pícnic junto al río Han",3000],
+ ["pl_classroom","place",0,"학교 교실","Classroom","学校の教室","学校教室","學校教室","Aula escolar",3000],
+ ["pl_pocha","place",0,"포장마차","Street Food Tent","屋台","路边大排档","路邊大排檔","Puesto callejero",3000],
+ ["pl_beach","place",0,"해수욕장(파라솔)","Beach Parasols","海水浴場","海水浴场","海水浴場","Playa con sombrillas",4000],
+ ["pl_valley","place",0,"계곡 평상","Valley Platform","渓谷の縁台","溪谷木榻","溪谷木榻","Tarima junto al arroyo",4000],
+ ["pl_grandma","place",0,"시골 할머니 댁 마루","Grandma's Country House","田舎のおばあちゃん家","乡下外婆家","鄉下外婆家","Casa de la abuela en el campo",4000],
+ ["pl_dabang","place",0,"70·80 다방","Retro Coffee House","70·80年代の喫茶店","七八十年代茶馆","七八十年代茶館","Cafetería retro",4000],
+ ["pl_roller","place",0,"롤라장","Roller Rink","ローラースケート場","旱冰场","溜冰場","Pista de patinaje",4000],
+ ["pl_gogo","place",0,"고고장","Go-Go Dance Hall","ゴーゴーダンスホール","复古迪斯科舞厅","復古迪斯可舞廳","Salón de baile a gogó",4000],
+ ["pl_tripbus","place",0,"수학여행 버스 안","School Trip Bus","修学旅行のバス","修学旅行大巴","修學旅行巴士","Autobús de excursión escolar",4000],
+ ["pl_jejucafe","place",0,"제주 바닷가 카페","Jeju Seaside Cafe","済州の海辺カフェ","济州海边咖啡馆","濟州海邊咖啡館","Café junto al mar en Jeju",6000],
+ ["pl_seorak","place",0,"설악산 정상","Seoraksan Summit","雪岳山の頂上","雪岳山山顶","雪嶽山山頂","Cima del Seoraksan",6000],
+ ["pl_cruise","place",0,"크루즈 갑판","Cruise Deck","クルーズ船のデッキ","邮轮甲板","郵輪甲板","Cubierta de crucero",6000],
+ ["pl_stage","place",0,"콘서트 무대","Concert Stage","コンサートステージ","演唱会舞台","演唱會舞台","Escenario de concierto",6000],
+ ["pl_hanok","place",0,"한옥 사랑방","Hanok Sarangbang","韓屋の客間","韩屋厢房","韓屋廂房","Salón de hanok",6000],
+ ["pl_snowcabin","place",0,"눈 오는 산장","Snowy Cabin","雪の山小屋","雪中山庄","雪中山莊","Cabaña nevada",6000],
+ ["pl_xmas","place",0,"크리스마스 거실","Christmas Living Room","クリスマスのリビング","圣诞客厅","聖誕客廳","Salón navideño",4000],
+ ["pl_seollal","place",0,"설날 안방","Seollal Room","お正月の部屋","春节里屋","春節裡屋","Habitación de Año Nuevo coreano",4000],
+ ["pl_chuseok","place",0,"추석 마당","Chuseok Courtyard","秋夕の中庭","中秋庭院","中秋庭院","Patio de Chuseok",4000],
+ ["pl_cherry","place",0,"벚꽃 공원","Cherry Blossom Park","桜の公園","樱花公园","櫻花公園","Parque de cerezos en flor",4000],
+ ["pl_halloween","place",0,"할로윈 파티","Halloween Party","ハロウィンパーティー","万圣节派对","萬聖節派對","Fiesta de Halloween",4000],
+ ["pr_sofa","furniture",0,"3인 소파","3-Seat Sofa","3人掛けソファ","三人沙发","三人沙發","Sofá de 3 plazas",2500,"🛋️"],
+ ["pr_armchair","furniture",0,"1인 안락의자","Armchair","1人掛けアームチェア","单人扶手椅","單人扶手椅","Sillón",2000,"🪑"],
+ ["pr_cushions","furniture",0,"방석","Floor Cushions","座布団","坐垫","坐墊","Cojines de suelo",1500,"🟫"],
+ ["pr_pyeongsang","furniture",0,"나무 평상","Wooden Pyeongsang","木の縁台","木榻","木榻","Tarima de madera",2500,"🪵"],
+ ["pr_table","furniture",0,"나무 탁자","Wooden Table","木のテーブル","木桌","木桌","Mesa de madera",1800,"🪵"],
+ ["pr_beanbag","furniture",0,"빈백","Bean Bag","ビーズクッション","懒人沙发","懶骨頭沙發","Puf",2000,"🫘"],
+ ["pr_hammock","furniture",0,"해먹","Hammock","ハンモック","吊床","吊床","Hamaca",2200,"🌴"],
+ ["pr_rug","furniture",0,"러그","Rug","ラグ","地毯","地毯","Alfombra",1500,"🧶"],
+ ["pr_floorlamp","furniture",0,"장스탠드","Floor Lamp","フロアランプ","落地灯","落地燈","Lámpara de pie",1800,"💡"],
+ ["pr_monstera","decor",0,"몬스테라 화분","Monstera Plant","モンステラの鉢","龟背竹盆栽","龜背芋盆栽","Planta monstera",1500,"🪴"],
+ ["pr_vase","decor",0,"꽃병","Flower Vase","花瓶","花瓶","花瓶","Florero",1400,"💐"],
+ ["pr_stringlights","decor",0,"전구 줄조명","String Lights","ストリングライト","串灯","串燈","Guirnalda de luces",1500,"✨"],
+ ["pr_mirrorball","decor",0,"미러볼","Mirror Ball","ミラーボール","迪斯科球","迪斯可球","Bola de espejos",1800,"🪩"],
+ ["pr_frame","decor",0,"액자","Picture Frame","額縁","相框","相框","Marco de fotos",1300,"🖼️"],
+ ["pr_speaker","decor",0,"스탠드 스피커","Standing Speaker","スタンドスピーカー","落地音箱","落地音響","Altavoz de pie",1600,"🔊"],
+ ["pr_stagelight","decor",0,"무대 조명","Stage Light","舞台照明","舞台灯","舞台燈","Foco de escenario",1700,"🔦"],
+ ["pr_neon","decor",0,"하트 네온","Heart Neon","ハートのネオン","爱心霓虹灯","愛心霓虹燈","Neón de corazón",1600,"💖"],
+ ["pr_candles","decor",0,"캔들 세트","Candle Set","キャンドルセット","蜡烛套装","蠟燭組","Juego de velas",1400,"🕯️"],
+ ["pr_chicken","food",1,"치킨과 맥주","Chicken & Beer","チキンとビール","炸鸡和啤酒","炸雞和啤酒","Pollo frito y cerveza",1500,"🍗"],
+ ["pr_watermelon","food",1,"수박","Watermelon","スイカ","西瓜","西瓜","Sandía",1300,"🍉"],
+ ["pr_ramen","food",1,"라면 냄비","Ramen Pot","ラーメン鍋","一锅拉面","一鍋泡麵","Olla de ramen",1300,"🍜"],
+ ["pr_pajeon","food",1,"파전과 막걸리","Pajeon & Makgeolli","チヂミとマッコリ","葱饼配米酒","蔥餅配米酒","Pajeon y makgeolli",1500,"🥞"],
+ ["pr_coffee","food",1,"커피 두 잔","Coffee for Two","コーヒー2杯","两杯咖啡","兩杯咖啡","Café para dos",1300,"☕"],
+ ["pr_cake","food",1,"생일 케이크","Birthday Cake","バースデーケーキ","生日蛋糕","生日蛋糕","Pastel de cumpleaños",1500,"🎂"],
+ ["pr_snacks","food",1,"과자 한 접시","Snack Plate","お菓子ひと皿","一盘零食","一盤零食","Plato de aperitivos",1300,"🍪"],
+ ["pr_icecream","food",1,"아이스크림","Ice Cream","アイスクリーム","冰淇淋","冰淇淋","Helado",1300,"🍦"],
+ ["pr_fruit","food",1,"과일 바구니","Fruit Basket","フルーツバスケット","水果篮","水果籃","Cesta de frutas",1400,"🍇"],
+ ["pr_tambourine","party",0,"탬버린","Tambourine","タンバリン","铃鼓","鈴鼓","Pandereta",1300,"🪘"],
+ ["pr_maracas","party",0,"마라카스","Maracas","マラカス","沙锤","沙鈴","Maracas",1300,"🪇"],
+ ["pr_glowsticks","party",1,"야광봉","Glow Sticks","ペンライト","荧光棒","螢光棒","Barras luminosas",1300,"✨"],
+ ["pr_popper","party",1,"폭죽(파티 크래커)","Party Popper","クラッカー","派对拉炮","派對拉炮","Lanzaconfeti",1300,"🎉"],
+ ["pr_micstand","party",0,"마이크 스탠드","Mic Stand","マイクスタンド","麦克风架","麥克風架","Pie de micrófono",1800,"🎤"],
+ ["pr_partyhat","party",0,"고깔모자","Party Hat","とんがり帽子","派对帽","派對帽","Gorro de fiesta",1300,"🥳"],
+ ["pr_balloons","party",0,"풍선 다발","Balloon Bunch","風船の束","一束气球","一束氣球","Ramo de globos",1500,"🎈"],
+ ["pr_trophy","party",0,"트로피","Trophy","トロフィー","奖杯","獎盃","Trofeo",2000,"🏆"],
+ ["pr_crown","party",0,"왕관","Crown","王冠","王冠","王冠","Corona",2000,"👑"],
+ ["pr_parasol","outdoor",0,"파라솔","Beach Parasol","ビーチパラソル","沙滩遮阳伞","沙灘遮陽傘","Sombrilla de playa",1700,"⛱️"],
+ ["pr_swimring","outdoor",0,"튜브","Swim Ring","浮き輪","游泳圈","游泳圈","Flotador",1500,"🛟"],
+ ["pr_sandcastle","outdoor",0,"모래성","Sandcastle","砂のお城","沙堡","沙堡","Castillo de arena",1500,"🏰"],
+ ["pr_campchair","outdoor",0,"캠핑 의자","Camping Chair","キャンプチェア","露营椅","露營椅","Silla de camping",1700,"🏕️"],
+ ["pr_tent","outdoor",0,"텐트","Tent","テント","帐篷","帳篷","Tienda de campaña",2000,"⛺"],
+ ["pr_bbq","outdoor",0,"바비큐 그릴","BBQ Grill","バーベキューグリル","烧烤架","烤肉架","Parrilla de barbacoa",2000,"🍖"],
+ ["pr_puppy","pet",0,"강아지","Puppy","子犬","小狗","小狗","Cachorro",3000,"🐶"],
+ ["pr_cat","pet",0,"고양이","Cat","猫","猫咪","貓咪","Gato",3000,"🐱"],
+ ["pr_parrot","pet",0,"앵무새","Parrot","インコ","鹦鹉","鸚鵡","Loro",2500,"🦜"]];
+var DCS=[   // 세트 — [키, 기본 가격, 이름 6개, 구성] (허브 DECO_S 와 같은 구성)
+ ["set_home",10000,["신혼집 거실","Newlywed Living Room","新婚の家のリビング","新婚小家客厅","新婚小家客廳","Salón de recién casados"],["pl_living","pr_sofa","pr_rug","pr_monstera","pr_floorlamp","pr_vase","pr_coffee"]],
+ ["set_summer",8000,["여름밤 평상","Summer Night Pyeongsang","夏の夜の縁台","夏夜乘凉","夏夜乘涼","Noche de verano en la tarima"],["pl_pyeongsang","pr_pyeongsang","pr_cushions","pr_watermelon","pr_pajeon","pr_icecream"]],
+ ["set_beach",9000,["해수욕장","Beach Day","海水浴","海边度假","海邊度假","Día de playa"],["pl_beach","pr_parasol","pr_swimring","pr_sandcastle","pr_campchair","pr_fruit"]],
+ ["set_party",9000,["노래방 파티","Karaoke Party","カラオケパーティー","KTV派对","KTV派對","Fiesta de karaoke"],["pr_mirrorball","pr_stagelight","pr_speaker","pr_micstand","pr_tambourine","pr_maracas","pr_glowsticks","pr_chicken"]],
+ ["set_xmas",9000,["크리스마스","Christmas","クリスマス","圣诞节","聖誕節","Navidad"],["pl_xmas","pr_stringlights","pr_candles","pr_balloons","pr_partyhat","pr_cake","pr_popper"]]];
+var DK={}, DKS={}, DLG=["ko","en","ja","zhs","zht","es"], DTAB=[["place"],["furniture"],["decor"],["food"],["party"],["outdoor","pet"],"set","inv"], DSLOT=[0,7,1,6,2,5,3,4];   // 자리 채우는 차례 = 양 끝부터
+DCI.forEach(function(x){ var n={}; DLG.forEach(function(l,i){ n[l]=x[3+i]; }); DK[x[0]]={k:x[0],c:x[1],cons:x[2],n:n,p:x[9],e:x[10]||""}; });
+DCS.forEach(function(x){ var n={}; DLG.forEach(function(l,i){ n[l]=x[2][i]; }); DKS[x[0]]={k:x[0],p:x[1],n:n,it:x[3]}; });
+var DC={inv:null,p:{},s:{},sc:{},ld:null};
+function dcN(k){ var x=DK[k]||DKS[k]; return x?L(x.n):k; }
+function dcHN(k){ return DKS[k]?L(DKS[k].n)+" "+L(TX.dcSet1):dcN(k); }   // 사용 내역·결제 확인 — 세트는 「○○ 세트」
+function dcIsPl(k){ return String(k).indexOf("pl_")===0; }
+function dcImg(k,th){ return dcIsPl(k)?"img/deco/"+(th?"t/":"")+k+".jpg":"img/deco/"+k+".webp"; }
+function dcP(k){ return DC.p[k]!=null?+DC.p[k]:DK[k]?DK[k].p:0; }
+function dcSP(k){ var c=DC.sc[k]; return c?c.cost:DC.s[k]!=null?+DC.s[k]:DKS[k].p; }
+function dcSum(k){ return DKS[k].it.reduce(function(a,x){ return a+dcP(x); },0); }
+function dcHas(k){ return k==="pl_noraebang"||!!(DC.inv&&DC.inv.own&&DC.inv.own[k]); }
+function dcCnt(k){ return DC.inv&&DC.inv.cnt&&DC.inv.cnt[k]||0; }
+function dcJo(w,a,b){ var s=String(w).replace(/\s*\([^)]*\)\s*$/,""), c=s.charCodeAt(s.length-1); return s+(c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28?a:b); }   // 받침 → 을/이 · 없으면 를/가
+function dcLoad(){ if(!sess()) return Promise.resolve(null); if(DC.ld) return DC.ld; DC.ld=kptPost("inv",{}).then(function(j){ DC.ld=null; if(j&&j.ok){ DC.inv=j.inv; DC.p=j.p||{}; DC.s=j.s||{}; DC.sc=j.sc||{}; } return j; }).catch(function(){ DC.ld=null; return null; }); return DC.ld; }
+// 방 배경 — 어둡게 덮어 영상 칸·글자가 잘 보이게
+function dcBg(el,pl){ if(!el) return; el.classList.toggle("kdhasbg",!!pl); el.style.backgroundImage=pl&&DK[pl]?"linear-gradient(180deg,rgba(10,6,22,.66),rgba(10,6,22,.78) 55%,rgba(8,5,18,.88)),url("+dcImg(pl)+")":""; }
+// 아래 띠 8칸 — 놓인 소품 · 빈칸은 희미하게(누르면 상점)
+function dcStrip(el,ctx){ if(!el) return; var d=ctx.deco(), by={}; (d.pr||[]).forEach(function(x){ by[x.s]=x; }); var h="";
+  for(var i=0;i<8;i++){ var x=by[i]; h+=x?'<button type="button" class="kdsl on'+(x.c?' kdcs':'')+'" data-s="'+i+'" title="'+esc(dcN(x.k))+'"><img src="'+dcImg(x.k)+'" alt="'+esc(dcN(x.k))+'"></button>':'<button type="button" class="kdsl" data-s="'+i+'" aria-label="'+esc(L(TX.dcT))+'"></button>'; }
+  el.innerHTML=h; [].forEach.call(el.querySelectorAll(".kdsl"),function(b){ b.onclick=function(){ var s=+b.dataset.s; if(by[s]) dcSlot(ctx,by[s]); else dcOpen(ctx,0); }; }); }
+// 즐거운 알림 (모두에게) — 그림 + 글 · 폭죽·야광봉은 반짝이
+function dcToast(msg,k,burst){ var b=box(); if(!b||!msg) return; var q=b.querySelector(".kdtq"); if(!q){ q=document.createElement("div"); q.className="kdtq"; b.appendChild(q); }
+  var t=document.createElement("div"); t.className="kdtst"; t.innerHTML=(k&&DK[k]?'<img src="'+dcImg(k,1)+'" alt="">':'')+'<span>'+esc(msg)+'</span>'; q.appendChild(t); while(q.children.length>3) q.firstChild.remove();
+  if(burst){ var f=document.createElement("div"); f.className="kdbst"; for(var i=1;i<=8;i++) f.innerHTML+='<i class="kcf c'+i+'"></i>'; b.appendChild(f); setTimeout(function(){ f.remove(); },3300); }
+  setTimeout(function(){ t.classList.add("out"); setTimeout(function(){ t.remove(); },400); },3600); }
+function dcNk(n){ n=String(n||"guest"); return window.LANG==="ko"&&n.length>1&&/님$/.test(n)?n.slice(0,-1):n; }   // 「○○님님」 막기
+function dcEvTx(a,k,n){ n=dcNk(n);
+  if(a==="pl") return k?tf(L(TX.dcPlT),{i:dcN(k)}):L(TX.dcPl0);
+  if(k==="pr_popper") return tf(L(TX.dcPopT),{n:n}); if(k==="pr_glowsticks") return tf(L(TX.dcGlowT),{n:n});
+  var x=DK[k]||{}, food=x.c==="food", nm=dcN(k), i=window.LANG==="ko"?dcJo(nm,"을","를"):nm;
+  return tf(L(food?TX.dcTreatT:TX.dcPutT),{n:n,i:i,e:x.e||""}); }
+function dcBackTx(k){ var nm=dcN(k); return tf(L(TX.dcBack),{i:window.LANG==="ko"?dcJo(nm,"이","가"):nm}); }
+function dcEv(a,k,n){ dcToast(dcEvTx(a,k,n),a==="pl"?"":k,k==="pr_popper"||k==="pr_glowsticks"); }
+// 빈자리 (양 끝부터)
+function dcFreeS(d){ var u={}; (d.pr||[]).forEach(function(x){ u[x.s]=1; }); for(var i=0;i<DSLOT.length;i++) if(!u[DSLOT[i]]) return DSLOT[i]; return -1; }
+function dcErr(j,f){ var e=j&&j.err; return L(e==="slot"?TX.dcBusy:e==="same"?TX.dcSame:e==="noinv"?TX.dcNoInv:e==="own"?(f==="rm"?TX.dcRmNo:TX.dcHost):e==="price"?TX.dcPrice:TX.efail); }
+// 놓인 소품 누름 — 이름·놓은 사람 · 치우기(방장 = 아무것 · 놓은 사람 = 자기 것)
+function dcSlot(ctx,x){ var h=ctx.host(); if(!h) return; var w=document.createElement("div"); w.className="kpm kdsm"; h.appendChild(w); var can=ctx.own()||x.me;
+  w.innerHTML='<div><div class="kdsmi"><img src="'+dcImg(x.k)+'" alt=""><span><b>'+esc(dcN(x.k))+'</b><small>'+esc(tf(L(TX.dcBy),{n:dcNk(x.n)}))+'</small></span></div>'+(can?'<button type="button" class="krf" data-rm="1">'+esc(L(TX.dcRm))+'</button>':'')+'<button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
+  w.querySelector(".kc").onclick=function(){ w.remove(); }; w.onclick=function(e){ if(e.target===w) w.remove(); };
+  var r=w.querySelector("[data-rm]"); if(r) r.onclick=function(){ r.disabled=true; ctx.rm(x.s,function(j){ w.remove(); if(!(j&&j.ok)){ soon(dcErr(j,"rm")); return; } if(j.back&&x.me) dcToast(dcBackTx(x.k),x.k); dcLoad(); }); }; }
+// 상점 + 보관함
+function dcOpen(ctx,tab){ if(!sess()){ kLogin(function(){ dcOpen(ctx,tab); }); return; } var h=ctx.host(); if(!h) return; var old=h.querySelector(".kdeco"); if(old) old.remove();
+  var o=document.createElement("div"); o.className="kpm kdeco"; h.appendChild(o); var t=tab||0, ld=!DC.inv;
+  var card=function(k){ var pl=dcIsPl(k), x=DK[k], own=!x.cons&&dcHas(k), cn=x.cons?dcCnt(k):0, d=ctx.deco(), now=pl&&d.pl===k, p=dcP(k);
+    var lab=now?'<em class="kdnow">'+esc(L(TX.dcNow))+'</em>':own?'<em class="kdok">✓ '+esc(L(TX.dcOwn))+'</em>':pl&&!p?'<em class="kdok">'+esc(L(TX.dcFree))+'</em>':'<span>'+ptS(p)+'</span>'+(cn?'<em class="kdok">'+esc(tf(L(TX.dcCnt),{n:cn}))+'</em>':'');
+    return '<button type="button" class="kdcd'+(pl?' kdcpl':'')+(own||cn?' kdown':'')+'" data-k="'+k+'"><span class="kdim"><img src="'+dcImg(k,1)+'" alt="" loading="lazy"></span><b>'+esc(dcN(k))+'</b><small class="kdpr">'+lab+'</small></button>'; };
+  var setCard=function(k){ var s=DKS[k], c=DC.sc[k], cost=dcSP(k), sum=c&&c.sum||dcSum(k);
+    return '<button type="button" class="kdst" data-set="'+k+'"><span class="kdsti">'+s.it.slice(0,4).map(function(x){ return '<img src="'+dcImg(x,1)+'" alt="" loading="lazy">'; }).join("")+'</span><span class="kdstx"><b>'+esc(L(s.n))+'</b><small>'+esc(tf(L(TX.dcSetN),{n:s.it.length}))+'</small>'
+      +'<span class="kdstp">'+(cost>0?'<s>'+ptS(sum)+'</s> <b>'+ptS(cost)+'</b>':'<em class="kdok">✓ '+esc(L(TX.dcOwn))+'</em>')+'</span></span></button>'; };
+  var draw=function(){ var tb=DTAB[t], body="", bal=KP.d?KP.d.bal.total:0;
+    if(ld) body='<div class="kstge">'+esc(L(TX.lo))+'</div>';
+    else if(tb==="set") body='<button type="button" class="kdban" data-ban="1"><img src="img/deco/ui_banner.jpg" alt=""><b>'+esc(L(TX.dcBan))+'</b></button><div class="kdsts">'+DCS.map(function(s){ return setCard(s[0]); }).join("")+'</div>';
+    else if(tb==="inv"){ var ks=DCI.filter(function(x){ return x[2]?dcCnt(x[0])>0:dcHas(x[0]); }).map(function(x){ return x[0]; }), mine=ks.filter(function(k){ return k!=="pl_noraebang"; });
+      body=(mine.length?'':'<div class="kdemp"><img src="img/deco/ui_empty.jpg" alt=""><p>'+esc(L(TX.dcEmpty))+'</p></div>')+'<div class="kdgrid">'+ks.map(card).join("")+'</div>'; }
+    else { body=(t===0?'<button type="button" class="kdban kdban2" data-ban="1"><img src="img/deco/ui_banner.jpg" alt=""><b>'+esc(L(TX.dcBan))+' ›</b></button>':'')+'<div class="kdgrid">'+DCI.filter(function(x){ return tb.indexOf(x[1])>=0; }).map(function(x){ return card(x[0]); }).join("")+'</div>'; }
+    var sc=o.querySelector(".kdbody"), top=sc&&o._t===t?sc.scrollTop:0; o._t=t; if(!o.firstChild) o.innerHTML='<div class="kdsh"><div class="kdmain"></div></div>';
+    o.querySelector(".kdmain").innerHTML='<div class="kdhd"><b>'+esc(L(TX.dcT))+'</b><button type="button" class="kdbal" data-w="1">'+ptS(bal)+'</button><button type="button" class="kdx0" aria-label="'+esc(L(TX.back))+'">✕</button></div>'
+      +'<div class="kdtabs">'+DTAB.map(function(_,i){ return '<button type="button" data-t="'+i+'"'+(i===t?' class="on"':'')+'>'+esc(kTx(TX.dcTabs,i))+'</button>'; }).join("")+'</div><div class="kdbody">'+body+'</div>';
+    sc=o.querySelector(".kdbody"); if(sc&&top) sc.scrollTop=top; var on=o.querySelector(".kdtabs .on"), tr=o.querySelector(".kdtabs"); if(on&&tr) tr.scrollLeft=Math.max(0,on.offsetLeft-tr.clientWidth/2+on.offsetWidth/2);
+    o.querySelector(".kdx0").onclick=function(){ o.remove(); }; o.querySelector("[data-w]").onclick=function(){ kwOpen(""); };
+    var mn=o.querySelector(".kdmain"); [].forEach.call(mn.querySelectorAll("[data-t]"),function(b){ b.onclick=function(){ t=+b.dataset.t; draw(); }; });
+    [].forEach.call(mn.querySelectorAll("[data-ban]"),function(b){ b.onclick=function(){ t=6; draw(); }; });
+    [].forEach.call(mn.querySelectorAll("[data-k]"),function(b){ b.onclick=function(){ dcItem(ctx,b.dataset.k,o,draw); }; });
+    [].forEach.call(mn.querySelectorAll("[data-set]"),function(b){ b.onclick=function(){ dcSet(ctx,b.dataset.set,o,draw,function(){ t=7; draw(); }); }; }); };
+  o._draw=draw; draw(); var go=function(){ ld=false; if(o.isConnected) draw(); };
+  Promise.all([dcLoad(),KP.d?null:kptLoad()]).then(go,go); try{ ntap("kara_deco","open_"+ctx.kind); }catch(e){} }
+// 미리 보기 — 작은 방(배경 + 3×3 칸 + 아래 띠)
+function dcPv(ctx,k){ var d=ctx.deco(), pl=dcIsPl(k)?k:d.pl, pr=(d.pr||[]).slice(), s=dcFreeS(d), tiles="";
+  if(!dcIsPl(k)) pr.push({s:s<0?0:s,k:k,n:""});
+  for(var i=0;i<9;i++) tiles+='<i></i>'; var by={}; pr.forEach(function(x){ by[x.s]=x; }); var st="";
+  for(var j=0;j<8;j++) st+=by[j]?'<span'+(by[j].k===k?' class="kdpvn"':'')+'><img src="'+dcImg(by[j].k)+'" alt=""></span>':'<span></span>';
+  return '<div class="kdpv'+(pl?' kdhasbg':'')+'"'+(pl?' style="background-image:linear-gradient(180deg,rgba(10,6,22,.5),rgba(10,6,22,.7)),url('+dcImg(pl)+')"':'')+'><div class="kdpvg">'+tiles+'</div><div class="kdpvs">'+st+'</div></div>'; }
+// 아이템 한 개 — 그림 · 이름 · 가격 · 구매 / 방에 놓기 / 이 장소로 바꾸기 · 놓아 보기
+function dcItem(ctx,k,o,redraw){ var x=DK[k]; if(!x) return; var w=document.createElement("div"); w.className="kdit"; (o.querySelector(".kdsh")||o).appendChild(w); var pv=false, busy=false, msg="";
+  var draw=function(){ var pl=dcIsPl(k), p=dcP(k), own=!x.cons&&dcHas(k), cn=x.cons?dcCnt(k):0, d=ctx.deco(), now=pl&&d.pl===k, placed=!pl&&!x.cons&&(d.pr||[]).some(function(y){ return y.k===k&&y.me; }), buy=!own&&p>0, bt="";
+    if(buy) bt+='<div class="kdipr">'+ptS(p)+'</div><button type="button" class="kgo" data-buy="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwBuyB))+'</button>';
+    if(pl&&(own||!p)){ if(ctx.own()) bt+='<button type="button" class="kgo kdgo2" data-pl="1"'+(busy?' disabled':'')+'>'+esc(L(now?TX.dcOff:TX.dcUse))+'</button>'; else bt+='<p class="km">'+esc(L(TX.dcHost))+'</p>'; }
+    if(!pl&&(own||cn>0)){ if(placed) bt+='<p class="km">'+esc(L(TX.dcSame))+'</p>'; else bt+='<button type="button" class="kgo kdgo2" data-put="1"'+(busy?' disabled':'')+'>'+esc(L(TX.dcPut))+(cn?' · '+esc(tf(L(TX.dcCnt),{n:cn})):'')+'</button>'; }
+    w.innerHTML='<div class="kdib">'+(pv?dcPv(ctx,k):'<div class="kdiim'+(pl?' kdiplc':'')+'"><img src="'+dcImg(k)+'" alt=""></div>')
+      +'<b class="kdin">'+esc(dcN(k))+(own?' <em class="kdok">✓ '+esc(L(TX.dcOwn))+'</em>':'')+'</b><p class="km">'+esc(L(pl?TX.dcPlN:x.cons?TX.dcConsN:TX.dcKeepN))+'</p>'
+      +'<button type="button" class="krf kdpvb" data-pv="1">'+esc(L(pv?TX.dcPrevX:TX.dcPrev))+'</button>'+(msg?'<div class="kerr">'+esc(msg)+'</div>':'')+bt+'<button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
+    w.querySelector(".kc").onclick=function(){ w.remove(); }; w.onclick=function(e){ if(e.target===w) w.remove(); };
+    w.querySelector("[data-pv]").onclick=function(){ pv=!pv; draw(); };
+    var bb=w.querySelector("[data-buy]"); if(bb) bb.onclick=function(){ var rid=kRid(); dcPay(p,dcN(k),function(done){ kptPost("deco",{rid:rid,key:k,cost:p}).then(function(j){
+        if(j&&j.ok){ done(); DC.inv=j.inv||DC.inv; dcLoad().then(function(){ if(w.isConnected) draw(); redraw(); }); kptLoad(); soon(L(TX.dcBuyOk)); try{ ntap("kara_deco","buy_"+k); }catch(e){} return; }
+        if(j&&j.err==="price"){ dcLoad().then(function(){ if(w.isConnected) draw(); redraw(); }); }
+        done(j&&j.err==="short"?tf(L(TX.kwShort),{h:ptS(j.have||0)}):dcErr(j)); kptLoad(); }).catch(function(){ done(L(TX.efail)); }); }); };
+    var pb=w.querySelector("[data-pl]"); if(pb) pb.onclick=function(){ if(busy) return; busy=true; msg=""; draw(); ctx.pl(now?"":k,function(j){ busy=false; if(j&&j.ok){ w.remove(); o.remove(); return; } msg=dcErr(j,"pl"); draw(); }); };
+    var ub=w.querySelector("[data-put]"); if(ub) ub.onclick=function(){ if(busy) return; var s=dcFreeS(ctx.deco()); if(s<0){ msg=L(TX.dcFull); draw(); return; } busy=true; msg=""; draw();
+      ctx.put(k,s,function(j){ busy=false; if(j&&j.ok){ dcLoad(); w.remove(); o.remove(); try{ ntap("kara_deco","put_"+k); }catch(e){} return; } if(j&&j.err==="noinv") dcLoad().then(function(){ redraw(); }); msg=dcErr(j,"put"); if(w.isConnected) draw(); }); }; };
+  draw(); }
+function dcPay(cost,title,run){ var go=function(){ kptAsk(cost,title,run,"",L(TX.kwBuyB)); }; if(KP.d) go(); else kptLoad().then(function(){ if(KP.d) go(); else soon(L(TX.efail)); }); }
+// 세트 — 구성 · 낱개 합(취소선) · 세트 가격(이미 가진 것은 빼고) · 구매
+function dcSet(ctx,sk,o,redraw,toInv){ var s=DKS[sk]; if(!s) return; var w=document.createElement("div"); w.className="kdit"; (o.querySelector(".kdsh")||o).appendChild(w);
+  var draw=function(){ var c=DC.sc[sk]||{}, cost=dcSP(sk), sum=c.sum||dcSum(sk);
+    w.innerHTML='<div class="kdib"><b class="kdin">'+esc(L(s.n))+'</b><div class="kdsli">'+s.it.map(function(k){ var hv=!DK[k].cons&&dcHas(k); return '<span'+(hv?' class="kdhv"':'')+'><img src="'+dcImg(k,1)+'" alt=""><small>'+esc(dcN(k))+'</small>'+(hv?'<em>✓</em>':'')+'</span>'; }).join("")+'</div>'
+      +(cost>0?(c.owned?'<p class="km">'+esc(tf(L(TX.dcSetOwn),{n:c.owned}))+'</p>':'')+'<div class="kdipr"><s>'+ptS(sum)+'</s> '+ptS(cost)+'</div><button type="button" class="kgo" data-buy="1">'+esc(L(TX.kwBuyB))+'</button>':'<p class="km">'+esc(L(TX.dcSetAll))+'</p>')
+      +'<p class="km">'+esc(L(TX.dcKeepN))+' '+esc(L(TX.dcConsN))+'</p><button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
+    w.querySelector(".kc").onclick=function(){ w.remove(); }; w.onclick=function(e){ if(e.target===w) w.remove(); };
+    var bb=w.querySelector("[data-buy]"); if(bb) bb.onclick=function(){ var rid=kRid(); dcPay(cost,dcHN(sk),function(done){ kptPost("deco",{rid:rid,set:sk,cost:cost}).then(function(j){
+        if(j&&j.ok){ done(); dcLoad().then(function(){ w.remove(); if(toInv) toInv(); else redraw(); }); kptLoad(); soon(L(TX.dcBuyOk)); try{ ntap("kara_deco","buy_"+sk); }catch(e){} return; }
+        if(j&&(j.err==="price"||j.err==="owned")) dcLoad().then(function(){ if(w.isConnected) draw(); redraw(); });
+        done(j&&j.err==="short"?tf(L(TX.kwShort),{h:ptS(j.have||0)}):dcErr(j)); kptLoad(); }).catch(function(){ done(L(TX.efail)); }); }); }; };
+  draw(); }
+// 방마다 연결 — 도란도란(실시간 소식) · 우리끼리 노래(방 칸)
+function dcDorCtx(){ return {kind:"dor",host:function(){ return DR.o; },own:function(){ return !!DR.own; },
+  deco:function(){ var d=DR.st&&DR.st.room.deco||{pl:"",pr:[]}; return {pl:d.pl||"",pr:(d.pr||[]).map(function(x){ return {s:x.s,k:x.k,n:x.n,c:x.c,me:x.m===DR.me?1:0}; })}; },
+  put:function(k,s,cb){ dPost("deco",{tok:DR.tok,op:"put",key:k,slot:s,rid:kRid()}).then(cb); },
+  rm:function(s,cb){ dPost("deco",{tok:DR.tok,op:"rm",slot:s}).then(cb); },
+  pl:function(k,cb){ dPost("deco",{tok:DR.tok,op:"pl",key:k}).then(cb); }}; }
+function dcDorPaint(){ var o=DR.o; if(!o||!o.isConnected) return; var c=dcDorCtx(); dcBg(o,c.deco().pl); dcStrip(o.querySelector(".kddeco"),c); }
+function dcDorMsg(m){ if(m.a==="rm"){ if(m.back&&m.om===DR.me&&m.m!==DR.me){ dcToast(dcBackTx(m.k),m.k); dcLoad(); } return; } dcEv(m.a,m.k,m.n); }
+function dcKstCtx(R,rid){ var set=function(j){ if(j&&j.ok&&j.deco&&R.info){ R.info.deco=j.deco; dcSeen(rid,j.deco); R.draw(); } };
+  return {kind:"kst",host:function(){ return R.o; },own:function(){ return !!(R.info&&R.info.owner); },deco:function(){ return R.info&&R.info.deco||{pl:"",pr:[],ev:[]}; },
+  put:function(k,s,cb){ kPost("/kst/room",{op:"dput",rid:rid,key:k,slot:s,rq:kRid()}).then(function(j){ set(j); if(j&&j.ok){ var e=(j.deco.ev||[]).slice(-1)[0]; dcEv("put",k,e&&e.n); } cb(j); }).catch(function(){ cb(null); }); },
+  rm:function(s,cb){ kPost("/kst/room",{op:"drm",rid:rid,slot:s}).then(function(j){ set(j); cb(j); }).catch(function(){ cb(null); }); },
+  pl:function(k,cb){ kPost("/kst/room",{op:"dpl",rid:rid,key:k}).then(function(j){ set(j); if(j&&j.ok) dcEv("pl",k,""); cb(j); }).catch(function(){ cb(null); }); }}; }
+function dcSeen(rid,d){ var ev=d&&d.ev||[], t=ev.length?ev[ev.length-1].at:0; try{ if(t) localStorage.setItem("kdeco_ev_"+rid,String(t)); }catch(e){} }
+function dcKstNews(rid,d){ var ev=d&&d.ev||[]; if(!ev.length) return; var seen=0; try{ seen=+localStorage.getItem("kdeco_ev_"+rid)||0; }catch(e){} var lim=seen||Date.now()-6*3600e3;   // 처음 보는 방 = 6시간 안 소식만
+  ev.filter(function(x){ return x.at>lim&&!x.me; }).slice(-2).forEach(function(x,i){ setTimeout(function(){ dcEv(x.a,x.k,x.n); },300+i*900); }); dcSeen(rid,d); }
 window.karDorJoin=dorJoin; window.karDorOpen=function(){ if(box()) dorOpen(""); };
 // ── 충전 안내창 (사장님 10-31 밤 「첫 안내창을 재미있게」) — 로그인 직후 한 번 · 앱을 켤 때마다 한 번까지 · 「결제」 = 바로 충전 창의 결제
 Object.assign(TX,{
