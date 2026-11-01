@@ -41,16 +41,17 @@ function klNew(x,mode){ var r="",i; for(i=0;i<6;i++) r+="abcdefghijklmnopqrstuvw
 function klTick(){ var g=KLG; if(!g) return; var n=Date.now(); if(g.run){ g.acc+=n-g.run; g.run=n; }
   var pl=g.mode==="embed"&&K.ready?K.pl:g.mode==="dor"&&DR.ytOk?DR.yt:null; if(pl){ try{ var d=+pl.getDuration()||0, p=+pl.getCurrentTime()||0; if(d>0) g.dur=Math.round(d); if(p>g.pos) g.pos=Math.round(p); if(d>0&&p>=d-3) g.full=1; }catch(e){} } }
 function klSend(){ var g=KLG; if(!g) return; try{ var x=0, own=0, ss=""; try{ x=localStorage.getItem("mpv_ntt")?1:0; own=localStorage.getItem("mp_owner")?1:0; ss=localStorage.getItem("mpv_pg_sess")||""; }catch(z){}
-  var b=JSON.stringify({pid:g.pid,id:g.id,no:g.no,t:g.t.slice(0,120),a:g.a.slice(0,80),ch:g.ch,rt:g.rt.slice(0,160),lyr:g.lyr,cmp:g.cmp,mode:g.mode,sec:Math.round(g.acc/1000),dur:g.dur,pos:g.pos,full:g.full,l:window.LANG||"",dev:klDev(),sess:ss,won:g.won,own:own,x:x});
+  var b=JSON.stringify({pid:g.pid,id:g.id,no:g.no,t:g.t.slice(0,120),a:g.a.slice(0,80),ch:g.ch,rt:g.rt.slice(0,160),lyr:g.lyr,cmp:g.cmp,mode:g.mode,sec:Math.round(g.acc/1000),dur:g.dur,pos:g.pos,full:g.full,l:window.LANG||"",dev:klDev(),sess:ss,won:g.won,own:own,x:x,ev:g.ev?1:0});
+  if(g.ev&&!g.evd&&(g.full||Math.round(g.acc/1000)>=10)){ g.evd=1; kEvDown(); }   // 이벤트 무료 곡 — 허브와 같은 10초 기준
   window.karLastLog=b;   // 화면 확인용(마지막으로 보낸 줄)
   if(navigator.sendBeacon&&navigator.sendBeacon(HUB+"/nkara",new Blob([b],{type:"text/plain"}))) return; fetch(HUB+"/nkara",{method:"POST",body:b,keepalive:true}).catch(function(){}); }catch(e){} }
 function klEnd(){ if(!KLG) return; if(!KLG.end){ klTick(); KLG.run=0; klSend(); } KLG=null; }
 function klState(s){ var x=K.cur; if(!x) return; var n=Date.now();
-  if(s===1){ if(!KLG||KLG.end||KLG.id!==x.id){ klEnd(); KLG=klNew(x,"embed"); KLG.run=n; klTick(); klSend(); } else if(!KLG.run) KLG.run=n; return; }   // 재생 시작 = 한 줄 (껐다 켜면 새 줄)
+  if(s===1){ if(!KLG||KLG.end||KLG.id!==x.id){ klEnd(); KLG=klNew(x,"embed"); if(K.evId===x.id){ KLG.ev=1; K.evId=""; } KLG.run=n; klTick(); klSend(); } else if(!KLG.run) KLG.run=n; return; }   // 재생 시작 = 한 줄 (껐다 켜면 새 줄)
   if(!KLG||KLG.end) return; klTick(); KLG.run=0;
   if(s===0){ KLG.full=1; klSend(); KLG.end=1; } else if(s===2) klSend(); }   // 0 끝 · 2 멈춤
 function klDor(st,vid,title){ var n=Date.now();   // 도란도란 곡 기록 (11-01) — 방 사람 폰마다 한 줄 (폰마다 유튜브 영상을 각자 재생) · mode "dor"
-  if(st===1){ if(!KLG||KLG.end||KLG.id!==vid||KLG.mode!=="dor"){ klEnd(); KLG=klNew({id:vid,t:title,ch:"ky"},"dor"); KLG.run=n; klTick(); klSend(); } else if(!KLG.run) KLG.run=n; return; }
+  if(st===1){ if(!KLG||KLG.end||KLG.id!==vid||KLG.mode!=="dor"){ klEnd(); KLG=klNew({id:vid,t:title,ch:"ky"},"dor"); if(DR.evV===vid){ KLG.ev=1; DR.evV=""; } KLG.run=n; klTick(); klSend(); } else if(!KLG.run) KLG.run=n; return; }
   if(!KLG||KLG.end||KLG.mode!=="dor") return; klTick(); KLG.run=0; if(st===0){ KLG.full=1; klSend(); KLG.end=1; } else if(st===2) klSend(); }
 function klYt(x){ klEnd(); KLG=klNew(x,"yt"); klSend(); KLG.end=1; KLG=null; }   // 유튜브로 보냄 — 재생 시간은 모른다
 setInterval(function(){ if(KLG&&KLG.run&&!KLG.end){ klTick(); klSend(); } },60000);
@@ -738,7 +739,9 @@ function blocked(x){ try{ K.pl&&K.pl.pauseVideo&&K.pl.pauseVideo(); }catch(e){}
 function kEndReset(){ var b=box(); if(!b||b.classList.contains("krecm")) return; try{ klEnd(); }catch(e){} try{ if(K.pl&&K.pl.destroy) K.pl.destroy(); }catch(e){} K.pl=null; K.ready=false; K.want=""; K.cur=null; K.idx=-1; K.ctx=null;
   var pl=b.querySelector(".kpl"); if(pl){ var y=pl.querySelector("#karYt,iframe"); if(y) y.remove(); [].forEach.call(pl.querySelectorAll(".kov"),function(o){ o.remove(); }); if(!pl.querySelector(".kmsg")){ var m=document.createElement("div"); m.className="kmsg"; m.textContent="🎤 "+L(TX.pick); pl.appendChild(m); } }
   K.q=""; var inp=b.querySelector(".ksr input"); if(inp) inp.value=""; load(); }
-function play(i){ var x=K.items&&K.items[i]; if(!x) return; klEnd(); K.cur=x; K.idx=i; paintList(); var b=box(); if(!b) return; var pl=b.querySelector(".kpl");
+// 노래 시작 — 우리끼리·챌린지·릴레이·LIVE 곡도 전부 여기를 지난다 · aft = 재생 뒤 할 일 (녹화 화면 등, 재생을 막으면 안 부름)
+function play(i,aft){ var x=K.items&&K.items[i]; if(!x) return; klEnd(); kSongOk(x.id,function(ev){ K.evId=ev?x.id:""; kPlay0(i); if(aft) aft(); }); }
+function kPlay0(i){ var x=K.items&&K.items[i]; if(!x) return; klEnd(); K.cur=x; K.idx=i; paintList(); var b=box(); if(!b) return; var pl=b.querySelector(".kpl");
   try{ ntap("kara_"+K.code,"tap"); }catch(e){}
   try{ kPassUse(); }catch(e){}   // 이용권 기간이면 사용 표시 (10-31) — 노래 차감은 없음
   var m0=pl.querySelector(".kmsg"); if(m0) m0.remove();
@@ -797,7 +800,7 @@ function karLeft(){
   // 사장님 미리보기 전용: 주소에 ?kartest=1 이거나 localStorage mpv_kartest=1 이면 5곡으로 보여 환불 단추를 볼 수 있게 한다
   try{ if(/[?&]kartest=1(&|$)/.test(location.search)||localStorage.getItem("mpv_kartest")==="1") return 5; }catch(e){}
   return KB.left||0; }
-function karcLoad(){ if(sess()) kptLoad();   // 포인트 지갑 (10-31)
+function karcLoad(){ kEvLoad(); if(sess()) kptLoad();   // 포인트 지갑 (10-31)
   var s=sess(), u=HUB+"/shop/karc", o=s?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sess:s})}:{};
   return fetch(u,o).then(function(r){ return r.json(); }).then(function(j){ if(!(j&&j.ok)) return;
     if(Array.isArray(j.packs)&&j.packs.length) KB.packs=j.packs; KB.sess=s?(j.sess?1:0):-1; KB.left=+j.left||0; barPaint(); if(KB.redraw) KB.redraw(); }).catch(function(){}); }
@@ -1111,7 +1114,7 @@ function kRid(){ return "r"+Date.now().toString(36)+Array.prototype.map.call(cry
 function kptOn(){ return !!(KP.on&&KP.d&&karSigned()); }
 function kptPost(path,o){ var q={sess:sess()}; for(var k in o) q[k]=o[k]; var h={"Content-Type":"application/json"};
   return fetch(HUB+"/shop/kpt/"+path,{method:"POST",headers:h,body:JSON.stringify(q)}).then(function(r){ return r.json().catch(function(){ return {ok:false,err:"http"}; }); }); }
-function kptLoad(){ try{ lvEntry(); }catch(e){} if(!sess()){ KP.on=0; KP.d=null; barPaint(); return Promise.resolve(null); }
+function kptLoad(){ try{ lvEntry(); }catch(e){} kEvLoad(); if(!sess()){ KP.on=0; KP.d=null; barPaint(); return Promise.resolve(null); }
   return kptPost("me",{}).then(function(j){ if(j&&j.ok&&!j.closed){ KP.on=1; KP.d=j; KB.left=+j.left||0; if(kApp()&&!KP.rec){ KP.rec=1; kGpRecover(); } if(!KP.pr){ KP.pr=1; kPromoWait(0); } if(KP.reChg){ KP.reChg=0; kwOpen("chg"); } } else { KP.on=0; KP.d=null; } barPaint(); if(KP.redraw) KP.redraw(); if(KB.redraw) KB.redraw(); return j; }).catch(function(){ return null; }); }
 // 사용 미리 보기 — 「3,000P 사용 → 9,000P 남음」 · 확인하면 go() (모자라면 충전으로)
 function kptAsk(cost,title,go,note,okL,onX){ /* okL = 마지막 단추 글자 (구매 등, 없으면 확인) */ var b=box(); if(!b) return; var o=document.createElement("div"); o.className="kpm kptq"; b.appendChild(o); var bal=KP.d?KP.d.bal.total:0, busy=false;   // note = 금액 대신 안내 글 (연장 등 돈 안 드는 확인)
@@ -1185,11 +1188,32 @@ function kwOpen(v0){ var b=box(); if(!b) return; var o=b.querySelector(".kwal");
 function kPassP(){ var d=KP.d; return d&&d.passP&&d.passP.length?d.passP:[{m:1,p:7000},{m:3,p:17000},{m:6,p:30000},{m:12,p:50000}]; }
 function kMon(m){ return tf(L(m===1?TX.psM1:TX.psM),{n:m}); }
 function kMd(ms){ var s=kYmd(ms), md=(+s.slice(5,7))+"."+s.slice(8,10); return s.slice(0,4)!==kYmd(Date.now()).slice(0,4)?s.slice(0,4)+"."+md:md; }   // 「11.30」 · 해가 다르면 「2027.2.28」
-function kBarTx(){ var d=KP.d, ps=d&&d.pass, n=karLeft(), a=[]; if(ps&&ps.on) a.push(tf(L(TX.psEnd),{d:kMd(ps.end)})); else if(n>0) a.push(fmtN(L(TX.kwSongN),n)); if(d) a.push(ptS(d.bal.total)); return a.join(" · ")||L(TX.kwT); }
+function kBarTx(){ var d=KP.d, ps=d&&d.pass, n=karLeft(), a=[]; if(ps&&ps.on) a.push(tf(L(TX.psEnd),{d:kMd(ps.end)})); else if(d&&d.ev&&d.ev.on) a.push(tf(L(EVT.bar),{n:d.ev.left})); else if(n>0) a.push(fmtN(L(TX.kwSongN),n)); if(d) a.push(ptS(d.bal.total)); return a.join(" · ")||L(TX.kwT); }
 function kPassBuy(k){ var q=kPassP()[k]||kPassP()[0], rid=kRid();
   kptAsk(q.p,L(TX.kb)+" "+kMon(q.m),function(done){
     kptPost("pass",{k:k,rid:rid}).then(function(j){ if(j&&j.ok){ try{ ntap("kara_pt","pass_"+q.m); }catch(e){} done(); kptLoad().then(function(){ soon(L(TX.kwDone)+" "+tf(L(TX.psEnd),{d:kMd(j.to)})); }); }
       else done(j&&j.err==="short"?tf(L(TX.kwShort),{h:ptS(j.have||0)}):L(TX.efail)); }).catch(function(){ done(L(TX.efail)); }); },"",L(TX.kwBuyB)); }
+// ── 이벤트·이용권 필수 (사장님 11-01) — 허브 kev.js · 스위치가 꺼져 있으면 지금처럼 전부 재생 · 켜지면 이용권 또는 진행 중 이벤트의 무료 곡이 있어야 재생 · LIVE 관람은 이 길을 안 지난다
+//   무료 곡 차감은 허브 — 앞단이 이벤트로 연 곡만 곡 기록에 ev 1 을 붙이고, 10초 미리 듣기를 넘긴 기록에서 계정당 1번
+var EVT={
+ t:{ko:"출시 이벤트",en:"Launch event",ja:"リリース記念イベント",zhs:"上线活动",zht:"上線活動",es:"Evento de lanzamiento"},
+ b:{ko:"이벤트 기간에는 계정당 {n}곡을 이용권 없이 부를 수 있습니다.",en:"During the event, each account can sing {n} songs without a pass.",ja:"イベント期間中は、1アカウントにつき{n}曲を利用券なしで歌えます。",zhs:"活动期间，每个账号可免畅唱券演唱 {n} 首歌。",zht:"活動期間，每個帳號可免暢唱券演唱 {n} 首歌。",es:"Durante el evento, cada cuenta puede cantar {n} canciones sin bono."},
+ p:{ko:"기간: {s} ~ {e}",en:"Period: {s} ~ {e}",ja:"期間：{s} ~ {e}",zhs:"期间：{s} ~ {e}",zht:"期間：{s} ~ {e}",es:"Periodo: {s} ~ {e}"},
+ bar:{ko:"무료 곡 {n}곡 남음",en:"Free songs left: {n}",ja:"無料曲 残り{n}曲",zhs:"免费歌曲剩余 {n} 首",zht:"免費歌曲剩餘 {n} 首",es:"Canciones gratis restantes: {n}"},
+ need:{ko:"노래를 시작하려면 이용권이 필요합니다.",en:"You need a pass to start a song.",ja:"歌を始めるには利用券が必要です。",zhs:"开始演唱需要畅唱券。",zht:"開始演唱需要暢唱券。",es:"Necesitas un bono para empezar una canción."},
+ err:{ko:"이용권을 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.",en:"Couldn't check your pass. Please try again shortly.",ja:"利用券を確認できませんでした。しばらくしてからもう一度お試しください。",zhs:"无法确认畅唱券，请稍后再试。",zht:"無法確認暢唱券，請稍後再試。",es:"No se pudo comprobar el bono. Inténtalo de nuevo en un momento."},
+ dor:{ko:"이용권이 없어 이 기기에서는 반주가 재생되지 않습니다. 대화와 영상은 그대로 이용할 수 있습니다.",en:"Without a pass, the backing track won't play on this device. Chat and video stay on.",ja:"利用券がないため、この端末では伴奏が再生されません。会話と映像はそのまま利用できます。",zhs:"没有畅唱券，此设备不会播放伴奏。聊天和视频可继续使用。",zht:"沒有暢唱券，此裝置不會播放伴奏。聊天和視訊可繼續使用。",es:"Sin bono, el acompañamiento no suena en este dispositivo. El chat y el vídeo siguen activos."}};
+var KEV={need:0,ev:null,at:0};
+function kEvLoad(){ var n=Date.now(); if(n-KEV.at<60000) return; KEV.at=n;
+  fetch(HUB+"/shop/kpt/ev").then(function(r){ return r.json(); }).then(function(j){ if(!j||!j.ok) return; KEV.need=j.need?1:0; KEV.ev=j.ev||null; kEvNote(); }).catch(function(){ KEV.at=0; }); }
+function kEvNote(){ var e=KEV.ev, b=box(); if(!KEV.need||!e||!b) return; var k="mpv_kev_"+e.id; try{ if(localStorage.getItem(k)) return; localStorage.setItem(k,"1"); }catch(x){ return; }   // 이벤트마다 안내 한 번
+  lvMsg(b,L(EVT.t)+"\n"+tf(L(EVT.b),{n:e.free})+"\n"+tf(L(EVT.p),{s:e.start,e:e.end}),[[L(TX.ok),null],[L(TX.kwBuyPt),function(){ payOpen(""); },"kc"]]); }
+function kEvDown(){ var e=KP.d&&KP.d.ev; if(e&&e.left>0){ e.left--; barPaint(); } }
+function kEvNo(host){ var b=box(); if(!b) return; try{ if(K.pl&&K.pl.stopVideo) K.pl.stopVideo(); }catch(e){} kMsg(host||b,L(EVT.need),[[L(TX.kwBuyPt),function(){ payOpen(""); }],[L(TX.cancel),null,"kc"]]); }
+// go(ev) — ev 1 = 이벤트 무료 곡으로 연 곡 · no = 막혔을 때 (없으면 구매 안내) · 스위치 꺼짐·이용권 보유 = 바로 go
+function kSongOk(id,go,no){ no=no||function(){ kEvNo(); }; if(!KEV.need){ go(0); return; } if(!karSigned()){ no(); return; }
+  var d=KP.d, e=d&&d.ev, l0=e&&e.on&&e.left<=0; if(d&&d.pass&&d.pass.on){ go(0); return; }   // l0 = 이 기기에서 방금 다 씀 (허브 기록이 아직 안 닿았을 수 있음)
+  kptPost("song",{rid:kRid()}).then(function(j){ if(j&&j.ok){ if(j.via==="ev"&&l0){ no(); return; } if(e&&j.left!=null) e.left=Math.min(e.left,j.left); barPaint(); go(j.via==="ev"?1:0); } else if(j&&j.err==="need") no(); else soon(L(EVT.err)); }).catch(function(){ soon(L(EVT.err)); }); }
 // 노래를 틀 때 — 이용권 기간이면 「사용」 표시 한 번 (7일 이내 전액 환불 기준) · 차감 없음
 function kPassUse(){ var d=KP.d, ps=d&&d.pass; if(!kptOn()||!ps||!ps.on||ps.used||KP.pu) return; KP.pu=1;
   kptPost("passuse",{rid:kRid()}).then(function(j){ KP.pu=0; if(j&&j.ok&&j.n>=0&&KP.d&&KP.d.pass) KP.d.pass.used=1; }).catch(function(){ KP.pu=0; }); }
@@ -2403,8 +2427,8 @@ function ntcOpen(){ var b=box(); if(!b) return; var o=b.querySelector(".kntc"); 
 // ── 도전 공통 (10-31) — 그 곡을 노래방 화면에서 틀고 녹화 화면으로. ctx = {ch:챌린지} | {rl:릴레이id, rid, sid} → 게시 창이 보고 자동으로 챌린지 참여·릴레이 게시
 function kSing(sid,t,ctx){ var b=box(); if(!b||!/^[A-Za-z0-9_-]{11}$/.test(String(sid||""))) return; try{ pgTo(0); }catch(e){}
   K.ctx=ctx||null; K.q=String(t||""); var inp=b.querySelector(".ksr input"); if(inp) inp.value=K.q;
-  K.items=[{id:sid,t:String(t||""),ch:"ky"}]; K.idx=-1; paintList(); play(0);
-  setTimeout(function(){ var bb=box(), r=bb&&bb.querySelector(".krec"); if(bb&&r&&!bb.classList.contains("krecm")) r.click(); },400); }
+  K.items=[{id:sid,t:String(t||""),ch:"ky"}]; K.idx=-1; paintList(); play(0,function(){
+  setTimeout(function(){ var bb=box(), r=bb&&bb.querySelector(".krec"); if(bb&&r&&!bb.classList.contains("krecm")) r.click(); },400); }); }
 // ── 챌린지 (사장님 10-31 「전체가 다 하는 거로」) — 지금 챌린지는 KCH 에 기억(게시 창이 곡을 보고 「챌린지 참여」 자동 체크)
 var KCH=null;
 function kChGet(){ return kGet("/kst/chal").then(function(j){ KCH=j&&j.ok?j:null; return KCH; }).catch(function(){ return null; }); }
@@ -2855,12 +2879,12 @@ function dCtl(c){ var s=DR.stream;
     try{ if(mg) mg.vt.stop(); else { s.removeTrack(old); old.stop(); } }catch(e){}   // 마스크 중 = 보내는 판은 그대로, 들어오는 카메라만 바꾼다 (11-01)
     setTimeout(function(){ gv(nf,1).catch(function(){ return gv(nf,0); }).then(function(ns){ if(!DR.alive){ ns.getTracks().forEach(function(t){ t.stop(); }); DR.flipB=0; return; } put(ns.getVideoTracks()[0],nf); })
       .catch(function(){ gv(of,0).then(function(ns){ if(DR.alive) put(ns.getVideoTracks()[0],of); else DR.flipB=0; }).catch(function(){ DR.flipB=0; }); soon(L(TX.efail)); }); },150); return; }
-  if(c==="sing"){ kSongPick(DR.o,L(TX.dorSingT),function(x){ dSend({t:"song",op:"start",vid:x.id,title:x.t,mode:"sing"}); try{ ntap("kara_dor","sing"); }catch(e){} }); return; }
+  if(c==="sing"){ kSongPick(DR.o,L(TX.dorSingT),function(x){ kSongOk(x.id,function(){ dSend({t:"song",op:"start",vid:x.id,title:x.t,mode:"sing"}); try{ ntap("kara_dor","sing"); }catch(e){} },function(){ kEvNo(DR.o); }); }); return; }
   if(c==="dance"){ var w=document.createElement("div"); w.className="kpm"; DR.o.appendChild(w);
     w.innerHTML='<div><h3>'+esc(L(TX.dorDance))+'</h3><button type="button" class="kgo" data-mu="1">'+esc(L(TX.dorDanceT))+'</button><button type="button" class="krf" data-no="1">'+esc(L(TX.dorNoMu))+'</button><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
     w.querySelector(".kc").onclick=function(){ w.remove(); }; w.onclick=function(e){ if(e.target===w) w.remove(); };
     w.querySelector("[data-no]").onclick=function(){ w.remove(); dSend({t:"song",op:"start",vid:"",mode:"dance"}); try{ ntap("kara_dor","dance"); }catch(e){} };
-    w.querySelector("[data-mu]").onclick=function(){ w.remove(); kSongPick(DR.o,L(TX.dorDanceT),function(x){ dSend({t:"song",op:"start",vid:x.id,title:x.t,mode:"dance"}); try{ ntap("kara_dor","dance_mu"); }catch(e){} }); }; } }
+    w.querySelector("[data-mu]").onclick=function(){ w.remove(); kSongPick(DR.o,L(TX.dorDanceT),function(x){ kSongOk(x.id,function(){ dSend({t:"song",op:"start",vid:x.id,title:x.t,mode:"dance"}); try{ ntap("kara_dor","dance_mu"); }catch(e){} },function(){ kEvNo(DR.o); }); }); }; } }
 // 노래·춤 띠 + 유튜브 맞춤 (모두가 각자 같은 영상 · 칸 시계 t0 기준)
 function dSong(){ var o=DR.o; if(!o) return; var bar=o.querySelector(".kdsong"), s=DR.st&&DR.st.room.song; o.classList.toggle("kdsongon",!!s);
   dNLk(!!s);   // 앱: 노래·춤 중엔 오디오 모드 잠금
@@ -2874,11 +2898,12 @@ function dSong(){ var o=DR.o; if(!o) return; var bar=o.querySelector(".kdsong"),
     var dk=bar.querySelector("[data-dk]"); if(dk) dk.onclick=function(){ DR.duck=DR.duck?0:1; dk.classList.toggle("on",!!DR.duck); dVol(); };
     var pp=bar.querySelector("[data-pp]"); if(pp) pp.onclick=function(){ var c=DR.st&&DR.st.room.song; if(!c) return; if(c.st==="play"){ var pos=0; try{ pos=DR.yt.getCurrentTime(); }catch(e){} dSend({t:"song",op:"pause",id:c.id,pos:pos}); } else dSend({t:"song",op:"resume",id:c.id}); };
     if(KLG&&KLG.mode==="dor") klEnd(); try{ if(DR.yt&&DR.yt.destroy) DR.yt.destroy(); }catch(e){} DR.yt=null; DR.ytOk=false; DR.ytId=s.vid;
-    if(s.vid) ytApi(function(){ if(!DR.alive||DR.songId!==s.id||!document.getElementById("dorYt")) return;
+    // 도란도란은 돌아가며 부른다 — 방 사람마다 자기 이용권·무료 곡 확인 · 없으면 이 폰만 반주를 안 틀고 대화·영상은 그대로 (사장님 11-01) · 산 뒤 「다시 불러오기」
+    if(s.vid) kSongOk(s.vid,function(ev){ if(!DR.alive||DR.songId!==s.id) return; DR.evV=ev?s.vid:""; ytApi(function(){ if(!DR.alive||DR.songId!==s.id||!document.getElementById("dorYt")) return;
       DR.yt=new YT.Player("dorYt",{videoId:s.vid,playerVars:{autoplay:0,playsinline:1,rel:0,controls:0,disablekb:1},events:{
         onReady:function(){ DR.ytOk=true; try{ DR.yt.setPlaybackQuality("medium"); }catch(e){} dYtSync(true); },
         onError:function(){ if((DR.ytRe||0)<3){ DR.ytRe=(DR.ytRe||0)+1; setTimeout(function(){ DR.songId=""; dSong(); },800); } },
-        onStateChange:function(ev){ if(ev) klDor(ev.data,s.vid,s.title||""); if(ev&&ev.data===0){ var c=DR.st&&DR.st.room.song; if(c&&c.id===s.id&&c.by===DR.me) dSend({t:"song",op:"end",id:c.id}); } } }}); });
+        onStateChange:function(ev){ if(ev) klDor(ev.data,s.vid,s.title||""); if(ev&&ev.data===0){ var c=DR.st&&DR.st.room.song; if(c&&c.id===s.id&&c.by===DR.me) dSend({t:"song",op:"end",id:c.id}); } } }}); }); },function(){ if(DR.alive&&DR.songId===s.id) kMsg(DR.o,L(EVT.dor),[[L(TX.kwBuyPt),function(){ payOpen(""); }],[L(TX.ok),null,"kc"]]); });
     dFit(); }
   var pb=bar.querySelector("[data-pp]"); if(pb) pb.textContent=L(s.st==="play"?TX.dorPause:TX.dorPlay);
   dYtSync(true); }
@@ -3057,9 +3082,9 @@ function lvGiftAsk(W,g,p){ var o=W.o, b0=W.bal||0, rid=kRid(), busy=false;
 function lvBtn(){ var b=box(); if(!b) return; if(LV.on){ kMsg(b,L(LT.stopQ),[[L(LT.stop),function(){ lvStop(); },"kgo r"],[L(TX.cancel),null,"kc"]]); return; }
   if(!(K.cur&&K.cur.t)){ soon(L(TX.pick)); return; }   // LIVE 는 곡을 골라야 켜진다 (11-01)
   if(!sess()){ kMsg(b,L(TX.lgReq),[[L(TX.lgin),function(){ kLogin(function(){ lvBtn(); }); }],[L(TX.cancel),null,"kc"]]); return; }
-  lvPost("/live/me",{}).then(function(j){ if(!(j&&j.ok)){ soon(L(LT.fail)); return; } if(!j.can){ soon(L(j.why==="shut"?LT.off:LT.gate)); return; } if(!j.host){ soon(L(LT.adult)); return; }
+  kSongOk(K.cur.id,function(){ lvPost("/live/me",{}).then(function(j){ if(!(j&&j.ok)){ soon(L(LT.fail)); return; } if(!j.can){ soon(L(j.why==="shut"?LT.off:LT.gate)); return; } if(!j.host){ soon(L(LT.adult)); return; }
     if(!(j.bal>0)){ kMsg(b,L(LT.nopt),[[L(LT.chg),function(){ kwOpen("chg"); }],[L(TX.cancel),null,"kc"]]); return; }
-    lvMsg(b,L(LT.ask)+"\n"+tf(L(LT.bal),{p:ptS(j.bal)}),[[L(LT.go),function(){ lvGo(); }],[L(TX.cancel),null,"kc"]]); }).catch(function(){ soon(L(LT.fail)); }); }
+    lvMsg(b,L(LT.ask)+"\n"+tf(L(LT.bal),{p:ptS(j.bal)}),[[L(LT.go),function(){ lvGo(); }],[L(TX.cancel),null,"kc"]]); }).catch(function(){ soon(L(LT.fail)); }); }); }   // 방송도 곡을 부르므로 이용권 확인 (관람은 필요 없음)
 function lvGo(){ var b=box(), pl=b&&b.querySelector(".kpl"); if(!pl) return; if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){ soon(L(TX.recNo)); return; }
   kzReset(); kAC(); b.classList.add("krecm","klvon"); var bt=b.querySelector(".klvb"); if(bt) bt.textContent=L(LT.stop);
   var fail=function(msg){ lvUi(0); camOff(); recExit(); soon(msg); };
