@@ -725,7 +725,11 @@ function paintList(){ var b=box(); if(!b) return; var el=b.querySelector(".kls")
   el.innerHTML=K.items.map(function(x,i){ return '<div class="kit'+(i===K.idx?' on':'')+'" data-i="'+i+'"><img src="'+(CH[x.ch]||CH.ky).i+'" alt=""><span>'+esc(x.t)+'</span><i>'+(x.e===0?'<b class="kyt">▶ '+esc(L(TX.ytt))+'</b> ':'')+esc(x.ln||"")+'</i></div>'; }).join("")+bizHtml();   // 맨 아래 사업자 정보 (10-30)
   [].forEach.call(el.querySelectorAll(".kit"),function(d){ d.onclick=function(){ play(+d.dataset.i); }; }); setTimeout(fitPl,30); }
 function load(){ K.items=null; paintList(); var u=HUB+"/kara?"+(K.q?"q="+encodeURIComponent(K.q):"tab="+K.tab);
-  fetch(u).then(function(r){ return r.json(); }).then(function(j){ K.items=(j&&j.ok&&j.items)||[]; K.idx=-1; paintList(); }).catch(function(){ K.items=[]; paintList(); }); }
+  var tq=K.q?Promise.resolve(null):fetch(HUB+"/nkara/top").then(function(r){ return r.json(); }).catch(function(){ return null; });
+  fetch(u).then(function(r){ return r.json(); }).then(function(j){ var a=(j&&j.ok&&j.items)||[]; return tq.then(function(t){ K.items=t&&t.ok?kTopSort(a,t.items||[]):a; K.idx=-1; paintList(); }); }).catch(function(){ K.items=[]; paintList(); }); }
+function kTopSort(a,top){ var tab=K.tab, m={}, out=[], c=function(x){ var s=String(x.t||""); return /[぀-ヿ]/.test(s)?"jpop":/[가-힣]/.test(s)?"kpop":"pop"; };   // 지난 7일 많이 부른 곡을 맨 앞으로 (11-01) — 탭에 맞는 곡만, 나머지는 원래 순서
+  a.forEach(function(x){ m[x.id]=x; }); top.forEach(function(x){ var y=m[x.id]; if(y){ out.push(y); y._top=1; } else if(c(x)===tab&&x.t) out.push({id:x.id,t:x.t,ch:"ky"}); });
+  a.forEach(function(x){ if(!x._top) out.push(x); else delete x._top; }); return out; }
 function ov(html,t){ var b=box(); if(!b) return; var pl=b.querySelector(".kpl"), o=pl.querySelector(".kov"); if(!html){ if(o&&(!t||o.dataset.t===t)) o.remove(); return; } if(!o){ o=document.createElement("div"); o.className="kov"; pl.appendChild(o); } o.dataset.t=t||""; o.innerHTML=html; }
 function blocked(x){ try{ K.pl&&K.pl.pauseVideo&&K.pl.pauseVideo(); }catch(e){}
   ov('<div>'+esc(L(TX.yt))+'</div><a href="https://www.youtube.com/watch?v='+encodeURIComponent(x.id)+'" target="_blank" rel="noopener" data-kyt="1">▶ '+esc(L(TX.ytb))+'</a>');
