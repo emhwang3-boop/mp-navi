@@ -1771,7 +1771,7 @@ function stageOpen(tab0){ var tab=tab0==="me"?"me":"all";
       +'<div class="kpr kpn">'+kIc("id")+(m&&m.nick?'<b>'+esc(m.nick)+'</b>'+kFtTag(m.ft)+'<button type="button" class="kln" data-nick="1">'+esc(L(TX.chg))+'</button>':'<button type="button" class="kln" data-nick="1">'+esc(L(TX.idSet))+'</button>')+'</div>'
       +'<div class="kpr'+(m&&m.pubid?' kfl2" role="button" tabindex="0" data-fl="followers':'')+'">'+kIc("fol")+'<span>'+esc(L(TX.fol))+'</span><b>'+(m?kNum(m.followers):dash)+'</b></div>'
       +'<div class="kpr'+(m&&m.pubid?' kfl2" role="button" tabindex="0" data-fl="following':'')+'">'+kIc("fol")+'<span>'+esc(L(TX.fing))+'</span><b>'+(m?kNum(m.following):dash)+'</b></div>'
-      +(m&&m.pubid?'<div class="kpr kfl2" role="button" tabindex="0" data-fl="mutual">'+kIc("fol")+'<span>'+esc(NL("mutF"))+'</span><b>›</b></div>':'')
+      +(m&&m.pubid?'<div class="kpr kfl2" role="button" tabindex="0" data-fl="mutual">'+kIc("fol")+'<span>'+esc(NL("mutF"))+'</span><b>'+kNum(m.mutual||0)+'</b></div>':'')
       +'<div class="kpr">'+kIc("view")+'<span>'+esc(L(TX.vw))+'</span><b>'+(m?kNum(m.views):dash)+'</b></div>'
       +'<div class="kpr">'+kIc("vid")+'<span>'+esc(L(TX.vids))+'</span><b>'+(m?kNum(m.count):dash)+'</b></div>'
       +'<div class="kpr kfl2" role="button" tabindex="0" data-aig="1">'+kIc("theme")+'<span>'+esc(L(TX.aiG))+'</span><b>'+(m?kNum(m.ain||0):dash)+'</b></div>'
