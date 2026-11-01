@@ -765,7 +765,7 @@ function open(code){ K.tab=({ja:"jpop",en:"pop",es:"pop"})[window.LANG]||"kpop";
     +'<div class="kpl"><button type="button" class="krec">'+recLb()+'</button><button type="button" class="klvb" style="display:none"><i class="klvdot"></i>'+esc(L(LT.b))+'</button><div class="kmsg">🎤 '+esc(L(TX.pick))+'</div></div>'
     +'<div class="kpay"><div class="kr"><button type="button" class="kbook kbk2" data-kbook="1" aria-label="'+esc(L(TX.bkB))+'" title="'+esc(L(TX.bkB))+'">'+kIc("book")+'</button></div><button type="button" class="kl" id="karLeft">'+esc(L(TX.lgin))+'</button><button type="button" class="kslot" data-kpay="1" aria-label="PAYMENT"><i></i><span>PAYMENT</span><small>'+esc(L(TX.slot))+'</small></button></div>'
     +'<div class="kpol2"><button type="button" class="kntl" data-kntc="1">'+esc(L(TX.ntc))+'</button></div>'   // 「곡 이용권 사기」 단추는 뺐다 — PAYMENT 와 같은 창 (사장님 10-30 「삭제」)
-    +'<div class="ktb"><button type="button" class="kstg">'+esc(L(TX.stgB))+'</button><button type="button" class="kchb">'+kIc("chal")+'<span>'+esc(L(TX.chB))+'</span></button><button type="button" class="kdorb"><img src="img/kara/dor.png" alt=""><span>'+esc(L(TX.dorB))+'</span></button><button type="button" class="klvg" style="display:none"><i class="klvdot"></i><span>'+esc(L(LT.b))+'<b class="klvgn"></b></span></button><button type="button" class="knrb">'+kIc("fol")+'<span>'+esc(L(NT.nrB))+'</span></button></div>'
+    +'<div class="ktb"><button type="button" class="kstg">'+esc(L(TX.stgB))+'</button><button type="button" class="kchb"><span>'+esc(L(TX.chB))+'</span></button><button type="button" class="kdorb"><span>'+esc(L(TX.dorB))+'</span></button><button type="button" class="klvg" style="display:none"><i class="klvdot"></i><span>'+esc(L(LT.b))+'<b class="klvgn"></b></span></button><button type="button" class="knrb">'+kIc("fol")+'<span>'+esc(L(NT.nrB))+'</span></button></div>'
     +'<form class="ksr"><input type="search" placeholder="'+esc(L(TX.q))+'"><button type="submit">'+esc(L(TX.go))+'</button></form>'
     +'<div class="kls"></div></div>';
   document.body.appendChild(b); document.documentElement.style.overflow="hidden";
@@ -2375,7 +2375,7 @@ function kRoom(rid,S0){ if(!/^[0-9a-f]{12}$/.test(String(rid||""))) return; var 
     else { body=kTurnBand(R.rl)+gpBand(R)+'<div class="krmh"><div class="krmt">'+kIc("!krm_song")+'<b>'+esc(m?m.name:"…")+'</b></div>'
         +'<button type="button" class="krmc'+(R.mem?' on':'')+'" data-mem="1">'+kIc("fol",1)+esc(tf(L(TX.rmN),{n:m?m.count:"…"}))+'</button>'
         +'<button type="button" class="krmc" data-rl="1">'+kIc("relay",1)+esc(L(TX.rlB))+'</button>'
-        +'<button type="button" class="kdrb" data-dor="1"><img src="img/kara/dor.png" alt="">'+esc(L(TX.dorB))+'</button>'
+        +'<button type="button" class="kdrb" data-dor="1">'+esc(L(TX.dorB))+'</button>'
         +'<button type="button" class="kdcb" data-deco="1"><img src="img/deco/pr_balloons.webp" alt="">'+esc(L(TX.dcB))+'</button>'
         +'<button type="button" class="kdcb kgpb" data-grp="1"><img src="img/kara/kst_theme.png" alt="">'+esc(L(TX.gpB))+'</button>'   // 단체 AI 사진 (10-31)
         +'<button type="button" class="krmx" data-mn="1" aria-label="menu">⋯</button></div>'+(m&&m.exp?'<div class="krmexp">'+esc(tf(L(TX.rmExp),{d:new Date(m.exp+9*3600e3).toISOString().slice(0,10).replace(/-/g,".")}))+'</div>':'')+(m?'<div class="kddeco kdk"></div>':'')
