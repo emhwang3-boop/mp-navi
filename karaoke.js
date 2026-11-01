@@ -1768,9 +1768,10 @@ function kUser(pub){ if(!/^[0-9a-f]{12}$/.test(String(pub||""))) return; var o=p
   o._fw=function(p2,j){ if(p2===pub&&U.info){ U.info.iFollow=j.iFollow; U.info.mu=j.mu?1:0; U.info.followers=j.followers; U.load(); } else if(U.info&&U.info.isMe){ U.info.following=j.following; U.draw(); } };
   U.draw=function(){ var m=U.info, dash="…", body;
     var head='<div class="kpf"><div class="kpfl"><div class="kpfv kro'+kFtC(m&&m.ft)+'">'+(m&&m.aip?kAiPf(m.aip):m&&m.pid?kThumb(m.pid,"kpfm"):'<span class="kpfe">'+kIc("vid")+'</span>')+'</div>'+kStars(m)+'</div><div class="kpfi">'
-      +'<div class="kpr kpn">'+kIc("id")+'<b>'+esc(m?(m.nick||"guest"):dash)+'</b>'+(m&&m.mu?kMuB():'')+kFtTag(m&&m.ft)+(m&&!m.isMe?kFwB(m.iFollow):'')+'</div>'
+      +'<div class="kpr kpn"><b>'+esc(m?(m.nick||"guest"):dash)+'</b>'+(m&&m.mu?kMuB():'')+kFtTag(m&&m.ft)+(m&&!m.isMe?kFwB(m.iFollow):'')+'</div>'
       +'<div class="kpr kfl2" role="button" tabindex="0" data-fl="followers">'+kIc("fol")+'<span>'+esc(L(TX.fol))+'</span><b>'+(m?kNum(m.followers):dash)+'</b></div>'
       +'<div class="kpr kfl2" role="button" tabindex="0" data-fl="following">'+kIc("fol")+'<span>'+esc(L(TX.fing))+'</span><b>'+(m?kNum(m.following):dash)+'</b></div>'
+      +'<div class="kpr kfl2" role="button" tabindex="0" data-fl="mutual">'+kIc("fol")+'<span>'+esc(NL("mutF"))+'</span><b>'+(m?kNum(m.mutual||0):dash)+'</b></div>'
       +'<div class="kpr">'+kIc("vid")+'<span>'+esc(L(TX.vids))+'</span><b>'+(m?kNum(m.count):dash)+'</b></div></div></div>';
     var list;
     if(U.items===null) list='<div class="kstge">'+esc(L(TX.lo))+'</div>';
@@ -1794,7 +1795,7 @@ function kUser(pub){ if(!/^[0-9a-f]{12}$/.test(String(pub||""))) return; var o=p
 // 팔로워·팔로잉 목록 — ID 를 누르면 그 사람 무대
 function kFl(pub,kind){ var o=pgOpen("kfl"); if(!o) return; var items=null, err=0, ttl=kind==="mutual"?NL("mutF"):L(kind==="following"?TX.fing:TX.fol);   // mutual = 맞팔 친구 (10-31 밤)
   var draw=function(){ var body=items===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':err?'<div class="kstge">'+esc(L(TX.stF))+'</div>':!items.length?'<div class="kstge">'+esc(L(TX.flE))+'</div>'
-      :'<div class="kfls">'+items.map(function(x,i){ return '<button type="button" data-i="'+i+'">'+kIc("id")+'<span class="'+kFtN(x.ft).trim()+'">'+esc(x.nick||"guest")+'</span>'+(x.mu?kMuB():'')+'</button>'; }).join("")+'</div>';
+      :'<div class="kfls">'+items.map(function(x,i){ return '<button type="button" data-i="'+i+'"><span class="'+kFtN(x.ft).trim()+'">'+esc(x.nick||"guest")+'</span>'+(x.mu?kMuB():'')+'</button>'; }).join("")+'</div>';
     o.innerHTML=kHead('<h3>'+esc(ttl)+(items&&items.length?' · '+kNum(items.length):'')+'</h3>')+'<div class="kpgb">'+body+'</div>';
     o.querySelector(".kpbk").onclick=pgBack;
     [].forEach.call(o.querySelectorAll(".kfls button"),function(c){ c.onclick=function(){ var x=items[+c.dataset.i]; if(x&&x.pubid) kUser(x.pubid); }; }); };
@@ -1802,7 +1803,7 @@ function kFl(pub,kind){ var o=pgOpen("kfl"); if(!o) return; var items=null, err=
     .catch(function(){ if(!o.isConnected) return; items=[]; err=1; draw(); }); }
 // 사람 찾기 (사장님 11-02) — 스테이지 위쪽 검색 칸 · ID 앞글자 · 누르면 그 사람 스테이지
 function kUsr(q){ var o=pgOpen("kfl"); if(!o) return; var items=null, err=0;
-  var draw=function(){ var body=items===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':err?'<div class="kstge">'+esc(L(TX.stF))+'</div>':!items.length?'<div class="kstge">'+esc(L(TX.usE))+'</div>':'<div class="kfls">'+items.map(function(x,i){ return '<button type="button" data-i="'+i+'">'+kIc("id")+'<span class="'+kFtN(x.ft).trim()+'">'+esc(x.nick)+'</span>'+(x.mu?kMuB():'')+'</button>'; }).join("")+'</div>';
+  var draw=function(){ var body=items===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':err?'<div class="kstge">'+esc(L(TX.stF))+'</div>':!items.length?'<div class="kstge">'+esc(L(TX.usE))+'</div>':'<div class="kfls">'+items.map(function(x,i){ return '<button type="button" data-i="'+i+'"><span class="'+kFtN(x.ft).trim()+'">'+esc(x.nick)+'</span>'+(x.mu?kMuB():'')+'</button>'; }).join("")+'</div>';
     o.innerHTML=kHead('<h3>'+esc(L(TX.usT))+' · '+esc(q)+'</h3>')+'<div class="kpgb">'+body+'</div>'; o.querySelector(".kpbk").onclick=pgBack;
     [].forEach.call(o.querySelectorAll(".kfls button"),function(c){ c.onclick=function(){ var x=items[+c.dataset.i]; if(x&&x.pubid) kUser(x.pubid); }; }); };
   draw(); kGet("/kst/usearch?q="+encodeURIComponent(q)).then(function(j){ if(!o.isConnected) return; if(j&&j.ok) items=j.items||[]; else { items=[]; err=1; } draw(); }).catch(function(){ if(!o.isConnected) return; items=[]; err=1; draw(); }); }
@@ -1823,7 +1824,7 @@ function stageOpen(tab0){ var tab=tab0==="me"?"me":"all";
   var prof=function(){ var m=S.me, pid=m&&m.pid, dash="…";
     return '<div class="kpf"><div class="kpfl"><button type="button" class="kpfv'+kFtC(m&&m.ft)+'" data-pf="1" aria-label="'+esc(L(TX.pfT))+'">'+(m&&m.aip?kAiPf(m.aip):pid?kThumb(pid,"kpfm"):'<span class="kpfe">'+kIc("vid")+'</span>')+'<span class="kpfc">'+esc(L(TX.chg))+'</span></button>'+kStars(m)+'</div>'
       +'<div class="kpfi">'
-      +'<div class="kpr kpn">'+kIc("id")+(m&&m.nick?'<b>'+esc(m.nick)+'</b>'+kFtTag(m.ft)+'<button type="button" class="kln" data-nick="1">'+esc(L(TX.chg))+'</button>':'<button type="button" class="kln" data-nick="1">'+esc(L(TX.idSet))+'</button>')+'</div>'
+      +'<div class="kpr kpn">'+(m&&m.nick?'<b>'+esc(m.nick)+'</b>'+kFtTag(m.ft)+'<button type="button" class="kln" data-nick="1">'+esc(L(TX.chg))+'</button>':'<button type="button" class="kln" data-nick="1">'+esc(L(TX.idSet))+'</button>')+'</div>'
       +'<div class="kpr'+(m&&m.pubid?' kfl2" role="button" tabindex="0" data-fl="followers':'')+'">'+kIc("fol")+'<span>'+esc(L(TX.fol))+'</span><b>'+(m?kNum(m.followers):dash)+'</b></div>'
       +'<div class="kpr'+(m&&m.pubid?' kfl2" role="button" tabindex="0" data-fl="following':'')+'">'+kIc("fol")+'<span>'+esc(L(TX.fing))+'</span><b>'+(m?kNum(m.following):dash)+'</b></div>'
       +(m&&m.pubid?'<div class="kpr kfl2" role="button" tabindex="0" data-fl="mutual">'+kIc("fol")+'<span>'+esc(NL("mutF"))+'</span><b>'+kNum(m.mutual||0)+'</b></div>':'')
@@ -2520,7 +2521,7 @@ function kSongPick(host,title,cb){ var w=document.createElement("div"); w.classN
 // 주자 고르기 창 — 아직 안 부른 사람 먼저 · noMe = 나 빼기(주자가 다음 사람 지명할 때)
 function kMemPick(host,title,mem,noMe,cb){ var w=document.createElement("div"); w.className="kpm"; host.appendChild(w);
   var a=(mem||[]).filter(function(p){ return p.pubid&&!(noMe&&p.me); }).slice().sort(function(x,y){ return (x.sung?1:0)-(y.sung?1:0); });
-  w.innerHTML='<div><h3>'+esc(title)+'</h3><p class="km">'+esc(L(TX.rlNextN))+'</p><div class="kfls">'+a.map(function(p,i){ return '<button type="button" data-i="'+i+'">'+kIc("id")+esc(p.nick||"guest")+(p.owner?'<small class="kchd">'+esc(L(TX.rmOw))+'</small>':'')+(p.sung?'<small class="kchd">'+esc(L(TX.rlSung))+'</small>':'')+'</button>'; }).join("")+'</div><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
+  w.innerHTML='<div><h3>'+esc(title)+'</h3><p class="km">'+esc(L(TX.rlNextN))+'</p><div class="kfls">'+a.map(function(p,i){ return '<button type="button" data-i="'+i+'">'+esc(p.nick||"guest")+(p.owner?'<small class="kchd">'+esc(L(TX.rmOw))+'</small>':'')+(p.sung?'<small class="kchd">'+esc(L(TX.rlSung))+'</small>':'')+'</button>'; }).join("")+'</div><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
   w.querySelector(".kc").onclick=function(){ w.remove(); }; w.onclick=function(e){ if(e.target===w) w.remove(); };
   [].forEach.call(w.querySelectorAll("[data-i]"),function(x){ x.onclick=function(){ var p=a[+x.dataset.i]; if(!p) return; w.remove(); cb(p); }; }); }
 function kRlErr(j){ var e=j&&j.err; return L(e==="busy"?TX.rlBusy:e==="turn"||e==="own"?TX.rlErr:e==="room"||e==="none"?TX.rmGone:TX.fail); }
