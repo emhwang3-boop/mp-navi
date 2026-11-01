@@ -1432,7 +1432,7 @@ function recExit(){ camOff(); recFx(false); var b=box(); if(!b) return; b.classL
 //   앱 녹화(StageCam): 안드로이드는 같은 일을 네이티브로(start 의 mask) · isAvailable().mask 가 없는 앱·아이폰은 웹 길로 녹화
 //   🔴 얼굴을 놓치거나 첫 인식 전·모델 못 받음 = 화면 전체를 흐리게 (그대로의 카메라를 내보내지 않는다) · 영상에도 그대로 들어간다
 var KMKD={   // [그림 폭 ÷ 얼굴 폭, 그림 안 눈높이(0~1), 부위] — 그림 정사각형 · 부위 h 머리·e 눈·m 입·턱·f 얼굴 전체
- mk_blind:[1.3,0.49,"e"], mk_shades:[1.3,0.5,"e"], mk_ninja:[2.1,0.45,"f"], mk_cloth:[1.7,0.37,"m"], mk_venice:[1.5,0.5,"e"], mk_feather:[1.6,0.6,"e"], mk_lace:[1.5,0.5,"e"], mk_blush:[1.6,0.42,"e"], mk_stache:[1.5,0.32,"m"], mk_beard:[1.5,0.18,"m"], mk_phantom:[1.6,0.42,"f"], mk_hero:[1.5,0.5,"e"], mk_cat:[2.6,0.47,"f"], mk_bear:[2.6,0.46,"f"], mk_fox:[2.75,0.47,"f"], mk_bunny:[2.8,0.56,"f"], mk_bob:[2.0,0.5,"h"], mk_long:[2.95,0.3,"h"], mk_blonde:[2.95,0.3,"h"], mk_idol:[2.0,0.5,"h"], mk_santa:[2.1,0.47,"f"], mk_pumpkin:[2.45,0.48,"f"], mk_deer:[2.65,0.54,"f"], mk_catpink:[2.7,0.47,"f"]};
+ mk_blind:[1.3,0.49,"e"], mk_shades:[1.3,0.5,"e"], mk_ninja:[2.1,0.45,"f"], mk_cloth:[1.7,0.37,"m"], mk_venice:[1.5,0.5,"e"], mk_feather:[1.6,0.6,"e"], mk_lace:[1.5,0.5,"e"], mk_blush:[1.6,0.42,"e"], mk_stache:[2,0.5,"m"], mk_beard:[2,0.5,"m"], mk_phantom:[1.6,0.42,"f"], mk_hero:[1.5,0.5,"e"], mk_cat:[2.6,0.47,"f"], mk_bear:[2.6,0.46,"f"], mk_fox:[2.75,0.47,"f"], mk_bunny:[2.8,0.56,"f"], mk_bob:[2.0,0.5,"h"], mk_long:[2.95,0.3,"h"], mk_blonde:[2.95,0.3,"h"], mk_idol:[2.0,0.5,"h"], mk_santa:[2.1,0.47,"f"], mk_pumpkin:[2.45,0.48,"f"], mk_deer:[2.65,0.54,"f"], mk_catpink:[2.7,0.47,"f"]};
 var KMKM="https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task", KFL=null, KFLP=null, KMX=null, KMIM={}, KNMK=false;
 function kMkIs(k){ return String(k||"").indexOf("mk_")===0; }
 var KMS=["h","e","m","f"];
@@ -1446,8 +1446,8 @@ function kFlLoad(){ if(KFL) return Promise.resolve(KFL); if(KFLP) return KFLP;
   KFLP.catch(function(){ KFLP=null; }); return KFLP; }
 function kMkImg(k){ var o=KMIM[k]; if(o) return o; o=new Image(); o.src="img/deco/"+k+".webp"; KMIM[k]=o; return o; }
 // 마스크 그리기 (11-01 품질) — 얼굴 망 468점 + 바깥 고리 = 볼·턱을 따라 늘어난다 · 안경·가발·깃털은 앵커 + 원근 · 품목마다 KMK2 로 지정
-//   KMK2 = m 1 얼굴 망(없으면 앵커) · r 1 단단한 품목(표준 3D 얼굴을 고개대로 돌림, 없으면 표정 따라 늘어남) · dz 앵커 판 깊이(얼굴 폭 배) · fe 가장자리 부드러움(기본 0.3) · mul 1 곱하기(피부에 물듦) · g 1 안경 다리 · mo [u, v, 폭, 그림] 입 벌림
-var KMK2={ mk_blind:{m:1,r:1}, mk_shades:{dz:-0.05,g:1}, mk_ninja:{m:1,r:1}, mk_cloth:{m:1}, mk_venice:{m:1,r:1}, mk_feather:{dz:0}, mk_lace:{m:1,r:1}, mk_blush:{m:1,mul:1,fe:0.9}, mk_stache:{m:1,fe:0.7}, mk_beard:{m:1,fe:0.7,hole:1}, mk_phantom:{m:1,r:1}, mk_hero:{m:1,r:1},
+//   KMK2 = m 1 얼굴 망(없으면 앵커) · r 1 단단한 품목(표준 3D 얼굴을 고개대로 돌림, 없으면 표정 따라 늘어남) · dz 앵커 판 깊이(얼굴 폭 배) · fe 가장자리 부드러움(기본 0.3) · hole 1 입술 윤곽 점으로 입을 뚫음(그림 위치와 상관없이 입이 보임) · mul 1 곱하기(피부에 물듦) · g 1 안경 다리 · mo [u, v, 폭, 그림] 입 벌림
+var KMK2={ mk_blind:{m:1,r:1}, mk_shades:{dz:-0.05,g:1}, mk_ninja:{m:1,r:1}, mk_cloth:{m:1}, mk_venice:{m:1,r:1}, mk_feather:{dz:0}, mk_lace:{m:1,r:1}, mk_blush:{m:1,mul:1,fe:0.6}, mk_stache:{m:1,fe:0.7,hole:1}, mk_beard:{m:1,fe:0.7,hole:1}, mk_phantom:{m:1,r:1}, mk_hero:{m:1,r:1},
  mk_cat:{m:1,r:1,mo:[0.5,0.68,0.15,"mo_a"]}, mk_bear:{m:1,r:1,mo:[0.5,0.71,0.16,"mo_a"]}, mk_fox:{m:1,r:1,mo:[0.5,0.71,0.14,"mo_b"]}, mk_bunny:{m:1,r:1,mo:[0.5,0.75,0.12,"mo_a"]},
  mk_bob:{dz:0.1,bk:"wb_bob",hc:"#17151c"}, mk_long:{dz:0.1,bk:"wb_long",hc:"#5a3a26",lt:0.3}, mk_blonde:{dz:0.1,bk:"wb_blonde",hc:"#d9b868",lt:0.7}, mk_idol:{dz:0.1,bk:"wb_idol",hc:"#c46fb0",lt:0.5},
  mk_santa:{m:1,r:1}, mk_pumpkin:{m:1,r:1,mo:[0.5,0.7,0.22,"mo_p"]}, mk_deer:{m:1,r:1,mo:[0.5,0.76,0.16,"mo_t"]}, mk_catpink:{m:1,r:1,mo:[0.5,0.65,0.12,"mo_a"]} };
@@ -1465,10 +1465,10 @@ function kFmLoad(){ if(KFM) return Promise.resolve(KFM); if(KFMP) return KFMP;
   KFMP=fetch("img/deco/facemesh.json").then(function(r){ return r.json(); }).then(function(d){ var v=d.v, o=d.o, n=o.length, R=[1.5,2.6,4.2], N=468+n*R.length, X=new Float32Array(N), Y=new Float32Array(N), Z=new Float32Array(N), i, r, idx=d.t.slice(), ni=idx.length, cx=(v[10][0]+v[152][0])/2, cy=(v[10][1]+v[152][1])/2;
     for(i=0;i<468;i++){ X[i]=v[i][0]; Y[i]=v[i][1]; Z[i]=v[i][2]; } for(r=0;r<R.length;r++) for(i=0;i<n;i++){ var q=v[o[i]]; X[468+r*n+i]=cx+(q[0]-cx)*R[r]; Y[468+r*n+i]=cy+(q[1]-cy)*R[r]; Z[468+r*n+i]=q[2]; }
     for(r=0;r<R.length;r++) for(i=0;i<n;i++){ var j=(i+1)%n, a=r?468+(r-1)*n+i:o[i], b=r?468+(r-1)*n+j:o[j], c=468+r*n+i, e=468+r*n+j; idx.push(a,c,b,b,c,e); }
-    KFM={X:X,Y:Y,Z:Z,ni:ni,nl:d.nl||0,idx:new Uint16Array(idx),o:o,R:R,N:N,ex:(v[33][0]+v[263][0])/2,ey:(v[33][1]+v[263][1])/2,ez:(v[33][2]+v[263][2])/2,fw:Math.hypot(v[454][0]-v[234][0],v[454][1]-v[234][1]),sx:v[263][0]>v[33][0]?1:-1,uv:{}}; return KFM; });
+    KFM={X:X,Y:Y,Z:Z,ni:ni,nl:d.nl||0,lc:d.lc||[],idx:new Uint16Array(idx),o:o,R:R,N:N,ex:(v[33][0]+v[263][0])/2,ey:(v[33][1]+v[263][1])/2,ez:(v[33][2]+v[263][2])/2,fw:Math.hypot(v[454][0]-v[234][0],v[454][1]-v[234][1]),sx:v[263][0]>v[33][0]?1:-1,uv:{}}; return KFM; });
   KFMP.catch(function(){ KFMP=null; }); return KFMP; }
-function kFmUv(k){ var F=KFM, c=F.uv[k]; if(c) return c; var d=KMKD[k], uv=new Float32Array(F.N*2), s=1/(F.fw*d[0]), i; for(i=0;i<F.N;i++){ uv[i*2]=0.5+F.sx*(F.X[i]-F.ex)*s; uv[i*2+1]=d[1]-(F.Y[i]-F.ey)*s; } c={uv:uv,mo:-1};   // 정면 투영 = 그림을 얼굴 망에 그대로 — 정면에서는 앵커 때와 같은 자리
-  var m=KMK2[k]&&KMK2[k].mo; if(m){ var b=1e9; for(i=0;i<468;i++){ var du=uv[i*2]-m[0], dv=uv[i*2+1]-m[1], e=du*du+dv*dv; if(e<b){ b=e; c.mo=i; } } } F.uv[k]=c; return c; }
+function kFmUv(k){ var F=KFM, c=F.uv[k]; if(c) return c; var d=KMKD[k], uv=new Float32Array(F.N*3), s=1/(F.fw*d[0]), i; for(i=0;i<F.N;i++){ uv[i*3]=0.5+F.sx*(F.X[i]-F.ex)*s; uv[i*3+1]=d[1]-(F.Y[i]-F.ey)*s; } if(KMK2[k]&&KMK2[k].hole) F.lc.forEach(function(q){ uv[q*3+2]=1; }); c={uv:uv,mo:-1};   // 정면 투영 = 그림을 얼굴 망에 그대로 — 정면에서는 앵커 때와 같은 자리
+  var m=KMK2[k]&&KMK2[k].mo; if(m){ var b=1e9; for(i=0;i<468;i++){ var du=uv[i*3]-m[0], dv=uv[i*3+1]-m[1], e=du*du+dv*dv; if(e<b){ b=e; c.mo=i; } } } F.uv[k]=c; return c; }
 // 얼굴 하나 = 흔들림 줄이기(one-euro) → 망 점 P(x,y,z) + 기울기
 function kFtrk(f,lm,W,now){ var n=468, P=f.P||(f.P=new Float32Array((KFM?KFM.N:576)*3)), x0=f.x, i, c, v, dt=f.t?Math.max(0.005,(now-f.t)/1000):0.033; f.t=now;
   var fw=Math.hypot((lm[454].x-lm[234].x)*W,(lm[454].y-lm[234].y)*f.H)||100, beta=30/fw, mc=1.5, ad=1-Math.exp(-2*Math.PI*dt);
@@ -1479,8 +1479,8 @@ function kFtrk(f,lm,W,now){ var n=468, P=f.P||(f.P=new Float32Array((KFM?KFM.N:5
   return f; }
 function kGlNew(W,H){ var c=mkc0(W,H), gl=c.getContext("webgl",{alpha:true,premultipliedAlpha:true,depth:true,antialias:true,preserveDrawingBuffer:true}); if(!gl) return null;
   var sh=function(t,s){ var o=gl.createShader(t); gl.shaderSource(o,s); gl.compileShader(o); return o; }, p=gl.createProgram();
-  gl.attachShader(p,sh(gl.VERTEX_SHADER,"attribute vec4 p;attribute vec2 u;varying vec2 v;void main(){gl_Position=p;v=u;}"));
-  gl.attachShader(p,sh(gl.FRAGMENT_SHADER,"precision mediump float;uniform sampler2D t;uniform vec3 c;uniform float e;varying vec2 v;void main(){vec4 s=texture2D(t,v);if(s.a<0.02)discard;float f=smoothstep(0.0,e,s.a);gl_FragColor=vec4(s.rgb*c,s.a)*f;}"));   // 가장자리 부드럽게 + 카메라 색 맞춤
+  gl.attachShader(p,sh(gl.VERTEX_SHADER,"attribute vec4 p;attribute vec3 u;varying vec3 v;void main(){gl_Position=p;v=u;}"));
+  gl.attachShader(p,sh(gl.FRAGMENT_SHADER,"precision mediump float;uniform sampler2D t;uniform vec3 c;uniform float e;varying vec3 v;void main(){vec4 s=texture2D(t,v.xy);float f=smoothstep(0.0,e,s.a)*(1.0-v.z);if(s.a*f<0.02)discard;gl_FragColor=vec4(s.rgb*c,s.a)*f;}"));   // 가장자리 부드럽게 + 카메라 색 맞춤
   gl.bindAttribLocation(p,0,"p"); gl.bindAttribLocation(p,1,"u"); gl.linkProgram(p); if(!gl.getProgramParameter(p,gl.LINK_STATUS)) return null; gl.useProgram(p);
   gl.enable(gl.BLEND); gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA); gl.depthFunc(gl.LEQUAL); gl.clearColor(0,0,0,0); gl.enableVertexAttribArray(0); gl.enableVertexAttribArray(1);
   return {c:c,gl:gl,uc:gl.getUniformLocation(p,"c"),ue:gl.getUniformLocation(p,"e"),bp:gl.createBuffer(),bu:gl.createBuffer(),bi:gl.createBuffer(),bq:gl.createBuffer(),tx:{},pa:null,W:W,H:H}; }
@@ -1493,7 +1493,7 @@ function kRig(f){ var F=KFM, z=f.z, R=f.R||(f.R=new Float32Array(F.N*3)), s=z.w3
 function kGlDraw(g,G,fs,v){ var gl=G.gl, W=g.W, H=g.H, F=KFM, l=Array.isArray(v)?v:kMkList(v), tc=g.tint||[1,1,1]; gl.viewport(0,0,G.c.width,G.c.height); gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT); gl.uniform3f(G.uc,tc[0],tc[1],tc[2]);
   fs.forEach(function(f){ var z=f.z; l.forEach(function(k){ var d=KMKD[k]||KMKD[k.replace("wb_","mk_")], e=KMK2[k]||KMK2[k.replace("wb_","mk_")]||{}, t=kGlTex(G,k); if(!t) return; gl.uniform1f(G.ue,e.fe||0.3); gl.bindTexture(gl.TEXTURE_2D,t);
       if(e.m&&F){ var N=F.N, pa=G.pa||(G.pa=new Float32Array(N*4)), P=e.r?kRig(f):f.P, i, u=kFmUv(k); for(i=0;i<N;i++){ pa[i*4]=P[i*3]/W*2-1; pa[i*4+1]=1-P[i*3+1]/H*2; pa[i*4+2]=Math.max(-0.95,Math.min(0.95,P[i*3+2]/W)); pa[i*4+3]=1; }
-        gl.enable(gl.DEPTH_TEST); gl.clear(gl.DEPTH_BUFFER_BIT); gl.bindBuffer(gl.ARRAY_BUFFER,G.bp); gl.bufferData(gl.ARRAY_BUFFER,pa,gl.STREAM_DRAW); gl.vertexAttribPointer(0,4,gl.FLOAT,false,0,0); gl.bindBuffer(gl.ARRAY_BUFFER,G.bu); gl.bufferData(gl.ARRAY_BUFFER,u.uv,gl.STATIC_DRAW); gl.vertexAttribPointer(1,2,gl.FLOAT,false,0,0);
+        gl.enable(gl.DEPTH_TEST); gl.clear(gl.DEPTH_BUFFER_BIT); gl.bindBuffer(gl.ARRAY_BUFFER,G.bp); gl.bufferData(gl.ARRAY_BUFFER,pa,gl.STREAM_DRAW); gl.vertexAttribPointer(0,4,gl.FLOAT,false,0,0); gl.bindBuffer(gl.ARRAY_BUFFER,G.bu); gl.bufferData(gl.ARRAY_BUFFER,u.uv,gl.STATIC_DRAW); gl.vertexAttribPointer(1,3,gl.FLOAT,false,0,0);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,G.bi); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,F.idx,gl.STATIC_DRAW); gl.disable(gl.DEPTH_TEST); gl.drawElements(gl.TRIANGLES,F.idx.length-F.ni,gl.UNSIGNED_SHORT,F.ni*2); gl.enable(gl.DEPTH_TEST); gl.drawElements(gl.TRIANGLES,e.hole?F.ni-F.nl:F.ni,gl.UNSIGNED_SHORT,0); gl.disable(gl.DEPTH_TEST);
         var mo=e.mo; if(mo&&u.mo>=0&&z.open>0.06){ var tm=kGlTex(G,mo[3]); if(tm){ var iw=z.w3*d[0]*mo[2], ih=iw*(0.25+0.9*z.open), ca=Math.cos(z.a), sa=Math.sin(z.a), mx=P[u.mo*3]-sa*ih*0.3, my=P[u.mo*3+1]+ca*ih*0.3, pt=function(a,b,uu,vv){ var X=mx+a*ca-b*sa, Y=my+a*sa+b*ca; return [X/W*2-1,1-Y/H*2,0,1,uu,vv]; }; gl.bindTexture(gl.TEXTURE_2D,tm); kGlQuad(G,[].concat(pt(-iw/2,-ih/2,0,0),pt(iw/2,-ih/2,1,0),pt(-iw/2,ih/2,0,1),pt(iw/2,ih/2,1,1))); } }
       } else { var w=z.w3*d[0], dz=(e.dz||0)*z.w3, top=-w*d[1], bot=w*(1-d[1]);
