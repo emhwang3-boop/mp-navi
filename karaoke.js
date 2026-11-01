@@ -1432,7 +1432,7 @@ function recExit(){ camOff(); recFx(false); var b=box(); if(!b) return; b.classL
 //   앱 녹화(StageCam): 안드로이드는 같은 일을 네이티브로(start 의 mask) · isAvailable().mask 가 없는 앱·아이폰은 웹 길로 녹화
 //   🔴 얼굴을 놓치거나 첫 인식 전·모델 못 받음 = 화면 전체를 흐리게 (그대로의 카메라를 내보내지 않는다) · 영상에도 그대로 들어간다
 var KMKD={   // [그림 폭 ÷ 얼굴 폭, 그림 안 눈높이(0~1), 부위] — 그림 정사각형 · 부위 h 머리·e 눈·m 입·턱·f 얼굴 전체
- mk_blind:[1.3,0.49,"e"], mk_shades:[1.3,0.5,"e"], mk_ninja:[2.1,0.45,"f"], mk_cloth:[1.7,0.37,"m"], mk_venice:[1.5,0.5,"e"], mk_feather:[1.6,0.6,"e"], mk_lace:[1.5,0.5,"e"], mk_blush:[1.6,0.42,"e"], mk_stache:[2,0.5,"m"], mk_beard:[2,0.5,"m"], mk_phantom:[1.6,0.42,"f"], mk_hero:[1.5,0.5,"e"], mk_cat:[2.6,0.47,"f"], mk_bear:[2.6,0.46,"f"], mk_fox:[2.75,0.47,"f"], mk_bunny:[2.8,0.56,"f"], mk_bob:[2.0,0.5,"h"], mk_long:[2.95,0.3,"h"], mk_blonde:[2.95,0.3,"h"], mk_idol:[2.0,0.5,"h"], mk_santa:[2.1,0.47,"f"], mk_pumpkin:[2.45,0.48,"f"], mk_deer:[2.65,0.54,"f"], mk_catpink:[2.7,0.47,"f"]};
+ mk_blind:[1.3,0.49,"e"], mk_shades:[1.3,0.5,"e"], mk_ninja:[2.1,0.45,"f"], mk_ninjaw:[2.1,0.45,"f"], mk_cateye:[1.3,0.5,"e"], mk_cloth:[1.7,0.37,"m"], mk_venice:[1.5,0.5,"e"], mk_feather:[1.6,0.6,"e"], mk_lace:[1.5,0.5,"e"], mk_blush:[1.6,0.42,"e"], mk_stache:[2,0.5,"m"], mk_beard:[2,0.5,"m"], mk_phantom:[1.6,0.42,"f"], mk_hero:[1.5,0.5,"e"], mk_cat:[2.6,0.47,"f"], mk_bear:[2.6,0.46,"f"], mk_fox:[2.75,0.47,"f"], mk_bunny:[2.8,0.56,"f"], mk_bob:[2.0,0.5,"h"], mk_long:[2.95,0.3,"h"], mk_blonde:[2.95,0.3,"h"], mk_idol:[2.0,0.5,"h"], mk_santa:[2.1,0.47,"f"], mk_pumpkin:[2.45,0.48,"f"], mk_deer:[2.65,0.54,"f"], mk_catpink:[2.7,0.47,"f"]};
 var KMKM="https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task", KFL=null, KFLP=null, KMX=null, KMIM={}, KNMK=false;
 function kMkIs(k){ return String(k||"").indexOf("mk_")===0; }
 var KMS=["h","e","m","f"];
@@ -1447,7 +1447,7 @@ function kFlLoad(){ if(KFL) return Promise.resolve(KFL); if(KFLP) return KFLP;
 function kMkImg(k){ var o=KMIM[k]; if(o) return o; o=new Image(); o.src="img/deco/"+k+".webp"; KMIM[k]=o; return o; }
 // 마스크 그리기 (11-01 품질) — 얼굴 망 468점 + 바깥 고리 = 볼·턱을 따라 늘어난다 · 안경·가발·깃털은 앵커 + 원근 · 품목마다 KMK2 로 지정
 //   KMK2 = m 1 얼굴 망(없으면 앵커) · r 1 단단한 품목(표준 3D 얼굴을 고개대로 돌림, 없으면 표정 따라 늘어남) · dz 앵커 판 깊이(얼굴 폭 배) · fe 가장자리 부드러움(기본 0.3) · hole 1 입술 윤곽 점으로 입을 뚫음(그림 위치와 상관없이 입이 보임) · mul 1 곱하기(피부에 물듦) · g 1 안경 다리 · mo [u, v, 폭, 그림] 입 벌림
-var KMK2={ mk_blind:{m:1,r:1}, mk_shades:{dz:-0.05,g:1}, mk_ninja:{m:1,r:1}, mk_cloth:{m:1}, mk_venice:{m:1,r:1}, mk_feather:{dz:0}, mk_lace:{m:1,r:1}, mk_blush:{m:1,mul:1,fe:0.6}, mk_stache:{m:1,fe:0.7,hole:1}, mk_beard:{m:1,fe:0.7,hole:1}, mk_phantom:{m:1,r:1}, mk_hero:{m:1,r:1},
+var KMK2={ mk_blind:{m:1,r:1}, mk_shades:{dz:-0.05,g:1}, mk_ninja:{m:1,r:1}, mk_ninjaw:{m:1,r:1}, mk_cateye:{dz:-0.05,g:1}, mk_cloth:{m:1}, mk_venice:{m:1,r:1}, mk_feather:{dz:0}, mk_lace:{m:1,r:1}, mk_blush:{m:1,mul:1,fe:0.6}, mk_stache:{m:1,fe:0.7,hole:1}, mk_beard:{m:1,fe:0.7,hole:1}, mk_phantom:{m:1,r:1}, mk_hero:{m:1,r:1},
  mk_cat:{m:1,r:1,mo:[0.5,0.68,0.15,"mo_a"]}, mk_bear:{m:1,r:1,mo:[0.5,0.71,0.16,"mo_a"]}, mk_fox:{m:1,r:1,mo:[0.5,0.71,0.14,"mo_b"]}, mk_bunny:{m:1,r:1,mo:[0.5,0.75,0.12,"mo_a"]},
  mk_bob:{dz:0.1,bk:"wb_bob",hc:"#17151c"}, mk_long:{dz:0.1,bk:"wb_long",hc:"#5a3a26",lt:0.3}, mk_blonde:{dz:0.1,bk:"wb_blonde",hc:"#d9b868",lt:0.7}, mk_idol:{dz:0.1,bk:"wb_idol",hc:"#c46fb0",lt:0.5},
  mk_santa:{m:1,r:1}, mk_pumpkin:{m:1,r:1,mo:[0.5,0.7,0.22,"mo_p"]}, mk_deer:{m:1,r:1,mo:[0.5,0.76,0.16,"mo_t"]}, mk_catpink:{m:1,r:1,mo:[0.5,0.65,0.12,"mo_a"]} };
@@ -3567,6 +3567,8 @@ var DCI=[
  ["mk_feather","mkw",0,"깃털 가면","Feather Mask","羽根マスク","羽毛面具","羽毛面具","Máscara de plumas",2000,""],
  ["mk_lace","mkw",0,"레이스 가면","Lace Mask","レースマスク","蕾丝面具","蕾絲面具","Máscara de encaje",2000,""],
  ["mk_blush","mkw",0,"볼터치 메이크업","Blush Makeup","チークメイク","腮红妆","腮紅妝","Maquillaje de colorete",2000,""],
+ ["mk_ninjaw","mkw",0,"레이스 복면","Lace Hood","レースの覆面","蕾丝面罩","蕾絲面罩","Capucha de encaje",2000,""],
+ ["mk_cateye","mkw",0,"캣아이 선글라스","Cat-Eye Sunglasses","キャットアイサングラス","猫眼墨镜","貓眼墨鏡","Gafas de sol ojo de gato",2000,""],
  ["mk_stache","mkm",0,"콧수염","Moustache","口ひげ","八字胡","八字鬍","Bigote",2000,""],
  ["mk_beard","mkm",0,"턱수염","Full Beard","あごひげ","络腮胡","絡腮鬍","Barba",2000,""],
  ["mk_phantom","mkm",0,"오페라 가면","Opera Mask","オペラマスク","歌剧面具","歌劇面具","Máscara de ópera",2000,""],
