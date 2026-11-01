@@ -3837,8 +3837,8 @@ function dcPv(ctx,k){ var d=ctx.deco(), pl=dcIsPl(k)?k:d.pl, pr=(d.pr||[]).slice
   return '<div class="kdpv'+(pl?' kdhasbg':'')+'"'+(pl?' style="background-image:linear-gradient(180deg,rgba(10,6,22,.5),rgba(10,6,22,.7)),url('+dcImg(pl)+')"':'')+'><div class="kdpvg">'+tiles+'</div><div class="kdpvs">'+st+'</div></div>'; }
 // 아이템 한 개 — 그림 · 이름 · 가격 · 구매 / 방에 놓기 / 이 장소로 바꾸기 · 놓아 보기
 function dcItem(ctx,k,o,redraw){ var x=DK[k]; if(!x) return; var w=document.createElement("div"); w.className="kdit"; (o.querySelector(".kdsh")||o).appendChild(w); var pv=false, busy=false, msg="", sel=0;
-  var mk=kMkIs(k), draw=function(){ var pl=dcIsPl(k), p=dcP(k), own=!x.cons&&dcHas(k), cn=x.cons?dcCnt(k):0, d=ctx.deco(), now=pl&&d.pl===k, placed=!pl&&!x.cons&&(d.pr||[]).some(function(y){ return y.k===k&&y.me; }), worn=mk&&kMkList(kMkCur()).indexOf(k)>=0, pd=x.cons?[p,p,p]:dcPd(k), c=pd[x.cons?0:sel], bt="", bx="";
-    if(p>0) bx=(x.cons?'':dcPds(pd,sel))+'<div class="kdipr">'+ptS(c)+'</div><button type="button" class="kgo'+(own?' kdgo3':'')+'" data-buy="1"'+(busy?' disabled':'')+'>'+esc(L(own?TX.dcExtB:TX.kwBuyB))+'</button>';   // 보유 중 = 아래에 기간 연장
+  var mk=kMkIs(k), draw=function(){ var pl=dcIsPl(k), p=dcP(k), own=!x.cons&&dcHas(k), cn=x.cons?dcCnt(k):0, d=ctx.deco(), now=pl&&d.pl===k, placed=!pl&&!x.cons&&(d.pr||[]).some(function(y){ return y.k===k&&y.me; }), worn=mk&&kMkList(kMkCur()).indexOf(k)>=0, one=x.cons||x.c==="bouquet", pd=one?[p,p,p]:dcPd(k), c=pd[x.cons?0:sel], bt="", bx="";
+    if(p>0) bx=(one?'':dcPds(pd,sel))+'<div class="kdipr">'+ptS(c)+'</div><button type="button" class="kgo'+(own?' kdgo3':'')+'" data-buy="1"'+(busy?' disabled':'')+'>'+esc(L(own?TX.dcExtB:TX.kwBuyB))+'</button>';   // 보유 중 = 아래에 기간 연장
     if(!own) bt+=bx;
     if(pl&&(own||!p||now)){ if(ctx.own()) bt+='<button type="button" class="kgo kdgo2" data-pl="1"'+(busy?' disabled':'')+'>'+esc(L(now?TX.dcOff:TX.dcUse))+'</button>'; else bt+='<p class="km">'+esc(L(TX.dcHost))+'</p>'; }
     if(mk){ if(own||worn) bt+='<button type="button" class="kgo kdgo2" data-wear="1">'+esc(L(kMkList(kMkCur()).indexOf(k)>=0?TX.mkOff:TX.mkWear))+'</button>'; }
@@ -3851,7 +3851,7 @@ function dcItem(ctx,k,o,redraw){ var x=DK[k]; if(!x) return; var w=document.crea
     w.querySelector("[data-pv]").onclick=function(){ if(mk){ kMkOpen({tryK:k}); return; } pv=!pv; draw(); };
     var wb=w.querySelector("[data-wear]"); if(wb) wb.onclick=function(){ var wn=kMkList(kMkCur()).indexOf(k)<0; kMkSet(kMkTog(kMkCur(),k)); if(DR.alive) dMkApply(); soon(L(wn?TX.mkOn:TX.mkOffOk)); w.remove(); o.remove(); };
     [].forEach.call(w.querySelectorAll("[data-d]"),function(b){ b.onclick=function(){ sel=+b.dataset.d; draw(); }; });
-    var bb=w.querySelector("[data-buy]"); if(bb) bb.onclick=function(){ var rid=kRid(), i=x.cons?0:sel; dcPay(c,dcN(k)+(x.cons?'':' · '+kTx(TX.dcD,i)),function(done){ kptPost("deco",{rid:rid,key:k,days:DCD[i],cost:c}).then(function(j){
+    var bb=w.querySelector("[data-buy]"); if(bb) bb.onclick=function(){ var rid=kRid(), i=one?0:sel; dcPay(c,dcN(k)+(one?' · '+kTx(TX.dcD,0):' · '+kTx(TX.dcD,i)),function(done){ kptPost("deco",{rid:rid,key:k,days:DCD[i],cost:c}).then(function(j){
         if(j&&j.ok){ done(); DC.inv=j.inv||DC.inv; dcRe(ctx,j.add); dcLoad().then(function(){ if(w.isConnected) draw(); redraw(); }); kptLoad(); soon(L(TX.dcBuyOk)); try{ ntap("kara_deco","buy_"+k); }catch(e){} return; }
         if(j&&j.err==="price"){ dcLoad().then(function(){ if(w.isConnected) draw(); redraw(); }); }
         done(j&&j.err==="short"?tf(L(TX.kwShort),{h:ptS(j.have||0)}):dcErr(j)); kptLoad(); }).catch(function(){ done(L(TX.efail)); }); },x.cons?tf(L(TX.dcAskC),{d:dcDT(dcNow()+864e5)}):tf(L(TX.dcAsk),{p:kTx(TX.dcD,i),d:dcDT(dcEx(k,i))})); };
