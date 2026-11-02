@@ -228,6 +228,7 @@ var TX={
  vids:{ko:"게시한 영상",en:"Videos",ja:"投稿動画",zhs:"发布的视频",zht:"發布的影片",es:"Vídeos"},
  sNew:{ko:"최신순",en:"Newest first",ja:"新しい順",zhs:"最新优先",zht:"最新優先",es:"Más recientes"},
  sOld:{ko:"오래된순",en:"Oldest first",ja:"古い順",zhs:"最早优先",zht:"最早優先",es:"Más antiguos"},
+ sViews:{ko:"조회순",en:"Most viewed",ja:"再生回数順",zhs:"按播放量",zht:"按觀看次數",es:"Más vistos"},
  sScore:{ko:"점수순",en:"Top score",ja:"点数順",zhs:"按分数",zht:"按分數",es:"Mejor puntuación"},
  scPt:{ko:"점",en:"pts",ja:"点",zhs:"分",zht:"分",es:"pts"},
  scT:{ko:"노래 점수",en:"Singing score",ja:"歌唱得点",zhs:"演唱得分",zht:"演唱得分",es:"Puntuación"},
@@ -1722,10 +1723,10 @@ function kVwBtn(){ return '<button type="button" class="kvw" data-view="1" aria-
 function kGvApply(){ var b=box(); if(b) b.classList.toggle("kgv",KGV); [].forEach.call(document.querySelectorAll("#karBox .kvw"),function(x){ x.innerHTML=KGV?'<img class="kgvi" src="img/kara/kst_list.png" alt="">':'<img class="kgvi" src="img/kara/kst_grid.png" alt="">'; }); }
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("#karBox [data-view]"); if(!t) return; e.preventDefault(); e.stopPropagation(); KGV=!KGV; try{ localStorage.setItem("mpv_kgv",KGV?"1":"0"); }catch(x){} kGvApply(); },true);
 new MutationObserver(function(){ var b=box(); if(b&&b.classList.contains("kgv")!==KGV) b.classList.toggle("kgv",KGV); }).observe(document.body,{childList:true});
-function kSortNx(s){ return s==="new"?"old":s==="old"?"score":"new"; }
-function kSortL(s){ return L(s==="old"?TX.sOld:s==="score"?TX.sScore:TX.sNew); }
+function kSortNx(s){ return s==="new"?"old":s==="old"?"score":s==="score"?"views":"new"; }   // 조회순 추가 (11-02)
+function kSortL(s){ return L(s==="old"?TX.sOld:s==="score"?TX.sScore:s==="views"?TX.sViews:TX.sNew); }
 function kSortA(items,s){ var a=items.map(function(x,i){ return [x,i]; }), nv=function(x){ return typeof x.sc==="number"?x.sc:-1; };
-  a.sort(function(p,q){ return s==="old"?p[0].at-q[0].at:s==="score"?(nv(q[0])-nv(p[0])||q[0].at-p[0].at):q[0].at-p[0].at; }); return a; }
+  a.sort(function(p,q){ return s==="old"?p[0].at-q[0].at:s==="views"?((q[0].views||0)-(p[0].views||0)||q[0].at-p[0].at):s==="score"?(nv(q[0])-nv(p[0])||q[0].at-p[0].at):q[0].at-p[0].at; }); return a; }
 // 그 사람 무대 — 프로필(고른 영상 첫 장면)·ID·팔로워·팔로잉·영상 수 + 팔로우 단추 + 내가 볼 수 있는 영상(전체 공개 + 내가 팔로워면 팔로워만)
 function kUser(pub){ if(!/^[0-9a-f]{12}$/.test(String(pub||""))) return; var o=pgOpen("kusr"); if(!o) return;
   var U={o:o,tab:"user",pub:pub,info:null,items:null,err:0,sort:"new",tok:0,busy:false};
@@ -1798,7 +1799,7 @@ function stageOpen(tab0){ var tab=tab0==="me"?"me":"all";
       +'<div class="kpr'+(m&&m.pubid?' kfl2" role="button" tabindex="0" data-fl="followers':'')+'">'+kIc("fol")+'<span>'+esc(L(TX.fol))+'</span><b>'+(m?kNum(m.followers):dash)+'</b></div>'
       +'<div class="kpr'+(m&&m.pubid?' kfl2" role="button" tabindex="0" data-fl="following':'')+'">'+kIc("fol")+'<span>'+esc(L(TX.fing))+'</span><b>'+(m?kNum(m.following):dash)+'</b></div>'
       +(m&&m.pubid?'<div class="kpr kfl2" role="button" tabindex="0" data-fl="mutual">'+kIc("fol")+'<span>'+esc(NL("mutF"))+'</span><b>'+kNum(m.mutual||0)+'</b></div>':'')
-      +'<div class="kpr">'+kIc("view")+'<span>'+esc(L(TX.vw))+'</span><b>'+(m?kNum(m.views):dash)+'</b></div>'
+      +'<div class="kpr'+(m?' kfl2" role="button" tabindex="0" data-vsort="1':'')+'">'+kIc("view")+'<span>'+esc(L(TX.vw))+'</span><b>'+(m?kNum(m.views):dash)+'</b></div>'   // 누르면 내 영상 조회순 (11-02)
       +'<div class="kpr">'+kIc("vid")+'<span>'+esc(L(TX.vids))+'</span><b>'+(m?kNum(m.count):dash)+'</b></div>'
       +'<div class="kpr kfl2" role="button" tabindex="0" data-aig="1">'+kIc("theme")+'<span>'+esc(L(TX.aiG))+'</span><b>'+(m?kNum(m.ain||0):dash)+'</b></div>'
       +'</div></div>'; };
@@ -1832,6 +1833,7 @@ function stageOpen(tab0){ var tab=tab0==="me"?"me":"all";
     var lgb=o.querySelector("[data-lg]"); if(lgb) lgb.onclick=function(){ kLogin(function(){ if(o.isConnected){ S.items=null; S.draw(); S.load(); } }); };   // 로그인 안내 (10-31 출시판)
     [].forEach.call(o.querySelectorAll("[data-st]"),function(x){ x.onclick=function(){ if(S.tab===x.dataset.st) return; S.tab=x.dataset.st; S.items=null; S.err=0; S.draw(); S.load(); var g=o.querySelector(".kpgb"); if(g) g.scrollTop=0; }; });
     var so=o.querySelector("[data-sort]"); if(so) so.onclick=function(){ S.sort=kSortNx(S.sort); S.draw(); };
+    var vwr=o.querySelector("[data-vsort]"); if(vwr){ var vgo=function(){ S.sort="views"; S.draw(); var l=o.querySelector(".ksrt"); if(l) l.scrollIntoView({block:"start",behavior:"smooth"}); }; vwr.onclick=vgo; vwr.onkeydown=function(e){ if(e.key==="Enter") vgo(); }; }   // 조회수 → 내 영상 조회순 (11-02)
     [].forEach.call(o.querySelectorAll("[data-vw]"),function(x){ x.onclick=function(){ if(S.view===x.dataset.vw) return; S.view=x.dataset.vw; S.items=null; S.rooms=null; S.err=0; S.draw(); S.load(); try{ ntap("kara_stage","view_"+S.view); }catch(e){} }; });
     var rn=o.querySelector("[data-rnew]"); if(rn) rn.onclick=function(){ kRoomNew(S); };
     [].forEach.call(o.querySelectorAll("[data-ri]"),function(x){ x.onclick=function(){ var r=S.rooms&&S.rooms[+x.dataset.ri]; if(r) kRoom(r.rid,S); }; });
