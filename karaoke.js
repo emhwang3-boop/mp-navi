@@ -75,7 +75,7 @@ var TX={
  lo:{ko:"불러오는 중…",en:"Loading…",ja:"読み込み中…",zhs:"加载中…",zht:"載入中…",es:"Cargando…"},
  x:{ko:"퇴장",en:"Leave",ja:"出る",zhs:"离开",zht:"離開",es:"Salir"},
  // 노래방 곡 이용권 판매 (사장님 10-27 「1,000원당 1곡, 기계의 돈 넣는 곳에 PAYMENT」 → 10-30 「카드사 심사에 보여 줄 판매 화면」 · 묶음 1 / 3+1 / 5+2 / 10+5)
- //  곡 이용권 = 정식 반주 곡용 · 결제는 시험(UNDER TESTING, 토스 시험 키)
+ //  곡 이용권 = 정식 반주 곡용 · 결제는 포트원·KG이니시스
   kb:{ko:"이용권",en:"Karaoke pass",ja:"利用券",zhs:"畅唱券",zht:"暢唱券",es:"Bono de karaoke"},   // (10-31) 곡 이용권 → 기간 이용권
   kbs:{ko:"1·3·6·12개월 · 기간 안에는 노래 무제한",en:"1, 3, 6 or 12 months · unlimited singing",ja:"1・3・6・12か月・期間中は歌い放題",zhs:"1·3·6·12个月 · 有效期内无限畅唱",zht:"1·3·6·12個月 · 有效期內無限暢唱",es:"1, 3, 6 o 12 meses · canta sin límite"},
  kbuy:{ko:"곡 이용권 구매",en:"Buy song pass",ja:"曲チケットを買う",zhs:"购买点歌券",zht:"購買點歌券",es:"Comprar bono"},
@@ -698,7 +698,7 @@ st.textContent+="#karBox .kwb{display:flex;flex-direction:column;align-items:cen
  +"#karBox .ktm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}#karBox .ktm button{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;border-radius:10px;padding:9px 2px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;line-height:1.25}#karBox .ktm button.on{border-color:#ffe066;background:rgba(255,224,102,.15);color:#ffe066}"
  +"#karBox .ktgst{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:9px 10px;font-size:12.5px;line-height:1.5;color:#e9defc}#karBox .ktgst button{margin-left:6px;border:0;border-radius:8px;padding:4px 10px;background:#ffe066;color:#1a1300;font-weight:900;cursor:pointer;font-family:inherit}"
  +"#karBox .ktsr .krow{display:flex;justify-content:space-between;gap:10px;font-size:14px}#karBox .ktsr .krow b{text-align:right;overflow-wrap:anywhere}#karBox .ktsr .kwait{background:rgba(255,224,102,.12);border:1px solid #b08900;border-radius:10px;padding:10px;font-size:13px;line-height:1.5}"
- +"div[id^=__tosspayments_]{z-index:2147483600!important}"
+ +"#imp-iframe-wrapper{z-index:2147483600!important}"
  +"#karBox .kwuse{font:900 19px/1.35 system-ui,sans-serif;text-align:center;background:#05140c;border:1px solid #1d6b43;color:#7CFFB2;border-radius:12px;padding:12px}#karBox .kwuse.kwno{color:#ffb4c8;border-color:#7a2a3a;background:#1a070c}#karBox .kpm.kptq{z-index:7}#karBox .kwtst{border-style:dashed!important;border-color:#ffe066!important;color:#ffe066!important}#karBox .kwac{margin-top:-4px}#karBox .kwlow{align-self:flex-end;border:0;background:none;color:#ffe066;font-weight:800;font-size:13px;text-decoration:underline;cursor:pointer;padding:0}#karBox .kwsoon{font-size:12.5px;line-height:1.5;background:rgba(255,224,102,.12);border-color:#8a7420;color:#ffe9a6}#karBox .kwbt .krf{padding:9px 4px;font-size:13px}#karBox .kwbt .krf:disabled{opacity:.4;cursor:default}#karBox .kwcap{text-align:center}";
 // 우리끼리 방 머리 (사장님 10-31) — 집 아이콘 + 방 이름은 한 줄 전체(길면 줄바꿈, 말줄임 없음) · 「N명」「릴레이」「⋯」은 그 아래 줄 오른쪽
 st.textContent+="#karBox .krmh{flex-wrap:wrap;row-gap:8px}#karBox .krmh .krmt{flex:1 1 100%}#karBox .krmh .krmt b{white-space:normal;overflow:visible;text-overflow:clip;word-break:keep-all;overflow-wrap:anywhere;line-height:1.3}#karBox .krmh .krmt+.krmc{margin-left:auto}";
@@ -797,12 +797,10 @@ function open(code){ K.tab=({ja:"jpop",en:"pop",es:"pop"})[window.LANG]||"kpop";
   b.querySelector(".ksr").onsubmit=function(e){ e.preventDefault(); K.q=String(b.querySelector(".ksr input").value||"").trim(); [].forEach.call(b.querySelectorAll(".ktb button[data-t]"),function(x){ x.classList.toggle("on",!K.q&&x.dataset.t===K.tab); }); load(); };
   mpPaid.start("kara_"+code); load(); barPaint(); karcLoad();
   if(KPTQ&&!kApp()){ KPTQ=false; setTimeout(function(){ if(box()&&!box().querySelector(".kwal")) kwOpen("chg"); },500); } }   // 심사용 ?paytest=1 (10-31)
-// ── 곡 이용권 판매 (사장님 10-30 「카드사 심사에 보여 줄 판매 화면」) — 노래방 안에서: 묶음 고르기 → 확인·구매자 정보 → 토스 시험 결제창 → 결제 완료
+// ── 곡 이용권 판매 (사장님 10-30 「카드사 심사에 보여 줄 판매 화면」) — 노래방 안에서: 이용권 고르기 → 포인트로 구매 (돈 결제는 포인트 충전만, 11-02 옛 토스 결제 화면 삭제)
 //   가격표 = 허브 GET/POST /shop/karc (관리자 「상품 관리」에서 고침, 서버 주문 금액도 같은 값). 허브가 안 되면 아래 기본값(허브 KARC_DEF 와 같게)
-//   주문 = 허브 POST /shop/order {pid:"karc", k, sess, test:true} → 시험 주문·텔레그램 「[시험 주문] 노래방 곡 이용권 n곡」 · 곡 수는 안 쌓음
-//   🔴 결제 붙일 때: test:true → false + 허브 승인 경로(worker.js shopRoute 주석)에서 "kc:<uid>" 에 곡 수 적립
 var KB={packs:[{n:1,b:0,p:1000},{n:3,b:1,p:3000},{n:5,b:2,p:5000},{n:10,b:5,p:10000}],left:0,sess:-1,k:1,cn:"",cp:"",ce:"",redraw:null};
-var TCK="test_ck_5OWRapdA8dzyq72vW4gRVo1zEqZK", TSDK="https://js.tosspayments.com/v2/standard", KPK="mpv_karpay";   // 시험 키 = shop.js·tosspay.js 와 같음 (_secrets\toss_test_ck.txt)
+var PSDK="https://cdn.portone.io/v2/browser-sdk.js";   // 포트원 V2 브라우저 SDK (11-02) — 전역 window.PortOne
 function sess(){ try{ return localStorage.getItem("mpv_pg_sess")||""; }catch(e){ return ""; } }
 // 로그인 여부 = pg.js 가 허브 세션을 두는 자리(mpv_pg_sess) — pg.js 는 안 건드리고 읽기만. 허브가 세션이 풀렸다고 하면(sess:0) 로그인 안 된 것으로
 function karSigned(){ return !!sess()&&KB.sess!==0; }
@@ -827,7 +825,7 @@ function barPaint(){ var b=box(), el=b&&b.querySelector("#karLeft"); if(!el) ret
 // 로그인 창(pg.js)을 노래방 위에 띄운다 — 닫히면 원래 높이로 돌리고 결제 창을 다시 그린다(로그인하면 남은 곡 표시)
 function signIn(){ if(!window.mpPG||!mpPG.open) return; mpPG.open(); var p=document.getElementById("pgBox"); if(!p) return; p.style.zIndex="2147483006";
   if(!p._karMo&&window.MutationObserver){ p._karMo=new MutationObserver(function(){ if(!p.hidden) return; p.style.zIndex=""; KB.sess=-1; karcLoad(); try{ kAdSync(); }catch(e){} var b=box(); if(b&&b.querySelector(".kpm:not(.kntc)")) payOpen(KB.k_go?"co":""); }); p._karMo.observe(p,{attributes:true,attributeFilter:["hidden"]}); } }
-function tsdk(){ return new Promise(function(ok,no){ if(window.TossPayments) return ok(); var s=document.createElement("script"); s.src=TSDK; s.onload=function(){ ok(); }; s.onerror=no; document.head.appendChild(s); }); }
+function psdk(){ return new Promise(function(ok,no){ if(window.PortOne) return ok(); var s=document.createElement("script"); s.src=PSDK; s.onload=function(){ ok(); }; s.onerror=no; document.head.appendChild(s); }); }
 function ss(k,v){ try{ if(v===undefined) return JSON.parse(sessionStorage.getItem(k)||"null"); if(v===null) sessionStorage.removeItem(k); else sessionStorage.setItem(k,JSON.stringify(v)); }catch(e){ return null; } }
 // mode: "" 묶음 고르기 · "co" 확인·결제 · "paid" 결제 완료(res) · "rq" 환불 요청 확인 · "done" 환불 요청 접수
 function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector(".kpm:not(.kntc)"); if(o) o.remove(); var mode=typeof mode0==="string"?mode0:"", agd=false;
@@ -836,7 +834,7 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
   var ut='';
   var cur={msg:"",busy:0};
   var draw=function(msg,busy){ cur={msg:msg||"",busy:busy||0}; var sg=karSigned(), left=karLeft(), P=KB.packs, x=P[KB.k]||P[0];
-    if(mode==="co") mode="";   // 돈 결제 창은 닫음 (10-31) — 로그인 뒤·토스 돌아옴도 묶음 창으로
+    if(mode==="co") mode="";   // 돈 결제 창은 닫음 (10-31) — 로그인 뒤에도 묶음 창으로
     KB.k_go=mode==="co";
     if(mode==="rq"){   // 환불 요청 확인 — 노래방 안에서
       o.innerHTML='<div><h3>'+esc(L(TX.rfh))+'</h3><p class="kq">'+esc(fmtN(L(TX.rfq),left))+'</p><button type="button" class="kgo" data-rfo="1">'+esc(L(TX.rfo))+'</button><button type="button" class="kc">'+esc(L(TX.cancel))+'</button></div>';
@@ -848,57 +846,6 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
     if(mode==="done"){
       o.innerHTML='<div><h3>'+esc(L(TX.rfh))+'</h3><p class="kq">'+esc(L(TX.rfd))+'</p><button type="button" class="kc">'+esc(L(TX.ok))+'</button></div>';
       o.querySelector(".kc").onclick=function(){ mode=""; draw(); }; return; }
-    if(mode==="paid"){   // 결제 완료 (토스 결제창에서 돌아옴)
-      var px=res.pk||x;
-      o.innerHTML='<div><h3>'+esc(L(TX.pdT))+ut+'</h3>'
-        +'<div class="krow"><span>'+esc(L(TX.sel))+'</span><b>'+esc(L(TX.kb))+' '+esc(pkName(px))+'</b></div>'
-        +'<div class="krow"><span>'+esc(L(TX.rcv))+'</span><b>'+esc(songsTx(px.n+px.b))+'</b></div>'
-        +'<div class="krow"><span>'+esc(L(TX.oid))+'</span><b>'+esc(res.oid)+'</b></div>'
-        +'<div class="kt"><span>'+esc(L(TX.tot))+'</span><span>'+won(res.amount)+'</span></div>'
-        +'<button type="button" class="kgo kcl">'+esc(L(TX.ok))+'</button>'+'</div>';
-      o.querySelector(".kcl").onclick=function(){ o.remove(); KB.redraw=null; }; return; }
-    if(mode==="co"){   // 확인·구매자 정보·결제 수단·동의 → 결제하기
-      if(!sg){ mode=""; draw(L(TX.sgn)); return; }
-      o.innerHTML='<div><h3>'+esc(L(TX.kb))+' · '+esc(L(TX.pay))+ut+'</h3>'
-        +'<div class="krow"><span>'+esc(L(TX.sel))+'</span><b>'+esc(pkName(x))+(x.b?' <em class="ksv">'+esc(tf(L(TX.svc),{b:x.b}))+'</em>':'')+'</b></div>'
-        +'<div class="krow"><span>'+esc(L(TX.rcv))+'</span><b>'+esc(songsTx(x.n+x.b))+' · '+esc(tf(L(TX.per),{w:perSong(x)}))+'</b></div>'
-        +(kptOn()?'<div class="kt"><span>'+esc(L(TX.kwUseAmt))+'</span><span>'+ptS(x.n*((KP.d.use&&KP.d.use.song)||1000))+'</span></div>'+(KP.d.bal.total<x.n*((KP.d.use&&KP.d.use.song)||1000)?'<button type="button" class="kwlow" data-kwlow="1">'+esc(L(TX.kwLow))+' ›</button>':''):'<div class="kt"><span>'+esc(L(TX.tot))+'</span><span>'+won(x.p)+'</span></div>')
-        +'<p class="km">'+esc(L(TX.keep))+'</p>'
-        +'<b class="kh">'+esc(L(TX.cu))+'</b>'
-        +'<label class="kfl">'+esc(L(TX.cn))+'<input type="text" id="kbN" maxlength="40" autocomplete="name" value="'+esc(KB.cn)+'"></label>'
-        +'<label class="kfl">'+esc(L(TX.cp))+'<input type="tel" id="kbP" maxlength="30" autocomplete="tel" value="'+esc(KB.cp)+'"></label>'
-        +'<label class="kfl">'+esc(L(TX.ce))+'<input type="email" id="kbE" maxlength="100" autocomplete="email" value="'+esc(KB.ce)+'"></label>'
-        +'<p class="km">'+esc(L(TX.cpn))+'</p>'
-        +'<b class="kh">'+esc(L(TX.pm))+'</b><label class="kfr"><input type="radio" checked> '+esc(L(TX.card))+'</label>'
-        +'<label class="kfr"><input type="checkbox" id="kbAg"> '+esc(L(TX.agr))+'</label>'
-        +'<div class="klk"><a href="terms.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+' ›</a> <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+' ›</a></div>'
-        +(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
-        +'<button type="button" class="kgo" id="kbGo" disabled>'+(busy?esc(L(busy===2?TX.opn:TX.sav)):won(x.p)+' '+esc(L(TX.pay)))+'</button>'
-        +'<button type="button" class="kc" id="kbX">'+esc(L(TX.back))+'</button>'+'</div>';
-      ["kbN","kbP","kbE"].forEach(function(id,i){ var el=o.querySelector("#"+id); el.oninput=function(){ KB[["cn","cp","ce"][i]]=el.value; }; });
-      var ag=o.querySelector("#kbAg"), go=o.querySelector("#kbGo");
-      if(busy){ ag.checked=true; ag.disabled=true; } else { ag.checked=agd; go.disabled=!agd; ag.onchange=function(){ agd=ag.checked; go.disabled=!agd; }; }
-      o.querySelector("#kbX").onclick=function(){ if(busy) return; mode=""; draw(); };
-      go.onclick=function(){ if(busy) return; var nm=KB.cn.trim(), ph=KB.cp.trim(), em=KB.ce.trim();
-        if(!nm){ draw(L(TX.enm)); return; }
-        if(!/^[\d\s+()-]{7,30}$/.test(ph)){ draw(L(TX.eph)); return; }
-        if(!/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/.test(em)){ draw(L(TX.eem)); return; }
-        draw("",1); var k=KB.k;
-        fetch(HUB+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:"karc",k:k,sess:sess(),pname:L(TX.kb)+" "+pkName(x),lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,test:true})})
-         .then(function(r){ return r.json(); }).then(function(j){
-           if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err; if(e==="sess"){ KB.sess=0; barPaint(); } draw(e==="sess"?L(TX.esess):e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):L(TX.efail)); return; }
-           try{ ntap("kara_pay","order_"+(x.n+x.b)); }catch(z){}
-           draw("",2);
-           ss(KPK,{oid:j.orderId,amount:j.amount,k:k,pk:{n:x.n,b:x.b,p:x.p},code:K.code,cn:nm,cp:ph,ce:em,at:Date.now()});   // 돌아왔을 때 화면을 다시 그리려고 이 탭에만 잠깐
-           var base=location.origin+location.pathname, mob=ph.replace(/\D/g,"");
-           var req={method:"CARD",amount:{currency:"KRW",value:j.amount},orderId:j.orderId,orderName:String(j.orderName||"Karaoke song pass").slice(0,100),
-             successUrl:base+"?karres=ok",failUrl:base+"?karres=fail",customerName:nm.slice(0,40),customerEmail:em};
-           if(/^01\d{8,9}$/.test(mob)) req.customerMobilePhone=mob;   // 토스는 한국 휴대폰 숫자만 받는다
-           req.card={flowMode:"DEFAULT",useEscrow:false,useCardPoint:false,useAppCardOnly:false};
-           return tsdk().then(function(){ return window.TossPayments(TCK).payment({customerKey:window.TossPayments.ANONYMOUS}).requestPayment(req); })
-             .catch(function(e){ window.__karTossErr=String((e&&e.code||"")+" "+(e&&e.message||e)); ss(KPK,null); draw((e&&e.code==="USER_CANCEL")?L(TX.pfT):((e&&e.message)||L(TX.pfT))); }); })
-         .catch(function(){ draw(L(TX.efail)); }); };
-      return; }
     // 이용권 고르기 (사장님 10-31 「곡당 판매 → 기간 이용권」) — 누구나 볼 수 있음 · 사려면 로그인 · 포인트로 「구매」 → 「10,000P 사용 → N P 남음」 확인
     var PP=kPassP(), q0=PP[KP.pk]||PP[0], on=kptOn(), bal=on?KP.d.bal.total:0, ps=(on&&KP.d.pass)||{};
     o.innerHTML='<div><h3>'+esc(L(TX.kb))+'</h3>'
@@ -922,23 +869,11 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
     o.querySelector(".kc").onclick=function(){ o.remove(); KB.redraw=null; }; };
   KB.redraw=function(){ if(o.isConnected&&!cur.busy) draw(cur.msg); };   // 언어 바꿈·가격표 받아 옴 → 다시 그림 (결제창 여는 중엔 안 건드림)
   draw(res&&res.err?res.err:""); if(!mode||mode==="co") karcLoad(); }
-// 토스 결제창에서 돌아옴 (?karres=ok&paymentKey&orderId&amount · ?karres=fail&code&message) — 주문번호·금액이 맞을 때만 완료 화면, 아니면 결제 확인 화면으로
-function karReturn(){ var sp=new URLSearchParams(location.search), r=sp.get("karres"); if(!r) return;
-  try{ var keep=location.search.slice(1).split("&").filter(function(x){ return !/^(karres|paymentKey|orderId|amount|paymentType|code|message)=/.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(keep?"?"+keep:"")+location.hash); }catch(e){}
-  var v=ss(KPK); if(!v||!v.oid) return;
-  var oid=sp.get("orderId")||"", amt=Math.round(Number(sp.get("amount")||0)), ok=r==="ok"&&oid===v.oid&&amt===v.amount;
-  if(ok) ss(KPK,null);
-  KB.cn=v.cn||""; KB.cp=v.cp||""; KB.ce=v.ce||""; if(typeof v.k==="number") KB.k=v.k;
-  open(v.code||"");
-  if(ok) payOpen("paid",{oid:v.oid,amount:v.amount,pk:v.pk});
-  else payOpen("co",{err:L(TX.pfT)+(r!=="ok"&&sp.get("message")?" ("+sp.get("message")+")":"")});
-  try{ ntap("kara_pay",ok?"paid_test":"payfail"); }catch(e){} window.__karResult=ok?"ok":"fail"; }
-if(/[?&]karres=/.test(location.search)){ var _kr=function(){ setTimeout(function(){ try{ karReturn(); }catch(e){ window.__karRetErr=String(e); } },700); }; if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",_kr); else _kr(); }
 // ── 포인트 지갑 (사장님 10-31 「자 만들어봐」) — 1원 = 1P · 로그인 계정마다 허브에 지갑 하나(웹·앱 같은 지갑) · 허브 POST /shop/kpt/{me,charge,use,refund}
 //   켜짐 = 로그인하고 허브가 지갑을 돌려줄 때 (10-31 출시판 — 누구나)
 //   초록 칸 「잔여 곡 3 · 12,000P」 → 누르면 「내 지갑」(잔여·유료/무료·유효기간·충전·사용 내역·환불 요청) · 돈 드는 일은 늘 「3,000P 사용 → 9,000P 남음」 확인 뒤
 //   충전: 웹 = 웹 가격(KG이니시스) / 앱(Capacitor) = 앱 가격만(구글 플레이 결제) — 앱에는 웹 가격을 절대 보이지 않는다
-//   (10-31 출시판) 「결제」 단추 하나 — 허브 d.live 에 진짜 결제 길(inicis·gplay)이 있으면 그 길, 없으면 같은 단추가 조용히 시험 충전(덩어리 test:1, 「시험」 표시만)
+//   (10-31 출시판) 「결제」 단추 하나 — 허브 d.live 에 진짜 결제 길(port·gplay)이 있으면 그 길, 없으면 같은 단추가 조용히 시험 충전(덩어리 test:1, 「시험」 표시만)
 var KP={on:0,d:null,redraw:null,k:1,pk:0};   // pk = 고른 이용권 (기본 1개월)   // k = 고른 충전 묶음 (기본 10,000P)
 function ptPer(q){ var v=q.n*((KP.d&&KP.d.use&&KP.d.use.song)||1000)/(q.n+q.b); return (v%1?"≈":"")+ptS(v); }   // 곡당 P
 function wonL(v){ return window.LANG==="ko"?Math.round(v).toLocaleString("ko-KR")+"원":won(v); }   // 결제 단추 — 한국어는 「10,000원」
@@ -1007,82 +942,86 @@ Object.assign(TX,{
  kwH:{ko:"충전|무료 지급|사용|사용 취소|환불 요청|환불|환불 거절|스토어 환불|기간 연장|이용권 구매|이용권 환불",en:"Top-up|Free points|Used|Use cancelled|Refund requested|Refunded|Refund declined|Store refund|Extended|Pass bought|Pass refunded",ja:"チャージ|無料付与|使用|使用取消|返金申請|返金|返金却下|ストア返金|期間延長|利用券購入|利用券返金",zhs:"充值|免费赠送|使用|取消使用|申请退款|退款|拒绝退款|商店退款|延长有效期|购买畅唱券|畅唱券退款",zht:"儲值|免費贈送|使用|取消使用|申請退款|退款|拒絕退款|商店退款|延長有效期|購買暢唱券|暢唱券退款",es:"Recarga|Puntos gratis|Uso|Uso cancelado|Reembolso solicitado|Reembolsado|Reembolso rechazado|Reembolso de tienda|Ampliado|Bono comprado|Bono reembolsado"},
  kwW:{ko:"곡 이용권|상황 사진|AI 영상|도란도란|도란도란 연장|우리끼리 노래 방|방 꾸미기|단체 AI 사진",en:"Song pass|AI photo|AI video|Doran-doran|Doran-doran extension|Just Us Karaoke room|Room decor|Group AI photo",ja:"曲チケット|シーン写真|AI動画|ドランドラン|ドランドラン延長|仲間だけカラオケ|ルームデコ|AI集合写真",zhs:"点歌券|情景照片|AI视频|Doran-doran|Doran-doran 延长|小圈子K歌房|房间装扮|AI 合影",zht:"點歌券|情境照片|AI影片|Doran-doran|Doran-doran 延長|小圈子K歌房|房間裝扮|AI 合影",es:"Bono de canciones|Foto IA|Video IA|Doran-doran|Ampliación Doran-doran|Sala Solo nosotros Karaoke|Decorar la sala|Foto de grupo IA"}
 });
-// ── 웹 포인트 충전 = 토스페이먼츠 결제창 (10-31 토스 PG 재심사) — 웹만 · 앱은 구글 플레이 그대로
-//   내 지갑 → 충전: 묶음 · 결제 수단(카드·토스페이·카카오페이·네이버페이·계좌이체·휴대폰) · 「50,000원 결제」 → 토스 결제창(API 개별 연동 키 TCK, requestPayment)
-//   로그인 = 허브 /shop/kpt/toss/order 가 주문번호·금액(서버 값)을 준다 → 돌아오면(?kptres=ok) /shop/kpt/toss/confirm → 충전 결과 화면
-//   비로그인(?paytest=1 심사용 등) = 같은 충전 화면·결제창을 볼 수 있다. 주문번호는 앞단에서(SG…) · 돌아오면 「결제 승인 대기(시험 키)」 — 포인트 없음
-//   시크릿 키(허브 TOSS_SECRET_KEY) 넣기 전 = 허브가 승인 못 함 → 시험 충전 스위치가 켜져 있으면 시험 포인트(test:1), 꺼져 있으면 「결제 승인 대기(시험 키)」
-//   🔴 승인 뒤: TCK 를 live_ck_… 로 바꾸고 허브에 TOSS_SECRET_KEY (live_sk_…)
+// ── 웹 포인트 충전 = 포트원 V2 · KG이니시스 결제창 (11-02) — 웹만 · 앱은 구글 플레이 그대로
+//   내 지갑 → 충전: 묶음 · 결제 수단(카드·카카오페이·네이버페이·토스페이·계좌이체) · 「결제」 → 허브 /shop/kpt/port/order 가 주문번호·금액·storeId·channelKey 를 준다 → PortOne.requestPayment
+//   redirectUrl + forceRedirect = PC·모바일 모두 ?kptres=1&paymentId 로 돌아옴(실패면 &code&message) → /shop/kpt/port/confirm → 허브가 포트원에서 결제를 다시 읽어 충전
+//   인증 결제라 결제창이 끝나면 돈이 나간다 — 로그인 전 손님은 결제창을 열지 않는다(로그인으로 보냄) · 시험 표시는 허브가 준 test(channel.type TEST)일 때만
+//   설정이 없으면(live.port 0) 결제 단추를 막고 안내 · 값은 전부 허브 설정이라 시험 → 운영에 앱 수정 없음
 Object.assign(TX,{
  tsCard:{ko:"신용·체크카드",en:"Credit/debit card",ja:"クレジット・デビットカード",zhs:"信用卡·借记卡",zht:"信用卡·簽帳金融卡",es:"Tarjeta de crédito/débito"},
- tsToss:{ko:"토스페이",en:"Toss Pay",ja:"Toss Pay",zhs:"Toss Pay",zht:"Toss Pay",es:"Toss Pay"},
  tsKakao:{ko:"카카오페이",en:"Kakao Pay",ja:"Kakao Pay",zhs:"Kakao Pay",zht:"Kakao Pay",es:"Kakao Pay"},
  tsNaver:{ko:"네이버페이",en:"Naver Pay",ja:"Naver Pay",zhs:"Naver Pay",zht:"Naver Pay",es:"Naver Pay"},
+ tsToss:{ko:"토스페이",en:"Toss Pay",ja:"Toss Pay",zhs:"Toss Pay",zht:"Toss Pay",es:"Toss Pay"},
  tsTr:{ko:"계좌이체",en:"Bank transfer",ja:"口座振替",zhs:"账户转账",zht:"帳戶轉帳",es:"Transferencia bancaria"},
- tsPh:{ko:"휴대폰",en:"Mobile phone",ja:"携帯電話",zhs:"手机支付",zht:"手機付款",es:"Teléfono móvil"},
+ tsOff:{ko:"결제 서비스를 준비하고 있습니다. 잠시 후 다시 이용해 주세요.",en:"Payment is being set up. Please try again later.",ja:"決済サービスを準備しています。しばらくしてからもう一度お試しください。",zhs:"支付服务正在准备中，请稍后再试。",zht:"付款服務正在準備中，請稍後再試。",es:"El servicio de pago se está preparando. Inténtalo más tarde."},
+ tsNeed:{ko:"계정에 이름 또는 이메일이 없어 PC에서 결제할 수 없습니다. 휴대폰에서 결제해 주세요.",en:"Your account has no name or email, so you can't pay on a PC. Please pay on your phone.",ja:"アカウントに名前またはメールがないため、PCでは決済できません。スマートフォンで決済してください。",zhs:"账户缺少姓名或邮箱，无法在电脑上支付。请使用手机支付。",zht:"帳戶缺少姓名或電子郵件，無法在電腦上付款。請使用手機付款。",es:"Tu cuenta no tiene nombre o correo, por lo que no puedes pagar en un PC. Paga desde el móvil."},
+ tsBad:{ko:"결제 금액을 확인해야 합니다. 포인트는 충전되지 않았습니다. admin@moneypuzzle.co.kr 로 문의해 주세요.",en:"The payment amount needs to be checked. No points were added. Please contact admin@moneypuzzle.co.kr.",ja:"決済金額の確認が必要です。ポイントはチャージされていません。admin@moneypuzzle.co.kr へお問い合わせください。",zhs:"需要核对支付金额，积分尚未充值。请联系 admin@moneypuzzle.co.kr。",zht:"需要核對付款金額，點數尚未儲值。請聯絡 admin@moneypuzzle.co.kr。",es:"Hay que comprobar el importe del pago. No se añadieron puntos. Escribe a admin@moneypuzzle.co.kr."},
+ tsMcX:{ko:"결제는 자동으로 취소됩니다.",en:"The payment will be cancelled automatically.",ja:"決済は自動的にキャンセルされます。",zhs:"该笔支付将自动取消。",zht:"該筆付款將自動取消。",es:"El pago se cancelará automáticamente."},
  tsAgr:{ko:"결제를 누르면 주문 내용과 이용약관·환불 규정을 확인하고 결제에 동의한 것으로 봅니다.",en:"By tapping Pay, you confirm the order and agree to the Terms and Refund Policy.",ja:"「決済」を押すと、注文内容と利用規約・返金規定を確認し、決済に同意したものとみなします。",zhs:"点击「支付」即表示您已确认订单内容及使用条款·退款规定，并同意付款。",zht:"點擊「支付」即表示您已確認訂單內容及使用條款·退款規定，並同意付款。",es:"Al pulsar Pagar, confirmas el pedido y aceptas los Términos y la Política de reembolso."},
  tsPay:{ko:"결제",en:"Pay",ja:"決済",zhs:"支付",zht:"支付",es:"Pagar"},
- tsGst:{ko:"로그인하지 않아도 충전 화면과 결제창을 볼 수 있습니다. 포인트는 로그인한 계정에만 충전됩니다.",en:"You can view the top-up screen and payment window without signing in. Points are only added to a signed-in account.",ja:"ログインしなくてもチャージ画面と決済画面を見られます。ポイントはログインしたアカウントにのみチャージされます。",zhs:"无需登录也可查看充值页面和支付窗口。积分只会充值到已登录的账户。",zht:"無需登入也可查看儲值頁面和付款視窗。點數只會儲值到已登入的帳戶。",es:"Puedes ver la recarga y la ventana de pago sin iniciar sesión. Los puntos solo se añaden a una cuenta con sesión iniciada."},
+ tsGst:{ko:"로그인하지 않아도 충전 화면을 볼 수 있습니다. 결제는 로그인한 뒤에 할 수 있습니다.",en:"You can view the top-up screen without signing in. Sign in to pay.",ja:"ログインしなくてもチャージ画面を見られます。決済にはログインが必要です。",zhs:"无需登录也可查看充值页面。登录后才能支付。",zht:"無需登入也可查看儲值頁面。登入後才能付款。",es:"Puedes ver la recarga sin iniciar sesión. Inicia sesión para pagar."},
  tsChk:{ko:"결제를 확인하고 있습니다…",en:"Confirming your payment…",ja:"決済を確認しています…",zhs:"正在确认付款…",zht:"正在確認付款…",es:"Confirmando el pago…"},
  tsOkT:{ko:"결제 완료",en:"Payment complete",ja:"決済完了",zhs:"支付完成",zht:"付款完成",es:"Pago completado"},
  tsOkD:{ko:"{p}가 충전되었습니다.",en:"{p} has been added.",ja:"{p}をチャージしました。",zhs:"已充值 {p}。",zht:"已儲值 {p}。",es:"Se han añadido {p}."},
  tsTstD:{ko:"시험 결제입니다 — 실제 청구는 없으며 시험 포인트로 충전되었습니다.",en:"Test payment — no real charge; test points were added.",ja:"テスト決済です — 実際の請求はなく、テストポイントがチャージされました。",zhs:"测试支付 — 不会实际扣款，已充值测试积分。",zht:"測試付款 — 不會實際扣款，已儲值測試點數。",es:"Pago de prueba: sin cargo real; se añadieron puntos de prueba."},
- tsWtT:{ko:"결제 승인 대기(시험 키)",en:"Awaiting approval (test key)",ja:"決済承認待ち（テストキー）",zhs:"等待支付批准（测试密钥）",zht:"等待付款核准（測試金鑰）",es:"Pendiente de aprobación (clave de prueba)"},
- tsWtD:{ko:"시험 결제창에서 돌아왔습니다. 정식 승인 전이라 실제 청구는 없고 포인트도 충전되지 않았습니다.",en:"You are back from the test payment window. It is not approved yet, so there is no charge and no points were added.",ja:"テスト決済画面から戻りました。正式承認前のため、請求はなく、ポイントもチャージされていません。",zhs:"已从测试支付窗口返回。尚未正式批准，因此不会扣款，也未充值积分。",zht:"已從測試付款視窗返回。尚未正式核准，因此不會扣款，也未儲值點數。",es:"Has vuelto de la ventana de pago de prueba. Aún no está aprobado: no hay cargo ni se añadieron puntos."},
+ tsWtT:{ko:"결제 확인 중",en:"Checking your payment",ja:"決済を確認中",zhs:"正在确认付款",zht:"正在確認付款",es:"Comprobando el pago"},
+ tsWtD:{ko:"결제 결과를 아직 받지 못했습니다. 결제가 완료되었다면 포인트가 자동으로 충전됩니다.",en:"We haven't received the payment result yet. If the payment went through, your points will be added automatically.",ja:"決済結果をまだ受け取っていません。決済が完了していれば、ポイントは自動でチャージされます。",zhs:"尚未收到支付结果。如果支付已完成，积分将自动充值。",zht:"尚未收到付款結果。如果付款已完成，點數將自動儲值。",es:"Aún no hemos recibido el resultado. Si el pago se completó, los puntos se añadirán automáticamente."},
  tsFlT:{ko:"결제가 완료되지 않았습니다",en:"Payment not completed",ja:"決済が完了しませんでした",zhs:"支付未完成",zht:"付款未完成",es:"El pago no se completó"},
  tsFlD:{ko:"결제가 취소되었거나 승인되지 않았습니다. 청구된 금액은 없습니다.",en:"The payment was cancelled or not approved. You have not been charged.",ja:"決済がキャンセルされたか、承認されませんでした。請求は発生していません。",zhs:"支付已取消或未获批准，未产生任何扣款。",zht:"付款已取消或未獲核准，未產生任何扣款。",es:"El pago se canceló o no se aprobó. No se te ha cobrado."},
  tsPt:{ko:"충전 포인트",en:"Top-up points",ja:"チャージポイント",zhs:"充值积分",zht:"儲值點數",es:"Puntos de recarga"},
  tsRe:{ko:"다시 결제",en:"Try again",ja:"もう一度決済",zhs:"重新支付",zht:"重新付款",es:"Intentar de nuevo"}
 });
-var KTK="mpv_kptpay", KTM=[["card","tsCard"],["tosspay","tsToss"],["kakaopay","tsKakao"],["naverpay","tsNaver"],["transfer","tsTr"],["phone","tsPh"]];
+var KTK="mpv_kptpay", KTM=[["card","tsCard"],["kakaopay","tsKakao"],["naverpay","tsNaver"],["tosspay","tsToss"],["transfer","tsTr"]], KEZ={kakaopay:"KAKAOPAY",naverpay:"NAVERPAY",tosspay:"TOSSPAY"};   // KG이니시스 V2 는 EASY_PAY 에 간편결제사 지정이 필수 (11-02 시험 채널 실측)
 var KPTQ=/[?&]paytest=1(?![0-9a-z])/i.test(location.search);   // 심사용 주소 ?paytest=1 — 노래방이 열리면 바로 「내 지갑 → 충전」 (로그인 없이도)
 if(KPTQ){ try{ var _pq=location.search.slice(1).split("&").filter(function(x){ return !/^paytest=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(_pq?"?"+_pq:"")+location.hash); }catch(e){} }
 // 로그인 전 충전 화면용 묶음표 (허브 KPT_PT·KPT_WEB 과 같은 값)
 function kGuestD(){ return {guest:1,packs:{pt:[50000,100000,150000,200000],web:[50000,100000,150000,200000],app:[60000,120000,180000,240000],gp:[]},bonus:[0,0,0,0],bal:{total:0,paid:0,free:0},live:{},hist:[],lots:[]}; }
 // 충전 화면의 결제 수단 · 동의 안내 · 결제 단추 (웹)
-function kTossUi(amt,busy,guest){ var m=KP.tm||"card", lg=esc(window.LANG||"en");
+function kPc(){ var u=navigator.userAgent||""; return !(/Android|iPhone|iPad|iPod|Mobile/i.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1)); }   // KG이니시스 PC 결제는 이름·전화·이메일 필수(모바일은 선택)
+function kPgLoc(pc){ var l=window.LANG; return l==="ko"?"KO_KR":(pc&&(l==="zhs"||l==="zht"))?"ZH_CN":"EN_US"; }   // 결제창 언어: PC 한·영·중 · 모바일 한·영 (포트원 KG이니시스 문서)
+function kPayUi(amt,busy,guest,off){ var m=KP.tm||"card", lg=esc(window.LANG||"en");
   return '<b class="kh">'+esc(L(TX.pm))+'</b><div class="ktm">'+KTM.map(function(x){ return '<button type="button" data-tm="'+x[0]+'"'+(x[0]===m?' class="on"':'')+'>'+esc(L(TX[x[1]]))+'</button>'; }).join("")+'</div>'
+    +(!guest&&!off&&kPc()?'<label class="kfl">'+esc(L(TX.cp))+'<input type="tel" id="kwPh" maxlength="30" autocomplete="tel" value="'+esc(KP.ph||"")+'"></label><p class="km">'+esc(L(TX.cpn))+'</p>':'')   // 계정에 전화번호가 없다 — PC 결제창 필수 값이라 여기서 받아 결제창에만 넘긴다(허브에 저장 안 함)
     +'<p class="km">'+esc(L(TX.tsAgr))+'</p><div class="klk"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+' ›</a> <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+' ›</a></div>'
     +(guest?'<div class="ktgst">'+esc(L(TX.tsGst))+'<button type="button" data-tlg="1">'+esc(L(TX.sgb))+'</button></div>':'')
-    +'<button type="button" class="kgo" data-pg="1"'+(busy?' disabled':'')+'>'+esc(busy?L(TX.opn):tf(L(TX.tsPay),{w:wonL(amt)}))+'</button>'; }
+    +(off?'<div class="kerr">'+esc(L(TX.tsOff))+'</div>':'')
+    +'<button type="button" class="kgo" data-pg="1"'+(busy||off?' disabled':'')+'>'+esc(busy?L(TX.opn):tf(L(TX.tsPay),{w:wonL(amt)}))+'</button>'; }
 // 15~18세 한 달 충전 한도 (10-31 밤) — 허브가 err "mcap" {cap,used,left} 로 거절 · /shop/kpt/me 의 mcap 도 같은 모양 (15~18세 계정만)
 var KMC={t:{ko:"청소년은 한 달에 {c}까지 충전할 수 있습니다. 이번 달 남은 한도는 {l}입니다.",en:"Users aged 15–18 can top up up to {c} per month. Remaining this month: {l}.",ja:"満15〜18歳のチャージは月{c}までです。今月の残り枠は{l}です。",zhs:"15~18周岁用户每月最多可充值{c}。本月剩余额度为{l}。",zht:"15~18歲使用者每月最多可儲值{c}。本月剩餘額度為{l}。",es:"De 15 a 18 años se puede recargar hasta {c} al mes. Te quedan {l} este mes."},
  n:{ko:"청소년 한 달 충전 한도 {c} · 이번 달 남은 한도 {l}",en:"Ages 15–18 monthly top-up limit {c} · {l} left this month",ja:"満15〜18歳の月間チャージ上限 {c}・今月の残り {l}",zhs:"15~18周岁每月充值上限 {c} · 本月剩余 {l}",zht:"15~18歲每月儲值上限 {c} · 本月剩餘 {l}",es:"Límite mensual de recarga (15 a 18 años): {c} · quedan {l} este mes"}};
 function kMcapTx(j,k){ j=j||{}; return tf(L(KMC[k||"t"]),{c:wonL(j.cap||0),l:wonL(j.left!=null?j.left:Math.max(0,(j.cap||0)-(j.used||0)))}); }
-// 토스 결제창 열기 — 돌려주는 값: null(결제창으로 감) · 문자열(화면에 보일 오류)
-function kTossGo(k){ var m=KP.tm||"card", guest=!kptOn(), base=location.origin+location.pathname, G=kGuestD();
-  var od=guest?Promise.resolve({ok:true,orderId:"SG"+kYmd(Date.now()).replace(/-/g,"")+"_"+kRid().slice(1),amount:G.packs.web[k],pt:G.packs.pt[k],orderName:"StageSong 포인트 "+G.packs.pt[k].toLocaleString("ko-KR")+"P"})
-    :kptPost("toss/order",{k:k,rid:kRid()});
-  var me=guest?Promise.resolve(null):fetch(HUB+"/npg/me",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sess:sess()})}).then(function(r){ return r.json(); }).catch(function(){ return null; });
+// 포트원 결제창 열기 — 돌려주는 값: null(결제창으로 감) · 문자열(화면에 보일 오류)
+function kBoxLow(on){ var b=document.getElementById("karBox"); if(b) b.style.zIndex=on?"10":""; }   // PC 결제창이 노래방 화면 뒤로 숨지 않게 — 결제창이 열린 동안만 낮춘다
+function kPortGo(k){ var m=KP.tm||"card", base=location.origin+location.pathname, pc=kPc(), ph=String(KP.ph||"").trim();
+  if(pc&&!/^[\d\s+()-]{7,30}$/.test(ph)) return Promise.resolve(L(TX.eph));
+  var od=kptPost("port/order",{k:k,rid:kRid()});
+  var me=fetch(HUB+"/npg/me",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sess:sess()})}).then(function(r){ return r.json(); }).catch(function(){ return null; });
   return Promise.all([od,me]).then(function(a){ var j=a[0], u=(a[1]&&a[1].me)||{};
-    if(!(j&&j.ok&&j.orderId&&j.amount)){ if(j&&j.err==="sess"){ KB.sess=0; barPaint(); return L(TX.esess); } if(j&&j.err==="mcap") return kMcapTx(j); return L(TX.kwPgN); }
-    try{ ntap("kara_pt","toss_"+m+"_"+k); }catch(e){}
-    ss(KTK,{oid:j.orderId,amount:j.amount,pt:j.pt,k:k,m:m,g:guest?1:0,code:K.code,at:Date.now()});   // 돌아왔을 때 이 탭에서만 맞춰 본다
-    var req={amount:{currency:"KRW",value:j.amount},orderId:j.orderId,orderName:String(j.orderName||"StageSong").slice(0,100),successUrl:base+"?kptres=ok",failUrl:base+"?kptres=fail"};
-    var nm=String(u.name||"").trim(), em=String(u.email||"").trim();
-    if(nm) req.customerName=nm.slice(0,100); if(/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/.test(em)) req.customerEmail=em;
-    var cd={flowMode:"DEFAULT",useEscrow:false,useCardPoint:false,useAppCardOnly:false};
-    if(m==="tosspay"||m==="kakaopay"||m==="naverpay"){ req.method="CARD"; req.card={flowMode:"DIRECT",easyPay:{tosspay:"TOSSPAY",kakaopay:"KAKAOPAY",naverpay:"NAVERPAY"}[m],useEscrow:false,useCardPoint:false,useAppCardOnly:false}; }
-    else if(m==="transfer"){ req.method="TRANSFER"; req.transfer={cashReceipt:{type:"소득공제"},useEscrow:false}; }
-    else if(m==="phone"){ req.method="MOBILE_PHONE"; }
-    else { req.method="CARD"; req.card=cd; }
-    var ck=/^[A-Za-z0-9_=.@-]{2,50}$/.test(j.customerKey||"")?j.customerKey:null;
-    return tsdk().then(function(){ return window.TossPayments(TCK).payment({customerKey:ck||window.TossPayments.ANONYMOUS}).requestPayment(req); }).then(function(){ return null; })
-      .catch(function(e){ window.__kptTossErr=String((e&&e.code||"")+" "+(e&&e.message||e)); ss(KTK,null); return (e&&e.code==="USER_CANCEL")?L(TX.tsFlD):((e&&e.message)||L(TX.kwPgN)); }); })
+    if(!(j&&j.ok&&j.paymentId&&j.amount&&j.storeId&&j.channelKey)){ if(j&&j.err==="sess"){ KB.sess=0; barPaint(); return L(TX.esess); } if(j&&j.err==="mcap") return kMcapTx(j); if(j&&j.err==="pgoff") return L(TX.tsOff); return L(TX.kwPgN); }
+    var nm=String(u.name||"").trim(), em=String(u.email||"").trim(); if(!/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/.test(em)) em="";
+    if(pc&&!(nm&&em)) return L(TX.tsNeed);
+    var c={}; if(nm) c.fullName=nm.slice(0,100); if(em) c.email=em; if(ph) c.phoneNumber=ph;
+    var req={storeId:j.storeId,channelKey:j.channelKey,paymentId:j.paymentId,orderName:String(j.orderName||"StageSong").slice(0,100),totalAmount:j.amount,currency:"KRW",payMethod:KEZ[m]?"EASY_PAY":m==="transfer"?"TRANSFER":"CARD",customer:c,redirectUrl:base+"?kptres=1",forceRedirect:true,locale:kPgLoc(pc)}; if(KEZ[m]) req.easyPay={easyPayProvider:KEZ[m]};
+    try{ ntap("kara_pt","pay_"+m+"_"+k); }catch(e){}
+    ss(KTK,{oid:j.paymentId,amount:j.amount,pt:j.pt,k:k,m:m,code:K.code,at:Date.now()});   // 돌아왔을 때 금액·포인트를 보여 주려고 이 탭에만 (확정은 허브가 포트원에서 읽은 값으로)
+    return psdk().then(function(){ kBoxLow(1); return window.PortOne.requestPayment(req); }).then(function(r){ kBoxLow(0);
+      if(r&&r.code!==undefined){ window.__kptPayErr=String(r.code)+" "+String(r.message||""); ss(KTK,null); return r.message||L(TX.kwPgN); }
+      location.href=base+"?kptres=1&paymentId="+encodeURIComponent(j.paymentId); return null; })
+      .catch(function(e){ kBoxLow(0); window.__kptPayErr=String((e&&e.code||"")+" "+(e&&e.message||e)); ss(KTK,null); return (e&&e.message)||L(TX.kwPgN); }); })
     .catch(function(){ return L(TX.kwPgN); }); }
-// 결제 결과 창 — st: "chk" 확인 중 · "ok" 충전됨(x.test = 시험) · "wait" 승인 대기(시험 키) · "fail"
-function kTossRes(st,x){ var b=box(); if(!b) return null; var o=b.querySelector(".ktsr"); if(o) o.remove(); o=document.createElement("div"); o.className="kpm ktsr"; b.appendChild(o); x=x||{};
+// 결제 결과 창 — st: "chk" 확인 중 · "ok" 충전됨(x.test = 포트원 시험 채널) · "wait" 결과 대기(웹훅·대조가 충전) · "fail" (x.only = 이 문구만)
+function kPayRes(st,x){ var b=box(); if(!b) return null; var o=b.querySelector(".ktsr"); if(o) o.remove(); o=document.createElement("div"); o.className="kpm ktsr"; b.appendChild(o); x=x||{};
   var lg=esc(window.LANG||"en"), h='<div><h3>'+esc(L(st==="ok"?TX.tsOkT:st==="wait"?TX.tsWtT:st==="fail"?TX.tsFlT:TX.tsChk))+'</h3>';
   if(st==="chk") h+='<p class="km">'+esc(L(TX.lo))+'</p>';
   else if(st==="ok") h+='<div class="kdone">'+esc(tf(L(TX.tsOkD),{p:ptS(x.pt)}))+(x.test?'<br>'+esc(L(TX.tsTstD)):'')+'</div>';
   else if(st==="wait") h+='<div class="kwait">'+esc(L(TX.tsWtD))+'</div>';
-  else h+='<div class="kerr">'+esc(L(TX.tsFlD))+(x.msg?' ('+esc(String(x.msg).slice(0,120))+')':'')+'</div>';
+  else h+='<div class="kerr">'+(x.only?esc(x.only):esc(L(TX.tsFlD))+(x.msg?' ('+esc(String(x.msg).slice(0,120))+')':''))+'</div>';
   if(x.oid) h+='<div class="krow"><span>'+esc(L(TX.oid))+'</span><b>'+esc(x.oid)+'</b></div>';
   if(x.won) h+='<div class="krow"><span>'+esc(L(TX.tot))+'</span><b>'+wonL(x.won)+'</b></div>';
   if(x.pt) h+='<div class="krow"><span>'+esc(L(TX.tsPt))+'</span><b>'+ptS(x.pt)+'</b></div>';
   if(st==="ok"&&x.bal) h+='<div class="kt"><span>'+esc(L(TX.kwBal))+'</span><span>'+ptS(x.bal.total)+'</span></div>';
   if(st==="ok") h+='<button type="button" class="kgo" data-tw="1">'+esc(L(TX.kwT))+'</button><button type="button" class="krf" data-tb="1">'+esc(L(TX.kwBuy))+'</button>';
-  if(st==="wait"||st==="fail") h+='<button type="button" class="kgo" data-tr="1">'+esc(L(TX.tsRe))+'</button>';
+  if(st==="fail") h+='<button type="button" class="kgo" data-tr="1">'+esc(L(TX.tsRe))+'</button>';
   h+='<div class="klk"><a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+' ›</a></div>'+(st!=="chk"?'<button type="button" class="kc">'+esc(L(TX.ok))+'</button>':'')+'</div>';
   o.innerHTML=h; var q=function(s){ return o.querySelector(s); };
   if(q(".kc")) q(".kc").onclick=function(){ o.remove(); };
@@ -1090,21 +1029,23 @@ function kTossRes(st,x){ var b=box(); if(!b) return null; var o=b.querySelector(
   if(q("[data-tb]")) q("[data-tb]").onclick=function(){ o.remove(); payOpen(""); };
   if(q("[data-tr]")) q("[data-tr]").onclick=function(){ o.remove(); kwOpen("chg"); };
   return o; }
-// 토스 결제창에서 돌아옴 (?kptres=ok&paymentKey&orderId&amount · ?kptres=fail&code&message)
+// 포트원 결제창에서 돌아옴 (?kptres=1&paymentId · 실패 &code&message&pgCode&pgMessage) — 결과는 허브가 포트원에서 읽은 값만 믿는다 · 결제 뒤 끊겨도 웹훅·대조가 충전하므로 확정 실패가 아니면 「확인 중」
 function kptReturn(){ var sp=new URLSearchParams(location.search), r=sp.get("kptres"); if(!r) return;
-  try{ var keep=location.search.slice(1).split("&").filter(function(x){ return !/^(kptres|paymentKey|orderId|amount|paymentType|code|message)=/.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(keep?"?"+keep:"")+location.hash); }catch(e){}
+  try{ var keep=location.search.slice(1).split("&").filter(function(x){ return !/^(kptres|paymentId|txId|transactionType|code|message|pgCode|pgMessage)=/.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(keep?"?"+keep:"")+location.hash); }catch(e){}
   var v=ss(KTK); ss(KTK,null);
-  var oid=sp.get("orderId")||"", amt=Math.round(Number(sp.get("amount")||0)), pk=sp.get("paymentKey")||"", ok=r==="ok"&&!!v&&oid===v.oid&&amt===v.amount&&!!pk;
+  var oid=sp.get("paymentId")||(v&&v.oid)||"", cd=sp.get("code");
   if(!box()) open((v&&v.code)||(window.KAR_SITE?"site":""));
-  var base={oid:oid||(v&&v.oid)||"",won:(v&&v.amount)||amt||0,pt:(v&&v.pt)||0};
-  var fin=function(st,x){ window.__kptResult=st; try{ ntap("kara_pt","toss_res_"+st); }catch(e){} kTossRes(st,Object.assign({},base,x||{})); };
-  if(!ok){ fin("fail",{msg:r==="ok"?"":(sp.get("message")||"")}); return; }
-  if(v.g){ fin("wait"); return; }
-  kTossRes("chk",base);
-  kptPost("toss/confirm",{rid:kRid(),paymentKey:pk,orderId:oid,amount:amt}).then(function(j){
+  var base={oid:oid,won:(v&&v.amount)||0,pt:(v&&v.pt)||0};
+  var fin=function(st,x){ window.__kptResult=st; try{ ntap("kara_pt","pay_res_"+st); }catch(e){} kPayRes(st,Object.assign({},base,x||{})); };
+  if(cd||!oid){ fin("fail",{msg:sp.get("pgMessage")||sp.get("message")||""}); return; }
+  if(!sess()){ fin("wait"); return; }
+  kPayRes("chk",base);
+  kptPost("port/confirm",{rid:kRid(),paymentId:oid}).then(function(j){
     if(j&&j.ok){ kptLoad(); fin("ok",{pt:j.pt||base.pt,won:j.won||base.won,test:j.test?1:0,bal:j.bal}); return; }
-    if(j&&j.err==="nosk"){ fin("wait"); return; }
-    fin("fail",{msg:j&&j.err==="sess"?L(TX.esess):j&&j.err==="mcap"?kMcapTx(j):(j&&j.msg)||""}); }).catch(function(){ fin("fail"); }); }
+    if(j&&j.err==="mcap"){ fin("fail",{only:kMcapTx(j)+" "+L(TX.tsMcX)}); return; }
+    if(j&&j.err==="amount"){ fin("fail",{only:L(TX.tsBad)}); return; }
+    if(j&&j.err==="fail"){ fin("fail"); return; }
+    fin("wait"); }).catch(function(){ fin("wait"); }); }
 if(/[?&]kptres=/.test(location.search)){ var _kt=function(){ setTimeout(function(){ try{ kptReturn(); }catch(e){ window.__kptRetErr=String(e); } },700); }; if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",_kt); else _kt(); }
 var KWH=["charge","bonus","use","undo","refreq","refund","refrej","void","ext","pass","passrf"],   /* ext = 옛 기간 연장 내역 표시만 (기능은 11-01 없앰) */ KWW=["song","ai","aiv","dor","dorx","room","deco"];   // deco = 방 꾸미기 (10-31)
 function kTx(o,i){ return String(L(o)).split("|")[i]||""; }
@@ -1138,7 +1079,7 @@ function kwOpen(v0){ var b=box(); if(!b) return; var o=b.querySelector(".kwal");
         return '<button type="button" data-k="'+i+'"'+(i===(KP.k||0)?' class="on"':'')+'><b>'+ptS(pt)+'</b>'+(bo?'<em class="ksv">'+esc(tf(L(TX.kwBon),{b:ptS(bo)}))+'</em>':'')+'<span>'+won(wonA[i])+'</span></button>'; }).join("")+'</div>'
         +'<p class="km">'+esc(L(TX.kwRule))+(app?'<br>'+esc(L(TX.kwGpN)):'')+'</p>'+(d.mcap?'<p class="km kmcap"><b>'+esc(kMcapTx(d.mcap,"n"))+'</b></p>':'')+(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
         +(app?'<button type="button" class="kgo" data-gp="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwPayB))+'</button>'
-             :kTossUi(wonA[KP.k||0],busy,!!d.guest))   // 웹 = 토스페이먼츠 결제창 (10-31)
+             :kPayUi(wonA[KP.k||0],busy,!!d.guest,!d.guest&&!(d.live&&d.live.port)))   // 웹 = 포트원·KG이니시스 결제창 (11-02)
         +'<button type="button" class="krf" data-buy="1">'+esc(L(TX.kwBuyPt))+'</button>'   // 충전 창 안에서 곡 이용권 구매 (10-31)
         +'<button type="button" class="kc" data-bk="1">'+esc(L(TX.back))+'</button>'+(app?'':bizHtml())+'</div>'; }
     else if(v==="rf"){ var f=Math.round((d.fee||0)*1000)/10;
@@ -1174,9 +1115,9 @@ function kwOpen(v0){ var b=box(); if(!b) return; var o=b.querySelector(".kwal");
     var live=d.live||{}, tst=function(){ if(busy) return; busy=true; draw(); var k=KP.k||0;   // 진짜 결제 길이 아직 없을 때 = 같은 「결제」 단추가 시험 충전 (10-31 출시판)
       var p=app?kGpTest(k):kptPost("charge",{rail:"test",k:k,rid:kRid()});
       p.then(function(j){ busy=false; if(j&&j.ok){ try{ ntap("kara_pt","test_"+k); }catch(e){} v=""; msg=""; kptLoad().then(function(){ soon(L(TX.kwDone)); }); } else { msg=j&&j.err==="mcap"?kMcapTx(j):L(TX.kwPgN); draw(); } }).catch(function(){ busy=false; msg=L(TX.kwPgN); draw(); }); };
-    if(q("[data-pg]")) q("[data-pg]").onclick=function(){ if(busy) return; busy=true; msg=""; draw();
-      if(!live.inicis){ kTossGo(KP.k||0).then(function(e){ busy=false; if(e) msg=e; if(o.isConnected) draw(); }); return; }   // 웹 = 토스페이먼츠 결제창 (10-31) · 이니시스 계약이 생기면 아래 길
-      kptPost("charge",{rail:"inicis",k:KP.k||0,rid:kRid()}).then(function(j){ busy=false; msg=j&&j.ok?"":L(TX.kwPgN); draw(); }).catch(function(){ busy=false; msg=L(TX.kwPgN); draw(); }); };
+    if(q("#kwPh")) q("#kwPh").oninput=function(){ KP.ph=this.value; };
+    if(q("[data-pg]")) q("[data-pg]").onclick=function(){ if(busy) return; if(d.guest){ o.remove(); KP.redraw=null; KP.reChg=1; signIn(); return; } busy=true; msg=""; draw();
+      kPortGo(KP.k||0).then(function(e){ busy=false; if(e) msg=e; if(o.isConnected) draw(); }); };   // 웹 = 포트원·KG이니시스 결제창 (11-02) · 결제하려면 로그인
     if(q("[data-gp]")) q("[data-gp]").onclick=function(){ if(!live.gplay) return tst(); if(busy) return; busy=true; msg=""; draw(); kGpBuy(KP.k||0).then(function(r){ busy=false; if(r&&r.ok){ v=""; kptLoad().then(function(){ soon(L(TX.kwDone)); }); } else { msg=r&&r.msg||L(TX.efail); draw(); } }); };
     if(q("[data-rq]")) q("[data-rq]").onclick=function(){ if(busy) return; busy=true; draw();
       kptPost("refund",{rid:rf.rid}).then(function(j){ busy=false; if(j&&j.ok){ rf.done=1; try{ ntap("kara_pt","refund_req"); }catch(e){} kptLoad(); } else msg=j&&j.err==="pending"?L(TX.kwRfPd):L(TX.efail); draw(); }).catch(function(){ busy=false; msg=L(TX.efail); draw(); }); }; };
