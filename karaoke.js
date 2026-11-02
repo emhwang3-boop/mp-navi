@@ -811,7 +811,7 @@ function bizHtml(){ var z=TX.bz[window.LANG]||TX.bz.en, lg=TX.bz[window.LANG]?wi
   return '<div class="kbz"><b>'+esc(z[0])+'</b><br><span class="nw">'+esc(z[1])+'</span> · <span class="nw">'+esc(z[2])+' '+esc(z[3])+'</span><br>'+esc(z[4])+' <span class="nw">297-81-03712</span><br>'+esc(z[5])+': '+esc(z[6])+'<br>'+esc(z[7])+': '+esc(z[8])+'<br>'+esc(z[9])+': admin@moneypuzzle.co.kr'+'<br>'+esc(L({ko:"전화",en:"Tel",ja:"電話",zhs:"电话",zht:"電話",es:"Tel."}))+': <span class="nw">010-4221-7066</span><br>'+esc(L(TX.bzh))+': GitHub, Inc. · Cloudflare, Inc.<br>'+esc(L(TX.bzn))
     +'<div class="kbzl"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a> · <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a> · <a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a>'+(window.KAR_SITE?' · <a href="legal.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.gL))+'</a>':'')+'</div>'+(window.KAR_VC?'<p class="kvc">'+esc(window.KAR_VC())+'</p>':'')+'</div>'; }   // 노래방 사이트 방문자 수 (site.js, 10-31)
 // 초록 칸 — 「잔여 곡 3 · 12,000P」 · 누르면 내 지갑
-function barPaint(){ var b=box(), el=b&&b.querySelector("#karLeft"); if(!el) return; el.textContent=karSigned()?(kptOn()?kBarTx():(karLeft()>0?fmtN(L(TX.lftN),karLeft()):L(TX.kwT))):L(TX.lgin); }
+function barPaint(){ var b=box(), el=b&&b.querySelector("#karLeft"); if(!el) return; el.textContent=karSigned()?(kptOn()?kBarPt():(karLeft()>0?fmtN(L(TX.lftN),karLeft()):L(TX.kwT))):L(TX.lgin); }
 // 로그인 창(pg.js)을 노래방 위에 띄운다 — 닫히면 원래 높이로 돌리고 결제 창을 다시 그린다(로그인하면 남은 곡 표시)
 function signIn(){ if(!window.mpPG||!mpPG.open) return; mpPG.open(); var p=document.getElementById("pgBox"); if(!p) return; p.style.zIndex="2147483006";
   if(!p._karMo&&window.MutationObserver){ p._karMo=new MutationObserver(function(){ if(!p.hidden) return; p.style.zIndex=""; KB.sess=-1; karcLoad(); try{ kAdSync(); }catch(e){} var b=box(); if(b&&b.querySelector(".kbuy")) payOpen(""); }); p._karMo.observe(p,{attributes:true,attributeFilter:["hidden"]}); } }
@@ -823,7 +823,7 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
   try{ ntap("kara_pay","open"); }catch(e){}
   var draw=function(){ var d=KP.d||kGuestD(), P=d.packs, wonA=app?P.app:P.web, sg=karSigned(), on=kptOn(), bal=on?KP.d.bal.paid:0, BN=kBnd(), q0=BN[KP.pk]||BN[0], off=!d.guest&&!(d.live&&d.live.port);
     var h='<div><h3>'+esc(L(TX.kb))+'</h3>'
-    +(sg?'<div class="klf">'+esc(on?kBarTx():(karLeft()>0?fmtN(L(TX.lftN),karLeft()):L(TX.kwT)))+'</div>':'<div class="ksg">'+esc(L(TX.sgi))+'<button type="button" class="ksgb">'+esc(L(TX.sgb))+'</button></div>')
+    +(sg?'<div class="klf">'+esc(on?kBarPt():(karLeft()>0?fmtN(L(TX.lftN),karLeft()):L(TX.kwT)))+'</div>':'<div class="ksg">'+esc(L(TX.sgi))+'<button type="button" class="ksgb">'+esc(L(TX.sgb))+'</button></div>')
     +(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
     +'<b class="kh">'+esc(L(TX.bnH))+'</b><p class="km">'+esc(tf(L(TX.bnN),{p:ptS(kSongP())}))+'</p>'
     +'<div class="kwpk">'+BN.map(function(q,i){ return '<button type="button" data-pk="'+i+'"'+(i===(KP.pk||0)?' class="on"':'')+'><b>'+esc(songsTx(q.n))+'</b><em class="ksv">'+esc(tf(L(TX.bnPer),{p:ptS(Math.round(q.p/q.n))}))+'</em><span>'+ptS(q.p)+'</span></button>'; }).join("")+'</div>'
@@ -1094,6 +1094,7 @@ function kwOpen(v0){ var b=box(); if(!b) return; var o=b.querySelector(".kwal");
   draw(); if(v==="rf") rfLoad(); kptLoad(); }
 // ── 곡 묶음 구매 (사장님 11-02) — 허브 /shop/kpt/bundle {k, cost} · 가격 = 허브 bnd (관리자 「곡 가격」) · 화면에 보인 값이 허브와 다르면 안 산다
 function kMon(m){ return tf(L(m===1?TX.psM1:TX.psM),{n:m}); }
+function kBarPt(){ var d=KP.d; return d?ptS(d.bal.total):""; }   // 초록 칸·PAYMENT 위 = 포인트만 (잔여 곡은 내 지갑에서, 사장님 11-02)
 function kBarTx(){ var d=KP.d, n=karLeft(), a=[]; if(d&&d.ev&&d.ev.on&&d.ev.left>0){ a.push(tf(L(EVT.bar),{n:d.ev.left})); if(n>0) a.push(fmtN(L(TX.kwSongN),n)); } else a.push(fmtN(L(TX.kwSongN),n)); if(d) a.push(ptS(d.bal.total)); return a.join(" · "); }
 function kBundleBuy(k){ var q=kBnd()[k]||kBnd()[0], rid=kRid();
   kptAsk(q.p,L(TX.bnH)+" "+songsTx(q.n),function(done){
