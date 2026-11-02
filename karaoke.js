@@ -4258,6 +4258,6 @@ function gpView(x){ var o=pgOpen("kgpv"); if(!o) return; var nm=gpName(x.th,x.sc
 function gOpen(code){ kGate(function(){ open(code); },code); }
 window.karGate=function(go){ kGate(go||function(){},""); };
 window.karOpen=gOpen; window.karClose=close; window.karState=K;   // karOpen = 성인 인증 관문을 거쳐 연다 (10-31)
-var _hc=window.hitClick; window.hitClick=function(k){ var m=/^__kara_([a-z]+)$/.exec(k||""); if(m){ gOpen(m[1]); return; } return _hc.apply(this,arguments); };
+var _hc=window.hitClick; window.hitClick=function(k){ var m=/^__kara_([a-z]+)$/.exec(k||""); if(m){ if(!/karaoke/.test(location.hostname)) return; gOpen(m[1]); return; } return _hc.apply(this,arguments); };
 var _gb=window.guBack; window.guBack=function(){ if(box()){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };   // 뒤로가기 = 노래방 나가기
 })();
