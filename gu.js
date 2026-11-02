@@ -37,7 +37,8 @@
     for(var fs=15;fs>=12;fs--) if(put(10,fs)) return;
     var low=10; obs.forEach(function(q){ if(q[1]<60) low=Math.max(low,q[3]+6); }); for(var f2=15;f2>=11;f2--) if(put(low,f2)) return; b.style.left=G+"px"; b.style.top=low+"px"; }
   function put(e,x,y,w,h){ e.style.left=x+"px"; e.style.top=y+"px"; e.style.width=w+"px"; e.style.height=h+"px"; }
-  function img(k){ var q=GU.d.P[k], e=document.createElement("img"); e.src=q.i; e.alt=""; e.draggable=false; e.dataset.k=k; try{ e.title=pName(k)||""; }catch(x){} return e; }
+  function noKar(k){ return /^__kara_/.test((GU.d.act&&GU.d.act[k])||""); }   // 노래방은 StageSong 앱 단독 — 투어앱에서 숨김 (사장님 11-02)
+  function img(k){ var q=GU.d.P[k], e=document.createElement("img"); e.src=q.i; e.alt=""; e.draggable=false; e.dataset.k=k; if(noKar(k)) e.style.display="none"; try{ e.title=pName(k)||""; }catch(x){} return e; }
   // 하위 약도 자리(서울 약도 비율) — 빨간 네모(areas)를 따라 내려간다. 부모 먼저(그 위에 아이 약도를 얹는다)
   function subs(){ var out=[]; (function walk(id,R){ var c=CITY[id]; if(!c||!c.areas) return; for(var a in c.areas){ var b=c.areas[a], r=[R[0]+b[0]*(R[2]-R[0]),R[1]+b[1]*(R[3]-R[1]),R[0]+b[2]*(R[2]-R[0]),R[1]+b[3]*(R[3]-R[1])]; out.push({id:a,r:r}); walk(a,r); } })(GU.d.map,[0,0,1,1]); return out; }
   function shown(o){ var b=GU.pb||[0,0,1,1]; return subs().filter(function(s){ var r=s.r; return CITY[s.id]&&CITY[s.id].img&&r[0]<b[2]&&r[2]>b[0]&&r[1]<b[3]&&r[3]>b[1]; }); }
@@ -84,7 +85,7 @@
       [0,1].forEach(function(j){ var e=document.createElementNS(NS,"path"); e.setAttribute("fill","none"); e.setAttribute("stroke","#3a3f47"); e.setAttribute("stroke-width","1.6"); e.setAttribute("vector-effect","non-scaling-stroke"); e.setAttribute("stroke-linecap","round"); e.dataset.j=j; cs.appendChild(e); }); L.appendChild(cs); });
     cabLines();
     var ic=o.ic||{}, ho=o.ho||[]; for(var k in ic){ var b=ic[k], q=P[k]; if(!q||ho.indexOf(k)>=0) continue;   /* ho = 궁 전체 그림 안에 이미 그려진 명소 — 누름 자리만 */ var e=img(k); e.className="gm"; put(e,b[0]*W,b[1]*H,(b[2]-b[0])*W,(b[3]-b[1])*H); if(+b[4]) e.style.transform="rotate("+(+b[4])+"deg)"; /* 5번째 값 = 배치기에서 돌린 각도(°) */ L.appendChild(e); if(q.bd&&!+b[4]) bbOn(L,k,b[0]*W,b[1]*H,(b[2]-b[0])*W,(b[3]-b[1])*H); }
-    var LB=GU.d.lab||{}; for(var k2 in LB){ var b2=ic[k2]; if(!b2) continue; var t2=document.createElement("div"); t2.className="glb"; t2.dataset.k=k2; t2.textContent=LP(LB[k2]); t2.style.left=((b2[0]+b2[2])/2*W)+"px"; t2.style.top=(b2[3]*H)+"px"; L.appendChild(t2); }   /* 이름표 (시티투어버스 출발점) — 화면 크기 고정 */
+    var LB=GU.d.lab||{}; for(var k2 in LB){ var b2=ic[k2]; if(!b2||noKar(k2)) continue; var t2=document.createElement("div"); t2.className="glb"; t2.dataset.k=k2; t2.textContent=LP(LB[k2]); t2.style.left=((b2[0]+b2[2])/2*W)+"px"; t2.style.top=(b2[3]*H)+"px"; L.appendChild(t2); }   /* 이름표 (시티투어버스 출발점) — 화면 크기 고정 */
     labScale(); }
   // 케이블카 줄 — 화면에서 두 가닥 사이 3px 가 되게 배율마다 다시 (10-20)
   function cabLines(){ var L=document.getElementById("gul"); if(!L) return; var m=document.getElementById("map"), w=m.clientWidth, as=ASP(), off=1.6/(ZM.s*w);
@@ -110,7 +111,7 @@
         for(var i=0;i<occ.length;i++){ var o=occ[i]; if(x0-g<o[2]&&x0+bw+g>o[0]&&y0-g<o[3]&&y0+bh+g>o[1]){ ok=false; break; } } if(ok){ bd=d; best=[x0,y0]; } }
       if(!best) best=[cx-bw/2,cy-bh/2]; var e=img(k); put(e,best[0],best[1],bw,bh); L.appendChild(e); occ.push([best[0],best[1],best[0]+bw,best[1]+bh]); bbOn(L,k,best[0],best[1],bw,bh); });
     // 관악산 북쪽 기슭에 노래방·PC방 (사장님 10-28 「나」 — 구 화면 건물은 그대로 두고 서울 전체 지도에 하나씩 더) · 누르면 관악구 노래방·PC방과 같은 화면
-    [["karaoke@gwanak",37.4668,126.9425,0,0],["pcbang@gwanak",37.4668,126.9555,1,0],["youtubeth",37.4668,126.9425,0,1],["netflixth",37.4668,126.9555,1,1]].forEach(function(m){ var k=m[0], q=GU.d.P[k], f=null; try{ f=meGeoFrac("seoulall",m[1],m[2]); }catch(x){} if(!q||!f) return; f=[f[0]+0.16+(m[3]?0.06:0),f[1]];   /* m[3] = 왼쪽(0)·오른쪽(1) 칸, m[4] = 둘째 줄(유튜브·넷플릭스, 사장님 10-28 「관악산 기슭에」) */   /* 사장님 10-28 「오른쪽으로 5센티」→「2센티만 왼쪽」(PC 화면 지도 폭 기준, 5cm=0.27) */
+    [["pcbang@gwanak",37.4668,126.9555,1,0],["youtubeth",37.4668,126.9425,0,1],["netflixth",37.4668,126.9555,1,1]].forEach(function(m){ var k=m[0], q=GU.d.P[k], f=null; try{ f=meGeoFrac("seoulall",m[1],m[2]); }catch(x){} if(!q||!f) return; f=[f[0]+0.16+(m[3]?0.06:0),f[1]];   /* m[3] = 왼쪽(0)·오른쪽(1) 칸, m[4] = 둘째 줄(유튜브·넷플릭스, 사장님 10-28 「관악산 기슭에」) */   /* 사장님 10-28 「오른쪽으로 5센티」→「2센티만 왼쪽」(PC 화면 지도 폭 기준, 5cm=0.27) */
       var bh=W*0.06, bw=bh*(q.ar||1), cx=f[0]*W, cy=f[1]*H+(m[4]?bh*1.75:0), g=W*0.002, best=null, bd=1e18, st=W*0.002;
       for(var dy=-W*0.04;dy<=W*0.04;dy+=st) for(var dx=-W*0.04;dx<=W*0.04;dx+=st){ var d=dx*dx+dy*dy; if(d>=bd) continue; var x0=cx+dx-bw/2, y0=cy+dy-bh, ok=true;
         for(var i=0;i<occ.length;i++){ var o=occ[i]; if(x0-g<o[2]&&x0+bw+g>o[0]&&y0-g<o[3]&&y0+bh+g>o[1]){ ok=false; break; } } if(ok){ bd=d; best=[x0,y0]; } }
