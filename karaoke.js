@@ -74,7 +74,7 @@ var TX={
  lo:{ko:"불러오는 중…",en:"Loading…",ja:"読み込み中…",zhs:"加载中…",zht:"載入中…",es:"Cargando…"},
  x:{ko:"퇴장",en:"Leave",ja:"出る",zhs:"离开",zht:"離開",es:"Salir"},
  // 노래방 충전·곡 묶음 (사장님 11-02) — 결제는 포트원·KG이니시스
-  kb:{ko:"충전과 곡 묶음 구매",en:"Top up & song bundles",ja:"チャージ・曲パック購入",zhs:"充值与购买歌曲套餐",zht:"儲值與購買歌曲套餐",es:"Recarga y paquetes de canciones"},   // (11-02) 이용권 폐지 — PAYMENT 창 제목
+  kb:{ko:"곡 구매 · 포인트 충전",en:"Buy songs · Top up points",ja:"曲購入・ポイントチャージ",zhs:"购买歌曲 · 积分充值",zht:"購買歌曲 · 點數儲值",es:"Comprar canciones · Recargar puntos"},   // (11-02) 이용권 폐지 — PAYMENT 창 제목 · (11-03) 탭 두 개로 나눔
   kbs:{ko:"포인트 충전 · 곡 묶음",en:"Top up points · song bundles",ja:"ポイントチャージ・曲パック",zhs:"积分充值 · 歌曲套餐",zht:"點數儲值 · 歌曲套餐",es:"Recarga de puntos · paquetes de canciones"},
  slot:{ko:"충전",en:"Insert here",ja:"投入口",zhs:"投币口",zht:"投幣口",es:"Introduce aquí"},
  left:{ko:"잔여 곡",en:"Songs left",ja:"残り曲数",zhs:"剩余歌曲",zht:"剩餘歌曲",es:"Canciones"},
@@ -704,6 +704,7 @@ st.textContent+="#karBox .ktb .kchb{flex:1;display:flex;align-items:center;justi
 st.textContent+="#karBox .kwb{display:flex;flex-direction:column;align-items:center;gap:3px;background:#05140c;border:1px solid #1d6b43;border-radius:14px;padding:12px;color:#7CFFB2;text-align:center}#karBox .kwb small{font-size:12px;color:#9fe8bf}#karBox .kwb b{font:900 28px/1.1 ui-monospace,Consolas,monospace;text-shadow:0 0 8px #2bd97d}#karBox .kwb span{font-size:12.5px;color:#cfeedd}"
  +"#karBox .kwbt{display:flex;gap:8px}#karBox .kwbt>*{flex:1;min-width:0}#karBox .kpm .kwg2{background:#7CFFB2}#karBox .kwls{display:flex;flex-direction:column;gap:6px;max-height:34vh;overflow:auto}#karBox .kwls>div{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,.06);border-radius:10px;padding:8px 10px;font-size:13.5px}#karBox .kwls span{display:block;min-width:0}#karBox .kwls small{display:block}#karBox .kwls small{font-size:11.5px;color:#cfc6e8}#karBox .kwls b{white-space:nowrap;font-variant-numeric:tabular-nums}#karBox .kwls .kwp{color:#7CFFB2}#karBox .kwls .kwm{color:#ffb4c8}"
  +"#karBox .kwtg{font-style:normal;font-size:10.5px;font-weight:900;color:#1a1300;background:#ffe066;border-radius:6px;padding:1px 5px;margin-left:4px}#karBox .kwpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#karBox .kwpk button{display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;border-radius:12px;padding:10px 4px;cursor:pointer}#karBox .kwpk button.on{border-color:#ffe066;background:rgba(255,224,102,.15)}#karBox .kwpk b{font-size:15px}#karBox .kwpk span{font-size:13px;color:#ffe066;font-weight:800}"
+ +"#karBox .kptab{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid rgba(255,255,255,.25);border-radius:12px;overflow:hidden;margin:2px 0 4px}#karBox .kptab button{border:0;background:rgba(255,255,255,.04);color:#cfc6e8;padding:11px 4px;font-size:14.5px;font-weight:800;cursor:pointer;font-family:inherit}#karBox .kptab button.on{background:#ffe066;color:#1a1530}"   // 곡 구매 | 포인트 충전 탭 (11-03)
  +"#karBox .ktm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}#karBox .ktm button{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;border-radius:10px;padding:9px 2px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;line-height:1.25}#karBox .ktm button.on{border-color:#ffe066;background:rgba(255,224,102,.15);color:#ffe066}"
  +"#karBox .ktgst{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:9px 10px;font-size:12.5px;line-height:1.5;color:#e9defc}#karBox .ktgst button{margin-left:6px;border:0;border-radius:8px;padding:4px 10px;background:#ffe066;color:#1a1300;font-weight:900;cursor:pointer;font-family:inherit}"
  +"#karBox .ktsr .krow{display:flex;justify-content:space-between;gap:10px;font-size:14px}#karBox .ktsr .krow b{text-align:right;overflow-wrap:anywhere}#karBox .ktsr .kwait{background:rgba(255,224,102,.12);border:1px solid #b08900;border-radius:10px;padding:10px;font-size:13px;line-height:1.5}"
@@ -806,7 +807,7 @@ function open(code){ K.tab=({ja:"jpop",en:"pop",es:"pop"})[window.LANG]||"kpop";
   [].forEach.call(b.querySelectorAll(".ktb button[data-t]"),function(t){ t.onclick=function(){ K.tab=t.dataset.t; K.q=""; b.querySelector(".ksr input").value=""; [].forEach.call(b.querySelectorAll(".ktb button[data-t]"),function(x){ x.classList.toggle("on",x===t); }); load(); }; });
   b.querySelector(".ksr").onsubmit=function(e){ e.preventDefault(); K.q=String(b.querySelector(".ksr input").value||"").trim(); [].forEach.call(b.querySelectorAll(".ktb button[data-t]"),function(x){ x.classList.toggle("on",!K.q&&x.dataset.t===K.tab); }); load(); };
   mpPaid.start("kara_"+code); load(); barPaint(); karcLoad();
-  if(KPTQ&&!kApp()){ KPTQ=false; setTimeout(function(){ if(box()&&!box().querySelector(".kbuy")) payOpen(""); },500); } }   // 심사용 ?paytest=1 (10-31)
+  if(KPTQ&&!kApp()){ KPTQ=false; setTimeout(function(){ if(box()&&!box().querySelector(".kbuy")) payOpen("chg"); },500); } }   // 심사용 ?paytest=1 (10-31)
 // ── PAYMENT 창 (사장님 11-02) — 충전과 곡 묶음 구매를 한 창에서 · 곡 묶음은 포인트로만 산다
 var KB={left:0,sess:-1,redraw:null};
 var PSDK="https://cdn.portone.io/v2/browser-sdk.js";   // 포트원 V2 브라우저 SDK (11-02) — 전역 window.PortOne
@@ -834,22 +835,23 @@ function signIn(){ if(!window.mpPG||!mpPG.open) return; mpPG.open(); var p=docum
   if(!p._karMo&&window.MutationObserver){ p._karMo=new MutationObserver(function(){ if(!p.hidden) return; p.style.zIndex=""; KB.sess=-1; karcLoad(); try{ kAdSync(); }catch(e){} var b=box(); if(b&&b.querySelector(".kbuy")) payOpen(""); }); p._karMo.observe(p,{attributes:true,attributeFilter:["hidden"]}); } }
 function psdk(){ return new Promise(function(ok,no){ if(window.PortOne) return ok(); var s=document.createElement("script"); s.src=PSDK; s.onload=function(){ ok(); }; s.onerror=no; document.head.appendChild(s); }); }
 function ss(k,v){ try{ if(v===undefined) return JSON.parse(sessionStorage.getItem(k)||"null"); if(v===null) sessionStorage.removeItem(k); else sessionStorage.setItem(k,JSON.stringify(v)); }catch(e){ return null; } }
-// PAYMENT 창 — 위: 곡 묶음(포인트로 구매) · 아래: 포인트 충전(웹 = KG이니시스 결제창, 앱 = 구글 플레이) · res.err = 맨 위 안내 (포인트 부족 등)
-function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector(".kbuy"); if(o) o.remove(); var msg=res&&res.err?res.err:"", busy=false, app=kApp();
+// PAYMENT 창 — 탭 두 개 (11-03): 곡 구매(포인트로 구매) · 포인트 충전(웹 = KG이니시스 결제창, 앱 = 구글 플레이) · mode0 = 열 탭 "song"/"chg" ("" = 지난번 탭) · res.err = 맨 위 안내 (포인트 부족 등)
+function payOpen(mode0,res){ var b=box(); if(!b) return; if(mode0==="chg"||mode0==="song") KP.tab=mode0; var o=b.querySelector(".kbuy"); if(o) o.remove(); var msg=res&&res.err?res.err:"", busy=false, app=kApp();
   o=document.createElement("div"); o.className="kpm kbuy"; b.appendChild(o);
   try{ ntap("kara_pay","open"); }catch(e){}
   var draw=function(){ var d=KP.d||kGuestD(), P=d.packs, wonA=app?P.app:P.web, sg=karSigned(), on=kptOn(), bal=on?KP.d.bal.paid:0, BN=kBnd(), q0=BN[KP.pk]||BN[0], off=!d.guest&&!(d.live&&d.live.port);
     var h='<div><h3>'+esc(L(TX.kb))+'</h3>'
     +(sg?'<div class="klf">'+esc(on?kBarPt():(karLeft()>0?fmtN(L(TX.lftN),karLeft()):L(TX.kwT)))+'</div>':'<div class="ksg">'+esc(L(TX.sgi))+'<button type="button" class="ksgb">'+esc(L(TX.sgb))+'</button></div>')
+    +'<div class="kptab"><button type="button" data-ptab="song"'+(KP.tab!=="chg"?' class="on"':'')+'>'+esc(L(TX.bnH))+'</button><button type="button" data-ptab="chg"'+(KP.tab==="chg"?' class="on"':'')+'>'+esc(L(TX.kwChgT))+'</button></div>'   // (11-03) 한 화면에 둘 다 있으니 둘 다 사는 줄 안다 — 탭으로 한쪽만
     +(msg?'<div class="kerr">'+esc(msg)+'</div>':'')
-    +'<b class="kh">'+esc(L(TX.bnH))+'</b><p class="km">'+esc(tf(L(TX.bnN),{p:ptS(kSongP())}))+'</p>'
+    +(KP.tab!=="chg"?'<p class="km">'+esc(tf(L(TX.bnN),{p:ptS(kSongP())}))+'</p>'
     +'<div class="kwpk">'+BN.map(function(q,i){ return '<button type="button" data-pk="'+i+'"'+(i===(KP.pk||0)?' class="on"':'')+'><b>'+esc(songsTx(q.n))+'</b><em class="ksv">'+esc(tf(L(TX.bnPer),{p:ptS(Math.round(q.p/q.n))}))+'</em><span>'+ptS(q.p)+'</span></button>'; }).join("")+'</div>'
     +(on&&bal<q0.p?'<button type="button" class="kwlow" data-kwlow="1">'+esc(L(TX.bnLow))+' ›</button>':'')
     +'<button type="button" class="kgo" id="kbNx"'+(busy?' disabled':'')+'>'+esc(tf(L(TX.kwPtBuy),{c:ptS(q0.p)}))+'</button>'
-    +'<b class="kh" id="kbChg">'+esc(L(TX.kwChgT))+'</b><div class="kwpk">'+P.pt.map(function(pt,i){ var bo=(d.bonus||[])[i]||0;
+    :'<div class="kwpk">'+P.pt.map(function(pt,i){ var bo=(d.bonus||[])[i]||0;
       return '<button type="button" data-k="'+i+'"'+(i===(KP.k||0)?' class="on"':'')+'><b>'+ptS(pt)+'</b>'+(bo?'<em class="ksv">'+esc(tf(L(TX.kwBon),{b:ptS(bo)}))+'</em>':'')+'<span>'+won(wonA[i])+'</span></button>'; }).join("")+'</div>'
     +'<p class="km">'+esc(L(TX.kwRule))+(app?'<br>'+esc(L(TX.kwGpN)):'')+'</p>'+(d.mcap?'<p class="km kmcap"><b>'+esc(kMcapTx(d.mcap,"n"))+'</b></p>':'')
-    +(app?'<button type="button" class="kgo" data-gp="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwPayB))+'</button>':kPayUi(wonA[KP.k||0],busy,!!d.guest,off))
+    +(app?'<button type="button" class="kgo" data-gp="1"'+(busy?' disabled':'')+'>'+esc(L(TX.kwPayB))+'</button>':kPayUi(wonA[KP.k||0],busy,!!d.guest,off)))
     +(on?'<button type="button" class="krf" data-kwc="1">'+esc(L(TX.kwT))+'</button>':'')
     +'<button type="button" class="kpp" data-kntc="1">'+esc(L(TX.ntcP))+'</button><button type="button" class="kc">'+esc(L(TX.ok))+'</button>'+(app?'':bizHtml())+'</div>';
     o.innerHTML=h; var q=function(x){ return o.querySelector(x); }, shut=function(){ o.remove(); KB.redraw=null; };
@@ -857,11 +859,12 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
     [].forEach.call(o.querySelectorAll("[data-k]"),function(y){ y.onclick=function(){ KP.k=+y.dataset.k; msg=""; draw(); }; });
     [].forEach.call(o.querySelectorAll("[data-tm]"),function(y){ y.onclick=function(){ KP.tm=y.dataset.tm; msg=""; draw(); }; });   // 결제 수단
     [].forEach.call(o.querySelectorAll("[data-tlg]"),function(y){ y.onclick=function(){ shut(); KP.reChg=1; signIn(); }; });   // 로그인 → 다시 이 창
-    q("#kbNx").onclick=function(){ if(!karSigned()){ msg=L(TX.sgn); draw(); signIn(); return; } if(kptOn()){ kBundleBuy(KP.pk||0); return; } kptLoad().then(function(){ if(kptOn()) kBundleBuy(KP.pk||0); else { msg=L(TX.efail); draw(); } }); };
+    if(q("#kbNx")) q("#kbNx").onclick=function(){ if(!karSigned()){ msg=L(TX.sgn); draw(); signIn(); return; } if(kptOn()){ kBundleBuy(KP.pk||0); return; } kptLoad().then(function(){ if(kptOn()) kBundleBuy(KP.pk||0); else { msg=L(TX.efail); draw(); } }); };
     if(q(".ksgb")) q(".ksgb").onclick=signIn;
     if(q("[data-kwc]")) q("[data-kwc]").onclick=function(){ kwOpen(""); };
-    if(q("[data-kwlow]")) q("[data-kwlow]").onclick=function(){ var c=q("#kbChg"); if(c) c.scrollIntoView({block:"start",behavior:"smooth"}); };
-    if(q("#kwPh")) q("#kwPh").oninput=function(){ KP.ph=this.value; };
+    [].forEach.call(o.querySelectorAll("[data-ptab]"),function(y){ y.onclick=function(){ if(busy) return; KP.tab=y.dataset.ptab; msg=""; draw(); }; });
+    if(q("[data-kwlow]")) q("[data-kwlow]").onclick=function(){ KP.tab="chg"; msg=""; draw(); };   // 유료 포인트 부족 → 충전 탭
+    if(q("#kwPh")) q("#kwPh").oninput=function(){ var v=kPhN(this.value); if(v!==this.value) this.value=v; KP.ph=v; };   // (11-03) 숫자만 — 하이픈·띄어쓰기 지우고 +82 는 0 으로
     var live=d.live||{}, tst=function(){ if(busy) return; busy=true; draw(); var k=KP.k||0;   // 진짜 결제 길이 아직 없을 때 = 같은 「결제」 단추가 시험 충전 (10-31 출시판)
       var p=app?kGpTest(k):kptPost("charge",{rail:"test",k:k,rid:kRid()});
       p.then(function(j){ busy=false; if(j&&j.ok){ try{ ntap("kara_pt","test_"+k); }catch(e){} msg=""; kptLoad().then(function(){ soon(L(TX.kwDone)); }); } else { msg=j&&j.err==="mcap"?kMcapTx(j):L(TX.kwPgN); draw(); } }).catch(function(){ busy=false; msg=L(TX.kwPgN); draw(); }); };
@@ -877,18 +880,18 @@ function payOpen(mode0,res){ var b=box(); if(!b) return; var o=b.querySelector("
 //   초록 칸 「잔여 곡 3 · 12,000P」 → 누르면 「내 지갑」(잔액·잔여 곡·유효기간·사용 내역·환불 요청) · 충전은 PAYMENT 창만 · 돈 드는 일은 늘 「3,000P 사용 → 9,000P 남음」 확인 뒤
 //   충전: 웹 = 웹 가격(KG이니시스) / 앱(Capacitor) = 앱 가격만(구글 플레이 결제) — 앱에는 웹 가격을 절대 보이지 않는다
 //   (10-31 출시판) 「결제」 단추 하나 — 허브 d.live 에 진짜 결제 길(port·gplay)이 있으면 그 길, 없으면 같은 단추가 조용히 시험 충전(덩어리 test:1, 「시험」 표시만)
-var KP={on:0,d:null,redraw:null,k:1,pk:0};   // pk = 고른 곡 묶음   // k = 고른 충전 묶음
+var KP={on:0,d:null,redraw:null,k:1,pk:0,tab:"song"};   // tab = PAYMENT 창 탭 (song 곡 구매 · chg 포인트 충전)   // pk = 고른 곡 묶음   // k = 고른 충전 묶음
 function kSongP(){ return (KP.d&&KP.d.song)||1000; }   // 1곡 값 — 허브 kptcfg.song (관리자 「곡 가격」)
 function kBnd(){ var d=KP.d; return d&&d.bnd&&d.bnd.length?d.bnd:[{n:10,p:9500},{n:20,p:18000},{n:30,p:26000},{n:50,p:42000},{n:100,p:80000}]; }   // 곡 묶음 — 로그인 전 표시용 기본값은 허브 KPT_BN_DEF 와 같게
 function wonL(v){ return window.LANG==="ko"?Math.round(v).toLocaleString("ko-KR")+"원":won(v); }   // 결제 단추 — 한국어는 「10,000원」
 Object.assign(TX,{
  kwPayB:{ko:"결제",en:"Pay",ja:"決済",zhs:"支付",zht:"支付",es:"Pagar"},
  kwBuyB:{ko:"구매",en:"Buy",ja:"購入",zhs:"购买",zht:"購買",es:"Comprar"},
- kwBuyPt:{ko:"곡 묶음 구매",en:"Buy a song bundle",ja:"曲パックを購入",zhs:"购买歌曲套餐",zht:"購買歌曲套餐",es:"Comprar paquete de canciones"},
+ kwBuyPt:{ko:"곡 구매",en:"Buy songs",ja:"曲を購入",zhs:"购买歌曲",zht:"購買歌曲",es:"Comprar canciones"},
  psM:{ko:"{n}개월",en:"{n} months",ja:"{n}か月",zhs:"{n}个月",zht:"{n}個月",es:"{n} meses"},
  psM1:{ko:"{n}개월",en:"{n} month",ja:"{n}か月",zhs:"{n}个月",zht:"{n}個月",es:"{n} mes"},
  kwSongN:{ko:"잔여 곡 {n}",en:"Songs {n}",ja:"残り曲 {n}",zhs:"剩余歌曲 {n}",zht:"剩餘歌曲 {n}",es:"Canciones {n}"},
- bnH:{ko:"곡 묶음",en:"Song bundles",ja:"曲パック",zhs:"歌曲套餐",zht:"歌曲套餐",es:"Paquetes de canciones"},
+ bnH:{ko:"곡 구매",en:"Buy songs",ja:"曲購入",zhs:"购买歌曲",zht:"購買歌曲",es:"Comprar canciones"},
  bnN:{ko:"1곡 {p} · 유료 포인트로 구매 · 유효기간 없음",en:"1 song {p} · paid points only · no expiry",ja:"1曲 {p}・有料ポイントで購入・有効期限なし",zhs:"1首 {p} · 用付费积分购买 · 无有效期",zht:"1首 {p} · 用付費點數購買 · 無有效期",es:"1 canción {p} · solo puntos de pago · sin caducidad"},
  bnLow:{ko:"유료 포인트 부족 → 충전",en:"Not enough paid points → Top up",ja:"有料ポイント不足 → チャージ",zhs:"付费积分不足 → 充值",zht:"付費點數不足 → 儲值",es:"Puntos de pago insuficientes → Recargar"},
  bnShort:{ko:"곡 묶음은 유료 포인트로만 구매할 수 있습니다 (유료 포인트 {h})",en:"Song bundles can be bought with paid points only (paid points: {h})",ja:"曲パックは有料ポイントでのみ購入できます（有料ポイント {h}）",zhs:"歌曲套餐只能用付费积分购买（付费积分 {h}）",zht:"歌曲套餐只能以付費點數購買（付費點數 {h}）",es:"Los paquetes de canciones solo se compran con puntos de pago (puntos de pago: {h})"},
@@ -910,7 +913,7 @@ Object.assign(TX,{
  kwPaid:{ko:"유료",en:"Paid",ja:"有料",zhs:"付费",zht:"付費",es:"De pago"},
  kwFree:{ko:"무료",en:"Free",ja:"無料",zhs:"免费",zht:"免費",es:"Gratis"},
  kwChg:{ko:"충전",en:"Top up",ja:"チャージ",zhs:"充值",zht:"儲值",es:"Recargar"},
- kwBuy:{ko:"곡 묶음 구매",en:"Buy a song bundle",ja:"曲パックを購入",zhs:"购买歌曲套餐",zht:"購買歌曲套餐",es:"Comprar paquete de canciones"},
+ kwBuy:{ko:"곡 구매",en:"Buy songs",ja:"曲を購入",zhs:"购买歌曲",zht:"購買歌曲",es:"Comprar canciones"},
  kwHist:{ko:"사용 내역",en:"History",ja:"利用履歴",zhs:"使用记录",zht:"使用記錄",es:"Historial"},
  kwRf:{ko:"환불 요청",en:"Request refund",ja:"返金申請",zhs:"申请退款",zht:"申請退款",es:"Solicitar reembolso"},
  kwAcct:{ko:"계정",en:"Account",ja:"アカウント",zhs:"账户",zht:"帳戶",es:"Cuenta"},
@@ -943,7 +946,7 @@ Object.assign(TX,{
  kwRfFix:{ko:"잔여 {l} − 정액 {x}",en:"{l} left − fixed {x}",ja:"残り {l} − 定額 {x}",zhs:"剩余 {l} − 定额 {x}",zht:"剩餘 {l} − 定額 {x}",es:"{l} restantes − fijo {x}"},
  kwSoon:{ko:"무료 포인트 {p}가 {d}에 만료됩니다.",en:"{p} of free points expire on {d}.",ja:"無料ポイント{p}が{d}に期限切れになります。",zhs:"免费积分{p}将于{d}到期。",zht:"免費點數{p}將於{d}到期。",es:"{p} de puntos gratis caducan el {d}."},
  kwPtBuy:{ko:"{c}로 구매",en:"Buy with {c}",ja:"{c}で購入",zhs:"用 {c} 购买",zht:"用 {c} 購買",es:"Comprar con {c}"},
- kwH:{ko:"충전|무료 지급|사용|사용 취소|환불 요청|환불|환불 거절|스토어 환불|기간 연장|이용권 구매|이용권 환불|곡 묶음 구매",en:"Top-up|Free points|Used|Use cancelled|Refund requested|Refunded|Refund declined|Store refund|Extended|Pass bought|Pass refunded|Song bundle bought",ja:"チャージ|無料付与|使用|使用取消|返金申請|返金|返金却下|ストア返金|期間延長|利用券購入|利用券返金|曲パック購入",zhs:"充值|免费赠送|使用|取消使用|申请退款|退款|拒绝退款|商店退款|延长有效期|购买畅唱券|畅唱券退款|购买歌曲套餐",zht:"儲值|免費贈送|使用|取消使用|申請退款|退款|拒絕退款|商店退款|延長有效期|購買暢唱券|暢唱券退款|購買歌曲套餐",es:"Recarga|Puntos gratis|Uso|Uso cancelado|Reembolso solicitado|Reembolsado|Reembolso rechazado|Reembolso de tienda|Ampliado|Bono comprado|Bono reembolsado|Paquete de canciones comprado"},
+ kwH:{ko:"충전|무료 지급|사용|사용 취소|환불 요청|환불|환불 거절|스토어 환불|기간 연장|이용권 구매|이용권 환불|곡 구매",en:"Top-up|Free points|Used|Use cancelled|Refund requested|Refunded|Refund declined|Store refund|Extended|Pass bought|Pass refunded|Songs bought",ja:"チャージ|無料付与|使用|使用取消|返金申請|返金|返金却下|ストア返金|期間延長|利用券購入|利用券返金|曲購入",zhs:"充值|免费赠送|使用|取消使用|申请退款|退款|拒绝退款|商店退款|延长有效期|购买畅唱券|畅唱券退款|购买歌曲",zht:"儲值|免費贈送|使用|取消使用|申請退款|退款|拒絕退款|商店退款|延長有效期|購買暢唱券|暢唱券退款|購買歌曲",es:"Recarga|Puntos gratis|Uso|Uso cancelado|Reembolso solicitado|Reembolsado|Reembolso rechazado|Reembolso de tienda|Ampliado|Bono comprado|Bono reembolsado|Canciones compradas"},
  kwW:{ko:"곡 재생|상황 사진|AI 영상|도란도란|도란도란 연장|우리끼리 노래 방|방 꾸미기|단체 AI 사진",en:"Song play|AI photo|AI video|Doran-doran|Doran-doran extension|Just Us Karaoke room|Room decor|Group AI photo",ja:"曲の再生|シーン写真|AI動画|ドランドラン|ドランドラン延長|仲間だけカラオケ|ルームデコ|AI集合写真",zhs:"歌曲播放|情景照片|AI视频|Doran-doran|Doran-doran 延长|小圈子K歌房|房间装扮|AI 合影",zht:"歌曲播放|情境照片|AI影片|Doran-doran|Doran-doran 延長|小圈子K歌房|房間裝扮|AI 合影",es:"Reproducción de canción|Foto IA|Video IA|Doran-doran|Ampliación Doran-doran|Sala Solo nosotros Karaoke|Decorar la sala|Foto de grupo IA"}
 });
 // ── 웹 포인트 충전 = 포트원 V2 · KG이니시스 결제창 (11-02) — 웹만 · 앱은 구글 플레이 그대로
@@ -981,11 +984,12 @@ if(KPTQ){ try{ var _pq=location.search.slice(1).split("&").filter(function(x){ r
 // 로그인 전 충전 화면용 묶음표 (허브 KPT_PT·KPT_WEB 과 같은 값)
 function kGuestD(){ return {guest:1,packs:{pt:[50000,100000,150000,200000],web:[50000,100000,150000,200000],app:[60000,120000,180000,240000],gp:[]},bonus:[0,0,0,0],bal:{total:0,paid:0,free:0},live:{},hist:[],lots:[]}; }
 // 충전 화면의 결제 수단 · 동의 안내 · 결제 단추 (웹)
+function kPhN(s){ var v=String(s||"").replace(/\D/g,""); if(/^82/.test(v)){ v=v.slice(2); if(v.charAt(0)!=="0") v="0"+v; } return v.slice(0,11); }   // 휴대폰 → 숫자 11자리 (붙여 넣은 010-1234-5678 · +82 10-… 도) (11-03)
 function kPc(){ var u=navigator.userAgent||""; return !(/Android|iPhone|iPad|iPod|Mobile/i.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1)); }   // KG이니시스 PC 결제는 이름·전화·이메일 필수(모바일은 선택)
 function kPgLoc(pc){ var l=window.LANG; return l==="ko"?"KO_KR":(pc&&(l==="zhs"||l==="zht"))?"ZH_CN":"EN_US"; }   // 결제창 언어: PC 한·영·중 · 모바일 한·영 (포트원 KG이니시스 문서)
 function kPayUi(amt,busy,guest,off){ var m=KP.tm||"card", lg=esc(window.LANG||"en");
   return '<b class="kh">'+esc(L(TX.pm))+'</b><div class="ktm">'+KTM.map(function(x){ return '<button type="button" data-tm="'+x[0]+'"'+(x[0]===m?' class="on"':'')+'>'+esc(L(TX[x[1]]))+'</button>'; }).join("")+'</div>'
-    +(!guest&&!off&&kPc()?'<label class="kfl">'+esc(L(TX.cp))+'<input type="tel" id="kwPh" maxlength="30" autocomplete="tel" value="'+esc(KP.ph||"")+'"></label><p class="km">'+esc(L(TX.cpn))+'</p>':'')   // 계정에 전화번호가 없다 — PC 결제창 필수 값이라 여기서 받아 결제창에만 넘긴다(허브에 저장 안 함)
+    +(!guest&&!off&&kPc()?'<label class="kfl">'+esc(L(TX.cp))+'<input type="tel" id="kwPh" inputmode="numeric" maxlength="20" autocomplete="tel" placeholder="01012345678" value="'+esc(KP.ph||"")+'"></label><p class="km">'+esc(L(TX.cpn))+'</p>':'')   // 계정에 전화번호가 없다 — PC 결제창 필수 값이라 여기서 받아 결제창에만 넘긴다(허브에 저장 안 함)
     +'<p class="km">'+esc(L(TX.tsAgr))+'</p><div class="klk"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+' ›</a> <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+' ›</a></div>'
     +(guest?'<div class="ktgst">'+esc(L(TX.tsGst))+'<button type="button" data-tlg="1">'+esc(L(TX.sgb))+'</button></div>':'')
     +(off?'<div class="kerr">'+esc(L(TX.tsOff))+'</div>':'')
@@ -996,8 +1000,8 @@ var KMC={t:{ko:"청소년은 한 달에 {c}까지 충전할 수 있습니다. �
 function kMcapTx(j,k){ j=j||{}; return tf(L(KMC[k||"t"]),{c:wonL(j.cap||0),l:wonL(j.left!=null?j.left:Math.max(0,(j.cap||0)-(j.used||0)))}); }
 // 포트원 결제창 열기 — 돌려주는 값: null(결제창으로 감) · 문자열(화면에 보일 오류)
 function kBoxLow(on){ var b=document.getElementById("karBox"); if(b) b.style.zIndex=on?"10":""; }   // PC 결제창이 노래방 화면 뒤로 숨지 않게 — 결제창이 열린 동안만 낮춘다
-function kPortGo(k){ var m=KP.tm||"card", base=location.origin+location.pathname, pc=kPc(), ph=String(KP.ph||"").trim();
-  if(pc&&!/^[\d\s+()-]{7,30}$/.test(ph)) return Promise.resolve(L(TX.eph));
+function kPortGo(k){ var m=KP.tm||"card", base=location.origin+location.pathname, pc=kPc(), ph=kPhN(KP.ph);
+  if(pc&&!/^\d{9,11}$/.test(ph)) return Promise.resolve(L(TX.eph));
   var od=kptPost("port/order",{k:k,rid:kRid()});
   var me=fetch(HUB+"/npg/me",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sess:sess()})}).then(function(r){ return r.json(); }).catch(function(){ return null; });
   return Promise.all([od,me]).then(function(a){ var j=a[0], u=(a[1]&&a[1].me)||{};
@@ -1030,8 +1034,8 @@ function kPayRes(st,x){ var b=box(); if(!b) return null; var o=b.querySelector("
   o.innerHTML=h; var q=function(s){ return o.querySelector(s); };
   if(q(".kc")) q(".kc").onclick=function(){ o.remove(); };
   if(q("[data-tw]")) q("[data-tw]").onclick=function(){ o.remove(); kwOpen(""); };
-  if(q("[data-tb]")) q("[data-tb]").onclick=function(){ o.remove(); payOpen(""); };
-  if(q("[data-tr]")) q("[data-tr]").onclick=function(){ o.remove(); payOpen(""); };
+  if(q("[data-tb]")) q("[data-tb]").onclick=function(){ o.remove(); payOpen("song"); };
+  if(q("[data-tr]")) q("[data-tr]").onclick=function(){ o.remove(); payOpen("chg"); };
   return o; }
 // 포트원 결제창에서 돌아옴 (?kptres=1&paymentId · 실패 &code&message&pgCode&pgMessage) — 결과는 허브가 포트원에서 읽은 값만 믿는다 · 결제 뒤 끊겨도 웹훅·대조가 충전하므로 확정 실패가 아니면 「확인 중」
 function kptReturn(){ var sp=new URLSearchParams(location.search), r=sp.get("kptres"); if(!r) return;
@@ -1061,7 +1065,7 @@ function kptOn(){ return !!(KP.on&&KP.d&&karSigned()); }
 function kptPost(path,o){ var q={sess:sess()}; for(var k in o) q[k]=o[k]; var h={"Content-Type":"application/json"};
   return fetch(HUB+"/shop/kpt/"+path,{method:"POST",headers:h,body:JSON.stringify(q)}).then(function(r){ return r.json().catch(function(){ return {ok:false,err:"http"}; }); }).then(kAccChk); }
 function kptLoad(){ try{ lvEntry(); }catch(e){} kEvLoad(); if(!sess()){ KP.on=0; KP.d=null; barPaint(); return Promise.resolve(null); }
-  return kptPost("me",{}).then(function(j){ if(j&&j.ok&&!j.closed){ KP.on=1; KP.d=j; KB.left=+j.left||0; if(kApp()&&!KP.rec){ KP.rec=1; kGpRecover(); } if(!KP.pr){ KP.pr=1; kPromoWait(0); } if(KP.reChg){ KP.reChg=0; payOpen(""); } } else { KP.on=0; KP.d=null; } barPaint(); if(KP.redraw) KP.redraw(); if(KB.redraw) KB.redraw(); return j; }).catch(function(){ return null; }); }
+  return kptPost("me",{}).then(function(j){ if(j&&j.ok&&!j.closed){ KP.on=1; KP.d=j; KB.left=+j.left||0; if(kApp()&&!KP.rec){ KP.rec=1; kGpRecover(); } if(!KP.pr){ KP.pr=1; kPromoWait(0); } if(KP.reChg){ KP.reChg=0; payOpen("chg"); } } else { KP.on=0; KP.d=null; } barPaint(); if(KP.redraw) KP.redraw(); if(KB.redraw) KB.redraw(); return j; }).catch(function(){ return null; }); }
 // 사용 미리 보기 — 「3,000P 사용 → 9,000P 남음」 · 확인하면 go() (모자라면 충전으로)
 function kptAsk(cost,title,go,note,okL,onX,ext,pd){ /* okL = 마지막 단추 글자 (구매 등, 없으면 확인) · ext = 금액 아래 안내 줄 (꾸미기 기간·끝나는 시각) · pd = 유료 포인트로만 (곡 묶음) */ var b=box(); if(!b) return; var o=document.createElement("div"); o.className="kpm kptq"; b.appendChild(o); var tot=KP.d?KP.d.bal.total:0, bal=pd&&KP.d?KP.d.bal.paid:tot, busy=false;   // note = 금액 대신 안내 글 (연장 등 돈 안 드는 확인)
   var draw=function(msg){ var short=!note&&bal<cost;
@@ -1070,7 +1074,7 @@ function kptAsk(cost,title,go,note,okL,onX,ext,pd){ /* okL = 마지막 단추 �
       +(short?'<button type="button" class="kgo" data-c="1">'+esc(L(TX.kwChg))+'</button>':'<button type="button" class="kgo" data-y="1"'+(busy?' disabled':'')+'>'+esc(okL||L(TX.kwOk))+'</button>')+'<button type="button" class="kc">'+esc(L(TX.back))+'</button></div>';
     o.querySelector(".kc").onclick=function(){ o.remove(); if(onX) onX(); };   // onX = 사용하지 않고 닫음 (10-31 밤)
     var y=o.querySelector("[data-y]"); if(y) y.onclick=function(){ if(busy) return; busy=true; draw(); go(function(err){ busy=false; if(err) draw(err); else o.remove(); }); };
-    var c=o.querySelector("[data-c]"); if(c) c.onclick=function(){ o.remove(); if(onX) onX(); payOpen(""); }; };
+    var c=o.querySelector("[data-c]"); if(c) c.onclick=function(){ o.remove(); if(onX) onX(); payOpen("chg"); }; };
   draw(""); }
 // 내 지갑 — v: "" 첫 화면(잔액·잔여 곡) · "rf" 환불 요청 · "hist" 사용 내역 · 충전 단추 없음 (충전은 PAYMENT)
 function kwOpen(v0){ var b=box(); if(!b) return; var o=b.querySelector(".kwal"); if(o) o.remove(); o=document.createElement("div"); o.className="kpm kwal"; b.appendChild(o);
@@ -1162,10 +1166,10 @@ var KEV={ev:null,at:0}, KPG=null, KPGT=0, KSG=0;   // KPG = 차감했는데 아�
 function kEvLoad(){ var n=Date.now(); if(n-KEV.at<60000) return; KEV.at=n;
   fetch(HUB+"/shop/kpt/ev").then(function(r){ return r.json(); }).then(function(j){ if(!j||!j.ok) return; KEV.ev=j.ev||null; kEvNote(); }).catch(function(){ KEV.at=0; }); }
 function kEvNote(){ var e=KEV.ev, b=box(); if(!e||!b) return; var k="mpv_kev_"+e.id; try{ if(localStorage.getItem(k)) return; localStorage.setItem(k,"1"); }catch(x){ return; }   // 이벤트마다 안내 한 번
-  lvMsg(b,L(EVT.t)+"\n"+tf(L(EVT.b),{n:e.free})+"\n"+tf(L(EVT.p),{s:e.start,e:e.end}),[[L(TX.ok),null],[L(TX.kb),function(){ payOpen(""); },"kc"]]); }
+  lvMsg(b,L(EVT.t)+"\n"+tf(L(EVT.b),{n:e.free})+"\n"+tf(L(EVT.p),{s:e.start,e:e.end}),[[L(TX.ok),null],[L(TX.kb),function(){ payOpen("song"); },"kc"]]); }
 function kSongSet(j){ var d=KP.d; if(!j) return; if(j.left!=null){ KB.left=+j.left||0; if(d) d.left=KB.left; } if(d&&j.bal) d.bal=j.bal; if(d&&d.ev){ if(j.evLeft!=null) d.ev.left=j.evLeft; else if(j.ev&&j.ev.left!=null) d.ev.left=j.ev.left; } barPaint(); if(KB.redraw) KB.redraw(); if(KP.redraw) KP.redraw(); }
 // 재생 못 함 — 플레이어를 세우고 PAYMENT 창 (로그인 전이면 같은 창의 로그인 안내)
-function kEvNo(){ try{ if(K.pl&&K.pl.stopVideo) K.pl.stopVideo(); }catch(e){} payOpen("",karSigned()?{err:L(EVT.need)}:null); }
+function kEvNo(){ try{ if(K.pl&&K.pl.stopVideo) K.pl.stopVideo(); }catch(e){} payOpen("song",karSigned()?{err:L(EVT.need)}:null); }
 // 처음 부를 때 한 번 — 「1곡을 부를 때마다 1,000P가 사용됩니다」 + 지금 남은 것 · 부를 수 없는 사람은 안내 없이 PAYMENT 창으로
 function kSongNote(host,go){ var k="mpv_ksn1", seen=1, d=KP.d, can=kptOn()&&((d.ev&&d.ev.on&&d.ev.left>0)||karLeft()>0||d.bal.total>=kSongP()); try{ seen=localStorage.getItem(k)?1:0; }catch(e){} if(seen||!can){ go(); return; }
   try{ localStorage.setItem(k,"1"); }catch(e){} lvMsg(host||box(),tf(L(EVT.note),{p:ptS(kSongP())})+"\n"+kBarTx(),[[L(TX.kwOk),go],[L(TX.cancel),null,"kc"]]); }
@@ -3139,20 +3143,20 @@ function lvGiftOpen(W){ var o=W.o; if(!sess()){ kMsg(o,L(TX.lgReq),[[L(TX.lgin),
   [].forEach.call(w.querySelectorAll("[data-g]"),function(b){ b.onclick=function(){ var g=b.dataset.g; w.remove(); lvGiftAsk(W,g,p[g]||0); }; }); }
 function lvGiftAsk(W,g,p){ var o=W.o, b0=W.bal||0, rid=kRid(), busy=false;
   lvMsg(o,tf(L(LT.gQ),{g:lvGift(g),p:ptS(p)})+"\n"+L(LT.gNo)+"\n"+tf(L(LT.bal),{p:ptS(b0)}),[[L(LT.gSend),function(){ if(busy) return; busy=true; lvPost("/live/gift",{id:W.id,g:g,rid:rid}).then(function(j){ if(j&&j.ok){ if(j.bal!=null) W.bal=j.bal; kptLoad(); return; }
-      var e=j&&j.err; if(e==="short"){ kMsg(o,L(LT.gShort),[[L(LT.chg),function(){ payOpen(""); }],[L(TX.cancel),null,"kc"]]); return; } if(e==="login"){ kLogin(function(){}); return; } soon(e==="dlim"?tf(L(LT.gLim),{p:ptS(j.lim||500000)}):L(LT.fail)); }).catch(function(){ soon(L(LT.fail)); }); }],[L(TX.cancel),null,"kc"]]); }
+      var e=j&&j.err; if(e==="short"){ kMsg(o,L(LT.gShort),[[L(LT.chg),function(){ payOpen("chg"); }],[L(TX.cancel),null,"kc"]]); return; } if(e==="login"){ kLogin(function(){}); return; } soon(e==="dlim"?tf(L(LT.gLim),{p:ptS(j.lim||500000)}):L(LT.fail)); }).catch(function(){ soon(L(LT.fail)); }); }],[L(TX.cancel),null,"kc"]]); }
 // 방송 — 켜기: 자격 확인 → 차감 안내(켤 때마다) → 카메라 → /live/start → 올리기
 function lvBtn(){ var b=box(); if(!b) return; if(LV.on){ kMsg(b,L(LT.stopQ),[[L(LT.stop),function(){ lvStop(); },"kgo r"],[L(TX.cancel),null,"kc"]]); return; }
   if(!(K.cur&&K.cur.t)){ soon(L(TX.pick)); return; }   // LIVE 는 곡을 골라야 켜진다 (11-01)
   if(!sess()){ kMsg(b,L(TX.lgReq),[[L(TX.lgin),function(){ kLogin(function(){ lvBtn(); }); }],[L(TX.cancel),null,"kc"]]); return; }
   sfGo("live",function(){ lvPost("/live/me",{}).then(function(j){ if(!(j&&j.ok)){ soon(L(LT.fail)); return; } if(!j.can){ soon(L(j.why==="shut"?LT.off:LT.gate)); return; } if(!j.host){ if(j.why==="tos"){ kAccErr("tos"); return; } soon(L(LT.adult)); return; }
-    if(!(j.bal>0)){ kMsg(b,L(LT.nopt),[[L(LT.chg),function(){ payOpen(""); }],[L(TX.cancel),null,"kc"]]); return; }
+    if(!(j.bal>0)){ kMsg(b,L(LT.nopt),[[L(LT.chg),function(){ payOpen("chg"); }],[L(TX.cancel),null,"kc"]]); return; }
     lvMsg(b,L(LT.ask)+"\n"+tf(L(LT.bal),{p:ptS(j.bal)}),[[L(LT.go),function(){ lvGo(); }],[L(TX.cancel),null,"kc"]]); }).catch(function(){ soon(L(LT.fail)); }); }); }   // 곡은 이미 재생을 시작할 때 차감됨 — 방송을 켠다고 또 차감하지 않는다 · 다음 곡은 play() · 관람은 차감 없음 · 자동 감시 동의
 function lvGo(){ var b=box(), pl=b&&b.querySelector(".kpl"); if(!pl) return; if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){ soon(L(TX.recNo)); return; }
   kzReset(); kAC(); b.classList.add("krecm","klvon"); var bt=b.querySelector(".klvb"); if(bt) bt.textContent=L(LT.stop);
   var fail=function(msg){ lvUi(0); camOff(); recExit(); soon(msg); };
   navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:1280},height:{ideal:720}},audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}}).then(kMkWrap).then(function(st){ if(!b.classList.contains("klvon")||!box()){ st.getTracks().forEach(function(t){ t.stop(); }); return; }
     REC.st=st; var v=document.createElement("video"); v.className="kcam"; v.muted=true; v.autoplay=true; v.playsInline=true; v.setAttribute("playsinline",""); v.srcObject=st; pl.insertBefore(v,pl.firstChild); try{ v.play(); }catch(e){} recFx(true);   // LIVE 도 녹화와 같은 뷰파인더 (11-01)
-    return lvPost("/live/start",{title:String((K.cur&&K.cur.t)||"").slice(0,120),sd:klDev()}).then(function(j){ if(!(j&&j.ok)){ if(j&&j.err==="nopt"){ lvUi(0); camOff(); recExit(); kMsg(b,L(LT.nopt),[[L(LT.chg),function(){ payOpen(""); }],[L(TX.cancel),null,"kc"]]); return; } fail(lvErr(j&&j.err)); return; }
+    return lvPost("/live/start",{title:String((K.cur&&K.cur.t)||"").slice(0,120),sd:klDev()}).then(function(j){ if(!(j&&j.ok)){ if(j&&j.err==="nopt"){ lvUi(0); camOff(); recExit(); kMsg(b,L(LT.nopt),[[L(LT.chg),function(){ payOpen("chg"); }],[L(TX.cancel),null,"kc"]]); return; } fail(lvErr(j&&j.err)); return; }
       LV={on:1,id:j.id,me:null,ws:null,pc:null,bal:j.bal||0,used:0,n:0,low:0,mr:null,recQ:[],recN:0,recBusy:0,mt:"",cm:[],gs:0,gr:0,bye:0,st:st}; lvOver(); lvHWs(); lvRecStart(st); sfLive(st,j.id); try{ ntap("kara_live","start"); }catch(e){} }); }).catch(function(){ fail(L(TX.recNo)); }); }
 function lvUi(on){ var b=box(); if(!b) return; if(!on){ b.classList.remove("klvon"); var h=b.querySelector(".klvh"); if(h) h.remove(); var bt=b.querySelector(".klvb"); if(bt) bt.innerHTML='<i class="klvdot"></i>'+esc(L(LT.b)); } }
 function lvOver(){ var b=box(), pl=b&&b.querySelector(".kpl"); if(!pl) return; var h=document.createElement("div"); h.className="klvh"; h.innerHTML='<div class="klvt"></div><button type="button" class="klvab">'+esc(L(LT.audB))+'</button><div class="klvc"></div>'; pl.appendChild(h); lvOvT(); h.querySelector(".klvab").onclick=lvAud;
@@ -3209,7 +3213,7 @@ function lvPkDraw(){ var b=box(), el=b&&b.querySelector(".klvpk"); if(!el) retur
   [].forEach.call(el.querySelectorAll(".klvpi"),function(d){ d.onclick=function(){ var i=+d.dataset.i, x=K.items[i]; if(!x) return; play(i,function(){ lvNxOff(); K.endP=0; lvHSend({t:"title",title:String(x.t||"").slice(0,120)}); }); }; }); }
 function lvStop(){ if(!LV.on) return; lvHSend({t:"end"}); var R0=LV; setTimeout(function(){ if(LV===R0&&LV.on) lvDone("own"); },6000); }
 function lvDone(why){ var R0=LV, b=box(); if(!R0.on) return; R0.on=0; lvNxOff(); lvAudOff(); sfStop(); try{ if(R0.mr&&R0.mr.state!=="inactive") R0.mr.stop(); }catch(e){} try{ R0.ws&&R0.ws.close(); }catch(e){} try{ R0.pc&&R0.pc.close(); }catch(e){} R0.pc=null; lvUi(0); camOff(); recExit(); if(K.endP){ K.endP=0; setTimeout(kEndReset,300); } if(!b) return;
-  var s=R0.sum||{vm:0,used:R0.used,bal:R0.bal,gs:R0.gs,gr:R0.gr}, txt=tf(L(LT.sum),{t:lvDur(s.vm),u:ptS(s.used),g:ptS(s.gr)}), head=why==="safe"?L(SFT.out)+"\n":why==="pt"?L(LT.ptEnd)+"\n":why==="ptf"?L(LT.ptFail)+"\n":why==="admin"?L(LT.endA)+"\n":"", bts=[[L(TX.ok),function(){ kptLoad(); },"kc"]]; if(why==="pt") bts.unshift([L(LT.chg),function(){ kptLoad(); payOpen(""); }]);
+  var s=R0.sum||{vm:0,used:R0.used,bal:R0.bal,gs:R0.gs,gr:R0.gr}, txt=tf(L(LT.sum),{t:lvDur(s.vm),u:ptS(s.used),g:ptS(s.gr)}), head=why==="safe"?L(SFT.out)+"\n":why==="pt"?L(LT.ptEnd)+"\n":why==="ptf"?L(LT.ptFail)+"\n":why==="admin"?L(LT.endA)+"\n":"", bts=[[L(TX.ok),function(){ kptLoad(); },"kc"]]; if(why==="pt") bts.unshift([L(LT.chg),function(){ kptLoad(); payOpen("chg"); }]);
   lvMsg(b,head+L(LT.sumT)+"\n"+txt,bts); }
 function lvQuit(){ if(LV.on){ lvHSend({t:"end"}); lvDone("own"); } }
 window.addEventListener("pagehide",function(){ try{ if(LV.on) lvHSend({t:"end"}); }catch(e){} });
@@ -3881,7 +3885,7 @@ function kPromo(){ var b=box(); if(!b||!KP.d||b.querySelector(".kpromo")) return
       +'<button type="button" class="kgo kprgo" data-go="1">'+esc(L(TX.prPay))+'</button><button type="button" class="kc" data-x="1">'+esc(L(TX.prLater))+'</button></div>';
     [].forEach.call(o.querySelectorAll("[data-k]"),function(x){ x.onclick=function(){ k=+x.dataset.k; draw(); }; });
     o.querySelector("[data-x]").onclick=function(){ o.remove(); try{ ntap("kara_pt","promo_x"); }catch(e){} };
-    o.querySelector("[data-go]").onclick=function(){ o.remove(); KP.k=k; try{ ntap("kara_pt","promo_go_"+k); }catch(e){} payOpen(""); setTimeout(function(){ var w=box()&&box().querySelector(".kbuy"), g=w&&w.querySelector("[data-pg],[data-gp]"); if(g) g.click(); },60); }; };
+    o.querySelector("[data-go]").onclick=function(){ o.remove(); KP.k=k; try{ ntap("kara_pt","promo_go_"+k); }catch(e){} payOpen("chg"); setTimeout(function(){ var w=box()&&box().querySelector(".kbuy"), g=w&&w.querySelector("[data-pg],[data-gp]"); if(g) g.click(); },60); }; };
   o.onclick=function(e){ if(e.target===o) o.remove(); };
   draw(); try{ ntap("kara_pt","promo"); }catch(e){} }
 function kPromoWait(n){ setTimeout(function(){ var b=box(); if(!b||!KP.d) return; if(b.querySelector(".kpm")||b.querySelector(".kdor")||document.getElementById("pgBox")&&!document.getElementById("pgBox").hidden){ if(n<20) kPromoWait(n+1); return; } kPromo(); },n?3000:700); }   // 다른 창이 떠 있으면 닫힌 뒤에
