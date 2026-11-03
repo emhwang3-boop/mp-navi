@@ -3598,7 +3598,8 @@ function jbVolUi(o){ var w=o.querySelector(".kjbvp"); if(w){ w.remove(); return;
   if(JB_IOS){ jbVolSet(null,!s.m); if(o._draw) o._draw(); return; }   // 아이폰 = 소리 끄기/켜기만
   w=document.createElement("div"); w.className="kjbvp"; w.innerHTML='<button type="button" class="kjbvm" aria-label="'+esc(JL(s.m?"unmute":"mute"))+'" title="'+esc(JL(s.m?"unmute":"mute"))+'">'+(s.m?JB_SV.mute:JB_SV.vol)+'</button><input type="range" min="0" max="100" step="1" value="'+(s.m?0:s.v)+'" aria-label="'+esc(JL("vol"))+'"><b>'+(s.m?0:s.v)+'</b>';
   host.appendChild(w); var r=w.querySelector("input"), lb=w.querySelector("b"), mb=w.querySelector(".kjbvm");
-  var paint=function(){ var t=jbVol(), val=t.m?0:t.v; r.value=val; lb.textContent=val; r.style.setProperty("--p",val+"%"); mb.innerHTML=t.m?JB_SV.mute:JB_SV.vol; mb.setAttribute("aria-label",JL(t.m?"unmute":"mute")); var vb=o.querySelector("[data-vol]"); if(vb) vb.innerHTML=t.m?JB_SV.mute:JB_SV.vol; };
+  var tm=0, kick=function(){ clearTimeout(tm); tm=setTimeout(function(){ if(w.isConnected) w.remove(); },3000); };   // 3초 손대지 않으면 닫힘 (11-03)
+  var paint=function(){ var t=jbVol(), val=t.m?0:t.v; r.value=val; lb.textContent=val; r.style.setProperty("--p",val+"%"); mb.innerHTML=t.m?JB_SV.mute:JB_SV.vol; mb.setAttribute("aria-label",JL(t.m?"unmute":"mute")); var vb=o.querySelector("[data-vol]"); if(vb) vb.setAttribute("aria-label",JL("vol")); kick(); };
   r.oninput=function(){ var v=+r.value; jbVolSet(v,v===0); paint(); };
   mb.onclick=function(){ var t=jbVol(); jbVolSet(t.m&&t.v===0?50:null,!t.m); paint(); };
   paint(); setTimeout(function(){ var off=function(e){ if(!w.isConnected){ document.removeEventListener("pointerdown",off,true); return; } if(!w.contains(e.target)&&!(e.target.closest&&e.target.closest("[data-vol]"))){ w.remove(); document.removeEventListener("pointerdown",off,true); } }; document.addEventListener("pointerdown",off,true); },0); }
