@@ -751,9 +751,9 @@ document.addEventListener("touchmove",function(e){ var g=KZ.g; if(!g) return;
 document.addEventListener("touchend",function(e){ if(!e.touches.length) KZ.g=null; else if(e.touches.length===1&&KZ.s>1){ KZ.g={m:1,px:e.touches[0].clientX,py:e.touches[0].clientY,x:KZ.x,y:KZ.y}; } },{passive:true});
 function paintList(){ var b=box(); if(!b) return; var el=b.querySelector(".kls"); if(LV.pk) lvPkDraw();
   var jm=K.jb&&JB.main, A=jm?JB.main:K.items, ix=jm?-1:K.idx;   // 주크박스 재생 중에도 노래방 목록은 인기곡 순위 그대로 (11-03)
-  if(A===null){ el.innerHTML='<div class="kst">'+esc(L(TX.ld))+'</div>'+bizHtml(); return; }
-  if(!A.length){ el.innerHTML='<div class="kst">'+esc(L(TX.no))+'</div>'+bizHtml(); return; }
-  el.innerHTML=A.map(function(x,i){ return '<div class="kit'+(i===ix?' on':'')+'" data-i="'+i+'"><img src="'+(CH[x.ch]||CH.ky).i+'" alt=""><span>'+esc(x.t)+'</span><i>'+(x.e===0?'<b class="kyt">▶ '+esc(L(TX.ytt))+'</b> ':'')+esc(x.ln||"")+'</i></div>'; }).join("")+bizHtml();   // 맨 아래 사업자 정보 (10-30)
+  if(A===null){ el.innerHTML='<div class="kst">'+esc(L(TX.ld))+'</div><div class="kvocslot"></div>'+bizHtml(); vocPut(el); return; }
+  if(!A.length){ el.innerHTML='<div class="kst">'+esc(L(TX.no))+'</div><div class="kvocslot"></div>'+bizHtml(); vocPut(el); return; }
+  el.innerHTML=A.map(function(x,i){ return '<div class="kit'+(i===ix?' on':'')+'" data-i="'+i+'"><img src="'+(CH[x.ch]||CH.ky).i+'" alt=""><span>'+esc(x.t)+'</span><i>'+(x.e===0?'<b class="kyt">▶ '+esc(L(TX.ytt))+'</b> ':'')+esc(x.ln||"")+'</i></div>'; }).join("")+'<div class="kvocslot"></div>'+bizHtml(); vocPut(el);   // 맨 아래 고객의 소리(11-03) · 사업자 정보 (10-30)
   [].forEach.call(el.querySelectorAll(".kit"),function(d){ d.onclick=function(){ if(K.jb&&JB.main){ K.items=JB.main; JB.main=null; K.jb=0; JB.mode=""; } play(+d.dataset.i); }; }); setTimeout(fitPl,30); }
 function load(){ K.items=null; K.jb=0; JB.mode=""; JB.main=null; jbVolOff(); paintList();   /* 다른 목록을 열면 주크박스 이어 듣기 끝 (11-03) */ var u=HUB+"/kara?"+(K.q?"q="+encodeURIComponent(K.q):"tab="+K.tab);
   var tq=K.q?Promise.resolve(null):fetch(HUB+"/nkara/top").then(function(r){ return r.json(); }).catch(function(){ return null; });
@@ -835,6 +835,33 @@ function won(v){ return "₩"+Math.round(v).toLocaleString("ko-KR"); }
 function tf(t,o){ return String(t).replace(/\{(\w+)\}/g,function(m,k){ return o[k]!=null?o[k]:m; }); }
 function fmtN(t,n){ return tf(t,{n:n}); }
 function songsTx(n){ return tf(L(n===1?TX.sN1:TX.sN),{n:n}); }
+// ── 고객의 소리 (사장님 11-03 「가」 = 로그인한 사람만) — 첫 화면 곡 목록 맨 아래 · 사업자 정보 바로 위 · 한 번 만든 칸을 목록을 다시 그려도 옮겨 붙인다(쓰던 글 유지)
+//   250자(보이는 글자 수) · 한 줄에서 시작해 글이 늘면 8줄까지 커짐 · 보내기 = 허브 /kst/voc (1분 1번 · 하루 5번) · 로그인 전 = 로그인 창(쓴 글은 그대로)
+var VCT={t:{ko:"고객의 소리",en:"Customer feedback",ja:"お客様の声",zhs:"用户反馈",zht:"用戶回饋",es:"Comentarios"},
+ ph:{ko:"StageSong에 바라는 점을 남겨 주세요",en:"Tell us what you'd like from StageSong",ja:"StageSongへのご要望をお聞かせください",zhs:"请留下您对 StageSong 的建议",zht:"請留下您對 StageSong 的建議",es:"Cuéntanos qué te gustaría en StageSong"},
+ send:{ko:"보내기",en:"Send",ja:"送信",zhs:"发送",zht:"送出",es:"Enviar"},
+ ok:{ko:"보내 주셔서 감사합니다",en:"Thank you for your feedback",ja:"お送りいただきありがとうございます",zhs:"感谢您的反馈",zht:"感謝您的回饋",es:"Gracias por tus comentarios"},
+ min:{ko:"잠시 후 다시 보내 주세요 (1분에 1번)",en:"Please wait a moment before sending again (once a minute)",ja:"少し時間をおいてから送信してください(1分に1回)",zhs:"请稍后再发送(每分钟1次)",zht:"請稍後再送出(每分鐘1次)",es:"Espera un momento antes de volver a enviar (una vez por minuto)"},
+ day:{ko:"오늘은 더 보낼 수 없습니다 (하루 5번)",en:"You can't send more today (5 per day)",ja:"本日はこれ以上送信できません(1日5回)",zhs:"今天无法再发送(每天5次)",zht:"今天無法再送出(每天5次)",es:"Hoy no puedes enviar más (5 al día)"}};
+var VOC={el:null,busy:0};
+var VOC_SEND='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg>';   // Material Icons "send" (Apache-2.0)
+function vocLen(s){ return Array.from(s||"").length; }
+function vocBox(){ if(VOC.el) return VOC.el; var w=document.createElement("div"); w.className="kvoc";
+  w.innerHTML='<b class="kvoct">'+esc(L(VCT.t))+'</b><textarea rows="1" placeholder="'+esc(L(VCT.ph))+'" aria-label="'+esc(L(VCT.t))+'"></textarea><div class="kvocf"><small class="kvocn">0/250</small><button type="button" class="kvocs" disabled aria-label="'+esc(L(VCT.send))+'" title="'+esc(L(VCT.send))+'">'+VOC_SEND+'</button></div>';
+  var ta=w.querySelector("textarea"), cn=w.querySelector(".kvocn"), bt=w.querySelector(".kvocs");
+  var fit=function(){ ta.style.height="auto"; var lh=parseFloat(getComputedStyle(ta).lineHeight)||20, mx=lh*8+14; ta.style.height=Math.min(ta.scrollHeight+2,mx)+"px"; ta.style.overflowY=ta.scrollHeight+2>mx?"auto":"hidden"; };
+  var upd=function(){ var v=ta.value; if(vocLen(v)>250){ var p=ta.selectionStart; ta.value=Array.from(v).slice(0,250).join(""); try{ ta.setSelectionRange(Math.min(p,ta.value.length),Math.min(p,ta.value.length)); }catch(e){} } cn.textContent=vocLen(ta.value)+"/250"; bt.disabled=VOC.busy||!ta.value.trim(); fit(); };   // 250자 넘게는 안 들어감 (붙여 넣기도)
+  ta.addEventListener("input",upd);
+  ta.addEventListener("focus",function(){ if(!sess()) kLogin(); });   // 로그인한 사람만 — 로그인 창을 띄우고 쓴 글은 둔다
+  bt.onclick=function(){ var v=ta.value.trim(); if(!v||VOC.busy) return; if(!sess()){ kLogin(); return; } VOC.busy=1; upd();
+    kPost("/kst/voc",{text:v,lang:window.LANG||"ko",page:"karaoke"}).then(function(j){ VOC.busy=0; if(j&&j.ok){ ta.value=""; upd(); soon(L(VCT.ok)); try{ ntap("kara_voc","send"); }catch(e){} return; }
+      upd(); soon(j&&j.err==="min"?L(VCT.min):j&&j.err==="day"?L(VCT.day):j&&j.err==="login"?L(TX.lgReq):L(TX.fail)); }).catch(function(){ VOC.busy=0; upd(); soon(L(TX.upNet)); }); };
+  VOC.el=w; VOC.fit=fit; return w; }
+function vocPut(el){ var s=el&&el.querySelector(".kvocslot"); if(!s) return; s.replaceWith(vocBox()); if(VOC.fit) setTimeout(VOC.fit,0); }
+(function(){ var s=document.createElement("style"); s.textContent="#karBox .kvoc{margin:14px 0 6px;padding:10px 12px;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(255,255,255,.05);display:flex;flex-direction:column;gap:6px}#karBox .kvoct{font-size:13.5px;font-weight:900;color:#ffe08a}"
+ +"#karBox .kvoc textarea{width:100%;box-sizing:border-box;resize:none;overflow-y:hidden;border:1px solid rgba(255,255,255,.25);border-radius:10px;background:rgba(0,0,0,.35);color:#fff;padding:7px 10px;font:inherit;font-size:14.5px;line-height:20px;min-height:36px}"
+ +"#karBox .kvocf{display:flex;align-items:center;justify-content:flex-end;gap:8px}#karBox .kvocn{color:#cfc6e8;font-size:12px;font-variant-numeric:tabular-nums}#karBox .kvocs{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:0;padding:0;background:none;color:#fff;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.8))}#karBox .kvocs svg{width:26px;height:26px}#karBox .kvocs:disabled{opacity:.35;cursor:default}";
+ document.head.appendChild(s); })();
 function bizHtml(){ var z=TX.bz[window.LANG]||TX.bz.en, lg=TX.bz[window.LANG]?window.LANG:"en";
   return '<div class="kbz"><b>'+esc(z[0])+'</b><br><span class="nw">'+esc(z[1])+'</span> · <span class="nw">'+esc(z[2])+' '+esc(z[3])+'</span><br>'+esc(z[4])+' <span class="nw">297-81-03712</span><br>'+esc(z[5])+': '+esc(z[6])+'<br>'+esc(z[7])+': '+esc(z[8])+'<br>'+esc(z[9])+': admin@moneypuzzle.co.kr'+'<br>'+esc(L({ko:"전화",en:"Tel",ja:"電話",zhs:"电话",zht:"電話",es:"Tel."}))+': <span class="nw">010-4221-7066</span><br>'+esc(L(TX.bzh))+': GitHub, Inc. · Cloudflare, Inc.<br>'+esc(L(TX.bzn))
     +'<div class="kbzl"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a> · <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a> · <a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a>'+(window.KAR_SITE?' · <a href="legal.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.gL))+'</a>':'')+'</div>'+(window.KAR_VC?'<p class="kvc">'+esc(window.KAR_VC())+'</p>':'')+'</div>'; }   // 노래방 사이트 방문자 수 (site.js, 10-31)
