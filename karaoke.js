@@ -859,7 +859,7 @@ function vocPut(el){ var s=el&&el.querySelector(".kvocslot"); if(!s) return; s.r
  +"#karBox .kvoc textarea{width:100%;box-sizing:border-box;resize:none;overflow-y:hidden;border:1px solid rgba(255,255,255,.25);border-radius:10px;background:rgba(0,0,0,.35);color:#fff;padding:7px 10px;font:inherit;font-size:14.5px;line-height:20px;min-height:36px}"
  +"#karBox .kvocf{display:flex;align-items:center;justify-content:flex-end;gap:8px}#karBox .kvocn{color:#cfc6e8;font-size:12px;font-variant-numeric:tabular-nums}#karBox .kvocs{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:0;padding:0;background:none;color:#fff;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.8))}#karBox .kvocs svg{width:26px;height:26px}#karBox .kvocs:disabled{opacity:.35;cursor:default}";
  document.head.appendChild(s); })();
-var KAR_VER="1103z12", KAR_BUILT="11-03 20:21";   // 판·만든 시각 — 판을 올릴 때 같이 바꾼다 (운영자 화면 맨 아래에만 보임)
+var KAR_VER="1103z13", KAR_BUILT="11-03 22:52";   // 판·만든 시각 — 판을 올릴 때 같이 바꾼다 (운영자 화면 맨 아래에만 보임)
 function bizHtml(){ if(!KOP&&!bizHtml.op&&sess()){ bizHtml.op=1; setTimeout(function(){ kOpChk(); },1500); } var z=TX.bz[window.LANG]||TX.bz.en, lg=TX.bz[window.LANG]?window.LANG:"en";
   return '<div class="kbz"><b>'+esc(z[0])+'</b><br><span class="nw">'+esc(z[1])+'</span> · <span class="nw">'+esc(z[2])+' '+esc(z[3])+'</span><br>'+esc(z[4])+' <span class="nw">297-81-03712</span><br>'+esc(z[5])+': '+esc(z[6])+'<br>'+esc(z[7])+': '+esc(z[8])+'<br>'+esc(L(TX.bzh))+': GitHub, Inc. · Cloudflare, Inc.<br>'+esc(L(TX.bzc))+'<br>'+esc(L(TX.bzm))+'<br>'+esc(z[9])+': admin@moneypuzzle.co.kr'+'<br>'+esc(L(TX.bzn))
     +'<div class="kbzl"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a> · <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a> · <a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a>'+(window.KAR_SITE?' · <a href="legal.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.gL))+'</a>':'')+'</div>'+(window.KAR_VC?'<p class="kvc">'+esc(window.KAR_VC())+'</p>':'')+'<p class="kvc kverop"'+(KOP?'':' hidden')+'>v '+KAR_VER+' · '+KAR_BUILT+' · <a href="#" class="kidvt" style="color:inherit">본인인증 시험</a></p></div>'; }   // 판 표시 = 운영자만 (11-03)   // 노래방 사이트 방문자 수 (site.js, 10-31)
@@ -1504,7 +1504,7 @@ function kMkSet(k){ try{ if(k) localStorage.setItem("mpv_kmask",k); else localSt
 function kFlLoad(){ if(KFL) return Promise.resolve(KFL); if(KFLP) return KFLP;
   KFLP=import(KMP+"/vision_bundle.mjs").then(function(m){ return m.FilesetResolver.forVisionTasks(KMP+"/wasm").then(function(fs){ return m.FaceLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:KMKM,delegate:"CPU"},runningMode:"VIDEO",numFaces:3,minFaceDetectionConfidence:0.4,minFacePresenceConfidence:0.4,minTrackingConfidence:0.4}); }); }).then(function(f){ KFL=f; return f; });
   KFLP.catch(function(){ KFLP=null; }); return KFLP; }
-function kMkImg(k){ var o=KMIM[k]; if(o) return o; o=new Image(); o.src="img/deco/"+k+".webp"; KMIM[k]=o; return o; }
+function kMkImg(k){ var o=KMIM[k]; if(o) return o; o=new Image(); o.src="img/deco/"+k+".webp"+dcImV(k); KMIM[k]=o; return o; }
 // 마스크 그리기 (11-01 품질) — 얼굴 망 468점 + 바깥 고리 = 볼·턱을 따라 늘어난다 · 안경·가발·깃털은 앵커 + 원근 · 품목마다 KMK2 로 지정
 //   KMK2 = m 1 얼굴 망(없으면 앵커) · r 1 단단한 품목(표준 3D 얼굴을 고개대로 돌림, 없으면 표정 따라 늘어남) · dz 앵커 판 깊이(얼굴 폭 배) · fe 가장자리 부드러움(기본 0.3) · hole 1 입술 윤곽 점으로 입을 뚫음(그림 위치와 상관없이 입이 보임) · mul 1 곱하기(피부에 물듦) · g 1 안경 다리 · mo [u, v, 폭, 그림] 입 벌림
 var KMK2={ mk_blind:{m:1,r:1}, mk_shades:{dz:-0.05,g:1}, mk_ninja:{m:1,r:1}, mk_ninjaw:{m:1,r:1}, mk_cateye:{dz:-0.05,g:1}, mk_cloth:{m:1}, mk_venice:{m:1,r:1}, mk_feather:{dz:0}, mk_lace:{m:1,r:1}, mk_blush:{m:1,mul:1,fe:0.6}, mk_stache:{m:1,fe:0.7,hole:1}, mk_beard:{m:1,fe:0.7,hole:1}, mk_phantom:{m:1,r:1}, mk_hero:{m:1,r:1},
@@ -1693,7 +1693,7 @@ function dcDk(root){ if(!root) return; [].forEach.call(root.querySelectorAll("im
   if(im.dataset.dkd) return; if(im.complete&&im.naturalWidth) go(); else im.addEventListener("load",go,{once:true}); }); }
 function kMkStop(){ var g=KMX; KMX=null; if(!g) return; cancelAnimationFrame(g.raf); try{ g.t&&g.t.stop(); }catch(e){} try{ g.vt.stop(); }catch(e){} try{ g.v.srcObject=null; g.v.remove(); }catch(e){} }
 function kMkWrap(st){ var k=kMkCur(); if(!k||!st||!st.getVideoTracks().length) return Promise.resolve(st); return kMkPipe(st,k).then(function(r){ if(r) return r.ms; st.getTracks().forEach(function(t){ t.stop(); }); throw new Error("nomask"); }); }
-function kMkNat(){ return kMkList(kMkCur()).map(function(k){ var d=KMKD[k]; var e=KMK2[k]||{}, u=function(n){ return new URL("img/deco/"+n+".webp",location.href).href; }; var hc=e.hc?[parseInt(e.hc.slice(1,3),16)/255,parseInt(e.hc.slice(3,5),16)/255,parseInt(e.hc.slice(5,7),16)/255]:null; return {url:u(k),f:d[0],ey:d[1],m:e.m?1:0,r:e.r?1:0,dz:e.dz||0,g:e.g?1:0,mo:e.mo?[e.mo[0],e.mo[1],e.mo[2]]:null,mu:e.mo?u(e.mo[3]):"",bk:e.bk?u(e.bk):"",hc:hc,lt:e.lt||0.25,fe:e.fe||0.3,mul:e.mul?1:0,hole:e.hole?1:0,hb:e.hb?[e.hb.l[0],e.hb.l[1],e.hb.r[0],e.hb.r[1],e.hb.t]:null,bd:e.bd||0,kw:e.kw||1.12,tg:e.tg||null,up:e.up||0}; }); }   /* hb… = 모자 띠 맞춤 (앱이 새 판이면 사용, 옛 앱은 무시하고 f·ey 앵커) */
+function kMkNat(){ return kMkList(kMkCur()).map(function(k){ var d=KMKD[k]; var e=KMK2[k]||{}, u=function(n){ return new URL("img/deco/"+n+".webp"+dcImV(n),location.href).href; }; var hc=e.hc?[parseInt(e.hc.slice(1,3),16)/255,parseInt(e.hc.slice(3,5),16)/255,parseInt(e.hc.slice(5,7),16)/255]:null; return {url:u(k),f:d[0],ey:d[1],m:e.m?1:0,r:e.r?1:0,dz:e.dz||0,g:e.g?1:0,mo:e.mo?[e.mo[0],e.mo[1],e.mo[2]]:null,mu:e.mo?u(e.mo[3]):"",bk:e.bk?u(e.bk):"",hc:hc,lt:e.lt||0.25,fe:e.fe||0.3,mul:e.mul?1:0,hole:e.hole?1:0,hb:e.hb?[e.hb.l[0],e.hb.l[1],e.hb.r[0],e.hb.r[1],e.hb.t]:null,bd:e.bd||0,kw:e.kw||1.12,tg:e.tg||null,up:e.up||0}; }); }   /* hb… = 모자 띠 맞춤 (앱이 새 판이면 사용, 옛 앱은 무시하고 f·ey 앵커) */
 function kMkNatOk(){ return !kMkCur()||KNMK; }   // 앱 네이티브 녹화로 마스크를 입힐 수 있나 — 안 되면 웹 길로 녹화
 function kMkChk(){ var P=kNat(); if(P&&P.isAvailable) P.isAvailable().then(function(j){ KNMK=!!(j&&j.mask===4); }).catch(function(){}); }
 function kMkPrune(){ if(DC.mkp||!sess()) return; DC.mkp=1; dcLoad().then(function(j){ if(!(j&&j.ok)){ DC.mkp=0; return; } var c=kMkList(kMkCur()), k=c.filter(dcHas); if(k.length!==c.length) kMkSet(k.join(",")); }); }   // 앱을 새로 켤 때 기간이 끝난 마스크를 벗긴다 (한 번 켠 동안은 쓰던 것 유지)
@@ -4217,7 +4217,9 @@ var DC={inv:null,p:{},s:{},sc:{},pd:{},off:0,ld:null}, DCD=[1,7,30];   // pd = �
 function dcN(k){ var x=DK[k]||DKS[k]; return x?L(x.n):k; }
 function dcHN(k){ return DKS[k]?L(DKS[k].n)+" "+L(TX.dcSet1):dcN(k); }   // 사용 내역·결제 확인 — 세트는 「○○ 세트」
 function dcIsPl(k){ return String(k).indexOf("pl_")===0; }
-function dcImg(k,th){ return dcIsPl(k)?"img/deco/"+(th?"t/":"")+k+".jpg":"img/deco/"+(DK[k]&&DK[k].c==="mkc"?"t/":"")+k+".webp"; }   // 모자 = 가운데 맞춘 작은 그림 img/deco/t/ (착용 그림은 머리 위 자리라 작게 보여서, 11-03)
+var DIMV={mk_cap:"gy1"};   // 그림을 바꾼 아이템 = 폰에 남은 옛 그림 대신 새 그림 (11-03 야구 모자 초록·노랑)
+function dcImV(k){ return DIMV[k]?"?v="+DIMV[k]:""; }
+function dcImg(k,th){ return dcIsPl(k)?"img/deco/"+(th?"t/":"")+k+".jpg":"img/deco/"+(DK[k]&&DK[k].c==="mkc"?"t/":"")+k+".webp"+dcImV(k); }   // 모자 = 가운데 맞춘 작은 그림 img/deco/t/ (착용 그림은 머리 위 자리라 작게 보여서, 11-03)
 function dcP(k){ return DC.p[k]!=null?+DC.p[k]:DK[k]?DK[k].p:0; }
 function dcRd(x){ return Math.floor((x+499)/1000)*1000; }
 function dcAuto(p){ if(!(p>0)) return [0,0,0]; var a=Math.max(1000,dcRd(p*2.5)); return [p,a,Math.max(a,dcRd(p*5))]; }   // 허브 decoAuto 와 같음 — [1일, 7일, 30일]
