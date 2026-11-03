@@ -191,6 +191,7 @@ var TX={
  upQ:{"ko": "노래 종료! 내 노래를 스테이지에 게시해 보세요", "en": "Song finished! Post your song to the Public Stage", "ja": "歌い終わり！自分の歌をステージに投稿しよう", "zhs": "唱完了！把你的歌发布到舞台", "zht": "唱完了！把你的歌發布到舞台", "es": "¡Canción terminada! Publica tu canción en el Escenario"},
  stgB:{"ko": "스테이지", "en": "Stage", "ja": "ステージ", "zhs": "舞台", "zht": "舞台", "es": "Escenario"},
  stg:{"ko": "스테이지", "en": "Public Stage", "ja": "ステージ", "zhs": "舞台", "zht": "舞台", "es": "Escenario"},
+ stgP:{ko:"공개 스테이지",en:"Public Stage",ja:"公開ステージ",zhs:"公开舞台",zht:"公開舞台",es:"Escenario público"},   // 스테이지 화면 맨 위 탭만 (11-03 사장님 — 다른 곳은 그대로)
  mstg:{"ko": "내 스테이지", "en": "My Stage", "ja": "マイステージ", "zhs": "我的舞台", "zht": "我的舞台", "es": "Mi escenario"},
  stgE:{"ko": "다른 사람 노래 영상", "en": "Other people's singing videos", "ja": "ほかの人の歌の動画", "zhs": "其他人的唱歌视频", "zht": "其他人的唱歌影片", "es": "Vídeos de otras personas cantando"},
  mstgE:{"ko": "내 노래 영상", "en": "My singing videos", "ja": "自分の歌の動画", "zhs": "我的唱歌视频", "zht": "我的唱歌影片", "es": "Mis vídeos cantando"},
@@ -1856,7 +1857,7 @@ function stageOpen(tab0){ var tab=tab0==="me"?"me":"all";
     else body='<div class="kseg">'+[["all",TX.vwAll,"pub"],["flw",TX.vwFlw,"folonly"],["room",TX.vwRoom,"!krm_song"]].map(function(b){ return '<button type="button" data-vw="'+b[0]+'"'+(S.view===b[0]?' class="on"':'')+'>'+kIc(b[2],1)+'<span>'+esc(L(b[1]))+'</span></button>'; }).join("")+'<button type="button" data-rk="1">'+kIc("score",1)+'<span>'+esc(L(TX.rkT))+'</span></button></div>'
       +'<form class="ksr kusr"><input type="search" maxlength="20" placeholder="'+esc(L(TX.usQ))+'"><button type="submit">'+esc(L(TX.go))+'</button></form>'+(lgN?lgH:S.view==="room"?roomsH():'<div class="ksrt"><span>'+esc(L(S.view==="flw"?TX.vwFlw:TX.stgE))+(S.items&&S.items.length?' · '+S.items.length:'')+'</span><button type="button" data-sort="1">⇅ '+esc(kSortL(S.sort))+'</button>'+kVwBtn()+'</div>'+rows());   // 가요무대 = 프로필 없이 같은 줄 목록 + 최신순/오래된순 (사장님 10-30) · 친구(팔로우) 영상은 팔로우 생기면 같이
     var sc=o.querySelector(".kpgb"), top=sc?sc.scrollTop:0;
-    o.innerHTML=kHead('<button type="button" data-st="all"'+(S.tab==="all"?' class="on"':'')+'>'+esc(L(TX.stg))+'</button><button type="button" data-st="me"'+(S.tab==="me"?' class="on"':'')+'>'+esc(L(TX.mstg))+'</button>')+'<div class="kpgb">'+body+'</div>'; kAcctB(o); var fu=o.querySelector(".kusr"); if(fu) fu.onsubmit=function(e){ e.preventDefault(); var q=String(fu.querySelector("input").value||"").trim(); if(q) kUsr(q); };
+    o.innerHTML=kHead('<button type="button" data-st="all"'+(S.tab==="all"?' class="on"':'')+'>'+esc(L(TX.stgP))+'</button><button type="button" data-st="me"'+(S.tab==="me"?' class="on"':'')+'>'+esc(L(TX.mstg))+'</button>')+'<div class="kpgb">'+body+'</div>'; kAcctB(o); var fu=o.querySelector(".kusr"); if(fu) fu.onsubmit=function(e){ e.preventDefault(); var q=String(fu.querySelector("input").value||"").trim(); if(q) kUsr(q); };
     sc=o.querySelector(".kpgb"); if(sc&&top) sc.scrollTop=top;
     o.querySelector(".kpbk").onclick=pgBack;
     var rkb=o.querySelector("[data-rk]"); if(rkb) rkb.onclick=function(){ kRank(); };
