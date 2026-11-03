@@ -3683,7 +3683,7 @@ function nrOpen(){ var b=box(); if(!b) return; if(!sess()){ kMsg(dHost(),L(TX.lg
       if(on){ body+='<div class="knrf knrfg">'+[["all","all"],["mu","fMu"],["a10","fA10"],["a20","fA20"],["a3040","fA3040"],["a50","fA50"],["a60","fA60"]].map(function(g){ var dis=false; return '<button type="button" data-g="'+g[0]+'"'+((NR.g||"all")===g[0]?' class="on"':'')+(dis?' disabled':'')+'>'+esc(NL(g[1]))+'</button>'; }).join("")+'</div>'   // 나이대·성별 거르기 (허브가 거름)
           +'<div class="knrf">'+[0].concat(NEARKM).map(function(k){ return '<button type="button" data-f="'+k+'"'+(NR.f===k?' class="on"':'')+'>'+esc(k?tf(NL("km"),{k:k}):NL("all"))+'</button>'; }).join("")+'</div>';
         var it=(S.list||[]).filter(function(x){ return !NR.f||x.d<=NR.f; });
-        body+=S.list===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':!it.length?'<div class="kstge">'+esc(NL(NR.g==="mu"?"noneMu":/^a/.test(NR.g||"")?"noneA":"none"))+'</div>'
+        body+=S.list===null?'<div class="kstge">'+esc(L(TX.lo))+'</div>':!it.length?'<div class="kstge">'+esc(NL(NR.g==="mu"?"noneMu":/^a\d/.test(NR.g||"")?"noneA":"none"))+'</div>'
           :'<div class="knrls">'+it.map(function(x){ var i=S.list.indexOf(x), vs=x.vids||[];
             return '<div class="knrw'+(vs.length?' knrsg':'')+'"><div class="knrtop"><button type="button" class="knrp'+kFtC(x.ft)+'" data-pf="'+i+'" aria-label="'+esc(NL("prof"))+'">'+nrPic(x)+'</button><div class="knri"><b>'+esc(x.nick)+(x.mu?kMuB():'')+'</b>'
               +'<span class="knrd">'+esc(tf(NL("km"),{k:x.d}))+'</span>'+(nrAge(x)?'<span class="knrag'+(x.sx==="F"?' f':x.sx==="M"?' m':'')+'">'+esc(nrAge(x))+'</span>':'')+(vs.length?'':'<small class="knrnv">'+esc(NL("noSong"))+'</small>')+'</div>'
