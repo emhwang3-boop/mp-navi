@@ -859,10 +859,10 @@ function vocPut(el){ var s=el&&el.querySelector(".kvocslot"); if(!s) return; s.r
  +"#karBox .kvoc textarea{width:100%;box-sizing:border-box;resize:none;overflow-y:hidden;border:1px solid rgba(255,255,255,.25);border-radius:10px;background:rgba(0,0,0,.35);color:#fff;padding:7px 10px;font:inherit;font-size:14.5px;line-height:20px;min-height:36px}"
  +"#karBox .kvocf{display:flex;align-items:center;justify-content:flex-end;gap:8px}#karBox .kvocn{color:#cfc6e8;font-size:12px;font-variant-numeric:tabular-nums}#karBox .kvocs{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:0;padding:0;background:none;color:#fff;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.8))}#karBox .kvocs svg{width:26px;height:26px}#karBox .kvocs:disabled{opacity:.35;cursor:default}";
  document.head.appendChild(s); })();
-var KAR_VER="1103z10", KAR_BUILT="11-03 19:50";   // 판·만든 시각 — 판을 올릴 때 같이 바꾼다 (운영자 화면 맨 아래에만 보임)
+var KAR_VER="1103z11", KAR_BUILT="11-03 20:05";   // 판·만든 시각 — 판을 올릴 때 같이 바꾼다 (운영자 화면 맨 아래에만 보임)
 function bizHtml(){ if(!KOP&&!bizHtml.op&&sess()){ bizHtml.op=1; setTimeout(function(){ kOpChk(); },1500); } var z=TX.bz[window.LANG]||TX.bz.en, lg=TX.bz[window.LANG]?window.LANG:"en";
   return '<div class="kbz"><b>'+esc(z[0])+'</b><br><span class="nw">'+esc(z[1])+'</span> · <span class="nw">'+esc(z[2])+' '+esc(z[3])+'</span><br>'+esc(z[4])+' <span class="nw">297-81-03712</span><br>'+esc(z[5])+': '+esc(z[6])+'<br>'+esc(z[7])+': '+esc(z[8])+'<br>'+esc(L(TX.bzh))+': GitHub, Inc. · Cloudflare, Inc.<br>'+esc(L(TX.bzc))+'<br>'+esc(L(TX.bzm))+'<br>'+esc(z[9])+': admin@moneypuzzle.co.kr'+'<br>'+esc(L(TX.bzn))
-    +'<div class="kbzl"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a> · <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a> · <a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a>'+(window.KAR_SITE?' · <a href="legal.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.gL))+'</a>':'')+'</div>'+(window.KAR_VC?'<p class="kvc">'+esc(window.KAR_VC())+'</p>':'')+'<p class="kvc kverop"'+(KOP?'':' hidden')+'>v '+KAR_VER+' · '+KAR_BUILT+'</p></div>'; }   // 판 표시 = 운영자만 (11-03)   // 노래방 사이트 방문자 수 (site.js, 10-31)
+    +'<div class="kbzl"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a> · <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a> · <a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a>'+(window.KAR_SITE?' · <a href="legal.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.gL))+'</a>':'')+'</div>'+(window.KAR_VC?'<p class="kvc">'+esc(window.KAR_VC())+'</p>':'')+'<p class="kvc kverop"'+(KOP?'':' hidden')+'>v '+KAR_VER+' · '+KAR_BUILT+' · <a href="#" class="kidvt" style="color:inherit">본인인증 시험</a></p></div>'; }   // 판 표시 = 운영자만 (11-03)   // 노래방 사이트 방문자 수 (site.js, 10-31)
 // 초록 칸 — 「잔여 곡 3 · 12,000P」 · 누르면 내 지갑
 function barPaint(){ var b=box(), el=b&&b.querySelector("#karLeft"); if(!el) return; el.textContent=karSigned()?(kptOn()?kBarPt():(karLeft()>0?fmtN(L(TX.lftN),karLeft()):L(TX.kwT))):L(TX.lgin); }
 // 로그인 창(pg.js)을 노래방 위에 띄운다 — 닫히면 원래 높이로 돌리고 결제 창을 다시 그린다(로그인하면 남은 곡 표시)
@@ -4410,7 +4410,7 @@ function agCfg(){ if(AGS.cfg) return AGS.cfg; var last="0"; try{ last=localStora
   var to=new Promise(function(r){ setTimeout(function(){ r(null); },5000); });
   if(last!=="0") last="1";   // (10-31 밤) 기본 켜짐 — 허브가 안 답하면 켜진 것으로
   AGS.cfg=Promise.race([fetch(HUB+"/idv/cfg",{cache:"no-store"}).then(function(r){ return r.json(); }),to]).catch(function(){ return null; }).then(function(j){
-    if(j&&j.ok){ try{ localStorage.setItem("kadult_cfg",j.gate?"1":"0"); }catch(e){} return j; } AGS.cfg=null; return {ok:false,gate:last==="1"?1:0}; });
+    if(j&&j.ok){ AGS.cj=j; try{ localStorage.setItem("kadult_cfg",j.gate?"1":"0"); }catch(e){} return j; } AGS.cfg=null; return {ok:false,gate:last==="1"?1:0}; });
   return AGS.cfg; }
 function agCheck(dv){ return fetch(HUB+"/idv/check",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sess:sess(),dv:dv||""})}).then(function(r){ return r.json(); }).catch(function(){ return null; }); }
 // 로그인한 뒤 — 이 기기의 성인 인증 결과를 계정으로 (계정마다 한 번)
@@ -4525,10 +4525,22 @@ function agShow(msg){ agCss(); var o=document.getElementById("karAG"); if(!o){ o
 function agMsg(k){ AGS.msg=k; var e=document.querySelector("#karAG .agm"); if(e){ e.textContent=k?L(AG[k]):""; e.className="agm"+(k==="minor"||k==="no"||k==="fail"||k==="acct"?" r":""); } }
 // 나가기 — 투어앱: 노래방을 안 연다 · 노래방 사이트·앱: 이전 화면으로(없으면 창 닫기 · 화면은 그대로)
 function agExit(){ clearInterval(AGS.tm); AGS.tm=0; try{ ntap("kara_gate","exit"); }catch(e){}
-  if(!window.KAR_SITE){ AGS.go=null; var e=document.getElementById("karAG"); if(e) e.remove(); return; }
+  if(!window.KAR_SITE||AGS.test){ AGS.test=0; AGS.go=null; var e=document.getElementById("karAG"); if(e) e.remove(); return; }
   try{ var C=window.Capacitor, A=C&&C.Plugins&&C.Plugins.App; if(A&&A.exitApp){ A.exitApp(); return; } }catch(e2){}
   try{ if(history.length>1) history.back(); else window.close(); }catch(e3){} }
-function agStart(){ var bt=document.querySelector("#karAG .aggo"); if(bt) bt.disabled=true; agMsg("ing");
+// 포트원 V2·KG이니시스 통합인증 (11-03) — /idv/cfg 에 pk 가 있으면 앱이 SDK 를 직접 부른다 · id = 허브 /idv/start 의 st · 모바일 = 포트원이 허브 /idv/cb 로 보냈다가 ?kidv= 로 돌아옴 · PC = /idv/done (허브가 포트원에서 직접 확인, 앱 값은 안 믿음)
+function agPo(pk){ var bt=document.querySelector("#karAG .aggo"), p=agPend()||{}, ld=psdk(), no=function(k){ var b=document.querySelector("#karAG .aggo"); if(b) b.disabled=false; agMsg(k||"fail"); };
+  if(bt) bt.disabled=true; agMsg("ing"); ld.catch(function(){});
+  fetch(HUB+"/idv/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sess:sess(),lang:window.LANG||"ko",ret:location.origin+location.pathname,dv:p.dv||""})}).then(function(r){ return r.json(); }).catch(function(){ return null; }).then(function(j){
+    if(!(j&&j.ok&&j.st)){ no(j&&j.err==="noprov"?"no":"fail"); return; }
+    agPend({dv:j.dv,code:AGS.code||"",at:Date.now()}); try{ ntap("kara_gate","start"); }catch(e){}
+    return ld.then(function(){ return window.PortOne.requestIdentityVerification({storeId:pk.s,identityVerificationId:j.st,channelKey:pk.c,redirectUrl:j.cb,bypass:{inicisUnified:{flgFixedUser:"N"}}}); }).then(function(r){
+      if(r&&r.code!=null){ no("fail"); return; }
+      return fetch(HUB+"/idv/done",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({st:j.st,dv:j.dv})}).then(function(x){ return x.json(); }).then(function(d){
+        if(d&&d.r==="minor"){ agShow("minor"); return; }
+        return agCheck(j.dv).then(function(c){ if(!agOk(c,j.dv)){ no("fail"); return; } try{ ntap("kara_gate","ok"); }catch(e){} if(AGS.test){ AGS.test=0; agMsg("ok"); setTimeout(agDone,1500); } else agDone(); }); });
+    }).catch(function(){ no("fail"); }); }); }
+function agStart(){ if(AGS.cj&&AGS.cj.pk) return agPo(AGS.cj.pk); var bt=document.querySelector("#karAG .aggo"); if(bt) bt.disabled=true; agMsg("ing");
   var app=kApp()||matchMedia("(display-mode: standalone)").matches||navigator.standalone===true, w=null;
   if(!app){ try{ w=window.open("","_blank"); }catch(e){} }   // 누른 순간 창을 열어 둔다(팝업 차단 피함) — 주소는 허브 답을 받은 뒤
   var p=agPend()||{};
@@ -4542,6 +4554,9 @@ function agPoll(dv){ agCheck(dv).then(function(j){ if(!document.getElementById("
   if(j&&j.dev&&j.dev.adult===0){ clearInterval(AGS.tm); AGS.tm=0; agShow("minor"); } }); }
 window.addEventListener("message",function(e){ if(!e||!e.data||e.data.t!=="kidv") return; var p=agPend(); if(!p||!p.dv) return;
   if(e.data.r==="ok"||e.data.r==="minor") agPoll(p.dv); else { clearInterval(AGS.tm); AGS.tm=0; var b=document.querySelector("#karAG .aggo"); if(b) b.disabled=false; agMsg("fail"); } });
+// 운영자만 「본인인증 시험」 (11-03) — 판 표시 줄(운영자만 보임)의 글자 · 관문 스위치와 상관없이 관문 화면을 띄운다 · 결과는 이 기기·계정에 실제로 저장(시험 채널 = by portone-test)
+function agTest(){ if(!KOP) return; AGS.test=1; AGS.go=null; AGS.cfg=null; agCfg().then(function(){ agShow(""); }); }
+document.addEventListener("click",function(e){ var a=e.target&&e.target.closest&&e.target.closest(".kidvt"); if(!a) return; e.preventDefault(); agTest(); });
 // 업체 화면에서 같은 창으로 돌아옴 (?kidv=ok|fail|minor) — 주소에서 지우고, 투어앱이면 그 노래방을 다시 연다
 (function(){ var m=/[?&]kidv=(ok|fail|minor)/.exec(location.search); if(!m) return; AGS.msg=m[1]==="ok"?"":m[1];
   try{ var keep=location.search.slice(1).split("&").filter(function(x){ return !/^kidv=/.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(keep?"?"+keep:"")+location.hash); }catch(e){}
