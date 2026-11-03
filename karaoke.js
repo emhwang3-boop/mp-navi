@@ -749,11 +749,12 @@ document.addEventListener("touchmove",function(e){ var g=KZ.g; if(!g) return;
   else if(g.m&&e.touches.length===1&&KZ.s>1){ KZ.x=g.x+(e.touches[0].clientX-g.px); KZ.y=g.y+(e.touches[0].clientY-g.py); kzApply(); e.preventDefault(); } },{passive:false});
 document.addEventListener("touchend",function(e){ if(!e.touches.length) KZ.g=null; else if(e.touches.length===1&&KZ.s>1){ KZ.g={m:1,px:e.touches[0].clientX,py:e.touches[0].clientY,x:KZ.x,y:KZ.y}; } },{passive:true});
 function paintList(){ var b=box(); if(!b) return; var el=b.querySelector(".kls"); if(LV.pk) lvPkDraw();
-  if(K.items===null){ el.innerHTML='<div class="kst">'+esc(L(TX.ld))+'</div>'+bizHtml(); return; }
-  if(!K.items.length){ el.innerHTML='<div class="kst">'+esc(L(TX.no))+'</div>'+bizHtml(); return; }
-  el.innerHTML=K.items.map(function(x,i){ return '<div class="kit'+(i===K.idx?' on':'')+'" data-i="'+i+'"><img src="'+(CH[x.ch]||CH.ky).i+'" alt=""><span>'+esc(x.t)+'</span><i>'+(x.e===0?'<b class="kyt">▶ '+esc(L(TX.ytt))+'</b> ':'')+esc(x.ln||"")+'</i></div>'; }).join("")+bizHtml();   // 맨 아래 사업자 정보 (10-30)
-  [].forEach.call(el.querySelectorAll(".kit"),function(d){ d.onclick=function(){ play(+d.dataset.i); }; }); setTimeout(fitPl,30); }
-function load(){ K.items=null; K.jb=0; JB.mode=""; jbVolOff(); paintList();   /* 다른 목록을 열면 주크박스 이어 듣기 끝 (11-03) */ var u=HUB+"/kara?"+(K.q?"q="+encodeURIComponent(K.q):"tab="+K.tab);
+  var jm=K.jb&&JB.main, A=jm?JB.main:K.items, ix=jm?-1:K.idx;   // 주크박스 재생 중에도 노래방 목록은 인기곡 순위 그대로 (11-03)
+  if(A===null){ el.innerHTML='<div class="kst">'+esc(L(TX.ld))+'</div>'+bizHtml(); return; }
+  if(!A.length){ el.innerHTML='<div class="kst">'+esc(L(TX.no))+'</div>'+bizHtml(); return; }
+  el.innerHTML=A.map(function(x,i){ return '<div class="kit'+(i===ix?' on':'')+'" data-i="'+i+'"><img src="'+(CH[x.ch]||CH.ky).i+'" alt=""><span>'+esc(x.t)+'</span><i>'+(x.e===0?'<b class="kyt">▶ '+esc(L(TX.ytt))+'</b> ':'')+esc(x.ln||"")+'</i></div>'; }).join("")+bizHtml();   // 맨 아래 사업자 정보 (10-30)
+  [].forEach.call(el.querySelectorAll(".kit"),function(d){ d.onclick=function(){ if(K.jb&&JB.main){ K.items=JB.main; JB.main=null; K.jb=0; JB.mode=""; } play(+d.dataset.i); }; }); setTimeout(fitPl,30); }
+function load(){ K.items=null; K.jb=0; JB.mode=""; JB.main=null; jbVolOff(); paintList();   /* 다른 목록을 열면 주크박스 이어 듣기 끝 (11-03) */ var u=HUB+"/kara?"+(K.q?"q="+encodeURIComponent(K.q):"tab="+K.tab);
   var tq=K.q?Promise.resolve(null):fetch(HUB+"/nkara/top").then(function(r){ return r.json(); }).catch(function(){ return null; });
   fetch(u).then(function(r){ return r.json(); }).then(function(j){ var a=(j&&j.ok&&j.items)||[]; return tq.then(function(t){ K.items=t&&t.ok?kTopSort(a,t.items||[]):a; K.idx=-1; paintList(); }); }).catch(function(){ K.items=[]; paintList(); }); }
 function kTopSort(a,top){ var tab=K.tab, m={}, out=[], c=function(x){ var s=String(x.t||""); return /[぀-ヿ]/.test(s)?"jpop":/[가-힣]/.test(s)?"kpop":"pop"; };   // 지난 7일 많이 부른 곡을 맨 앞으로 (11-01) — 탭에 맞는 곡만, 나머지는 원래 순서
@@ -3572,7 +3573,7 @@ function jbToggle(x,cb){ if(!sess()){ jbLogin(); return; } var on=!!JB.ids[x.id]
   kPost("/kst/jb",on?{del:x.id}:{add:{id:x.id,t:x.t||"",ch:x.ch||"ky",ln:x.ln||""}}).then(function(j){ if(j&&j.ok){ jbSet(j.items); soon(on?JL("deld"):tf(JL("added"),{n:JB.items.length})); } else if(j&&j.err==="full"){ jbSet(j.items); soon(JL("full")); } else if(!(j&&j.err==="login")) soon(L(TX.fail)); if(cb) cb(); }).catch(function(){ soon(L(TX.upNet)); if(cb) cb(); }); }
 // 재생 — play() 와 같은 차례 (klEnd → kPgDrop → kSongOk 차감 → kPlay0) · 노래방 곡 목록 자리에도 주크박스 곡이 보인다(K.jb)
 function jbPlay(k){ var a=JB.items||[]; if(!a.length||!box()) return; k=((k%a.length)+a.length)%a.length; JB.k=k; JB.hist=(JB.hist||[]).concat(k).slice(-30);   // 들은 차례 (랜덤 이전 곡)
-  K.items=a.map(function(s){ return {id:s.id,t:s.t,ch:s.ch,ln:s.ln}; }); K.jb=1; paintList();
+  if(!K.jb) JB.main=K.items; K.items=a.map(function(s){ return {id:s.id,t:s.t,ch:s.ch,ln:s.ln}; }); K.jb=1; paintList();   // 노래방 목록(인기곡 순위)은 JB.main 에 보관 — 화면 목록은 그대로 (11-03)
   var x=K.items[k]; klEnd(); kPgDrop(); kSongOk(x.id,function(rid){ KPG={rid:rid,id:x.id}; kPlay0(k); if(JB.o&&JB.o._draw) JB.o._draw(); try{ ntap("kara_jb","play"); }catch(e){} },dHost()); }
 function jbNext(){ if(!K.jb||!JB.mode||LV.on) return false; var n=(JB.items||[]).length, k; if(!n) return false;
   if(JB.mode==="rnd") k=n>1?(JB.k+1+Math.floor(Math.random()*(n-1)))%n:0;
@@ -3620,7 +3621,7 @@ function jbDock(r){ var b=box(), pl=b&&b.querySelector(".kpl"); if(!pl) return;
   if(!JB.dock){ JB.dock=1; JB.h0=pl.style.height; b.classList.add("kjbon"); jbTap(pl); }
   var st=pl.style, px=function(v){ return Math.round(v)+"px"; }; st.position="fixed"; st.left=px(r.left); st.top=px(r.top); st.width=px(r.width); st.height=px(r.height); st.zIndex=String(11+PG.length); st.borderRadius="6px"; st.margin="0";
   st.visibility=b.querySelector(".kpm")?"hidden":""; }   // 안내 창이 뜨면 잠깐 숨김
-function jbLoop(){ var o=JB.o; if(!o||!o.isConnected){ JB.raf=0; jbDock(null); return; } JB.raf=requestAnimationFrame(jbLoop);
+function jbLoop(){ var o=JB.o; if(!o||!o.isConnected){ JB.raf=0; JB.mode=""; jbDock(null); return; }   /* 주크박스를 나가면 지금 곡만 끝까지, 다음 곡 없음 (11-03 사장님 나) */ JB.raf=requestAnimationFrame(jbLoop);
   var play=!!(K.jb&&K.cur), top=PG[PG.length-1]===o;
   if(play!==JB.pv){ JB.pv=play; o._draw(); }
   var sl=o.querySelector(".kjbv"); if(play&&top&&sl){ var r=sl.getBoundingClientRect(); if(r.width>10) jbDock(r); else jbDock(null); } else jbDock(null);
