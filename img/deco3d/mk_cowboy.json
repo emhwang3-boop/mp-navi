@@ -2,7 +2,7 @@
  "anchor": "forehead",
  "offset": [
   0,
-  -0.18,
+  -0.13,
   -0.42
  ],
  "rot": [
@@ -19,5 +19,6 @@
  "id": "mk_cowboy",
  "glb": "mk_cowboy.glb",
  "src": "meshy-6 image-to-3d (11-03)",
- "v": 1
+ "v": 1,
+ "hairK": 0.6
 }
