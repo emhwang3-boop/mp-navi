@@ -17,13 +17,8 @@
   "bandY": 0.0
  },
  "id": "mk_cap",
- "glb": "mk_cap.glb",
- "src": "meshy-6 image-to-3d (11-03)",
+ "glb": "mk_cap.glb?v=gy1",
+ "src": "meshy-6 (11-03) · 텍스처 초록 몸통 + 노랑 챙으로 다시 칠함",
  "v": 1,
- "tint": [
-  1.45,
-  1.45,
-  1.5
- ],
  "rough": 0.9
 }
