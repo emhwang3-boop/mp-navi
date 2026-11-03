@@ -1493,7 +1493,8 @@ var KMKD={   // [그림 폭 ÷ 얼굴 폭, 그림 안 눈높이(0~1), 부위] �
  mk_santa:[2.1,0.47,"f"], mk_pumpkin:[2.45,0.48,"f"], mk_deer:[2.65,0.54,"f"], mk_catpink:[2.7,0.47,"f"]};
 var KMKM="https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task", KFL=null, KFLP=null, KMX=null, KMIM={}, KNMK=false;
 function kMkIs(k){ return String(k||"").indexOf("mk_")===0; }
-var KMS=["h","e","m","f"];
+var KMS=["h","c","e","m","f"];   // c = 모자 (11-03) — 쓰는 자리는 머리(h)와 같아 가발과 동시에 하나
+function kMkTab(k){ return KMK2[k]&&KMK2[k].hb?"c":KMKD[k][2]; }
 function kMkList(v){ var o={}; String(v||"").split(",").forEach(function(k){ var d=KMKD[k]; if(d) o[d[2]]=k; }); return o.f?[o.f]:["h","m","e"].map(function(c){ return o[c]; }).filter(Boolean); }   // 부위마다 1개 · 겹치는 차례대로
 function kMkCur(){ var k=""; try{ k=localStorage.getItem("mpv_kmask")||""; }catch(e){} return kMkList(k).join(","); }
 function kMkTog(v,k){ var l=kMkList(v), c=KMKD[k][2]; if(l.indexOf(k)>=0) return l.filter(function(x){ return x!==k; }).join(","); return kMkList((c==="f"?[]:l.filter(function(x){ return KMKD[x][2]!==c&&KMKD[x][2]!=="f"; })).concat([k]).join(",")).join(","); }
@@ -1599,17 +1600,24 @@ function kMkPipe(st,k){ var vt=st.getVideoTracks()[0]; if(!vt) return Promise.re
     var fr=function(){ if(KMX!==g) return; g.raf=requestAnimationFrame(fr); if(g.t&&g.t.readyState==="ended"){ kMkStop(); return; } try{ kMkFrame(g); }catch(e){} }; g.raf=requestAnimationFrame(fr);
     return {ms:new MediaStream([g.t].concat(st.getAudioTracks())),g:g}; }); }
 function kMkFrame(g){ var v=g.v, x=g.x, W=g.W, H=g.H, now=performance.now(); if(v.readyState<2){ if(!g.drew){ x.fillStyle="#120a22"; x.fillRect(0,0,W,H); } return; } g.drew=1;
-  if(!g.k||g.rear){ x.drawImage(v,0,0,W,H); return; }   // 후면 카메라는 얼굴이 없으니 마스크·흐림 없이 그대로 (11-01) · 벗은 상태(미리 보기·도란도란에서 벗음) = 카메라 그대로
+  if(g.kPrev==null) g.kPrev=g.k||"";   // 처음 = 지금 쓴 것 (스캔은 그 뒤 새로 쓸 때만)
+  if(!g.k||g.rear){ g.kPrev=g.k||""; x.drawImage(v,0,0,W,H); return; }   // 후면 카메라는 얼굴이 없으니 마스크·흐림 없이 그대로 (11-01) · 벗은 상태(미리 보기·도란도란에서 벗음) = 카메라 그대로
   var q=KMQ[g.lv||0], f0=performance.now();
   if(KFL&&now-g.dt>=q[0]){ g.dt=now; try{ g.ts=Math.max((g.ts||0)+1,now); var r=KFL.detectForVideo(v,g.ts), fs=r&&r.faceLandmarks||[]; if(fs.length){ var old=g.z||[]; g.z=fs.map(function(lm,i){ var f=old[i]||{H:H}; f.H=H; return kFtrk(f,lm,W,now); }); g.seen=now; } }catch(e){} }
   var lost=now-g.seen, sp=g.z.length?(g.z[0].spd||0):9, hold=sp<1.2?700:300;   // 손이 잠깐 가려도(천천히 움직이던 얼굴) 0.7초는 그 자리 유지 · 그 뒤엔 흐림
   if(lost>hold||!g.z.length||!kMkReady(g.k)){ g.sx.drawImage(v,0,0,g.sc.width,g.sc.height); x.imageSmoothingEnabled=true; x.drawImage(g.sc,0,0,W,H); g.ok=0; return; }   // 🔴 얼굴 못 찾음 = 전체 흐리게
   kMkTint(g); x.drawImage(v,0,0,W,H);
-  if(g.G){ var G=g.G, cw=Math.round(W*q[1]), ch=Math.round(H*q[1]), wg=kMkList(g.k).filter(function(k){ return KMK2[k]&&KMK2[k].bk; })[0]; if(G.c.width!==cw){ G.c.width=cw; G.c.height=ch; } if(wg&&(g.lv||0)<2){ kHsLoad().catch(function(){}); kHairSeg(g,now,q[0]*3); kHairPaint(g,G,x,g.z,wg,W,H); } else if((g.lv||0)<2&&kMkList(g.k).some(function(k){ return KMK2[k]&&KMK2[k].hb; })){ kHsLoad().catch(function(){}); kHairSeg(g,now,q[0]*3); }   /* 모자 = 머리 꼭대기·폭만 잼 (그리기 없음) */ var lM=kMkList(g.k), lm=lM.filter(function(k){ return KMK2[k]&&KMK2[k].mul; }), ln=lM.filter(function(k){ return !(KMK2[k]&&KMK2[k].mul); });
-    k3dIdsLoad(); var l3=K3D.st>=0?ln.filter(function(k){ return k3dId(k); }):[], d3=[]; if(l3.length){ k3dEng(); if(K3D.st===2) d3=l3.filter(function(k){ var id=k3dId(k); return K3D.E.state(id)===1; }); }   /* 3D 로 그릴 수 있는 아이템은 2D 목록에서 뺀다 · 읽는 중·실패면 2D 그대로 */
+  if(g.kPrev==null) g.kPrev=g.k; else if(g.kPrev!==g.k){ var pv=kMkList(g.kPrev), nw=kMkList(g.k).filter(function(k){ return pv.indexOf(k)<0; }); if(nw.length) g.scan={t0:now,items:nw,rm:kRm()}; else if(g.scan) g.scan.items=g.scan.items.filter(function(k){ return kMkList(g.k).indexOf(k)>=0; }); g.kPrev=g.k; }   // (11-03) 새로 쓴 아이템만
+  var hid=g.scan?g.scan.items:[];
+  k3dIdsLoad(); var lA=kMkList(g.k).filter(function(k){ return hid.indexOf(k)<0; }), l3=K3D.st>=0?lA.filter(function(k){ return k3dId(k)&&!(KMK2[k]&&KMK2[k].mul); }):[], d3=[]; if(l3.length){ k3dEng(); if(K3D.st===2) d3=l3.filter(function(k){ return K3D.E.state(k3dId(k))===1; }); }   /* (11-03) 3D 로 그릴 아이템 — 2D 목록에서 뺀다 · 읽는 중·실패면 2D 그대로 */
+  g.d3=d3.length; g.cw3=Math.round(W*q[1]); g.ch3=Math.round(H*q[1]);
+  if(g.G){ var G=g.G, cw=Math.round(W*q[1]), ch=Math.round(H*q[1]), wg=lA.filter(function(k){ return KMK2[k]&&KMK2[k].bk; })[0]; if(G.c.width!==cw){ G.c.width=cw; G.c.height=ch; } if(wg&&(g.lv||0)<2){ kHsLoad().catch(function(){}); kHairSeg(g,now,q[0]*3); kHairPaint(g,G,x,g.z,wg,W,H); } else if((g.lv||0)<2&&kMkList(g.k).some(function(k){ return KMK2[k]&&KMK2[k].hb; })){ kHsLoad().catch(function(){}); kHairSeg(g,now,q[0]*3); }   /* 모자 = 머리 꼭대기·폭만 잼 (그리기 없음) */ var lM=lA, lm=lM.filter(function(k){ return KMK2[k]&&KMK2[k].mul; }), ln=lM.filter(function(k){ return !(KMK2[k]&&KMK2[k].mul); });
     if(lm.length){ kGlDraw(g,G,g.z,lm); x.globalCompositeOperation="multiply"; x.drawImage(G.c,0,0,W,H); x.globalCompositeOperation="source-over"; } var l2=ln.filter(function(k){ return d3.indexOf(k)<0; }); if(l2.length){ kGlDraw(g,G,g.z,l2); x.drawImage(G.c,0,0,W,H); }
-    if(l3.length&&K3D.st===2){ try{ k3dDraw(g,x,l3,cw,ch); }catch(e){ K3D.st=-1; K3D.err=String(e&&e.message||e); } } }
-  else g.z.forEach(function(f){ kMkPaint(x,g.k,f.z,g,f); });
+  }
+  else { var l2c=lA.filter(function(k){ return d3.indexOf(k)<0; }).join(","); if(l2c) g.z.forEach(function(f){ kMkPaint(x,l2c,f.z,g,f); }); }   // GL 판이 없는 폰 = 캔버스 2D 그림 (3D 아이템은 빼고)
+  if(l3.length&&K3D.st===2){ try{ k3dDraw(g,x,l3,g.cw3,g.ch3); }catch(e){ K3D.st=-1; K3D.err=String(e&&e.message||e); } }
+  if(g.scan) kScan(g,x,now);
+  k3dDbg(g,now);
   var dt=performance.now()-f0; g.ft=g.ft?g.ft*0.92+dt*0.08:dt; if(g.ft>28&&(g.lv||0)<2){ g.lv=(g.lv||0)+1; g.ft=0; } else if(g.ft&&g.ft<9&&g.lv>0){ g.lv--; g.ft=0; }   // 끊기면 추적 빈도·해상도를 낮추고, 여유 생기면 되돌림
   g.ok=1; }
 // ── 3D 얼굴 아이템 (11-03 사장님 「시작해」) — kar3d.js(three.js 0.180 고정, 우리 서버) 를 3D 아이템을 쓸 때만 읽는다 · 못 읽거나 WebGL 이 안 되면 지금 2D 그림 그대로
@@ -1619,16 +1627,69 @@ var K3D={st:0,E:null,ids:null,idp:null,fail:{},n:0,ms:0};
 function k3dDev(){ try{ return localStorage.getItem("mpv_k3d_dev")||""; }catch(e){ return ""; } }
 function k3dIdsLoad(){ if(K3D.ids||K3D.idp) return; K3D.idp=fetch("img/deco3d/index.json",{cache:"no-cache"}).then(function(r){ return r.ok?r.json():{}; }).catch(function(){ return {}; }).then(function(j){ var o={}; ((j&&j.items)||[]).forEach(function(k){ o[k]=k; }); K3D.ids=o; }); }
 function k3dId(k){ var fl=K3D.fail[k]; if(fl&&(fl.n>=3||Date.now()-fl.t<15000)) return ""; var d=k3dDev(), i, e; if(d){ e=d.split(","); for(i=0;i<e.length;i++){ var q=e[i].split("="); if(q[0]===k) return q[1]||"_dev_cap"; } } return K3D.ids&&K3D.ids[k]||""; }   // 시험: "mk_cap" = 도형 시험 모자 · "mk_cap=mk_cap" = 받은 3D(glb) 를 index.json 없이
-function k3dEng(){ if(K3D.st) return; K3D.st=1; import("./kar3d.js?v=2").then(function(m){ return kFmLoad().then(function(F){ var E=m.engine({base:"img/deco3d/"}); E.setFaceIdx(F.idx.slice(0,F.ni)); K3D.E=E; K3D.st=2; }); }).catch(function(e){ K3D.st=-1; K3D.err=String(e&&e.message||e); }); }
+function k3dEng(){ if(K3D.st) return; K3D.st=1; import("./kar3d.js?v=4").then(function(m){ return kFmLoad().then(function(F){ var E=m.engine({base:"img/deco3d/"}); E.setFaceIdx(F.idx.slice(0,F.ni)); K3D.E=E; K3D.st=2; window.KAR3D_V=m.VER+"/r"+m.THREE_VER;
+      E.canvas.addEventListener("webglcontextlost",function(ev){ ev.preventDefault(); K3D.st=-1; K3D.err="webgl context lost"; }); E.canvas.addEventListener("webglcontextrestored",function(){ K3D.st=2; K3D.err=""; }); }); }).catch(function(e){ K3D.st=-1; K3D.err=String(e&&e.message||e); }); }
 function k3dHair(g,f){ var P=f.P; if(!P) return null; var p=function(i){ return [P[i*3],P[i*3+1]]; }, a10=p(10), a152=p(152), a21=p(21), a251=p(251), ux=a10[0]-a152[0], uy=a10[1]-a152[1], fh=Math.hypot(ux,uy)||1, u=[ux/fh,uy/fh], rx=a251[0]-a21[0], ry=a251[1]-a21[1], tw=Math.hypot(rx,ry)||1, r=[rx/tw,ry/tw];
-  var hr=kHatHair(g,f,[a10[0],a10[1]],u,r,fh,tw); if(!hr) return f.h3||null; var w=hr.hw/(tw*0.5); f.h3=f.h3?{w:f.h3.w+(w-f.h3.w)*0.25}:{w:w}; return f.h3; }   // 머리 폭 ÷ 관자놀이 반폭 (짧은 머리 ≈ 1)
+  var hr=kHatHair(g,f,[a10[0],a10[1]],u,r,fh,tw); if(!hr) return f.h3||null; var w=hr.hw/(tw*0.5), tp=hr.top/fh; f.h3=f.h3?{w:f.h3.w+(w-f.h3.w)*0.25,top:f.h3.top+(tp-f.h3.top)*0.25}:{w:w,top:tp}; return f.h3; }   // w = 머리 폭 ÷ 관자놀이 반폭 (짧은 머리 ≈ 1) · top = 이마 위 머리카락 꼭대기 높이 ÷ 얼굴 높이 (11-03 여성 모자 — 머리 위에 얹기)
 function k3dEnv(g,f){ if(g.e3&&(g.fn||0)%24!==2) return g.e3; try{ var P=f.P, sw=g.sc.width, sh=g.sc.height, x0=1e9,x1=-1e9,y0=1e9,y1=-1e9; [234,454,10,152].forEach(function(i){ x0=Math.min(x0,P[i*3]); x1=Math.max(x1,P[i*3]); y0=Math.min(y0,P[i*3+1]); y1=Math.max(y1,P[i*3+1]); });
     g.sx.drawImage(g.v,0,0,sw,sh); var X0=Math.max(0,Math.floor(x0/g.W*sw)), X1=Math.min(sw,Math.ceil(x1/g.W*sw)), Y0=Math.max(0,Math.floor(y0/g.H*sh)), Y1=Math.min(sh,Math.ceil(y1/g.H*sh)); if(X1-X0<2||Y1-Y0<2) return g.e3;
     var d=g.sx.getImageData(X0,Y0,X1-X0,Y1-Y0).data, w=X1-X0, r=0,gg=0,b=0,lL=0,lR=0,n=0,i,x; for(i=0;i<d.length;i+=4){ x=(i/4)%w; var l=0.3*d[i]+0.59*d[i+1]+0.11*d[i+2]; r+=d[i]; gg+=d[i+1]; b+=d[i+2]; if(x<w/2) lL+=l; else lR+=l; n++; }
     var L=(0.3*r+0.59*gg+0.11*b)/n/255, m=Math.max(r,gg,b)||1, e={lum:L,col:[r/m,gg/m,b/m],dir:(lR-lL)/((lR+lL)||1)*3}; g.e3=g.e3?{lum:g.e3.lum+(e.lum-g.e3.lum)*0.3,col:g.e3.col.map(function(v,j){ return v+(e.col[j]-v)*0.3; }),dir:g.e3.dir+(e.dir-g.e3.dir)*0.3}:e; }catch(e){} return g.e3; }   // 얼굴 밝기·색온도·좌우 밝기 차
+// ── 얼굴 스캔 (11-03 사장님) — 아이템을 쓸 때 약 1초: 얼굴 망을 형광 초록으로 그리고, 밝은 줄이 위→아래로 훑은 뒤 망이 사라지며 아이템이 짠
+//   녹화·LIVE 화면(같은 캔버스)에 그대로 들어감 · 3D 모델이 아직이면 망이 은은하게 깜빡이며 기다림(최대 3초, 그 뒤엔 2D 그림) · 움직임 줄이기 설정이면 짧게·훑기 없음 · 그림 파일 없음(선·빛·그라데이션)
+function kRm(){ try{ return !!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches); }catch(e){ return false; } }
+function kScanReady(g){ var S=g.scan; return S.items.every(function(k){ var id=k3dId(k); if(!id||K3D.st<0) return true; if(K3D.st!==2){ k3dEng(); return false; } var st=K3D.E.state(id); if(!st) K3D.E.load(id).catch(function(){ var fl=K3D.fail[k]||{n:0}; K3D.fail[k]={n:fl.n+1,t:Date.now()}; }); return st===1||st===-1; }); }
+// 감싸는 그물 (사장님 11-03 다시 고침) — 정수리 꼭대기에서 시작해 그물 선이 앞·옆·뒤로 내려오며 머리 전체와 얼굴을 덮고 턱에서 끝남 → 그물이 사라지며 아이템이 짠 · 점은 그리지 않고 선만
+//   선 = 얼굴 망 삼각형 전부 + 머리 덮개(가림막과 같은 타원체)의 위도·경도 촘촘한 그물(정수리~귀 아래) · 각 점이 정수리에서 떨어진 각도로 차례로 켜짐 · 물결 앞쪽은 굵고 밝게 · 매 화면 고개 자세를 따라감
+var KSG=null;
+function kSg(){ if(KSG) return KSG; var R=28, M=60, T=2.0, o=[], r, m; for(r=0;r<=R;r++) for(m=0;m<M;m++){ var th=T*r/R, ph=2*Math.PI*m/M; o.push([0.56*Math.sin(th)*Math.cos(ph),0.72*Math.cos(th),0.64*Math.sin(th)*Math.sin(ph),th,Math.sin(th)*Math.sin(ph)]); } KSG={R:R,M:M,p:o}; return KSG; }   // th = 정수리에서 각도 · 마지막 = 앞쪽 정도
+function kScan(g,x,now){ var S=g.scan, F=KFM; if(S.lt==null){ S.lt=now; S.e=0; kScanReady(g); } S.e+=Math.min(50,now-S.lt); S.lt=now; var el=S.e, sd=S.rm?0:950, hold=S.rm?0:150, fd=S.rm?300:280, dur=sd+hold+fd;   // 화면이 잠깐 멈춰도(3D 모델 읽기) 건너뛰지 않게 한 화면에 최대 50ms 씩만 진행 · 시작할 때 모델 읽기를 미리 건다   // (11-03) 물결이 턱에 닿은 뒤(sd) 잠깐 다 켜진 채(hold) → 사라짐(fd) · 모델이 이미 있어도 턱까지 다 덮은 다음에만
+  if(!S.items.length||(el>=dur&&(kScanReady(g)||now-S.t0>=3000))){ g.scan=null; return; }   // 끝 = 다음 화면부터 아이템이 보인다
+  if(!F||!g.z||!g.z.length) return; var sw=Math.max(1,g.W/640), wave=S.rm?1:Math.min(1,el/sd), ft=el-sd-hold, fade=ft<0?1:ft<fd?1-ft/fd*0.75:0.3+0.25*Math.sin(el/140), G=kSg(), BAND=0.28;   // wave 1 = 턱(가장 아래 얼굴 점)까지 · 목으로는 안 내려감
+  g.z.forEach(function(f){ var P=f.P; if(!P) return;
+    var q=function(k){ return [P[k*3],-P[k*3+1],-P[k*3+2]]; }, a=q(234), b=q(454), t=q(10), c=q(152), vx=[b[0]-a[0],b[1]-a[1],b[2]-a[2]], hw=Math.hypot(vx[0],vx[1],vx[2])||1; vx=[vx[0]/hw,vx[1]/hw,vx[2]/hw];
+    var vy=[t[0]-c[0],t[1]-c[1],t[2]-c[2]], d=vy[0]*vx[0]+vy[1]*vx[1]+vy[2]*vx[2]; vy=[vy[0]-d*vx[0],vy[1]-d*vx[1],vy[2]-d*vx[2]]; var nl=Math.hypot(vy[0],vy[1],vy[2])||1; vy=[vy[0]/nl,vy[1]/nl,vy[2]/nl];
+    var vz=[vx[1]*vy[2]-vx[2]*vy[1],vx[2]*vy[0]-vx[0]*vy[2],vx[0]*vy[1]-vx[1]*vy[0]], O=[(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2];
+    var C=[O[0]+vy[0]*0.14*hw-vz[0]*0.3*hw, O[1]+vy[1]*0.14*hw-vz[1]*0.3*hw, O[2]+vy[2]*0.14*hw-vz[2]*0.3*hw];   // 머리 가운데 · 덮개는 머리카락까지 덮게 가림막보다 조금 크게 · 정수리 꼭대기 = 여기서 위(vy)로
+    var ang=function(X,Y,Z){ var dx=X-C[0], dy=Y-C[1], dz=Z-C[2], n=Math.hypot(dx,dy,dz)||1; return Math.acos(Math.max(-1,Math.min(1,(dx*vy[0]+dy*vy[1]+dz*vy[2])/n))); };
+    var Am=0, i0; for(i0=0;i0<468;i0++){ var a0=ang(P[i0*3],-P[i0*3+1],-P[i0*3+2]); if(a0>Am) Am=a0; } Am*=1.01; var front=wave*Am, i, m, lit=new Float32Array(468), on=new Uint8Array(468);
+    var pd=G.p, sx=new Float32Array(pd.length), sy=new Float32Array(pd.length), ok=new Uint8Array(pd.length);
+    for(i=0;i<pd.length;i++){ var s=pd[i], X=C[0]+(vx[0]*s[0]+vy[0]*s[1]+vz[0]*s[2])*hw, Y=C[1]+(vx[1]*s[0]+vy[1]*s[1]+vz[1]*s[2])*hw, nz=vx[2]*s[0]/0.3136+vy[2]*s[1]/0.5184+vz[2]*s[2]/0.4096;
+      sx[i]=X; sy[i]=-Y; ok[i]=nz>-0.02&&!(s[4]>0.35&&s[3]>0.95)&&s[3]<=front?1:0; }   // 카메라 쪽 · 얼굴 앞(얼굴 망이 덮는 곳)은 빼고 · 켜진 것만
+    for(i=0;i<468;i++){ var an=ang(P[i*3],-P[i*3+1],-P[i*3+2]); lit[i]=an; on[i]=an<=front?1:0; }
+    var cold=new Path2D(), hot=new Path2D(), seg=function(k1,k2,a1,a2,x1,y1,x2,y2){ var pth=(front-Math.max(a1,a2))<BAND?hot:cold; pth.moveTo(x1,y1); pth.lineTo(x2,y2); };
+    var R=G.R, M=G.M; for(i=0;i<=R;i++) for(m=0;m<M;m++){ var k=i*M+m, kr=i*M+(m+1)%M, kd=(i+1)*M+m;
+      if(ok[k]&&ok[kr]) seg(k,kr,pd[k][3],pd[kr][3],sx[k],sy[k],sx[kr],sy[kr]); if(i<R&&ok[k]&&ok[kd]) seg(k,kd,pd[k][3],pd[kd][3],sx[k],sy[k],sx[kd],sy[kd]); }   // 위도·경도 그물
+    var idx=F.idx, n=F.ni; for(i=0;i<n;i+=3){ var e=[idx[i],idx[i+1],idx[i+2]]; for(m=0;m<3;m++){ var u=e[m], w=e[(m+1)%3]; if(u>w||!(on[u]&&on[w])) continue; seg(u,w,lit[u],lit[w],P[u*3],P[u*3+1],P[w*3],P[w*3+1]); } }   // 얼굴 망 (변 하나는 한 번만)
+    x.save(); x.globalCompositeOperation="lighter"; x.lineJoin="round"; x.lineCap="round";
+    x.globalAlpha=0.6*fade; x.strokeStyle="#39ff14"; x.lineWidth=0.8*sw; x.stroke(cold);
+    x.globalAlpha=0.3*fade; x.strokeStyle="#39ff14"; x.lineWidth=3*sw; x.stroke(hot); x.globalAlpha=0.85*fade; x.strokeStyle="#b8ff9c"; x.lineWidth=1*sw; x.stroke(hot);   // 물결 앞쪽 = 빛나는 선
+    x.restore(); }); }
+function k3dDbgOn(){ if(K3D.dbg==null){ var q=""; try{ q=location.search; }catch(e){} var ls=""; try{ ls=localStorage.getItem("mpv_k3ddbg")||""; }catch(e){} K3D.dbg=/[?&]k3ddbg=1/.test(q)||ls==="1"?1:0; } return K3D.dbg||KOP; }
+function k3dPose(P){ var ax=P[454*3]-P[234*3], ay=-(P[454*3+1]-P[234*3+1]), az=-(P[454*3+2]-P[234*3+2]), ux=P[10*3]-P[152*3], uy=-(P[10*3+1]-P[152*3+1]), uz=-(P[10*3+2]-P[152*3+2]), n=Math.hypot(ax,ay,az)||1; ax/=n; ay/=n; az/=n;
+  var d=ux*ax+uy*ay+uz*az; ux-=d*ax; uy-=d*ay; uz-=d*az; n=Math.hypot(ux,uy,uz)||1; ux/=n; uy/=n; uz/=n; var zx=ay*uz-az*uy, zy=az*ux-ax*uz, zz=ax*uy-ay*ux, D=180/Math.PI;
+  return {yaw:Math.round(Math.atan2(zx,zz)*D),pitch:Math.round(Math.asin(Math.max(-1,Math.min(1,zy)))*D),roll:Math.round(Math.atan2(ay,ax)*D),zr:Math.round(Math.abs(P[454*3+2]-P[234*3+2]))}; }   // 도 단위 · zr = 귀 앞 두 점 깊이 차(픽셀) — 0 이면 깊이(z)가 안 들어온 것
+function k3dDbg(g,now){ if(!k3dDbgOn()) return; g.fpsN=(g.fpsN||0)+1; if(now-(g.dbgT||0)<500) return; var fps=g.dbgT?Math.round(g.fpsN*1000/(now-g.dbgT)):0; g.dbgT=now; g.fpsN=0;
+  var b=document.getElementById("k3ddbg"); if(!b){ b=document.createElement("div"); b.id="k3ddbg"; b.style.cssText="position:fixed;left:6px;top:6px;z-index:2147483647;background:rgba(0,0,0,.72);color:#9f9;font:11px/1.35 monospace;padding:4px 6px;border-radius:6px;pointer-events:none;white-space:pre"; document.body.appendChild(b); }
+  var why=K3D.st===-1?"실패 "+(K3D.err||"").slice(0,60):K3D.st===1?"엔진 읽는 중":K3D.st===0?(K3D.ids?"3D 아이템 아님":"목록 읽는 중"):!g.d3?"모델 읽는 중/없음":"";
+  var f=g.z&&g.z[0], ps=f&&f.P?k3dPose(f.P):null;
+  b.textContent="3D "+(g.d3?"ON":"OFF")+(why?" ("+why+")":"")+"\nfps "+fps+" · 그리기 "+(Math.round((K3D.ms||0)*10)/10)+"ms · lv "+(g.lv||0)+" · GL "+(g.G?1:0)+"\n"+(ps?"yaw "+ps.yaw+" pitch "+ps.pitch+" roll "+ps.roll+" · z "+ps.zr:"얼굴 없음")+(f&&f.h3?" · hair w "+(Math.round(f.h3.w*100)/100)+" top "+(Math.round((f.h3.top||0)*100)/100):"")+"\n"+g.W+"x"+g.H+" · v "+(window.KAR3D_V||"")+" "+(navigator.userAgent.match(/Android [0-9.]+|iPhone OS [0-9_]+|Chrome\/[0-9]+/g)||[]).join(" "); }
 function k3dDraw(g,x,l3,cw,ch){ var E=K3D.E, ids=[], t0=performance.now(); l3.forEach(function(k){ var id=k3dId(k); if(!id) return; var s=E.state(id); if(!s||s===-1){ if(s===-1) E.forget(id); E.load(id).catch(function(){ var fl=K3D.fail[k]||{n:0}; K3D.fail[k]={n:fl.n+1,t:Date.now()}; }); } else if(s===1) ids.push(id); });   /* 못 읽으면 15초 뒤 다시 (3번까지) — 그동안 2D */
   if(!ids.length) return []; var fs=g.z.map(function(f){ return {P:f.P,hair:k3dHair(g,f)}; }); if(E.draw({W:g.W,H:g.H,cw:cw,ch:ch,faces:fs,items:ids,env:k3dEnv(g,g.z[0])})) x.drawImage(E.canvas,0,0,g.W,g.H);
   var dt=performance.now()-t0; K3D.ms=K3D.ms?K3D.ms*0.9+dt*0.1:dt; K3D.n++; return l3.filter(function(k){ var id=k3dId(k); return id&&E.state(id)===1; }); }   // 그린 아이템(2D 에서 뺄 것)
+// ── 어두운 아이템 그림 받침 (11-03 사장님 — 콧수염·턱수염·복면처럼 검은 그림이 어두운 칸에서 안 보임) · 목록을 정하지 않고 그림 밝기를 잰다
+//   불투명한 곳 평균 밝기 < 0.3 = 어두움 → 칸에 밝은 둥근 받침(kddk) · 결과는 이 창이 열린 동안 기억
+var DKC={};
+function dcDk(root){ if(!root) return; [].forEach.call(root.querySelectorAll("img[data-dk]"),function(im){ var k=im.getAttribute("data-dk"), host=im.closest(".kdim,.kmkc")||im.parentNode;   // (11-03) 작은 그림이면 그림만큼 확대 · 옅은 그림(볼터치)은 진하게 + 얼굴 윤곽 받침 · 어두운 그림은 밝은 받침 — 칸 그림만, 쓰는 그림은 그대로
+  var put=function(){ var r=DKC[k]; if(!r||!host) return; if(r.dk) host.classList.add("kddk"); if(r.fx){ host.classList.add("kdfx"); if(r.src&&im.getAttribute("src")!==r.src){ im.dataset.dkd="1"; im.src=r.src; } } if(r.s>1) im.style.transform="scale("+r.s+") translate("+r.tx+"%,"+r.ty+"%)"; };
+  if(DKC[k]!=null){ put(); return; } var go=function(){ if(DKC[k]!=null){ put(); return; } var r={dk:0,fx:0,s:1,tx:0,ty:0};
+    try{ var N=48, c=mkc0(N,N), x=c.getContext("2d"); x.drawImage(im,0,0,N,N); var d=x.getImageData(0,0,N,N).data, t=0, n=0, al=0, x0=N, x1=-1, y0=N, y1=-1, i, px, py;
+      for(i=0;i<d.length;i+=4){ if(d[i+3]<24) continue; px=(i/4)%N; py=(i/4/N)|0; if(px<x0) x0=px; if(px>x1) x1=px; if(py<y0) y0=py; if(py>y1) y1=py; al+=d[i+3]/255; t+=(0.3*d[i]+0.59*d[i+1]+0.11*d[i+2])/255; n++; }
+      if(n>8){ var lum=t/n, ma=al/n; r.dk=lum<0.3?1:0; r.fx=ma<0.45?1:0;
+        var bw=(x1-x0+1)/N, bh=(y1-y0+1)/N, mx=Math.max(bw,bh); if(mx<0.72&&!r.fx){ r.s=Math.round(Math.min(2.6,0.86/mx)*100)/100; r.tx=Math.round((0.5-(x0+x1+1)/2/N)*1000)/10; r.ty=Math.round((0.5-(y0+y1+1)/2/N)*1000)/10; }
+        if(r.fx){ var W=im.naturalWidth, H=im.naturalHeight, c2=mkc0(W,H), x2=c2.getContext("2d"); x2.drawImage(im,0,0); var id=x2.getImageData(0,0,W,H), dd=id.data; for(i=3;i<dd.length;i+=4) dd[i]=Math.min(255,dd[i]*2.6); x2.putImageData(id,0,0); r.src=c2.toDataURL("image/png"); } } }catch(e){}
+    DKC[k]=r; put(); };
+  if(im.dataset.dkd) return; if(im.complete&&im.naturalWidth) go(); else im.addEventListener("load",go,{once:true}); }); }
 function kMkStop(){ var g=KMX; KMX=null; if(!g) return; cancelAnimationFrame(g.raf); try{ g.t&&g.t.stop(); }catch(e){} try{ g.vt.stop(); }catch(e){} try{ g.v.srcObject=null; g.v.remove(); }catch(e){} }
 function kMkWrap(st){ var k=kMkCur(); if(!k||!st||!st.getVideoTracks().length) return Promise.resolve(st); return kMkPipe(st,k).then(function(r){ if(r) return r.ms; st.getTracks().forEach(function(t){ t.stop(); }); throw new Error("nomask"); }); }
 function kMkNat(){ return kMkList(kMkCur()).map(function(k){ var d=KMKD[k]; var e=KMK2[k]||{}, u=function(n){ return new URL("img/deco/"+n+".webp",location.href).href; }; var hc=e.hc?[parseInt(e.hc.slice(1,3),16)/255,parseInt(e.hc.slice(3,5),16)/255,parseInt(e.hc.slice(5,7),16)/255]:null; return {url:u(k),f:d[0],ey:d[1],m:e.m?1:0,r:e.r?1:0,dz:e.dz||0,g:e.g?1:0,mo:e.mo?[e.mo[0],e.mo[1],e.mo[2]]:null,mu:e.mo?u(e.mo[3]):"",bk:e.bk?u(e.bk):"",hc:hc,lt:e.lt||0.25,fe:e.fe||0.3,mul:e.mul?1:0,hole:e.hole?1:0,hb:e.hb?[e.hb.l[0],e.hb.l[1],e.hb.r[0],e.hb.r[1],e.hb.t]:null,bd:e.bd||0,kw:e.kw||1.12,tg:e.tg||null,up:e.up||0}; }); }   /* hb… = 모자 띠 맞춤 (앱이 새 판이면 사용, 옛 앱은 무시하고 f·ey 앵커) */
@@ -1644,17 +1705,17 @@ function dMkApply(){ var s=DR.stream, k=kMkCur(); if(!s||!s.getVideoTracks().len
   var old=s.getVideoTracks()[0]; kMkPipe(s,k).then(function(r){ if(!r||!DR.alive){ if(r) kMkStop(); return; } r.g.rear=DR.face==="environment"; var t=r.g.t; try{ s.removeTrack(old); s.addTrack(t); t.enabled=!!DR.cam; if(DR.txV&&DR.cam) DR.txV.sender.replaceTrack(t); }catch(e){} dDraw(); }); }
 // 고르는 창 — 착용 미리 보기 · o.tryK = 사기 전 써 보기 · 도란도란 안에서는 지금 카메라 그대로 보여 준다
 function kMkOpen(o){ o=o||{}; if(!sess()){ kLogin(function(){ kMkOpen(o); }); return; } var b=box(); if(!b) return; var old=b.querySelector(".kmkp"); if(old) old.remove(); var dor=!!(DR.alive&&DR.o), w=document.createElement("div"); w.className="kpm kmkp"; b.appendChild(w); var cam=null, cur=kMkCur(), dead=false, tab=0;
-  if(o.tryK){ if(kMkList(cur).indexOf(o.tryK)<0) cur=kMkTog(cur,o.tryK); tab=KMS.indexOf(KMKD[o.tryK][2]); } else if(kMkList(cur).length) tab=KMS.indexOf(KMKD[kMkList(cur)[0]][2]);
+  if(o.tryK){ if(kMkList(cur).indexOf(o.tryK)<0) cur=kMkTog(cur,o.tryK); tab=KMS.indexOf(kMkTab(o.tryK)); } else if(kMkList(cur).length) tab=KMS.indexOf(kMkTab(kMkList(cur)[0]));
   var close=function(){ dead=true; try{ if(cam){ cam.getTracks().forEach(function(t){ t.stop(); }); kMkStop(); } }catch(e){} w.remove(); kMkChip(); };
   var push=function(){ kMkSet(kMkList(cur).filter(kMkOk).join(",")); if(dor) dMkApply(); if(KMX&&!dor){ KMX.k=cur; KMX.z=[]; KMX.seen=0; kMkReady(cur); } draw(); };
-  var sel=function(k){ cur=k?kMkTog(cur,k):kMkList(cur).filter(function(x){ return KMKD[x][2]!==KMS[tab]; }).join(","); push(); };
-  var draw=function(){ var l=kMkList(cur), sl=KMS[tab], own=DCI.filter(function(x){ return kMkIs(x[0])&&KMKD[x[0]][2]===sl&&kMkOk(x[0]); }).map(function(x){ return x[0]; }), g=w.querySelector(".kmkg"), un=o.tryK&&KMKD[o.tryK][2]===sl&&own.indexOf(o.tryK)<0?[o.tryK]:[], on=l.some(function(k){ return KMKD[k][2]===sl; });
+  var sel=function(k){ cur=k?kMkTog(cur,k):kMkList(cur).filter(function(x){ return kMkTab(x)!==KMS[tab]; }).join(","); push(); };
+  var draw=function(){ var l=kMkList(cur), sl=KMS[tab], own=DCI.filter(function(x){ return kMkIs(x[0])&&kMkTab(x[0])===sl&&kMkOk(x[0]); }).map(function(x){ return x[0]; }), g=w.querySelector(".kmkg"), un=o.tryK&&kMkTab(o.tryK)===sl&&own.indexOf(o.tryK)<0?[o.tryK]:[], on=l.some(function(k){ return kMkTab(k)===sl; });
     if(!g){ w.innerHTML='<div><h3>'+esc(L(TX.mkT))+'</h3><video class="kmkv" muted autoplay playsinline></video><p class="km">'+esc(L(TX.mkNote))+'</p><div class="kmkts"></div><div class="kmkg"></div><button type="button" class="kgo" data-shop="1">'+esc(L(TX.mkShop))+'</button><button type="button" class="kc">'+esc(L(TX.back))+'</button></div>'; g=w.querySelector(".kmkg");
       w.querySelector(".kc").onclick=close; w.querySelector("[data-shop]").onclick=function(){ close(); dcOpen(dor?dcDorCtx():kMkCtx(),DTAB.findIndex(function(x){ return Array.isArray(x)&&x[0]==="mkb"; })); }; }
-    var tb=w.querySelector(".kmkts"); tb.innerHTML=KMS.map(function(c,i){ var n=l.filter(function(k){ return KMKD[k][2]===c; }).length; return '<button type="button" data-tb="'+i+'"'+(i===tab?' class="on"':'')+'>'+esc(kTx(TX.mkTabs,i))+(n?' <i></i>':'')+'</button>'; }).join("");
+    var tb=w.querySelector(".kmkts"); tb.innerHTML=KMS.map(function(c,i){ var n=l.filter(function(k){ return kMkTab(k)===c; }).length; return '<button type="button" data-tb="'+i+'"'+(i===tab?' class="on"':'')+'>'+esc(kTx(TX.mkTabs,i))+(n?' <i></i>':'')+'</button>'; }).join("");
     [].forEach.call(tb.querySelectorAll("[data-tb]"),function(x){ x.onclick=function(){ tab=+x.dataset.tb; draw(); }; });
-    g.innerHTML='<button type="button" class="kmkc'+(on?'':' on')+'" data-mk=""><span>✕</span><small>'+esc(L(TX.mkNone))+'</small></button>'+own.concat(un).map(function(k){ return '<button type="button" class="kmkc'+(l.indexOf(k)>=0?' on':'')+'" data-mk="'+k+'"><img src="'+dcImg(k)+'" alt=""><small>'+esc(dcN(k))+'</small></button>'; }).join("")+(own.length||un.length?'':'<p class="km">'+esc(L(TX.mkEmp))+'</p>');
-    [].forEach.call(g.querySelectorAll("[data-mk]"),function(x){ x.onclick=function(){ sel(x.dataset.mk); }; }); };
+    g.innerHTML='<button type="button" class="kmkc'+(on?'':' on')+'" data-mk=""><span>✕</span><small>'+esc(L(TX.mkNone))+'</small></button>'+own.concat(un).map(function(k){ return '<button type="button" class="kmkc'+(l.indexOf(k)>=0?' on':'')+'" data-mk="'+k+'"><img src="'+dcImg(k)+'" alt="" data-dk="'+k+'"><small>'+esc(dcN(k))+'</small></button>'; }).join("")+(own.length||un.length?'':'<p class="km">'+esc(L(TX.mkEmp))+'</p>');
+    [].forEach.call(g.querySelectorAll("[data-mk]"),function(x){ x.onclick=function(){ sel(x.dataset.mk); }; }); dcDk(g); };
   draw(); dcLoad().then(function(){ if(!dead) draw(); }); var pv=w.querySelector(".kmkv");
   if(dor){ pv.srcObject=DR.stream; return; }
   var md=navigator.mediaDevices; if(!md||!md.getUserMedia){ pv.remove(); return; }
@@ -3921,7 +3982,7 @@ function jbAdd(){ var o=pgOpen("kjbadd"); if(!o) return; var A={q:"",items:null}
  +"#karBox .kdtabs{flex:0 0 auto;display:flex;gap:6px;overflow-x:auto;padding:2px 12px 10px;scrollbar-width:none}#karBox .kdtabs::-webkit-scrollbar{display:none}#karBox .kdtabs button{flex:0 0 auto;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#e9dcff;border-radius:999px;padding:7px 13px;font-weight:800;font-size:13.5px;white-space:nowrap;cursor:pointer}#karBox .kdtabs button.on{background:linear-gradient(90deg,#ff4fd8,#7a5cff);border-color:transparent;color:#fff}"
  +"#karBox .kdbody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 12px max(16px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px}"
  +"#karBox .kdgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}#karBox .kdcd{display:flex;flex-direction:column;align-items:stretch;gap:4px;padding:6px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);border-radius:14px;color:#fff;cursor:pointer;text-align:center;min-width:0}#karBox .kdcd.kdown{border-color:rgba(124,255,178,.55);background:rgba(124,255,178,.06)}"
- +"#karBox .kdim{display:block;aspect-ratio:1;border-radius:10px;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.16),rgba(255,255,255,.02) 70%);overflow:hidden}#karBox .kdim img{width:100%;height:100%;object-fit:contain;display:block}#karBox .kdcpl .kdim{aspect-ratio:3/4}#karBox .kddefim{display:block;background:radial-gradient(ellipse at 20% 0%,#3b0d5c 0%,#12081f 45%,#05030a 100%)}#karBox .kdcpl .kdim img{object-fit:cover}"
+ +"#karBox .kdim{display:block;aspect-ratio:1;border-radius:10px;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.16),rgba(255,255,255,.02) 70%);overflow:hidden}#karBox .kdim img{width:100%;height:100%;object-fit:contain;display:block}#karBox .kdim.kdfx,#karBox .kmkc.kdfx img{background:radial-gradient(ellipse 30% 40% at 50% 52%,#f3d2b8 0,#eec3a3 92%,rgba(238,195,163,0) 100%),radial-gradient(circle at 50% 47%,rgba(255,255,255,.92),rgba(232,230,242,.7) 44%,rgba(255,255,255,.1) 72%)!important}#karBox .kdim img,#karBox .kmkc img{transform-origin:50% 50%}#karBox .kmkc{overflow:hidden}#karBox .kdim.kddk,#karBox .kmkc.kddk img{background:radial-gradient(circle at 50% 47%,rgba(255,255,255,.92),rgba(232,230,242,.7) 44%,rgba(255,255,255,.1) 72%)}#karBox .kmkc.kddk img{border-radius:10px}#karBox .kdcpl .kdim{aspect-ratio:3/4}#karBox .kddefim{display:block;background:radial-gradient(ellipse at 20% 0%,#3b0d5c 0%,#12081f 45%,#05030a 100%)}#karBox .kdcpl .kdim img{object-fit:cover}"
  +"#karBox .kdcd b{font-size:12.5px;font-weight:800;line-height:1.25;min-height:2.5em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all;overflow-wrap:anywhere}#karBox .kdpr{display:flex;flex-wrap:wrap;justify-content:center;gap:3px;font-size:12px;font-weight:900;color:#ffe066}"
  +"#karBox .kdok{font-style:normal;color:#7CFFB2;font-weight:900}#karBox .kdnow{font-style:normal;color:#1a1300;background:#ffe066;border-radius:999px;padding:0 7px}"
  +"#karBox .kdban{position:relative;display:block;border:0;padding:0;border-radius:16px;overflow:hidden;cursor:pointer;flex:0 0 auto;background:#000}#karBox .kdban img{width:100%;display:block;aspect-ratio:1376/768;object-fit:cover}#karBox .kdban2 img{aspect-ratio:16/5}#karBox .kdban b{position:absolute;left:0;right:0;bottom:0;padding:18px 12px 9px;background:linear-gradient(transparent,rgba(10,4,20,.88));color:#ffe066;font-size:15px;font-weight:900;text-align:left}"
@@ -3952,12 +4013,12 @@ function jbAdd(){ var o=pgOpen("kjbadd"); if(!o) return; var A={q:"",items:null}
 //   허브: /shop/kpt/inv (보관함·가격) · /shop/kpt/deco (구매) · /dor/deco (도란도란 놓기·치우기·장소, 모두에게 실시간) · /kst/room op dput·drm·dpl (우리끼리 노래)
 Object.assign(TX,{
  dcB:{ko:"꾸미기",en:"Decorate",ja:"デコる",zhs:"装扮",zht:"裝扮",es:"Decorar"},
- dcT:{ko:"방 꾸미기",en:"Room decor",ja:"ルームデコ",zhs:"房间装扮",zht:"房間裝扮",es:"Decorar la sala"},
+ dcT:{ko:"꾸미기",en:"Decorate",ja:"デコ",zhs:"装扮",zht:"裝扮",es:"Decorar"},
  usQ:{ko:"ID로 사람 찾기",en:"Find people by ID",ja:"IDで人を探す",zhs:"按ID找人",zht:"依ID找人",es:"Buscar personas por ID"},
  usT:{ko:"사람 찾기",en:"Find people",ja:"人を探す",zhs:"找人",zht:"找人",es:"Buscar personas"},
  usE:{ko:"찾는 ID가 없습니다.",en:"No matching ID.",ja:"該当するIDはありません。",zhs:"没有找到该ID。",zht:"沒有找到該ID。",es:"No se encontró ese ID."},
  mkT:{ko:"마스크",en:"Mask",ja:"マスク",zhs:"面具",zht:"面具",es:"Máscara"},
- mkTabs:{ko:"머리|눈|입·턱|얼굴 전체",en:"Hair|Eyes|Mouth·Chin|Full face",ja:"髪|目|口·あご|顔全体",zhs:"头发|眼部|嘴·下巴|全脸",zht:"頭髮|眼部|嘴·下巴|全臉",es:"Pelo|Ojos|Boca·Barbilla|Cara completa"},
+ mkTabs:{ko:"머리|모자|눈|입·턱|얼굴 전체",en:"Hair|Hats|Eyes|Mouth·Chin|Full face",ja:"髪|帽子|目|口·あご|顔全体",zhs:"头发|帽子|眼部|嘴·下巴|全脸",zht:"頭髮|帽子|眼部|嘴·下巴|全臉",es:"Pelo|Sombreros|Ojos|Boca·Barbilla|Cara completa"},
  mkNone:{ko:"착용 안 함",en:"None",ja:"なし",zhs:"不佩戴",zht:"不佩戴",es:"Sin máscara"},
  mkShop:{ko:"마스크 상점",en:"Mask shop",ja:"マスクショップ",zhs:"面具商店",zht:"面具商店",es:"Tienda de máscaras"},
  mkNote:{ko:"부위마다 1개씩 함께 착용합니다. 얼굴 전체를 고르면 다른 부위는 비워집니다. 얼굴을 찾지 못하면 화면 전체가 흐려집니다.",en:"Wear one per area at the same time. Choosing a full-face mask clears the other areas. If your face can't be found, the whole picture is blurred.",ja:"部位ごとに1つずつ同時に着用できます。顔全体を選ぶと他の部位は外れます。顔を見つけられないと画面全体がぼやけます。",zhs:"每个部位可同时佩戴1个。选择全脸后其他部位会清空。找不到面部时整个画面会变模糊。",zht:"每個部位可同時佩戴1個。選擇全臉後其他部位會清空。找不到臉部時整個畫面會變模糊。",es:"Lleva una por zona a la vez. Si eliges cara completa, las demás zonas se vacían. Si no se detecta tu cara, toda la imagen se difumina."},
@@ -3971,7 +4032,7 @@ Object.assign(TX,{
  mkOffOk:{ko:"마스크를 벗었습니다.",en:"Mask off.",ja:"マスクを外しました。",zhs:"已摘下面具。",zht:"已摘下面具。",es:"Máscara quitada."},
  mkCat:{ko:"기본|여성용|남성용|동물|가발|모자|세트·시즌",en:"Basic|For women|For men|Animals|Wigs|Hats|Sets·Seasonal",ja:"ベーシック|女性用|男性用|動物|ウィッグ|帽子|セット·シーズン",zhs:"基础|女士|男士|动物|假发|帽子|套装·季节",zht:"基礎|女士|男士|動物|假髮|帽子|套裝·季節",es:"Básicas|Mujer|Hombre|Animales|Pelucas|Sombreros|Sets·Temporada"},
  ntcM1:{ko:"마스크는 구매 시각부터 1일·7일·30일 중 고른 기간 동안 보관함에 남고, 부위마다 1개씩 함께 착용합니다. 얼굴을 찾지 못하는 동안은 화면 전체가 흐려지며, 녹화·방송에도 그대로 담깁니다.",en:"Masks stay in My items for 1, 7 or 30 days from the time of purchase, as you choose, and you can wear one per area together. While your face can't be found the whole picture is blurred, including in recordings and broadcasts.",ja:"マスクは購入時刻から1日・7日・30日のうち選んだ期間アイテム箱に残り、部位ごとに1つずつ同時に着用できます。顔を見つけられない間は画面全体がぼやけ、録画・放送にもそのまま残ります。",zhs:"面具自购买时起在所选期限（1天、7天或30天）内保存在我的物品中，每个部位可同时佩戴1个。未找到面部时整个画面会变模糊，录像和直播中也一样。",zht:"面具自購買時起在所選期限（1天、7天或30天）內保存在我的物品中，每個部位可同時佩戴1個。未找到臉部時整個畫面會變模糊，錄影和直播中也一樣。",es:"Las máscaras quedan en Mis objetos 1, 7 o 30 días desde la compra, según elijas, y puedes llevar una por zona a la vez. Si no se detecta tu cara, toda la imagen se difumina, también en grabaciones y emisiones."},
- dcTabs:{ko:"장소|가구|장식|꽃다발|먹거리|노래방|야외·동물|마스크|세트|보관함",en:"Places|Furniture|Decor|Bouquets|Food|Karaoke|Outdoor·Pets|Masks|Sets|My items",ja:"場所|家具|インテリア|花束|フード|カラオケ|アウトドア·動物|マスク|セット|アイテム箱",zhs:"场景|家具|装饰|花束|美食|K歌|户外·宠物|面具|套装|我的物品",zht:"場景|家具|裝飾|花束|美食|K歌|戶外·寵物|面具|套裝|我的物品",es:"Lugares|Muebles|Decoración|Ramos|Comida|Karaoke|Aire libre·Mascotas|Máscaras|Packs|Mis artículos"},
+ dcTabs:{ko:"장소|가구|장식|꽃다발|먹거리|노래방|야외·동물|마스크|모자|세트|보관함",en:"Places|Furniture|Decor|Bouquets|Food|Karaoke|Outdoor·Pets|Masks|Hats|Sets|My items",ja:"場所|家具|インテリア|花束|フード|カラオケ|アウトドア·動物|マスク|帽子|セット|アイテム箱",zhs:"场景|家具|装饰|花束|美食|K歌|户外·宠物|面具|帽子|套装|我的物品",zht:"場景|家具|裝飾|花束|美食|K歌|戶外·寵物|面具|帽子|套裝|我的物品",es:"Lugares|Muebles|Decoración|Ramos|Comida|Karaoke|Aire libre·Mascotas|Máscaras|Sombreros|Packs|Mis artículos"},
  dcD:{ko:"1일|7일|30일",en:"1 day|7 days|30 days",ja:"1日|7日|30日",zhs:"1天|7天|30天",zht:"1天|7天|30天",es:"1 día|7 días|30 días"},
  dcLeftD:{ko:"{n}일 남음",en:"{n}d left",ja:"残り{n}日",zhs:"剩 {n} 天",zht:"剩 {n} 天",es:"Quedan {n} d"},
  dcLeftH:{ko:"{n}시간 남음",en:"{n}h left",ja:"残り{n}時間",zhs:"剩 {n} 小时",zht:"剩 {n} 小時",es:"Quedan {n} h"},
@@ -4146,9 +4207,9 @@ var DCS=[   // 세트 — [키, 기본 가격, 이름 6개, 구성] (허브 DECO
  ["set_beach",14000,["해수욕장","Beach Day","海水浴","海边度假","海邊度假","Día de playa"],["pl_beach","pr_parasol","pr_swimring","pr_sandcastle","pr_campchair","pr_fruit"]],
  ["set_party",14000,["노래방 파티","Karaoke Party","カラオケパーティー","KTV派对","KTV派對","Fiesta de karaoke"],["pr_mirrorball","pr_stagelight","pr_speaker","pr_micstand","pr_tambourine","pr_maracas","pr_glowsticks","pr_chicken"]],
  ["set_xmas",14000,["크리스마스","Christmas","クリスマス","圣诞节","聖誕節","Navidad"],["pl_xmas","pr_stringlights","pr_candles","pr_balloons","pr_partyhat","pr_cake","pr_popper"]]];
-var DC_HIDE={mk_fedora:1,mk_newsboy:1,mk_cowboy:1,mk_straw:1,mk_bucket:1,mk_beanie:1,mk_cloche:1,mk_fascinator:1};   // 🔴 모자 10종 — 사장님 승인 전까지 상점·착용 고르기에서 숨김 (허브 DECO_HIDE 와 같이, 11-03) · 승인되면 비운다
+var DC_HIDE={};   // 🔴 모자 10종 — 사장님 승인 전까지 상점·착용 고르기에서 숨김 (허브 DECO_HIDE 와 같이, 11-03) · 승인되면 비운다
 DCI=DCI.filter(function(x){ return !DC_HIDE[x[0]]; });
-var DK={}, DKS={}, DLG=["ko","en","ja","zhs","zht","es"], DTAB=[["place"],["furniture"],["decor"],["bouquet"],["food"],["party"],["outdoor","pet"],["mkb","mkw","mkm","mka","mkh"].concat(Object.keys(DC_HIDE).length>=10?[]:["mkc"]).concat(["mks"]),"set","inv"], DSLOT=[0,7,1,6,2,5,3,4];   // 자리 채우는 차례 = 양 끝부터
+var DK={}, DKS={}, DLG=["ko","en","ja","zhs","zht","es"], DTAB=[["place"],["furniture"],["decor"],["bouquet"],["food"],["party"],["outdoor","pet"],["mkb","mkw","mkm","mka","mkh","mks"],["mkc"],"set","inv"], DSLOT=[0,7,1,6,2,5,3,4];   // 자리 채우는 차례 = 양 끝부터
 DCI.forEach(function(x){ var n={}; DLG.forEach(function(l,i){ n[l]=x[3+i]; }); DK[x[0]]={k:x[0],c:x[1],cons:x[2],n:n,p:x[9],e:x[10]||""}; });
 DCS.forEach(function(x){ var n={}; DLG.forEach(function(l,i){ n[l]=x[2][i]; }); DKS[x[0]]={k:x[0],p:x[1],n:n,it:x[3]}; });
 var DC={inv:null,p:{},s:{},sc:{},pd:{},off:0,ld:null}, DCD=[1,7,30];   // pd = 기간별 가격 · off = 허브 시각 − 이 기기 시각
@@ -4210,7 +4271,7 @@ function dcOpen(ctx,tab){ if(!sess()){ kLogin(function(){ dcOpen(ctx,tab); }); r
   var o=document.createElement("div"); o.className="kpm kdeco"; h.appendChild(o); var t=tab||0, ld=!DC.inv;
   var card=function(k){ var pl=dcIsPl(k), x=DK[k], own=!x.cons&&dcHas(k), cn=x.cons?dcCnt(k):0, d=ctx.deco(), now=pl&&d.pl===k, p=dcP(k);
     var lab=now?'<em class="kdnow">'+esc(L(TX.dcNow))+'</em>'+(own&&k!=="pl_noraebang"?'<em class="kdok">'+esc(dcOL(k))+'</em>':''):own?'<em class="kdok">✓ '+esc(dcOL(k))+'</em>':pl&&!p?'<em class="kdok">'+esc(L(TX.dcFree))+'</em>':'<span>'+(x.cons?'':esc(kTx(TX.dcD,0))+' ')+ptS(p)+'</span>'+(cn?'<em class="kdok">'+esc(tf(L(TX.dcCnt),{n:cn}))+' · '+esc(dcLf(dcLot(k)[0]))+'</em>':'');
-    return '<button type="button" class="kdcd'+(pl?' kdcpl':'')+(own||cn?' kdown':'')+'" data-k="'+k+'"><span class="kdim"><img src="'+dcImg(k,1)+'" alt="" loading="lazy"></span><b>'+esc(dcN(k))+'</b><small class="kdpr">'+lab+'</small></button>'; };
+    return '<button type="button" class="kdcd'+(pl?' kdcpl':'')+(own||cn?' kdown':'')+'" data-k="'+k+'"><span class="kdim"><img src="'+dcImg(k,1)+'" alt="" loading="lazy" data-dk="'+k+'"></span><b>'+esc(dcN(k))+'</b><small class="kdpr">'+lab+'</small></button>'; };
   var defCard=function(){ var d=ctx.deco(); return '<button type="button" class="kdcd kdcpl kdcdef'+(!d.pl?' kdown':'')+'" data-def="1"><span class="kdim kddefim"></span><b>'+esc(L(TX.dcDef))+'</b><small class="kdpr">'+(!d.pl?'<em class="kdnow">'+esc(L(TX.dcNow))+'</em>':'')+'</small></button>'; };   /* 「기본 배경」 = 장소 첫 칸 (11-03 사장님) — 장소를 안 쓸 때의 방 배경 · 값 없음 · 방장이 누르면 바로 기본 배경으로 */
   var setCard=function(k){ var s=DKS[k], c=DC.sc[k], cost=dcSP(k), sum=c&&c.sum||dcSum(k);   // 목록 값 = 1일
     return '<button type="button" class="kdst" data-set="'+k+'"><span class="kdsti">'+s.it.slice(0,4).map(function(x){ return '<img src="'+dcImg(x,1)+'" alt="" loading="lazy">'; }).join("")+'</span><span class="kdstx"><b>'+esc(L(s.n))+'</b><small>'+esc(tf(L(TX.dcSetN),{n:s.it.length}))+'</small>'
@@ -4225,7 +4286,7 @@ function dcOpen(ctx,tab){ if(!sess()){ kLogin(function(){ dcOpen(ctx,tab); }); r
     var sc=o.querySelector(".kdbody"), top=sc&&o._t===t?sc.scrollTop:0; o._t=t; if(!o.firstChild) o.innerHTML='<div class="kdsh"><div class="kdmain"></div></div>';
     o.querySelector(".kdmain").innerHTML='<div class="kdhd"><b>'+esc(L(TX.dcT))+'</b><button type="button" class="kdbal" data-w="1">'+ptS(bal)+'</button><button type="button" class="kdx0" aria-label="'+esc(L(TX.back))+'">✕</button></div>'
       +'<div class="kdtabs">'+DTAB.map(function(_,i){ return '<button type="button" data-t="'+i+'"'+(i===t?' class="on"':'')+'>'+esc(kTx(TX.dcTabs,i))+'</button>'; }).join("")+'</div><div class="kdbody">'+body+'</div>';
-    sc=o.querySelector(".kdbody"); if(sc&&top) sc.scrollTop=top; var on=o.querySelector(".kdtabs .on"), tr=o.querySelector(".kdtabs"); if(on&&tr) tr.scrollLeft=Math.max(0,on.offsetLeft-tr.clientWidth/2+on.offsetWidth/2);
+    sc=o.querySelector(".kdbody"); if(sc&&top) sc.scrollTop=top; dcDk(o.querySelector(".kdmain")); var on=o.querySelector(".kdtabs .on"), tr=o.querySelector(".kdtabs"); if(on&&tr) tr.scrollLeft=Math.max(0,on.offsetLeft-tr.clientWidth/2+on.offsetWidth/2);
     o.querySelector(".kdx0").onclick=function(){ o.remove(); }; o.querySelector("[data-w]").onclick=function(){ kwOpen(""); };
     var mn=o.querySelector(".kdmain"); [].forEach.call(mn.querySelectorAll("[data-t]"),function(b){ b.onclick=function(){ t=+b.dataset.t; draw(); }; });
     [].forEach.call(mn.querySelectorAll("[data-ban]"),function(b){ b.onclick=function(){ t=DTAB.indexOf("set"); draw(); }; });
