@@ -2,7 +2,7 @@
  "anchor": "forehead",
  "offset": [
   0,
-  -0.13,
+  -0.17,
   -0.42
  ],
  "rot": [
@@ -14,7 +14,7 @@
  "fitHair": true,
  "fit": {
   "width": 1.8,
-  "bandY": 0.12
+  "bandY": 0.2
  },
  "id": "mk_cowboy",
  "glb": "mk_cowboy_u1.glb",
