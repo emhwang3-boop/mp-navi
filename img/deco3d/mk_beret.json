@@ -13,7 +13,7 @@
  "scale": 1,
  "fitHair": true,
  "fit": {
-  "width": 1.27,
+  "width": 1.36,
   "bandY": 0.05
  },
  "id": "mk_beret",
@@ -26,5 +26,5 @@
   1.1
  ],
  "rough": 0.95,
- "hairK": 0.35
+ "hairK": 0.7
 }
