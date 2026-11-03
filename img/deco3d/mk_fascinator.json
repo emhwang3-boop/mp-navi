@@ -1,9 +1,9 @@
 {
  "anchor": "forehead",
  "offset": [
-  0.26,
-  0.2,
-  -0.22
+  0.24,
+  0.04,
+  -0.16
  ],
  "rot": [
   0,
@@ -13,11 +13,12 @@
  "scale": 1,
  "fitHair": false,
  "fit": {
-  "width": 0.55,
+  "width": 0.82,
   "bandY": 0.1
  },
  "id": "mk_fascinator",
  "glb": "mk_fascinator.glb",
  "src": "meshy-6 image-to-3d (11-03)",
- "v": 1
+ "v": 1,
+ "shadow": false
 }
