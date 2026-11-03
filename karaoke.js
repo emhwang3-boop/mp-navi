@@ -859,9 +859,10 @@ function vocPut(el){ var s=el&&el.querySelector(".kvocslot"); if(!s) return; s.r
  +"#karBox .kvoc textarea{width:100%;box-sizing:border-box;resize:none;overflow-y:hidden;border:1px solid rgba(255,255,255,.25);border-radius:10px;background:rgba(0,0,0,.35);color:#fff;padding:7px 10px;font:inherit;font-size:14.5px;line-height:20px;min-height:36px}"
  +"#karBox .kvocf{display:flex;align-items:center;justify-content:flex-end;gap:8px}#karBox .kvocn{color:#cfc6e8;font-size:12px;font-variant-numeric:tabular-nums}#karBox .kvocs{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:0;padding:0;background:none;color:#fff;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.8))}#karBox .kvocs svg{width:26px;height:26px}#karBox .kvocs:disabled{opacity:.35;cursor:default}";
  document.head.appendChild(s); })();
-function bizHtml(){ var z=TX.bz[window.LANG]||TX.bz.en, lg=TX.bz[window.LANG]?window.LANG:"en";
+var KAR_VER="1103z10", KAR_BUILT="11-03 19:50";   // 판·만든 시각 — 판을 올릴 때 같이 바꾼다 (운영자 화면 맨 아래에만 보임)
+function bizHtml(){ if(!KOP&&!bizHtml.op&&sess()){ bizHtml.op=1; setTimeout(function(){ kOpChk(); },1500); } var z=TX.bz[window.LANG]||TX.bz.en, lg=TX.bz[window.LANG]?window.LANG:"en";
   return '<div class="kbz"><b>'+esc(z[0])+'</b><br><span class="nw">'+esc(z[1])+'</span> · <span class="nw">'+esc(z[2])+' '+esc(z[3])+'</span><br>'+esc(z[4])+' <span class="nw">297-81-03712</span><br>'+esc(z[5])+': '+esc(z[6])+'<br>'+esc(z[7])+': '+esc(z[8])+'<br>'+esc(L(TX.bzh))+': GitHub, Inc. · Cloudflare, Inc.<br>'+esc(L(TX.bzc))+'<br>'+esc(L(TX.bzm))+'<br>'+esc(z[9])+': admin@moneypuzzle.co.kr'+'<br>'+esc(L(TX.bzn))
-    +'<div class="kbzl"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a> · <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a> · <a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a>'+(window.KAR_SITE?' · <a href="legal.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.gL))+'</a>':'')+'</div>'+(window.KAR_VC?'<p class="kvc">'+esc(window.KAR_VC())+'</p>':'')+'</div>'; }   // 노래방 사이트 방문자 수 (site.js, 10-31)
+    +'<div class="kbzl"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a> · <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a> · <a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a>'+(window.KAR_SITE?' · <a href="legal.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.gL))+'</a>':'')+'</div>'+(window.KAR_VC?'<p class="kvc">'+esc(window.KAR_VC())+'</p>':'')+'<p class="kvc kverop"'+(KOP?'':' hidden')+'>v '+KAR_VER+' · '+KAR_BUILT+'</p></div>'; }   // 판 표시 = 운영자만 (11-03)   // 노래방 사이트 방문자 수 (site.js, 10-31)
 // 초록 칸 — 「잔여 곡 3 · 12,000P」 · 누르면 내 지갑
 function barPaint(){ var b=box(), el=b&&b.querySelector("#karLeft"); if(!el) return; el.textContent=karSigned()?(kptOn()?kBarPt():(karLeft()>0?fmtN(L(TX.lftN),karLeft()):L(TX.kwT))):L(TX.lgin); }
 // 로그인 창(pg.js)을 노래방 위에 띄운다 — 닫히면 원래 높이로 돌리고 결제 창을 다시 그린다(로그인하면 남은 곡 표시)
@@ -1600,7 +1601,7 @@ function kMkPipe(st,k){ var vt=st.getVideoTracks()[0]; if(!vt) return Promise.re
     var fr=function(){ if(KMX!==g) return; g.raf=requestAnimationFrame(fr); if(g.t&&g.t.readyState==="ended"){ kMkStop(); return; } try{ kMkFrame(g); }catch(e){} }; g.raf=requestAnimationFrame(fr);
     return {ms:new MediaStream([g.t].concat(st.getAudioTracks())),g:g}; }); }
 function kMkFrame(g){ var v=g.v, x=g.x, W=g.W, H=g.H, now=performance.now(); if(v.readyState<2){ if(!g.drew){ x.fillStyle="#120a22"; x.fillRect(0,0,W,H); } return; } g.drew=1;
-  if(g.kPrev==null) g.kPrev=g.k||"";   // 처음 = 지금 쓴 것 (스캔은 그 뒤 새로 쓸 때만)
+  if(g.kPrev==null) g.kPrev="";   // (11-03) 처음 = 아무것도 안 쓴 것으로 → 화면을 열 때 이미 쓰고 있던 아이템도 얼굴을 처음 찾은 순간 한 번 스캔 · 얼굴이 없을 때 고른 것도 얼굴을 찾는 순간 스캔 (비교는 얼굴을 찾은 화면에서만) · 잠깐 놓쳤다 찾으면 다시 안 함
   if(!g.k||g.rear){ g.kPrev=g.k||""; x.drawImage(v,0,0,W,H); return; }   // 후면 카메라는 얼굴이 없으니 마스크·흐림 없이 그대로 (11-01) · 벗은 상태(미리 보기·도란도란에서 벗음) = 카메라 그대로
   var q=KMQ[g.lv||0], f0=performance.now();
   if(KFL&&now-g.dt>=q[0]){ g.dt=now; try{ g.ts=Math.max((g.ts||0)+1,now); var r=KFL.detectForVideo(v,g.ts), fs=r&&r.faceLandmarks||[]; if(fs.length){ var old=g.z||[]; g.z=fs.map(function(lm,i){ var f=old[i]||{H:H}; f.H=H; return kFtrk(f,lm,W,now); }); g.seen=now; } }catch(e){} }
@@ -1627,7 +1628,7 @@ var K3D={st:0,E:null,ids:null,idp:null,fail:{},n:0,ms:0};
 function k3dDev(){ try{ return localStorage.getItem("mpv_k3d_dev")||""; }catch(e){ return ""; } }
 function k3dIdsLoad(){ if(K3D.ids||K3D.idp) return; K3D.idp=fetch("img/deco3d/index.json",{cache:"no-cache"}).then(function(r){ return r.ok?r.json():{}; }).catch(function(){ return {}; }).then(function(j){ var o={}; ((j&&j.items)||[]).forEach(function(k){ o[k]=k; }); K3D.ids=o; }); }
 function k3dId(k){ var fl=K3D.fail[k]; if(fl&&(fl.n>=3||Date.now()-fl.t<15000)) return ""; var d=k3dDev(), i, e; if(d){ e=d.split(","); for(i=0;i<e.length;i++){ var q=e[i].split("="); if(q[0]===k) return q[1]||"_dev_cap"; } } return K3D.ids&&K3D.ids[k]||""; }   // 시험: "mk_cap" = 도형 시험 모자 · "mk_cap=mk_cap" = 받은 3D(glb) 를 index.json 없이
-function k3dEng(){ if(K3D.st) return; K3D.st=1; import("./kar3d.js?v=4").then(function(m){ return kFmLoad().then(function(F){ var E=m.engine({base:"img/deco3d/"}); E.setFaceIdx(F.idx.slice(0,F.ni)); K3D.E=E; K3D.st=2; window.KAR3D_V=m.VER+"/r"+m.THREE_VER;
+function k3dEng(){ if(K3D.st) return; K3D.st=1; import("./kar3d.js?v=5").then(function(m){ return kFmLoad().then(function(F){ var E=m.engine({base:"img/deco3d/"}); E.setFaceIdx(F.idx.slice(0,F.ni)); K3D.E=E; K3D.st=2; window.KAR3D_V=m.VER+"/r"+m.THREE_VER;
       E.canvas.addEventListener("webglcontextlost",function(ev){ ev.preventDefault(); K3D.st=-1; K3D.err="webgl context lost"; }); E.canvas.addEventListener("webglcontextrestored",function(){ K3D.st=2; K3D.err=""; }); }); }).catch(function(e){ K3D.st=-1; K3D.err=String(e&&e.message||e); }); }
 function k3dHair(g,f){ var P=f.P; if(!P) return null; var p=function(i){ return [P[i*3],P[i*3+1]]; }, a10=p(10), a152=p(152), a21=p(21), a251=p(251), ux=a10[0]-a152[0], uy=a10[1]-a152[1], fh=Math.hypot(ux,uy)||1, u=[ux/fh,uy/fh], rx=a251[0]-a21[0], ry=a251[1]-a21[1], tw=Math.hypot(rx,ry)||1, r=[rx/tw,ry/tw];
   var hr=kHatHair(g,f,[a10[0],a10[1]],u,r,fh,tw); if(!hr) return f.h3||null; var w=hr.hw/(tw*0.5), tp=hr.top/fh; f.h3=f.h3?{w:f.h3.w+(w-f.h3.w)*0.25,top:f.h3.top+(tp-f.h3.top)*0.25}:{w:w,top:tp}; return f.h3; }   // w = 머리 폭 ÷ 관자놀이 반폭 (짧은 머리 ≈ 1) · top = 이마 위 머리카락 꼭대기 높이 ÷ 얼굴 높이 (11-03 여성 모자 — 머리 위에 얹기)
@@ -1643,8 +1644,8 @@ function kScanReady(g){ var S=g.scan; return S.items.every(function(k){ var id=k
 //   선 = 얼굴 망 삼각형 전부 + 머리 덮개(가림막과 같은 타원체)의 위도·경도 촘촘한 그물(정수리~귀 아래) · 각 점이 정수리에서 떨어진 각도로 차례로 켜짐 · 물결 앞쪽은 굵고 밝게 · 매 화면 고개 자세를 따라감
 var KSG=null;
 function kSg(){ if(KSG) return KSG; var R=28, M=60, T=2.0, o=[], r, m; for(r=0;r<=R;r++) for(m=0;m<M;m++){ var th=T*r/R, ph=2*Math.PI*m/M; o.push([0.56*Math.sin(th)*Math.cos(ph),0.72*Math.cos(th),0.64*Math.sin(th)*Math.sin(ph),th,Math.sin(th)*Math.sin(ph)]); } KSG={R:R,M:M,p:o}; return KSG; }   // th = 정수리에서 각도 · 마지막 = 앞쪽 정도
-function kScan(g,x,now){ var S=g.scan, F=KFM; if(S.lt==null){ S.lt=now; S.e=0; kScanReady(g); } S.e+=Math.min(50,now-S.lt); S.lt=now; var el=S.e, sd=S.rm?0:950, hold=S.rm?0:150, fd=S.rm?300:280, dur=sd+hold+fd;   // 화면이 잠깐 멈춰도(3D 모델 읽기) 건너뛰지 않게 한 화면에 최대 50ms 씩만 진행 · 시작할 때 모델 읽기를 미리 건다   // (11-03) 물결이 턱에 닿은 뒤(sd) 잠깐 다 켜진 채(hold) → 사라짐(fd) · 모델이 이미 있어도 턱까지 다 덮은 다음에만
-  if(!S.items.length||(el>=dur&&(kScanReady(g)||now-S.t0>=3000))){ g.scan=null; return; }   // 끝 = 다음 화면부터 아이템이 보인다
+function kScan(g,x,now){ var S=g.scan, F=KFM; if(S.lt==null){ S.lt=now; S.e=0; kScanReady(g); } S.e+=Math.min(120,now-S.lt); S.lt=now; var el=Math.max(S.e,now-S.t0-1500), sd=S.rm?0:950, hold=S.rm?0:150, fd=S.rm?300:280, dur=sd+hold+fd;   // 화면이 잠깐 멈춰도(3D 모델 읽기) 건너뛰지 않게 한 화면에 최대 120ms 씩만 진행 · 시작할 때 모델 읽기를 미리 건다   // (11-03) 물결이 턱에 닿은 뒤(sd) 잠깐 다 켜진 채(hold) → 사라짐(fd) · 모델이 이미 있어도 턱까지 다 덮은 다음에만
+  if(!S.items.length||now-S.t0>=4500||(el>=dur&&(kScanReady(g)||now-S.t0>=3000))){ g.scan=null; return; }   // 느린 폰: 한 화면 최대 120ms · 실제 시간보다 1.5초 넘게 늦지 않게 · 4.5초면 무조건 끝   // 끝 = 다음 화면부터 아이템이 보인다
   if(!F||!g.z||!g.z.length) return; var sw=Math.max(1,g.W/640), wave=S.rm?1:Math.min(1,el/sd), ft=el-sd-hold, fade=ft<0?1:ft<fd?1-ft/fd*0.75:0.3+0.25*Math.sin(el/140), G=kSg(), BAND=0.28;   // wave 1 = 턱(가장 아래 얼굴 점)까지 · 목으로는 안 내려감
   g.z.forEach(function(f){ var P=f.P; if(!P) return;
     var q=function(k){ return [P[k*3],-P[k*3+1],-P[k*3+2]]; }, a=q(234), b=q(454), t=q(10), c=q(152), vx=[b[0]-a[0],b[1]-a[1],b[2]-a[2]], hw=Math.hypot(vx[0],vx[1],vx[2])||1; vx=[vx[0]/hw,vx[1]/hw,vx[2]/hw];
@@ -1675,7 +1676,7 @@ function k3dDbg(g,now){ if(!k3dDbgOn()) return; g.fpsN=(g.fpsN||0)+1; if(now-(g.
   var f=g.z&&g.z[0], ps=f&&f.P?k3dPose(f.P):null;
   b.textContent="3D "+(g.d3?"ON":"OFF")+(why?" ("+why+")":"")+"\nfps "+fps+" · 그리기 "+(Math.round((K3D.ms||0)*10)/10)+"ms · lv "+(g.lv||0)+" · GL "+(g.G?1:0)+"\n"+(ps?"yaw "+ps.yaw+" pitch "+ps.pitch+" roll "+ps.roll+" · z "+ps.zr:"얼굴 없음")+(f&&f.h3?" · hair w "+(Math.round(f.h3.w*100)/100)+" top "+(Math.round((f.h3.top||0)*100)/100):"")+"\n"+g.W+"x"+g.H+" · v "+(window.KAR3D_V||"")+" "+(navigator.userAgent.match(/Android [0-9.]+|iPhone OS [0-9_]+|Chrome\/[0-9]+/g)||[]).join(" "); }
 function k3dDraw(g,x,l3,cw,ch){ var E=K3D.E, ids=[], t0=performance.now(); l3.forEach(function(k){ var id=k3dId(k); if(!id) return; var s=E.state(id); if(!s||s===-1){ if(s===-1) E.forget(id); E.load(id).catch(function(){ var fl=K3D.fail[k]||{n:0}; K3D.fail[k]={n:fl.n+1,t:Date.now()}; }); } else if(s===1) ids.push(id); });   /* 못 읽으면 15초 뒤 다시 (3번까지) — 그동안 2D */
-  if(!ids.length) return []; var fs=g.z.map(function(f){ return {P:f.P,hair:k3dHair(g,f)}; }); if(E.draw({W:g.W,H:g.H,cw:cw,ch:ch,faces:fs,items:ids,env:k3dEnv(g,g.z[0])})) x.drawImage(E.canvas,0,0,g.W,g.H);
+  if(!ids.length) return []; var fs=g.z.map(function(f){ return {P:f.P,hair:k3dHair(g,f)}; }); if(E.draw({W:g.W,H:g.H,cw:cw,ch:ch,faces:fs,items:ids,env:k3dEnv(g,g.z[0]),envCanvas:g.sc})) x.drawImage(E.canvas,0,0,g.W,g.H);
   var dt=performance.now()-t0; K3D.ms=K3D.ms?K3D.ms*0.9+dt*0.1:dt; K3D.n++; return l3.filter(function(k){ var id=k3dId(k); return id&&E.state(id)===1; }); }   // 그린 아이템(2D 에서 뺄 것)
 // ── 어두운 아이템 그림 받침 (11-03 사장님 — 콧수염·턱수염·복면처럼 검은 그림이 어두운 칸에서 안 보임) · 목록을 정하지 않고 그림 밝기를 잰다
 //   불투명한 곳 평균 밝기 < 0.3 = 어두움 → 칸에 밝은 둥근 받침(kddk) · 결과는 이 창이 열린 동안 기억
@@ -1894,7 +1895,7 @@ function kThumb(id,cls){ return '<video class="'+cls+'" preload="metadata" plays
 function kHead(inner){ return '<div class="kpgh"><button type="button" class="kpbk" aria-label="'+esc(L(TX.back))+'"><img src="img/kara/kst_back.png" alt=""></button><div class="kpgt">'+inner+'</div></div>'; }
 function kNum(n){ n=+n||0; try{ return n.toLocaleString(kLoc()); }catch(e){ return String(n); } }
 function kQs(){ return "dev="+encodeURIComponent(klDev())+"&sess="+encodeURIComponent(sess()); }
-function kGet(path){ return fetch(HUB+path+(path.indexOf("?")>=0?"&":"?")+kQs()).then(function(r){ return r.json(); }).then(function(j){ if(path.indexOf("/kst/me")===0&&j&&j.ok) KOP=j.op?1:0; return j; }); }
+function kGet(path){ return fetch(HUB+path+(path.indexOf("?")>=0?"&":"?")+kQs()).then(function(r){ return r.json(); }).then(function(j){ if(path.indexOf("/kst/me")===0&&j&&j.ok){ KOP=j.op?1:0; [].forEach.call(document.querySelectorAll(".kverop"),function(e){ e.hidden=!KOP; }); } return j; }); }
 // ── 운영자 (11-03 사장님) — 허브가 운영자로 정한 계정에만 메뉴가 보인다(허브도 다시 확인) · 영상·댓글·LIVE·우리끼리 방
 var KOP=0;
 function kOpChk(){ if(sess()&&!KOP) return kGet("/kst/me").then(function(){ return KOP; }).catch(function(){ return 0; }); return Promise.resolve(KOP); }
