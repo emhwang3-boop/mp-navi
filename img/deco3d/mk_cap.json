@@ -1,0 +1,29 @@
+{
+ "anchor": "forehead",
+ "offset": [
+  0,
+  -0.2,
+  -0.4
+ ],
+ "rot": [
+  4,
+  0,
+  0
+ ],
+ "scale": 1,
+ "fitHair": true,
+ "fit": {
+  "width": 1.24,
+  "bandY": 0.0
+ },
+ "id": "mk_cap",
+ "glb": "mk_cap.glb",
+ "src": "meshy-6 image-to-3d (11-03)",
+ "v": 1,
+ "tint": [
+  1.45,
+  1.45,
+  1.5
+ ],
+ "rough": 0.9
+}
