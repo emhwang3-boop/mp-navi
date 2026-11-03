@@ -1,0 +1,30 @@
+{
+ "anchor": "forehead",
+ "offset": [
+  0,
+  -0.1,
+  -0.36
+ ],
+ "rot": [
+  -4,
+  0,
+  0
+ ],
+ "scale": 1,
+ "fitHair": true,
+ "fit": {
+  "width": 1.27,
+  "bandY": 0.05
+ },
+ "id": "mk_beret",
+ "glb": "mk_beret.glb",
+ "src": "meshy-6 image-to-3d (11-03)",
+ "v": 1,
+ "tint": [
+  1.15,
+  1.1,
+  1.1
+ ],
+ "rough": 0.95,
+ "hairK": 0.35
+}
