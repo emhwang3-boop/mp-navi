@@ -1,0 +1,24 @@
+{
+ "anchor": "forehead",
+ "offset": [
+  0,
+  -0.14,
+  -0.42
+ ],
+ "rot": [
+  0,
+  0,
+  0
+ ],
+ "scale": 1,
+ "fitHair": true,
+ "fit": {
+  "width": 1.24,
+  "bandY": 0.0
+ },
+ "id": "mk_cloche",
+ "glb": "mk_cloche.glb",
+ "src": "meshy-6 image-to-3d (11-03)",
+ "v": 1,
+ "hairK": 0.35
+}
