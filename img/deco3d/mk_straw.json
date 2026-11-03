@@ -13,12 +13,12 @@
  "scale": 1,
  "fitHair": true,
  "fit": {
-  "width": 1.75,
+  "width": 1.95,
   "bandY": 0.2
  },
  "id": "mk_straw",
  "glb": "mk_straw.glb",
  "src": "meshy-6 image-to-3d (11-03)",
  "v": 1,
- "hairK": 0.35
+ "hairK": 0.7
 }
