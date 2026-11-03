@@ -859,7 +859,7 @@ function vocPut(el){ var s=el&&el.querySelector(".kvocslot"); if(!s) return; s.r
  +"#karBox .kvoc textarea{width:100%;box-sizing:border-box;resize:none;overflow-y:hidden;border:1px solid rgba(255,255,255,.25);border-radius:10px;background:rgba(0,0,0,.35);color:#fff;padding:7px 10px;font:inherit;font-size:14.5px;line-height:20px;min-height:36px}"
  +"#karBox .kvocf{display:flex;align-items:center;justify-content:flex-end;gap:8px}#karBox .kvocn{color:#cfc6e8;font-size:12px;font-variant-numeric:tabular-nums}#karBox .kvocs{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:0;padding:0;background:none;color:#fff;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.8))}#karBox .kvocs svg{width:26px;height:26px}#karBox .kvocs:disabled{opacity:.35;cursor:default}";
  document.head.appendChild(s); })();
-var KAR_VER="1104b", KAR_BUILT="11-04 00:11";   // 판·만든 시각 — 판을 올릴 때 같이 바꾼다 (운영자 화면 맨 아래에만 보임)
+var KAR_VER="1104c", KAR_BUILT="11-04 02:00";   // 판·만든 시각 — 판을 올릴 때 같이 바꾼다 (운영자 화면 맨 아래에만 보임)
 function bizHtml(){ if(!KOP&&!bizHtml.op&&sess()){ bizHtml.op=1; setTimeout(function(){ kOpChk(); },1500); } var z=TX.bz[window.LANG]||TX.bz.en, lg=TX.bz[window.LANG]?window.LANG:"en";
   return '<div class="kbz"><b>'+esc(z[0])+'</b><br><span class="nw">'+esc(z[1])+'</span> · <span class="nw">'+esc(z[2])+' '+esc(z[3])+'</span><br>'+esc(z[4])+' <span class="nw">297-81-03712</span><br>'+esc(z[5])+': '+esc(z[6])+'<br>'+esc(z[7])+': '+esc(z[8])+'<br>'+esc(L(TX.bzh))+': GitHub, Inc. · Cloudflare, Inc.<br>'+esc(L(TX.bzc))+'<br>'+esc(L(TX.bzm))+'<br>'+esc(z[9])+': admin@moneypuzzle.co.kr'+'<br>'+esc(L(TX.bzn))
     +'<div class="kbzl"><a href="terms.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.tL))+'</a> · <a href="refund.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.rL))+'</a> · <a href="privacy.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.pL))+'</a>'+(window.KAR_SITE?' · <a href="legal.html?lang='+lg+'" target="_blank" rel="noopener">'+esc(L(TX.gL))+'</a>':'')+'</div>'+(window.KAR_VC?'<p class="kvc">'+esc(window.KAR_VC())+'</p>':'')+'<p class="kvc kverop"'+(KOP?'':' hidden')+'>v '+KAR_VER+' · '+KAR_BUILT+' · <a href="#" class="kidvt" style="color:inherit">본인인증 시험</a></p></div>'; }   // 판 표시 = 운영자만 (11-03)   // 노래방 사이트 방문자 수 (site.js, 10-31)
@@ -1622,7 +1622,7 @@ function kMkFrame(g){ var v=g.v, x=g.x, W=g.W, H=g.H, now=performance.now(); if(
   }
   else { var l2c=lA.filter(function(k){ return d3.indexOf(k)<0; }).join(","); if(l2c) g.z.forEach(function(f){ kMkPaint(x,l2c,f.z,g,f); }); }   // GL 판이 없는 폰 = 캔버스 2D 그림 (3D 아이템은 빼고)
   if(l3.length&&K3D.st===2){ try{ k3dDraw(g,x,l3,g.cw3,g.ch3); }catch(e){ K3D.st=-1; K3D.err=String(e&&e.message||e); } }
-  if(g.scan) kScan(g,x,now);
+  if(g.scan){ var ov=kScanOv(g); ov.x.clearRect(0,0,g.W,g.H); kScan(g,ov.x,now); if(!g.scan) ov.x.clearRect(0,0,g.W,g.H); }   // (11-04) 그물은 녹화 판(x)이 아니라 화면 위 덧판에만 → 녹화 영상엔 안 남음
   k3dDbg(g,now);
   var dt=performance.now()-f0; g.ft=g.ft?g.ft*0.92+dt*0.08:dt; if(g.ft>28&&(g.lv||0)<2){ g.lv=(g.lv||0)+1; g.ft=0; } else if(g.ft&&g.ft<9&&g.lv>0){ g.lv--; g.ft=0; }   // 끊기면 추적 빈도·해상도를 낮추고, 여유 생기면 되돌림
   g.ok=1; }
@@ -1649,6 +1649,10 @@ function kScanReady(g){ var S=g.scan; return S.items.every(function(k){ var id=k
 //   선 = 얼굴 망 삼각형 전부 + 머리 덮개(가림막과 같은 타원체)의 위도·경도 촘촘한 그물(정수리~귀 아래) · 각 점이 정수리에서 떨어진 각도로 차례로 켜짐 · 물결 앞쪽은 굵고 밝게 · 매 화면 고개 자세를 따라감
 var KSGRID=null;   // (11-04) 이름 바꿈 — 곡 차감 잠금 KSG 와 이름이 겹쳐 스캔 뒤 곡이 안 눌리던 원인
 function kSg(){ if(KSGRID) return KSGRID; var R=28, M=60, T=2.0, o=[], r, m; for(r=0;r<=R;r++) for(m=0;m<M;m++){ var th=T*r/R, ph=2*Math.PI*m/M; o.push([0.56*Math.sin(th)*Math.cos(ph),0.72*Math.cos(th),0.64*Math.sin(th)*Math.sin(ph),th,Math.sin(th)*Math.sin(ph)]); } KSGRID={R:R,M:M,p:o}; return KSGRID; }   // th = 정수리에서 각도 · 마지막 = 앞쪽 정도
+function kScanOv(g){ var o=g.ov, ok=function(v){ var s=v&&v.isConnected&&v.srcObject; return !!(s&&s.getVideoTracks&&s.getVideoTracks().indexOf(g.t)>=0); };   // (11-04) 미리보기 <video> 바로 위에 같은 크기·같은 거울로 겹치는 투명 판
+  if(!o||!ok(o.v)){ if(o&&o.c.parentNode) o.c.parentNode.removeChild(o.c); var v=[].slice.call(document.querySelectorAll("video")).filter(ok)[0], c=mkc0(g.W,g.H); o=g.ov={c:c,x:c.getContext("2d"),v:v||null}; if(v&&v.parentNode) v.parentNode.insertBefore(c,v.nextSibling); }
+  var v=o.v; if(v&&o.c.parentNode){ var cs=getComputedStyle(v); o.c.style.cssText="position:absolute;pointer-events:none;background:transparent;left:"+v.offsetLeft+"px;top:"+v.offsetTop+"px;width:"+v.offsetWidth+"px;height:"+v.offsetHeight+"px;object-fit:"+cs.objectFit+";transform:"+cs.transform+";border-radius:"+cs.borderRadius+";z-index:"+((parseInt(cs.zIndex,10)||1)+1); }
+  return o; }
 function kScan(g,x,now){ var S=g.scan, F=KFM; if(S.lt==null){ S.lt=now; S.e=0; kScanReady(g); } S.e+=Math.min(120,now-S.lt); S.lt=now; var el=Math.max(S.e,now-S.t0-1500), sd=S.rm?0:950, hold=S.rm?0:150, fd=S.rm?300:280, dur=sd+hold+fd;   // 화면이 잠깐 멈춰도(3D 모델 읽기) 건너뛰지 않게 한 화면에 최대 120ms 씩만 진행 · 시작할 때 모델 읽기를 미리 건다   // (11-03) 물결이 턱에 닿은 뒤(sd) 잠깐 다 켜진 채(hold) → 사라짐(fd) · 모델이 이미 있어도 턱까지 다 덮은 다음에만
   if(!S.items.length||now-S.t0>=4500||(el>=dur&&(kScanReady(g)||now-S.t0>=3000))){ g.scan=null; return; }   // 느린 폰: 한 화면 최대 120ms · 실제 시간보다 1.5초 넘게 늦지 않게 · 4.5초면 무조건 끝   // 끝 = 다음 화면부터 아이템이 보인다
   if(!F||!g.z||!g.z.length) return; var sw=Math.max(1,g.W/640), wave=S.rm?1:Math.min(1,el/sd), ft=el-sd-hold, fade=ft<0?1:ft<fd?1-ft/fd*0.75:0.3+0.25*Math.sin(el/140), G=kSg(), BAND=0.28;   // wave 1 = 턱(가장 아래 얼굴 점)까지 · 목으로는 안 내려감
@@ -1696,7 +1700,7 @@ function dcDk(root){ if(!root) return; [].forEach.call(root.querySelectorAll("im
         if(r.fx){ var W=im.naturalWidth, H=im.naturalHeight, c2=mkc0(W,H), x2=c2.getContext("2d"); x2.drawImage(im,0,0); var id=x2.getImageData(0,0,W,H), dd=id.data; for(i=3;i<dd.length;i+=4) dd[i]=Math.min(255,dd[i]*2.6); x2.putImageData(id,0,0); r.src=c2.toDataURL("image/png"); } } }catch(e){}
     DKC[k]=r; put(); };
   if(im.dataset.dkd) return; if(im.complete&&im.naturalWidth) go(); else im.addEventListener("load",go,{once:true}); }); }
-function kMkStop(){ var g=KMX; KMX=null; if(!g) return; cancelAnimationFrame(g.raf); try{ g.t&&g.t.stop(); }catch(e){} try{ g.vt.stop(); }catch(e){} try{ g.v.srcObject=null; g.v.remove(); }catch(e){} }
+function kMkStop(){ var g=KMX; KMX=null; if(!g) return; try{ g.ov&&g.ov.c.remove(); }catch(e){} cancelAnimationFrame(g.raf); try{ g.t&&g.t.stop(); }catch(e){} try{ g.vt.stop(); }catch(e){} try{ g.v.srcObject=null; g.v.remove(); }catch(e){} }
 function kMkWrap(st){ var k=kMkCur(); if(!k||!st||!st.getVideoTracks().length) return Promise.resolve(st); return kMkPipe(st,k).then(function(r){ if(r) return r.ms; st.getTracks().forEach(function(t){ t.stop(); }); throw new Error("nomask"); }); }
 function kMkNat(){ return kMkList(kMkCur()).map(function(k){ var d=KMKD[k]; var e=KMK2[k]||{}, u=function(n){ return new URL("img/deco/"+n+".webp"+dcImV(n),location.href).href; }; var hc=e.hc?[parseInt(e.hc.slice(1,3),16)/255,parseInt(e.hc.slice(3,5),16)/255,parseInt(e.hc.slice(5,7),16)/255]:null; return {url:u(k),f:d[0],ey:d[1],m:e.m?1:0,r:e.r?1:0,dz:e.dz||0,g:e.g?1:0,mo:e.mo?[e.mo[0],e.mo[1],e.mo[2]]:null,mu:e.mo?u(e.mo[3]):"",bk:e.bk?u(e.bk):"",hc:hc,lt:e.lt||0.25,fe:e.fe||0.3,mul:e.mul?1:0,hole:e.hole?1:0,hb:e.hb?[e.hb.l[0],e.hb.l[1],e.hb.r[0],e.hb.r[1],e.hb.t]:null,bd:e.bd||0,kw:e.kw||1.12,tg:e.tg||null,up:e.up||0}; }); }   /* hb… = 모자 띠 맞춤 (앱이 새 판이면 사용, 옛 앱은 무시하고 f·ey 앵커) */
 function kMkNatOk(){ return !kMkCur()||KNMK; }   // 앱 네이티브 녹화로 마스크를 입힐 수 있나 — 안 되면 웹 길로 녹화
