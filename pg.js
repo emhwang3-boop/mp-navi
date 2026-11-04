@@ -1,5 +1,5 @@
 /* 머니퍼즐 투어 — 구글·애플 로그인 + 내 배지 (사장님 2026-10-26, 10-27 배지 창)
- *  · ⋮ 메뉴 「내 ★배지」(★ = img/rank/star.webp, 10-27 퍼즐골드 창 대체) → 창: 로그인 전 = 구글·애플 로그인 단추 · 로그인 뒤 = 별·큰 별·작은 태양·큰 태양·매일 빙고 1등·주간 1·2·3등·졸업/명예의 전당
+ *  · ⋮ 메뉴 「내 ★배지」(★ = img/rank/star.webp) → 창: 로그인 전 = 구글·애플 로그인 단추 · 로그인 뒤 = 별·큰 별·작은 태양·큰 태양·매일 빙고 1등·주간 1·2·3등·졸업/명예의 전당
  *  · 클라이언트 ID 는 허브 GOOGLE_CLIENT_ID 한 곳(wrangler.toml) — /npg/cfg 로 읽는다. 비어 있으면 이 파일의 PG_CID
  *  · 받은 ID 토큰은 허브 /npg/login 이 구글 서명까지 검사 → 허브 세션(30일)만 이 브라우저(mpv_pg_sess)에 둔다. 구글 토큰은 저장 안 함
  *  · 기기 번호 = 앱이 이미 쓰는 mpv_dev (같은 기기 다른 계정 수상 경고용) · 사장님 기기(mp_owner)는 own=1 → MIS 합계에서 빠진다
@@ -60,11 +60,11 @@ function css(){ if(document.getElementById("pgCss")) return; var s=document.crea
   +"#pgIn{background:var(--card);color:var(--ink);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 16px calc(26px + env(safe-area-inset-bottom,0px));max-height:85vh;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;box-sizing:border-box}"
   +"@media (min-width:700px){#pgBox{align-items:center;padding:7.5vh 16px;box-sizing:border-box}#pgIn{border-radius:18px;max-height:85vh;padding-bottom:22px;box-shadow:0 12px 40px rgba(0,0,0,.3)}}"
   +"#pgIn h3{margin:0 0 8px;font-size:18px;display:flex;align-items:center;gap:8px}#pgIn h3 img{flex:none}#pgIn .pgx{margin-left:auto;border:0;background:none;color:var(--sub);font-size:15px;cursor:pointer}"
-  +"#pgIn .pgp{color:var(--sub);font-size:13px;line-height:1.55;margin:8px 0}#pgIn .pgbal{background:linear-gradient(135deg,#ffe8a3,#f7c948);color:#4a3500;border-radius:14px;padding:14px;margin:10px 0}"
-  +"#pgIn .pgbal b{display:block;font-size:30px;line-height:1.1}#pgIn .pgbal span{font-size:13px}#pgIn .pgrow{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}"
+  +"#pgIn .pgp{color:var(--sub);font-size:13px;line-height:1.55;margin:8px 0}"
+  +"#pgIn .pgrow{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}"
   +"#pgIn .pgrow small{color:var(--sub)}#pgIn .pgsec{font-weight:700;margin:14px 0 4px;font-size:14px}#pgIn .pggrad{background:#e7f5ff;color:#1c4f7a;border-radius:10px;padding:10px;font-size:13px;margin:8px 0}"
   +":root[data-theme=dark] #pgIn .pggrad{background:#1b2b3d;color:#a5d8ff}#pgIn .pgbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 16px;font-size:14px;cursor:pointer}"
-  +"#pgIn .pgbtn[disabled]{opacity:.6;cursor:default}#pgIn .pgplus{color:#2b8a3e;font-weight:700}#pgIn .pgminus{color:#c92a2a;font-weight:700}#pgIn .pgdim{color:var(--sub)}#pgGbtn{margin:12px 0 6px;min-height:44px}#pgAbtn{margin:0 0 12px;min-height:44px}#appleid-signin{width:240px;height:40px;cursor:pointer}"
+  +"#pgIn .pgbtn[disabled]{opacity:.6;cursor:default}#pgIn .pgdim{color:var(--sub)}#pgGbtn{margin:12px 0 6px;min-height:44px}#pgAbtn{margin:0 0 12px;min-height:44px}#appleid-signin{width:240px;height:40px;cursor:pointer}"
   +"#pgIn .pgbd{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:6px 0 2px}#pgIn .pgbd div{background:var(--line);border-radius:12px;padding:8px 2px;text-align:center;font-size:11px;color:var(--sub)}"
   +"#pgIn .pgbd img{width:32px;height:32px;display:block;margin:0 auto 4px}#pgIn .pgbd b{display:block;font-size:18px;color:var(--ink)}#pgIn .pgdim0{opacity:.35}";
   document.head.appendChild(s); }
