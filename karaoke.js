@@ -723,6 +723,8 @@ st.textContent+="#karBox .kwb{display:flex;flex-direction:column;align-items:cen
  +"#karBox .kwuse{font:900 19px/1.35 system-ui,sans-serif;text-align:center;background:#05140c;border:1px solid #1d6b43;color:#7CFFB2;border-radius:12px;padding:12px}#karBox .kwuse.kwno{color:#ffb4c8;border-color:#7a2a3a;background:#1a070c}#karBox .kpm.kptq{z-index:7}#karBox .kwtst{border-style:dashed!important;border-color:#ffe066!important;color:#ffe066!important}#karBox .kwac{margin-top:-4px}#karBox .kwlow{align-self:flex-end;border:0;background:none;color:#ffe066;font-weight:800;font-size:13px;text-decoration:underline;cursor:pointer;padding:0}#karBox .kwsoon{font-size:12.5px;line-height:1.5;background:rgba(255,224,102,.12);border-color:#8a7420;color:#ffe9a6}#karBox .kwbt .krf{padding:9px 4px;font-size:13px}#karBox .kwbt .krf:disabled{opacity:.4;cursor:default}#karBox .kwcap{text-align:center}";
 // 우리끼리 방 머리 (사장님 10-31) — 집 아이콘 + 방 이름은 한 줄 전체(길면 줄바꿈, 말줄임 없음) · 「N명」「릴레이」「⋯」은 그 아래 줄 오른쪽
 st.textContent+="#karBox .krmh{flex-wrap:wrap;row-gap:8px}#karBox .krmh .krmt{flex:1 1 100%}#karBox .krmh .krmt b{white-space:normal;overflow:visible;text-overflow:clip;word-break:keep-all;overflow-wrap:anywhere;line-height:1.3}#karBox .krmh .krmt+.krmc{margin-left:auto}";
+// 반주기 옆면 걸이 마이크 (11-04) — 노래방 사이트(karaoke_pub/index.html)와 같은 자리·같은 모양 · .kmicw 는 투어앱에서 마이크를 붙인 칸에만 (kMicAdd)
+st.textContent+="#karBox .kpay.kmicw{position:relative;padding-left:58px!important}#karBox .kmic{position:absolute;left:-8px;top:-14px;transform:scaleX(-1);height:66px;width:auto;user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}";
 document.head.appendChild(st);
 var K={code:"",tab:"kpop",items:[],idx:-1,pl:null,q:""};
 function ytApi(cb){ if(window.YT&&YT.Player) return cb(); var prev=window.onYouTubeIframeAPIReady; window.onYouTubeIframeAPIReady=function(){ try{ prev&&prev(); }catch(e){} cb(); };
@@ -800,7 +802,7 @@ function open(code){ K.tab=({ja:"jpop",en:"pop",es:"pop"})[window.LANG]||"kpop";
     +'<div class="ktb"><button type="button" class="kstg">'+esc(L(TX.stgB))+'</button><button type="button" class="kchb"><span>'+esc(L(TX.chB))+'</span></button><button type="button" class="kdorb krmb"><span>'+esc(L(TX.rmDef))+'</span></button><button type="button" class="klvg" style="display:none"><i class="klvdot"></i><span>'+esc(L(LT.b))+'<b class="klvgn"></b></span></button><i class="ktbbr"></i><button type="button" class="knrb">'+kIc("fol")+'<span>'+esc(L(NT.nrB))+'</span></button><button type="button" class="kjbb">'+esc(JL("jb"))+'</button></div>'
     +'<form class="ksr"><input type="search" placeholder="'+esc(L(TX.q))+'"><button type="submit">'+esc(L(TX.go))+'</button></form>'
     +'<div class="kls"></div></div>'+(kApp()?'':'<div class="kbzbar">'+bizBar()+'</div>');   // 맨 아래 고정 사업자 띠 = 웹만 (11-04)
-  document.body.appendChild(b); document.documentElement.style.overflow="hidden"; kBzFit();
+  document.body.appendChild(b); document.documentElement.style.overflow="hidden"; kBzFit(); kMicAdd(b);
   b.querySelector(".kx").onclick=close; kFsBtn(b.querySelector(".kpl"));   // 전체 화면 단추 (11-03)
   [].forEach.call(b.querySelectorAll("[data-kpay]"),function(x){ x.onclick=function(){ payOpen(""); }; /* PAYMENT = 충전과 곡 묶음 구매 창 (11-02) · 지갑에는 충전 단추 없음 */ });
   b.querySelector("[data-kntc]").onclick=ntcOpen;
@@ -821,6 +823,11 @@ function open(code){ K.tab=({ja:"jpop",en:"pop",es:"pop"})[window.LANG]||"kpop";
   b.querySelector(".ksr").onsubmit=function(e){ e.preventDefault(); K.q=String(b.querySelector(".ksr input").value||"").trim(); [].forEach.call(b.querySelectorAll(".ktb button[data-t]"),function(x){ x.classList.toggle("on",!K.q&&x.dataset.t===K.tab); }); load(); };
   mpPaid.start("kara_"+code); load(); barPaint(); karcLoad();
   if(KPTQ&&!kApp()){ KPTQ=false; setTimeout(function(){ if(box()&&!box().querySelector(".kbuy")) payOpen("chg"); },500); } }   // 심사용 ?paytest=1 (10-31)
+// 반주기(곡 이용권 칸) 옆면에 걸린 마이크 — 손님에겐 장식, 누르면 노래방 관리 로그인 (11-04)
+//   노래방 사이트는 site.js 가 붙인다(KAR_SITE) · 전용 앱(kApp)은 그대로 둔다 · 투어앱 admin/ 은 통계청이라 반드시 노래방 사이트 절대 주소
+function kMicAdd(b){ if(window.KAR_SITE||kApp()) return; var pay=b&&b.querySelector(".kpay"); if(!pay||b.querySelector(".kmic")) return;
+  pay.classList.add("kmicw"); var m=document.createElement("img"); m.className="kmic"; m.src="img/mic_hook.png"; m.alt=""; m.setAttribute("aria-hidden","true"); m.draggable=false;
+  m.addEventListener("click",function(e){ e.preventDefault(); e.stopPropagation(); location.href="https://karaoke.moneypuzzle.co.kr/admin/"; }); pay.appendChild(m); }
 // ── PAYMENT 창 (사장님 11-02) — 충전과 곡 묶음 구매를 한 창에서 · 곡 묶음은 포인트로만 산다
 var KB={left:0,sess:-1,redraw:null};
 var PSDK="https://cdn.portone.io/v2/browser-sdk.js";   // 포트원 V2 브라우저 SDK (11-02) — 전역 window.PortOne
@@ -866,7 +873,7 @@ function vocPut(el){ var s=el&&el.querySelector(".kvocslot"); if(!s) return; s.r
  +"#karBox .kvocf{display:flex;align-items:center;justify-content:flex-end;gap:8px}#karBox .kvocn{color:#cfc6e8;font-size:12px;font-variant-numeric:tabular-nums}#karBox .kvocs{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:0;padding:0;background:none;color:#fff;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.8))}#karBox .kvocs svg{width:26px;height:26px}#karBox .kvocs:disabled{opacity:.35;cursor:default}";
  document.head.appendChild(s); })();
 var BIZ_TEL="";   // 🔴 사업자 대표 전화(유선번호) — "02-1234-5678" 처럼 넣기만 하면 맨 아래 고정 띠·곡 목록 끝·PAYMENT 창·본인인증 관문 아래 사업자 정보에 모두 「전화」로 나온다 · 비어 있으면 안 보임 (11-04 포트원 통합인증 재신청) · 서비스 소개(karaoke_pub/intro.html) 맨 위 BIZ_TEL 도 같은 번호로
-var KAR_VER="1104i", KAR_BUILT="11-04 18:32";   // 판·만든 시각 — 판을 올릴 때 같이 바꾼다 (운영자 화면 맨 아래에만 보임)
+var KAR_VER="1104j", KAR_BUILT="11-04 18:44";   // 판·만든 시각 — 판을 올릴 때 같이 바꾼다 (운영자 화면 맨 아래에만 보임)
 function kIntroU(lg){ return (location.host==="karaoke.moneypuzzle.co.kr"?"":"https://karaoke.moneypuzzle.co.kr/")+"intro.html?lang="+lg; }   // 서비스 소개 — 투어앱·전용 앱에서는 노래방 사이트 주소로
 function bizHtml(){ if(!KOP&&!bizHtml.op&&sess()){ bizHtml.op=1; setTimeout(function(){ kOpChk(); },1500); } var z=TX.bz[window.LANG]||TX.bz.en, lg=TX.bz[window.LANG]?window.LANG:"en";
   return '<div class="kbz"><b>'+esc(z[0])+'</b><br><span class="nw">'+esc(z[1])+'</span> · <span class="nw">'+esc(z[2])+' '+esc(z[3])+'</span><br>'+esc(z[4])+' <span class="nw">297-81-03712</span><br>'+esc(z[5])+': '+esc(z[6])+'<br>'+esc(z[7])+': '+esc(z[8])+(BIZ_TEL?'<br>'+esc(L(TX.bzt))+': <span class="nw">'+esc(BIZ_TEL)+'</span>':'')+'<br>'+esc(L(TX.bzh))+': GitHub, Inc. · Cloudflare, Inc.<br>'+esc(L(TX.bzc))+'<br>'+esc(L(TX.bzm))+'<br>'+esc(z[9])+': admin@moneypuzzle.co.kr'+'<br>'+esc(L(TX.bzn))
