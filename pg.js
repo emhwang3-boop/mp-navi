@@ -41,6 +41,7 @@ var W={
  sess:{ko:"로그인이 끝났습니다. 다시 로그인해 주세요.",en:"Your session has ended. Please sign in again.",ja:"ログインの有効期限が切れました。もう一度ログインしてください。",zhs:"登录已过期，请重新登录。",zht:"登入已過期，請重新登入。",es:"Su sesión ha terminado. Vuelva a iniciar sesión."},
  gNat:{ko:"Google로 로그인",en:"Sign in with Google",ja:"Googleでログイン",zhs:"使用Google登录",zht:"使用Google登入",es:"Iniciar sesión con Google"},
  aNat:{ko:"앱에서는 Apple 로그인을 지원하지 않습니다. Google로 로그인하거나, 웹 브라우저의 사이트에서 Apple로 로그인해 주세요.",en:"Sign in with Apple is not available in the app. Please sign in with Google, or use Apple sign-in on the website in your web browser.",ja:"アプリではAppleでのログインはご利用いただけません。Googleでログインするか、ウェブブラウザのサイトでAppleでログインしてください。",zhs:"应用内不支持Apple登录。请使用Google登录，或在网页浏览器的网站上使用Apple登录。",zht:"App 內不支援 Apple 登入。請使用 Google 登入，或在網頁瀏覽器的網站上使用 Apple 登入。",es:"El inicio de sesión con Apple no está disponible en la app. Inicia sesión con Google o usa Apple en el sitio web desde tu navegador."},
+ iosNo:{ko:"아이폰 앱(App Store)은 당분간 지원하지 않습니다. 아이폰에서는 웹 브라우저로 이용해 주세요.",en:"The iPhone app (App Store) is not available for now. On iPhone, please use this website in your web browser.",ja:"iPhoneアプリ（App Store）は当面ご利用いただけません。iPhoneではウェブブラウザでご利用ください。",zhs:"暂不支持iPhone应用（App Store）。在iPhone上请使用网页浏览器访问。",zht:"暫不支援 iPhone App（App Store）。在 iPhone 上請使用網頁瀏覽器瀏覽。",es:"La app para iPhone (App Store) no está disponible por ahora. En iPhone, usa este sitio web desde tu navegador."},
  natUpd:{ko:"이 앱 버전에서는 로그인을 지원하지 않습니다. 앱을 최신 버전으로 업데이트해 주세요.",en:"Sign-in is not supported in this app version. Please update the app to the latest version.",ja:"このアプリのバージョンではログインできません。アプリを最新バージョンに更新してください。",zhs:"此应用版本不支持登录，请将应用更新到最新版本。",zht:"此 App 版本不支援登入，請將 App 更新到最新版本。",es:"Esta versión de la app no admite el inicio de sesión. Actualiza la app a la última versión."}
 };
 /* 다른 사이트(노래방 karaoke.moneypuzzle.co.kr, 10-30)가 같은 pg.js 를 쓸 때 — window.PG_SITE={W:{문구},simple,aredir}. 투어앱엔 PG_SITE 가 없어 그대로 */
@@ -80,7 +81,9 @@ function gisLoad(){ if(window.google&&google.accounts&&google.accounts.id) retur
 var GLOC={ko:"ko",en:"en",ja:"ja",zhs:"zh_CN",zht:"zh_TW",es:"es"};
 function paintLogin(msg){ var I=document.getElementById("pgIn");
   I.innerHTML=head()+'<div class="pgp">'+esc(t("intro"))+'</div><div class="pgp" style="color:var(--ink)">'+esc(t("ask"))+'</div>'+(msg?'<div class="pgp" style="color:#c92a2a">'+esc(msg)+'</div>':'')
-    +'<div id="pgGbtn"><button type="button" class="pgbtn" disabled>'+esc(t("load"))+'</button></div><div id="pgAbtn"></div>'+rvHtml()+privHtml();
+    +'<div id="pgGbtn"><button type="button" class="pgbtn" disabled>'+esc(t("load"))+'</button></div><div id="pgAbtn"></div>'
+    +(natApp()?'':'<div class="pgp" style="color:var(--ink)">'+esc(t("iosNo"))+'</div>')   /* 아이폰 앱 없음 안내 — 웹만 (사장님 11-04 「가」, 노래방·투어앱 둘 다) */
+    +rvHtml()+privHtml();
   if(natApp()){ natPaint(); rvWire(); return; }   /* 앱(StageSong 등) 안 — 웹 구글·애플 로그인은 WebView 에서 막힘(흰 화면) → 앱 전용 로그인 (10-31) */
   appleBtn(); rvWire();
   cfg().then(function(c){ var g=document.getElementById("pgGbtn"); if(!g) return; c={cid:(c&&c.cid)||PG_CID};
