@@ -263,43 +263,39 @@ function xlsLed(){ if(!LG||!window.XLSX){ alert("자료나 엑셀 도구를 아�
   var s3=[["시각","상품","통화","금액","상태","주문번호"]].concat(LG.items.map(function(x){ return [x.at,PRN[x.product]||x.product,x.cur,x.amount,x.status==="refund"?"환불":"결제",x.oid||""]; }));
   var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(s1,[20,24]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[12,8,12,10,8,8,8]),"날짜별"); XLSX.utils.book_append_sheet(wb,sheet(s3,[18,10,6,12,6,24]),"기록");
   save(wb,"머니퍼즐내비_장부_"+LG.from+"_"+LG.to+".xlsx"); }
-// ── 퍼즐골드 (2026-10-26) — 허브 /npg/admin/* (x-admin). 상 지급은 사람 고르고 이벤트명·등수 → 금액 자동(1등 100·2등 50·3등 20) · 3번이면 졸업(거절)
-//   합계 칸은 사장님 기기 계정(own) 뺀 값 · 「같은 기기」 경고 = 같은 기기 번호에서 다른 구글 계정도 상을 받음(차단 아님) · IP 없음
-var PGD=null, PGF="";
-function pgDay(ms){ return ms?new Date(ms+9*3600e3).toISOString().slice(0,16).replace("T"," "):""; }
 // ── 한국 빙고 (2026-10-26) — 허브 /npg/admin/bingo. 다음 주 문제는 허브가 AI 로 미리 만든다. 승인 안 해도 월요일엔 그대로 쓴다 ──
 var BGINTO="", BG=null, BGW="next", BGL=["ko","en","ja","zhs","zht","es"];
-// ── 이벤트 (2026-10-26) — 한 주에 하나만. 종류 고르고 「시작」(그 주 일 24:00까지) · 「지금 닫기」(지급 없음). 빙고 문제 편집은 아래 「빙고 문제」 ──
+// ── 이벤트 (2026-10-26) — 한 주에 하나만. 종류 고르고 「시작」(그 주 일 24:00까지) · 「지금 닫기」(순위 없음). 빙고 문제 편집은 아래 「빙고 문제」 ──
 var EVK=[["bingo","한국 빙고"],["treasure","지도 속 보물상자"],["spot","명소 맞히기"],["photo","이번 주 사진"]], EVL=["ko","en","ja","zhs","zht","es"], EV=null, EVTAB="";
 function evLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>이벤트</b><div class="msg">부르는 중…</div></div>';
   api("/npg/admin/ev"+(PHK?"?k=1":"")).then(function(j){ if(!j.ok) throw new Error(j.err||"x"); EV=j; evPaintA(); }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div></div>'; }); }
 function evOpenKind(){ if(EV.ew&&EV.ew.st==="open") return EV.ew.kind; if(EV.bingo&&EV.bingo.st==="open") return "bingo"; return ""; }
 function evNm(k){ for(var i=0;i<EVK.length;i++) if(EVK[i][0]===k) return EVK[i][1]; return k||"-"; }
-// 매일 빙고 (2026-10-27) — 해외 빙고는 매일 새 판. 켜면 한국 자정마다 새 문제·지난 날 점수 정산, 월요일 0시 주간 점수 기준 PG(실전만) — 허브 /npg/admin/ev/daily
-function bdOn(m){ if(!confirm(m==="live"?"매일 빙고를 「실전」으로 켤까요?\n오늘 판을 새로 만들고(오늘 진행 기록은 지워짐) 이번 주 점수 합계 20·50·70점에 20·50·100 PG가 월요일 0시에 자동 지급됩니다. 동의·한국 제외가 켜집니다.":"매일 빙고를 「시험」으로 켤까요? 상금 없이 순위·점수·별만 기록합니다. (모드를 바꾸면 오늘 판을 새로 만듭니다)")) return;
+// 매일 빙고 (2026-10-27) — 해외 빙고는 매일 새 판. 켜면 한국 자정마다 새 문제·지난 날 점수 정산, 월요일 0시 주간 점수 1·2·3등 기록(실전만) — 허브 /npg/admin/ev/daily
+function bdOn(m){ if(!confirm(m==="live"?"매일 빙고를 「실전」으로 켤까요?\n오늘 판을 새로 만들고(오늘 진행 기록은 지워짐) 월요일 0시에 이번 주 점수 합계로 1·2·3등을 기록합니다. 동의·한국 제외가 켜집니다.":"매일 빙고를 「시험」으로 켤까요? 순위·점수·별을 시험 기록으로 따로 남깁니다. (모드를 바꾸면 오늘 판을 새로 만듭니다)")) return;
   var m2=$("bdMsg"); if(m2) m2.textContent="오늘 판 문제를 만드는 중… (1~2분)";
   api("/npg/admin/ev/daily",{method:"POST",body:JSON.stringify({act:"dstart",mode:m})}).then(function(j){ alert(j.ok?(j.already?"이미 그 모드로 켜져 있습니다":"켰습니다 ("+(j.mode==="live"?"실전":"시험")+" · "+j.day+")"):"켜지 못함 ("+(j.err||"")+")"); evLoad(); }).catch(function(e){ alert("켜지 못함 ("+e.message+")"); evLoad(); }); }
-function bdOff(){ if(!confirm("매일 빙고를 끌까요? 오늘 판은 점수 정산 없이 닫힙니다(지난 날 점수·주간 지급은 그대로).")) return; api("/npg/admin/ev/daily",{method:"POST",body:JSON.stringify({act:"dstop"})}).then(function(j){ alert(j.ok?"껐습니다":"끄지 못함 ("+(j.err||"")+")"); evLoad(); }); }
+function bdOff(){ if(!confirm("매일 빙고를 끌까요? 오늘 판은 점수 정산 없이 닫힙니다(지난 날 점수·주간 순위는 그대로).")) return; api("/npg/admin/ev/daily",{method:"POST",body:JSON.stringify({act:"dstop"})}).then(function(j){ alert(j.ok?"껐습니다":"끄지 못함 ("+(j.err||"")+")"); evLoad(); }); }
 function bdCard(){ var d=EV.daily, k=EV.ko, on=!!(d&&d.st==="open"), lv=on&&d.mode==="live", bl=EV.bdlast, bp=EV.bdpaid;
   return '<div class="card"><div class="row"><b style="flex:1">매일 빙고 (해외)</b></div>'
-   +'<div class="row" style="margin-top:6px"><span>지금: '+(on?'<b style="color:'+(lv?'#e8590c':'#2f9e44')+'">켜짐 · '+(lv?'실전 (주간 점수 → PG)':'시험 (상금 없음)')+'</b> · 오늘 판 '+esc(d.day||"-"):'<b>꺼짐</b>')+'</span></div>'
+   +'<div class="row" style="margin-top:6px"><span>지금: '+(on?'<b style="color:'+(lv?'#e8590c':'#2f9e44')+'">켜짐 · '+(lv?'실전 (주간 점수 순위)':'시험')+'</b> · 오늘 판 '+esc(d.day||"-"):'<b>꺼짐</b>')+'</span></div>'
    +'<div class="row" style="margin-top:8px"><button onclick="bdOn(\'test\')"'+(on&&!lv?' disabled':'')+'>매일 빙고 켜기(시험)</button><button onclick="bdOn(\'live\')"'+(lv?' disabled':'')+' style="background:#e8590c">매일 빙고 켜기(실전)</button><button class="g" onclick="bdOff()"'+(on?'':' disabled')+'>끄기</button></div>'
-   +'<div class="msg" id="bdMsg">한국 시간 밤 12시마다 새 판. 그날 24칸 완성자 걸린 시간 순 → 점수 1등 10·2등 8·3등 6·4등 5·5등 4·6~10등 3·나머지 1 · 그날 1등 별. 실전이면 월요일 0시에 한 주 점수 합계 70↑ 100 PG · 50↑ 50 PG · 20↑ 20 PG (넘으면 누구나, 가장 높은 하나, 사장님 기기·졸업자 제외). 시험은 상금 없음.</div>'
-   +'<div class="msg">한국인 판(한국어+한국 IP): '+(k&&k.st==="open"?'<b>켜짐</b> · '+esc(k.day||""):'꺼짐')+(bl?' · 지난 주간 점수('+esc(bl.wk)+') '+(bl.n||0)+'명'+((bl.res||[]).filter(function(r){ return r.pg; }).length?', PG 받은 사람 '+(bl.res||[]).filter(function(r){ return r.pg; }).length+'명':''):'')+(bp&&bp.res?' · 지난주 지급 '+bp.res.filter(function(r){ return r.pg; }).map(function(r){ return esc(r.nm)+' '+r.p+'점 '+r.pg+'PG(메일 '+({sent:"보냄",fail:"실패",none:"없음"}[r.mail]||"-")+')'; }).join(", "):'')+'</div></div>'; }
+   +'<div class="msg" id="bdMsg">한국 시간 밤 12시마다 새 판. 그날 24칸 완성자 걸린 시간 순 → 점수 1등 10·2등 8·3등 6·4등 5·5등 4·6~10등 3·나머지 1 · 그날 1등 별. 실전이면 월요일 0시에 한 주 점수 합계로 1·2·3등을 기록합니다(졸업 셈, 사장님 기기·졸업자 제외). 시험은 기록을 따로 둡니다.</div>'
+   +'<div class="msg">한국인 판(한국어+한국 IP): '+(k&&k.st==="open"?'<b>켜짐</b> · '+esc(k.day||""):'꺼짐')+(bl?' · 지난 주간 점수('+esc(bl.wk)+') '+(bl.n||0)+'명':'')+(bp&&bp.res&&bp.res.filter(function(r){ return r.t3; }).length?' · 지난주 1·2·3등 '+bp.res.filter(function(r){ return r.t3; }).map(function(r){ return r.t3+'등 '+esc(r.nm)+' '+r.p+'점'; }).join(", "):'')+'</div></div>'; }
 var EVS=[["photo","이번 주 사진"]];   // 이번 주 이벤트 (빙고는 위 매일 빙고로) · 명소 맞히기는 매일 판(오늘의 명소 맞히기)으로, 보물상자는 매일 탭(레벨 판)으로 옮겨 뺌 (10-29)
 function evPaintA(){ var P=$("pane"), ew=EV.ew, ok=ew&&ew.st==="open"?ew.kind:"";
   var h=bdCard()+'<div class="card"><div class="row"><b style="flex:1">이번 주 이벤트 · '+esc(EV.wk)+'</b></div>'
    +'<div class="row" style="margin-top:6px"><span>지금: '+(ok?'<b style="color:#2f9e44">'+esc(evNm(ok))+' 진행 중</b> (일요일 24:00 마감)':(ew&&ew.st==="judge"?'<b style="color:#c47a3c">'+esc(evNm(ew.kind))+' 마감 — 1·2·3등 고르기 대기</b>':'<b>닫힘</b>'))+'</span></div>'
    +'<div class="row" style="margin-top:8px"><select id="evKind">'+EVS.map(function(k){ return '<option value="'+k[0]+'">'+k[1]+'</option>'; }).join("")+'</select>'
    +'<button onclick="evStart()"'+(ok?' disabled':'')+'>이번 주 이벤트 시작</button><button class="g" onclick="evStop()"'+(ok?'':' disabled')+'>지금 닫기</button></div>'
-   +'<div class="msg">자동으로 열리지 않습니다. 한 주에 한 종류, 매일 빙고와는 같이 열립니다. 시작한 때부터 그 주 일요일 24:00(한국 시간)까지 열리고, 보물상자·명소 맞히기는 마감 뒤 1·2·3등에게 100/50/20 PG를 자동 지급(당첨 메일)·1등 별. 한국인(한국어+한국 IP)은 같은 판을 「한국인 판」으로 따로 풀고(상금 없음, 1등 별만). 사진은 마감 뒤 아래에서 1·2·3등을 고르면 지급됩니다. 「지금 닫기」는 지급 없이 닫습니다. 사장님 기기·졸업자(3회)는 순위에서 빠집니다.</div></div>';
+   +'<div class="msg">자동으로 열리지 않습니다. 한 주에 한 종류, 매일 빙고와는 같이 열립니다. 시작한 때부터 그 주 일요일 24:00(한국 시간)까지 열리고, 보물상자·명소 맞히기는 마감 뒤 1·2·3등을 기록하고 1등은 별을 받습니다. 한국인(한국어+한국 IP)은 같은 판을 「한국인 판」으로 따로 풉니다(1등 별). 사진은 마감 뒤 아래에서 1·2·3등을 고르면 확정됩니다. 「지금 닫기」는 순위 없이 닫습니다. 사장님 기기·졸업자(3회)는 순위에서 빠집니다.</div></div>';
   h+='<div class="card"><div class="row">'+EVK.map(function(k){ return '<button class="'+(EVTAB===k[0]?"":"g")+'" onclick="EVTAB=\''+k[0]+'\';evPaintA()">'+k[1]+' 설정</button>'; }).join("")+'</div></div>';
   P.innerHTML=h+'<div id="evTab"></div>';
   if(EVTAB==="bingo"){ $("evTab").innerHTML='<div class="msg">빙고 문제를 불러오는 중…</div>'; api("/npg/admin/bingo").then(function(j){ if(!j.ok) throw 0; BG=j; bgPaint("evTab"); }).catch(function(){ $("evTab").innerHTML='<div class="card"><div class="msg err">빙고 문제를 못 불렀습니다</div></div>'; }); }
   if(EVTAB==="treasure") evTre(); if(EVTAB==="spot") evSpot(); if(EVTAB==="photo") evPho(); }
 function evStart(){ var k=$("evKind").value; if(!confirm("「"+evNm(k)+"」을(를) 지금 시작할까요? 일요일 24:00(한국 시간)에 마감됩니다.")) return;
   api("/npg/admin/ev/start",{method:"POST",body:JSON.stringify({kind:k})}).then(function(j){ alert(j.ok?(j.already?"이미 진행 중입니다":"시작했습니다"):(j.err==="cfg"?"먼저 아래 「"+evNm(k)+" 설정」을 채워 저장해 주세요":j.err==="already-open"?"이미 「"+evNm(j.kind)+"」이(가) 열려 있습니다":"시작 못 함 ("+(j.err||"")+")")); evLoad(); }); }
-function evStop(){ if(!confirm("지금 열린 이벤트를 닫을까요? 순위·상금 지급 없이 닫힙니다(기록 보관).")) return; api("/npg/admin/ev/stop",{method:"POST"}).then(function(j){ alert(j.ok?"닫았습니다":"닫지 못함 ("+(j.err||"")+")"); evLoad(); }); }
+function evStop(){ if(!confirm("지금 열린 이벤트를 닫을까요? 순위 없이 닫힙니다(기록 보관).")) return; api("/npg/admin/ev/stop",{method:"POST"}).then(function(j){ alert(j.ok?"닫았습니다":"닫지 못함 ("+(j.err||"")+")"); evLoad(); }); }
 function evSave(kind,cfg){ return api("/npg/admin/ev/cfg",{method:"POST",body:JSON.stringify({kind:kind,cfg:cfg})}).then(function(j){ alert(j.ok?"저장했습니다":"저장 못 함 ("+(j.err||"")+")"); if(j.ok) evLoad(); }); }
 function ml(id,o){ return EVL.map(function(l){ return '<div class="row" style="margin-top:3px"><span class="sub" style="width:34px">'+l+'</span><input id="'+id+'_'+l+'" value="'+esc((o&&o[l])||"")+'" style="flex:1;min-width:200px"></div>'; }).join(""); }
 function mlGet(id){ var o={}; EVL.forEach(function(l){ var e=$(id+"_"+l); o[l]=e?e.value.trim():""; }); return o; }
@@ -340,7 +336,7 @@ function evPho(){ var c=EV.cfg.photo||{}, h='<div class="card"><b>이번 주 사
   if(!EV.photos.length) h+='<div class="msg">아직 사진이 없습니다.</div>';
   EV.photos.forEach(function(x){ h+='<div style="border-top:1px solid #eee;padding:8px 0"><div class="row"><b>'+esc(x.nm)+'</b><span class="sub">'+new Date(x.at+9*3600e3).toISOString().slice(5,16).replace("T"," ")+' · SNS 동의 '+(x.sns?"예":"아니오")+(x.own?' · 사장님 기기':'')+(x.grad?' · 졸업자':'')+'</span>'
     +'<button class="g" onclick="phView(\''+x.uid+'\')">보기</button><select id="phR_'+x.uid+'"><option value="">순위 없음</option><option value="1">1등</option><option value="2">2등</option><option value="3">3등</option></select><button class="g" onclick="phDel(\''+x.uid+'\')">삭제</button></div><div id="phI_'+x.uid+'"></div></div>'; });
-  h+='<button onclick="phAward()" style="margin-top:8px">'+(PHK?'고른 1·2·3등 확정 (한국인 판 — 상금 없이 1등 별만)':'고른 1·2·3등에게 지급 (마감 뒤)')+'</button></div>';
+  h+='<button onclick="phAward()" style="margin-top:8px">'+(PHK?'고른 1·2·3등 확정 (한국인 판 — 1등 별)':'고른 1·2·3등 확정 (마감 뒤)')+'</button></div>';
   $("evTab").innerHTML=h; }
 function phSave(){ var t=mlGet("phT"); if(!t.ko&&!t.en){ alert("주제를 넣어 주세요"); return; } evSave("photo",{topic:t}); }
 var PHK=0;   // 1 = 한국인 판 사진 (10-27)
@@ -348,7 +344,7 @@ function phWk(){ api("/npg/admin/ev?wk="+encodeURIComponent($("phWk").value)+(PH
 function phView(u){ api("/npg/admin/ev/photo",{method:"POST",body:JSON.stringify({wk:EV.pwk,uid:u,k:PHK})}).then(function(j){ if(j.ok) $("phI_"+u).innerHTML='<img src="'+j.img+'" style="max-width:100%;max-height:420px;border-radius:8px">'; }); }
 function phDel(u){ if(!confirm("이 사진을 지울까요? (부적절한 사진)")) return; api("/npg/admin/ev/photo/del",{method:"POST",body:JSON.stringify({wk:EV.pwk,uid:u,k:PHK})}).then(function(){ phWk(); }); }
 function phAward(){ var pick=["","",""]; EV.photos.forEach(function(x){ var v=$("phR_"+x.uid).value; if(v) pick[+v-1]=x.uid; }); var uids=pick.filter(Boolean); if(!uids.length){ alert("1·2·3등을 고르세요"); return; }
-  if(!confirm(PHK?"한국인 판 순위를 확정할까요? (상금 없음 · 1등 별)":uids.length+"명에게 퍼즐골드를 지급하고 당첨 메일을 보낼까요?")) return; api("/npg/admin/ev/photo/award",{method:"POST",body:JSON.stringify({wk:EV.pwk,uids:pick.filter(Boolean),k:PHK})}).then(function(j){ alert(j.ok?"지급했습니다":(j.err==="done"?"이미 지급했습니다":"지급 못 함 ("+(j.err||"")+")")); evLoad(); }); }
+  if(!confirm(PHK?"한국인 판 순위를 확정할까요? (1등 별)":uids.length+"명을 1·2·3등으로 확정할까요? (1등 별)")) return; api("/npg/admin/ev/photo/award",{method:"POST",body:JSON.stringify({wk:EV.pwk,uids:pick.filter(Boolean),k:PHK})}).then(function(j){ alert(j.ok?"확정했습니다":(j.err==="done"?"이미 확정했습니다":"확정 못 함 ("+(j.err||"")+")")); evLoad(); }); }
 function bgLoad(){ if(BGINTO==="evTab"){ evLoad(); return; } var P=$("pane"); P.innerHTML='<div class="card"><b>한국 빙고</b><div class="msg">부르는 중…</div></div>';
   api("/npg/admin/bingo").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); BG=j; bgPaint(); }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div></div>'; }); }
 function bgPaint(into){ var P=$(into||BGINTO||"pane"); BGINTO=into||BGINTO; var w=BG[BGW], h='<div class="card"><div class="row"><b style="flex:1">한국 빙고</b>'
@@ -356,8 +352,8 @@ function bgPaint(into){ var P=$(into||BGINTO||"pane"); BGINTO=into||BGINTO; var 
   +'<button class="g" onclick="bgGen()">다음 판 다시 만들기(AI)</button></div>'
   +(BGINTO==="evTab"?'':'<div class="row" style="margin-top:8px"><b>이번 주 상태: '+(BG.cur&&BG.cur.st==="open"?'<span style="color:#2f9e44">진행 중</span> (일요일 24:00 마감)':'닫힘')+'</b>'
   +'<button onclick="bgStart()"'+(BG.cur&&BG.cur.st==="open"?' disabled':'')+'>이번 주 빙고 시작</button><button class="g" onclick="bgStop()"'+(BG.cur&&BG.cur.st==="open"?'':' disabled')+'>지금 닫기</button></div>')
-  +'<div class="msg">빙고는 자동으로 열리지 않습니다 — 「이번 주 빙고 시작」을 누른 때부터 그 주 일요일 24:00까지 열리고, 마감 후 1·2·3등 퍼즐골드가 자동 지급됩니다. 「지금 닫기」는 순위·지급 없이 닫습니다(기록 보관). 시작하면 이번 주에 만들어 둔 판(있으면) 또는 미리 만든 「다음 판」 문제를 씁니다. 정답 = 초록. 고친 뒤 「저장」.'+(BG.last&&BG.last.res?' · 지난주('+esc(BG.last.wk)+') 참가 '+(BG.last.n||0)+'명, 1등 '+esc((BG.last.res[0]||{}).nm||"-"):'')+'</div></div>';
-  if(BG.last&&BG.last.res&&BG.last.res.length) h+='<div class="card"><b>지난주 결과 ('+esc(BG.last.wk)+')</b>'+BG.last.res.map(function(r){ return '<div class="msg">'+r.rk+'등 · '+esc(r.nm)+' · '+r.lines+'줄'+(r.pg?' · '+r.pg+' PG · 당첨 메일 '+({sent:"보냄",fail:"실패",none:"이메일 없음"}[r.mail]||"-"):'')+'</div>'; }).join("")+'</div>';
+  +'<div class="msg">빙고는 자동으로 열리지 않습니다 — 「이번 주 빙고 시작」을 누른 때부터 그 주 일요일 24:00까지 열리고, 마감 후 1·2·3등을 기록하고 1등은 별을 받습니다. 「지금 닫기」는 순위 없이 닫습니다(기록 보관). 시작하면 이번 주에 만들어 둔 판(있으면) 또는 미리 만든 「다음 판」 문제를 씁니다. 정답 = 초록. 고친 뒤 「저장」.'+(BG.last&&BG.last.res?' · 지난주('+esc(BG.last.wk)+') 참가 '+(BG.last.n||0)+'명, 1등 '+esc((BG.last.res[0]||{}).nm||"-"):'')+'</div></div>';
+  if(BG.last&&BG.last.res&&BG.last.res.length) h+='<div class="card"><b>지난주 결과 ('+esc(BG.last.wk)+')</b>'+BG.last.res.map(function(r){ return '<div class="msg">'+r.rk+'등 · '+esc(r.nm)+' · '+r.lines+'줄'+'</div>'; }).join("")+'</div>';
   if(!w){ P.innerHTML=h+'<div class="card"><div class="msg">아직 판이 없습니다.</div></div>'; return; }
   h+='<div class="card"><div class="row"><b style="flex:1">'+esc(w.wk)+' · '+(w.st||"")+(w.appr?' · 승인됨':'')+'</b><button onclick="bgSave()">저장</button>'+(BGW==="next"?'<button class="g" onclick="bgAppr()">승인</button>':'')+'</div>';
   w.cells.forEach(function(c,i){ if(c.free){ h+='<div class="msg">'+(i+1)+'. FREE</div>'; return; }
@@ -368,60 +364,10 @@ function bgPaint(into){ var P=$(into||BGINTO||"pane"); BGINTO=into||BGINTO; var 
 function bgSave(){ var w=BG[BGW]; if(!w) return; var cells=w.cells.map(function(c,i){ if(c.free) return {free:1}; var q={},o={}; BGL.forEach(function(l){ q[l]=$("bq_"+l+"_"+i).value; o[l]=[0,1,2].map(function(k){ return $("bo_"+l+"_"+i+"_"+k).value; }); });
     return {w:{en:$("bw_en_"+i).value,ko:$("bw_ko_"+i).value},q:q,o:o,a:+$("ba_"+i).value}; });
   api("/npg/admin/bingo/save",{method:"POST",body:JSON.stringify({which:BGW,cells:cells})}).then(function(j){ alert(j.ok?"저장했습니다":"저장 못 함 ("+(j.err||"")+")"); bgLoad(); }); }
-function bgStart(){ if(!confirm("이번 주 빙고를 지금 시작할까요? 일요일 24:00(한국 시간)에 마감되고 1·2·3등에게 퍼즐골드가 자동 지급됩니다.")) return; api("/npg/admin/bingo/start",{method:"POST"}).then(function(j){ alert(j.ok?(j.already?"이미 진행 중입니다":"시작했습니다"):"시작 못 함 ("+(j.err||"")+")"); bgLoad(); }); }
-function bgStop(){ if(!confirm("이번 주 빙고를 지금 닫을까요? 순위·상금 지급 없이 닫힙니다(참가 기록은 보관).")) return; api("/npg/admin/bingo/stop",{method:"POST"}).then(function(j){ alert(j.ok?"닫았습니다":"닫지 못함 ("+(j.err||"")+")"); bgLoad(); }); }
+function bgStart(){ if(!confirm("이번 주 빙고를 지금 시작할까요? 일요일 24:00(한국 시간)에 마감되고 1·2·3등을 기록합니다.")) return; api("/npg/admin/bingo/start",{method:"POST"}).then(function(j){ alert(j.ok?(j.already?"이미 진행 중입니다":"시작했습니다"):"시작 못 함 ("+(j.err||"")+")"); bgLoad(); }); }
+function bgStop(){ if(!confirm("이번 주 빙고를 지금 닫을까요? 순위 없이 닫힙니다(참가 기록은 보관).")) return; api("/npg/admin/bingo/stop",{method:"POST"}).then(function(j){ alert(j.ok?"닫았습니다":"닫지 못함 ("+(j.err||"")+")"); bgLoad(); }); }
 function bgAppr(){ api("/npg/admin/bingo/approve",{method:"POST"}).then(function(j){ alert(j.ok?"승인했습니다":"승인 못 함"); bgLoad(); }); }
 function bgGen(){ if(!confirm("다음 주 문제를 AI 로 새로 만들까요? (지금 다음 주 판은 지워집니다)")) return; api("/npg/admin/bingo/gen",{method:"POST"}).then(function(j){ alert(j.ok?"만들었습니다":"못 만들었습니다 ("+(j.err||"")+")"); bgLoad(); }); }
-function pgLoad(){ var P=$("pane");
-  P.innerHTML='<div class="card"><b>퍼즐골드 (Puzzle Gold)</b><div class="msg">매주 이벤트 상금 · 1등 100 PG · 2등 50 PG · 3등 20 PG · 3번 받으면 졸업 · 유효기간 1년(지나면 자동 소멸) · 앱 결제에만 · 현금 환불 없음 · 판매 안 함</div><div id="pgSum"><div class="msg">불러오는 중…</div></div></div>'
-    +'<div class="card"><b>상 지급</b><div class="row" style="margin-top:8px"><select id="pgU" style="min-width:220px"></select><input type="text" id="pgE" placeholder="이벤트명 (예: 10월 4주 빙고)" maxlength="60" style="flex:1;min-width:180px"><select id="pgR"><option value="1">1등 · 100 PG</option><option value="2">2등 · 50 PG</option><option value="3">3등 · 20 PG</option></select><button onclick="pgGrant()">지급</button></div><div class="msg" id="pgGm"></div></div>'
-    +'<div class="card"><div class="row" style="justify-content:space-between"><b>사람 목록</b><span class="row"><input type="text" id="pgQ" placeholder="이름·이메일 찾기" oninput="PGF=this.value;pgPaint()"><button class="g" onclick="pgLoad()">새로고침</button><button class="g" onclick="xlsPg()">엑셀 받기</button></span></div><div class="tw"><table id="pgT"></table></div></div>'
-    +'<div class="card"><b>받은 내역 (지급)</b><div class="tw"><table id="pgGT"></table></div></div>'
-    +'<div class="card"><b>사용 내역</b><div class="msg">결제 연결 전 — 허브 「PG 차감」 경로(/npg/spend)만 만들어 둠</div><div class="tw"><table id="pgST"></table></div></div>';
-  api("/npg/admin/list").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); PGD=j; pgPaint(); })
-    .catch(function(e){ $("pgSum").innerHTML='<div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div>'; }); }
-function pgName(u){ return (u.name||"(이름 없음)")+(u.own?" [사장님 기기]":""); }
-function pgPaint(){ var j=PGD; if(!j) return; var T=j.tot, by={}; j.users.forEach(function(u){ by[u.uid]=u; });
-  $("pgSum").innerHTML='<div class="tiles">'+tile(T.users+"명","로그인한 사람")+tile(T.bal.toLocaleString()+" PG","남은 잔액 합계")+tile(T.granted.toLocaleString()+" PG","지급 합계")+tile(T.spent.toLocaleString()+" PG","사용 합계")+tile(T.lost.toLocaleString()+" PG","1년 지나 소멸")+tile(T.grad+"명","졸업 (3회)")+'</div><div class="msg">합계는 사장님 기기 계정을 뺀 값입니다.</div>';
-  var sel=$("pgU"), sv=sel.value; sel.innerHTML='<option value="">— 받을 사람 고르기 —</option>'+j.users.map(function(u){ return '<option value="'+u.uid+'"'+(u.grad?' disabled':'')+'>'+esc(pgName(u)+" · "+(u.email||"")+" · 수상 "+u.aw+"회"+(u.grad?" (졸업)":""))+'</option>'; }).join(""); sel.value=sv;
-  var q=(PGF||"").trim().toLowerCase(), us=j.users.filter(function(u){ return !q||(u.name+" "+u.email).toLowerCase().indexOf(q)>=0; });
-  var h='<tr><th class="l">이름</th><th class="l">이메일</th><th>잔액</th><th>수상</th><th class="l">졸업</th><th class="l">경고</th><th>기기</th><th class="l">처음</th><th class="l">마지막 이용</th></tr>';
-  us.forEach(function(u){ h+='<tr><td class="l">'+esc(pgName(u))+'</td><td class="l">'+esc(u.email)+'</td><td>'+u.bal.toLocaleString()+' PG</td><td>'+u.aw+' / '+j.max+'</td><td class="l">'+(u.grad?'졸업':'')+'</td><td class="l">'+(u.warn.length?'<span class="err">같은 기기 · '+esc(u.warn.map(function(x){ return by[x]?(by[x].name||by[x].email):x.slice(0,6); }).join(", "))+'</span>':'')+'</td><td>'+u.dev+'</td><td class="l">'+esc(pgDay(u.c))+'</td><td class="l">'+esc(pgDay(u.la))+'</td></tr>'; });
-  if(!us.length) h+='<tr><td class="l" colspan="9">아직 로그인한 사람이 없습니다.</td></tr>';
-  $("pgT").innerHTML=h;
-  var G=[], S=[]; j.users.forEach(function(u){ (u.g||[]).forEach(function(g){ G.push([u,g]); }); (u.s||[]).forEach(function(s){ S.push([u,s]); }); });
-  G.sort(function(a,b){ return b[1].at-a[1].at; }); S.sort(function(a,b){ return b[1].at-a[1].at; });
-  var ST={ok:"유효",exp:"소멸(1년)",void:"취소됨"};
-  var g='<tr><th class="l">지급 시각</th><th class="l">이름</th><th class="l">이벤트</th><th>등수</th><th>금액</th><th>남음</th><th class="l">만료일</th><th class="l">상태</th><th></th></tr>';
-  G.forEach(function(x){ var u=x[0], r=x[1]; g+='<tr><td class="l">'+esc(pgDay(r.at))+'</td><td class="l">'+esc(pgName(u))+'</td><td class="l">'+esc(r.ev)+'</td><td>'+r.rk+'등</td><td>'+r.amt+'</td><td>'+r.left+'</td><td class="l">'+esc(pgDay(r.exp).slice(0,10))+'</td><td class="l">'+(ST[r.st]||r.st)+'</td><td>'+(r.st==="ok"&&r.left===r.amt?'<button class="g" onclick="pgVoid(\''+u.uid+'\',\''+r.id+'\')">지급 취소</button>':'')+'</td></tr>'; });
-  if(!G.length) g+='<tr><td class="l" colspan="9">아직 지급한 상이 없습니다.</td></tr>';
-  $("pgGT").innerHTML=g;
-  var s='<tr><th class="l">사용 시각</th><th class="l">이름</th><th>PG 사용</th><th>결제 금액</th><th class="l">주문번호</th><th class="l">메모</th><th class="l">상태</th><th></th></tr>';
-  S.forEach(function(x){ var u=x[0], r=x[1]; s+='<tr><td class="l">'+esc(pgDay(r.at))+'</td><td class="l">'+esc(pgName(u))+'</td><td>'+r.amt+'</td><td>'+r.total+'</td><td class="l">'+esc(r.oid)+'</td><td class="l">'+esc(r.memo||"")+'</td><td class="l">'+(r.st==="void"?"취소됨":"사용")+'</td><td>'+(r.st==="ok"?'<button class="g" onclick="pgUnspend(\''+u.uid+'\',\''+r.id+'\')">사용 취소</button>':'')+'</td></tr>'; });
-  if(!S.length) s+='<tr><td class="l" colspan="8">아직 사용 내역이 없습니다.</td></tr>';
-  $("pgST").innerHTML=s; }
-function pgPost(path,b){ var o={method:"POST",body:JSON.stringify(b)}; return api(path,o); }
-function pgGrant(){ var uid=$("pgU").value, ev=$("pgE").value.trim(), rk=+$("pgR").value, m=$("pgGm");
-  if(!uid){ m.textContent="받을 사람을 고르세요."; return; } if(!ev){ m.textContent="이벤트명을 넣으세요."; return; }
-  var u=(PGD.users.filter(function(x){ return x.uid===uid; })[0])||{}, amt=(PGD.amt||{})[rk];
-  if(!confirm(pgName(u)+" ("+(u.email||"")+")\n「"+ev+"」 "+rk+"등 → "+amt+" PG 지급할까요?")) return;
-  m.textContent="지급 중…";
-  pgPost("/npg/admin/grant",{uid:uid,ev:ev,rk:rk}).then(function(j){
-    if(!j.ok){ m.innerHTML='<span class="err">'+(j.err==="grad"?"이미 3번 받아 졸업한 사람입니다 — 지급 거절.":"실패: "+esc(j.err||""))+'</span>'; return; }
-    m.innerHTML='지급됨 · '+j.grant.amt+' PG · 수상 '+j.aw+'회'+(j.grad?' (이제 졸업)':'')+(j.warn&&j.warn.length?' · <span class="err">같은 기기에서 다른 계정도 상을 받았습니다 (차단 아님)</span>':'');
-    $("pgE").value=""; api("/npg/admin/list").then(function(k){ if(k.ok){ PGD=k; pgPaint(); } });
-  }).catch(function(e){ m.innerHTML='<span class="err">실패: '+esc(e.message)+'</span>'; }); }
-function pgVoid(uid,gid){ if(!confirm("이 상 지급을 취소할까요? (수상 횟수도 1 줄어듭니다)")) return;
-  pgPost("/npg/admin/void",{uid:uid,gid:gid}).then(function(j){ if(!j.ok){ alert(j.err==="used"?"이미 일부를 쓴 상이라 취소할 수 없습니다.":"실패: "+(j.err||"")); return; } pgLoad(); }).catch(function(e){ alert("실패: "+e.message); }); }
-function pgUnspend(uid,sid){ if(!confirm("이 사용을 취소하고 PG 를 돌려줄까요? (1년 지난 상의 몫은 소멸)")) return;
-  pgPost("/npg/admin/unspend",{uid:uid,sid:sid}).then(function(j){ if(!j.ok){ alert("실패: "+(j.err||"")); return; } pgLoad(); }).catch(function(e){ alert("실패: "+e.message); }); }
-function xlsPg(){ if(!PGD||!window.XLSX){ alert("자료나 엑셀 도구를 아직 못 불렀습니다."); return; } var j=PGD, T=j.tot, ST={ok:"유효",exp:"소멸(1년)",void:"취소됨"};
-  var s1=[[CO],["퍼즐골드 (Puzzle Gold) 장부"],["만든 날",kday(0)],["규칙","1등 100 · 2등 50 · 3등 20 PG · 3회 졸업 · 유효 1년 · 앱 결제 전용 · 현금 환불 없음"],[],["로그인한 사람(사장님 기기 제외)",T.users],["남은 잔액 합계",T.bal],["지급 합계",T.granted],["사용 합계",T.spent],["소멸 합계",T.lost],["졸업",T.grad]];
-  var s2=[["이름","이메일","사장님 기기","잔액","수상","졸업","같은 기기 경고","기기 수","처음","마지막 이용"]].concat(j.users.map(function(u){ return [u.name,u.email,u.own?"예":"",u.bal,u.aw,u.grad?"졸업":"",u.warn.length?"같은 기기 "+u.warn.length+"명":"",u.dev,pgDay(u.c),pgDay(u.la)]; }));
-  var s3=[["지급 시각","이름","이메일","이벤트","등수","금액","남음","소멸","만료일","상태"]], s4=[["사용 시각","이름","이메일","PG 사용","결제 금액","주문번호","메모","상태"]];
-  j.users.forEach(function(u){ (u.g||[]).forEach(function(r){ s3.push([pgDay(r.at),u.name,u.email,r.ev,r.rk,r.amt,r.left,r.lost||0,pgDay(r.exp).slice(0,10),ST[r.st]||r.st]); }); (u.s||[]).forEach(function(r){ s4.push([pgDay(r.at),u.name,u.email,r.amt,r.total,r.oid,r.memo||"",r.st==="void"?"취소됨":"사용"]); }); });
-  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(s1,[30,60]),"요약"); XLSX.utils.book_append_sheet(wb,sheet(s2,[14,26,8,8,6,6,14,6,16,16]),"사람"); XLSX.utils.book_append_sheet(wb,sheet(s3,[16,14,26,22,6,6,6,6,12,8]),"지급"); XLSX.utils.book_append_sheet(wb,sheet(s4,[16,14,26,8,10,20,16,8]),"사용");
-  save(wb,"머니퍼즐투어_퍼즐골드_"+kday(0)+".xlsx"); }
 function menu(){ $("menu").innerHTML=MENU.map(function(m){ return '<button id="m_'+m[0]+'" onclick="show(\''+m[0]+'\')">'+esc(m[1])+'<small>'+esc(m[2])+'</small></button>'; }).join(""); }
 function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",m[0]===id); });
   var P=$("pane");
@@ -443,7 +389,6 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
   if(id==="pay"){ payLoad(); return; }
   if(id==="bingo"){ evLoad(); return; }   // 한국 빙고 (2026-10-26)
-  if(id==="pg"){ pgLoad(); return; }   // 퍼즐골드 (2026-10-26)
   if(id==="pw"){ P.innerHTML='<div class="card"><b>비밀번호 변경</b><div class="msg">새 비밀번호는 10자 이상 (한글·숫자·영문 섞어도 됩니다). 바꾸면 옛 비밀번호는 바로 안 통합니다.</div>'
     +'<div style="display:grid;gap:8px;margin-top:10px;max-width:420px"><input type="password" id="pw0" placeholder="지금 비밀번호" autocomplete="current-password"><input type="password" id="pw1" placeholder="새 비밀번호 (10자 이상)" autocomplete="new-password"><input type="password" id="pw2" placeholder="새 비밀번호 확인" autocomplete="new-password"><button id="pwb" onclick="pwChange()">바꾸기</button></div><div class="msg" id="pwm"></div></div>'; return; }
 }
