@@ -387,6 +387,7 @@ Object.assign(TX,{
  rmInvH:{ko:"초대 링크 (24시간 유효)",en:"Invitation link (valid for 24 hours)",ja:"招待リンク（24時間有効）",zhs:"邀请链接（24小时内有效）",zht:"邀請連結（24小時內有效）",es:"Enlace de invitación (válido 24 horas)"},
  rmInv1:{ko:"1명만 사용 가능한 링크입니다. 초대할 사람마다 새 링크를 보내 주세요.",en:"This link can be used by one person only. Send a new link to each person you invite.",ja:"1人だけが使えるリンクです。招待する人ごとに新しいリンクを送ってください。",zhs:"此链接仅限1人使用。请为每位受邀者发送新的链接。",zht:"此連結僅限1人使用。請為每位受邀者傳送新的連結。",es:"Este enlace solo lo puede usar una persona. Envía un enlace nuevo a cada persona que invites."},
  rjUsed:{ko:"이미 다른 사람이 사용한 초대 링크예요. 방장에게 새 초대 링크를 요청해 주세요.",en:"This invitation link has already been used by someone else. Ask the host for a new one.",ja:"この招待リンクはすでに他の人が使用しました。ホストに新しいリンクを依頼してください。",zhs:"此邀请链接已被他人使用，请向房主索取新的链接。",zht:"此邀請連結已被他人使用，請向房主索取新的連結。",es:"Otra persona ya ha usado este enlace de invitación. Pide uno nuevo al anfitrión."},
+ rjOff:{ko:"이 초대 링크는 더 이상 사용할 수 없어요. 방장에게 새 초대 링크를 요청해 주세요.",en:"This invitation link can no longer be used. Ask the host for a new one.",ja:"この招待リンクはもう使用できません。ホストに新しいリンクを依頼してください。",zhs:"此邀请链接已无法使用，请向房主索取新的链接。",zht:"此邀請連結已無法使用，請向房主索取新的連結。",es:"Este enlace de invitación ya no se puede usar. Pide uno nuevo al anfitrión."},
  rjIng:{ko:"우리끼리 노래 방에 입장하는 중…",en:"Entering the Just Us Karaoke room…",ja:"「仲間だけカラオケ」ルームに入室中…",zhs:"正在进入小圈子K歌房…",zht:"正在進入小圈子K歌房…",es:"Entrando en la sala «Solo nosotros Karaoke»…"},
  rjOk:{ko:"「{r}」 방에 입장했어요.",en:"You joined “{r}”.",ja:"「{r}」に入室しました。",zhs:"已加入「{r}」。",zht:"已加入「{r}」。",es:"Te has unido a «{r}»."},
  rjAl:{ko:"이미 「{r}」 방의 멤버예요.",en:"You’re already a member of “{r}”.",ja:"すでに「{r}」のメンバーです。",zhs:"你已经是「{r}」的成员。",zht:"你已經是「{r}」的成員。",es:"Ya eres miembro de «{r}»."},
@@ -865,7 +866,7 @@ function vocPut(el){ var s=el&&el.querySelector(".kvocslot"); if(!s) return; s.r
  +"#karBox .kvocf{display:flex;align-items:center;justify-content:flex-end;gap:8px}#karBox .kvocn{color:#cfc6e8;font-size:12px;font-variant-numeric:tabular-nums}#karBox .kvocs{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:0;padding:0;background:none;color:#fff;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.8))}#karBox .kvocs svg{width:26px;height:26px}#karBox .kvocs:disabled{opacity:.35;cursor:default}";
  document.head.appendChild(s); })();
 var BIZ_TEL="";   // 🔴 사업자 대표 전화(유선번호) — "02-1234-5678" 처럼 넣기만 하면 맨 아래 고정 띠·곡 목록 끝·PAYMENT 창·본인인증 관문 아래 사업자 정보에 모두 「전화」로 나온다 · 비어 있으면 안 보임 (11-04 포트원 통합인증 재신청) · 서비스 소개(karaoke_pub/intro.html) 맨 위 BIZ_TEL 도 같은 번호로
-var KAR_VER="1104h", KAR_BUILT="11-04 18:23";   // 판·만든 시각 — 판을 올릴 때 같이 바꾼다 (운영자 화면 맨 아래에만 보임)
+var KAR_VER="1104i", KAR_BUILT="11-04 18:32";   // 판·만든 시각 — 판을 올릴 때 같이 바꾼다 (운영자 화면 맨 아래에만 보임)
 function kIntroU(lg){ return (location.host==="karaoke.moneypuzzle.co.kr"?"":"https://karaoke.moneypuzzle.co.kr/")+"intro.html?lang="+lg; }   // 서비스 소개 — 투어앱·전용 앱에서는 노래방 사이트 주소로
 function bizHtml(){ if(!KOP&&!bizHtml.op&&sess()){ bizHtml.op=1; setTimeout(function(){ kOpChk(); },1500); } var z=TX.bz[window.LANG]||TX.bz.en, lg=TX.bz[window.LANG]?window.LANG:"en";
   return '<div class="kbz"><b>'+esc(z[0])+'</b><br><span class="nw">'+esc(z[1])+'</span> · <span class="nw">'+esc(z[2])+' '+esc(z[3])+'</span><br>'+esc(z[4])+' <span class="nw">297-81-03712</span><br>'+esc(z[5])+': '+esc(z[6])+'<br>'+esc(z[7])+': '+esc(z[8])+(BIZ_TEL?'<br>'+esc(L(TX.bzt))+': <span class="nw">'+esc(BIZ_TEL)+'</span>':'')+'<br>'+esc(L(TX.bzh))+': GitHub, Inc. · Cloudflare, Inc.<br>'+esc(L(TX.bzc))+'<br>'+esc(L(TX.bzm))+'<br>'+esc(z[9])+': admin@moneypuzzle.co.kr'+'<br>'+esc(L(TX.bzn))
@@ -2720,7 +2721,7 @@ function kRoomJoin(tok){ if(!sfOk("room")){ sfGo("room",function(){ kRoomJoin(to
   soon(L(TX.rjIng));
   kPost("/kst/room",{op:"join",tok:tok}).then(function(j){ var sk=b.querySelector(".ksoon"); if(sk) sk.remove();
     if(!(j&&j.ok&&j.rid)){ var e=j&&j.err; if(e==="exp"||e==="none"||e==="tok"||e==="many"||e==="used") drop();
-      kMsg(b,L(e==="exp"?TX.rjExp:e==="used"?TX.rjUsed:e==="none"||e==="tok"?TX.rjNo:e==="many"?TX.rjFull:TX.fail),[[L(TX.ok),null]]); return; }   // used = 다른 사람이 이미 쓴 링크 (11-04)
+      kMsg(b,L(e==="exp"?TX.rjExp:e==="used"?(j.off?TX.rjOff:TX.rjUsed):e==="none"||e==="tok"?TX.rjNo:e==="many"?TX.rjFull:TX.fail),[[L(TX.ok),null]]); return; }   // used = 다른 사람이 이미 쓴 링크 · used+off = 방장이 내보낸 사람의 옛 링크 (11-04, 일반 문구)
     drop(); try{ ntap("kara_stage",j.already?"room_join_again":"room_join"); }catch(e){}
     stageOpen("all"); var S=KS; if(S){ S.view="room"; S.rooms=null; S.items=null; S.err=0; S.draw(); S.load(); }
     var R=kRoom(j.rid,S); soon(tf(L(j.already?TX.rjAl:TX.rjOk),{r:j.name||""})); var sq=b.querySelector(".ksoon"); if(sq){ sq.style.whiteSpace="normal"; sq.style.width="max-content"; sq.style.maxWidth="calc(100% - 32px)"; sq.style.textAlign="center"; }
