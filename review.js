@@ -31,6 +31,9 @@ var W={
  ic_edit:{ko:"수정",en:"Edit",ja:"編集",zhs:"编辑",zht:"編輯",es:"Editar"},   /* 내 후기 아이콘 (사장님 11-05) */
  ic_del:{ko:"삭제",en:"Delete",ja:"削除",zhs:"删除",zht:"刪除",es:"Eliminar"},
  delq:{ko:"내 후기를 지울까요?",en:"Delete your review?",ja:"自分のレビューを削除しますか？",zhs:"要删除您的评价吗？",zht:"要刪除您的評價嗎？",es:"¿Eliminar su reseña?"},
+ buyOnly:{ko:"이 상품을 구매한 분만 후기를 쓸 수 있습니다.",en:"Only customers who bought this product can write a review.",ja:"この商品を購入した方のみレビューを書けます。",zhs:"仅购买了此商品的顾客可以写评价。",zht:"僅購買了此商品的顧客可以寫評價。",es:"Solo quienes compraron este producto pueden escribir una reseña."},   /* 패키지 후기 = 산 사람만 (사장님 11-05) */
+ loginShop:{ko:"구매하셨다면 로그인하고 후기 남기기",en:"Bought this? Sign in to leave a review",ja:"ご購入の方はログインしてレビューを書く",zhs:"已购买？登录后写评价",zht:"已購買？登入後寫評價",es:"¿Lo compraste? Inicia sesión para dejar una reseña"},
+ loginNoteShop:{ko:"이 상품을 구매한 분만 후기를 쓸 수 있습니다. 주문할 때 로그인했던 계정이나, 주문 이메일과 같은 구글·애플 계정으로 로그인해 주세요.",en:"Only customers who bought this product can write a review. Sign in with the account you used when ordering, or a Google or Apple account with the same email as your order.",ja:"この商品を購入した方のみレビューを書けます。注文時にログインしていたアカウント、または注文メールと同じGoogle・Appleアカウントでログインしてください。",zhs:"仅购买了此商品的顾客可以写评价。请使用下单时登录的账号，或与订单邮箱相同的Google·Apple账号登录。",zht:"僅購買了此商品的顧客可以寫評價。請使用下單時登入的帳號，或與訂單電郵相同的Google·Apple帳號登入。",es:"Solo quienes compraron este producto pueden escribir una reseña. Inicia sesión con la cuenta que usaste al pedir, o con una cuenta de Google o Apple con el mismo correo del pedido."},
  login:{ko:"로그인하고 후기 남기기",en:"Sign in to leave a review",ja:"ログインしてレビューを書く",zhs:"登录后写评价",zht:"登入後寫評價",es:"Inicie sesión para dejar una reseña"},
  loginNote:{ko:"구글 또는 애플 계정으로 로그인한 분만 후기를 쓸 수 있습니다. 아이디는 일부를 가려 보여 드립니다.",en:"Only visitors signed in with Google or Apple can write reviews. Your ID is shown partly hidden.",ja:"GoogleまたはAppleでログインした方のみレビューを書けます。IDは一部を隠して表示します。",zhs:"仅限使用Google或Apple登录的用户发表评价。账号将部分隐藏显示。",zht:"僅限使用Google或Apple登入的使用者發表評價。帳號將部分隱藏顯示。",es:"Solo quienes inicien sesión con Google o Apple pueden escribir reseñas. Su ID se muestra parcialmente oculto."},
  rule:{ko:"한 명소에 후기 하나 · 다시 쓰면 고쳐집니다 · 글은 AI가 검사하고 6개 언어로 번역합니다.",en:"One review per place · posting again edits it · AI checks your text and translates it into 6 languages.",ja:"1か所につきレビュー1件・再投稿で編集されます・文章はAIが確認し6言語に翻訳します。",zhs:"每个景点限一条评价 · 再次发布即为修改 · 文字由AI审核并翻译成6种语言。",zht:"每個景點限一則評價 · 再次發佈即為修改 · 文字由AI審核並翻譯成6種語言。",es:"Una reseña por lugar · publicar de nuevo la edita · la IA revisa el texto y lo traduce a 6 idiomas."},
@@ -102,12 +105,13 @@ function itemHtml(x,i){ return '<div class="rvi'+(x.me?' me':'')+'"><div class="
 function pickHtml(){ var h=""; for(var i=1;i<=5;i++) h+='<span data-rvpick="'+i+'"'+(i<=PICK?' class="on"':'')+'>★</span>'; return h; }
 function paintList(k){ var p=panel(k); if(!p||!LIST) return; var j=LIST, h="";
   h+=(j.items||[]).map(itemHtml).join("")||'<div class="rvsm">'+esc(t("none"))+'</div>';
-  if(sess()&&j.login){ var m=j.mine;   // 내 후기가 있으면 고치기 칸은 ✏️ 를 눌렀을 때만 (11-05) · 알림 줄(.rvmsg)은 칸 밖에 두어 접혀도 보이게
+  if(sess()&&j.login&&j.buyOnly&&!j.can&&!j.mine) h+='<div class="rvw"><div class="rvsm" style="margin:0">'+esc(t("buyOnly"))+'</div></div>';   // 패키지 — 안 산 사람 (11-05)
+  else if(sess()&&j.login){ var m=j.mine;   // 내 후기가 있으면 고치기 칸은 ✏️ 를 눌렀을 때만 (11-05) · 알림 줄(.rvmsg)은 칸 밖에 두어 접혀도 보이게
     h+='<div class="rvmsg"></div><div class="rvw"'+(m&&EDIT!==k?' hidden':'')+'><div class="rvq">'+esc(t(m?"edit":"write"))+'</div><div class="rvpick">'+pickHtml()+'</div>'
       +'<textarea maxlength="300" placeholder="'+esc(t("ph"))+'">'+esc(m?m.txt:"")+'</textarea>'
       +'<div class="rvr"><span class="rvc">'+((m?m.txt:"").length)+' / 300</span><button type="button" class="rvgo" data-rvgo="1">'+esc(t("save"))+'</button></div>'
       +'<div class="rvsm">'+esc(t("rule"))+'</div></div>'; }
-  else h+='<div class="rvw"><button type="button" class="rvlg" data-rvlogin="1">'+esc(t("login"))+'</button><div class="rvsm">'+esc(t("loginNote"))+'</div></div>';
+  else h+='<div class="rvw"><button type="button" class="rvlg" data-rvlogin="1">'+esc(t(j.buyOnly?"loginShop":"login"))+'</button><div class="rvsm">'+esc(t(j.buyOnly?"loginNoteShop":"loginNote"))+'</div></div>';
   p.innerHTML=h; }
 function msg(s,c){ var pp=rvp(OPEN), e=pp&&pp.querySelector(".rvmsg"); if(e){ e.className="rvmsg"+(c?" "+c:""); e.textContent=s; } }
 function save(k){ var pp=rvp(k), ta=pp&&pp.querySelector("textarea"), b=pp&&pp.querySelector("[data-rvgo]"); if(!ta) return;
@@ -119,6 +123,7 @@ function save(k){ var pp=rvp(k), ta=pp&&pp.querySelector("textarea"), b=pp&&pp.q
     var er=j&&j.err;
     if(er==="reject") msg(t("r_"+(W["r_"+j.why]?j.why:"spam")),"e");
     else if(er==="day") msg(t("e_day"),"e");
+    else if(er==="buyer") msg(t("buyOnly"),"e");
     else if(er==="budget") msg(t("e_budget"),"e");
     else if(er==="sess"){ try{ localStorage.removeItem("mpv_pg_sess"); }catch(e){} msg(t("e_sess"),"e"); }
     else msg(t("e_x"),"e"); })
