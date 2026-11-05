@@ -115,8 +115,11 @@ function refresh(){ var n=TR.items.length, mm=document.getElementById("mm");
     a.innerHTML='<img class="miic" src="img/menu/mi_cart.png" alt="">'+esc(T("여행카트 ("+n+")","My trip ("+n+")")); }
   var tb=document.querySelector(".tbs"), c=document.getElementById("trchip");
   if(tb&&!c){ c=document.createElement("button"); c.id="trchip"; c.type="button"; c.className="tb"; c.onclick=openPanel; tb.insertBefore(c,document.getElementById("rs")); }
-  if(c){ c.hidden=false; c.innerHTML=MPIMG("mi_cart",MIS)+n; c.title=T("내 여행","My trip"); }
+  if(c){ c.hidden=false; c.innerHTML=CARTSVG("1.35em","vertical-align:-0.3em;margin-right:3px")+n; c.title=T("내 여행","My trip"); }
   flags(); }
+// 카트 아이콘 = 구글 Material Symbols 「shopping_cart」(Apache 2.0, github.com/google/material-design-icons) 경로 그대로 (사장님 11-05) — 머리줄 카트·AI와 일정짜기 화면·안내 창이 같이 쓴다
+function CARTSVG(sz,st){ return '<svg class="cartic" viewBox="0 -960 960 960" width="'+sz+'" height="'+sz+'" fill="currentColor" aria-hidden="true" style="display:inline-block;'+(st||"")+'"><path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z"/></svg>'; }
+window.CARTSVG=CARTSVG;
 
 // ── 창 공통 ──
 function tPop(html){ var b=document.createElement("div"); b.className="trpop"; b.onclick=function(e){ if(e.target===b) b.remove(); };
@@ -765,6 +768,7 @@ var css=document.createElement("style"); css.textContent=
 +".gsdone{background:#e3fafc;border:1px solid #99e9f2;color:#0b7285;border-radius:12px;padding:12px 14px;font-size:14.5px;font-weight:800;line-height:1.5}:root[data-theme=dark] .gsdone{background:#0a2a30}";
 document.head.appendChild(css);
 window.TRIP={open:openPanel,report:openReport,close:sheetClose,state:function(){ return TR; },hasPass:hasPass,
+  add:function(it){ addItem(it); return has(it&&it.k); },del:delItem,has:has,snap:snapPlace,pinKey:pinKey,   // 「AI와 일정짜기」 화면이 같은 카트에 담는다 (11-05)
   debug:function(){ var pl=TR.plan; if(!pl) return null; var H=REPH||pl.H||null, tot=0, tr=0, rl=0;   // 읽기 전용 — 날짜별 묶음·이동시간·실제구간 수 (시험·비교용)
     var days=pl.days.map(function(d){ var arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), p=H, tv=0, legs=0, real=0;
       arr.forEach(function(x){ if(p){ var lg=leg(p,x); if(lg.mode!=="walk"){ legs++; if(lg.real) real++; } tv+=lg.min; } p=x; });
