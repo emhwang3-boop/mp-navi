@@ -1445,7 +1445,7 @@ function meKrSpot(f,Wf,Hf){ var as=ASP(), lb=[], k=f[0].toFixed(4)+","+f[1].toFi
   c.unshift([0,f[0],f[1]]); c.sort(function(p,q){ return p[0]-q[0]; });
   var a=null; for(var i=0;i<c.length;i++){ var bx=c[i][1], by=c[i][2]; if(ctFree(bx-Wf/2,by-Hf,bx+Wf/2,by,lb)){ a=[bx,by]; break; } }
   MEKR={k:k,a:a||f}; return MEKR.a; }
-var ME_W=0.06;
+var ME_W=0.08;   // 11-05 사장님 「지금보다 조금 더 크게」 0.06 → 0.08 · 화면에서 늘 같은 크기(「나」 방식) 그대로
 // 「나」·리본 크기 기준 폭 (사장님 10-25 PC 웹) — 지도 칸 폭 그대로 쓰면 넓은 PC 화면에서 지도 그림 대비 너무 커진다.
 //   지도 그림 표시 크기(높이 맞춤 기준 MH×비율)의 0.64배(폰 세로 화면 비율)를 넘지 않게 → 폰(세로 화면)은 지금과 같고, PC 도 지도 대비 같은 비율
 function meRefW(){ var w=document.getElementById("map").clientWidth; return Math.min(w,MH()*ASP()*0.64); }   // 「나」 그림 폭 = 화면에서 지도 폭의 6% — 전국·약도·구 화면·확대 배율 어디서나 같게 (사장님 10-21)
@@ -1614,11 +1614,12 @@ thPaint();
 paint();
 infoPaint();
 hitInit();
+var MEP=myPos();   // 11-05 사장님 「전국 지도가 나올 때 내 위치를 빨리」 — 지도 자료 받는 동안 위치도 같이 묻는다(전엔 다 받은 뒤에 물었다)
 Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(function(a){ var R=a[0];
   for(var id in R.maps) if(id!==R.root) CITY[id]=R.maps[id];
   ROOTGEO=R.maps[R.root]; try{ lodDraw(); }catch(e){}
   INFO=a[1]; infoPaint();
-  myPos().then(function(p){ if(!p) return; meSet(p); meWatch(); });   // 앱을 열면 위치 한 번 — 보고 있는 지도(전국)에 「나」만 표시, 지도는 안 옮긴다. 약도로 가는 건 「◎ 현재 위치」 단추로만 (사장님 10-17)
+  MEP.then(function(p){ if(p) meSet(p); meWatch(); });   // 첫 요청이 4초 안에 답을 못 받아도 위치 지켜보기는 켠다 — 위치가 잡히는 대로 「나」가 뜬다 (11-05)   // 앱을 열면 위치 한 번 — 보고 있는 지도(전국)에 「나」만 표시, 지도는 안 옮긴다. 약도로 가는 건 「◎ 현재 위치」 단추로만 (사장님 10-17)
   }).catch(function(e){ try{ console.error(e); }catch(x){} });
 </script>
 <script>
