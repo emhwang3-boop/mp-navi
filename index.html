@@ -1504,8 +1504,8 @@ function meBtn(){ var b=document.getElementById("zme")||{}; b.disabled=true;
 // ── 「나에게서 거리」 줄 + 화면 가장자리 「나」 화살표 (사장님 10-15 「1과 2」) — 위치는 화면에만 ──
 function meDistLine(k){ var p=PLACES[k]; if(!ME.pos||!p||k==="__me") return ""; var km=kmLL(ME.pos,[+p.lat,+p.lng]), t=km<1?Math.round(km*1000)+" m":(km<10?km.toFixed(1):Math.round(km))+" km", x="";
   if(km<=2){ var mi=Math.max(1,Math.round(km*1.3/4.5*60)); x=T(" · 걸어서 약 "+mi+"분"," · ~"+mi+" min walk"); }   // 직선×1.3, 시속 4.5km
-  else if(km<=50) x=' · <a href="#" class="medist" data-k="'+esc(k)+'" style="border:0;background:none;padding:0;margin:0;font-size:13px;color:#1a73e8;font-weight:800;text-decoration:underline">'+T("교통편 보기","See routes")+'</a>';
-  return '<div class="d" style="margin:0 0 4px;color:#1a73e8;font-weight:800">'+MPIMG("mi_pin",MIS)+T("나에게서 "+t,t+" from you")+x+'</div>'; }
+  else x=' · <a href="#" class="medist" data-k="'+esc(k)+'" style="border:0;background:none;padding:0;margin:0;font-size:13px;color:#1a73e8;font-weight:800;text-decoration:underline">'+T("교통편 보기","See routes")+'</a>';
+  return '<div class="d" style="margin:0 0 4px;color:#1a73e8;font-weight:800">'+MPIMG("mi_pin",MIS)+T("나에게서 "+t,t+" from you")+x+'</div>'; }   // 11-05 사장님 「가」: 50km 넘어도 「교통편 보기」 — 누르면 60km 넘는 곳은 기차·고속버스·자동차 안내(routePlan)
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("a.medist"); if(!a) return; e.preventDefault(); e.stopPropagation(); meLineTo(a.dataset.k); },true);
 // 나 ↔ 장소 거리선 — 둘 다 덮는 가장 자세한 약도에서 (같은 약도면 그대로)
 function meCover(a,b){ var best=null, bd=-1, ba=1e9; for(var id in CITY){ var q=CITY[id].bb; if(!q) continue; var ok=[a,b].every(function(p){ return p[0]>=q[0]&&p[0]<=q[2]&&p[1]>=q[1]&&p[1]<=q[3]; }); if(!ok) continue;
