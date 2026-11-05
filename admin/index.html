@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["karlog","노래방 이용 기록","곡별 재생·끝까지·시간·이용자 · 협회 보고용 CSV"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["gchat","가이드 대화방","손님↔가이드 대화 · 읽기 전용"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["forms","양식함","계약서·서식 내려받기 (PDF·워드)"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["gchat","가이드 대화방","손님↔가이드 대화 · 읽기 전용"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["forms","양식함","계약서·서식 내려받기 (PDF·워드)"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -124,9 +124,9 @@ function homeLoad(){ var P=$("pane"), td=kday(0);
 // ── 방문 — 내비 숫자는 토큰 경로(/ntapstats)에서, 허브 공개 화면은 단추로 ──
 function visitLoad(){ var P=$("pane"), td=kday(0);
   P.innerHTML='<div class="card"><b>방문 요약 — 앱 vs 홈피</b><div class="msg">앱 = 투어앱(navi.moneypuzzle.co.kr), 열릴 때 1번 · 홈피 = moneypuzzle.co.kr. 서로 다른 방문입니다 (로봇·사장님 기기 뺌).</div><div id="vsplit"><div class="msg">불러오는 중…</div></div></div>'
-    +'<div class="card"><b>노래방 사이트 방문 (karaoke.moneypuzzle.co.kr)</b><div class="msg">세션마다 1번 · 로봇·사장님 기기 뺌 (10-31부터)</div><div id="kvsp"><div class="msg">불러오는 중…</div></div></div>'+'<div class="card"><b>투어앱 방문 (최근 30일)</b><div class="msg">앱이 열릴 때 1번 셉니다. 기기 수 = 그날 처음 연 기기 (사장님 기기 제외)</div><div class="tw"><table id="vt"></table></div></div>'
+    ""+'<div class="card"><b>투어앱 방문 (최근 30일)</b><div class="msg">앱이 열릴 때 1번 셉니다. 기기 수 = 그날 처음 연 기기 (사장님 기기 제외)</div><div class="tw"><table id="vt"></table></div></div>'
     +'<div class="card"><b>허브 방문 통계 화면 (자세히)</b><div class="row" style="margin-top:8px"><a href="'+HUB+'/hstats" target="_blank" rel="noopener"><button class="g">홈페이지 방문 (/hstats)</button></a><a href="'+HUB+'/stats" target="_blank" rel="noopener"><button class="g">투자앱 방문 (/stats)</button></a></div><div class="msg">※ /stats 는 투자앱(브리핑·주식·코인) 통계 — 투어앱과 다른 서비스입니다.</div></div>';
-  hc("?s=kara&n=0&geo=1").then(function(K){ $("kvsp").innerHTML='<div class="tiles">'+tile((K.total||0).toLocaleString(),"누적 방문")+tile((K.uniq||0).toLocaleString(),"누적 방문자")+tile((K.tuniq||0).toLocaleString(),"오늘 방문자")+tile((K.today||0).toLocaleString(),"오늘 방문")+tile((K.bot||0).toLocaleString(),"로봇 (안 셈)")+'</div>'; }).catch(function(){ $("kvsp").innerHTML='<div class="msg err">불러오지 못했습니다 (허브 /hc?s=kara)</div>'; });   // 노래방 방문 (10-31)
+  if($("kvsp")) hc("?s=kara&n=0&geo=1").then(function(K){ $("kvsp").innerHTML='<div class="tiles">'+tile((K.total||0).toLocaleString(),"누적 방문")+tile((K.uniq||0).toLocaleString(),"누적 방문자")+tile((K.tuniq||0).toLocaleString(),"오늘 방문자")+tile((K.today||0).toLocaleString(),"오늘 방문")+tile((K.bot||0).toLocaleString(),"로봇 (안 셈)")+'</div>'; }).catch(function(){ $("kvsp").innerHTML='<div class="msg err">불러오지 못했습니다 (허브 /hc?s=kara)</div>'; });   // 노래방 방문 (10-31)
   Promise.all([api("/ntapstats?from="+kday(-29)+"&to="+td),hc("?sum=1").catch(function(){ return null; })]).then(function(a){
     var j=a[0], H=a[1], appTd=(j.days.filter(function(d){ return d.d===td; })[0]||{}).vis||0;
     $("vsplit").innerHTML='<div class="tiles">'
@@ -407,18 +407,18 @@ var PAID_HTML='<div class="card"><div class="row">'
  +'<select id="pper" onchange="paidPer()"><option value="0">오늘</option><option value="6" selected>최근 7일</option><option value="29">최근 30일</option><option value="89">최근 90일</option><option value="c">직접 고르기</option></select>'
  +'<input type="date" id="pfr"> ~ <input type="date" id="pto"> <button onclick="paidLoad()">보기</button>'
  +'<label class="sub"><input type="checkbox" id="ptst" onchange="paidLoad()"> 시험 자료</label><button onclick="xlsPaid()">엑셀 받기</button></div>'
- +'<div class="msg">누름 = 그림을 눌러 카드·노래방을 연 수 · 나감 = Steam·게임·넷플릭스·유튜브 사이트로 나간 수 · 사용 시간 = 열려 있던 시간 + 나갔다 돌아올 때까지</div>'
+ +'<div class="msg">누름 = 그림을 눌러 카드를 연 수 · 나감 = Steam·게임·넷플릭스·유튜브 사이트로 나간 수 · 사용 시간 = 열려 있던 시간 + 나갔다 돌아올 때까지</div>'
  +'<div id="psum"></div></div><div class="card"><b>구별</b><div class="tw"><table id="pgu"></table></div></div><div class="card"><b>날짜별</b><div class="tw"><table id="pday"></table></div></div>';
 var PD=null, PGU=null;
 function paidPer(){ var v=$("pper").value; if(v==="c") return; $("pto").value=kday(0); $("pfr").value=kday(-(+v)); paidLoad(); }
 function paidInit(){ $("pto").value=kday(0); $("pfr").value=kday(-6); paidLoad(); }
 function paidGu(){ if(PGU) return Promise.resolve(PGU); return fetch("../data/gu_seoul.json",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(d){ PGU={}; ["pcb","kara"].forEach(function(t){ var o=d[t]||{}; for(var c in o) PGU[c]=o[c].g; }); return PGU; }).catch(function(){ PGU={}; return PGU; }); }
-var PKIND={pcb:"PC방",kara:"노래방",netflixth:"넷플릭스 상영관",youtubeth:"유튜브 상영관"};
+var PKIND={pcb:"PC방",netflixth:"넷플릭스 상영관",youtubeth:"유튜브 상영관"};   // 11-05 노래방 뺌 (사장님)
 function pkOf(k){ var m=/^(pcb|kara)_([a-z]+)$/.exec(k); if(m) return {t:m[1],g:(PGU&&PGU[m[2]])||m[2]}; if(PKIND[k]) return {t:k,g:"중구"}; return {t:"기타",g:""}; }
 function hms(s){ s=Math.round(s||0); var h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+"시간 ":"")+(h||m?m+"분 ":"")+x+"초"; }
 function paidAgg(){ var byK={}, byG={}, byD=[], tot={o:0,x:0,s:0};
   PD.days.forEach(function(d){ var row={d:d.d}; Object.keys(PKIND).forEach(function(t){ row[t]=[0,0,0]; });
-    for(var k in d.items){ var v=d.items[k], q=pkOf(k); if(!row[q.t]) row[q.t]=[0,0,0];
+    for(var k in d.items){ var v=d.items[k], q=pkOf(k); if(q.t==="kara") continue; if(!row[q.t]) row[q.t]=[0,0,0];
       [0,1,2].forEach(function(i){ row[q.t][i]+=v[i]; }); var a=byK[q.t]||(byK[q.t]=[0,0,0]); [0,1,2].forEach(function(i){ a[i]+=v[i]; });
       var gk=q.g+"|"+q.t, b=byG[gk]||(byG[gk]={g:q.g,t:q.t,v:[0,0,0]}); [0,1,2].forEach(function(i){ b.v[i]+=v[i]; }); tot.o+=v[0]; tot.x+=v[1]; tot.s+=v[2]; }
     byD.push(row); });
@@ -827,7 +827,7 @@ function pdList(){ var P=$("pane"), c=PD.cost;
    +'<div class="msg">앱 「체험·입장권」에 이 순서대로 나옵니다. 판매 중지는 앱에서 안 보이고, 준비 중(예시)은 보이지만 주문을 받지 않습니다. 한국어로만 쓰면 저장할 때 AI 가 6개 언어로 번역합니다. 이번 달 번역 비용: '+(c?won(c.krw)+' · '+c.calls+'회':'0원')+(PD.stop?' / 상한 '+won(PD.stop):'')+'</div>'
    +'<div class="inv" style="margin-top:10px"><b>고정 상품 8개 (토스 카드사 심사 중)</b> — '+(PD.lock?'<span class="pdtag pdlock">심사 중 — 수정 잠금</span> 이름·분류·가격·판매 상태가 바뀌면 재심사가 걸려 잠가 두었습니다. <button class="g" onclick="pdLock(0)">잠금 풀기</button>':'<span class="pdtag" style="background:#c92a2a">잠금 풀림</span> 고정 상품을 고칠 수 있습니다. <button onclick="pdLock(1)">다시 잠그기</button>')+'</div>'
    +(PD.r2?'':'<div class="msg err">사진 저장소(R2)가 아직 연결되지 않아 사진을 올릴 수 없습니다. 사진 없이 저장은 됩니다.</div>')
-   +kcHtml();
+   ;   // 노래방 곡 이용권 가격표 뺌 (사장님 11-05)
   h+=PD.items.map(function(x){ var th=pdThumb(x), lk=pdLocked(x);
     return '<div class="pdl">'+(th?'<img src="'+esc(th)+'" alt="" loading="lazy">':'<span class="pdn"></span>')+'<div class="pdx"><b>'+esc(pdName(x))+'</b>'
       +'<div class="sub"><span class="pdtag" style="background:'+(PD_STC[x.st]||"#868e96")+'">'+esc(PD_ST[x.st]||x.st)+'</span>'+(x.fixed?'<span class="pdtag pdlock">고정'+(lk?' · 심사 중 — 수정 잠금':'')+'</span>':'')+(x.trw?'<span class="pdtag" style="background:#c92a2a">번역 필요</span>':'')
