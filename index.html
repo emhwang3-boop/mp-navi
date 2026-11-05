@@ -549,9 +549,9 @@ function gRate(q,ps,it){ it=it||[];
     it.forEach(function(x){ var nb=spinNorm(x.name), best=null, bd=1e9; if(!nb) return;
       g.forEach(function(p){ var a=spinNorm(p.name); if(!a) return; var d=kmLL([+x.y,+x.x],[+p.lat,+p.lng]); if(d>0.2||d>=bd) return;
         if(a.indexOf(nb)>=0||nb.indexOf(a)>=0||(nb.length>=3&&a.slice(0,3)===nb.slice(0,3))){ bd=d; best=p; } });
-      if(best){ best._u=1; if(best.rating){ x.rating=+best.rating; x.n=+best.n||0; } } });
+      if(best){ best._u=1; if(best.rating){ x.rating=+best.rating; x.n=+best.n||0; } if(best.oh) x.oh=best.oh; if(best.gt) x.gt=best.gt; } });   // 영업시간·종류도 (11-06)
     // 카카오에 없는 구글 장소도 더한다 — 카카오가 한 상호만 잔뜩 줄 때(「헤어샵」→ 준오헤어만, 10-23). 별점 있는 곳만, 내 위치 40km 안
-    var add=g.filter(function(p){ return !p._u&&p.rating&&(!ps||kmLL(ps,[+p.lat,+p.lng])<=40); }).map(function(p){ return {gid:p.id,name:p.name,addr:p.addr,name_en:p.name_en||undefined,addr_en:p.addr_en||undefined,x:p.lng,y:p.lat,rating:+p.rating,n:+p.n||0,cat:"",_l:LANG,dist:ps?Math.round(kmLL(ps,[+p.lat,+p.lng])*1000):null}; });
+    var add=g.filter(function(p){ return !p._u&&p.rating&&(!ps||kmLL(ps,[+p.lat,+p.lng])<=40); }).map(function(p){ return {gid:p.id,name:p.name,addr:p.addr,name_en:p.name_en||undefined,addr_en:p.addr_en||undefined,x:p.lng,y:p.lat,rating:+p.rating,n:+p.n||0,cat:"",_l:LANG,dist:ps?Math.round(kmLL(ps,[+p.lat,+p.lng])*1000):null,oh:p.oh,gt:p.gt}; });   // oh·gt = 구글 영업시간·종류 (11-06)
     it=it.concat(add); if(LANG==="ko"||!add.length) return it;
     return fetch(HUB+"/gplace?all=1&lang="+encodeURIComponent(LANG)+"&q="+encodeURIComponent(q)+(ps?"&lat="+ps[0].toFixed(5)+"&lng="+ps[1].toFixed(5):"")).then(function(r){ return r.json(); }).then(function(j2){ var m={};   // 외국어 화면: 더한 곳 이름을 그 언어로
       ((j2&&j2.ok&&j2.items)||[]).forEach(function(p){ m[p.id]=p; }); add.forEach(function(x){ var p=m[x.gid]; if(p){ x.name_en=p.name; x.addr_en=p.addr; } }); return it; }).catch(function(){ return it; });
@@ -633,7 +633,7 @@ function spinShow0(x){ var lat=+x.y, lng=+x.x, nb=spinNorm(x.name);
   for(var k in PLACES){ if(k.charAt(0)==="_") continue; var p=PLACES[k], a=spinNorm(p.ko); if(a&&(a===nb||a.indexOf(nb)>=0||nb.indexOf(a)>=0)&&kmLL([lat,lng],[+p.lat,+p.lng])<0.05){   // 그림 있는 곳
       var id0=meBest(+p.lat,+p.lng)||NAVI_ROOT; if(DET){ try{ _nm.setCenter(new naver.maps.LatLng(+p.lat,+p.lng)); }catch(e){} } else spinGo(id0===NAVI_ROOT?"kr":id0,+p.lat,+p.lng,null); placeShow(k); pinMark(k); return; } }
   try{ ntap("sp_"+spinCat(x.cat),"search_pin"); }catch(e){}
-  PLACES.__pin={own:x.own?1:0,ko:x.name,en:x.name_en||x.name,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",lat:lat,lng:lng,tel:x.tel||"",cat:x.cat||"",cat_en:x.cat_en||"",_l:x._l||(x.name_en?LANG:"ko"),LL:x.LL?JSON.parse(JSON.stringify(x.LL)):undefined};   // _l·LL = 언어별 이름 (lang.js, 10-18)
+  PLACES.__pin={own:x.own?1:0,ko:x.name,en:x.name_en||x.name,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",lat:lat,lng:lng,tel:x.tel||"",cat:x.cat||"",cat_en:x.cat_en||"",_l:x._l||(x.name_en?LANG:"ko"),LL:x.LL?JSON.parse(JSON.stringify(x.LL)):undefined,oh:Array.isArray(x.oh)?x.oh:undefined,gt:Array.isArray(x.gt)?x.gt:undefined};   // _l·LL = 언어별 이름 (lang.js, 10-18) · oh·gt = 구글 영업시간·종류 → 내 여행에 담을 때 같이 (11-06)
   if(DET&&window.naver&&naver.maps&&_nm){ var ll=new naver.maps.LatLng(lat,lng); _nm.setCenter(ll); if(_nm.getZoom()<16) _nm.setZoom(16);   // 자세한 지도는 네이버 마커 그대로
     if(_spm) _spm.setMap(null); _spm=new naver.maps.Marker({position:ll,map:_nm,title:x.name}); naver.maps.Event.addListener(_spm,"click",spinCard); spinCard(); return; }
   var cur=meGeoFrac(VIEW,lat,lng), b=CITY[VIEW]&&CITY[VIEW].bb, id;
@@ -1691,15 +1691,15 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
-<script src="trip.js?v=1105aip"></script>
-<script src="gift.js?v=1028gift"></script>
-<script src="near.js?v=1105dec"></script>
-<script src="shop.js?v=1105dec"></script>
+<script src="trip.js?v=1106lv"></script>
+<script src="gift.js?v=1106lv"></script>
+<script src="near.js?v=1106lv"></script>
+<script src="shop.js?v=1106lv"></script>
 <script src="tosspay.js?v=1105aip"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}
 /* 손님 「내 예약」 링크로 열렸으면 통역·길안내 첫 화면의 그 예약 카드를 연다 (2026-11-05) */try{ if(window.__mpTdone&&window.NEAR&&window.NEAR.tdone) window.NEAR.tdone(window.__mpTdone); }catch(e){}</script>
-<script src="reco.js?v=1105aip"></script>
+<script src="reco.js?v=1106lv"></script>
 <script src="gu.js?v=1105mu"></script>
 <script src="citytour.js?v=1024icons"></script>
 <script src="pass.js?v=1024gmatch"></script>
@@ -1839,7 +1839,8 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 </script>
 <script src="lang.js?v=1026op"></script>
 <script src="interp.js?v=1025qs"></script>
-<script src="chat.js?v=1105aip"></script>   <!-- 손님 ↔ 가이드 대화방 · 말풍선 「가이드 대화」 탭 (11-05) — interp.js 뒤에 -->
+<script src="chat.js?v=1106lv"></script>   <!-- 손님 ↔ 가이드 대화방 · 말풍선 「가이드 대화」 탭 (11-05) — interp.js 뒤에 -->
+<script src="bell.js?v=1106lv"></script>   <!-- 🔔 앱 알림함 — 머리줄 💬 옆 종 · 알림 판(알림 받기·소리·진동·목록) (11-06) — chat.js 뒤에 -->
 <script src="manual.js?v=1105m"></script>
 <script src="karaoke.js?v=1105a"></script>
 <script src="tvid.js?v=1105j3"></script>
