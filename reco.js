@@ -64,7 +64,7 @@ function L(){ return LANG!=="ko"; }   // 외국어 화면 (10-18)
 function RM(f){ f(); window._RR={f:f}; }   // #res 안내 — 언어를 바꾸면 lang.js 가 그 자리에서 다시 (10-18)
 function pass(){ try{ return (window.TRIP&&TRIP.hasPass)?TRIP.hasPass():(typeof window.hasPass==="function"?window.hasPass():true); }catch(e){ return true; } }
 // 첫 화면 「추천받기」 단추는 뺐다 (사장님 11-05) — 엔진은 아래 「AI와 일정짜기」 칩 화면이 쓴다. 칩은 편의시설 칩 자리(index.html #gfchips 순서 ai=3)
-var AIC6={ko:"AI일정짜기",en:"DIY Trip",ja:"DIY旅行",zhs:"自助游",zht:"自助旅行",es:"Viaje a tu aire"};   // 11-06 사장님 — 옛 「AI와 일정짜기」 · 한국어 화면엔 한국어 이름만
+var AIC6={ko:"AI와 자유여행",en:"DIY Trip",ja:"DIY旅行",zhs:"自助游",zht:"自助旅行",es:"Viaje a tu aire"};   // 11-06 사장님 — 옛 「AI와 일정짜기」 · 한국어 화면엔 한국어 이름만
 var AID6={ko:"하고 싶은 것을 적으면 AI가 장소·식당·숙소를 골라 날짜별 일정을 짜 드려요. 교통편과 숙소·항공권 예약까지 한 화면에서 이어서 할 수 있어요.",en:"Tell us what you’d like to do and AI picks places, restaurants and lodging and builds a day-by-day plan. Transport and lodging/flight booking continue on the same screen.",ja:"やりたいことを書くと、AIが場所・食事・宿を選んで日ごとの旅程を作ります。交通手段や宿・航空券の予約まで同じ画面で続けられます。",zhs:"写下想做的事，AI 会挑选地点、餐厅和住宿，按天排好行程。交通以及住宿、机票预订也能在同一页面接着完成。",zht:"寫下想做的事，AI 會挑選地點、餐廳和住宿，按天排好行程。交通以及住宿、機票預訂也能在同一頁面接著完成。",es:"Escribe lo que te gustaría hacer y la IA elige lugares, restaurantes y alojamiento y arma un plan día a día. El transporte y las reservas de alojamiento y vuelos siguen en la misma pantalla."};   // 첫 화면 맨 위 설명 (사장님 11-06 확인 초안)
 function btn(){ css(); var o=$("recob"); if(o) o.remove(); var box=$("gfchips"); if(!box) return; var c=box.querySelector(".nrchip.ai");
   if(!c){ box.insertAdjacentHTML("beforeend",'<button type="button" class="nrchip ai" data-aip="open"></button>'); c=box.querySelector(".nrchip.ai"); c.onclick=function(e){ e.preventDefault(); apOpen(); }; }
