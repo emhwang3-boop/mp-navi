@@ -4,7 +4,8 @@
  *  · 방 하나 = 예약 하나. 자유 가이드(gbk) 방 맨 위 = 예약 내용 · 대화 · 「투어 완료」(끝나는 시각 뒤 켜짐) · 완료 뒤 같은 방에서 별점·후기
  *    패키지 방 = 가이드가 수락한 순간 ~ 그날 끝(그 뒤 읽기 전용) · 자동 번역 없음(사장님 「가이드와 대화인데 자동번역은 빼」)
  *  · 손님 = 예약한 폰의 예약 토큰(localStorage mpv_gbk_v1, near.js 와 같이 씀) · 가이드 = 구글·애플 로그인(pg.js mpv_pg_sess) 이메일이 등록 가이드 이메일과 같으면
- *  · 알림: 손님은 「알림 받기」를 누르면 웹 푸시(sw.js) — 앱이 꺼져 있어도. 허브가 안 되면 메일·문자로
+ *  · 알림: 손님은 「알림 받기」를 누르면 웹 푸시(sw.js) — 앱이 꺼져 있어도. 허브가 안 되면 메일로(11-06 손님 문자 끔)
+ *    11-06: 「알림 받기」 = 머리줄 🔔 알림함(bell.js)의 「알림 받기」와 같은 상태 · 새 글(안내 줄 포함)이 오면 🔔 목록에 한 줄(BELL.chat)
  *  · 허브: POST /guide/chat (손님) · POST /guide/gme (가이드) · GET /guide/chat/vapid · POST /guide/booking/done · POST /guide/review
  *  · 주소: ?gchat=<예약 토큰>(그 방) · ?gchat=1(말풍선 창) · ?gme=1(가이드 화면)
  */
@@ -68,7 +69,7 @@ var TX={
  rvThx:T6("후기를 남겨 주셔서 감사합니다.","Thank you for your review.","レビューありがとうございました。","感谢您的评价。","感謝您的評價。","Gracias por tu reseña."),
  push:T6("🔔 새 메시지 알림 받기","🔔 Get new-message alerts","🔔 新着メッセージの通知を受け取る","🔔 接收新消息通知","🔔 接收新訊息通知","🔔 Recibir avisos de mensajes"),
  pushOk:T6("🔔 알림 받는 중","🔔 Alerts on","🔔 通知オン","🔔 已开启通知","🔔 已開啟通知","🔔 Avisos activados"),
- pushNo:T6("이 폰에서는 알림을 켤 수 없습니다. 새 메시지는 메일·문자로 알려 드립니다.","Alerts can't be turned on on this phone. We'll tell you about new messages by email or text.","この端末では通知をオンにできません。新着メッセージはメール・SMSでお知らせします。","此手机无法开启通知。新消息将通过邮件或短信通知您。","此手機無法開啟通知。新訊息將透過電郵或簡訊通知您。","No se pueden activar avisos en este teléfono. Te avisaremos por correo o SMS."),
+ pushNo:T6("이 폰에서는 알림을 켤 수 없습니다. 새 메시지는 메일로 알려 드립니다.","Alerts can't be turned on on this phone. We'll tell you about new messages by email.","この端末では通知をオンにできません。新着メッセージはメールでお知らせします。","此手机无法开启通知。新消息将通过邮件通知您。","此手機無法開啟通知。新訊息將透過電郵通知您。","No se pueden activar avisos en este teléfono. Te avisaremos de los mensajes nuevos por correo."),   // 11-06 손님 문자 끔
  err:T6("잠시 뒤 다시 해 주세요.","Please try again shortly.","しばらくしてからもう一度お試しください。","请稍后再试。","請稍後再試。","Inténtalo de nuevo en un momento."),
  load:T6("불러오는 중…","Loading…","読み込み中…","加载中…","載入中…","Cargando…"),
  me:T6("나","Me","自分","我","我","Yo"),
@@ -139,7 +140,7 @@ function panel(){ stopPoll(); X.view="list"; X.room=null; var b=shell();
 function loadLists(){ var tks=bks().map(function(x){ return x.tk; }), s=sess(), ps=[];
   ps.push(tks.length||s?post("/guide/chat",{op:"rooms",tks:tks,sess:s||undefined}).then(function(j){ X.rooms=j&&j.ok?j.items:[]; (X.rooms||[]).forEach(function(r){ try{ if(window.NEARBK&&!NEARBK.get(r.oid)) NEARBK.put(NEARBK.from(r,r.tk)); }catch(e){} }); }).catch(function(){ X.rooms=X.rooms||[]; }):Promise.resolve(X.rooms=[]));
   if(isG()||X.gwant) ps.push(gMe());
-  return Promise.all(ps).then(function(){ UNREAD.c=(X.rooms||[]).filter(shown).reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0); UNREAD.g=X.gme?X.gme.items.reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0):0; dotPaint(); }); }
+  return Promise.all(ps).then(function(){ UNREAD.c=(X.rooms||[]).filter(shown).reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0); UNREAD.g=X.gme?X.gme.items.reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0):0; dotPaint(); bellRooms(X.rooms); }); }
 function gMe(){ var s=sess(); if(!s){ X.gme=null; X.gerr="login"; return Promise.resolve(); }
   return post("/guide/gme",{sess:s,op:"me"}).then(function(j){ if(j&&j.ok){ X.gme=j; X.gerr=""; ls("mpv_isguide","1"); } else { X.gme=null; X.gerr=(j&&j.err)||"x"; if(j&&(j.err==="notguide"||j.err==="sess")) ls("mpv_isguide",null); if(j&&j.err==="sess") ls("mpv_pg_sess",null); } }).catch(function(){ X.gerr="net"; }); }
 function avHtml(g){ return g&&g.photo?'<img class="av" src="'+HB+'/guide/photo?id='+encodeURIComponent(g.id)+'" alt="">':'<span class="av">🧭</span>'; }
@@ -210,8 +211,9 @@ function rvForm(){ var s=""; for(var i=1;i<=5;i++) s+='<button type="button" dat
   return '<div class="chdone">✓ '+esc(L(TX.doneOk))+'</div><div class="chlbl" style="margin-top:6px">'+esc(L(TX.rvT))+'</div><div class="chstars">'+s+'</div>'
     +'<textarea class="chin" data-chrvt="1" maxlength="500" rows="3" placeholder="'+esc(L(TX.rvTx))+'">'+esc(X.rvText||"")+'</textarea><input class="chin" data-chrvn="1" maxlength="30" placeholder="'+esc(L(TX.rvNm))+'" value="'+esc(X.rvName||"")+'">'
     +'<button type="button" class="chgo" data-chrv="1">'+esc(L(TX.rvGo))+'</button><div class="cherr" data-chrve="1"></div>'; }
+function bellOn(){ try{ return !!(window.BELL&&BELL.isOn()); }catch(e){ return false; } }
 function pushBtn(){ if(!("serviceWorker" in navigator)||!("PushManager" in window)||!window.Notification) return ""; if(!X.vapid) return "";
-  var on=X.room&&X.room.rm&&X.room.rm.push&&Notification.permission==="granted";
+  var on=bellOn();   // 🔔 알림함 「알림 받기」와 같은 상태 (11-06)
   return '<button type="button" class="chgo g2" data-chpush="1"'+(on?' disabled':'')+'>'+esc(L(on?TX.pushOk:TX.push))+'</button><div class="chsmall" data-chpe="1"></div>'; }
 function wireTools(t){ var o=X.room, sm=o.sum||{};
   var d=t.querySelector("[data-chdone]"); if(d){ if(d.disabled&&sm.end>Date.now()){ var w=sm.end-Date.now()+400; if(w<2147483000){ if(X.dtm) clearTimeout(X.dtm); X.dtm=setTimeout(function(){ if(!document.body.contains(d)) return; d.disabled=false; var n=t.querySelector("[data-chdw]"); if(n) n.textContent=L(TX.doneN); },w); } }   // 끝나는 시각이 지나면 다시 그리지 않아도 켜진다
@@ -223,7 +225,9 @@ function wireTools(t){ var o=X.room, sm=o.sum||{};
   var rb=t.querySelector("[data-chrv]"); if(rb) rb.onclick=function(){ var e=t.querySelector("[data-chrve]"); if(!X.stars){ e.textContent=L(TX.rvPick); return; } rb.disabled=true;
     post("/guide/review",{token:o.info.review,stars:X.stars,text:(t.querySelector("[data-chrvt]").value||"").slice(0,500),name:(t.querySelector("[data-chrvn]").value||"").slice(0,30)}).then(function(j){
       if(j&&(j.ok||j.err==="used")){ o.info.reviewed=true; try{ if(window.NEARBK) NEARBK.put({oid:sm.oid,rvd:true}); }catch(z){} paintTools(); return; } rb.disabled=false; e.textContent=L(TX.err); }).catch(function(){ rb.disabled=false; e.textContent=L(TX.err); }); };
-  var pb=t.querySelector("[data-chpush]"); if(pb) pb.onclick=function(){ pushOn(pb,t.querySelector("[data-chpe]")); }; }
+  var pb=t.querySelector("[data-chpush]"); if(pb) pb.onclick=function(){ var m=t.querySelector("[data-chpe]"); pb.disabled=true;   // = 🔔 「알림 받기」 켜기 (11-06)
+    (window.BELL?BELL.turnOn():Promise.resolve({ok:false})).then(function(r){ if(r&&r.ok){ pb.textContent=L(TX.pushOk); return; } pb.disabled=false; if(m) m.textContent=r&&r.why==="blocked"?L(BLK):L(TX.pushNo); }); }; }
+var BLK=T6("브라우저 설정에서 이 사이트 알림을 허용해 주세요","Please allow notifications for this site in your browser settings","ブラウザの設定でこのサイトの通知を許可してください","请在浏览器设置中允许此网站的通知","請在瀏覽器設定中允許此網站的通知","Permite las notificaciones de este sitio en la configuración del navegador");
 function sendMsg(ta,bt){ var v=String(ta.value||"").trim(); if(!v||X.busy) return; X.busy=true; bt.disabled=true; var ver=X.ver;
   api("send",{t:v.slice(0,500)}).then(function(j){ X.busy=false; bt.disabled=false; if(X.ver!==ver) return;
     if(j&&j.ok){ ta.value=""; ta.style.height=""; if(j.m&&j.m.s>X.last){ X.msgs.push(j.m); X.last=j.m.s; } paintRoom(false); var bd=body(); if(bd) bd.scrollTop=bd.scrollHeight; return; }
@@ -232,16 +236,30 @@ function sendMsg(ta,bt){ var v=String(ta.value||"").trim(); if(!v||X.busy) retur
 
 // ── 웹 푸시 (손님) — 누르면 그때 권한을 묻고 sw.js 를 단다. 알림은 「새 메시지」만(내용은 안 실음) ──
 function b64uToU8(s){ s=s.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; var r=atob(s), u=new Uint8Array(r.length); for(var i=0;i<r.length;i++) u[i]=r.charCodeAt(i); return u; }
-function pushOn(btn,msg){ btn.disabled=true;
-  Notification.requestPermission().then(function(p){ if(p!=="granted") throw new Error("deny");
-    return navigator.serviceWorker.register("/sw.js?l="+encodeURIComponent(window.LANG||"en"),{scope:"/"}); })
-  .then(function(){ return navigator.serviceWorker.ready; })
-  .then(function(reg){ return reg.pushManager.getSubscription().then(function(s){ return s||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uToU8(X.vapid)}); }); })
-  .then(function(sub){ var tks=X.room&&X.room.side==="c"?[X.room.tk]:[]; bks().forEach(function(x){ if(tks.indexOf(x.tk)<0) tks.push(x.tk); });
-    return Promise.all(tks.map(function(tk){ return post("/guide/chat",{op:"push",tk:tk,ep:sub.endpoint}).catch(function(){}); })); })
-  .then(function(){ ls("mpv_chpush","1"); if(X.room&&X.room.rm) X.room.rm.push=true; btn.textContent=L(TX.pushOk); })
-  .catch(function(){ btn.disabled=false; if(msg) msg.textContent=L(TX.pushNo); }); }
-fetch(HB+"/guide/chat/vapid",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ X.vapid=j&&j.key&&/^[A-Za-z0-9_-]{80,100}$/.test(j.key)?j.key:""; }).catch(function(){});
+// 11-06: 권한 묻기는 🔔(bell.js turnOn) 한 곳 — 여기는 허락된 뒤 구독·방마다 주소 등록(pushSub)과 끄기(pushUnsub)만
+function pushSub(){ if(!("serviceWorker" in navigator)) return Promise.reject(new Error("nosw"));
+  return navigator.serviceWorker.register("/sw.js?l="+encodeURIComponent(window.LANG||"en"),{scope:"/"}).then(function(){ return navigator.serviceWorker.ready; })
+  .then(function(reg){ return VAPID_P.then(function(){ if(!X.vapid||!reg.pushManager) return null; return reg.pushManager.getSubscription().then(function(s){ return s||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uToU8(X.vapid)}); }); }); })
+  .then(function(sub){ if(!sub) return null; var tks=X.room&&X.room.side==="c"?[X.room.tk]:[]; bks().forEach(function(x){ if(tks.indexOf(x.tk)<0) tks.push(x.tk); });
+    return Promise.all(tks.map(function(tk){ return post("/guide/chat",{op:"push",tk:tk,ep:sub.endpoint}).then(function(){ PUSHED[tk]=1; }).catch(function(){}); })).then(function(){ ls("mpv_chpush","1"); if(X.room&&X.room.rm) X.room.rm.push=true; return sub; }); }); }
+function pushUnsub(){ ls("mpv_chpush",null); PUSHED={}; if(!("serviceWorker" in navigator)) return Promise.resolve();
+  return navigator.serviceWorker.getRegistration("/").then(function(reg){ return reg&&reg.pushManager?reg.pushManager.getSubscription():null; }).then(function(s){ return s?s.unsubscribe():null; }).catch(function(){}); }
+// 🔔 켜진 폰인데 허브에 주소가 없는 방(새 예약 등) — 그 방에만 주소 등록 (허브 POST /guide/chat op:push, 화면당 방마다 한 번)
+var PUSHED={};
+function syncPush(rs){ if(!bellOn()||!(rs&&rs.length)||!("serviceWorker" in navigator)) return; var need=rs.filter(function(r){ return r.tk&&r.room&&!r.room.push&&!PUSHED[r.tk]&&shown(r); }); if(!need.length) return;
+  need.forEach(function(r){ PUSHED[r.tk]=1; });
+  navigator.serviceWorker.getRegistration("/").then(function(reg){ return reg&&reg.pushManager?reg.pushManager.getSubscription():null; }).then(function(sub){ if(!sub) return;
+    need.forEach(function(r){ post("/guide/chat",{op:"push",tk:r.tk,ep:sub.endpoint}).catch(function(){}); }); }).catch(function(){}); }
+// 🔔 알림함 — 방마다 메시지 수(n)를 기억해 두었다가 늘었고 안 읽은 글이 있으면 한 줄 (처음 본 방은 수만 적어 둔다 — 예약 순간 안내 줄로는 안 뜨게)
+var BSEEN=(function(){ try{ return JSON.parse(ls("mpv_bellseen")||"{}")||{}; }catch(e){ return {}; } })();
+function roomLbl(r){ var o={}; ["ko","en","ja","zhs","zht","es"].forEach(function(l){ var g=r.g, nm="";
+    if(r.kind==="pkg") nm=r.pname||""; else if(g) nm=l==="ko"?(g.name||""):l==="ja"?(g.name_ja||g.name_en||g.name||""):(l==="zhs"||l==="zht")?(g.name_zh||g.name_en||g.name||""):(g.name_en||g.name||""); o[l]=nm; }); return o; }
+function bellRooms(rs){ if(!rs) return; var ch=false; syncPush(rs);
+  rs.filter(shown).forEach(function(r){ var k=r.tk, n=(r.room&&r.room.n)||0, u=(r.room&&r.room.unread)||0; if(!k) return;
+    if(BSEEN[k]==null){ BSEEN[k]=n; ch=true; return; }
+    if(n>BSEEN[k]){ var inRoom=X.view==="room"&&X.room&&X.room.tk===k&&box(); if(u>0&&!inRoom&&window.BELL) try{ BELL.chat({tk:k,n:Math.min(u,n-BSEEN[k]),lb:roomLbl(r)}); }catch(e){} BSEEN[k]=n; ch=true; } });
+  if(ch) ls("mpv_bellseen",JSON.stringify(BSEEN)); }
+var VAPID_P=fetch(HB+"/guide/chat/vapid",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ X.vapid=j&&j.key&&/^[A-Za-z0-9_-]{80,100}$/.test(j.key)?j.key:""; }).catch(function(){});
 
 // ── 말풍선 빨간 점 — 안 읽은 메시지 (손님 방 + 가이드 화면) · 1분마다 · 화면에 돌아오면 바로 ──
 function dotPaint(){ var hb=document.getElementById("hit"); if(!hb) return; var n=UNREAD.c+UNREAD.g, d=hb.querySelector(".chdot");
@@ -249,7 +267,7 @@ function dotPaint(){ var hb=document.getElementById("hit"); if(!hb) return; var 
   [].forEach.call(document.querySelectorAll('.chtabs [data-cht="chat"]'),function(t){ var e=t.querySelector(".n"); if(n>0){ if(!e){ e=document.createElement("span"); e.className="n"; t.appendChild(e); } e.textContent=n; } else if(e) e.remove(); }); }
 var dotT=null; function dotSoon(){ if(dotT) return; dotT=setTimeout(function(){ dotT=null; dot(); },1500); }
 function dot(){ var tks=bks().map(function(x){ return x.tk; }), s=sess(), ps=[];
-  if(tks.length) ps.push(post("/guide/chat",{op:"rooms",tks:tks}).then(function(j){ if(j&&j.ok){ X.rooms=j.items; UNREAD.c=j.items.filter(shown).reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0); } }).catch(function(){}));
+  if(tks.length) ps.push(post("/guide/chat",{op:"rooms",tks:tks}).then(function(j){ if(j&&j.ok){ X.rooms=j.items; UNREAD.c=j.items.filter(shown).reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0); bellRooms(j.items); } }).catch(function(){}));
   else UNREAD.c=0;
   if(isG()) ps.push(gMe().then(function(){ UNREAD.g=X.gme?X.gme.items.reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0):0; }));
   else UNREAD.g=0;
@@ -268,5 +286,5 @@ hook(); setTimeout(function(){ if(has()) dot(); },1200);
   else if(g) setTimeout(guide,900); })();
 function guide(){ X.gwant=true; panel(); }
 navigator.serviceWorker&&navigator.serviceWorker.addEventListener&&navigator.serviceWorker.addEventListener("message",function(e){ if(e.data&&e.data.mp==="chat") panel(); });
-window.CHAT={panel:panel,room:room,guide:guide,dot:dot,has:has,close:close};
+window.CHAT={panel:panel,room:room,guide:guide,dot:dot,has:has,close:close,pushSub:pushSub,pushUnsub:pushUnsub,repaint:function(){ try{ if(X.view==="room"&&box()) paintTools(); }catch(e){} }};   // pushSub·pushUnsub·repaint = 🔔 알림함(bell.js)과 같은 상태 (11-06)
 })();
