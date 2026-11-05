@@ -21,7 +21,10 @@ var KEY="mpv_trip", MAXN=40;
 var TR=load();
 function load(){ var o=null; try{ o=JSON.parse(localStorage.getItem(KEY)||"null"); }catch(e){} if(!o||!Array.isArray(o.items)) o={items:[]};
   o.opt=Object.assign({n:3,start:"",from:"09:30",to:"20:00",walk:1,hotel:null,food:"any",adv:false},o.opt||{}); return o; }   // 11-06 더한 칸(없어도 됨): hotels{도시 id:숙소} · ap{a,d} · pax · hAll
-function save(){ try{ localStorage.setItem(KEY,JSON.stringify(TR)); }catch(e){} }
+var SAVED_H=JSON.stringify(TR.opt&&TR.opt.hotel||null);   // 11-06 사장님 「숙소를 안 잡았는데 잡혀 있다」 — 예전에 저장된 숙소는 이번 여행에서 고른 것으로 보지 않는다
+function hKey(){ var o=TR.opt||{}; return (o.start||"")+"|"+(o.n||1); }
+function hOkNow(){ var o=TR.opt||{}; return !!o.hotel&&o.hOk===hKey(); }
+function save(){ try{ var hj=JSON.stringify(TR.opt&&TR.opt.hotel||null); if(hj!==SAVED_H){ if(TR.opt) TR.opt.hOk=TR.opt.hotel?hKey():""; SAVED_H=hj; } localStorage.setItem(KEY,JSON.stringify(TR)); }catch(e){} }
 function L(){ return window.LANG!=="ko"; }   // 외국어 화면(영·일·중) — 10-18
 function nm(it){ if(!it) return ""; if(!L()) return it.ko; var p=it.k&&window.PLACES&&PLACES[it.k]; return (p&&p[LANG])||it[LANG]||it.en||it.ko; }   // 일·중 이름은 지금 받은 장소 자료에서
 function T5(o){ return o[window.LANG]||o.en; }   // 다섯 말 문구 (10-20)
@@ -1586,7 +1589,7 @@ function lgToast(t){ var o=document.createElement("div"); o.className="tlgtoast"
 document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("#trRep [data-hpick]"); if(!b) return; e.preventDefault(); var pl=TR.plan; if(!pl) return; var ci=b.dataset.hpick===""?null:+b.dataset.hpick; lodgeFor(pl,+b.dataset.hd,ci); },true);
 
 // ══ 「AI일정짜기」 화면 3단계 (사장님 11-06) — ① 항공편 ② 첫날 숙소(「여행 내내 이 숙소」) ③ AI와 일정짜기(reco.js 지금 화면 그대로) · 건너뛸 수 있고, 이미 예약했으면 「있어요 — 입력」 ══
-var ST6={s1:{ko:"① 항공편 예약",en:"① Book flights",ja:"① 航空券の予約",zhs:"① 预订机票",zht:"① 預訂機票",es:"① Reserva tus vuelos"},
+var ST6={prev:{ko:"지난번 숙소: {h}",en:"Your earlier lodging: {h}",ja:"前回の宿: {h}",zhs:"上次的住宿: {h}",zht:"上次的住宿: {h}",es:"Alojamiento anterior: {h}"},useP:{ko:"이 숙소로",en:"Use this one",ja:"この宿にする",zhs:"就住这里",zht:"就住這裡",es:"Usar este"},otherP:{ko:"다른 숙소 찾기",en:"Find another",ja:"別の宿を探す",zhs:"找其他住宿",zht:"找其他住宿",es:"Buscar otro"},s1:{ko:"① 항공편 예약",en:"① Book flights",ja:"① 航空券の予約",zhs:"① 预订机票",zht:"① 預訂機票",es:"① Reserva tus vuelos"},
  s2:{ko:"② 첫날 숙소 예약",en:"② Book your first night",ja:"② 初日の宿の予約",zhs:"② 预订第一晚住宿",zht:"② 預訂第一晚住宿",es:"② Reserva la primera noche"},
  s3:{ko:"③ AI와 일정짜기",en:"③ Plan with AI",ja:"③ AIと旅程づくり",zhs:"③ 与AI规划行程",zht:"③ 與AI規劃行程",es:"③ Planifica con IA"},
  have:{ko:"있어요 — 입력",en:"Already booked — enter it",ja:"予約済み — 入力",zhs:"已预订——填写",zht:"已預訂——填寫",es:"Ya reservado: introducir"},
@@ -1604,7 +1607,7 @@ var ST6={s1:{ko:"① 항공편 예약",en:"① Book flights",ja:"① 航空券�
 var STS={open:"",hq:"",hr:null};
 function stepsPaint(el){ el=el||document.getElementById("aipSteps"); if(!el) return; var o=TR.opt, ap=o.ap||{}, pax=o.pax||1, start=o.start||kstToday(1), last=dayDate(Math.max(0,(o.n||1)-1)).toISOString().slice(0,10);
   var apSel=function(w){ var q=ap[w]||{}; return '<select data-stap="'+w+'"><option value="">'+esc(T5(AP6.none))+'</option>'+Object.keys(APT).filter(function(id){ return APT[id].ui; }).map(function(id){ return '<option value="'+id+'"'+(q.id===id?' selected':'')+'>'+esc(apNm(id))+'</option>'; }).join("")+'</select>'; };
-  var f1=!!(ap.a&&ap.a.id), f2=!!o.hotel, h='';
+  var f1=!!(ap.a&&ap.a.id), f2=hOkNow(), old=!!o.hotel&&!f2, hNm=function(x){ return x&&x.type==='here'?hotelTxt(x):nm(x); }, h='';
   h+='<div class="stp'+(f1?' ok':'')+'"><div class="stph" data-sto="1"><b>'+esc(T5(ST6.s1))+'</b>'+(f1?'<span class="stok">'+esc(T5(ST6.ok))+'</span>':'')+'</div>';
   if(STS.open==="1"){ h+='<div class="stpb"><div class="stpr"><label>'+esc(T5(ST6.day1))+'<input type="date" data-sts="start" value="'+esc(start)+'"></label><label>'+esc(T5(ST6.days))+'<select data-sts="n">'+[1,2,3,4,5,6,7].map(function(d){ return '<option'+(o.n===d?" selected":"")+'>'+d+'</option>'; }).join("")+'</select></label><label>'+esc(T5(ST6.pax))+'<select data-sts="pax">'+[1,2,3,4,5,6,7,8,9].map(function(d){ return '<option'+(pax===d?" selected":"")+'>'+d+'</option>'; }).join("")+'</select></label></div>'
     +'<div class="stpr"><label class="w">'+esc(T5(AP6.arr))+apSel("a")+'</label><label>'+esc(T5(AP6.tA))+'<input type="time" data-stt="a" value="'+esc((ap.a&&ap.a.t)||"")+'"></label></div>'
@@ -1613,7 +1616,7 @@ function stepsPaint(el){ el=el||document.getElementById("aipSteps"); if(!el) ret
     +'<div class="stpl"><span>'+esc(T5(ST6.outb))+':</span>'+flyLinks((ap.d&&ap.d.id)||(ap.a&&ap.a.id)||"icn",null,last,pax)+'</div>'
     +'<div class="d">'+esc(T5(ST6.times))+'</div><div class="tlgnote">'+esc(gTxt(NX6.book,{s:T5(NX6.sites)}))+'</div>'
     +'<div class="stpn"><button type="button" class="trbtn" data-sto="2">'+esc(T5(ST6.skip))+' ›</button></div></div>'; }
-  h+='</div><div class="stp'+(f2?' ok':'')+'"><div class="stph" data-sto="2"><b>'+esc(T5(ST6.s2))+'</b>'+(f2?'<span class="stok">'+esc(T5(ST6.ok))+' · '+esc(hotelTxt(o.hotel))+(o.hAll?' · '+esc(T5(LG6.all)):'')+'</span>':'')+'</div>';
+  h+='</div><div class="stp'+(f2?' ok':'')+'"><div class="stph" data-sto="2"><b>'+esc(T5(ST6.s2))+'</b>'+(f2?'<span class="stok">'+esc(T5(ST6.ok))+' · '+esc(hNm(o.hotel))+(o.hAll?' · '+esc(T5(LG6.all)):'')+'</span>':'')+'</div>'+(old&&STS.open!=="2"?'<div class="stpb"><div class="d" style="margin:0 0 6px">'+esc(gTxt(ST6.prev,{h:hNm(o.hotel)}))+'</div><div class="stpn"><button type="button" class="trbtn" data-sthok="1">'+esc(T5(ST6.useP))+'</button> <button type="button" class="trbtn" data-sto="2">'+esc(T5(ST6.otherP))+'</button></div></div>':'');
   if(STS.open==="2"){ var cid=STS.city||(ap.a&&ap.a.id==="pus"?"busan":ap.a&&ap.a.id==="cju"?"jeju":"seoul");
     h+='<div class="stpb"><div class="stpr"><label class="w">'+esc(T5(ST6.city))+'<select data-stc="1">'+CITYNM.map(function(c){ return '<option value="'+c[0]+'"'+(c[0]===cid?' selected':'')+'>'+esc(LANG==="ko"?c[1]:({en:c[2],ja:c[3],zhs:c[4],zht:c[5],es:c[6]}[LANG]||c[2]))+'</option>'; }).join("")+'</select></label></div>'
       +'<div class="stpn"><button type="button" class="trbtn big" data-stl="1">'+MPIMG("mi_stay",MIS)+esc(T5(LG6.ttl))+'</button></div>'
@@ -1629,7 +1632,8 @@ document.addEventListener("change",function(e){ var t=e.target, el=document.getE
   if(t.dataset.sts==="start"){ o.start=t.value; save(); } else if(t.dataset.sts==="n"){ o.n=+t.value; TR.plan=null; save(); } else if(t.dataset.sts==="pax"){ o.pax=+t.value; save(); }
   else if(t.dataset.stap||t.dataset.stt) stApSet(); else if(t.dataset.stc){ STS.city=t.value; }
   stepsPaint(el); },true);
-document.addEventListener("click",function(e){ var el=document.getElementById("aipSteps"); if(!el||!e.target.closest||!el.contains(e.target)) return; var t=e.target.closest("[data-sto],[data-stl],[data-sth],[data-sthp]"); if(!t) return; e.preventDefault();
+document.addEventListener("click",function(e){ var el=document.getElementById("aipSteps"); if(!el||!e.target.closest||!el.contains(e.target)) return; var t=e.target.closest("[data-sthok],[data-sto],[data-stl],[data-sth],[data-sthp]"); if(!t) return; e.preventDefault();
+  if(t.dataset.sthok){ TR.opt.hOk=hKey(); save(); STS.open="3"; stepsPaint(el); return; }
   if(t.dataset.sto){ var v=t.dataset.sto; STS.open=STS.open===v?"":v; if(v==="3"){ STS.open=""; try{ var q=document.getElementById("aipQ"); if(q){ q.scrollIntoView({block:"center"}); q.focus(); } }catch(z){} } stepsPaint(el); return; }
   if(t.dataset.stl){ var cid=STS.city||(el.querySelector("[data-stc]")||{}).value||"seoul", c=CITYNM.filter(function(q){ return q[0]===cid; })[0]||CITYNM[0];
     openLodge({lat:c[7],lng:c[8],date:TR.opt.start||kstToday(1),n:Math.max(1,(TR.opt.n||1)-1),city:LANG==="ko"?c[1]:({en:c[2],ja:c[3],zhs:c[4],zht:c[5],es:c[6]}[LANG]||c[2]),cityKo:c[1],cityEn:c[2],allOpt:true,all:!!TR.opt.hAll,cb:function(h,all){ TR.opt.hotel=h; TR.opt.hAll=all?1:0; if(!all){ TR.opt.hotels=TR.opt.hotels||{}; } TR.plan=null; save(); STS.open="3"; stepsPaint(); }}); return; }
