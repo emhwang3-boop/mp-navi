@@ -26,7 +26,7 @@ var TX={
  tChat:T6("가이드 대화","Guide chat","ガイドとチャット","向导聊天","嚮導聊天","Chat con guía"),
  tInt:T6("통역","Interpreter","通訳","翻译","翻譯","Intérprete"),
  my:T6("내 예약 대화방","My booking chats","私の予約チャット","我的预约聊天","我的預約聊天","Chats de mis reservas"),
- none:T6("아직 대화방이 없습니다. 통역·길안내에서 가이드를 예약하면 여기에 방이 생깁니다.","No chats yet. When you book a guide under Interpreter & guide, a chat room appears here.","まだチャットはありません。通訳・ガイドでガイドを予約するとここにルームができます。","还没有聊天室。在「翻译·向导」预约向导后，这里会出现聊天室。","還沒有聊天室。在「翻譯·嚮導」預約嚮導後，這裡會出現聊天室。","Aún no hay chats. Cuando reserves un guía en Intérprete y guía, aparecerá una sala aquí."),
+ none:T6("아직 대화방이 없습니다. 투어 가이드에서 가이드를 예약하면 여기에 방이 생깁니다.","No chats yet. When you book a guide under Tour guide, a chat room appears here.","まだチャットはありません。ツアーガイドでガイドを予約するとここにルームができます。","还没有聊天室。在「旅游向导」预约向导后，这里会出现聊天室。","還沒有聊天室。在「旅遊嚮導」預約嚮導後，這裡會出現聊天室。","Aún no hay chats. Cuando reserves un guía en Guía turístico, aparecerá una sala aquí."),
  gScr:T6("가이드 화면","Guide screen","ガイド画面","向导页面","嚮導頁面","Pantalla de guía"),
  gLogin:T6("가이드로 등록한 이메일과 같은 구글·애플 계정으로 로그인해 주세요.","Please sign in with the Google or Apple account that uses the email you registered as a guide.","ガイド登録したメールと同じGoogle・Appleアカウントでログインしてください。","请使用与向导登记邮箱相同的Google或Apple账号登录。","請使用與嚮導登記電郵相同的Google或Apple帳號登入。","Inicia sesión con la cuenta de Google o Apple que usa el correo con el que te registraste como guía."),
  gLoginB:T6("로그인","Sign in","ログイン","登录","登入","Iniciar sesión"),
