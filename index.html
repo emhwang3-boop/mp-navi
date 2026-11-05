@@ -150,6 +150,7 @@ html .sbox #gob{position:absolute!important;width:1px!important;height:1px!impor
 .sbox{row-gap:6px}
 .sbox #gfchips{grid-template-columns:repeat(2,minmax(0,184px));gap:9px 10px;margin:6px 0 0}
 .sbox #gfchips>button{font-size:15px!important;padding:9px 6px!important;line-height:1.25}
+.sbox #gfchips{grid-auto-rows:1fr}.sbox #gfchips>button{height:100%;min-height:58px;display:flex!important;align-items:center;justify-content:center}   /* 11-06 사장님 「6개 칩 규격 통일」 — 줄마다 높이 같게(두 줄 칩 높이에 맞춤) */
 #res:empty{margin-top:0}
 .map{margin-top:12px}
 html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새로고침·바운스 막음 (10-23 잠깐 풀었다 다시 막음 — 새로고침은 ⋮ 메뉴 단추) — html 에만 (body 에 걸면 body 가 스크롤 상자라 화면 넘김이 막힌다, 10-16) */
@@ -305,7 +306,7 @@ html.mpc-lock #treasIsle{visibility:hidden}
   </div>
   <form class="sbox" onsubmit="try{document.getElementById('q').blur()}catch(e){}go();return false">
     <div class="qw"><input id="q" autocomplete="off" enterkeyhint="search" placeholder="예: 경복궁, 해운대 맛집, 전주 한옥마을"><button type="button" id="qx" hidden aria-label="clear" onclick="qClear()">✕</button></div>
-    <p class="desc" id="hint">가고 싶은 곳을 써 보세요. 하고 싶은 것은 「AI일정짜기」에서 찾아 드려요.</p>
+    <p class="desc" id="hint">가고 싶은 곳을 써 보세요. 하고 싶은 것은 「AI와 자유여행」에서 찾아 드려요.</p>
     <button type="submit" id="gob" tabindex="-1" aria-hidden="true">검색</button><!-- 11-05 화면에서 감춤(엔터 검색용으로 남김) -->
   </form>
   <div class="res" id="res"></div>
@@ -528,7 +529,7 @@ function paint(){
   document.getElementById("q").placeholder=T("예: 경복궁, 해운대 맛집, 전주 한옥마을","e.g. Gyeongbokgung, Haeundae food, Jeonju Hanok Village");
   document.getElementById("gob").textContent=T("검색","Search");
   document.getElementById("zme").textContent=T("◎ 현재 위치","◎ My location");
-  document.getElementById("hint").textContent=LANG==="ko"?"가고 싶은 곳을 써 보세요. 하고 싶은 것은 「AI일정짜기」에서 찾아 드려요.":({en:"Type a place you want to go. For things to do, try “DIY Trip”.",ja:"行きたい場所を入力してください。やりたいことは「DIY旅行」で探せます。",zhs:"输入想去的地方。想做的事可以在「自助游」里找。",zht:"輸入想去的地方。想做的事可以在「自助旅行」裡找。",es:"Escribe un lugar al que quieras ir. Para planes, prueba «Viaje a tu aire»."}[LANG]||"Type a place you want to go. For things to do, try “DIY Trip”.");   // 11-06 칩 이름 「AI일정짜기」 (6개 언어)
+  document.getElementById("hint").textContent=LANG==="ko"?"가고 싶은 곳을 써 보세요. 하고 싶은 것은 「AI와 자유여행」에서 찾아 드려요.":({en:"Type a place you want to go. For things to do, try “DIY Trip”.",ja:"行きたい場所を入力してください。やりたいことは「DIY旅行」で探せます。",zhs:"输入想去的地方。想做的事可以在「自助游」里找。",zht:"輸入想去的地方。想做的事可以在「自助旅行」裡找。",es:"Escribe un lugar al que quieras ir. Para planes, prueba «Viaje a tu aire»."}[LANG]||"Type a place you want to go. For things to do, try “DIY Trip”.");   // 11-06 칩 이름 「AI일정짜기」 (6개 언어)
   document.getElementById("mapimg").alt=T("대한민국 관광 지도","Korea travel map");
   document.title="Money Puzzle Tour for Korea";
   try{ footBuild(); }catch(e){}
@@ -1691,7 +1692,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
-<script src="trip.js?v=1106mn"></script>
+<script src="trip.js?v=1106hk"></script>
 <script src="gift.js?v=1106lv"></script>
 <script src="near.js?v=1106mn"></script>
 <script src="shop.js?v=1106nt"></script>
@@ -1699,7 +1700,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}
 /* 손님 「내 예약」 링크로 열렸으면 통역·길안내 첫 화면의 그 예약 카드를 연다 (2026-11-05) */try{ if(window.__mpTdone&&window.NEAR&&window.NEAR.tdone) window.NEAR.tdone(window.__mpTdone); }catch(e){}</script>
-<script src="reco.js?v=1106nt"></script>
+<script src="reco.js?v=1106az"></script>
 <script src="gu.js?v=1105mu"></script>
 <script src="citytour.js?v=1024icons"></script>
 <script src="pass.js?v=1024gmatch"></script>
