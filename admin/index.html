@@ -526,10 +526,10 @@ function guideLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>가이�
   api("/guide/admin/all").then(function(j){ if(!j.ok) throw new Error("x");
     var pend=j.pending||[], appr=j.approved||[], rej=j.rejected||[], leads=j.leads||[], H='';
     GGUIDES={}; pend.concat(appr,rej).forEach(function(g){ GGUIDES[g.id]=g; });   // 수정 폼 미리채움용
-    H+='<div class="card"><b>승인 대기 ('+pend.length+')</b><div class="msg">자격증 번호·사본과 서명한 업무위탁 계약서를 확인하고 승인/거절하세요.</div>'+(pend.length?pend.map(gCard).join(""):'<div class="msg">대기 중인 신청이 없습니다.</div>')+'</div>';
+    if(pend.length) H+='<div class="card"><b>승인 대기 ('+pend.length+')</b><div class="msg">자격증 번호·사본과 서명한 업무위탁 계약서를 확인하고 승인/거절하세요.</div>'+pend.map(gCard).join("")+'</div>';   // 새 신청이 있을 때만 (사장님 11-05)
     H+='<div class="card"><b>승인된 가이드 ('+appr.length+')</b>'+(appr.length?appr.map(gCard).join(""):'<div class="msg">아직 없습니다.</div>')+'</div>';
     if(rej.length) H+='<div class="card"><b>거절 ('+rej.length+')</b>'+rej.map(gCard).join("")+'</div>';
-    H+='<div class="card"><b>손님 요청 ('+leads.length+')</b><div class="msg">손님이 가이드에게 보낸 요청입니다. 가이드에게 이메일로도 갑니다. 1년 지나면 지워집니다.</div>'+(leads.length?leads.map(gLead).join(""):'<div class="msg">아직 없습니다.</div>')+'</div>';
+    var wd=j.withdrawn||[]; if(wd.length) H+='<div class="card"><b>탈퇴한 가이드 ('+wd.length+')</b><div class="msg">이름·언어·자격증 번호·등록일·탈퇴일만 보관합니다. 연락처·사진·자격증 사본·계약서는 탈퇴 때 지웠습니다.</div>'+wd.map(function(w){ return '<div class="inv"><b>'+esc(w.name||"")+'</b> <span class="sub">'+esc((w.langs||[]).map(gLangNm).join(", "))+' · 자격증 번호 '+esc(w.lic||"")+' · 등록 '+esc(w.at||"")+' · 탈퇴 '+esc(w.wdAt||"")+'</span></div>'; }).join("")+'</div>';   // 손님 요청 칸은 뺌 — 대화는 「가이드 대화방」에서 (사장님 11-05)
     P.innerHTML=H;
   }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+').</div></div>'; }); }
 function gCard(g){ var langs=(g.langs||[]).map(gLangNm).join(", ");
@@ -544,7 +544,7 @@ function gCard(g){ var langs=(g.langs||[]).map(gLangNm).join(", ");
     +(g.status!=='approved'?'<button data-id="'+esc(g.id)+'" onclick="gAct(\'approve\',this.dataset.id)">승인</button>':'')
     +(g.status==='new'?'<button class="g" data-id="'+esc(g.id)+'" onclick="gAct(\'reject\',this.dataset.id)">거절</button>':'')
     +'<button class="g" data-id="'+esc(g.id)+'" onclick="gEdit(this.dataset.id)">수정</button>'
-    +'<button class="g" data-id="'+esc(g.id)+'" onclick="gAct(\'delete\',this.dataset.id)">지우기</button></div>'
+    +(g.status==='approved'?'<button class="g" data-id="'+esc(g.id)+'" onclick="gAct(\'withdraw\',this.dataset.id)">탈퇴</button>':'<button class="g" data-id="'+esc(g.id)+'" onclick="gAct(\'delete\',this.dataset.id)">신청 삭제</button>')+'</div>'
     +'<div id="glic_'+esc(g.id)+'"></div><div id="gct_'+esc(g.id)+'"></div><div id="gedit_'+esc(g.id)+'"></div></div></div></div>'; }
 // ── 가이드 프로필 수정 (관리자, 2026-10-24) — /guide/admin/edit. 사진·자격증 사본은 바꿀 때만 올린다(안 바꾸면 그대로). 상태는 유지(수정이 승인을 풀지 않음) ──
 var GGUIDES={}, GEDIT={photo:null,lic:null};
@@ -644,7 +644,7 @@ function gLic(id){ var box=$("glic_"+id); if(!box) return; if(box.innerHTML){ bo
 function gCt(id,n){ var box=$("gct_"+id); if(!box) return; if(box.innerHTML){ box.innerHTML=''; return; } n=Math.max(1,Math.min(3,n||1)); box.innerHTML='<div class="msg">불러오는 중…</div>';
   var ps=[]; for(var i=0;i<n;i++) ps.push(api("/guide/admin/contract?id="+encodeURIComponent(id)+"&n="+i).catch(function(){ return null; }));
   Promise.all(ps).then(function(a){ box.innerHTML=a.map(function(j,i){ return j&&j.ok&&j.data?'<div class="sub" style="margin-top:6px">계약서 '+(i+1)+'/'+n+'</div><img src="'+j.data+'" style="max-width:100%;border-radius:10px;margin-top:4px;border:1px solid var(--line)">':'<div class="msg">'+(i+1)+'번째 장을 불러오지 못했습니다.</div>'; }).join(""); }); }
-function gAct(a,id){ if(a==='delete'&&!confirm('이 가이드를 지울까요?')) return; if(a==='reject'&&!confirm('이 신청을 거절할까요?')) return;
+function gAct(a,id){ if(a==='withdraw'&&!confirm('이 가이드를 탈퇴 처리할까요?\n이름·언어·자격증 번호·등록일만 「탈퇴한 가이드」 목록에 남기고, 연락처·사진·자격증 사본·계약서는 지웁니다. 앱 가이드 목록과 자동 배정에서도 빠집니다.')) return; if(a==='delete'&&!confirm('이 신청을 삭제할까요?\n신청서와 첨부한 사진·자격증 사본·계약서가 모두 지워집니다.')) return; if(a==='reject'&&!confirm('이 신청을 거절할까요?')) return;
   api("/guide/admin/"+a,{method:"POST",body:JSON.stringify({id:id})}).then(function(j){ if(j&&j.ok) guideLoad(); else alert('처리하지 못했습니다.'); }).catch(function(){ alert('처리하지 못했습니다.'); }); }
 
 // ── 가이드 예약·결제 장부 MIS (통역·길안내, 2026-10-24) — 허브 /guide/admin/bookings · /guide/booking ──
