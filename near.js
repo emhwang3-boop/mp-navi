@@ -18,7 +18,7 @@ var KINDS={
   // 숙소 (사장님 10-16) — 카카오 숙박(AD5)을 허브가 종류로 나눔 + 관광공사 관광정보에 실린 숙소는 kto=1 (「관광공사」 표시)
   st:{e:"stay", t:["🏨 숙소","🏨 Stay"], tabs:[{c:"AD5",kind:"hotel",ko:"호텔",en:"Hotel",i:"🏨",r:3000},{c:"AD5",kind:"motel",ko:"모텔",en:"Motel",i:"🛏",r:3000},{c:"AD5",kind:"gh",ko:"게스트하우스",en:"Guesthouse",i:"🎒",r:3000},{c:"AD5",kind:"hanok",ko:"한옥스테이",en:"Hanok stay",i:"🏯",r:3000}]},
   // 통역·길안내 (사장님 10-24) — 우리 가이드(관광통역안내사) 등록·매칭 판. 무료. 언어 고르기→승인된 가이드 목록→요청 (GoWithGuide 외부 링크 대신)
-  ig:{e:"guide", t:["통역·길안내","Interpreter & guide"], tabs:[{c:"IG"}]}
+  ig:{e:"guide", t:["투어 가이드","Tour guide"], tabs:[{c:"IG"}]}
 };
 // 칩 글자 (아이콘 없이, 사장님 10-16) · ⋮ 메뉴 글자
 var CHIP={tg:["투어 가이드","Tour guide"],am:["편의시설","Convenience"],em:["긴급","Emergency"],st:["숙소","Stay"]};
@@ -321,12 +321,12 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
 //   가이드 등록은 「입점 문의」 빌딩 → 「관광 가이드 등록」(window.GUIDEREG) · 승인은 통계청(관리자)
 var GLANG6=[["한국어","ko"],["English","en"],["日本語","ja"],["中文(简)","zhs"],["中文(繁)","zht"],["Español","es"]];
 var IG={view:"pick",lang:"",guides:null,gid:null,gobj:null,err:"",busy:false,done:false};
-function igNote(){ return LG6({ko:"실제 통역·길안내를 해 주는 사람(관광통역안내사)을 연결해 드립니다. 외부 여행 예약 사이트의 투어 가이드와는 별개이며, 여기서 소개해 드리는 가이드만이 머니퍼즐 투어앱과 제휴를 맺은 가이드입니다. 우리 앱에서 선정된 가이드가 외부 여행 예약 사이트의 여행 상품을 안내해 드릴 수는 없습니다. 가이드를 중복으로 선정하지 않도록 주의해 주세요.",
-  en:"We connect you with a real licensed interpreter-guide (Korea Tour Guide license). These are separate from tour guides on external travel booking sites — only the guides introduced here are partnered with the Money Puzzle tour app. A guide selected in our app cannot guide travel products booked on external travel booking sites. Please take care not to book duplicate guides.",
-  ja:"実際に通訳・道案内をしてくれる人（通訳案内士）をおつなぎします。外部の旅行予約サイトのツアーガイドとは別で、ここでご紹介するガイドのみがMoney Puzzleツアーアプリと提携したガイドです。当アプリで選んだガイドが、外部の旅行予約サイトの旅行商品をご案内することはできません。ガイドを重複して選ばないようご注意ください。",
-  zhs:"为您联系真人口译·向导（持证导游）。与外部旅游预订网站的旅游向导不同，只有在这里为您介绍的向导，才是与 Money Puzzle 旅游App 合作的向导。在本App选定的向导，无法为外部旅游预订网站的旅游产品提供导览。请注意不要重复选定向导。",
-  zht:"為您聯繫真人口譯·嚮導（持證導遊）。與外部旅遊預訂網站的旅遊嚮導不同，只有在這裡為您介紹的嚮導，才是與 Money Puzzle 旅遊App 合作的嚮導。在本App選定的嚮導，無法為外部旅遊預訂網站的旅遊產品提供導覽。請注意不要重複選定嚮導。",
-  es:"Te ponemos en contacto con un intérprete-guía con licencia real. Son distintos de los guías turísticos de sitios externos de reservas de viaje: solo los guías que presentamos aquí están asociados con la app Money Puzzle Tour. Un guía seleccionado en nuestra app no puede acompañar los productos de viaje comprados en sitios externos de reservas de viaje. Tenga cuidado de no seleccionar guías por duplicado."}); }
+function igNote(){ return LG6({ko:"실제 투어 가이드(관광통역안내사)를 연결해 드립니다. 외부 여행 예약 사이트의 투어 가이드와는 별개이며, 여기서 소개해 드리는 가이드만이 머니퍼즐 투어앱과 제휴를 맺은 가이드입니다. 우리 앱에서 선정된 가이드가 외부 여행 예약 사이트의 여행 상품을 안내해 드릴 수는 없습니다. 가이드를 중복으로 선정하지 않도록 주의해 주세요.",
+  en:"We connect you with a real licensed tour guide (Korea Tour Guide license). These are separate from tour guides on external travel booking sites — only the guides introduced here are partnered with the Money Puzzle tour app. A guide selected in our app cannot guide travel products booked on external travel booking sites. Please take care not to book duplicate guides.",
+  ja:"実際のツアーガイド（通訳案内士）をおつなぎします。外部の旅行予約サイトのツアーガイドとは別で、ここでご紹介するガイドのみがMoney Puzzleツアーアプリと提携したガイドです。当アプリで選んだガイドが、外部の旅行予約サイトの旅行商品をご案内することはできません。ガイドを重複して選ばないようご注意ください。",
+  zhs:"为您联系真人旅游向导（持证导游）。与外部旅游预订网站的旅游向导不同，只有在这里为您介绍的向导，才是与 Money Puzzle 旅游App 合作的向导。在本App选定的向导，无法为外部旅游预订网站的旅游产品提供导览。请注意不要重复选定向导。",
+  zht:"為您聯繫真人旅遊嚮導（持證導遊）。與外部旅遊預訂網站的旅遊嚮導不同，只有在這裡為您介紹的嚮導，才是與 Money Puzzle 旅遊App 合作的嚮導。在本App選定的嚮導，無法為外部旅遊預訂網站的旅遊產品提供導覽。請注意不要重複選定嚮導。",
+  es:"Te ponemos en contacto con un guía turístico con licencia real. Son distintos de los guías turísticos de sitios externos de reservas de viaje: solo los guías que presentamos aquí están asociados con la app Money Puzzle Tour. Un guía seleccionado en nuestra app no puede acompañar los productos de viaje comprados en sitios externos de reservas de viaje. Tenga cuidado de no seleccionar guías por duplicado."}); }
 function igDates(){ var out=[]; for(var i=1;i<=2;i++){ var d=new Date(Date.now()+9*3600e3+i*864e5), s=d.toISOString().slice(0,10);
     out.push([s, (i===1?LG6({ko:"내일",en:"Tomorrow",ja:"明日",zhs:"明天",zht:"明天",es:"Mañana"}):LG6({ko:"모레",en:"Day after tomorrow",ja:"明後日",zhs:"后天",zht:"後天",es:"Pasado mañana"}))+" ("+s+")"]); } return out; }
 function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) return GLANG6[i][0]; return c; }
@@ -342,12 +342,12 @@ var GB_TCK="test_ck_5OWRapdA8dzyq72vW4gRVo1zEqZK", GB_SDK="https://js.tosspaymen
 var GB_PG=false;   // 🔴 PG 붙이면 true — 결제창(토스) → ?gbres= 돌아오기. 지금(11-05 사장님 「결제도 막 눌러」)은 「결제하기」 = 바로 확정(허브 pay:"none")
 function T6(ko,en,ja,zhs,zht,es){ return {ko:ko,en:en,ja:ja,zhs:zhs,zht:zht,es:es}; }
 var GBT={
- note:T6("자유여행을 하고 싶은 관광객이 반일, 하루 또는 원하는 기간만큼 통역관광가이드와 함께 자유롭게 여행할 수 있는 메뉴입니다. 원하는 가이드를 고르신 뒤 가고 싶은 곳이나 원하는 관광 내용을 간단히 적고 「보내기 및 결제」를 누른 다음 결제해 주세요.",
-  "This menu is for travelers who want to explore Korea on their own with a licensed interpreter-guide — for half a day, a full day or as long as you like. Choose your guide, briefly write where you want to go or what you would like to do, tap \"Send & pay\" and then complete the payment.",
-  "自由旅行をしたい旅行者が、半日・1日、またはご希望の期間だけ通訳案内士と一緒に自由に旅するためのメニューです。ご希望のガイドを選んだら、行きたい場所やご希望の観光内容を簡単に入力し、「送信して支払う」を押してからお支払いください。",
-  "本菜单供想自由行的游客，在半天、一天或所需的期间内，与持证翻译导游一起自由旅行。选好想要的向导后，请简单填写想去的地方或希望的游览内容，点击「发送并付款」后完成付款。",
-  "本選單供想自由行的旅客，在半天、一天或所需的期間內，與持證翻譯導遊一起自由旅行。選好想要的嚮導後，請簡單填寫想去的地方或希望的遊覽內容，點擊「送出並付款」後完成付款。",
-  "Este menú es para viajeros que quieren recorrer Corea por su cuenta con un guía-intérprete con licencia: medio día, un día entero o el tiempo que quieran. Elige a tu guía, escribe brevemente adónde quieres ir o qué te gustaría hacer, pulsa «Enviar y pagar» y completa el pago."),
+ note:T6("자유여행을 하고 싶은 관광객이 반일, 하루 또는 원하는 기간만큼 투어 가이드와 함께 자유롭게 여행할 수 있는 메뉴입니다. 원하는 가이드를 고르신 뒤 가고 싶은 곳이나 원하는 관광 내용을 간단히 적고 「보내기 및 결제」를 누른 다음 결제해 주세요.",
+  "This menu is for travelers who want to explore Korea on their own with a licensed tour guide — for half a day, a full day or as long as you like. Choose your guide, briefly write where you want to go or what you would like to do, tap \"Send & pay\" and then complete the payment.",
+  "自由旅行をしたい旅行者が、半日・1日、またはご希望の期間だけツアーガイドと一緒に自由に旅するためのメニューです。ご希望のガイドを選んだら、行きたい場所やご希望の観光内容を簡単に入力し、「送信して支払う」を押してからお支払いください。",
+  "本菜单供想自由行的游客，在半天、一天或所需的期间内，与持证旅游向导一起自由旅行。选好想要的向导后，请简单填写想去的地方或希望的游览内容，点击「发送并付款」后完成付款。",
+  "本選單供想自由行的旅客，在半天、一天或所需的期間內，與持證旅遊嚮導一起自由旅行。選好想要的嚮導後，請簡單填寫想去的地方或希望的遊覽內容，點擊「送出並付款」後完成付款。",
+  "Este menú es para viajeros que quieren recorrer Corea por su cuenta con un guía turístico con licencia: medio día, un día entero o el tiempo que quieran. Elige a tu guía, escribe brevemente adónde quieres ir o qué te gustaría hacer, pulsa «Enviar y pagar» y completa el pago."),
  gd:T6("가이드","Guide","ガイド","向导","嚮導","Guía"),
  dur:T6("이용 시간","Duration","ご利用時間","使用时长","使用時長","Duración"),
  half:T6("반일 (4시간)","Half day (4 h)","半日（4時間）","半天（4小时）","半天（4小時）","Medio día (4 h)"),
@@ -520,7 +520,7 @@ if(/[?&]gbres=/.test(location.search)){ var _gr=function(){ setTimeout(function(
 
 // 한 판 안에서 세 화면(pick=언어 고르기 · list=가이드 목록 · req=요청하기) 을 state(IG)로
 function igRender(b){
-  var head='<div class="nrtop"><b>'+esc(LG6({ko:"통역·길안내",en:"Interpreter & guide",ja:"通訳・ガイド",zhs:"翻译·向导",zht:"翻譯·嚮導",es:"Intérprete y guía"}))+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
+  var head='<div class="nrtop"><b>'+esc(LG6({ko:"투어 가이드",en:"Tour guide",ja:"ツアーガイド",zhs:"旅游向导",zht:"旅遊嚮導",es:"Guía turístico"}))+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
   var back='<button type="button" class="igback" data-igback="1">‹ '+esc(LG6({ko:"뒤로",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Atrás"}))+'</button>';
   if(IG.view==="review"){ b.innerHTML=head+igReviewForm(); igWire(b); return; }
   if(IG.view==="editask"){ b.innerHTML=head+'<button type="button" class="igback" data-igback="pick">‹ '+esc(LG6({ko:"뒤로",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Atrás"}))+'</button>'+igEditAskForm(); igWire(b); return; }   // 가이드 본인 — 등록 이메일 넣기
@@ -931,7 +931,7 @@ function gReg(){ css(); var o=document.getElementById("gregBox"); if(o) o.remove
   o=document.createElement("div"); o.id="gregBox";
   o.innerHTML='<div class="gin"><button type="button" class="gx" id="gX">✕</button>'
     +'<h3><img src="img/menu/mi_guideperson.png" alt="" style="height:24px;width:auto;vertical-align:-5px;margin-right:7px">'+esc(L({ko:"관광 가이드 등록",en:"Register as a tour guide",ja:"観光ガイド登録",zhs:"导游登记",zht:"導遊登記",es:"Regístrate como guía turístico"}))+'</h3>'
-    +'<div class="gsub">'+esc(L({ko:"관광통역안내사 등 실제로 통역·길안내를 해 주실 분을 등록합니다. 담당자가 자격증을 확인한 뒤 승인합니다. (무료)",en:"Register if you are a real (licensed) interpreter-guide. We approve after verifying your license. (free)",ja:"通訳案内士など、実際に通訳・道案内をされる方の登録です。資格を確認後に承認します。（無料）",zhs:"面向真正的持证口译·向导。核验资格证后审核通过。（免费）",zht:"面向真正的持證口譯·嚮導。核驗資格證後審核通過。（免費）",es:"Regístrate si eres un intérprete-guía real (con licencia). Aprobamos tras verificar tu licencia. (gratis)"}))+'</div>'
+    +'<div class="gsub">'+esc(L({ko:"관광통역안내사 등 실제로 투어 가이드를 해 주실 분을 등록합니다. 담당자가 자격증을 확인한 뒤 승인합니다. (무료)",en:"Register if you are a real (licensed) tour guide. We approve after verifying your license. (free)",ja:"通訳案内士など、実際にツアーガイドをされる方の登録です。資格を確認後に承認します。（無料）",zhs:"面向真正的持证旅游向导。核验资格证后审核通过。（免费）",zht:"面向真正的持證旅遊嚮導。核驗資格證後審核通過。（免費）",es:"Regístrate si eres un guía turístico real (con licencia). Aprobamos tras verificar tu licencia. (gratis)"}))+'</div>'
     +'<label class="iglb">'+esc(L({ko:"이름 *",en:"Name *",ja:"お名前 *",zhs:"姓名 *",zht:"姓名 *",es:"Nombre *"}))+'</label><input class="igin" id="gNm" maxlength="40">'
     +'<label class="iglb">'+esc(L({ko:"영문 이름 (선택 — 비우면 자동 변환)",en:"Name in English letters (optional — auto if blank)",ja:"ローマ字表記の名前（任意・空欄なら自動）",zhs:"英文姓名（选填，留空则自动转换）",zht:"英文姓名（選填，留空則自動轉換）",es:"Nombre en letras latinas (opcional; automático si se deja vacío)"}))+'</label><input class="igin" id="gNmEn" maxlength="60" placeholder="Hong Gildong">'
     +'<label class="iglb">'+esc(L({ko:"사진 *",en:"Photo *",ja:"写真 *",zhs:"照片 *",zht:"照片 *",es:"Foto *"}))+'</label><div class="gph"><img class="gpv" id="gPv" alt="" style="display:none"><input type="file" accept="image/*" id="gPh"></div>'
@@ -960,7 +960,7 @@ function gRegSend(){ var L=LG6, M=document.getElementById("gMsg"), set=function(
   if(!document.getElementById("gAg").checked){ set(L({ko:"개인정보 수집·이용에 동의해 주세요.",en:"Please agree to the privacy notice.",ja:"個人情報の取り扱いに同意してください。",zhs:"请同意个人信息处理。",zht:"請同意個人資訊處理。",es:"Acepta el aviso de privacidad."})); return; }
   var go=document.getElementById("gGo"); if(go) go.disabled=true; set("…");
   fetch(HUB+"/guide/join",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:nm,name_en:g("gNmEn"),langs:langs,lic:lic,years:g("gYr"),region:rg,intro:g("gIn"),email:em,phone:g("gTel"),photo:GREGV.photo,licPhoto:GREGV.lic,contract:GREGV.ct.slice(0,3),consent:true}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ if(go) go.disabled=false;
-    if(j&&j.ok){ var o=document.getElementById("gregBox"); if(o) o.querySelector(".gin").innerHTML='<button type="button" class="gx" onclick="document.getElementById(\'gregBox\').remove()">✕</button><h3>✓ '+esc(L({ko:"등록 신청이 접수되었습니다",en:"Registration received",ja:"登録申請を受け付けました",zhs:"已收到登记申请",zht:"已收到登記申請",es:"Registro recibido"}))+'</h3><div class="gsub">'+esc(L({ko:"담당자가 자격증을 확인한 뒤 승인해 드립니다. 승인되면 손님이 통역·길안내에서 회원님을 볼 수 있어요.",en:"We will approve after verifying your license. Once approved, travelers can find you under Interpreter & guide.",ja:"資格確認後に承認します。承認後、お客様が通訳・ガイドで見つけられます。",zhs:"核验资格后审核通过。通过后游客可在翻译·向导中找到您。",zht:"核驗資格後審核通過。通過後旅客可在翻譯·嚮導中找到您。",es:"Aprobaremos tras verificar tu licencia. Luego los viajeros podrán encontrarte en Intérprete y guía."}))+'</div><button type="button" class="gbtn" onclick="document.getElementById(\'gregBox\').remove()">'+esc(L({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}))+'</button>'; return; }
+    if(j&&j.ok){ var o=document.getElementById("gregBox"); if(o) o.querySelector(".gin").innerHTML='<button type="button" class="gx" onclick="document.getElementById(\'gregBox\').remove()">✕</button><h3>✓ '+esc(L({ko:"등록 신청이 접수되었습니다",en:"Registration received",ja:"登録申請を受け付けました",zhs:"已收到登记申请",zht:"已收到登記申請",es:"Registro recibido"}))+'</h3><div class="gsub">'+esc(L({ko:"담당자가 자격증을 확인한 뒤 승인해 드립니다. 승인되면 손님이 투어 가이드에서 회원님을 볼 수 있어요.",en:"We will approve after verifying your license. Once approved, travelers can find you under Tour guide.",ja:"資格確認後に承認します。承認後、お客様がツアーガイドで見つけられます。",zhs:"核验资格后审核通过。通过后游客可在「旅游向导」中找到您。",zht:"核驗資格後審核通過。通過後旅客可在「旅遊嚮導」中找到您。",es:"Aprobaremos tras verificar tu licencia. Luego los viajeros podrán encontrarte en Guía turístico."}))+'</div><button type="button" class="gbtn" onclick="document.getElementById(\'gregBox\').remove()">'+esc(L({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}))+'</button>'; return; }
     set(j&&j.err==="contract"?L(GCT.err):j&&j.err==="photo"||j&&j.err==="licphoto"?L({ko:"사진을 다시 올려 주세요 (JPEG).",en:"Please re-upload the photo (JPEG).",ja:"写真を再アップロードしてください（JPEG）。",zhs:"请重新上传照片（JPEG）。",zht:"請重新上傳照片（JPEG）。",es:"Vuelve a subir la foto (JPEG)."}):j&&j.err==="rate"?L({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてから。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):L({ko:"보내지 못했습니다. 칸을 확인해 주세요.",en:"Could not send. Please check the fields.",ja:"送信できませんでした。入力をご確認ください。",zhs:"发送失败，请检查填写。",zht:"發送失敗，請檢查填寫。",es:"No se pudo enviar. Revisa los campos."})); })
   .catch(function(){ if(go) go.disabled=false; set(L({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
 window.GUIDEREG=gReg;
