@@ -64,7 +64,8 @@ function L(){ return LANG!=="ko"; }   // 외국어 화면 (10-18)
 function RM(f){ f(); window._RR={f:f}; }   // #res 안내 — 언어를 바꾸면 lang.js 가 그 자리에서 다시 (10-18)
 function pass(){ try{ return (window.TRIP&&TRIP.hasPass)?TRIP.hasPass():(typeof window.hasPass==="function"?window.hasPass():true); }catch(e){ return true; } }
 // 첫 화면 「추천받기」 단추는 뺐다 (사장님 11-05) — 엔진은 아래 「AI와 일정짜기」 칩 화면이 쓴다. 칩은 편의시설 칩 자리(index.html #gfchips 순서 ai=3)
-var AIC6={ko:"AI와 일정짜기",en:"Tour Plan with AI",ja:"AIと旅程づくり",zhs:"与AI规划行程",zht:"與AI規劃行程",es:"Plan de viaje con IA"};
+var AIC6={ko:"AI일정짜기",en:"DIY Trip",ja:"DIY旅行",zhs:"自助游",zht:"自助旅行",es:"Viaje a tu aire"};   // 11-06 사장님 — 옛 「AI와 일정짜기」 · 한국어 화면엔 한국어 이름만
+var AID6={ko:"하고 싶은 것을 적으면 AI가 장소·식당·숙소를 골라 날짜별 일정을 짜 드려요. 교통편과 숙소·항공권 예약까지 한 화면에서 이어서 할 수 있어요.",en:"Tell us what you’d like to do and AI picks places, restaurants and lodging and builds a day-by-day plan. Transport and lodging/flight booking continue on the same screen.",ja:"やりたいことを書くと、AIが場所・食事・宿を選んで日ごとの旅程を作ります。交通手段や宿・航空券の予約まで同じ画面で続けられます。",zhs:"写下想做的事，AI 会挑选地点、餐厅和住宿，按天排好行程。交通以及住宿、机票预订也能在同一页面接着完成。",zht:"寫下想做的事，AI 會挑選地點、餐廳和住宿，按天排好行程。交通以及住宿、機票預訂也能在同一頁面接著完成。",es:"Escribe lo que te gustaría hacer y la IA elige lugares, restaurantes y alojamiento y arma un plan día a día. El transporte y las reservas de alojamiento y vuelos siguen en la misma pantalla."};   // 첫 화면 맨 위 설명 (사장님 11-06 확인 초안)
 function btn(){ css(); var o=$("recob"); if(o) o.remove(); var box=$("gfchips"); if(!box) return; var c=box.querySelector(".nrchip.ai");
   if(!c){ box.insertAdjacentHTML("beforeend",'<button type="button" class="nrchip ai" data-aip="open"></button>'); c=box.querySelector(".nrchip.ai"); c.onclick=function(e){ e.preventDefault(); apOpen(); }; }
   c.textContent=A6(AIC6); chipFit(); if($("aipBox")) apLang(); }
@@ -232,7 +233,7 @@ var AX={
   passB:T6("이용권 보기","See passes","パスを見る","查看通行券","查看通行券","Ver pases"),
   none:T6("알맞은 곳을 찾지 못했어요. 다른 말로 찾아 보세요.","Nothing matched. Try other words.","合う場所が見つかりませんでした。別の言葉で探してみてください。","没有找到合适的地方，请换个说法试试。","沒有找到合適的地方，請換個說法試試。","No encontramos nada. Prueba con otras palabras."),
   plc:T6("장소","Places","スポット","地点","地點","Lugares"),
-  pkg:T6("체험·입장권","Try & tickets","体験・入場券","体验·门票","體驗·門票","Prueba y entradas"),
+  pkg:T6("패키지여행","Group Tour","パッケージツアー","跟团游","跟團遊","Tour en grupo"),   // 11-06 칩 이름과 같게
   more:T6("자세히 ›","Details ›","詳しく ›","详情 ›","詳情 ›","Detalles ›"),
   back:T6("← 목록으로","← Back to list","← 一覧に戻る","← 返回列表","← 返回列表","← Volver a la lista"),
   from:T6("나에게서","From you","現在地から","距你","距你","Desde ti"),
@@ -261,13 +262,14 @@ function apCart(){ var e=$("aipCart"); if(!e) return; var n=apCount(); e.innerHT
 function apOpen(){ css(); if(apBox()) return;
   var b=document.createElement("div"); b.id="aipBox"; b.setAttribute("role","dialog");
   b.innerHTML='<div class="apin"><div class="aptop"><b id="aipTtl"></b><span id="aipCart" class="apcart"></span><button type="button" class="apdone" data-ap="done"></button></div>'
+    +'<p class="apsub apdesc" id="aipDesc"></p><div id="aipSteps"></div>'   // 맨 위 설명 + 3단계(① 항공편 ② 첫날 숙소 ③ AI와 일정짜기 — 화면은 trip.js TRIP.steps, 11-06)
     +'<form class="apq" id="aipF"><input id="aipQ" type="text" autocomplete="off" enterkeyhint="search" maxlength="200"><button type="submit" class="apgo" id="aipGo"><img src="img/menu/mi_search.png" alt=""></button></form>'
     +'<p class="apsub" id="aipSub"></p><div id="aipRes"></div></div>';
   document.body.appendChild(b); document.documentElement.classList.add("aiplock");
   $("aipF").onsubmit=function(e){ e.preventDefault(); var q=$("aipQ"); try{ q.blur(); }catch(x){} apGo(q.value.trim()); };
   if(AP.q) $("aipQ").value=AP.q; AP.det=null; apLang();
   if(!AP.q) setTimeout(function(){ try{ $("aipQ").focus(); }catch(e){} },80); }
-function apLang(){ var b=apBox(); if(!b) return; $("aipTtl").textContent=A6(AIC6); b.querySelector(".apdone").textContent=A6(AX.done);
+function apLang(){ var b=apBox(); if(!b) return; $("aipTtl").textContent=A6(AIC6); b.querySelector(".apdone").textContent=A6(AX.done); var dd=$("aipDesc"); if(dd) dd.textContent=A6(AID6); try{ if(window.TRIP&&TRIP.steps) TRIP.steps($("aipSteps")); }catch(e){}
   var q=$("aipQ"); q.placeholder=A6(AX.ph); q.setAttribute("aria-label",A6(AIC6)); $("aipGo").setAttribute("aria-label",A6(AX.go)); $("aipSub").textContent=A6(AX.sub); apPaint(); }
 function apClose(){ var b=apBox(); if(b) b.remove(); document.documentElement.classList.remove("aiplock"); AP.det=null; }
 function apDone(){ apClose(); apPop(); }
