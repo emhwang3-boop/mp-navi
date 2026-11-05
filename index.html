@@ -1691,7 +1691,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
-<script src="trip.js?v=1106lv"></script>
+<script src="trip.js?v=1106sm"></script>
 <script src="gift.js?v=1106lv"></script>
 <script src="near.js?v=1106lv"></script>
 <script src="shop.js?v=1106lv"></script>
@@ -2013,5 +2013,6 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",go); else go(); })();</script>
 <style>#mapDev{display:none;position:absolute;top:10px;left:10px;z-index:6;background:#e8590c;color:#fff;font:800 12px/1 system-ui,sans-serif;border-radius:6px;padding:5px 8px;box-shadow:0 1px 4px rgba(0,0,0,.4);pointer-events:none;white-space:nowrap}.map.onkr #mapDev{display:block}</style>
 <script>/* 전국 지도 왼쪽 위 「개발 중」 (사장님 11-05, 노래방 .kdev 와 같은 모양) — 전국 지도(.map.onkr)에서만 보임 · 6개 언어 */(function(){var T={ko:"개발 중",en:"Under development",ja:"開発中",zhs:"开发中",zht:"開發中",es:"En desarrollo"};function p(){var e=document.getElementById("mapDev");if(e)e.textContent=T[window.LANG]||T.en;}document.addEventListener("DOMContentLoaded",function(){var s=window.setLang;if(s)window.setLang=function(){var r=s.apply(this,arguments);try{p();}catch(x){}return r;};p();});})();</script>
+<script src="krpop.js?v=1106kp"></script>
 </body>
 </html>
