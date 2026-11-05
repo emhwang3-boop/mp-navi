@@ -72,7 +72,18 @@ var TX={
  load:T6("불러오는 중…","Loading…","読み込み中…","加载中…","載入中…","Cargando…"),
  me:T6("나","Me","自分","我","我","Yo"),
  gd:T6("가이드","Guide","ガイド","向导","嚮導","Guía"),
- x:T6("닫기","Close","閉じる","关闭","關閉","Cerrar")};
+ x:T6("닫기","Close","閉じる","关闭","關閉","Cerrar"),
+ wait:T6("가이드 확정 대기","Waiting for a guide","ガイド確定待ち","等待向导确认","等待嚮導確認","Esperando un guía"),
+ noG:T6("가이드가 확정되면 이 방에서 가이드와 대화할 수 있습니다. 확정 소식도 여기에 안내해 드립니다.","Once a guide is confirmed, you can chat with them here. We will post the confirmation here too.","ガイドが確定すると、このルームでガイドとチャットできます。確定のお知らせもここに届きます。","向导确认后，即可在此聊天室与向导聊天。确认消息也会在这里通知您。","嚮導確認後，即可在此聊天室與嚮導聊天。確認消息也會在這裡通知您。","Cuando se confirme un guía, podrás chatear con él aquí. También te avisaremos aquí de la confirmación.")};
+// 방 안내 글 (메일로 가던 안내를 방에도, 11-05) — 허브는 코드+값만 · 여기서 보는 사람 언어로
+var SYS={booked:T6("예약을 받았습니다.","Your booking has been received.","ご予約を受け付けました。","已收到预约。","已收到預約。","Hemos recibido la reserva."),
+ gconf:T6("가이드 {g} 님이 확정되었습니다.","Guide {g} is confirmed.","ガイド {g} さんが確定しました。","向导 {g} 已确认。","嚮導 {g} 已確認。","El guía {g} está confirmado."),
+ done:T6("투어 완료로 표시되었습니다.","The tour was marked as completed.","ツアー完了になりました。","导览已标记为完成。","導覽已標記為完成。","El tour se marcó como completado."),
+ rvthx:T6("후기를 남겨 주셔서 감사합니다.","Thank you for the review.","レビューありがとうございました。","感谢您的评价。","感謝您的評價。","Gracias por la reseña."),
+ cancel:T6("예약이 취소되었습니다.","This booking was cancelled.","ご予約はキャンセルされました。","预约已取消。","預約已取消。","La reserva fue cancelada.")};
+function sysTx(m){ var o=SYS[m.k]; if(!o) return ""; var g=(m.v&&m.v.g)||{}, l=window.LANG||"en", nm=l==="ko"?g.ko:l==="ja"?(g.ja||g.en):(l==="zhs"||l==="zht")?(g.zh||g.en):g.en; return F(o,{g:nm||g.ko||""}); }
+// 말풍선 목록 — 「내 예약」과 같은 규칙으로 숨김: 취소·환불 · 후기까지 끝난 것(자유 가이드는 투어 완료+후기, 패키지는 후기)
+function shown(r){ return !(r.status==="cancelled"||r.status==="refunded"||(r.reviewed&&(r.done||r.kind==="pkg"))); }
 var MD={half:T6("반일 (4시간)","Half day (4 h)","半日（4時間）","半天（4小时）","半天（4小時）","Medio día (4 h)"),full:T6("하루 (8시간)","Full day (8 h)","1日（8時間）","一天（8小时）","一天（8小時）","Día completo (8 h)"),
  hours:T6("{n}시간","{n} h","{n}時間","{n}小时","{n}小時","{n} h"),days:T6("{n}일 (하루 8시간)","{n} days (8 h a day)","{n}日（1日8時間）","{n}天（每天8小时）","{n}天（每天8小時）","{n} días (8 h al día)")};
 function mdTx(k){ if(!k||!k.mode) return ""; return F(MD[k.mode]||MD.half,{n:k.mode==="days"?k.d:k.h}); }
@@ -99,7 +110,7 @@ css.textContent="#hit{position:relative}#hit .chdot{position:absolute;top:-3px;r
  +".chgo{display:block;width:100%;border:0;border-radius:12px;background:#0c8599;color:#fff;font-size:16px;font-weight:900;padding:12px;margin-top:8px;cursor:pointer}.chgo:disabled{opacity:.45;cursor:default}.chgo.g2{background:#efece4;color:#1d2433;font-size:14px;padding:10px}"
  +".chdone{border:1px solid #b2f2bb;background:#ebfbee;color:#2b8a3e;border-radius:12px;padding:10px 12px;font-weight:800;margin:8px 0}.chstars{display:flex;gap:4px;margin:4px 0}.chstars button{border:0;background:none;font-size:32px;line-height:1;color:#ccc;cursor:pointer;padding:2px 4px}.chstars button.on{color:#f59f00}"
  +".chin{width:100%;box-sizing:border-box;border:1.5px solid var(--line,#e6e9ef);border-radius:10px;padding:9px 11px;font:inherit;font-size:14.5px;background:var(--bg,#f4f6fa);color:var(--ink,#111827);margin-top:6px}.chin::placeholder{color:#8a929c;opacity:1}"
- +".cherr{color:#c92a2a;font-weight:800;font-size:13px;margin-top:6px}.chsmall{font-size:12.5px;color:var(--sub,#5b6474);margin-top:6px;line-height:1.5}"
+ +".chsys{text-align:center;margin:8px 0}.chsys span{display:inline-block;font-size:12px;color:var(--sub,#5b6474);background:var(--bg,#f1f3f5);border:1px solid var(--line,#e6e9ef);border-radius:999px;padding:4px 11px;line-height:1.4}.chsys small{color:#8a929c;margin-left:6px}.chpend{display:inline-block;font-size:11.5px;font-weight:800;color:#e8590c;background:#fff4e6;border-radius:999px;padding:1px 8px;margin-left:6px}.cherr{color:#c92a2a;font-weight:800;font-size:13px;margin-top:6px}.chsmall{font-size:12.5px;color:var(--sub,#5b6474);margin-top:6px;line-height:1.5}"
  +"#itB .chtabs{margin:-16px -14px 10px;padding:12px 12px 8px}";
 document.head.appendChild(css);
 
@@ -127,13 +138,13 @@ function panel(){ stopPoll(); X.view="list"; X.room=null; var b=shell();
 function loadLists(){ var tks=bks().map(function(x){ return x.tk; }), s=sess(), ps=[];
   ps.push(tks.length||s?post("/guide/chat",{op:"rooms",tks:tks,sess:s||undefined}).then(function(j){ X.rooms=j&&j.ok?j.items:[]; (X.rooms||[]).forEach(function(r){ try{ if(window.NEARBK&&!NEARBK.get(r.oid)) NEARBK.put(NEARBK.from(r,r.tk)); }catch(e){} }); }).catch(function(){ X.rooms=X.rooms||[]; }):Promise.resolve(X.rooms=[]));
   if(isG()||X.gwant) ps.push(gMe());
-  return Promise.all(ps).then(function(){ UNREAD.c=(X.rooms||[]).reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0); UNREAD.g=X.gme?X.gme.items.reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0):0; dotPaint(); }); }
+  return Promise.all(ps).then(function(){ UNREAD.c=(X.rooms||[]).filter(shown).reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0); UNREAD.g=X.gme?X.gme.items.reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0):0; dotPaint(); }); }
 function gMe(){ var s=sess(); if(!s){ X.gme=null; X.gerr="login"; return Promise.resolve(); }
   return post("/guide/gme",{sess:s,op:"me"}).then(function(j){ if(j&&j.ok){ X.gme=j; X.gerr=""; ls("mpv_isguide","1"); } else { X.gme=null; X.gerr=(j&&j.err)||"x"; if(j&&(j.err==="notguide"||j.err==="sess")) ls("mpv_isguide",null); if(j&&j.err==="sess") ls("mpv_pg_sess",null); } }).catch(function(){ X.gerr="net"; }); }
 function avHtml(g){ return g&&g.photo?'<img class="av" src="'+HB+'/guide/photo?id='+encodeURIComponent(g.id)+'" alt="">':'<span class="av">🧭</span>'; }
-function paintList(){ var bd=body(); if(!bd||X.view!=="list") return; var h="", rs=X.rooms||[];
+function paintList(){ var bd=body(); if(!bd||X.view!=="list") return; var h="", rs=(X.rooms||[]).filter(shown);
   if(rs.length||!(isG()||X.gwant)){ h+='<div class="chlbl">'+esc(L(TX.my))+'</div>';
-    h+=rs.length?rs.map(function(r){ return '<div class="chit" data-chroom="'+esc(r.tk)+'">'+avHtml(r.g)+'<div class="b"><b>'+esc(r.kind==="pkg"?r.pname:gName(r.g))+'</b><div class="m">'+esc(r.date+" "+r.time+" (KST)")+(r.kind==="pkg"&&r.g?' · '+esc(gName(r.g)):'')+(r.room.ro?' · '+esc(L(TX.ro)).split(" (")[0]:'')+'</div></div>'+(r.room.unread>0?'<span class="u">'+r.room.unread+'</span>':'')+'</div>'; }).join(""):'<div class="chnote">'+esc(L(TX.none))+'</div>'; }
+    h+=rs.length?rs.map(function(r){ return '<div class="chit" data-chroom="'+esc(r.tk)+'">'+avHtml(r.g)+'<div class="b"><b>'+esc(r.kind==="pkg"?r.pname:gName(r.g))+'</b><div class="m">'+esc(r.date+" "+r.time+" (KST)")+(r.kind==="pkg"&&r.g?' · '+esc(gName(r.g)):'')+(r.kind==="pkg"&&!r.g?'<span class="chpend">'+esc(L(TX.wait))+'</span>':'')+(r.room.ro?' · '+esc(L(TX.ro)).split(" (")[0]:'')+'</div></div>'+(r.room.unread>0?'<span class="u">'+r.room.unread+'</span>':'')+'</div>'; }).join(""):'<div class="chnote">'+esc(L(TX.none))+'</div>'; }
   if(isG()||X.gwant){ h+='<div class="chlbl">'+esc(L(TX.gScr))+(X.gme?' · '+esc(gName(X.gme.guide)):'')+'</div>';
     if(X.gerr==="login"||X.gerr==="sess") h+='<div class="chnote">'+esc(L(TX.gLogin))+'</div><button type="button" class="chgo" data-chlogin="1">'+esc(L(TX.gLoginB))+'</button>';
     else if(X.gerr==="notguide") h+='<div class="chnote">'+esc(L(TX.gNot))+'</div><button type="button" class="chgo g2" data-chlogin="1">'+esc(L(TX.gLoginB))+'</button>';
@@ -158,7 +169,7 @@ function loginThen(cb){ if(!window.mpPG) return; window.mpPG.open(); var bx=docu
 // ── 대화방 ──
 function sumRows(sm,side){ var r=function(a,b){ return '<div class="r"><span>'+esc(L(a))+'</span><span>'+b+'</span></div>'; }, pk=sm.kind==="pkg";
   return '<div class="chsum"><div style="font-weight:800;font-size:13.5px;margin-bottom:3px">'+esc(L(TX.sum))+'</div>'
-    +(pk?r(T6("상품","Product","商品","商品","商品","Producto"),esc(side==="g"?(sm.pnameKo||sm.pname):sm.pname)):r(TX.gd,esc(side==="g"?(X.gme&&X.gme.guide?X.gme.guide.name:""):gName(X.room&&X.room.g))+(sm.k?' · '+esc(mdTx(sm.k)):'')))
+    +(pk?r(T6("상품","Product","商品","商品","商品","Producto"),esc(side==="g"?(sm.pnameKo||sm.pname):sm.pname))+(side==="c"?r(TX.gd,X.room&&X.room.g?esc(gName(X.room.g)):'<span class="chpend" style="margin:0">'+esc(L(TX.wait))+'</span>'):''):r(TX.gd,esc(side==="g"?(X.gme&&X.gme.guide?X.gme.guide.name:""):gName(X.room&&X.room.g))+(sm.k?' · '+esc(mdTx(sm.k)):'')))
     +r(TX.dt,esc(sm.date+" "+sm.time+" (KST)"))+(sm.end?r(TX.endL,esc(window.NEARBK?NEARBK.when(sm.end):hm(sm.end))):'')+r(TX.ppl,esc(String(sm.n)))+r(TX.amt,esc(won(sm.amount)))+r(TX.oid,esc(sm.oid))
     +(side==="g"?r(TX.cust,esc(sm.cust||""))+r(TX.lang,esc(LGN[sm.lang]||sm.lang||""))+(sm.memo?r(TX.memo,esc(sm.memo)):''):'')+'</div>'; }
 function room(tk){ var r=(X.rooms||[]).filter(function(x){ return x.tk===tk; })[0]||null; openRoom({side:"c",tk:tk,g:r&&r.g}); }
@@ -178,9 +189,10 @@ function paintRoom(first){ var b=box(); if(!b||X.view!=="room") return; var o=X.
   var hd=b.querySelector(".chhd b"); if(hd) hd.textContent=side==="g"?(sm.cust||""):(sm.kind==="pkg"?sm.pname:gName(o.g));
   var near=bd.scrollHeight-bd.scrollTop-bd.clientHeight<80;
   var h=sumRows(sm,side)+'<div class="chtools"></div>';
-  h+=X.msgs.length?X.msgs.map(function(m){ var me=m.by===side; return '<div class="chmsg'+(me?' me':'')+'"><div class="bb">'+esc(m.t)+'<div class="tm">'+(me?esc(L(TX.me)):esc(side==="g"?L(TX.cust):L(TX.gd)))+' · '+hm(m.at)+'</div></div></div>'; }).join(""):'<div class="chnote">'+esc(L(TX.empty))+'</div>';
+  h+=X.msgs.length?X.msgs.map(function(m){ if(m.by==="s") return '<div class="chsys"><span>'+esc(sysTx(m))+'<small>'+hm(m.at)+'</small></span></div>'; var me=m.by===side; return '<div class="chmsg'+(me?' me':'')+'"><div class="bb">'+esc(m.t)+'<div class="tm">'+(me?esc(L(TX.me)):esc(side==="g"?L(TX.cust):L(TX.gd)))+' · '+hm(m.at)+'</div></div></div>'; }).join(""):'<div class="chnote">'+esc(L(TX.empty))+'</div>';
   bd.innerHTML=h; paintTools();
   var ft=b.querySelector(".chft"); if(o.rm&&o.rm.ro){ ft.innerHTML='<div class="chsmall" style="flex:1;text-align:center">'+esc(L(TX.ro))+'</div>'; }
+  else if(o.rm&&o.rm.guide===false){ ft.innerHTML='<div class="chsmall" style="flex:1;text-align:center">'+esc(L(TX.noG))+'</div>'; }   // 패키지 — 가이드 확정 전엔 안내 글만 (11-05)
   else if(!ft.querySelector("textarea")){ ft.innerHTML='<textarea maxlength="500" rows="1" placeholder="'+esc(L(TX.ph))+'"></textarea><button type="button">'+esc(L(TX.send))+'</button>';
     var ta=ft.querySelector("textarea"), bt=ft.querySelector("button"); ta.oninput=function(){ ta.style.height="auto"; ta.style.height=Math.min(120,ta.scrollHeight)+"px"; }; bt.onclick=function(){ sendMsg(ta,bt); }; }
   if(first||near) bd.scrollTop=bd.scrollHeight; }
@@ -236,12 +248,12 @@ function dotPaint(){ var hb=document.getElementById("hit"); if(!hb) return; var 
   [].forEach.call(document.querySelectorAll('.chtabs [data-cht="chat"]'),function(t){ var e=t.querySelector(".n"); if(n>0){ if(!e){ e=document.createElement("span"); e.className="n"; t.appendChild(e); } e.textContent=n; } else if(e) e.remove(); }); }
 var dotT=null; function dotSoon(){ if(dotT) return; dotT=setTimeout(function(){ dotT=null; dot(); },1500); }
 function dot(){ var tks=bks().map(function(x){ return x.tk; }), s=sess(), ps=[];
-  if(tks.length) ps.push(post("/guide/chat",{op:"rooms",tks:tks}).then(function(j){ if(j&&j.ok){ X.rooms=j.items; UNREAD.c=j.items.reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0); } }).catch(function(){}));
+  if(tks.length) ps.push(post("/guide/chat",{op:"rooms",tks:tks}).then(function(j){ if(j&&j.ok){ X.rooms=j.items; UNREAD.c=j.items.filter(shown).reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0); } }).catch(function(){}));
   else UNREAD.c=0;
   if(isG()) ps.push(gMe().then(function(){ UNREAD.g=X.gme?X.gme.items.reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0):0; }));
   else UNREAD.g=0;
   return Promise.all(ps).then(dotPaint); }
-function has(){ return bks().some(function(x){ return x.room||x.kind==="gbk"; })||isG(); }   // 대화방이 있을 수 있는 사람 — 아니면 말풍선 = 통역 그대로
+function has(){ return bks().some(function(x){ return x.room||x.kind==="gbk"||x.kind==="pkg"; })||isG(); }   // 대화방이 있을 수 있는 사람 — 아니면 말풍선 = 통역 그대로
 setInterval(function(){ if(!document.hidden&&has()) dot(); },60000);
 document.addEventListener("visibilitychange",function(){ if(!document.hidden&&has()) dot(); });
 // 머리줄 말풍선 — 대화방이 있는 사람만 탭 두 개 창, 나머지는 지금 통역(interp.js) 그대로
