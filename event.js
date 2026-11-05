@@ -187,7 +187,7 @@ function wire(e){ [].forEach.call(e.querySelectorAll("[data-ev]"),function(x){ x
 function cur(){ if(TAB==="ev"&&E) return E; if(TAB==="sd"&&SD) return SD; if(TAB==="dsp"&&DS) return DS; if(TAB==="th"&&TH) return TH; return B||SD||DS||TH||E; }   // 두 칸이 다 열려 있으면 고른 탭
 function needIn(o){ if(!o.me) return '<div class="ecard"><button type="button" class="ebtn" data-ev="signin">'+esc(L(T.signin))+'</button></div>'; var gh=o.me.grad?'<div class="ecard" style="color:#7a3cff;font-weight:700">'+esc(L(T.grad))+'</div>':''; if(!o.me.agreed) return gh+'<div class="ecard"><button type="button" class="ebtn" data-ev="rules">'+esc(L(T.agree))+'</button></div>'; return gh; }   /* 졸업자도 순위에 든다 — 졸업 안내 + 동의 단추 (10-27) */
 function evPaint(){ var e=document.getElementById("evBody"); if(!e||!E) return; var k=E.kind, me=E.me; setHead(k);
-  var h=tabsH()+(E.ko?KOEV:'<div class="ecard" style="background:#fff1e4;border:2px solid #ff7a1a;font-size:13px;font-weight:800;color:#8a3d00">'+esc(L(EVP))+'</div>');
+  var h=tabsH()+(E.ko?'':'<div class="ecard" style="background:#fff1e4;border:2px solid #ff7a1a;font-size:13px;font-weight:800;color:#8a3d00">'+esc(L(EVP))+'</div>');
   h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKL))+'</b> · '+esc(L(RANKHOW[k]||{en:""}))+'</div><div class="ecard ewk"><span>'+esc(L(T.ends))+'</span><span>'+leftTxt(E.end)+'</span></div>'+needIn(E);
   var ok=me&&me.agreed;
   if(k==="treasure"){
@@ -509,8 +509,8 @@ function paint(){ var e=document.getElementById("evBody"); if(!e||!B) return;
   var h=tabsH(), me=B.me, rh=RANKHOW[B.kind||"bingo"], dl=B.daily||B.ko;
   if(!B.cells||!B.open){ evClosed(null); return; }
   setHead("bingo");
-  if(B.ko) h+='<div class="ecard" style="background:#eaf3ff;border:2px solid #3b82f6;font-weight:800;color:#1e3a8a;text-align:center">한국인 판 · 한국어 설정으로 한국에서 접속한 분만 풀 수 있어요. 순위·점수·별 배지가 있습니다. 사자성어·순우리말 등 어려운 문제가 매일 밤 12시에 바뀝니다.</div>';   // 한국인 판 (10-27, 한국어만)
-  else if(B.test) h+='<div class="ecard" style="background:#fff4d6;border:2px dashed #e0a100;font-weight:800;color:#8a5a00;text-align:center">TEST · '+esc(L(TST))+'</div>';
+  if(B.ko){}   // 11-05 사장님: 게임 위 파란 띠(한국인 판) 삭제
+  else if(B.test){}   // 11-05 사장님: 게임 위 노란 띠(TEST) 삭제
   else if(B.live) h+='<div class="ecard" style="background:#fff1e4;border:2px solid #ff7a1a;font-size:13px;font-weight:800;color:#8a3d00">'+esc(L(LIVEB))+'</div>';   // 매일 빙고 실전 — 주간 점수·기간
   if(rh) h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(dl?RKD:RKL))+'</b> · '+esc(L(rh))+'</div>';
   if(!B.test&&!B.ko) h+='<div class="ecard ewk"><span>'+esc(L(dl?DSUB:T.ends))+'</span><span>'+esc(L(T.same))+'</span></div>';
@@ -617,8 +617,8 @@ function sdPut(n){ if(!SD||!SD.me||SD.me.done||SDSEL<0||SD.puz[SDSEL]!=="0") ret
   if(nw.length){ fxSnd("line"); fxFlash(nw.map(cel),"fxl"); } else { fxSnd("ok"); fxFlash([cel(i)],"fxg"); } }
 function sdTick(){ clearInterval(SDTI); SDTI=setInterval(function(){ var c=document.getElementById("sdClk"); if(!c||!SD||!SD.me||SD.me.done){ clearInterval(SDTI); return; } c.textContent=elTxt(sdElapsed()); },1000); }
 function sdPaint(){ var e=document.getElementById("evBody"); if(!e||!SD) return; setHead("sudoku"); var me=SD.me, h=tabsH(), max=SD.max||12;
-  if(SD.ko) h+='<div class="ecard" style="background:#eaf3ff;border:2px solid #3b82f6;font-weight:800;color:#1e3a8a;text-align:center">한국인 판 · 한국어 설정으로 한국에서 접속한 분만 참가합니다. 순위·별 배지가 있습니다. 판은 매일 밤 12시에 바뀝니다.</div>';
-  else if(SD.test) h+='<div class="ecard" style="background:#fff4d6;border:2px dashed #e0a100;font-weight:800;color:#8a5a00;text-align:center">TEST · '+esc(L(TST))+'</div>';
+  if(SD.ko){}   // 11-05 사장님: 게임 위 파란 띠(한국인 판) 삭제
+  else if(SD.test){}   // 11-05 사장님: 게임 위 노란 띠(TEST) 삭제
   h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKD))+'</b> · '+esc(L(RANKHOW.sudoku))+'</div>';
   h+=needIn(SD);
   if(me&&me.agreed){
@@ -658,8 +658,8 @@ var DST={res:{ko:"{t}문제 중 {n}개!",en:"{n} out of {t}!",ja:"{t}問中{n}�
  ln:{ko:"「시작」을 누르면 지도 위에 명소 사진이 나오고 시간이 갑니다.",en:"Press “Start” — a sight photo appears over the map and the clock starts.",ja:"「スタート」を押すと地図の上に名所の写真が出て、時間の計測が始まります。",zhs:"按「开始」后，地图上方会出现景点照片并开始计时。",zht:"按「開始」後，地圖上方會出現景點照片並開始計時。",es:"Pulsa «Empezar»: aparece una foto del lugar sobre el mapa y empieza el reloj."}};
 function dsRes(n,t){ return L(DST.res).replace("{n}",n||0).replace("{t}",t||10); }
 function dsPaint(){ var e=document.getElementById("evBody"); if(!e||!DS) return; setHead("dspot"); var me=DS.me, h=tabsH(), max=DS.max||12, tot=DS.total||10;
-  if(DS.ko) h+='<div class="ecard" style="background:#eaf3ff;border:2px solid #3b82f6;font-weight:800;color:#1e3a8a;text-align:center">한국인 판 · 한국어 설정으로 한국에서 접속한 분만 참가합니다. 순위·별 배지가 있습니다. 문제는 매일 밤 12시에 바뀝니다.</div>';
-  else if(DS.test) h+='<div class="ecard" style="background:#fff4d6;border:2px dashed #e0a100;font-weight:800;color:#8a5a00;text-align:center">TEST · '+esc(L(TST))+'</div>';
+  if(DS.ko){}   // 11-05 사장님: 게임 위 파란 띠(한국인 판) 삭제
+  else if(DS.test){}   // 11-05 사장님: 게임 위 노란 띠(TEST) 삭제
   h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKD))+'</b> · '+esc(L(RANKHOW.dspot))+'</div>';
   h+=needIn(DS);
   if(me&&me.agreed){ var live=me.st&&!me.done;
@@ -697,8 +697,8 @@ var THT={lvn:{ko:"레벨 {n}",en:"Level {n}",ja:"レベル{n}",zhs:"等级 {n}",
  miss:{ko:"아니에요 — 다시 눌러 보거나 다음 힌트를 보세요",en:"Not this one — tap again or take the next hint",ja:"違います — もう一度タップするか次のヒントを見てください",zhs:"不是这个——再点一次或看下一条提示",zht:"不是這個——再點一次或看下一條提示",es:"No es este: vuelve a tocar o pide la siguiente pista"},
  ln:{ko:"「시작」을 누르면 지도 위에 첫 힌트가 나옵니다. 힌트에 맞는 명소 그림을 지도에서 누르세요.",en:"Press “Start” and the first hint appears over the map. Tap the matching sight’s picture on the map.",ja:"「スタート」を押すと地図の上に最初のヒントが出ます。ヒントに合う名所の絵を地図でタップしてください。",zhs:"按「开始」后，地图上方会出现第一条提示。请在地图上点击符合提示的景点图画。",zht:"按「開始」後，地圖上方會出現第一條提示。請在地圖上點擊符合提示的景點圖畫。",es:"Pulsa «Empezar» y aparece la primera pista sobre el mapa. Toca el dibujo del lugar que coincida."}};
 function thPaint(){ var e=document.getElementById("evBody"); if(!e||!TH) return; setHead("thunt"); var me=TH.me, h=tabsH(), tot=TH.total||0;
-  if(TH.ko) h+='<div class="ecard" style="background:#eaf3ff;border:2px solid #3b82f6;font-weight:800;color:#1e3a8a;text-align:center">한국인 판 · 한국어 설정으로 한국에서 접속한 분만 참가합니다. 순위가 따로 있고, 레벨은 날마다 초기화되지 않습니다.</div>';
-  else if(TH.test) h+='<div class="ecard" style="background:#fff4d6;border:2px dashed #e0a100;font-weight:800;color:#8a5a00;text-align:center">TEST</div>';
+  if(TH.ko){}   // 11-05 사장님: 게임 위 파란 띠(한국인 판) 삭제
+  else if(TH.test){}   // 11-05 사장님: 게임 위 노란 띠(TEST) 삭제
   h+='<div class="ecard" style="font-size:13px"><b style="color:#ff7a1a">'+esc(L(RKD))+'</b> · '+esc(L(RANKHOW.thunt))+'</div>';
   h+=needIn(TH);
   if(me&&me.agreed){
