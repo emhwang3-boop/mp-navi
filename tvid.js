@@ -4,7 +4,7 @@
  *  · 넷플릭스 상영관(app:"netflix")도 같은 창 — Netflix Korea 공식 채널(+Netflix 본 채널) 예고편 data/tvid_nf.json, 맨 아래 「넷플릭스 앱에서 보기」= appGo("netflix")
  *  · 재생은 karaoke.js 와 같은 유튜브 퍼가기 플레이어(IFrame API). 막힌 영상은 「유튜브에서 열기」. 검색창 없음
  *  · 음악 감상실(「__music」 — 서울 전체 관악산 기슭 옛 노래방 칸, 사장님 11-05) = 같은 창·같은 플레이어 + 위에 검색칸.
- *    허브 /ytsearch(공식 YouTube Data API v3, 퍼가기 되는 음악 영상만) → 조회수 많은 순 10개(11-05 5→10) · 이어 듣기·반복·셔플(아이콘 = Material Symbols repeat·shuffle, Apache 2.0) · 플레이어는 늘 보이고 위를 덮지 않음(막힘 안내는 플레이어 밖) ·
+ *    허브 /ytsearch(공식 YouTube Data API v3, 퍼가기 되는 음악 영상만) → 조회수 많은 순 10개(11-05 5→10) · 금색 주크박스(img/music/jukebox_ml.webp = 노래방 주크박스 그림 복사본) 앞판에 플레이어, 그림 단추 7개(⏮ ▶ ⏭ ⏹ 반복 셔플 소리)로 이어 듣기·반복·셔플 · 플레이어는 늘 보이고 위를 덮지 않음(막힘 안내는 플레이어 밖) ·
  *    앱이 화면에서 사라지면 일시정지 · 창 아래 YouTube 서비스 약관·구글 개인정보처리방침 링크
  *  · 11-05 사장님 「가」 — 유튜브·넷플릭스 상영관도 같은 유튜브 규칙 세 가지: 숨으면 일시정지 · 맨 아래 약관 링크 줄 · 막힌 영상 안내는 플레이어 아래 한 줄
  */
@@ -53,7 +53,14 @@ var TX={
  tos:{ko:"YouTube 서비스 약관",en:"YouTube Terms of Service",ja:"YouTube 利用規約",zhs:"YouTube 服务条款",zht:"YouTube 服務條款",es:"Términos del Servicio de YouTube"},
  pp:{ko:"구글 개인정보처리방침",en:"Google Privacy Policy",ja:"Google プライバシー ポリシー",zhs:"Google 隐私权政策",zht:"Google 隱私權政策",es:"Política de Privacidad de Google"},
  rep:{ko:"반복 재생",en:"Repeat",ja:"リピート再生",zhs:"循环播放",zht:"循環播放",es:"Repetir"},
- shuf:{ko:"셔플 재생",en:"Shuffle",ja:"シャッフル再生",zhs:"随机播放",zht:"隨機播放",es:"Aleatorio"}
+ shuf:{ko:"셔플 재생",en:"Shuffle",ja:"シャッフル再生",zhs:"随机播放",zht:"隨機播放",es:"Aleatorio"},
+ jprev:{ko:"이전 곡",en:"Previous",ja:"前の曲",zhs:"上一首",zht:"上一首",es:"Anterior"},
+ jplay:{ko:"재생",en:"Play",ja:"再生",zhs:"播放",zht:"播放",es:"Reproducir"},
+ jpause:{ko:"일시정지",en:"Pause",ja:"一時停止",zhs:"暂停",zht:"暫停",es:"Pausa"},
+ jnext:{ko:"다음 곡",en:"Next",ja:"次の曲",zhs:"下一首",zht:"下一首",es:"Siguiente"},
+ jstop:{ko:"정지",en:"Stop",ja:"停止",zhs:"停止",zht:"停止",es:"Detener"},
+ jmute:{ko:"소리 끄기",en:"Mute",ja:"消音",zhs:"静音",zht:"靜音",es:"Silenciar"},
+ junmute:{ko:"소리 켜기",en:"Unmute",ja:"消音を解除",zhs:"取消静音",zht:"取消靜音",es:"Activar sonido"}
 };
 var st=document.createElement("style");
 st.textContent="#tvBox{position:fixed;inset:0;z-index:2147483004;background:radial-gradient(ellipse at 20% 0%,#3a0a0a 0%,#140707 45%,#050303 100%);color:#fff3f0;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR','Hiragino Sans','PingFang SC','Microsoft YaHei',sans-serif;overflow:hidden}"
@@ -69,10 +76,17 @@ st.textContent="#tvBox{position:fixed;inset:0;z-index:2147483004;background:radi
  +"#tvBox .tnote{flex:0 0 auto;margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:800}#tvBox .tnote[hidden]{display:none}#tvBox .tnote a{background:#ff0033;color:#fff;text-decoration:none;border-radius:999px;padding:6px 12px;font-weight:900}"
  +"#tvBox .tit span.tmu{display:block}#tvBox .tmu em{font-style:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}#tvBox .tmu i{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
  +"#tvBox .tft{flex:0 0 auto;text-align:center;font-size:12px;font-weight:600;line-height:1.5;padding:8px 4px calc(10px + env(safe-area-inset-bottom));opacity:.75}#tvBox .tft a{color:inherit;text-decoration:underline}"
- +"#tvBox .tctl{display:flex;justify-content:center;gap:28px;margin-top:6px;flex:0 0 auto}#tvBox .tctl button{width:46px;height:40px;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:none;color:#fff;opacity:.4;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent}#tvBox .tctl button svg{width:26px;height:26px;fill:currentColor}#tvBox .tctl button.on{opacity:1;color:#ff3b3b;background:rgba(255,59,59,.16)}";   /* 음악 감상실 반복·셔플 — 켜짐 빨강·꺼짐 흐리게 (11-05) */   /* 음악 감상실 — 검색칸·막힘 안내(플레이어 밖)·후보 줄·약관 링크 (11-05) */
+ +"#tvBox .tmw{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;margin:6px -12px 0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}"   /* 주크박스+목록 = 한 칸 · 주크박스는 앞판 위끝에서 붙어 서고(sticky) 그 아래로 목록만 지나간다 */
+ +"#tvBox .tjw{position:sticky;z-index:2}#tvBox .tji{width:100%;display:block;pointer-events:none;-webkit-user-select:none;user-select:none}"
+ +"#tvBox .tjw .tpl{position:absolute;width:auto;aspect-ratio:auto;margin:0;border-radius:4px;box-shadow:none;z-index:3}#tvBox .tjw .tpl .tmsg{font-size:14px;color:#eafcff}"   /* 앞판 = 플레이어 (그 위엔 아무것도 없음) */
+ +"#tvBox .tjar{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;overflow:hidden;padding:0 5% 3%;box-sizing:border-box;color:#fff5d6;text-shadow:0 0 8px rgba(255,200,90,.8),0 1px 2px #000;pointer-events:none}#tvBox .tjar b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:16px;font-weight:900;line-height:1.2;max-width:100%}#tvBox .tjar small{display:block;max-width:85%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:700;color:#ffe08a;margin-top:2px}"   /* 위 반달 유리 = 지금 곡 (노래방 주크박스와 같은 방식) */
+ +"#tvBox .tjcb{position:absolute;inset:0;pointer-events:none;z-index:2}#tvBox .tjk:before{content:\"\";position:absolute;inset:-12%;border-radius:50%}#tvBox .tjk{position:absolute;width:9%;aspect-ratio:1;transform:translate(-50%,-50%);border:0;padding:0;border-radius:50%;background:transparent;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent;transition:box-shadow .2s,background .2s}"
+ +"#tvBox .tjk.on{box-shadow:0 0 0 3px #fff1b8,0 0 0 5px rgba(255,190,60,.9),0 0 18px 7px rgba(255,205,90,.85),0 0 34px 12px rgba(255,170,40,.45);background:radial-gradient(circle,rgba(255,240,180,.3) 0,rgba(255,222,140,.14) 55%,rgba(255,222,140,0) 72%)}"   /* 켜짐 = 금빛 테 (노래방 주크박스 .kjbk.on 과 같은 모양) */
+ +"#tvBox .tjk:not(:disabled):active{background:radial-gradient(circle,rgba(0,0,0,.42) 0,rgba(0,0,0,.3) 60%,rgba(0,0,0,0) 74%);box-shadow:inset 0 4px 10px rgba(0,0,0,.6);transform:translate(-50%,-50%) scale(.97)}#tvBox .tjk:disabled,#tvBox .tjk.mut{background:radial-gradient(circle,rgba(10,6,2,.55) 0,rgba(10,6,2,.45) 62%,rgba(10,6,2,0) 73%)}#tvBox .tjk:disabled{cursor:default}"   /* 누름 · 쓸 수 없음 · 소리 꺼짐 = 어둡게 */
+ +"#tvBox .tmw .tls{flex:none;overflow:visible;margin:0;padding:8px 12px 16px}#tvBox .tmw .tnote{margin:8px 12px 0}";   /* 음악 감상실 주크박스 (11-05) */   /* 음악 감상실 — 검색칸·막힘 안내(플레이어 밖)·후보 줄·약관 링크 (11-05) */
 document.head.appendChild(st);
 var MD={yt:{G:G,t:"t",s:"s",f:"data/tvid.json",k:"youtubeth",g:"all"},nf:{G:GNF,t:"nt",s:"ns",f:"data/tvid_nf.json",k:"netflixth",g:"drama"},mu:{G:[],t:"mt",s:"ms",k:"musiclounge",g:""}};
-var T={m:"yt",cache:{},g:"all",all:null,idx:-1,pl:null,ready:false,want:"",res:[],mst:"",sq:0,ord:[],pos:-1,rep:false,shuf:false};   // ord·pos = 음악 감상실 재생 순서·지금 자리, rep·shuf = 반복·셔플 (기본 끔)   // res·mst·sq = 음악 감상실 검색 결과·안내 문구·검색 차례
+var T={m:"yt",cache:{},g:"all",all:null,idx:-1,pl:null,ready:false,want:"",res:[],mst:"",sq:0,ord:[],pos:-1,rep:false,shuf:false,mut:false,jy:0};   // mut = 소리 끔 · jy = 주크박스가 붙어 서는 스크롤 자리   // ord·pos = 음악 감상실 재생 순서·지금 자리, rep·shuf = 반복·셔플 (기본 끔)   // res·mst·sq = 음악 감상실 검색 결과·안내 문구·검색 차례
 function ytApi(cb){ if(window.YT&&YT.Player) return cb(); var prev=window.onYouTubeIframeAPIReady; window.onYouTubeIframeAPIReady=function(){ try{ prev&&prev(); }catch(e){} cb(); };
   if(!document.getElementById("ytApiJs")){ var s=document.createElement("script"); s.id="ytApiJs"; s.src="https://www.youtube.com/iframe_api"; document.head.appendChild(s); } }
 function box(){ return document.getElementById("tvBox"); }
@@ -95,12 +109,12 @@ function play(i){ var x=items()[i]; if(!x) return; T.idx=i; paintList(); var b=b
     if(T.pl){ if(T.ready) T.pl.loadVideoById(x.id); return; }   // 플레이어는 하나만
     var d=document.createElement("div"); d.id="tvYt"; pl.insertBefore(d,pl.firstChild);
     T.pl=new YT.Player("tvYt",{videoId:x.id,playerVars:{autoplay:1,playsinline:1,rel:0},events:{
-      onReady:function(){ T.ready=true; if(T.want&&T.pl.getVideoData&&T.pl.getVideoData().video_id!==T.want) T.pl.loadVideoById(T.want); },
+      onReady:function(){ T.ready=true; if(T.want&&T.pl.getVideoData&&T.pl.getVideoData().video_id!==T.want) T.pl.loadVideoById(T.want); if(T.m==="mu"){ if(T.mut){ try{ T.pl.mute(); }catch(e){} } muDeck(); } },
       onError:function(){ if(T.cur) blocked(T.cur); },
-      onStateChange:function(ev){ if(ev&&ev.data===1) ov("","lo"); if(ev&&ev.data===0&&T.m==="mu") muNext(); } }}); }); }   // 0 = 곡 끝 → 음악 감상실 이어 듣기
+      onStateChange:function(ev){ if(ev&&ev.data===1) ov("","lo"); if(ev&&ev.data===0&&T.m==="mu") muNext(); if(T.m==="mu") muDeck(); } }}); }); }   // 0 = 곡 끝 → 음악 감상실 이어 듣기
 function load(){ var m=T.m; if(T.cache[m]&&T.cache[m].length){ T.all=T.cache[m]; paintList(); return; } T.all=null; paintList();
   fetch(MD[m].f+"?v=1028tv").then(function(r){ return r.json(); }).then(function(j){ var a=(j&&j.items)||[]; T.cache[m]=a; if(T.m===m){ T.all=a; paintList(); } }).catch(function(){ if(T.m===m){ T.all=[]; paintList(); } }); }
-function open(mode){ var M=MD[mode]||MD.yt; T.m=MD[mode]?mode:"yt"; T.g=M.g; T.all=null; T.idx=-1; T.pl=null; T.ready=false; T.want=""; T.cur=null; T.res=[]; T.mst="mhint"; T.sq++; T.ord=[]; T.pos=-1; T.rep=false; T.shuf=false; var old=box(); if(old) old.remove();
+function open(mode){ var M=MD[mode]||MD.yt; T.m=MD[mode]?mode:"yt"; T.g=M.g; T.all=null; T.idx=-1; T.pl=null; T.ready=false; T.want=""; T.cur=null; T.res=[]; T.mst="mhint"; T.sq++; T.ord=[]; T.pos=-1; T.rep=false; T.shuf=false; T.mut=false; var old=box(); if(old) old.remove();
   var b=document.createElement("div"); b.id="tvBox";
   if(T.m==="mu") return muOpen(b,M);
   b.innerHTML='<div class="tin"><div class="thd"><div><b>'+esc(L(TX[M.t]))+'</b><small>'+esc(L(TX[M.s]))+'</small></div><button type="button" class="tx">✕ '+esc(L(TX.x))+'</button></div>'
@@ -118,44 +132,65 @@ function fmtV(n){ var s; try{ s=new Intl.NumberFormat(LOC[window.LANG]||"en-US",
 function thumbOf(x){ return /^https:\/\/i\.ytimg\.com\//.test(x.thumb||"")?x.thumb:"https://i.ytimg.com/vi/"+encodeURIComponent(x.id)+"/mqdefault.jpg"; }
 function ftHtml(){ return '<div class="tft"><a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">'+esc(L(TX.tos))+'</a> · <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">'+esc(L(TX.pp))+'</a></div>'; }   // 맨 아래 YouTube 서비스 약관 · 구글 개인정보처리방침 (모든 상영관·음악 감상실)
 function paintMu(){ var b=box(); if(!b) return; var el=b.querySelector(".tls");
-  if(T.mst){ el.innerHTML='<div class="tst">'+esc(L(TX[T.mst]))+'</div>'; return; }
+  muDeck(); if(T.mst){ el.innerHTML='<div class="tst">'+esc(L(TX[T.mst]))+'</div>'; return; }
   el.innerHTML=(T.res||[]).map(function(x,i){ return '<div class="tit'+(i===T.idx?' on':'')+'" data-i="'+i+'"><img loading="lazy" src="'+esc(thumbOf(x))+'" alt=""><span class="tmu"><em>'+esc(x.title)+'</em><i>'+esc(x.channel)+'</i><i>'+esc(fmtV(x.views))+'</i></span></div>'; }).join("");
   [].forEach.call(el.querySelectorAll(".tit"),function(d){ d.onclick=function(){ muPick(+d.dataset.i); }; }); }
 function muFind(q){ q=String(q||"").replace(/\s+/g," ").trim().slice(0,100); if(!q) return; var n=++T.sq; T.res=[]; T.idx=-1; T.ord=[]; T.pos=-1; T.mst="msr"; paintMu();
   var bad=function(){ if(n!==T.sq||T.m!=="mu"||!box()) return; T.res=[]; T.mst="merr"; paintMu(); };
   fetch((window.HUB||"https://brief-live-hub.emhwang3.workers.dev")+"/ytsearch?q="+encodeURIComponent(q)+"&lang="+encodeURIComponent(window.LANG||"en")).then(function(r){ return r.json(); }).then(function(j){ if(n!==T.sq||T.m!=="mu"||!box()) return;
-    if(!j||!j.ok) return bad(); T.res=(j.items||[]).filter(function(x){ return x&&/^[A-Za-z0-9_-]{6,20}$/.test(x.id||""); }).slice(0,10); T.mst=T.res.length?"":"mno"; paintMu(); var l=box().querySelector(".tls"); if(l) l.scrollTop=0; }).catch(bad); }
+    if(!j||!j.ok) return bad(); T.res=(j.items||[]).filter(function(x){ return x&&/^[A-Za-z0-9_-]{6,20}$/.test(x.id||""); }).slice(0,10); T.mst=T.res.length?"":"mno"; paintMu(); var w=box().querySelector(".tmw"); if(w) w.scrollTop=T.jy; }).catch(bad); }   // 주크박스 앞판·단추 아래로 목록 첫 곡들이 보이게
 // 이어 듣기 (11-05) — 곡이 끝나면 순서(ord)의 다음 곡. 반복 끔 = 마지막 곡 뒤 멈춤 · 반복 켬 = 처음으로(셔플이면 한 바퀴마다 다시 섞기) · 셔플 = 한 바퀴 안에 같은 곡 두 번 없음
-var PREP="M280-80 120-240l160-160 56 58-62 62h406v-160h80v240H274l62 62-56 58Zm-80-440v-240h486l-62-62 56-58 160 160-160 160-56-58 62-62H280v160h-80Z", PSHUF="M560-160v-80h104L537-367l57-57 126 126v-102h80v240H560Zm-344 0-56-56 504-504H560v-80h240v240h-80v-104L216-160Zm151-377L160-744l56-56 207 207-56 56Z";   // Material Symbols Outlined repeat·shuffle (Google, Apache 2.0) — 유튜브·유튜브 뮤직과 같은 모양
+var MJB={src:"img/music/jukebox_ml2.webp?v=1105b",r:858/600,scr:[13.83,40.56,71.83,29.49],arc:[19.33,11.31,61.33,19.23],bd:7.7,   // 새 그림 (11-05 나노바나나 글 지시문으로 새로 뽑은 2장째, 600x858 — 낮고 넓은 몸통·작은 단추 한 줄) — scr 앞판 · arc 위 반달 유리 (% 왼·위·너비·높이, PIL 로 잼) · bd = 단추(금테 포함) 지름 %
+ btn:[["prev",19.33,81.59],["play",29.5,81.59],["next",39.67,81.59],["stop",49.83,81.59],["rep",60.0,81.59],["shuf",70.42,81.59],["vol",80.38,81.59]]};   // 그려진 단추 7개 중심 % — 한 줄: ⏮ ▶ ⏭ ⏹ 반복 셔플 소리
 function mix(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
 function muOrder(first){ var n=(T.res||[]).length, a=[]; for(var i=0;i<n;i++) a.push(i); var f=first!=null&&first>=0&&first<n;
   if(T.shuf){ if(f){ a.splice(first,1); T.ord=[first].concat(mix(a)); } else T.ord=mix(a); T.pos=0; } else { T.ord=a; T.pos=f?first:0; } }
 function muPick(i){ muOrder(i); play(i); }   // 손님이 고른 곡부터 이어 간다
-function muSee(){ var b=box(), l=b&&b.querySelector(".tls"), it=l&&l.querySelector(".tit.on"); if(!it) return; var lr=l.getBoundingClientRect(), r=it.getBoundingClientRect(); if(r.top<lr.top||r.bottom>lr.bottom) l.scrollTop+=r.top-lr.top-4; }   // 목록 칸만 움직여 지금 곡을 보이게
+function muSee(){ var b=box(), w=b&&b.querySelector(".tmw"), it=w&&w.querySelector(".tls .tit.on"), jw=w&&w.querySelector(".tjw"); if(!it) return; var wr=w.getBoundingClientRect(), r=it.getBoundingClientRect(), top=Math.max(wr.top,jw?jw.getBoundingClientRect().bottom:wr.top);
+  if(r.top<top) w.scrollTop-=top-r.top+4; else if(r.bottom>wr.bottom) w.scrollTop+=r.bottom-wr.bottom+4; }   // 지금 곡이 주크박스 아래 목록 자리에 보이게
 function muNext(){ var n=(T.res||[]).length; if(!n||!box()) return;
   if(T.ord.length!==n){ muOrder(null); play(T.ord[T.pos]); return muSee(); }   // 새로 검색한 목록 = 처음부터 새 순서
   if(T.pos+1<n) T.pos++;
   else { if(!T.rep) return;   // 반복 끔 = 마지막 곡 뒤 멈춤
     var last=T.ord[T.pos]; if(T.shuf){ T.ord=mix(T.ord.slice()); if(n>1&&T.ord[0]===last){ var j=1+Math.floor(Math.random()*(n-1)), t=T.ord[0]; T.ord[0]=T.ord[j]; T.ord[j]=t; } } T.pos=0; }
   play(T.ord[T.pos]); muSee(); }
-function muCtl(){ var b=box(); if(!b) return; [].forEach.call(b.querySelectorAll(".tctl button"),function(t){ var on=t.dataset.c==="rep"?T.rep:T.shuf; t.classList.toggle("on",on); t.setAttribute("aria-pressed",on?"true":"false"); }); }
+// 주크박스 단추 7개·위 반달 (11-05) — 그려진 단추 위 투명 누름 칸 (노래방 주크박스와 같은 방식)
+function muDeck(){ var b=box(); if(!b||T.m!=="mu") return; var has=(T.res||[]).length>0, cur=!!T.cur, st=-1; try{ if(T.pl&&T.ready&&T.pl.getPlayerState) st=T.pl.getPlayerState(); }catch(e){}
+  var set=function(k,lab,dis,on){ var t=b.querySelector('.tjk[data-j="'+k+'"]'); if(!t) return; var s=L(TX[lab]); t.setAttribute("aria-label",s); t.title=s; t.disabled=!!dis; if(on!=null){ t.classList.toggle("on",!!on); t.setAttribute("aria-pressed",on?"true":"false"); } };
+  set("prev","jprev",!cur); set("play",(st===1||st===3)?"jpause":"jplay",!cur&&!has); set("next","jnext",!cur); set("stop","jstop",!cur); set("rep","rep",false,T.rep); set("shuf","shuf",false,T.shuf);
+  set("vol",T.mut?"junmute":"jmute",false); var v=b.querySelector('.tjk[data-j="vol"]'); if(v) v.classList.toggle("mut",!!T.mut);
+  var ar=b.querySelector(".tjar"), h=cur?'<b>'+esc(T.cur.title||"")+'</b>'+(T.cur.channel?'<small>'+esc(T.cur.channel)+'</small>':''):""; if(ar&&ar._h!==h){ ar._h=h; ar.innerHTML=h; } }   // 반달 = 지금 곡 제목·채널 (없으면 비움)
+function muPlay(){ var n=(T.res||[]).length; if(!T.cur||!T.pl){ if(n){ muOrder(null); play(T.ord[T.pos]); } return; }   // 아직 안 골랐으면 목록 처음(셔플이면 섞은 첫 곡)부터
+  try{ var s=T.pl.getPlayerState(); if(s===1||s===3) T.pl.pauseVideo(); else T.pl.playVideo(); }catch(e){} setTimeout(muDeck,300); }
+function muPrev(){ var n=(T.res||[]).length; if(!T.cur) return;
+  if(T.ord.length===n&&T.idx>=0){ if(T.pos>0){ T.pos--; play(T.ord[T.pos]); return muSee(); } if(T.rep&&n>1){ T.pos=n-1; play(T.ord[T.pos]); return muSee(); } }
+  try{ T.pl.seekTo(0,true); T.pl.playVideo(); }catch(e){} }   // 맨 앞이면 지금 곡 처음부터
+function muStop(){ try{ T.pl&&T.pl.stopVideo&&T.pl.stopVideo(); }catch(e){} setTimeout(muDeck,300); }
+function muMute(){ T.mut=!T.mut; try{ if(T.pl&&T.ready){ if(T.mut) T.pl.mute(); else T.pl.unMute(); } }catch(e){} muDeck(); }
+function muFit(){ var b=box(), w=b&&b.querySelector(".tmw"), jw=w&&w.querySelector(".tjw"); if(!jw) return; var cw=w.clientWidth||360, need=Math.ceil(206/(MJB.r*MJB.scr[3]/100)), W=Math.max(need,Math.min(cw,520));
+  jw.style.width=W+"px"; jw.style.marginLeft=Math.round((cw-W)/2)+"px"; T.jy=Math.max(0,Math.round(W*MJB.r*MJB.scr[1]/100)-6); jw.style.top=(-T.jy)+"px"; }   // 앞판(플레이어) 세로 206px 이상 — 폰(412)에선 주크박스가 화면보다 넓어 양옆이 잘린다 (사장님 11-05) · 목록을 내리면 앞판 위끝에서 붙어 선다
+window.addEventListener("resize",function(){ if(T.m==="mu"&&box()) muFit(); });
 function muTog(c){ if(c==="rep") T.rep=!T.rep;
   else { T.shuf=!T.shuf; var n=(T.res||[]).length, cur=T.idx;
     if(n&&cur>=0&&cur<n){ var a=[]; for(var i=0;i<n;i++) if(!T.shuf||i!==cur) a.push(i); if(T.shuf){ T.ord=[cur].concat(mix(a)); T.pos=0; } else { T.ord=a; T.pos=cur; } }   // 셔플 켬 = 지금 곡 다음부터 섞음 · 끔 = 목록 순서로 지금 곡 다음부터
     else { T.ord=[]; T.pos=-1; } }
-  muCtl(); }
+  muDeck(); }
 function muOpen(b,M){
   b.innerHTML='<div class="tin"><div class="thd"><div><b>'+esc(L(TX[M.t]))+'</b><small>'+esc(L(TX[M.s]))+'</small></div><button type="button" class="tx">✕ '+esc(L(TX.x))+'</button></div>'
     +'<form class="tsr" role="search"><input type="search" enterkeyhint="search" maxlength="100" autocomplete="off" placeholder="'+esc(L(TX.mq))+'" aria-label="'+esc(L(TX.mq))+'"><button type="submit">'+esc(L(TX.mb))+'</button></form>'
-    +'<div class="tpl"><div class="tmsg">'+esc(L(TX.mpk))+'</div></div><div class="tnote" hidden></div>'
-    +'<div class="tctl">'+[["shuf",PSHUF],["rep",PREP]].map(function(c){ return '<button type="button" data-c="'+c[0]+'" aria-pressed="false" aria-label="'+esc(L(TX[c[0]]))+'" title="'+esc(L(TX[c[0]]))+'"><svg viewBox="0 -960 960 960" aria-hidden="true"><path d="'+c[1]+'"/></svg></button>'; }).join("")+'</div>'   // 셔플·반복 = 플레이어 바깥 한 줄
-    +'<div class="tls"></div>'
+    +'<div class="tmw"><div class="tjw"><img class="tji" src="'+MJB.src+'" alt="">'
+    +'<div class="tjar" style="left:'+MJB.arc[0]+'%;top:'+MJB.arc[1]+'%;width:'+MJB.arc[2]+'%;height:'+MJB.arc[3]+'%"></div>'
+    +'<div class="tpl" style="left:'+MJB.scr[0]+'%;top:'+MJB.scr[1]+'%;width:'+MJB.scr[2]+'%;height:'+MJB.scr[3]+'%"><div class="tmsg">'+esc(L(TX.mpk))+'</div></div>'   // 앞판 = 플레이어
+    +'<div class="tjcb">'+MJB.btn.map(function(k){ return '<button type="button" class="tjk" data-j="'+k[0]+'" style="left:'+k[1]+'%;top:'+k[2]+'%;width:'+MJB.bd+'%"></button>'; }).join("")+'</div></div>'   // 그려진 단추 7개 = 실제 단추
+    +'<div class="tnote" hidden></div><div class="tls"></div></div>'
     +ftHtml()+'</div>';
   document.body.appendChild(b); document.documentElement.style.overflow="hidden";
   b.querySelector(".tx").onclick=close;
   var fm=b.querySelector(".tsr"), inp=fm.querySelector("input");
   fm.onsubmit=function(e){ e.preventDefault(); if(!inp.value.trim()){ inp.focus(); return; } try{ inp.blur(); }catch(z){} muFind(inp.value); };   // 검색 뒤 자판을 내려 후보가 보이게
-  [].forEach.call(b.querySelectorAll(".tctl button"),function(t){ t.onclick=function(){ muTog(t.dataset.c); }; }); muCtl();
+  var J={prev:muPrev,play:muPlay,next:function(){ if(!T.cur) return muPlay(); muNext(); },stop:muStop,rep:function(){ muTog("rep"); },shuf:function(){ muTog("shuf"); },vol:muMute};
+  [].forEach.call(b.querySelectorAll(".tjk"),function(t){ t.onclick=function(){ var f=J[t.dataset.j]; if(f) f(); }; });
+  muFit(); var im=b.querySelector(".tji"); if(im) im.addEventListener("load",muFit);
   paintMu(); try{ ntap(M.k,"tap"); }catch(e){} }   // 누름 수 (관리자 계기판 장소별 누름)
 document.addEventListener("visibilitychange",function(){ if(document.hidden&&box()&&T.pl&&T.pl.pauseVideo){ try{ T.pl.pauseVideo(); }catch(e){} } });   // 앱이 화면에서 사라지면 일시정지 (유튜브 규칙 — 소리만 뒤에서 재생 금지)
 function close(){ var b=box(); if(b){ try{ T.pl&&T.pl.destroy&&T.pl.destroy(); }catch(e){} b.remove(); } T.pl=null; T.ready=false; document.documentElement.style.overflow=""; try{ mpPaid.end(); }catch(e){} }
