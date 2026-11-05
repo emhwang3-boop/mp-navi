@@ -398,12 +398,13 @@ var GBT={
  opn:T6("토스 결제창을 여는 중…","Opening the Toss payment window…","Toss決済画面を開いています…","正在打开Toss付款窗口…","正在開啟Toss付款視窗…","Abriendo la ventana de pago de Toss…"),
  ppn:T6("PayPal 결제는 아직 연결 전이에요. 신용·체크카드(해외 카드 포함)로 결제해 주세요.","PayPal is not connected yet. Please pay by credit/debit card (overseas cards accepted).","PayPal決済はまだ準備中です。クレジット・デビットカード（海外カード可）でお支払いください。","PayPal付款尚未开通，请使用信用卡/借记卡（含境外卡）付款。","PayPal付款尚未開通，請使用信用卡/簽帳卡（含境外卡）付款。","PayPal aún no está disponible. Paga con tarjeta de crédito/débito (se aceptan extranjeras)."),
  pdT:T6("예약 확정","Booking confirmed","予約確定","预约已确认","預約已確認","Reserva confirmada"),
- pdS:T6("예약이 확정되었습니다. 가이드가 이메일이나 전화로 연락드립니다.","Your booking is confirmed. Your guide will contact you by email or phone.","ご予約が確定しました。ガイドからメールまたはお電話でご連絡します。","预约已确认。向导会通过邮件或电话与您联系。","預約已確認。嚮導會透過電郵或電話與您聯絡。","Tu reserva está confirmada. Tu guía te contactará por correo o teléfono."),
+ pdS:T6("예약이 확정되었습니다. 가이드가 투어앱 안의 말풍선과 전화로 연락드립니다.","Your booking is confirmed. Your guide will contact you through the speech bubble in the tour app and by phone.","ご予約が確定しました。ガイドからツアーアプリの吹き出しとお電話でご連絡します。","预约已确认。向导会通过旅游应用中的对话气泡和电话与您联系。","預約已確認。嚮導會透過旅遊應用程式中的對話氣泡和電話與您聯絡。","Tu reserva está confirmada. Tu guía te contactará por la burbuja de chat de la app de viaje y por teléfono."),   // 11-05 사장님 「3」 — 이모지 없이
  amt:T6("결제 금액","Amount paid","決済金額","付款金额","付款金額","Importe pagado"),
  oid:T6("주문번호","Order no.","注文番号","订单号","訂單號","N.º de pedido"),
  endL:T6("끝나는 시간","Ends at","終了時刻","结束时间","結束時間","Termina a las"),   // 11-05 실전 — 시험 결제 문구(tkey·tsv) 대신
- sent:T6("예약 확정 안내를 메일과 문자로 보냈습니다.","We sent your booking confirmation by email and text message.","予約確定のご案内をメールとSMSでお送りしました。","已通过邮件和短信发送预约确认。","已透過電郵和簡訊發送預約確認。","Te enviamos la confirmación por correo y SMS."),
- tdn:T6("가이드와의 대화·투어 완료·후기는 「내 예약」의 대화방에서 합니다. 투어 완료는 끝나는 시간부터 누를 수 있습니다.","Chat with your guide, tap “Tour completed” and leave a review in the chat room under “My bookings”. You can tap Tour completed from the time the tour ends.","ガイドとのチャット・ツアー完了・レビューは「私の予約」のチャットルームで行います。ツアー完了は終了時刻から押せます。","与向导聊天、导览完成和评价都在「我的预约」的聊天室中进行。导览完成从结束时间起可点击。","與嚮導聊天、導覽完成和評價都在「我的預約」的聊天室中進行。導覽完成從結束時間起可點擊。","El chat con tu guía, «Tour completado» y la reseña están en la sala de chat de «Mis reservas». Podrás pulsar Tour completado desde la hora en que termina el tour."),
+ sent:T6("가이드와의 대화·투어 완료·후기는 말풍선(💬)에서 합니다. 새 메시지나 취소 같은 소식은 문자로도 알려 드립니다.","Chat with your guide, tap “Tour completed” and leave a review in the chat (💬). We'll also text you about news such as new messages or a cancellation.","ガイドとのチャット・ツアー完了・レビューは吹き出し（💬）で行います。新しいメッセージやキャンセルなどのお知らせはSMSでもお送りします。","与向导聊天、导览完成和评价都在对话气泡（💬）中进行。新消息、取消等通知也会通过短信告诉您。","與嚮導聊天、導覽完成和評價都在對話氣泡（💬）中進行。新訊息、取消等通知也會透過簡訊告訴您。","El chat con tu guía, «Tour completado» y la reseña se hacen en el chat (💬). También te avisaremos por SMS de novedades como mensajes nuevos o una cancelación."),   // 11-05 접수 안내 문자·메일 끊음 — 화면 + 말풍선
+ tdn:T6("투어 완료는 끝나는 시간부터 누를 수 있습니다.","You can tap Tour completed from the time the tour ends.","ツアー完了は終了時刻から押せます。","导览完成从结束时间起可点击。","導覽完成從結束時間起可點擊。","Podrás pulsar Tour completado desde la hora en que termina el tour."),
+ chatGo:T6("💬 말풍선에서 보기","💬 Open in chat","💬 吹き出し（チャット）で見る","💬 在对话气泡中查看","💬 在對話氣泡中查看","💬 Ver en el chat"),
  pfT:T6("결제가 완료되지 않았어요 (취소 또는 실패).","The payment was not completed (cancelled or failed).","決済が完了しませんでした（キャンセルまたは失敗）。","付款未完成（已取消或失败）。","付款未完成（已取消或失敗）。","El pago no se completó (cancelado o fallido)."),
  home:T6("처음으로","Start over","最初に戻る","返回开始","返回開始","Volver al inicio"),
  enm:T6("이름을 넣어 주세요.","Please enter your name.","お名前を入力してください。","请填写姓名。","請填寫姓名。","Escribe tu nombre."),
@@ -476,7 +477,8 @@ function gbDone(g){ var L=LG6, r=IG.gbRes||{};
     +'<div class="gbpr">'+gbRows(g)+'<div class="gbt"><span>'+esc(L(GBT.amt))+'</span><span>'+gbWon(r.amount)+'</span></div><div class="gbl"><span>'+esc(L(GBT.oid))+'</span><b>'+esc(r.oid||"")+'</b></div>'
     +(r.end?'<div class="gbl"><span>'+esc(L(GBT.endL))+'</span><b>'+esc(bkWhen(r.end))+'</b></div>':'')+'</div>'
     +'<div class="ignt">'+esc(L(GBT.sent))+'<br>'+esc(L(GBT.tdn))+'</div>'+gbRefund()
-    +'<button type="button" class="gbgo" data-igback="pick">'+esc(L(BKT.my))+' ›</button>'; }   // 「내 예약」 = 첫 화면 맨 위 카드 (11-05)
+    +(r.tk?'<button type="button" class="gbgo" data-gbchat="1">'+esc(L(GBT.chatGo))+'</button>':'')   // 주 단추 = 그 예약의 말풍선 방 (사장님 11-05)
+    +'<button type="button" class="gbgo'+(r.tk?' g2':'')+'" data-igback="pick">'+esc(L(BKT.my))+' ›</button>'; }   // 「내 예약」 = 첫 화면 맨 위 카드 (보조)
 // 「보내기 및 결제」 — 칸 확인 → 요약 확인(gconf)
 function gbSend(){ gbGrab(); var k=IG.bk, L=LG6, err="";
   if(!k.cn.trim()) err=L(GBT.enm);
@@ -495,7 +497,7 @@ function gbPay(){ var k=IG.bk, g=IG.gobj, L=LG6; if(!k||!g||IG.busy) return;
     if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err; IG.busy=0; k.err=e==="name"?L(GBT.enm):e==="email"?L(GBT.eem):e==="phone"?L(GBT.eph):(e==="date"||e==="time")?L(GBT.edt):e==="guide"?L(GBT.egd):L(GBT.efail); paint(); return; }
     try{ ntap("guide","gbk_order"); }catch(z){}
     if(!GB_PG){ IG.busy=0; if(j.tdone) bkPut({oid:j.orderId,tk:j.tdone,kind:"gbk",date:k.date,time:k.time,end:+j.end||0,k:{mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0},n:k.n,amount:j.amount,status:j.status||"confirmed",g:{id:g.id,name:g.name,name_en:g.name_en,name_ja:g.name_ja,name_zh:g.name_zh,langs:g.langs,years:g.years,region:g.region,photo:g.photo},room:{n:0,unread:0}});
-      IG.gbRes={oid:j.orderId,amount:j.amount,end:+j.end||0}; IG.view="gdone"; paint(); gbTop(); try{ window.CHAT&&CHAT.dot(); }catch(z){} return; }
+      IG.gbRes={oid:j.orderId,amount:j.amount,end:+j.end||0,tk:j.tdone||""}; IG.view="gdone"; paint(); gbTop(); try{ window.CHAT&&CHAT.dot(); }catch(z){} return; }
     gbPaint(2);
     try{ sessionStorage.setItem(GB_KEY,JSON.stringify({oid:j.orderId,amount:j.amount,g:{id:g.id,name:g.name,name_en:g.name_en,name_ja:g.name_ja,name_zh:g.name_zh,langs:g.langs,years:g.years,region:g.region,photo:g.photo},lang:IG.lang,bk:k,at:Date.now()})); }catch(z){}
     var base=location.origin+location.pathname, mob=k.cp.replace(/\D/g,"");
@@ -587,6 +589,7 @@ function igWire(b){
   var gag=b.querySelector("#gbAg"), gpy=b.querySelector("#gbPay"); if(gag&&gpy&&!IG.busy){ gag.onchange=function(){ gpy.disabled=!gag.checked; }; gpy.onclick=gbPay; }
   [].forEach.call(b.querySelectorAll("[data-rvstar]"),function(bt){ bt.onclick=function(){ var t=document.getElementById("igrvText"), n=document.getElementById("igrvName"); if(t) IG.rvText=t.value; if(n) IG.rvName=n.value; IG.rvStars=+bt.dataset.rvstar; paint(); }; });
   var rgo=b.querySelector("#igrvGo"); if(rgo) rgo.onclick=igRvSend;
+  var gch=b.querySelector("[data-gbchat]"); if(gch) gch.onclick=function(){ var t=IG.gbRes&&IG.gbRes.tk; if(t&&window.CHAT){ close(); CHAT.room(t); } };   // 예약 확정 화면 → 그 방 (11-05)
   [].forEach.call(b.querySelectorAll("[data-bkchat]"),function(bt){ bt.onclick=function(){ var x=bkGet(bt.dataset.bkchat); if(x&&window.CHAT) CHAT.room(x.tk); }; });   // 내 예약 = 대화방 입구 (11-05)
   [].forEach.call(b.querySelectorAll("[data-bkrv]"),function(bt){ bt.onclick=function(){ var x=bkGet(bt.dataset.bkrv); if(x&&x.rv) openReview(x.rv); }; });   // 패키지 배정 가이드 별점·후기
   [].forEach.call(b.querySelectorAll("[data-igedit]"),function(a){ a.onclick=function(e){ e.preventDefault(); IG.view="editask"; IG.busy=false; paint(); }; });   // 가이드 본인 — 내 프로필 수정
