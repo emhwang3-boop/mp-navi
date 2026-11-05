@@ -52,6 +52,7 @@ var TX={
  amt:T6("결제 금액","Amount paid","決済金額","付款金额","付款金額","Importe pagado"),
  oid:T6("주문번호","Order no.","注文番号","订单号","訂單號","N.º de pedido"),
  cust:T6("손님","Traveler","お客様","旅客","旅客","Viajero"),
+ bkr:T6("예약자","Booked by","予約者","预订人","預訂人","Reservado por"),   // 손님 쪽 예약자 이름 (11-05)
  lang:T6("손님 언어","Traveler language","お客様の言語","旅客语言","旅客語言","Idioma del viajero"),
  memo:T6("요청","Notes","メモ","备注","備註","Notas"),
  done:T6("투어 완료","Tour completed","ツアー完了","导览完成","導覽完成","Tour completado"),
@@ -170,7 +171,7 @@ function loginThen(cb){ if(!window.mpPG) return; window.mpPG.open(); var bx=docu
 function sumRows(sm,side){ var r=function(a,b){ return '<div class="r"><span>'+esc(L(a))+'</span><span>'+b+'</span></div>'; }, pk=sm.kind==="pkg";
   return '<div class="chsum"><div style="font-weight:800;font-size:13.5px;margin-bottom:3px">'+esc(L(TX.sum))+'</div>'
     +(pk?r(T6("상품","Product","商品","商品","商品","Producto"),esc(side==="g"?(sm.pnameKo||sm.pname):sm.pname))+(side==="c"?r(TX.gd,X.room&&X.room.g?esc(gName(X.room.g)):'<span class="chpend" style="margin:0">'+esc(L(TX.wait))+'</span>'):''):r(TX.gd,esc(side==="g"?(X.gme&&X.gme.guide?X.gme.guide.name:""):gName(X.room&&X.room.g))+(sm.k?' · '+esc(mdTx(sm.k)):'')))
-    +r(TX.dt,esc(sm.date+" "+sm.time+" (KST)"))+(sm.end?r(TX.endL,esc(window.NEARBK?NEARBK.when(sm.end):hm(sm.end))):'')+r(TX.ppl,esc(String(sm.n)))+r(TX.amt,esc(won(sm.amount)))+r(TX.oid,esc(sm.oid))
+    +(side==="c"&&sm.cust?r(TX.bkr,esc(sm.cust)):'')+r(TX.dt,esc(sm.date+" "+sm.time+" (KST)"))+(sm.end?r(TX.endL,esc(window.NEARBK?NEARBK.when(sm.end):hm(sm.end))):'')+r(TX.ppl,esc(String(sm.n)))+r(TX.amt,esc(won(sm.amount)))+r(TX.oid,esc(sm.oid))
     +(side==="g"?r(TX.cust,esc(sm.cust||""))+r(TX.lang,esc(LGN[sm.lang]||sm.lang||""))+(sm.memo?r(TX.memo,esc(sm.memo)):''):'')+'</div>'; }
 function room(tk){ var r=(X.rooms||[]).filter(function(x){ return x.tk===tk; })[0]||null; openRoom({side:"c",tk:tk,g:r&&r.g}); }
 function groom(oid){ openRoom({side:"g",oid:oid}); }
