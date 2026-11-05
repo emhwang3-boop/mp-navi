@@ -76,17 +76,18 @@ st.textContent="#tvBox{position:fixed;inset:0;z-index:2147483004;background:radi
  +"#tvBox .tnote{flex:0 0 auto;margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:800}#tvBox .tnote[hidden]{display:none}#tvBox .tnote a{background:#ff0033;color:#fff;text-decoration:none;border-radius:999px;padding:6px 12px;font-weight:900}"
  +"#tvBox .tit span.tmu{display:block}#tvBox .tmu em{font-style:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}#tvBox .tmu i{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
  +"#tvBox .tft{flex:0 0 auto;text-align:center;font-size:12px;font-weight:600;line-height:1.5;padding:8px 4px calc(10px + env(safe-area-inset-bottom));opacity:.75}#tvBox .tft a{color:inherit;text-decoration:underline}"
- +"#tvBox .tmw{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;margin:6px -12px 0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}"   /* 주크박스+목록 = 한 칸 · 주크박스는 앞판 위끝에서 붙어 서고(sticky) 그 아래로 목록만 지나간다 */
- +"#tvBox .tjw{position:sticky;z-index:2}#tvBox .tji{width:100%;display:block;pointer-events:none;-webkit-user-select:none;user-select:none}"
+ +"#tvBox .tmw{flex:1;min-height:0;overflow:hidden;overflow:clip;position:relative;margin:6px -12px 0}"   /* 주크박스 한 화면 — 페이지는 스크롤 안 함 (11-05 사장님 나) · 넘치면 양옆·위(반달)만 잘림 */
+ +"#tvBox .tjw{position:absolute;z-index:2}#tvBox .tji{width:100%;display:block;pointer-events:none;-webkit-user-select:none;user-select:none}"
  +"#tvBox .tjw .tpl{position:absolute;width:auto;aspect-ratio:auto;margin:0;border-radius:4px;box-shadow:none;z-index:3}#tvBox .tjw .tpl .tmsg{font-size:14px;color:#eafcff}"   /* 앞판 = 플레이어 (그 위엔 아무것도 없음) */
- +"#tvBox .tjar{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;overflow:hidden;padding:0 5% 3%;box-sizing:border-box;color:#fff5d6;text-shadow:0 0 8px rgba(255,200,90,.8),0 1px 2px #000;pointer-events:none}#tvBox .tjar b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:16px;font-weight:900;line-height:1.2;max-width:100%}#tvBox .tjar small{display:block;max-width:85%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:700;color:#ffe08a;margin-top:2px}"   /* 위 반달 유리 = 지금 곡 (노래방 주크박스와 같은 방식) */
+ +"#tvBox .tjar{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;overflow:hidden;padding:0 5% 3%;box-sizing:border-box;color:#fff5d6;text-shadow:0 0 8px rgba(255,200,90,.8),0 1px 2px #000;pointer-events:none}#tvBox .tjar b{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;font-size:16px;font-weight:900;line-height:1.2;max-width:100%}#tvBox .tjar small{display:block;max-width:85%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:700;color:#ffe08a;margin-top:2px}"   /* 위 반달 유리 = 지금 곡 (노래방 주크박스와 같은 방식) */
  +"#tvBox .tjcb{position:absolute;inset:0;pointer-events:none;z-index:2}#tvBox .tjk:before{content:\"\";position:absolute;inset:-12%;border-radius:50%}#tvBox .tjk{position:absolute;width:9%;aspect-ratio:1;transform:translate(-50%,-50%);border:0;padding:0;border-radius:50%;background:transparent;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent;transition:box-shadow .2s,background .2s}"
  +"#tvBox .tjk.on{box-shadow:0 0 0 3px #fff1b8,0 0 0 5px rgba(255,190,60,.9),0 0 18px 7px rgba(255,205,90,.85),0 0 34px 12px rgba(255,170,40,.45);background:radial-gradient(circle,rgba(255,240,180,.3) 0,rgba(255,222,140,.14) 55%,rgba(255,222,140,0) 72%)}"   /* 켜짐 = 금빛 테 (노래방 주크박스 .kjbk.on 과 같은 모양) */
  +"#tvBox .tjk:not(:disabled):active{background:radial-gradient(circle,rgba(0,0,0,.42) 0,rgba(0,0,0,.3) 60%,rgba(0,0,0,0) 74%);box-shadow:inset 0 4px 10px rgba(0,0,0,.6);transform:translate(-50%,-50%) scale(.97)}#tvBox .tjk:disabled,#tvBox .tjk.mut{background:radial-gradient(circle,rgba(10,6,2,.55) 0,rgba(10,6,2,.45) 62%,rgba(10,6,2,0) 73%)}#tvBox .tjk:disabled{cursor:default}"   /* 누름 · 쓸 수 없음 · 소리 꺼짐 = 어둡게 */
- +"#tvBox .tmw .tls{flex:none;overflow:visible;margin:0;padding:8px 12px 16px}#tvBox .tmw .tnote{margin:8px 12px 0}";   /* 음악 감상실 주크박스 (11-05) */   /* 음악 감상실 — 검색칸·막힘 안내(플레이어 밖)·후보 줄·약관 링크 (11-05) */
+ +"#tvBox .tjl{position:absolute;z-index:3;display:flex;flex-direction:column;overflow:hidden;border-radius:4px;background:rgba(6,5,12,.62)}#tvBox .tjl .tls{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;margin:0;padding:2px 4px 4px}#tvBox .tjl .tnote{flex:0 0 auto;margin:4px 6px 2px;font-size:12px}"   /* 목록 창 = 곡 목록 (창 안에서만 스크롤) */
+ +"#tvBox .tjl .tit{gap:8px;padding:5px 3px;border-bottom:1px solid rgba(255,255,255,.08)}#tvBox .tjl .tit img{width:80px;height:45px;border-radius:4px}#tvBox .tjl .tit span.tmu{font-size:13px;line-height:1.25;color:#f6f1e4}#tvBox .tjl .tmu i{font-size:11px;margin-top:2px;opacity:.72}#tvBox .tjl .tit.on{background:rgba(255,205,90,.2);border-radius:6px}#tvBox .tjl .tst{font-size:12.5px;color:#efe8d6;opacity:.9;padding:8px 6px}";   /* 좁은 창 = 썸네일 작게 · 어두운 바탕에 밝은 글자 */   /* 음악 감상실 주크박스 (11-05) */   /* 음악 감상실 — 검색칸·막힘 안내(플레이어 밖)·후보 줄·약관 링크 (11-05) */
 document.head.appendChild(st);
 var MD={yt:{G:G,t:"t",s:"s",f:"data/tvid.json",k:"youtubeth",g:"all"},nf:{G:GNF,t:"nt",s:"ns",f:"data/tvid_nf.json",k:"netflixth",g:"drama"},mu:{G:[],t:"mt",s:"ms",k:"musiclounge",g:""}};
-var T={m:"yt",cache:{},g:"all",all:null,idx:-1,pl:null,ready:false,want:"",res:[],mst:"",sq:0,ord:[],pos:-1,rep:false,shuf:false,mut:false,jy:0};   // mut = 소리 끔 · jy = 주크박스가 붙어 서는 스크롤 자리   // ord·pos = 음악 감상실 재생 순서·지금 자리, rep·shuf = 반복·셔플 (기본 끔)   // res·mst·sq = 음악 감상실 검색 결과·안내 문구·검색 차례
+var T={m:"yt",cache:{},g:"all",all:null,idx:-1,pl:null,ready:false,want:"",res:[],mst:"",sq:0,ord:[],pos:-1,rep:false,shuf:false,mut:false};   // mut = 소리 끔   // ord·pos = 음악 감상실 재생 순서·지금 자리, rep·shuf = 반복·셔플 (기본 끔)   // res·mst·sq = 음악 감상실 검색 결과·안내 문구·검색 차례
 function ytApi(cb){ if(window.YT&&YT.Player) return cb(); var prev=window.onYouTubeIframeAPIReady; window.onYouTubeIframeAPIReady=function(){ try{ prev&&prev(); }catch(e){} cb(); };
   if(!document.getElementById("ytApiJs")){ var s=document.createElement("script"); s.id="ytApiJs"; s.src="https://www.youtube.com/iframe_api"; document.head.appendChild(s); } }
 function box(){ return document.getElementById("tvBox"); }
@@ -133,21 +134,20 @@ function thumbOf(x){ return /^https:\/\/i\.ytimg\.com\//.test(x.thumb||"")?x.thu
 function ftHtml(){ return '<div class="tft"><a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">'+esc(L(TX.tos))+'</a> · <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">'+esc(L(TX.pp))+'</a></div>'; }   // 맨 아래 YouTube 서비스 약관 · 구글 개인정보처리방침 (모든 상영관·음악 감상실)
 function paintMu(){ var b=box(); if(!b) return; var el=b.querySelector(".tls");
   muDeck(); if(T.mst){ el.innerHTML='<div class="tst">'+esc(L(TX[T.mst]))+'</div>'; return; }
-  el.innerHTML=(T.res||[]).map(function(x,i){ return '<div class="tit'+(i===T.idx?' on':'')+'" data-i="'+i+'"><img loading="lazy" src="'+esc(thumbOf(x))+'" alt=""><span class="tmu"><em>'+esc(x.title)+'</em><i>'+esc(x.channel)+'</i><i>'+esc(fmtV(x.views))+'</i></span></div>'; }).join("");
+  el.innerHTML=(T.res||[]).map(function(x,i){ return '<div class="tit'+(i===T.idx?' on':'')+'" data-i="'+i+'"><img loading="lazy" src="'+esc(thumbOf(x))+'" alt=""><span class="tmu"><em>'+esc(x.title)+'</em><i>'+esc(x.channel)+' · '+esc(fmtV(x.views))+'</i></span></div>'; }).join("");
   [].forEach.call(el.querySelectorAll(".tit"),function(d){ d.onclick=function(){ muPick(+d.dataset.i); }; }); }
 function muFind(q){ q=String(q||"").replace(/\s+/g," ").trim().slice(0,100); if(!q) return; var n=++T.sq; T.res=[]; T.idx=-1; T.ord=[]; T.pos=-1; T.mst="msr"; paintMu();
   var bad=function(){ if(n!==T.sq||T.m!=="mu"||!box()) return; T.res=[]; T.mst="merr"; paintMu(); };
   fetch((window.HUB||"https://brief-live-hub.emhwang3.workers.dev")+"/ytsearch?q="+encodeURIComponent(q)+"&lang="+encodeURIComponent(window.LANG||"en")).then(function(r){ return r.json(); }).then(function(j){ if(n!==T.sq||T.m!=="mu"||!box()) return;
-    if(!j||!j.ok) return bad(); T.res=(j.items||[]).filter(function(x){ return x&&/^[A-Za-z0-9_-]{6,20}$/.test(x.id||""); }).slice(0,10); T.mst=T.res.length?"":"mno"; paintMu(); var w=box().querySelector(".tmw"); if(w) w.scrollTop=T.jy; }).catch(bad); }   // 주크박스 앞판·단추 아래로 목록 첫 곡들이 보이게
+    if(!j||!j.ok) return bad(); T.res=(j.items||[]).filter(function(x){ return x&&/^[A-Za-z0-9_-]{6,20}$/.test(x.id||""); }).slice(0,10); T.mst=T.res.length?"":"mno"; paintMu(); var l=box().querySelector(".tjl .tls"); if(l) l.scrollTop=0; }).catch(bad); }   // 목록 창 맨 위로
 // 이어 듣기 (11-05) — 곡이 끝나면 순서(ord)의 다음 곡. 반복 끔 = 마지막 곡 뒤 멈춤 · 반복 켬 = 처음으로(셔플이면 한 바퀴마다 다시 섞기) · 셔플 = 한 바퀴 안에 같은 곡 두 번 없음
-var MJB={src:"img/music/jukebox_ml2.webp?v=1105b",r:858/600,scr:[13.83,40.56,71.83,29.49],arc:[19.33,11.31,61.33,19.23],bd:7.7,   // 새 그림 (11-05 나노바나나 글 지시문으로 새로 뽑은 2장째, 600x858 — 낮고 넓은 몸통·작은 단추 한 줄) — scr 앞판 · arc 위 반달 유리 (% 왼·위·너비·높이, PIL 로 잼) · bd = 단추(금테 포함) 지름 %
- btn:[["prev",19.33,81.59],["play",29.5,81.59],["next",39.67,81.59],["stop",49.83,81.59],["rep",60.0,81.59],["shuf",70.42,81.59],["vol",80.38,81.59]]};   // 그려진 단추 7개 중심 % — 한 줄: ⏮ ▶ ⏭ ⏹ 반복 셔플 소리
+var MJB={src:"img/music/jukebox_ml3.webp?v=1105",r:1037/600,scr:[18.67,31.63,62.0,19.96],arc:[18.67,9.16,63.33,16.01],lst:[18.67,66.44,62.17,25.46],bd:7.67,pmin:202,bot:95.5,   // 목록 창 있는 새 그림 (11-05 나노바나나 글 지시문, 600x1037·스피커 없음) — scr 앞판 · arc 위 반달 · lst 곡 목록 창 (% 왼·위·너비·높이, PIL 로 잼) · bd 단추 지름 % · pmin 플레이어 최소 세로 px · bot = 넘칠 때 먼저 잘라도 되는 받침 위끝 %
+ btn:[["prev",20.17,58.82],["play",30.08,58.82],["next",40.0,58.82],["stop",49.83,58.82],["rep",59.75,58.82],["shuf",69.67,58.82],["vol",79.5,58.82]]};   // 그려진 단추 7개 중심 % — 한 줄: ⏮ ▶ ⏭ ⏹ 반복 셔플 소리
 function mix(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
 function muOrder(first){ var n=(T.res||[]).length, a=[]; for(var i=0;i<n;i++) a.push(i); var f=first!=null&&first>=0&&first<n;
   if(T.shuf){ if(f){ a.splice(first,1); T.ord=[first].concat(mix(a)); } else T.ord=mix(a); T.pos=0; } else { T.ord=a; T.pos=f?first:0; } }
 function muPick(i){ muOrder(i); play(i); }   // 손님이 고른 곡부터 이어 간다
-function muSee(){ var b=box(), w=b&&b.querySelector(".tmw"), it=w&&w.querySelector(".tls .tit.on"), jw=w&&w.querySelector(".tjw"); if(!it) return; var wr=w.getBoundingClientRect(), r=it.getBoundingClientRect(), top=Math.max(wr.top,jw?jw.getBoundingClientRect().bottom:wr.top);
-  if(r.top<top) w.scrollTop-=top-r.top+4; else if(r.bottom>wr.bottom) w.scrollTop+=r.bottom-wr.bottom+4; }   // 지금 곡이 주크박스 아래 목록 자리에 보이게
+function muSee(){ var b=box(), l=b&&b.querySelector(".tjl .tls"), it=l&&l.querySelector(".tit.on"); if(!it) return; var lr=l.getBoundingClientRect(), r=it.getBoundingClientRect(); if(r.top<lr.top) l.scrollTop-=lr.top-r.top+2; else if(r.bottom>lr.bottom) l.scrollTop+=r.bottom-lr.bottom+2; }   // 지금 곡이 목록 창 안에 보이게 (창 안만 움직임)
 function muNext(){ var n=(T.res||[]).length; if(!n||!box()) return;
   if(T.ord.length!==n){ muOrder(null); play(T.ord[T.pos]); return muSee(); }   // 새로 검색한 목록 = 처음부터 새 순서
   if(T.pos+1<n) T.pos++;
@@ -167,8 +167,10 @@ function muPrev(){ var n=(T.res||[]).length; if(!T.cur) return;
   try{ T.pl.seekTo(0,true); T.pl.playVideo(); }catch(e){} }   // 맨 앞이면 지금 곡 처음부터
 function muStop(){ try{ T.pl&&T.pl.stopVideo&&T.pl.stopVideo(); }catch(e){} setTimeout(muDeck,300); }
 function muMute(){ T.mut=!T.mut; try{ if(T.pl&&T.ready){ if(T.mut) T.pl.mute(); else T.pl.unMute(); } }catch(e){} muDeck(); }
-function muFit(){ var b=box(), w=b&&b.querySelector(".tmw"), jw=w&&w.querySelector(".tjw"); if(!jw) return; var cw=w.clientWidth||360, need=Math.ceil(206/(MJB.r*MJB.scr[3]/100)), W=Math.max(need,Math.min(cw,520));
-  jw.style.width=W+"px"; jw.style.marginLeft=Math.round((cw-W)/2)+"px"; T.jy=Math.max(0,Math.round(W*MJB.r*MJB.scr[1]/100)-6); jw.style.top=(-T.jy)+"px"; }   // 앞판(플레이어) 세로 206px 이상 — 폰(412)에선 주크박스가 화면보다 넓어 양옆이 잘린다 (사장님 11-05) · 목록을 내리면 앞판 위끝에서 붙어 선다
+function muFit(){ var b=box(), w=b&&b.querySelector(".tmw"), jw=w&&w.querySelector(".tjw"); if(!jw) return; var cw=w.clientWidth||360, ch=w.clientHeight||600, need=Math.ceil(MJB.pmin/(MJB.r*MJB.scr[3]/100)), W=Math.max(need,Math.min(cw,Math.floor(ch/MJB.r))), H=W*MJB.r;
+  var ov=Math.max(0,H-ch), cb=Math.min(ov,H*(1-MJB.bot/100)), ct=ov-cb, top=ov?-ct:(ch-H)/2;   // 넘치면 받침(다리)부터, 그다음 위(반달)를 자른다 — 앞판·단추·목록 창은 늘 다 보임
+  jw.style.width=W+"px"; jw.style.left=Math.round((cw-W)/2)+"px"; jw.style.top=Math.round(top)+"px";
+  var ar=jw.querySelector(".tjar"); if(ar) ar.style.visibility=(top+H*(MJB.arc[1]+MJB.arc[3])/100)<34?"hidden":""; }   // 플레이어 세로 202px 이상(유튜브 200 규칙) · 그 안에서 주크박스가 한 화면에 · 양옆도 잘림 (사장님 11-05) · 반달이 34px 도 안 보이면 제목을 숨김
 window.addEventListener("resize",function(){ if(T.m==="mu"&&box()) muFit(); });
 function muTog(c){ if(c==="rep") T.rep=!T.rep;
   else { T.shuf=!T.shuf; var n=(T.res||[]).length, cur=T.idx;
@@ -181,8 +183,8 @@ function muOpen(b,M){
     +'<div class="tmw"><div class="tjw"><img class="tji" src="'+MJB.src+'" alt="">'
     +'<div class="tjar" style="left:'+MJB.arc[0]+'%;top:'+MJB.arc[1]+'%;width:'+MJB.arc[2]+'%;height:'+MJB.arc[3]+'%"></div>'
     +'<div class="tpl" style="left:'+MJB.scr[0]+'%;top:'+MJB.scr[1]+'%;width:'+MJB.scr[2]+'%;height:'+MJB.scr[3]+'%"><div class="tmsg">'+esc(L(TX.mpk))+'</div></div>'   // 앞판 = 플레이어
-    +'<div class="tjcb">'+MJB.btn.map(function(k){ return '<button type="button" class="tjk" data-j="'+k[0]+'" style="left:'+k[1]+'%;top:'+k[2]+'%;width:'+MJB.bd+'%"></button>'; }).join("")+'</div></div>'   // 그려진 단추 7개 = 실제 단추
-    +'<div class="tnote" hidden></div><div class="tls"></div></div>'
+    +'<div class="tjcb">'+MJB.btn.map(function(k){ return '<button type="button" class="tjk" data-j="'+k[0]+'" style="left:'+k[1]+'%;top:'+k[2]+'%;width:'+MJB.bd+'%"></button>'; }).join("")+'</div>'   // 그려진 단추 7개 = 실제 단추
+    +'<div class="tjl" style="left:'+MJB.lst[0]+'%;top:'+MJB.lst[1]+'%;width:'+MJB.lst[2]+'%;height:'+MJB.lst[3]+'%"><div class="tnote" hidden></div><div class="tls"></div></div></div></div>'   // 곡 목록 창 = 검색 후보 10곡 (창 안에서만 스크롤)
     +ftHtml()+'</div>';
   document.body.appendChild(b); document.documentElement.style.overflow="hidden";
   b.querySelector(".tx").onclick=close;
