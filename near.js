@@ -886,7 +886,7 @@ function entries(){ css(); var box=document.getElementById("gfchips");
   /* 편의시설(am) 칩은 뺌 — ⋮ 메뉴에만 (그 자리에 「AI와 일정짜기」, reco.js · 사장님 11-05) */
   ["ig","tg","em","st"].forEach(function(k){ var c=box.querySelector('.nrchip[data-nr="'+k+'"]'); if(!c){ box.insertAdjacentHTML("beforeend",'<button type="button" class="nrchip'+(k!=="am"?' '+k:'')+'" data-nr="'+k+'"></button>'); c=box.querySelector('.nrchip[data-nr="'+k+'"]'); }
     if(k==="ig"){ var l2=IG_CHIP2[window.LANG]||IG_CHIP2.en; c.innerHTML=esc(l2[0])+"<br>"+esc(l2[1]); c.setAttribute("aria-label",LG6(IG_CHIP6)); } else c.textContent=k==="tg"?LG6(TOURS6):T(CHIP[k][0],CHIP[k][1]); });   // 「가이드인솔 / 자유여행」 두 줄 — 같은 줄 「패키지여행」 칩은 격자(grid) 늘이기로 높이가 같다
-  var mm=document.getElementById("mm"); if(mm) ["tg","am","em","st","ig"].forEach(function(k){ var id="mnear_"+k, a=document.getElementById(id);
+  var mm=document.getElementById("mm"); if(mm) ["am","em","st"].forEach(function(k){   /* 11-06 사장님 ⋮ 메뉴에서 「Group Tour(패키지여행)」·「Travel with Guide(가이드인솔 자유여행)」 삭제 — 첫 화면 칩에 있음 */ var id="mnear_"+k, a=document.getElementById(id);
     if(!a){ a=document.createElement("a"); a.id=id; a.href="#"; a.className="mi"; a.dataset.nr=k; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); }
     a.innerHTML=k==="ig"?'<img class="miic" src="img/menu/mi_guideperson.png" alt="">'+esc(LG6(IG_CHIP6)):miLbl(k); }); }
 var f=window.setLang; if(typeof f==="function"&&!f._nr){ var g=function(){ var r=f.apply(this,arguments); try{ entries(); if(document.getElementById("nrBox")) relang(); var bk=document.getElementById("nrBk"); if(bk&&BK) bookOpen(); }catch(e){} return r; }; g._nr=1; g._gf=f._gf; g._tr=f._tr; window.setLang=g; }   // 열린 목록·예약 창은 그 자리에서 (10-18)
