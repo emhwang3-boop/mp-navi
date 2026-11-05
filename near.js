@@ -71,9 +71,11 @@ var S={k:"",tab:0,base:null,src:"",items:null,err:""}, CACHE={}, PICK=null;
 function L(){ return window.LANG!=="ko"; }   // 외국어 화면(영·일·중) — 10-18
 function LG6(o){ return o[window.LANG]||o.en; }   // 통역·길안내 새 문구는 6개 언어를 바로 넣는다(i18n.js 안 건드림, 10-24)
 // 「투어·입장권 / Tours & tickets」 (사장님 10-24) — 옛 「투어 가이드」. 내용(Klook·GetYourGuide·Creatrip·Trazy)은 그대로, 이름만 6개 언어로
-var TOURS6={ko:"체험·입장권",en:"Try & tickets",ja:"体験・入場券",zhs:"体验·门票",zht:"體驗·門票",es:"Prueba y entradas"};
+var TOURS6={ko:"패키지여행",en:"Group Tour",ja:"パッケージツアー",zhs:"跟团游",zht:"跟團遊",es:"Tour en grupo"};   // 11-06 사장님 — 옛 「체험·입장권」
 // 「투어 가이드」 칩 글자 (사장님 10-24) — 맨 앞 칩. 누르면 통역·길안내(ig) 가이드 매칭 판이 열린다
-var IG_CHIP6={ko:"투어 가이드",en:"Tour guide",ja:"ツアーガイド",zhs:"旅游向导",zht:"旅遊嚮導",es:"Guía turístico"};
+var IG_CHIP6={ko:"가이드인솔 자유여행",en:"Travel with Guide",ja:"ガイド同行の自由旅行",zhs:"向导陪同自由行",zht:"嚮導陪同自由行",es:"Viaje con guía"};   // 11-06 사장님 — 옛 「투어 가이드」 · 칩은 두 줄(IG_CHIP2)
+var IG_CHIP2={ko:["가이드인솔","자유여행"],en:["Travel","with Guide"],ja:["ガイド同行の","自由旅行"],zhs:["向导陪同","自由行"],zht:["嚮導陪同","自由行"],es:["Viaje","con guía"]};   // 줄바꿈 자리 고정 (사장님 11-06)
+var IG_DESC6={ko:"내가 가고 싶은 곳을 내 일정대로 다니고, 현지 가이드가 함께 다니며 안내와 통역을 해 드려요. 반일·하루·여러 날 중에 고르고, 가고 싶은 곳을 적어 보내면 가이드와 대화방에서 함께 정해요.",en:"Go where you want, on your own schedule — a local guide comes along to show you around and interpret. Choose half a day, a full day or several days, send the places you’d like to see, and plan it together with your guide in the chat.",ja:"行きたい場所を自分の日程で回り、現地ガイドが同行して案内と通訳をします。半日・1日・数日から選び、行きたい場所を送れば、ガイドとチャットで一緒に決められます。",zhs:"按自己的行程去想去的地方，当地向导全程陪同讲解和翻译。可选半天、一天或多天，把想去的地方发过去，就能在聊天室里和向导一起商定。",zht:"按自己的行程去想去的地方，當地嚮導全程陪同導覽和翻譯。可選半天、一天或多天，把想去的地方傳過去，就能在聊天室裡和嚮導一起商定。",es:"Ve a donde quieras, a tu ritmo: un guía local te acompaña, te orienta y te hace de intérprete. Elige medio día, un día o varios, envía los lugares que quieres ver y decidid juntos el plan en el chat."};   // 첫 화면 맨 위 설명 (사장님 11-06 확인 초안)
 // 빨간·파란 단추 안 전화기 — 흰 선 그림(글자색 그대로, 사장님 10-16: 이모지는 분홍빛이라)
 var PH='<svg class="nrph" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function km(m){ return m<1000?Math.round(m)+" m":(m/1000).toFixed(1)+" km"; }
@@ -525,7 +527,7 @@ if(/[?&]gbres=/.test(location.search)){ var _gr=function(){ setTimeout(function(
 
 // 한 판 안에서 세 화면(pick=언어 고르기 · list=가이드 목록 · req=요청하기) 을 state(IG)로
 function igRender(b){
-  var head='<div class="nrtop"><b>'+esc(LG6({ko:"투어 가이드",en:"Tour guide",ja:"ツアーガイド",zhs:"旅游向导",zht:"旅遊嚮導",es:"Guía turístico"}))+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
+  var head='<div class="nrtop"><b>'+esc(LG6(IG_CHIP6))+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>'+(IG.view==="pick"?'<div class="ignote igdesc">'+esc(LG6(IG_DESC6))+'</div>':'');   // 첫 화면 맨 위 설명 (11-06)
   var back='<button type="button" class="igback" data-igback="1">‹ '+esc(LG6({ko:"뒤로",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Atrás"}))+'</button>';
   if(IG.view==="review"){ b.innerHTML=head+igReviewForm(); igWire(b); return; }
   if(IG.view==="editask"){ b.innerHTML=head+'<button type="button" class="igback" data-igback="pick">‹ '+esc(LG6({ko:"뒤로",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Atrás"}))+'</button>'+igEditAskForm(); igWire(b); return; }   // 가이드 본인 — 등록 이메일 넣기
@@ -883,10 +885,10 @@ function entries(){ css(); var box=document.getElementById("gfchips");
   if(!box){ var h=document.getElementById("gob")||document.getElementById("hint"); if(!h) return; h.insertAdjacentHTML("afterend",'<div id="gfchips" style="display:flex;justify-content:center;gap:6px;margin:10px 0 0;flex-wrap:wrap"></div>'); box=document.getElementById("gfchips"); }
   /* 편의시설(am) 칩은 뺌 — ⋮ 메뉴에만 (그 자리에 「AI와 일정짜기」, reco.js · 사장님 11-05) */
   ["ig","tg","em","st"].forEach(function(k){ var c=box.querySelector('.nrchip[data-nr="'+k+'"]'); if(!c){ box.insertAdjacentHTML("beforeend",'<button type="button" class="nrchip'+(k!=="am"?' '+k:'')+'" data-nr="'+k+'"></button>'); c=box.querySelector('.nrchip[data-nr="'+k+'"]'); }
-    c.textContent=k==="tg"?LG6(TOURS6):k==="ig"?LG6(IG_CHIP6):T(CHIP[k][0],CHIP[k][1]); });
+    if(k==="ig"){ var l2=IG_CHIP2[window.LANG]||IG_CHIP2.en; c.innerHTML=esc(l2[0])+"<br>"+esc(l2[1]); c.setAttribute("aria-label",LG6(IG_CHIP6)); } else c.textContent=k==="tg"?LG6(TOURS6):T(CHIP[k][0],CHIP[k][1]); });   // 「가이드인솔 / 자유여행」 두 줄 — 같은 줄 「패키지여행」 칩은 격자(grid) 늘이기로 높이가 같다
   var mm=document.getElementById("mm"); if(mm) ["tg","am","em","st","ig"].forEach(function(k){ var id="mnear_"+k, a=document.getElementById(id);
     if(!a){ a=document.createElement("a"); a.id=id; a.href="#"; a.className="mi"; a.dataset.nr=k; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); }
-    a.innerHTML=k==="ig"?'<img class="miic" src="img/menu/mi_guideperson.png" alt="">'+esc(LG6({ko:"여행가이드",en:"Tour guide",ja:"旅行ガイド",zhs:"导游",zht:"導遊",es:"Guía turístico"})):miLbl(k); }); }
+    a.innerHTML=k==="ig"?'<img class="miic" src="img/menu/mi_guideperson.png" alt="">'+esc(LG6(IG_CHIP6)):miLbl(k); }); }
 var f=window.setLang; if(typeof f==="function"&&!f._nr){ var g=function(){ var r=f.apply(this,arguments); try{ entries(); if(document.getElementById("nrBox")) relang(); var bk=document.getElementById("nrBk"); if(bk&&BK) bookOpen(); }catch(e){} return r; }; g._nr=1; g._gf=f._gf; g._tr=f._tr; window.setLang=g; }   // 열린 목록·예약 창은 그 자리에서 (10-18)
 entries();
 // ── 관광 가이드 등록 (공급 측, 사장님 10-24) — 「입점 문의」 빌딩에서 window.GUIDEREG() 로 연다. 별도 전체 화면 · 6개 언어 ──
