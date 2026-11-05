@@ -300,7 +300,8 @@ function apPkList(){ if(!window.SHOP||!SHOP.items) return []; var all=[]; try{ a
 function apList(){ var a=[]; AP.picks.forEach(function(p){ if(PLACES[p.k]) a.push({t:"p",p:p}); }); AP.kits.forEach(function(x){ a.push({t:x._src==="g"?"g":"k",x:x}); }); return a; }
 function apTrip(o){ if(!window.TRIP||!TRIP.snap) return null; if(o.t==="p") return TRIP.snap(o.p.k);
   var x=o.x, g=o.t==="g", lat=g?+x.lat:+x.y, lng=g?+x.lng:+x.x;   // 카카오·구글 장소 = 검색 핀 카드의 「＋ 내 여행에 담기」와 같은 꼴(pin)
-  return {k:TRIP.pinKey({ko:x.name,lat:lat,lng:lng}),ko:x.name,en:(!g&&x.name_en)||x.name,lat:lat,lng:lng,addr:x.addr||"",addr_en:(!g&&x.addr_en)||x.addr||"",cat:x.cat||"",pin:1}; }
+  var it={k:TRIP.pinKey({ko:x.name,lat:lat,lng:lng}),ko:x.name,en:(!g&&x.name_en)||x.name,lat:lat,lng:lng,addr:x.addr||"",addr_en:(!g&&x.addr_en)||x.addr||"",cat:x.cat||"",pin:1};
+  if(Array.isArray(x.oh)&&x.oh.length) it.oh=x.oh; if(Array.isArray(x.gt)&&x.gt.length) it.gt=x.gt; return it; }   // 구글 영업시간·종류 → 일정 짜기가 밤 장소·문 여는 시각을 본다 (11-06)
 function apAdd(i,o){ var it=apTrip(o), on=!!(it&&TRIP.has(it.k)); return '<button type="button" class="apadd'+(on?' on':'')+'" data-aa="'+i+'">'+esc(on?T("✓ 담김 · 빼기","✓ Added · Remove"):T("＋ 내 여행에 담기","＋ Add to my trip"))+'</button>'; }
 function apToggle(i){ var o=apList()[i], it=o&&apTrip(o); if(!it) return; if(TRIP.has(it.k)) TRIP.del(it.k); else TRIP.add(it);
   var b=apBox(); if(b) [].forEach.call(b.querySelectorAll('[data-aa="'+i+'"]'),function(x){ x.outerHTML=apAdd(i,o); }); apCart(); }
