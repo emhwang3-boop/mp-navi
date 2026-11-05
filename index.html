@@ -284,7 +284,7 @@ html.mpc-lock #treasIsle{visibility:hidden}
     <button id="inst" onclick="instGo()" hidden style="white-space:nowrap;margin-left:auto;border:0;border-radius:999px;padding:8px 14px;background:var(--blue);color:#fff;font-weight:700;font-size:13px;cursor:pointer"><img class="miic" src="img/menu/mi_install.png" alt="" style="height:1.1em;width:auto;vertical-align:-0.18em;margin-right:4px">앱 설치</button>
     <button id="rs" onclick="resetAll()" class="tb">처음으로</button>
     <select id="lang" class="tb" hidden onchange="setLang(this.value)" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="es">Español</option><option value="ja">日本語</option><option value="zhs">简体中文</option><option value="zht">繁體中文</option></select>
-    <button id="sh" onclick="shOpen()" aria-label="share" class="tb">공유</button>
+    <button id="sh" onclick="shOpen()" aria-label="공유" title="공유" class="hic" style="color:var(--ink)"><svg viewBox="0 -960 960 960" width="24" height="24" fill="currentColor" aria-hidden="true" style="display:block"><path d="M720-80q-50 0-85-35t-35-85q0-7 1-14.5t3-13.5L322-392q-17 15-38 23.5t-44 8.5q-50 0-85-35t-35-85q0-50 35-85t85-35q23 0 44 8.5t38 23.5l282-164q-2-6-3-13.5t-1-14.5q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35q-23 0-44-8.5T638-672L356-508q2 6 3 13.5t1 14.5q0 7-1 14.5t-3 13.5l282 164q17-15 38-23.5t44-8.5q50 0 85 35t35 85q0 50-35 85t-85 35Zm0-640q17 0 28.5-11.5T760-760q0-17-11.5-28.5T720-800q-17 0-28.5 11.5T680-760q0 17 11.5 28.5T720-720ZM240-440q17 0 28.5-11.5T280-480q0-17-11.5-28.5T240-520q-17 0-28.5 11.5T200-480q0 17 11.5 28.5T240-440Zm480 280q17 0 28.5-11.5T760-200q0-17-11.5-28.5T720-240q-17 0-28.5 11.5T680-200q0 17 11.5 28.5T720-160Zm0-600ZM240-480Zm480 280Z"/></svg></button><!-- 11-05 사장님: 공유 = 구글 공개 아이콘(Material Symbols share, Apache 2.0) -->
     <button id="hlg" type="button" aria-label="Language" title="Language" class="hic"><img class="miic" src="img/menu/mi_globe.png" alt=""></button>
     <button id="hit" type="button" aria-label="Interpreter" title="Interpreter" class="hic"><img class="miic" src="img/menu/mi_interpreter.png" alt=""></button>
     <button id="th" onclick="thTog()" aria-label="theme" style="border:0;background:none;font-size:20px;line-height:1;padding:4px 4px;cursor:pointer"><img class="miic" src="img/menu/mi_moon.png" alt="theme" style="height:20px;width:20px;vertical-align:-3px;margin:0"></button>
@@ -513,7 +513,7 @@ function paint(){
   document.getElementById("ttl").textContent="Tour for Korea";   /* 앱 이름 Money Puzzle Tour for Korea — 모든 언어 같음 (사장님 10-22) */
   document.getElementById("inst").innerHTML=MPICO("mi_install",T("⬇ 앱 설치","⬇ Install"),MIS);
   document.getElementById("rs").textContent=T("처음으로","Reset");
-  document.getElementById("sh").textContent=T("공유","Share");
+  (function(){ var e=document.getElementById("sh"), t=T("공유","Share"); e.setAttribute("aria-label",t); e.title=t; })();   // 글자 대신 아이콘 — 이름은 읽어 주기·말풍선 도움말로만 (11-05)
   document.getElementById("mcopy").innerHTML='<img class="miic" src="img/menu/mi_copy.png" alt="">'+esc(T("링크 복사","Copy link"));
   document.getElementById("mref").innerHTML='<img class="miic" src="img/menu/mi_refresh.png" alt="">'+esc(T("새로고침","Refresh"));
   try{ var _rl={ko:"인트로 다시 보기",en:"Replay intro",es:"Repetir intro",ja:"イントロをもう一度",zhs:"重播片头",zht:"重播片頭"}; document.getElementById("mreplay").innerHTML='<img class="miic" src="img/menu/mi_refresh.png" alt="">'+esc(_rl[LANG]||_rl.en); }catch(e){}
@@ -773,7 +773,7 @@ function thPaint(){ document.getElementById("th").innerHTML=MPIMG(thDark()?"mi_s
 function thTog(){ var d=!thDark(); document.documentElement.setAttribute("data-theme",d?"dark":"light"); try{ localStorage.setItem("mpv_theme",d?"dark":"light"); }catch(e){} thPaint(); }
 document.getElementById("mcopy").hidden=false;   /* 2026-10-26 모든 방문자 */
 // 자료는 data/*.json 에 — 원본은 C:\kiwoom_work\tour_icons\navi_build\src, build_navi.py 가 만든다 (2026-10-15)
-var NAVI_V="1029op", NAVI_ROOT="kr";
+var NAVI_V="1105in", NAVI_ROOT="kr";
 var PLACES={}, MAPD={};
 function jget(p){ return fetch("data/"+p+"?v="+NAVI_V).then(function(r){ if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }); }
 function hgMake(h){ var g=new Uint8Array(65536), i=0; h.rle.split(",").forEach(function(t){ var v=t.charCodeAt(0)-48, n=+t.slice(1); for(var k=0;k<n;k++) g[i++]=v; }); return g; }
@@ -1683,8 +1683,8 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1027gap2"></script>
 <script src="gift.js?v=1028gift"></script>
-<script src="near.js?v=1105bk"></script>
-<script src="shop.js?v=1105tg"></script>
+<script src="near.js?v=1105pd"></script>
+<script src="shop.js?v=1105ni"></script>
 <script src="tosspay.js?v=1029tw"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}
@@ -1825,7 +1825,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 </script>
 <script src="lang.js?v=1026op"></script>
 <script src="interp.js?v=1025qs"></script>
-<script src="chat.js?v=1105tg"></script>   <!-- 손님 ↔ 가이드 대화방 · 말풍선 「가이드 대화」 탭 (11-05) — interp.js 뒤에 -->
+<script src="chat.js?v=1105sys"></script>   <!-- 손님 ↔ 가이드 대화방 · 말풍선 「가이드 대화」 탭 (11-05) — interp.js 뒤에 -->
 <script src="manual.js?v=1105m"></script>
 <script src="karaoke.js?v=1105a"></script>
 <script src="tvid.js?v=1028tg"></script>
