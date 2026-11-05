@@ -405,7 +405,7 @@ var GBT={
  amt:T6("결제 금액","Amount paid","決済金額","付款金额","付款金額","Importe pagado"),
  oid:T6("주문번호","Order no.","注文番号","订单号","訂單號","N.º de pedido"),
  endL:T6("끝나는 시간","Ends at","終了時刻","结束时间","結束時間","Termina a las"),   // 11-05 실전 — 시험 결제 문구(tkey·tsv) 대신
- sent:T6("가이드와의 대화·투어 완료·후기는 말풍선(💬)에서 합니다. 새 메시지나 취소 같은 소식은 문자로도 알려 드립니다.","Chat with your guide, tap “Tour done” and leave a review in the chat (💬). We'll also text you about news such as new messages or a cancellation.","ガイドとのチャット・ツアー完了・レビューは吹き出し（💬）で行います。新しいメッセージやキャンセルなどのお知らせはSMSでもお送りします。","与向导聊天、导览完成和评价都在对话气泡（💬）中进行。新消息、取消等通知也会通过短信告诉您。","與嚮導聊天、導覽完成和評價都在對話氣泡（💬）中進行。新訊息、取消等通知也會透過簡訊告訴您。","El chat con tu guía, «Tour completado» y la reseña se hacen en el chat (💬). También te avisaremos por SMS de novedades como mensajes nuevos o una cancelación."),   // 11-05 접수 안내 문자·메일 끊음 — 화면 + 말풍선
+ sent:T6("가이드와의 대화·투어 완료·후기는 말풍선(💬)에서 합니다. 새 메시지나 취소 같은 소식은 🔔 앱 알림과 메일로도 알려 드립니다.","Chat with your guide, tap “Tour done” and leave a review in the chat (💬). We'll also let you know about news such as new messages or a cancellation by app notification (🔔) and email.","ガイドとのチャット・ツアー完了・レビューは吹き出し（💬）で行います。新しいメッセージやキャンセルなどのお知らせは🔔アプリ通知とメールでもお送りします。","与向导聊天、导览完成和评价都在对话气泡（💬）中进行。新消息、取消等通知也会通过🔔应用通知和邮件告诉您。","與嚮導聊天、導覽完成和評價都在對話氣泡（💬）中進行。新訊息、取消等通知也會透過🔔應用程式通知和電郵告訴您。","El chat con tu guía, «Tour completado» y la reseña se hacen en el chat (💬). También te avisaremos de novedades como mensajes nuevos o una cancelación con notificaciones de la app (🔔) y por correo."),   // 11-06 손님 문자 끔 → 🔔 앱 알림·메일   // 11-05 접수 안내 문자·메일 끊음 — 화면 + 말풍선
  tdn:T6("투어 완료는 끝나는 시간부터 누를 수 있습니다.","You can tap Tour done from the time the tour ends.","ツアー完了は終了時刻から押せます。","导览完成从结束时间起可点击。","導覽完成從結束時間起可點擊。","Podrás pulsar Tour completado desde la hora en que termina el tour."),
  chatGo:T6("💬 말풍선에서 보기","💬 Open in chat","💬 吹き出し（チャット）で見る","💬 在对话气泡中查看","💬 在對話氣泡中查看","💬 Ver en el chat"),
  pfT:T6("결제가 완료되지 않았어요 (취소 또는 실패).","The payment was not completed (cancelled or failed).","決済が完了しませんでした（キャンセルまたは失敗）。","付款未完成（已取消或失败）。","付款未完成（已取消或失敗）。","El pago no se completó (cancelado o fallido)."),
@@ -479,7 +479,7 @@ function gbDone(g){ var L=LG6, r=IG.gbRes||{};
     +'<div class="gbdone">✓ '+esc(L(GBT.pdS))+'</div>'
     +'<div class="gbpr">'+gbRows(g)+'<div class="gbt"><span>'+esc(L(GBT.amt))+'</span><span>'+gbWon(r.amount)+'</span></div><div class="gbl"><span>'+esc(L(GBT.oid))+'</span><b>'+esc(r.oid||"")+'</b></div>'
     +(r.end?'<div class="gbl"><span>'+esc(L(GBT.endL))+'</span><b>'+esc(bkWhen(r.end))+'</b></div>':'')+'</div>'
-    +'<div class="ignt">'+esc(L(GBT.sent))+'<br>'+esc(L(GBT.tdn))+'</div>'+gbRefund()
+    +'<div class="ignt">'+esc(L(GBT.sent))+'<br>'+esc(L(GBT.tdn))+'</div>'+(window.BELL&&BELL.promptHtml?BELL.promptHtml():'')+gbRefund()   // 🔔 알림 켜기 권유 — 이미 켜져 있으면 없음 (11-06)
     +(r.tk?'<button type="button" class="gbgo" data-gbchat="1">'+esc(L(GBT.chatGo))+'</button>':'')   // 주 단추 = 그 예약의 말풍선 방 (사장님 11-05)
     +'<button type="button" class="gbgo'+(r.tk?' g2':'')+'" data-igback="pick">'+esc(L(BKT.my))+' ›</button>'; }   // 「내 예약」 = 첫 화면 맨 위 카드 (보조)
 // 「보내기 및 결제」 — 칸 확인 → 요약 확인(gconf)
@@ -822,7 +822,7 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
 // ── 한 곳 고르기 → 기존 검색 핀 ──
 function pick(x){ var t=KINDS[S.k].tabs[S.tab]; try{ ntap(t.kind||t.c.toLowerCase(),KINDS[S.k].e); }catch(e){}
   PICK={lat:+x.y,lng:+x.x,em:S.k==="em"}; close();
-  spinShow({name:x.name,name_en:x.name_en||x.name,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",y:x.y,x:x.x,tel:x.tel||"",cat:x.cat||"",cat_en:x.cat_en||"",_l:S.fl||(x.name_en?LANG:"ko")}); }
+  spinShow({name:x.name,name_en:x.name_en||x.name,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",y:x.y,x:x.x,tel:x.tel||"",cat:x.cat||"",cat_en:x.cat_en||"",_l:S.fl||(x.name_en?LANG:"ko"),oh:x.oh,gt:x.gt}); }   // oh·gt = 구글 영업시간·종류 → 내 여행에 담을 때 (11-06)
 // 긴급으로 고른 곳은 카드 맨 위에 큰 「전화」 단추
 var sc0=window.spinCard; if(typeof sc0==="function"&&!sc0._nr){ var sc1=function(){ var r=sc0.apply(this,arguments);
     try{ var p=PLACES.__pin; if(PICK&&PICK.em&&p&&p.tel&&Math.abs(+p.lat-PICK.lat)<1e-6&&Math.abs(+p.lng-PICK.lng)<1e-6){ var it=document.querySelector("#res .item");
