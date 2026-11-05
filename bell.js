@@ -6,6 +6,7 @@
  *  · 목록은 이 기기 localStorage(mpv_bell, 최근 50개·30일). 앱이 닫혀 있을 때 sw.js 가 받은 대화방 푸시는 Cache(mpbell)에 쌓였다가 앱을 열면 목록으로
  *  · 설정 mpv_bellcfg {on,snd,vib} — sw.js 도 읽게 Cache(mpbell /__mpbell/cfg)에 사본
  *  · 🔴 문자·메일은 여기서 보내지 않는다(허브 몫) · 사이트 데이터 지우라는 안내는 쓰지 않는다
+ *  · 11-06 일정 알림(k "trip")을 누르면 TRIP.alert(go) — go.q 가 있으면 그 물음(더 계시나요?·숙소), 없으면 늦어짐 주의 창
  */
 (function(){
 "use strict";
@@ -148,7 +149,7 @@ function addSw(e){ if(!e||!e.id||LIST.some(function(x){ return x.id===e.id; })) 
 function goId(id){ var e=LIST.filter(function(x){ return x.id===id; })[0]; close();
   if(e){ e.rd=1; save(); btnPaint(); }
   var k=(e&&e.k)||"chat";
-  if(k==="trip"){ try{ if(window.TRIP&&TRIP.alert) TRIP.alert(); }catch(x){} return; }
+  if(k==="trip"){ try{ if(window.TRIP&&TRIP.alert) TRIP.alert(e&&e.go); }catch(x){} return; }   // go.q = 「더 계시나요?」·숙소 물음이면 그 물음으로 (trip.js, 11-06)
   if(k==="chat"){ try{ if(window.CHAT){ if(e&&e.tk) CHAT.room(e.tk); else CHAT.panel(); } }catch(x){} return; } }
 // 앱이 닫혀 있을 때 sw.js 가 쌓아 둔 알림 → 목록
 function qPull(){ if(!window.caches) return Promise.resolve(0);
