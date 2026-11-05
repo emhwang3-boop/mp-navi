@@ -139,11 +139,19 @@ html:lang(zh-Hant) body,html:lang(zh-Hant) :is(button,input,select,textarea){fon
 .sbox #gfchips{order:1;flex:0 0 100%;width:100%;display:grid!important;grid-template-columns:repeat(2,minmax(0,170px));justify-content:center;gap:6px;margin:12px 0 0;box-sizing:border-box}
 .sbox #gob{width:min(260px,70%)!important;box-sizing:border-box;text-align:center;margin:0!important;white-space:nowrap;order:0}
 .sbox #gfchips>button{width:auto!important;box-sizing:border-box;text-align:center;margin:0!important;white-space:nowrap}
-/* 2열 채우는 순서: 투어가이드·투어입장권 / 숙소·편의시설 / 선물·긴급 */
-.sbox #gfchips>.nrchip.ig{order:1}.sbox #gfchips>.nrchip.tg{order:2}.sbox #gfchips>.nrchip.st{order:3}.sbox #gfchips>.nrchip:not(.st):not(.em):not(.tg):not(.ig){order:4}.sbox #gfchips>.gfchip{order:5}.sbox #gfchips>.nrchip.em{order:6}
+/* 2열 채우는 순서: 투어가이드·체험입장권 / AI와 일정짜기·숙소 / 선물·긴급 (사장님 11-05 — 편의시설 칩은 빼서 ⋮ 메뉴에만, 그 자리에 AI 칩(reco.js) · 숙소와 자리 바꿈) */
+.sbox #gfchips>.nrchip.ig{order:1}.sbox #gfchips>.nrchip.tg{order:2}.sbox #gfchips>.nrchip.ai{order:3}.sbox #gfchips>.nrchip.st{order:4}.sbox #gfchips>.gfchip{order:5}.sbox #gfchips>.nrchip.em{order:6}
 .map{margin:18px 0 0;border-radius:18px;overflow:hidden;background:#96b2c4;box-shadow:0 2px 14px rgba(0,0,0,.08)}
 /* 지도는 화면 폭 거의 전부 × 화면 높이 거의 전부(제목줄·칩 줄만 남김) — 정사각형 아님. 높이 --MH 는 mapFit() 이 잰다 (사장님 10-16) */
 .map{--W:min(calc(100vw - 24px),1600px);width:var(--W);margin-left:calc((100% - var(--W)) / 2);height:var(--MH,max(320px,calc(100vh - 300px)))}
+/* 첫 화면 「검색」·「추천받기」 단추 뺌 (사장님 11-05) — 검색은 검색칸에서 엔터(폰 자판 「검색」). #gob 은 엔터 제출·다른 파일이 찾는 자리라 남기고 화면에서만 감춘다 */
+html .sbox #gob{position:absolute!important;width:1px!important;height:1px!important;min-width:0!important;padding:0!important;margin:-1px!important;border:0!important;overflow:hidden!important;clip:rect(0 0 0 0);clip-path:inset(50%);opacity:0}
+/* 단추 둘이 빠진 자리 — 칩을 조금 크게·간격 넓게, 검색칸·안내 문장·칩·지도 사이 여백은 줄여 지도를 위로 (사장님 11-05). 가로 화면·넓은 PC 는 아래 @media 그대로 */
+.sbox{row-gap:6px}
+.sbox #gfchips{grid-template-columns:repeat(2,minmax(0,184px));gap:9px 10px;margin:6px 0 0}
+.sbox #gfchips>button{font-size:15px!important;padding:9px 6px!important;line-height:1.25}
+#res:empty{margin-top:0}
+.map{margin-top:12px}
 html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새로고침·바운스 막음 (10-23 잠깐 풀었다 다시 막음 — 새로고침은 ⋮ 메뉴 단추) — html 에만 (body 에 걸면 body 가 스크롤 상자라 화면 넘김이 막힌다, 10-16) */
 /* 가로 화면(폰 눕힘)·넓은 PC — 제목줄·검색칸·칩을 얇게 한 줄로, 지도에 높이를 몰아준다 */
 @media (orientation:landscape) and (max-height:560px),(min-width:900px) and (min-height:561px){
@@ -295,10 +303,10 @@ html.mpc-lock #treasIsle{visibility:hidden}
       <a href="#" id="mref" onclick="location.reload();return false" class="mi" style="border-bottom:0"><img class="miic" src="img/menu/mi_refresh.png" alt="">새로고침</a>
     </div>
   </div>
-  <form class="sbox" onsubmit="go();return false">
-    <div class="qw"><input id="q" autocomplete="off" placeholder="예: 경복궁, 해운대 맛집, 전주 한옥마을"><button type="button" id="qx" hidden aria-label="clear" onclick="qClear()">✕</button></div>
-    <p class="desc" id="hint">가고 싶은 곳, 먹고 싶은 것, 하고 싶은 것 등 아무거나 써 보세요. 뭐라도 추천해 드립니다.</p>
-    <button type="submit" id="gob">검색</button>
+  <form class="sbox" onsubmit="try{document.getElementById('q').blur()}catch(e){}go();return false">
+    <div class="qw"><input id="q" autocomplete="off" enterkeyhint="search" placeholder="예: 경복궁, 해운대 맛집, 전주 한옥마을"><button type="button" id="qx" hidden aria-label="clear" onclick="qClear()">✕</button></div>
+    <p class="desc" id="hint">가고 싶은 곳을 써 보세요. 하고 싶은 것은 「AI와 일정짜기」에서 찾아 드려요.</p>
+    <button type="submit" id="gob" tabindex="-1" aria-hidden="true">검색</button><!-- 11-05 화면에서 감춤(엔터 검색용으로 남김) -->
   </form>
   <div class="res" id="res"></div>
   <div id="vbar" hidden><button type="button" id="vback" hidden>←</button><div id="vttl" hidden></div><button type="button" id="vdet" hidden>자세히</button></div>
@@ -340,7 +348,7 @@ html.mpc-lock #treasIsle{visibility:hidden}
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
 <script src="geoconsent.js?v=1027lbs"></script>
-<script src="i18n.js?v=1028pw"></script>
+<script src="i18n.js?v=1105dec"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
 // 그림별 누름 수 (사장님 2026-10-15) — 광고 근거. 🔴 IP·기기ID·위치는 안 보낸다: 장소키·지도·언어·종류·「오늘 첫 번」 표시뿐. 실패해도 앱은 그대로
@@ -520,7 +528,7 @@ function paint(){
   document.getElementById("q").placeholder=T("예: 경복궁, 해운대 맛집, 전주 한옥마을","e.g. Gyeongbokgung, Haeundae food, Jeonju Hanok Village");
   document.getElementById("gob").textContent=T("검색","Search");
   document.getElementById("zme").textContent=T("◎ 현재 위치","◎ My location");
-  document.getElementById("hint").textContent=T("가고 싶은 곳, 먹고 싶은 것, 하고 싶은 것 등 아무거나 써 보세요. 뭐라도 추천해 드립니다.","Type anything — places to go, food to eat, things to do. We'll recommend something.");
+  document.getElementById("hint").textContent=T("가고 싶은 곳을 써 보세요. 하고 싶은 것은 「AI와 일정짜기」에서 찾아 드려요.","Type a place you want to go. For things to do, try “Tour Plan with AI”.");
   document.getElementById("mapimg").alt=T("대한민국 관광 지도","Korea travel map");
   document.title="Money Puzzle Tour for Korea";
   try{ footBuild(); }catch(e){}
@@ -1658,6 +1666,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
   function vis(e){ return e&&!e.hidden&&e.offsetParent!==null||(e&&!e.hidden&&getComputedStyle(e).position==="fixed"&&getComputedStyle(e).display!=="none"); }
   function backClose(){
     if(window.SHOP&&SHOP.back&&SHOP.back()) return true;   /* 체험·입장권 — 결제창 → 상품 상세 → 목록 (10-29) */
+    if(window.AIPLAN&&AIPLAN.back&&AIPLAN.back()) return true;   /* AI와 일정짜기 — 읽던 카드 → 목록 → 「완료」와 같음 (11-05) */
     var c=[].slice.call(document.querySelectorAll("#infopop,.trpop,#nrBk,#inqBox,#shBox,.trsheet,#gfBox,#nrBox,#itB")).filter(vis);
     if(c.length){ c.sort(function(a,b){ return (parseInt(getComputedStyle(a).zIndex)||0)-(parseInt(getComputedStyle(b).zIndex)||0); }); var o=c[c.length-1];
       if(o.id==="shBox"){ o.hidden=true; return true; }
@@ -1682,15 +1691,15 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
-<script src="trip.js?v=1105h24"></script>
+<script src="trip.js?v=1105aip"></script>
 <script src="gift.js?v=1028gift"></script>
-<script src="near.js?v=1105cs"></script>
-<script src="shop.js?v=1105ni"></script>
-<script src="tosspay.js?v=1029tw"></script>
+<script src="near.js?v=1105dec"></script>
+<script src="shop.js?v=1105dec"></script>
+<script src="tosspay.js?v=1105aip"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}
 /* 손님 「내 예약」 링크로 열렸으면 통역·길안내 첫 화면의 그 예약 카드를 연다 (2026-11-05) */try{ if(window.__mpTdone&&window.NEAR&&window.NEAR.tdone) window.NEAR.tdone(window.__mpTdone); }catch(e){}</script>
-<script src="reco.js?v=1026pm"></script>
+<script src="reco.js?v=1105aip"></script>
 <script src="gu.js?v=1105mu"></script>
 <script src="citytour.js?v=1024icons"></script>
 <script src="pass.js?v=1024gmatch"></script>
@@ -1830,10 +1839,10 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 </script>
 <script src="lang.js?v=1026op"></script>
 <script src="interp.js?v=1025qs"></script>
-<script src="chat.js?v=1105cu"></script>   <!-- 손님 ↔ 가이드 대화방 · 말풍선 「가이드 대화」 탭 (11-05) — interp.js 뒤에 -->
+<script src="chat.js?v=1105aip"></script>   <!-- 손님 ↔ 가이드 대화방 · 말풍선 「가이드 대화」 탭 (11-05) — interp.js 뒤에 -->
 <script src="manual.js?v=1105m"></script>
 <script src="karaoke.js?v=1105a"></script>
-<script src="tvid.js?v=1105jb"></script>
+<script src="tvid.js?v=1105j2"></script>
 <script src="pcbang.js?v=1026pc5"></script>
 <script src="pg.js?v=1105st"></script>
 <script src="review.js?v=1105buy"></script>
