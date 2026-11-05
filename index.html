@@ -56,6 +56,10 @@ try{ window.__mpSrc=window.__mpSrcOf(navigator.userAgent||"",location.search||""
   var gem=/[?&]gedit=([0-9a-f]{32})(?![0-9a-z])/i.exec(location.search);
   if(/[?&]gedit=/i.test(location.search)){ try{ var qsg=location.search.slice(1).split("&").filter(function(x){ return !/^gedit=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qsg?"?"+qsg:"")+location.hash); }catch(x){} }
   if(gem){ window.__mpGedit=gem[1]; localStorage.setItem("mpv_ok","1"); ok=true; }
+  /* 손님 「내 예약」 링크 (2026-11-05, near.js openTdone 과 짝) — 예약 확정 메일·문자의 ?tdone=<예약 토큰>. 손님 연락처 없음. 들어온 손님이니 통과시킨다 */
+  var tdm=/[?&]tdone=([0-9a-f]{32})(?![0-9a-z])/i.exec(location.search);
+  if(/[?&]tdone=/i.test(location.search)){ try{ var qsd=location.search.slice(1).split("&").filter(function(x){ return !/^tdone=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(qsd?"?"+qsd:"")+location.hash); }catch(x){} }
+  if(tdm){ window.__mpTdone=tdm[1]; localStorage.setItem("mpv_ok","1"); ok=true; }
   if(localStorage.getItem("mp_owner")||localStorage.getItem("mpv_inv")) document.addEventListener("DOMContentLoaded",function(){ var l=document.querySelector('link[rel="mp-manifest"]'); if(l) l.rel="manifest"; });
   /* 7일짜리 초대 링크 (사장님 2026-10-15) — 고정 코드는 더 안 받는다. 허브가 서명·만료를 확인한다 */
   var IH="https://brief-live-hub.emhwang3.workers.dev", IA="navi";
@@ -1679,11 +1683,12 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="trip.js?v=1027gap2"></script>
 <script src="gift.js?v=1028gift"></script>
-<script src="near.js?v=1104nopg"></script>
-<script src="shop.js?v=1030ly"></script>
+<script src="near.js?v=1105chat"></script>
+<script src="shop.js?v=1105real"></script>
 <script src="tosspay.js?v=1029tw"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
-/* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}</script>
+/* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}
+/* 손님 「내 예약」 링크로 열렸으면 통역·길안내 첫 화면의 그 예약 카드를 연다 (2026-11-05) */try{ if(window.__mpTdone&&window.NEAR&&window.NEAR.tdone) window.NEAR.tdone(window.__mpTdone); }catch(e){}</script>
 <script src="reco.js?v=1026pm"></script>
 <script src="gu.js?v=1104rh"></script>
 <script src="citytour.js?v=1024icons"></script>
@@ -1820,12 +1825,13 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 </script>
 <script src="lang.js?v=1026op"></script>
 <script src="interp.js?v=1025qs"></script>
-<script src="manual.js?v=1028m"></script>
+<script src="chat.js?v=1105chat"></script>   <!-- 손님 ↔ 가이드 대화방 · 말풍선 「가이드 대화」 탭 (11-05) — interp.js 뒤에 -->
+<script src="manual.js?v=1105m"></script>
 <script src="karaoke.js?v=1105a"></script>
 <script src="tvid.js?v=1028tg"></script>
 <script src="pcbang.js?v=1026pc5"></script>
-<script src="pg.js?v=1104nopg"></script>
-<script src="review.js?v=1105ic"></script>
+<script src="pg.js?v=1105st"></script>
+<script src="review.js?v=1105buy"></script>
 <script src="event.js?v=1104nopg"></script>
 <script src="billboard.js?v=1021pl"></script>
 <script src="airport_i18n.js?v=1028pw"></script>
