@@ -53,7 +53,40 @@ function catOf(it){ var k=it.k||"", s=(it.ko||"")+" "+(it.en||"")+" "+(it.d||"")
 var STAY={palace:120,museum:120,market:90,tower:60,show:60,shop:90,temple:60,park:60,cruise:90,village:90,street:60,hq:20,theme:300,mount:300};
 function stayOf(it){ return STAY[catOf(it)]||60; }
 var PERFK={sejongctr:1,sac:1,bluesq:1,lgart:1,olympichall:1};   // 공연장 5곳 — 공연은 저녁이라 그날 마지막 장소로 (사장님 10-27 「예술의전당 9시에 끝」)
-function isNight(it){ return !!PERFK[it.k]||/밤 추천|night/i.test((it.d||"")+" "+(it.den||"")); }
+function isNight(it){ return !!PERFK[it.k]||/밤 추천|night/i.test((it.d||"")+" "+(it.den||""))||isBar(it); }
+// ── 밤 종류·영업시간 (사장님 11-06 — 구글 「Day&Night 데이앤나잇」 나이트클럽이 1일차 10:00 첫 장소로 들어감) ──
+//  · 밤 종류 = 구글·카카오에서 담은 핀(pin)만: 구글 종류(gt) night_club·bar·pub 등 → 없으면 카카오 분류(cat) 「술집」 등 → 그것도 없으면 이름 낱말
+//  · 영업시간(oh, 허브가 구글에서 같이 받아 옴): 문 여는 시각 전에는 안 넣고(기다렸다 들어감), 마감 뒤에 닿으면 표시 · 쉬는 요일이면 다른 날로(compute)
+//  · 밤 종류인데 영업시간을 모르면 저녁 19시부터 · 알면 그 시각에 맞춰 · 밤 종류는 지금처럼 그날 끝자리
+var BAR_GT=/^(night_club|bar|pub|wine_bar|cocktail_bar|lounge_bar|sports_bar|irish_pub|brewpub|beer_garden|hookah_bar)$/;
+var BAR_X=/골프|헬스|피트니스|키즈|어린이|북 ?클럽|요트|스포츠,레저|golf|fitness|\bgym\b|kids|book ?club|country ?club|yacht|(sushi|salad|juice|snack|oyster|noodle|coffee|espresso|dessert|milk|nail|brow|lash) ?bar|(스시|샐러드|주스|커피|디저트|네일) ?바/i;
+var BAR_C=/술집|주점|호프|포장마차|포차|이자카야|칵테일|와인바|나이트|클럽|라운지|\bbars?\b|\bpubs?\b|night ?club|lounge/i;
+var BAR_N=/나이트클럽|나이트(?!\s*(마켓|투어|뷰|시장|사파리|워크))|클럽|night ?club|\bclub\b|\bpubs?\b|펍|술집|주점|라운지|lounge|이자카야|izakaya|居酒屋|포차|포장마차|호프|칵테일|cocktail|와인 ?바|wine ?bar|\bbars?\b|ナイトクラブ|バー(?!ガ)|酒吧|夜店|夜总会|夜總會/i;
+function isBar(it){ if(!it||!it.pin) return false; var gt=Array.isArray(it.gt)?it.gt:[]; if(gt.length) return gt.some(function(t){ return BAR_GT.test(t); });
+  var c=String(it.cat||""); if(c){ if(BAR_X.test(c)) return false; if(BAR_C.test(c)) return true; if(/>/.test(c)) return false; }   // 카카오 분류(「음식점 > 한식」 등)가 있으면 그것으로
+  var s=(it.ko||"")+" "+(it.en||""); return BAR_N.test(s)&&!BAR_X.test(s); }
+var EVE=19*60;   // 영업시간을 모르는 밤 종류 = 19시부터
+// 그날 여는 칸 [[여는 분, 닫는 분], …] (그날 0시 기준, 전날 밤부터 이어지는 칸·자정 넘는 칸 포함) · off = 그날 쉼 · eve = 영업시간 모르는 밤 종류 · null = 모름(제한 없음)
+function winOf(x,date){ var oh=x&&x.oh;
+  if(Array.isArray(oh)&&oh.length){ var dw=date.getUTCDay(), w=[];
+    oh.forEach(function(q){ if(!Array.isArray(q)||q.length<3) return; var S=q[0]*1440+(+q[1])-dw*1440, E=q[0]*1440+(+q[2])-dw*1440;
+      [-10080,0,10080].forEach(function(s){ var a=S+s, b=E+s; if(b>0&&a<2880) w.push([a,b]); }); });
+    w.sort(function(a,b){ return a[0]-b[0]; }); var m=[];
+    w.forEach(function(r){ var l=m[m.length-1]; if(l&&r[0]<=l[1]) l[1]=Math.max(l[1],r[1]); else m.push(r.slice()); });
+    if(!m.some(function(r){ return r[1]>360&&r[0]<1440; })) return {w:[],off:1};   // 그날 아침 6시~자정에 여는 칸이 없으면 쉬는 날
+    return {w:m.filter(function(r){ return r[0]<1680; })}; }   // 다음 날 새벽 4시 뒤에 여는 칸(= 다음 날 영업)은 그날 칸이 아니다 — 밤새 기다려 다음 날 들어가는 일정은 안 만든다
+  if(isBar(x)) return {w:[[EVE,4320]],eve:1};
+  return null; }
+// 그 시각에 닿을 때의 마감 — {c:닫는 분, o:여는 분} · last=궁궐 입장마감 · off=쉬는 날 · c:null=모름
+function closeOf(x,dt,t){ if(PERFK[x.k]) return {c:null}; var li=lastIn(FACT[x.k],dt); if(li!=null) return {c:li,last:1};
+  var wn=winOf(x,dt); if(!wn) return {c:null}; if(wn.eve) return {c:null,eve:1}; if(wn.off) return {c:null,off:1};
+  for(var i=0;i<wn.w.length;i++) if(t<wn.w[i][1]) return {c:wn.w[i][1],o:wn.w[i][0]};
+  var l=wn.w[wn.w.length-1]; return {c:l?l[1]:null,o:l?l[0]:null}; }
+// 밤 장소(끝자리)를 가장 이르게 들어갈 때 숙소 도착 — 하루 끝 시각보다 늦으면 그날 기준 끝 = 이것 (나이트클럽을 담았으면 그 시각까지가 그날) · from = 하루 시작
+function nightEnd(H,arr,date,from){ var nt=arr.filter(isNight); if(!nt.length) return 0; var t=from||0, p=null;
+  nt.forEach(function(x){ if(p) t+=legMin(p,x); var wn=PERFK[x.k]?null:winOf(x,date); if(wn&&!wn.off){ for(var i=0;i<wn.w.length;i++) if(t<wn.w[i][1]){ if(t<wn.w[i][0]) t=wn.w[i][0]; break; } } t+=x.stay; p=x; });
+  if(H&&p) t+=legMin(p,H); return t; }
+function dayLim(pl,d,H,arr,dt){ return Math.max((d&&d.gap&&d.gap.until)||pl.to,nightEnd(H,arr,dt,pl.from)); }
 
 // ── 공식 확인된 운영 정보만 (궁능유적본부 관람안내 royal.khs.go.kr/ROYAL/contents/R702000000.do, 2026-10-15 확인) ──
 //   cl=정기휴일 요일(0=일) · last=월별 입장마감 · ev=정해진 행사 시각(덕수궁 수문장 교대식 — 장소 자료 문구, 2024년 기준)
@@ -65,13 +98,14 @@ var FACT={
   deoksugung:{cl:[1],last:[20],ev:[660,840],evd:[2,3,4,5,6,0],evn:["수문장 교대식","Royal Guard Changing Ceremony"]}
 };
 function lastIn(f,d){ if(!f||!f.last) return null; var v=f.last.length===1?f.last[0]:f.last[d.getUTCMonth()]; return Math.round(v*60); }
-function needCheck(it){ var c=catOf(it); return !FACT[it.k]&&/^(palace|museum|theme|tower|show|cruise)$/.test(c); }
+function needCheck(it){ var c=catOf(it); return !FACT[it.k]&&!(Array.isArray(it.oh)&&it.oh.length)&&/^(palace|museum|theme|tower|show|cruise)$/.test(c); }   // 구글 영업시간을 받은 곳은 뺀다 (11-06)
 
 // ── 담기 ──
 function has(k){ return TR.items.some(function(x){ return x.k===k; }); }
 function snapPlace(k){ var p=window.PLACES&&PLACES[k]; if(!p) return null; return {k:k,ko:p.ko,en:p.en||p.ko,lat:+p.lat,lng:+p.lng,addr:p.addr||"",addr_en:p.addr_en||"",d:p.dko||"",den:p.den||""}; }
 function pinKey(p){ var s=(p.ko||"")+"|"+(+p.lat).toFixed(5)+"|"+(+p.lng).toFixed(5), h=0; for(var i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))|0; } return "pin_"+(h>>>0).toString(36); }
-function snapPin(){ var p=window.PLACES&&PLACES.__pin; if(!p) return null; return {k:pinKey(p),ko:p.ko,en:p.en||p.ko,lat:+p.lat,lng:+p.lng,addr:p.addr||"",addr_en:p.addr_en||"",cat:p.cat||"",pin:1}; }
+function snapPin(){ var p=window.PLACES&&PLACES.__pin; if(!p) return null; var it={k:pinKey(p),ko:p.ko,en:p.en||p.ko,lat:+p.lat,lng:+p.lng,addr:p.addr||"",addr_en:p.addr_en||"",cat:p.cat||"",pin:1};
+  if(Array.isArray(p.oh)&&p.oh.length) it.oh=p.oh; if(Array.isArray(p.gt)&&p.gt.length) it.gt=p.gt; return it; }   // 구글 영업시간·종류 (11-06)
 function addItem(it){ if(!it||has(it.k)) return; if(TR.items.length>=MAXN){ alert(T("최대 "+MAXN+"곳까지 담을 수 있어요","Up to "+MAXN+" places")); return; }
   TR.items.push(it); TR.plan=null; save(); try{ ntap(it.pin?("sp_"+(window.spinCat?spinCat(it.cat):"etc")):it.k,"trip_add"); }catch(e){} refresh(); }
 function delItem(k){ TR.items=TR.items.filter(function(x){ return x.k!==k; }); TR.plan=null; save(); refresh(); }
@@ -255,26 +289,40 @@ function improve(H,gs,cap,avg){ var cst=function(g){ if(!g.length) return 500; v
         if(c1+c2<cs[a]+cs[b]-0.5){ gs[a]=A2; gs[b]=B2; cs[a]=c1; cs[b]=c2; ok=true; x=y; } } } }
   return gs; }
 // 하루 시간표 — 정해진 행사 시각은 그 앞에 닿게, 입장마감 넘기면 표시
-function sched(H,arr,date,from,mo){ var t=from, p=H, rows=[], lunch=false, dinner=false, viol=0, wait=0, miss=0;
+// lv (11-06, 오늘 실제 기록) = {i:마지막으로 기록된 장소 차례, rec:{키:{a:도착 분,d:출발 분}}, now:지금 분, r:이 손님 머문 시간 비율, ml:{차례:[식사]}} — 있으면
+//   i 앞·i = 실제 도착·출발 시각 그대로(지금 장소는 「지금까지 + 경향」만큼), i 뒤 = 지금 시각부터 이동 + 계획 머문 시간 × 비율 · 식사 칸은 계획과 같은 자리(ml)
+function sched(H,arr,date,from,mo,lv){ var t=from, p=H, rows=[], lunch=false, dinner=false, viol=0, wait=0, miss=0;
   // 식사 칸 — mo={to,lunch,dinner}(고른 식당). 고른 식당이 있으면 그리로 걸어가 1시간, 다음 장소는 식당에서 출발
   var meal=function(kind,anchor,next){ var r=mo&&mo[kind], lg=null; if(r){ lg=p?leg(p,r):null; if(lg) t+=lg.min; } rows.push({meal:kind,lunch:1,t:t,anchor:anchor,next:next,r:r||null,leg:lg}); t+=60; if(r) p=r; };
-  arr.forEach(function(x,i){ var lg=p?leg(p,x):null; if(lg) t+=lg.min; var f=FACT[x.k], dw=date.getUTCDay(), note=[];
-    if(f&&f.ev&&f.evd.indexOf(dw)>=0){ var ev=null; f.ev.forEach(function(e){ if(ev==null&&t<=e-10+5) ev=e; }); if(ev!=null&&ev-10>t&&ev-10-t<=90){ wait+=ev-10-t; t=ev-10; } if(ev!=null) note.push([f.evn[0]+" "+m2hm(ev),f.evn[1]+" "+m2hm(ev)]); else miss++; }
-    var li=PERFK[x.k]?null:lastIn(f,date); if(li!=null&&t>li){ viol++; note.push(["입장 마감 "+m2hm(li)+" 지남","Last entry "+m2hm(li)+" passed"]); }
-    rows.push({x:x,leg:lg,t:t,note:note}); t+=x.stay; p=x;
+  arr.forEach(function(x,i){ var lg=p?leg(p,x):null; if(lg) t+=lg.min; var f=FACT[x.k], dw=date.getUTCDay(), note=[], st=x.stay, act=0, R=lv&&lv.rec[x.k];
+    if(lv&&i<=lv.i){ if(R&&R.a!=null) t=R.a;   // 실제로 다녀온 곳·지금 있는 곳 — 확인 없이 기록 그대로
+      if(i<lv.i){ if(R&&R.a!=null&&R.d!=null) st=Math.max(1,R.d-R.a); act=R&&(R.a!=null||R.d!=null)?2:0; }
+      else if(R&&R.d!=null){ if(R.a==null&&R.d-t<10) t=R.d-x.stay; st=Math.max(1,R.d-t); act=2; }
+      else { st=Math.max(Math.round(x.stay*lv.r),lv.now-t+1); act=1; } }
+    else {
+      if(lv){ if(t<lv.now) t=lv.now; st=Math.max(5,Math.round(x.stay*lv.r)); }
+      if(f&&f.ev&&f.evd.indexOf(dw)>=0){ var ev=null; f.ev.forEach(function(e){ if(ev==null&&t<=e-10+5) ev=e; }); if(ev!=null&&ev-10>t&&ev-10-t<=90){ wait+=ev-10-t; t=ev-10; } if(ev!=null) note.push([f.evn[0]+" "+m2hm(ev),f.evn[1]+" "+m2hm(ev)]); else miss++; }
+      var wn=PERFK[x.k]?null:winOf(x,date);   // 영업시간 (11-06) — 문 열기 전이면 기다렸다 들어가고, 마감 뒤면 표시
+      if(wn){ if(wn.off){ viol++; note.push({o:LV6.off}); }
+        else { var nx=null, lc=null; for(var wi=0;wi<wn.w.length;wi++){ if(t<wn.w[wi][1]){ nx=wn.w[wi]; break; } lc=wn.w[wi][1]; }
+          if(!nx){ viol++; note.push({o:LV6.shut,v:{t:m2hm(lc||0)}}); } else if(t<nx[0]){ wait+=nx[0]-t; t=nx[0]; note.push({o:LV6.open,v:{t:m2hm(nx[0])}}); } }
+        if(wn.eve) note.push({o:LV6.eve}); }
+      var li=PERFK[x.k]?null:lastIn(f,date); if(li!=null&&t>li){ viol++; note.push(["입장 마감 "+m2hm(li)+" 지남","Last entry "+m2hm(li)+" passed"]); } }
+    rows.push({x:x,leg:lg,t:t,note:note,st:st,act:act,ext:act===1?1:0}); t+=st; p=x;
+    if(lv&&lv.ml){ (lv.ml[i]||[]).forEach(function(kd){ if(i>=lv.i&&(kd==="lunch"?t>14*60+30:t>21*60)) return; meal(kd,x,arr[i+1]||null); if(kd==="lunch") lunch=true; else dinner=true; }); return; }   // 늦어져 점심 14:30·저녁 21:00 을 넘기면 그 식사 칸은 뺀다
     if(!lunch&&t>=11*60+45&&t<=14*60+30&&(mo||i<arr.length-1)){ meal("lunch",x,arr[i+1]||null); lunch=true; }   // 보고서에선 마지막 장소 뒤라도 점심 칸
     else if(mo&&!dinner&&t>=17*60+30&&i<arr.length-1){ meal("dinner",x,arr[i+1]); dinner=true; } });
-  if(mo&&!dinner&&arr.length){ var dt=Math.max(t,18*60); if(dt+60<=mo.to){ t=dt; meal("dinner",arr[arr.length-1],null); dinner=true; } }   // 저녁 칸이 없으면 하루 끝 전에
+  if(mo&&!dinner&&arr.length&&!(lv&&lv.ml)){ var dt=Math.max(t,18*60); if(dt+60<=mo.to){ t=dt; meal("dinner",arr[arr.length-1],null); dinner=true; } }   // 저녁 칸이 없으면 하루 끝 전에
   var back=(H&&arr.length)?leg(p,H):null; if(back) t+=back.min;
   return {rows:rows,back:back,end:t,viol:viol,wait:wait,miss:miss}; }
 function sc(s){ return s.viol*1000+s.miss*120+s.end+s.wait*0.5; }
 function fixTimes(H,arr,date,from){ var cur=arr, cs=sched(H,cur,date,from);
-  arr.forEach(function(x){ if(!FACT[x.k]||PERFK[x.k]) return; var base=cur.filter(function(y){ return y!==x; });
+  arr.forEach(function(x){ if(!(FACT[x.k]||winOf(x,date))||PERFK[x.k]) return; var base=cur.filter(function(y){ return y!==x; });   // 영업시간이 있는 곳도 문 여는 시각에 맞는 자리로 (11-06)
     for(var i=0;i<=base.length;i++){ var c=base.slice(0,i).concat([x],base.slice(i)); if(c.some(function(y,j){ return j>0&&!isNight(y)&&isNight(c[j-1]); })) continue; var s=sched(H,c,date,from);   // 밤·공연 장소는 늘 끝자리
       if(sc(s)<sc(cs)-1){ cur=c; cs=s; } } });
   return cur; }
 function orderDay(H,arr,date,from){ if(!arr.length) return arr; var o=twoOpt(H,nnOrder(H,arr)), night=o.filter(isNight); o=o.filter(function(x){ return !isNight(x); }).concat(night); return fixTimes(H,o,date,from); }
-function closedOn(x,d){ var f=FACT[x.k]; return !!(f&&f.cl&&f.cl.indexOf(d.getUTCDay())>=0); }
+function closedOn(x,d){ var f=FACT[x.k]; if(f&&f.cl&&f.cl.indexOf(d.getUTCDay())>=0) return true; var w=winOf(x,d); return !!(w&&w.off); }   // 구글 영업시간상 쉬는 요일도 (11-06)
 function perms(a){ if(a.length<=1) return [a]; var r=[]; a.forEach(function(x,i){ perms(a.slice(0,i).concat(a.slice(i+1))).forEach(function(p){ r.push([x].concat(p)); }); }); return r; }
 function compute(H,Dn){ var o=TR.opt, D=Dn||o.n, from=hm2m(o.from)||570, to=hm2m(o.to)||1200, cap=Math.max(120,to-from), skip=[];
   var P=TR.items.filter(function(it){ var c=catOf(it); if(c==="hotel"||c==="trans"){ skip.push(it); return false; } return true; }).map(function(it){ return Object.assign({},it,{stay:stayOf(it)}); });
@@ -294,8 +342,8 @@ function compute(H,Dn){ var o=TR.opt, D=Dn||o.n, from=hm2m(o.from)||570, to=hm2m
   return {v:1,at:Date.now(),from:from,to:to,hotel:o.hotel&&o.hotel.type!=="here"?o.hotel:(o.hotel?{type:"here"}:null),days:days,pool:pool,skip:skip.map(function(x){ return x.k; }),ai:null}; }
 // 날짜 수 추천 (사장님 11-05) — 고른 날짜로 하루 끝 시각 안에 다 못 돌면, 다 들어가는 가장 짧은 날짜 수를 (고른 수+1)~7일 차례로 짜 보아 찾는다. 7일로도 안 되면 7
 //   「들어간다」= 보고서 ⚠ 경고와 같은 기준 — 그날 시간표(식사 칸 포함, 새 일정의 mealsOf 와 같은 {to,lunch:null,dinner:null}) 숙소 도착 ≤ 하루 끝
-function planFits(H,p){ return p.days.every(function(d){ var arr=d.stops.map(function(k){ return p.pool[k]; }).filter(Boolean);
-  return sched(H,arr,new Date(d.date+"T00:00:00Z"),p.from,{to:p.to,lunch:null,dinner:null}).end<=p.to; }); }
+function planFits(H,p){ return p.days.every(function(d){ var arr=d.stops.map(function(k){ return p.pool[k]; }).filter(Boolean), dt=new Date(d.date+"T00:00:00Z");
+  return sched(H,arr,dt,p.from,{to:p.to,lunch:null,dinner:null}).end<=Math.max(p.to,nightEnd(H,arr,dt,p.from)); }); }   // 밤 장소가 있는 날은 그 장소 시각까지가 그날 (11-06)
 var SUG={key:""};   // 같은 일정·조건·실제 시간 개수면 다시 안 짠다 (화면에만)
 function sugDays(H,cur,at){ var key=at+"|"+cur+"|"+Object.keys(RT).length+"|"+JSON.stringify(TR.opt); if(SUG.key===key) return SUG.n; var n=7;
   for(var D=Math.max(2,cur+1);D<=7;D++){ if(planFits(H,compute(H,D))){ n=D; break; } }
@@ -414,10 +462,11 @@ function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan;
     +'<div id="trNextBox" data-html2canvas-ignore></div>'
     +'<div class="d" id="trAiS" data-html2canvas-ignore'+(pl.ai?" hidden":"")+'>'+T("설명을 쓰는 중… (없어도 일정은 그대로 쓸 수 있어요)","Writing notes… (the plan works without them)")+'</div>'
     +(pl.skip&&pl.skip.length?'<div class="d">'+T("일정에서 뺀 곳(숙소·교통시설): ","Skipped (lodging/transport): ")+esc(pl.skip.map(function(k){ var it=TR.items.filter(function(x){ return x.k===k; })[0]; return it?nm(it):k; }).join(", "))+'</div>':"");
-  pl.days.forEach(function(d,di){ var dt=new Date(d.date+"T00:00:00Z"), arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), s=sched(H,arr,dt,pl.from,mealsOf(di)), a=ai.days&&ai.days[di];
+  pl.days.forEach(function(d,di){ var dt=new Date(d.date+"T00:00:00Z"), arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), lv=liveLv(pl,di,H,arr,dt,mealsOf(di)), s=sched(H,arr,dt,pl.from,mealsOf(di),lv), a=ai.days&&ai.days[di], hk=d.date===kstToday(0)?liveHereK(pl,di,arr,s,lv):null;   // 오늘 = 실제 도착·출발로 다시 계산한 시각 (11-06)
     h+='<div class="tday" data-d="'+di+'"><div class="tdh"><span>'+T((di+1)+"일차",'Day '+(di+1))+'</span> · '+esc(dateTxt(dt))+'<small>'+T("투어맵","Tour Map")+'</small></div>';
     if(!arr.length){ h+='<div class="d" style="padding:6px 0">'+T("자유 일정","Free day")+'</div></div>'; return; }
     if(aiTx(a)) h+='<div class="tai">'+esc(aiTx(a))+'</div>';
+    if(lv) h+='<div class="tlvn" data-html2canvas-ignore>'+esc(T5(LV6.pred))+'</div>';
     h+='<div class="tmap" id="tmap'+di+'"></div><div class="trows">';
     // 1번째 장소까지 — 늘 「지금 내 위치」에서(숙소는 날짜 나누기·순서·귀가에만). 모양은 장소 사이 구간과 같게, 실제 경로(ODsay)는 누를 때만, PDF 엔 안 찍음 (10-20)
     var f0=s.rows[0];
@@ -432,16 +481,21 @@ function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan;
         else h+='<div class="trw l"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+ml+'<span class="teat" id="te_'+mk.replace(":","_")+'" data-k="'+mk+'">'+eatList(mk,r.anchor)+'</span></span></div>';
         return; }
       if(r.leg&&prevK&&ri>0) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.x.k)+'" data-d="'+di+'">'+legTxt(r.leg)+(r.leg.mode!=="walk"?' <a href="#" class="tlgo">· '+T("실제 경로 보기","See real routes")+'</a>':'')+'<div class="tods"></div></div>';
-      n++; var tip=tips[r.x.k], memo=r.note.map(function(q){ return T(q[0],q[1]); });
+      n++; var tip=tips[r.x.k], memo=r.note.map(function(q){ return Array.isArray(q)?T(q[0],q[1]):gTxt(q.o,q.v||{}); }), lr=lv&&lv.rec[r.x.k];
+      if(r.act===2&&lr) memo.unshift(lr.a!=null?gTxt(LV6.done,{a:m2hm(lr.a),d:m2hm(lr.d!=null?lr.d:r.t+r.st)}):gTxt(LV6.left,{d:m2hm(lr.d)}));
+      else if(r.act===1&&lr) memo.unshift(gTxt(LV6.here,{a:m2hm(lr.a)}));
+      if(!r.act&&Array.isArray(r.x.oh)&&r.x.oh.length){ var co=closeOf(r.x,dt,r.t); if(co.c!=null&&co.o!=null&&co.c-co.o<1440) memo.push(gTxt(LV6.hrs,{o:m2hm(co.o),c:m2hm(co.c)})); }
       if(needCheck(r.x)) memo.push(T("운영 시간·휴무일 확인 필요","Check opening hours/closures"));
       if(isNight(r.x)) memo.push(T("밤 추천","Best at night"));
       h+='<div class="trw tpk" data-k="'+esc(r.x.k)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp"><b class="tno">'+n+'</b> <b>'+esc(nm(r.x))+'</b> <i>'+durTxt(r.st||r.x.stay)+(r.ext?' · '+T(m2hm(r.t+(r.st||r.x.stay))+"까지","until "+m2hm(r.t+(r.st||r.x.stay))):'')+'</i>'
-        +(memo.length?'<span class="tmemo">'+esc(memo.join(" · "))+'</span>':"")+(aiTx(tip)?'<span class="ttip">'+MPIMG("mi_tip",MIS)+esc(aiTx(tip))+'</span>':"")+'</span></div>';
+        +(memo.length?'<span class="tmemo">'+esc(memo.join(" · "))+'</span>':"")+(aiTx(tip)?'<span class="ttip">'+MPIMG("mi_tip",MIS)+esc(aiTx(tip))+'</span>':"")
+        +(hk===r.x.k?'<span class="tlvw" data-html2canvas-ignore><button type="button" class="tlvb" data-lvleave="'+esc(r.x.k)+'">'+esc(T5(LV6.leave))+'</button></span>':'')+'</span></div>';
       prevK=r.x.k; });
     if(s.back) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="__hotel" data-d="'+di+'">'+legTxt(s.back)+(s.back.mode!=="walk"?' <a href="#" class="tlgo">· '+T("실제 경로 보기","See real routes")+'</a>':'')+'<div class="tods"></div></div><div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+MPICO("mi_stay",T("숙소 도착","Back to lodging"),MIS)+'</span></div>';
     else h+='<div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+T("일정 끝","End of day")+'</span></div>';
     h+=gapAsk(pl,d,di,s);
-    if(s.end>((d.gap&&d.gap.until)||pl.to)){ over=true; h+='<div class="tmemo" style="margin-top:4px">⚠ '+esc(gTxt(OVR6,{t:m2hm((d.gap&&d.gap.until)||pl.to)}))+'</div>'; }
+    var lim=dayLim(pl,d,H,arr,dt);   // 밤 장소가 있는 날은 그 장소 시각까지 (11-06)
+    if(s.end>lim){ over=true; h+='<div class="tmemo" style="margin-top:4px">⚠ '+esc(gTxt(OVR6,{t:m2hm(lim)}))+'</div>'; }
     h+='</div></div>'; });
   // 그날 ⚠ 경고가 하나라도 있으면 맨 위에 날짜 수 추천 (고른 날짜가 이미 7일이면 더 늘릴 수 없어 안 띄움)
   if(over&&pl.days.length<7){ var sg=sugHtml(pl.days.length,sugDays(H,pl.days.length,pl.at)); h=h.replace('<div class="trbar"',function(m){ return sg+m; }); }
@@ -503,7 +557,8 @@ function dayMap(el,H,arr){ var pts=arr.slice(); if(H) pts.push(H); var id=coverM
   if(id==="kr"||c.spots) go(); else mapLoad(id).then(go,go); }
 // 다음 갈 곳 — 오늘이 여행 날이면 지금 시각 다음 장소, 아니면 첫날 첫 장소 → 길찾기·K.Ride (기존 linksTo)
 function nextStop(){ var pl=TR.plan, box=document.getElementById("trNextBox"); if(!pl||!box) return; var today=kstToday(0), now=new Date(Date.now()+9*3600e3), nm0=now.getUTCHours()*60+now.getUTCMinutes(), pick=null;
-  pl.days.forEach(function(d){ if(pick||d.date!==today) return; var s=sched(REPH,d.stops.map(function(k){ return pl.pool[k]; }),new Date(d.date+"T00:00:00Z"),pl.from); s.rows.forEach(function(r){ if(!pick&&!r.lunch&&r.t+r.x.stay>nm0) pick=r.x; }); });
+  pl.days.forEach(function(d,di){ if(pick||d.date!==today) return; var arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), dt=new Date(d.date+"T00:00:00Z"), lv=liveLv(pl,di,REPH,arr,dt,mealsOf(di)), s=sched(REPH,arr,dt,pl.from,undefined,lv);   // 오늘 실제 기록이 있으면 그 시각으로 (11-06)
+    s.rows.forEach(function(r){ if(!pick&&!r.lunch&&r.act!==2&&r.t+(r.st||r.x.stay)>nm0) pick=r.x; }); });
   if(!pick){ for(var i=0;i<pl.days.length&&!pick;i++){ var d=pl.days[i]; if(d.date>=today&&d.stops.length) pick=pl.pool[d.stops[0]]; } }
   if(!pick) for(i=0;i<pl.days.length&&!pick;i++) if(pl.days[i].stops.length) pick=pl.pool[pl.days[i].stops[0]];
   if(!pick) return; box.innerHTML='<div class="item"><div class="t">➡ '+esc(nm(pick))+'</div><div class="d">'+esc(L()?(pick.addr_en||pick.addr||""):(pick.addr||""))+'</div>'+linksTo(pick.ko,pick.lat,pick.lng,null,pick.addr)+'</div>'; }
@@ -732,6 +787,172 @@ function fromShare(z){ return unzip(z).then(function(s){ var o=JSON.parse(s); if
     TR.plan={v:1,at:Date.now(),from:hm2m(o.f)||570,to:hm2m(o.t)||1200,hotel:h,days:days.map(function(ks,i){ return {date:dayDate(i).toISOString().slice(0,10),stops:ks}; }),pool:pool,skip:[],ai:null};
     TR.plan.H=h?{k:"__hotel",ko:h.ko,en:h.en,lat:h.lat,lng:h.lng,hotel:1}:null; save(); refresh(); }); }); }
 
+// ══ 실제 머문 시간으로 남은 오늘 일정 계속 조정 (사장님 2026-11-06 「1-가」) ══
+//  · 도착·출발 — 앱이 켜져 있을 때 폰 위치(「나」 = meSet)가 오늘 일정 장소 120m 안에 1분 넘게(위치 2번 넘게) 있으면 도착, 지금 장소에서 250m 밖에 1분 넘게 있으면 출발.
+//    잠깐 튀는 위치는 무시(1분·2번 조건) · 「여기 떠나요」 단추 = 출발 · 기록은 이 기기 localStorage(mpv_trlive)에만(서버로 안 보냄, 14일 지나면 지움)
+//  · 출발·도착할 때마다 남은 오늘 일정을 지금 시각부터 다시 계산 — 이 손님 경향 = 실제/계획 머문 시간 비율(기록이 쌓일수록 1에서 멀어짐, 0.5~2.5)
+//  · 70% 판단 — 남은 장소 머문 시간(경향 × 흩어짐, 로그정규 σ: 기록 3곳부터 이 손님 것, 그 전 0.3)·이동 시간(±25%)을 폰 안에서 400번 모의 →
+//    하루 끝 시각을 넘기거나 남은 장소 하나라도 마감 뒤 도착할 확률 ≥ 70% 면 주의. 같은 내용(남은 장소·넘는 것)은 30분 안에 다시 안 울림 · 「끝까지 간다」를 고른 내용은 그날 다시 안 울림
+//  · 주의 = 앱 안 주의 창(내일로·취소·끝까지) + 🔔 알림함(bell.js — 알림 켜짐이면 폰 알림). 🔴 문자·메일·대화방·허브로는 보내지 않는다 (사장님 11-06)
+//  · 앱이 완전히 닫혀 있으면 위치를 못 받으니 다시 열 때 계산
+var LV6={
+ open:{ko:"{t} 문 열어요",en:"Opens at {t}",ja:"{t}に開店",zhs:"{t}开门",zht:"{t}開門",es:"Abre a las {t}"},
+ shut:{ko:"마감 {t} 지남 — 못 들어가요",en:"Closed at {t} — can't get in",ja:"{t}に閉店 — 入れません",zhs:"{t}已关门——进不去",zht:"{t}已關門——進不去",es:"Cerró a las {t}: no podrás entrar"},
+ off:{ko:"이 날은 쉬는 날",en:"Closed on this day",ja:"この日は定休日",zhs:"当天休息",zht:"當天休息",es:"Cerrado este día"},
+ eve:{ko:"영업시간 정보가 없어 저녁(19시 뒤)에 넣었어요",en:"No opening hours found — placed after 7 pm",ja:"営業時間が分からないため夜（19時以降）に入れました",zhs:"没有营业时间信息，已安排在晚上（19点后）",zht:"沒有營業時間資訊，已安排在晚上（19點後）",es:"Sin horario disponible: lo pusimos después de las 19:00"},
+ hrs:{ko:"영업 {o}–{c}",en:"Open {o}–{c}",ja:"営業 {o}–{c}",zhs:"营业 {o}–{c}",zht:"營業 {o}–{c}",es:"Abierto {o}–{c}"},
+ pred:{ko:"실제로 머문 시간에 맞춰 남은 시각을 다시 계산했어요 (예상)",en:"Remaining times were recalculated from how long you actually stayed (estimate)",ja:"実際の滞在時間に合わせて残りの時刻を計算し直しました（予想）",zhs:"已根据实际停留时间重新计算剩余时间（预计）",zht:"已根據實際停留時間重新計算剩餘時間（預計）",es:"Recalculamos las horas restantes según el tiempo que realmente te quedaste (estimado)"},
+ done:{ko:"다녀옴 {a}–{d}",en:"Visited {a}–{d}",ja:"訪問済み {a}–{d}",zhs:"已到访 {a}–{d}",zht:"已到訪 {a}–{d}",es:"Visitado {a}–{d}"},
+ left:{ko:"{d} 출발",en:"Left at {d}",ja:"{d}に出発",zhs:"{d}出发",zht:"{d}出發",es:"Salida a las {d}"},
+ here:{ko:"{a} 도착 · 지금 여기",en:"Arrived {a} · you're here",ja:"{a}到着・今ここ",zhs:"{a}到达 · 现在在这里",zht:"{a}到達 · 現在在這裡",es:"Llegada {a} · estás aquí"},
+ leave:{ko:"여기 떠나요",en:"I'm leaving here",ja:"ここを出発します",zhs:"我要离开这里",zht:"我要離開這裡",es:"Me voy de aquí"},
+ at:{ko:"오늘 일정이 늦어지고 있어요",en:"Today's plan is running late",ja:"今日の予定が遅れています",zhs:"今天的行程正在延误",zht:"今天的行程正在延誤",es:"El plan de hoy va con retraso"},
+ ab:{ko:"이대로 가면 {p}% 확률로 하루 끝({t})을 넘기거나 마감 시각에 늦어요.",en:"At this pace there is a {p}% chance you'll go past your end time ({t}) or reach a place after it closes.",ja:"このままだと{p}%の確率で一日の終わり（{t}）を過ぎるか、閉店時刻に間に合いません。",zhs:"照这样下去，有{p}%的可能超过当天结束时间（{t}）或赶不上关门时间。",zht:"照這樣下去，有{p}%的可能超過當天結束時間（{t}）或趕不上關門時間。",es:"A este ritmo hay un {p}% de probabilidad de pasarte de tu hora de fin ({t}) o de llegar a un lugar ya cerrado."},
+ bb:{ko:"하루 끝·마감에 늦을 확률 {p}% — 눌러서 남은 일정을 정하세요",en:"{p}% chance of running past your end time or closing times — tap to decide",ja:"終了時刻・閉店に遅れる確率{p}% — 押して残りの予定を決めてください",zhs:"有{p}%的可能赶不上结束或关门时间——点按决定剩余行程",zht:"有{p}%的可能趕不上結束或關門時間——點按決定剩餘行程",es:"{p}% de probabilidad de pasarte de la hora de fin o de cierre — toca para decidir"},
+ eta:{ko:"도착 예상 {a}",en:"ETA {a}",ja:"到着予想 {a}",zhs:"预计到达 {a}",zht:"預計到達 {a}",es:"Llegada prevista {a}"},
+ cl:{ko:"마감 {c}",en:"closes {c}",ja:"閉店 {c}",zhs:"关门 {c}",zht:"關門 {c}",es:"cierra {c}"},
+ last:{ko:"입장 마감 {c}",en:"last entry {c}",ja:"入場締切 {c}",zhs:"最晚入场 {c}",zht:"最晚入場 {c}",es:"última entrada {c}"},
+ late:{ko:"못 들어가요",en:"you won't get in",ja:"入れません",zhs:"进不去",zht:"進不去",es:"no podrás entrar"},
+ ok:{ko:"들어갈 수 있어요",en:"you'll make it",ja:"間に合います",zhs:"来得及",zht:"來得及",es:"llegas a tiempo"},
+ unk:{ko:"마감 정보 없음",en:"closing time unknown",ja:"閉店時刻不明",zhs:"关门时间不详",zht:"關門時間不詳",es:"hora de cierre desconocida"},
+ endH:{ko:"숙소 도착 예상 {e}",en:"Back at lodging around {e}",ja:"宿に着くのは{e}ごろ",zhs:"预计{e}回到住处",zht:"預計{e}回到住處",es:"Llegada al alojamiento hacia las {e}"},
+ endN:{ko:"일정 끝 예상 {e}",en:"Day ends around {e}",ja:"予定終了は{e}ごろ",zhs:"预计{e}结束行程",zht:"預計{e}結束行程",es:"El día termina hacia las {e}"},
+ b1:{ko:"남은 일정 내일로",en:"Move the rest to tomorrow",ja:"残りの予定を明日へ",zhs:"剩余行程改到明天",zht:"剩餘行程改到明天",es:"Pasar el resto a mañana"},
+ b2:{ko:"남은 일정 취소",en:"Cancel the rest",ja:"残りの予定を取り消す",zhs:"取消剩余行程",zht:"取消剩餘行程",es:"Cancelar el resto"},
+ b3:{ko:"끝까지 간다",en:"Keep going",ja:"最後まで行く",zhs:"坚持走完",zht:"堅持走完",es:"Seguir hasta el final"},
+ r1:{ko:"남은 {n}곳을 내일({d})로 옮기고 내일 일정을 처음부터 다시 짰어요.",en:"Moved the remaining {n} place(s) to tomorrow ({d}) and re-planned tomorrow from scratch.",ja:"残りの{n}か所を明日（{d}）に移し、明日の予定を最初から組み直しました。",zhs:"已把剩余{n}个地点改到明天（{d}），并从头重新安排了明天的行程。",zht:"已把剩餘{n}個地點改到明天（{d}），並從頭重新安排了明天的行程。",es:"Pasamos los {n} lugares restantes a mañana ({d}) y replanificamos mañana desde cero."},
+ r1x:{ko:"마지막 날이라 하루를 늘렸어요.",en:"It was the last day, so we added a day.",ja:"最終日だったので1日増やしました。",zhs:"因为是最后一天，已增加一天。",zht:"因為是最後一天，已增加一天。",es:"Era el último día, así que añadimos un día."},
+ r2:{ko:"오늘 남은 {n}곳을 일정에서 뺐어요. 여행카트에는 그대로 있어요.",en:"Removed the remaining {n} place(s) from today's plan. They're still in your trip cart.",ja:"今日の残り{n}か所を予定から外しました。旅のカートにはそのまま残っています。",zhs:"已从今天的行程中移除剩余{n}个地点，行程购物车里仍然保留。",zht:"已從今天的行程中移除剩餘{n}個地點，行程購物車裡仍然保留。",es:"Quitamos los {n} lugares restantes del plan de hoy. Siguen en tu carrito de viaje."},
+ r3:{ko:"그대로 갑니다. 남은 장소의 마감 시각을 확인하세요.",en:"Keeping the plan. Check the closing times below.",ja:"このまま進みます。残りの場所の閉店時刻を確認してください。",zhs:"按原计划继续。请确认剩余地点的关门时间。",zht:"按原計畫繼續。請確認剩餘地點的關門時間。",es:"Seguimos con el plan. Revisa las horas de cierre."},
+ rl:{ko:"남은 장소 마감 확인",en:"Closing times of the places left",ja:"残りの場所の閉店時刻",zhs:"剩余地点关门时间",zht:"剩餘地點關門時間",es:"Horas de cierre de los lugares restantes"},
+ rt:{ko:"내일({d}) 일정",en:"Tomorrow ({d})",ja:"明日（{d}）の予定",zhs:"明天（{d}）行程",zht:"明天（{d}）行程",es:"Mañana ({d})"},
+ none:{ko:"오늘 남은 장소가 없어요.",en:"No places left today.",ja:"今日残っている場所はありません。",zhs:"今天没有剩余地点。",zht:"今天沒有剩餘地點。",es:"Hoy no quedan lugares."},
+ view:{ko:"일정 보기",en:"See my plan",ja:"予定を見る",zhs:"查看行程",zht:"查看行程",es:"Ver mi plan"},
+ x:{ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}};
+function fill6(o,v){ var r={}; ["ko","en","ja","zhs","zht","es"].forEach(function(l){ r[l]=String(o[l]||o.en).replace(/\{(\w)\}/g,function(_,k){ return v[k]; }); }); return r; }
+var LKEY="mpv_trlive", LIVE=(function(){ var o=null; try{ o=JSON.parse(localStorage.getItem(LKEY)||"null"); }catch(e){} return (o&&typeof o==="object")?o:{}; })();
+function liveSave(){ try{ var cut=kstToday(-14); for(var k in (LIVE.d||{})) if(k<cut) delete LIVE.d[k]; for(var s in (LIVE.ack||{})) if(s.slice(0,10)<cut) delete LIVE.ack[s]; localStorage.setItem(LKEY,JSON.stringify(LIVE)); }catch(e){} }
+function liveRecs(date,mk){ LIVE.d=LIVE.d||{}; if(!LIVE.d[date]&&mk) LIVE.d[date]={}; return LIVE.d[date]||null; }
+function kminOn(ms,date){ return Math.round((ms-Date.parse(date+"T00:00:00+09:00"))/6e4); }   // 그날 한국 0시부터 분 (자정 넘으면 1440 넘음)
+function liveToday(){ var pl=TR.plan; if(!pl||!pl.days) return null; var td=kstToday(0);
+  for(var i=0;i<pl.days.length;i++){ var d=pl.days[i]; if(d.date===td) return {pl:pl,di:i,d:d,arr:d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean)}; } return null; }
+function liveH(){ var pl=TR.plan; return REPH||(pl&&pl.H)||null; }
+// 이 손님 경향 — 실제/계획 머문 시간 비율(로그 평균, 기록 n곳이면 n/(n+1) 만큼만 믿음) · 흩어짐 σ
+function liveTrend(){ var pl=TR.plan, ls=[];
+  for(var dt in (LIVE.d||{})){ var rc=LIVE.d[dt]; for(var k in rc){ var q=rc[k], x=pl&&pl.pool[k]; if(!x||q.a==null||q.d==null) continue; var m=(q.d-q.a)/6e4; if(m<3) continue; var r=m/(x.stay||60); if(r>0.15&&r<6) ls.push(Math.log(r)); } }
+  var n=ls.length; if(!n) return {r:1,sg:0.3,n:0}; var mu=ls.reduce(function(s,x){ return s+x; },0)/n, v=ls.reduce(function(s,x){ return s+(x-mu)*(x-mu); },0)/n;
+  return {r:Math.min(2.5,Math.max(0.5,Math.exp(mu*n/(n+1)))),sg:n>=3?Math.min(0.6,Math.max(0.15,Math.sqrt(v))):0.3,n:n}; }
+// 오늘이고 기록이 있으면 sched 의 lv (없으면 null) — 식사 칸 자리는 계획과 같게(ml)
+function liveLv(pl,di,H,arr,dt,mo){ var d=pl&&pl.days[di]; if(!d||!arr.length||d.date!==kstToday(0)) return null; var rc=liveRecs(d.date); if(!rc) return null;
+  var ai=-1; arr.forEach(function(x,i){ var q=rc[x.k]; if(q&&(q.a!=null||q.d!=null)) ai=i; }); if(ai<0) return null;
+  var R={}; arr.forEach(function(x){ var q=rc[x.k]; if(q) R[x.k]={a:q.a!=null?kminOn(q.a,d.date):null,d:q.d!=null?kminOn(q.d,d.date):null}; });
+  var ps=sched(H,arr,dt,pl.from,mo), ml={}, li=-1; ps.rows.forEach(function(r){ if(r.meal) (ml[li]=ml[li]||[]).push(r.meal); else li=arr.indexOf(r.x); });
+  var tr=liveTrend(); return {i:ai,rec:R,now:kminOn(Date.now(),d.date),r:tr.r,sg:tr.sg,n:tr.n,ml:ml}; }
+// 「여기 떠나요」 단추를 붙일 장소 — 지금 있는 곳(도착 기록, 출발 없음) · 아니면 마지막 출발 다음 곳 · 기록이 없으면 계획상 지금 있을 곳
+function liveHereK(pl,di,arr,s,lv){ if(!arr.length) return null;
+  if(lv){ var x=arr[lv.i], q=lv.rec[x.k]; if(q&&q.a!=null&&q.d==null) return x.k; var nx=arr[lv.i+1]; return nx?nx.k:null; }
+  var now=kminOn(Date.now(),pl.days[di].date), pick=null; if(now>s.end) return null; s.rows.forEach(function(r){ if(r.x&&r.t<=now+15) pick=r.x.k; }); return pick; }
+// 위치 → 도착·출발 (화면 메모리 후보 GF — 1분·2번 넘게 그 상태여야 기록)
+var GF={c:null,o:null};
+function liveTick(pos){ var L=liveToday(); if(!L||!L.arr.length||!pos) return; var now=Date.now(), me={lat:+pos[0],lng:+pos[1]}, rec=liveRecs(L.d.date,1), ch="";
+  var cur=null; L.arr.forEach(function(x){ var q=rec[x.k]; if(q&&q.a!=null&&q.d==null) cur=x; });
+  var dCur=cur?km(me,cur)*1000:1e9, nb=null, nd=1e9;
+  L.arr.forEach(function(x){ var q=rec[x.k]; if(x===cur||(q&&(q.a!=null||q.d!=null))) return; var dm=km(me,x)*1000; if(dm<=120&&dm<nd){ nd=dm; nb=x; } });
+  if(nb&&(!cur||nd<dCur)){ if(!GF.c||GF.c.k!==nb.k) GF.c={k:nb.k,t:now,n:1}; else GF.c.n++;
+    if(GF.c.n>=2&&now-GF.c.t>=60000){ if(cur&&rec[cur.k].d==null) rec[cur.k].d=GF.c.t; rec[nb.k]={a:GF.c.t}; GF.c=null; GF.o=null; ch="arr"; } }
+  else GF.c=null;
+  if(!ch&&cur){ if(dCur>250){ if(!GF.o||GF.o.k!==cur.k) GF.o={k:cur.k,t:now,n:1}; else GF.o.n++; if(GF.o.n>=2&&now-GF.o.t>=60000){ rec[cur.k].d=GF.o.t; GF.o=null; ch="dep"; } } else GF.o=null; }
+  if(ch){ liveSave(); liveChanged(ch); } }
+function liveLeave(k){ var L=liveToday(); if(!L) return; var rec=liveRecs(L.d.date,1), q=rec[k]||(rec[k]={}); if(q.d==null) q.d=Date.now(); GF.c=null; GF.o=null; liveSave(); liveChanged("leave"); }
+function liveChanged(why){ try{ if(document.getElementById("trRep")) repPaint(); }catch(e){} try{ liveCheck(why); }catch(e){} }
+document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("#trRep [data-lvleave]"); if(!b) return; e.preventDefault(); e.stopPropagation(); liveLeave(b.dataset.lvleave); },true);
+// 지금 상태 — 오늘 기록이 있고 남은 장소가 있을 때만
+function liveState(){ var L=liveToday(); if(!L||!L.arr.length) return null; var pl=L.pl, H=liveH(), dt=new Date(L.d.date+"T00:00:00Z"), mo=mealsOf(L.di), lv=liveLv(pl,L.di,H,L.arr,dt,mo); if(!lv) return null;
+  var s=sched(H,L.arr,dt,pl.from,mo,lv), E=dayLim(pl,L.d,H,L.arr,dt), rest=L.arr.slice(lv.i+1);
+  return {L:L,H:H,dt:dt,mo:mo,lv:lv,s:s,E:E,rest:rest,info:closeList(L.arr,dt,s,lv.i),over:s.end>E+LVTOL}; }
+var LVTOL=15;   // 하루 끝은 15분 여유를 두고 넘김으로 본다 — 계획이 하루 끝에 딱 맞으면 머문 시간 흩어짐만으로 「넘김」이 절반쯤 나와 헛주의가 된다
+// 장소별 도착 예상 vs 마감 (from 차례 뒤만)
+function closeList(arr,dt,s,from){ var out=[]; s.rows.forEach(function(r){ if(!r.x) return; var i=arr.indexOf(r.x); if(i<=from) return; var co=closeOf(r.x,dt,r.t), late=!!co.off||(co.c!=null&&(co.last?r.t>co.c:r.t>=co.c)); out.push({x:r.x,t:r.t,co:co,late:late}); }); return out; }
+function sigOf(S){ return S.L.d.date+"|"+S.rest.map(function(x){ return x.k; }).join(",")+"|"+(S.over?"E":"")+"|"+S.info.filter(function(q){ return q.late; }).map(function(q){ return q.x.k; }).join(","); }
+function nrm(){ var u=Math.random()||1e-9, v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+// 400번 모의 — 하루 끝을 넘기거나 마감 뒤 도착이 하나라도 있는 비율
+function mcRisk(S){ var lv=S.lv, arr=S.L.arr, rows=S.s.rows, dt=S.dt, H=S.H, E=S.E, a0=-1;
+  rows.forEach(function(r,j){ if(r.x&&arr.indexOf(r.x)===lv.i) a0=j; }); if(a0<0) return 0;
+  var ax=arr[lv.i], R=lv.rec[ax.k]||{}, N=400, bad=0, sg=lv.sg;
+  for(var n=0;n<N;n++){ var t, p=ax, late=false, first;
+    if(R.d!=null){ t=R.d; first=true; } else { var a=R.a!=null?R.a:lv.now; t=Math.max(lv.now,a+ax.stay*lv.r*Math.exp(sg*nrm())); first=false; }
+    for(var j=a0+1;j<rows.length;j++){ var r=rows[j];
+      if(r.meal){ if(r.r){ t+=legMin(p,r.r)*Math.exp(0.25*nrm()); p=r.r; } if(first&&t<lv.now) t=lv.now; first=false; t+=60; continue; }
+      var x=r.x; t+=legMin(p,x)*Math.exp(0.25*nrm()); if(first&&t<lv.now) t=lv.now; first=false;
+      var wn=PERFK[x.k]?null:winOf(x,dt);
+      if(wn){ if(wn.off) late=true; else { var nx=null; for(var i=0;i<wn.w.length;i++) if(t<wn.w[i][1]){ nx=wn.w[i]; break; } if(!nx) late=true; else if(t<nx[0]) t=nx[0]; } }
+      var li=PERFK[x.k]?null:lastIn(FACT[x.k],dt); if(li!=null&&t>li) late=true;
+      t+=x.stay*lv.r*Math.exp(sg*nrm()); p=x; }
+    if(H&&p) t+=legMin(p,H)*Math.exp(0.25*nrm());
+    if(late||t>E+LVTOL) bad++; }
+  return bad/N; }
+function liveCheck(why){ var S=liveState(); if(!S||!S.rest.length) return null; var P=mcRisk(S);
+  var res={p:P,end:S.s.end,lim:S.E,over:S.over,late:S.info.filter(function(q){ return q.late; }).map(function(q){ return q.x.k; }),r:S.lv.r,why:why||""}; window.__trLive=res;
+  if(P<0.7) return res; var sig=sigOf(S); LIVE.ack=LIVE.ack||{};
+  if(LIVE.ack[sig]){ res.ack=1; return res; }
+  var al=LIVE.al; if(al&&al.sig===sig&&Date.now()-al.at<30*60000){ res.dup=1; return res; }
+  LIVE.al={sig:sig,at:Date.now(),p:P}; liveSave(); res.fired=1;
+  try{ if(window.BELL&&BELL.add) BELL.add({k:"trip",ti:LV6.at,bd:fill6(LV6.bb,{p:Math.round(P*100)}),go:{k:"trip"}}); }catch(e){}
+  if(!document.hidden) liveModal(P);
+  return res; }
+// ── 주의 창 (앱 안) — 남은 장소 도착 예상·마감 + 선택 3개 → 고른 뒤 남은 장소 마감 다시 ──
+var ALS={view:"ask",p:null,res:null};
+function lvRows(list){ return list.map(function(q){ var co=q.co, st=co.off?T5(LV6.off):co.c==null?T5(LV6.unk):gTxt(co.last?LV6.last:LV6.cl,{c:m2hm(co.c)});
+    return '<div class="talr'+(q.late?' bad':'')+'"><b>'+esc(nm(q.x))+'</b><span>'+esc(gTxt(LV6.eta,{a:m2hm(q.t)}))+' · '+esc(st)+(co.off||co.c!=null?' — '+esc(T5(q.late?LV6.late:LV6.ok)):'')+'</span></div>'; }).join(""); }
+function lvEnd(H,end){ return '<div class="tale">'+esc(gTxt(H?LV6.endH:LV6.endN,{e:m2hm(end)}))+'</div>'; }
+function liveModal(p){ var o=document.getElementById("trAl"); if(o) o.remove();
+  var b=document.createElement("div"); b.id="trAl"; b.className="trpop tral"; b.onclick=function(e){ if(e.target===b) b.remove(); };
+  ALS={view:"ask",p:(typeof p==="number")?p:null,res:null};
+  if(ALS.p==null){ var S0=liveState(); ALS.p=S0&&S0.rest.length?mcRisk(S0):0; }
+  var draw=function(){ b.innerHTML='<div class="talbox">'+alHtml()+'</div>'; };
+  b._rb=draw; draw(); document.body.appendChild(b); return b; }
+function alHtml(){ var pl=TR.plan, h='';
+  if(ALS.view==="res"&&ALS.res){ var R=ALS.res;
+    if(R.kind==="tm"&&pl&&pl.days[R.di]){ var nd=pl.days[R.di], H=liveH(), ndt=new Date(nd.date+"T00:00:00Z"), arr=nd.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), s=sched(H,arr,ndt,pl.from,mealsOf(R.di)), lim=dayLim(pl,nd,H,arr,ndt);
+      h+='<div class="talh">✓ '+esc(gTxt(LV6.r1,{n:R.n,d:dateTxt(ndt)}))+'</div>'+(R.added?'<div class="tals">'+esc(T5(LV6.r1x))+'</div>':'')
+        +'<div class="tall"><div class="talt">'+esc(gTxt(LV6.rt,{d:dateTxt(ndt)}))+'</div>'+lvRows(closeList(arr,ndt,s,-1))+'</div>'+lvEnd(H,s.end)
+        +(s.end>lim?'<div class="tmemo">⚠ '+esc(gTxt(OVR6,{t:m2hm(lim)}))+'</div>':''); }
+    else { var S=liveState();
+      h+='<div class="talh">✓ '+esc(R.kind==="cx"?gTxt(LV6.r2,{n:R.n||0}):T5(LV6.r3))+'</div>';
+      if(S&&S.rest.length) h+='<div class="tall"><div class="talt">'+esc(T5(LV6.rl))+'</div>'+lvRows(S.info)+'</div>'+lvEnd(S.H,S.s.end)+(S.over?'<div class="tmemo">⚠ '+esc(gTxt(OVR6,{t:m2hm(S.E)}))+'</div>':'');
+      else { h+='<div class="tals">'+esc(T5(LV6.none))+'</div>'; var L=liveToday(); if(L&&L.arr.length){ var dt=new Date(L.d.date+"T00:00:00Z"), H2=liveH(), mo=mealsOf(L.di), s2=sched(H2,L.arr,dt,pl.from,mo,liveLv(pl,L.di,H2,L.arr,dt,mo)); h+=lvEnd(H2,s2.end); } } }
+    return h+'<div class="talb"><button type="button" data-al="view">'+esc(T5(LV6.view))+'</button></div><button type="button" class="talx" data-al="x">'+esc(T5(LV6.x))+'</button>'; }
+  var S2=liveState();
+  h+='<div class="talh">⚠ '+esc(T5(LV6.at))+'</div>';
+  if(!S2||!S2.rest.length) return h+'<div class="tals">'+esc(T5(LV6.none))+'</div><button type="button" class="talx" data-al="x">'+esc(T5(LV6.x))+'</button>';
+  h+='<div class="tals">'+esc(gTxt(LV6.ab,{p:Math.round((ALS.p||0)*100),t:m2hm(S2.E)}))+'</div><div class="tall">'+lvRows(S2.info)+'</div>'+lvEnd(S2.H,S2.s.end)
+    +'<div class="talb"><button type="button" data-al="tm">'+esc(T5(LV6.b1))+'</button><button type="button" data-al="cx">'+esc(T5(LV6.b2))+'</button><button type="button" data-al="go">'+esc(T5(LV6.b3))+'</button></div>'
+    +'<button type="button" class="talx" data-al="x">'+esc(T5(LV6.x))+'</button>';
+  return h; }
+// 내일로 — 미룬 곳 + 다음 날 일정을 합쳐 다음 날을 처음부터 다시(orderDay = 밤 장소 끝자리·문 여는 시각·마감 확인) · 마지막 날이면 하루 늘림 · AI 하루 설명은 지금처럼 다시 받기(보고서를 열 때 aiFetch 한 번)
+function liveMove(){ var S=liveState(); if(!S||!S.rest.length) return null; var pl=S.L.pl, d=S.L.d, di=S.L.di, rest=d.stops.slice(S.lv.i+1);
+  d.stops=d.stops.slice(0,S.lv.i+1); d.gap="early";   // 오늘은 여기서 끝 — 「일찍 끝나는 날」 물음 대신 「숙소로 일찍 돌아가는 일정」
+  var nd=pl.days[di+1], added=false;
+  if(!nd){ var x=new Date(d.date+"T00:00:00Z"); x.setUTCDate(x.getUTCDate()+1); nd={date:x.toISOString().slice(0,10),stops:[]}; pl.days.push(nd); added=true; TR.opt.n=pl.days.length; }
+  var ndt=new Date(nd.date+"T00:00:00Z"), all=nd.stops.concat(rest.filter(function(k){ return nd.stops.indexOf(k)<0; })).map(function(k){ return pl.pool[k]; }).filter(Boolean);
+  var ord=orderDay(S.H,all,ndt,pl.from); nd.stops=ord.map(function(x){ return x.k; }); delete nd.gap; nd.end=sched(S.H,ord,ndt,pl.from).end;
+  pl.ai=null; pl.at=Date.now(); save(); return {n:rest.length,di:di+1,added:added}; }
+// 취소 — 오늘 남은 곳을 일정에서만 뺀다(여행카트 TR.items 는 그대로)
+function liveCancel(){ var S=liveState(); if(!S||!S.rest.length) return null; var d=S.L.d, n=d.stops.length-(S.lv.i+1); d.stops=d.stops.slice(0,S.lv.i+1); d.gap="early"; save(); return {n:n}; }
+// 끝까지 — 그대로, 이 내용으로는 오늘 다시 안 울림
+function liveKeep(){ var S=liveState(); if(S){ LIVE.ack=LIVE.ack||{}; LIVE.ack[sigOf(S)]=1; liveSave(); } return {}; }
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trAl [data-al]"); if(!a) return; e.preventDefault(); var v=a.dataset.al, b=document.getElementById("trAl");
+  if(v==="x"){ if(b) b.remove(); return; }
+  if(v==="view"){ if(b) b.remove(); try{ openReport(); }catch(z){} return; }
+  var r=v==="tm"?liveMove():v==="cx"?liveCancel():liveKeep();
+  ALS.view="res"; ALS.res=Object.assign({kind:v},r||{}); if(b&&b._rb) b._rb();
+  try{ if(document.getElementById("trRep")) repPaint(); }catch(z){} },true);
+// 위치 받기 감싸기 · 앱을 열 때·화면에 돌아올 때·5분마다 다시 판단
+(function(){ var f=window.meSet; if(typeof f!=="function"||f._lv) return; var g=function(p){ var r=f.apply(this,arguments); try{ if(p) liveTick(p); }catch(e){} return r; }; for(var k in f) g[k]=f[k]; g._lv=1; window.meSet=g; })();
+setTimeout(function(){ try{ liveCheck("open"); }catch(e){} },4000);
+setInterval(function(){ if(!document.hidden) try{ liveCheck("tick"); }catch(e){} },5*60000);
+document.addEventListener("visibilitychange",function(){ if(!document.hidden) try{ liveCheck("show"); }catch(e){} });
+
 // ── 시작 ──
 var css=document.createElement("style"); css.textContent=
  ".tradd{margin:8px 0 0;border:1.5px solid var(--green);background:#eefaf0;color:#2b8a3e;border-radius:999px;padding:7px 14px;font-weight:800;font-size:13.5px;cursor:pointer;font-family:inherit}.tradd.on{background:var(--green);color:#fff}"
@@ -765,10 +986,18 @@ var css=document.createElement("style"); css.textContent=
 +".gsrb{display:inline-block;font-size:12.5px;font-weight:800;color:#e8590c;white-space:nowrap;margin-left:4px}.gsrb0{color:var(--sub);font-weight:700;font-size:12px}"
 +".gslb{display:block;font-size:13px;color:var(--sub);font-weight:700;margin:10px 2px 3px}.gsin{width:100%;box-sizing:border-box;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 11px}"
 +".gschk{display:flex;gap:7px;align-items:flex-start;font-size:13px;color:var(--ink);margin:12px 2px 0;line-height:1.5}.gschk input{width:18px;height:18px;margin-top:1px;flex:0 0 auto}.gsgo{background:#0c8599!important;border-color:#0c8599!important;color:#fff!important}"
-+".gsdone{background:#e3fafc;border:1px solid #99e9f2;color:#0b7285;border-radius:12px;padding:12px 14px;font-size:14.5px;font-weight:800;line-height:1.5}:root[data-theme=dark] .gsdone{background:#0a2a30}";
++".gsdone{background:#e3fafc;border:1px solid #99e9f2;color:#0b7285;border-radius:12px;padding:12px 14px;font-size:14.5px;font-weight:800;line-height:1.5}:root[data-theme=dark] .gsdone{background:#0a2a30}"
+// 오늘 실제 머문 시간·「여기 떠나요」·늦어짐 주의 창 (사장님 11-06)
++".tlvn{font-size:12.5px;color:#0b7285;background:#e3fafc;border-radius:8px;padding:5px 9px;margin:4px 0 6px;font-weight:700;line-height:1.45}:root[data-theme=dark] .tlvn{background:#0a2a30;color:#99e9f2}"
++".tlvw{display:block;margin-top:6px}.tlvb{border:1.5px solid #e8590c;background:#fff4e6;color:#c2410c;border-radius:999px;padding:6px 14px;font-weight:900;font-size:13.5px;cursor:pointer;font-family:inherit}:root[data-theme=dark] .tlvb{background:#3a1d08;color:#ffc078}"
++"#trAl{z-index:2147483002}#trAl>div{text-align:left;width:100%;max-width:440px;max-height:86vh;overflow:auto;box-sizing:border-box}.talh{font-size:17px;font-weight:900;color:#c2410c;margin-bottom:6px;line-height:1.4}.tals{font-size:14px;line-height:1.55;margin-bottom:8px}"
++".talt{font-size:13px;font-weight:900;color:var(--sub);margin:4px 0 2px}.talr{display:block;border-top:1px solid var(--line);padding:6px 0;font-size:14px}.talr b{display:block}.talr span{color:var(--sub);font-size:12.5px}.talr.bad span{color:#c2410c;font-weight:800}"
++".tale{font-size:13px;color:var(--sub);margin:8px 0 2px;font-weight:800}.talb{display:flex;flex-direction:column;gap:7px;margin-top:12px}.talb button{border:0;border-radius:12px;padding:11px;font-weight:900;font-size:15px;cursor:pointer;font-family:inherit;background:var(--green);color:#fff}"
++".talb [data-al=tm]{background:#1c7ed6}.talb [data-al=cx]{background:#efece4;color:#1d2433}.talb [data-al=go]{background:#e8590c}.talx{display:block;margin:10px auto 0;border:0;background:none;color:var(--sub);font-weight:800;font-size:14px;cursor:pointer;font-family:inherit}";
 document.head.appendChild(css);
 window.TRIP={open:openPanel,report:openReport,close:sheetClose,state:function(){ return TR; },hasPass:hasPass,
   add:function(it){ addItem(it); return has(it&&it.k); },del:delItem,has:has,snap:snapPlace,pinKey:pinKey,   // 「AI와 일정짜기」 화면이 같은 카트에 담는다 (11-05)
+  alert:function(){ return liveModal(); },live:{check:liveCheck,tick:liveTick,leave:liveLeave,state:function(){ return LIVE; },trend:liveTrend},   // 🔔 알림함 「일정 주의」 → 주의 창 · 시험용 읽기 (11-06)
   debug:function(){ var pl=TR.plan; if(!pl) return null; var H=REPH||pl.H||null, tot=0, tr=0, rl=0;   // 읽기 전용 — 날짜별 묶음·이동시간·실제구간 수 (시험·비교용)
     var days=pl.days.map(function(d){ var arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), p=H, tv=0, legs=0, real=0;
       arr.forEach(function(x){ if(p){ var lg=leg(p,x); if(lg.mode!=="walk"){ legs++; if(lg.real) real++; } tv+=lg.min; } p=x; });
