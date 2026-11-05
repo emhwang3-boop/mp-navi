@@ -108,7 +108,7 @@ function nbHtml(k){ if(!OPEN[k.c]) return '<button type="button" class="gfnb" da
   return h+it.map(function(x,i){ return nbItem(k,x,i); }).join("")+'</div>'; }
 function nbPick(k,j){ var x=nbList(k)[j]; if(!x) return; try{ ntap(k.c,"gift"); }catch(e){} close();
   var fl=x.name_l&&L();
-  spinShow({name:x.name,name_en:fl?x.name_l:x.name,addr:x.addr||"",addr_en:fl?(x.addr_l||x.addr||""):(x.addr||""),y:x.y,x:x.x,tel:x.tel||"",cat:x.cat||"",cat_en:fl?(x.cat_l||""):"",_l:fl?LANG:"ko"}); }
+  spinShow({name:x.name,name_en:fl?x.name_l:x.name,addr:x.addr||"",addr_en:fl?(x.addr_l||x.addr||""):(x.addr||""),y:x.y,x:x.x,tel:x.tel||"",cat:x.cat||"",cat_en:fl?(x.cat_l||""):"",_l:fl?LANG:"ko",oh:x.oh,gt:x.gt}); }   // oh·gt = 구글 영업시간·종류 (11-06)
 
 // ── 제휴 가게 (광고) — 허브 「npartner」 공개 조회. 없거나 실패하면 그냥 빈칸 ──
 function adsFor(k){ if(ADS[k.c]) return ADS[k.c];
