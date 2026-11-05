@@ -55,11 +55,11 @@ var TX={
  bkr:T6("예약자","Booked by","予約者","预订人","預訂人","Reservado por"),   // 손님 쪽 예약자 이름 (11-05)
  lang:T6("손님 언어","Traveler language","お客様の言語","旅客语言","旅客語言","Idioma del viajero"),
  memo:T6("요청","Notes","メモ","备注","備註","Notas"),
- done:T6("투어 완료","Tour completed","ツアー完了","导览完成","導覽完成","Tour completado"),
+ done:T6("투어 완료","Tour done","ツアー完了","导览完成","導覽完成","Tour completado"),
  doneW:T6("투어가 끝나는 {t}부터 누를 수 있습니다.","You can tap this from {t} (Korea time), when the tour ends.","ツアーが終わる{t}から押せます。","导览结束的{t}起可点击。","導覽結束的{t}起可點擊。","Podrás pulsarlo desde las {t} (hora de Corea), cuando termine el tour."),
- doneN:T6("투어가 끝났으면 「투어 완료」를 누르고 가이드 후기를 남겨 주세요.","If your tour is over, tap “Tour completed” and leave a review for your guide.","ツアーが終わったら「ツアー完了」を押して、ガイドのレビューを残してください。","导览结束后，请点击「导览完成」并为向导留下评价。","導覽結束後，請點擊「導覽完成」並為嚮導留下評價。","Si tu tour terminó, pulsa «Tour completado» y deja una reseña para tu guía."),
- doneQ:T6("투어를 완료로 표시하고 가이드 후기를 남길까요?","Mark the tour as completed and leave a review for your guide?","ツアーを完了にして、ガイドのレビューを書きますか？","将导览标记为已完成并为向导写评价吗？","將導覽標記為已完成並為嚮導寫評價嗎？","¿Marcar el tour como completado y dejar una reseña para tu guía?"),
- doneOk:T6("투어 완료","Tour completed","ツアー完了","导览已完成","導覽已完成","Tour completado"),
+ doneN:T6("투어가 끝났으면 「투어 완료」를 누르고 가이드 후기를 남겨 주세요.","If your tour is over, tap “Tour done” and leave a review for your guide.","ツアーが終わったら「ツアー完了」を押して、ガイドのレビューを残してください。","导览结束后，请点击「导览完成」并为向导留下评价。","導覽結束後，請點擊「導覽完成」並為嚮導留下評價。","Si tu tour terminó, pulsa «Tour completado» y deja una reseña para tu guía."),
+ doneQ:T6("투어를 완료로 표시하고 가이드 후기를 남길까요?","Mark the tour as done and leave a review for your guide?","ツアーを完了にして、ガイドのレビューを書きますか？","将导览标记为已完成并为向导写评价吗？","將導覽標記為已完成並為嚮導寫評價嗎？","¿Marcar el tour como completado y dejar una reseña para tu guía?"),
+ doneOk:T6("투어 완료","Tour done","ツアー完了","导览已完成","導覽已完成","Tour completado"),
  rvT:T6("가이드 별점·후기","Rate your guide","ガイドの評価・レビュー","为向导评分·写评价","為嚮導評分·寫評價","Valora a tu guía"),
  rvTx:T6("칭찬 한마디 (선택)","A kind word (optional)","ひとこと（任意）","赞美留言（可选）","讚美留言（可選）","Unas palabras (opcional)"),
  rvNm:T6("이름 또는 이니셜 (선택)","Name or initials (optional)","名前またはイニシャル（任意）","姓名或缩写（可选）","姓名或縮寫（可選）","Nombre o iniciales (opcional)"),
@@ -79,7 +79,7 @@ var TX={
 // 방 안내 글 (메일로 가던 안내를 방에도, 11-05) — 허브는 코드+값만 · 여기서 보는 사람 언어로
 var SYS={booked:T6("예약을 받았습니다.","Your booking has been received.","ご予約を受け付けました。","已收到预约。","已收到預約。","Hemos recibido la reserva."),
  gconf:T6("가이드 {g} 님이 확정되었습니다.","Guide {g} is confirmed.","ガイド {g} さんが確定しました。","向导 {g} 已确认。","嚮導 {g} 已確認。","El guía {g} está confirmado."),
- done:T6("투어 완료로 표시되었습니다.","The tour was marked as completed.","ツアー完了になりました。","导览已标记为完成。","導覽已標記為完成。","El tour se marcó como completado."),
+ done:T6("투어 완료로 표시되었습니다.","The tour was marked as done.","ツアー完了になりました。","导览已标记为完成。","導覽已標記為完成。","El tour se marcó como completado."),
  rvthx:T6("후기를 남겨 주셔서 감사합니다.","Thank you for the review.","レビューありがとうございました。","感谢您的评价。","感謝您的評價。","Gracias por la reseña."),
  cancel:T6("예약이 취소되었습니다.","This booking was cancelled.","ご予約はキャンセルされました。","预约已取消。","預約已取消。","La reserva fue cancelada.")};
 function sysTx(m){ var o=SYS[m.k]; if(!o) return ""; var g=(m.v&&m.v.g)||{}, l=window.LANG||"en", nm=l==="ko"?g.ko:l==="ja"?(g.ja||g.en):(l==="zhs"||l==="zht")?(g.zh||g.en):g.en; return F(o,{g:nm||g.ko||""}); }
