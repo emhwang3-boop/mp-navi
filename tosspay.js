@@ -17,6 +17,7 @@ function won(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,",")+(window.L
   try{ var q=location.search.slice(1).split("&").filter(function(x){ return !/^paytest=/.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(q?"?"+q:"")+location.hash); }catch(e){} })();
 function on(){ return true; }   // 10-25 사장님: 모든 손님에게 결제 흐름 (숨김 없앰). 단추는 near.js 빅4 카드의 「예약·결제」
 var T={
+  cx:{ko:"취소",en:"Cancel",ja:"キャンセル",zhs:"取消",zht:"取消",es:"Cancelar"},   // 결제 단추 옆 취소 (사장님 11-05) — ✕ 와 같음
   btn:{ko:"예약·결제",en:"Book & pay",ja:"予約・決済",zhs:"预订·付款",zht:"預訂·付款",es:"Reservar y pagar"},
   title:{ko:"K-POP 빅4 사옥 투어 주문",en:"Order: K-pop Big4 Agency Tour",ja:"ご注文：K-POP BIG4 社屋ツアー",zhs:"订单：K-POP四大社参观团",zht:"訂單：K-POP四大社參觀團",es:"Pedido: Tour de las Big4 del K-pop"},
   date:{ko:"투어 날짜",en:"Tour date",ja:"ツアー日",zhs:"旅游日期",zht:"旅遊日期",es:"Fecha del tour"},
@@ -32,7 +33,7 @@ var T={
   needn:{ko:"예약자 이름을 넣어 주세요.",en:"Please enter your name.",ja:"予約者名を入力してください。",zhs:"请填写预订人姓名。",zht:"請填寫預訂人姓名。",es:"Escribe tu nombre."},
   load:{ko:"결제수단 불러오는 중…",en:"Loading payment methods…",ja:"決済手段を読み込み中…",zhs:"正在加载付款方式…",zht:"正在載入付款方式…",es:"Cargando métodos de pago…"},
   close:{ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"},
-  okT:{ko:"시험 결제 완료",en:"Test payment complete",ja:"テスト決済完了",zhs:"测试付款完成",zht:"測試付款完成",es:"Pago de prueba completado"},
+  okT:{ko:"시험 결제 완료",en:"Test payment done",ja:"テスト決済完了",zhs:"测试付款完成",zht:"測試付款完成",es:"Pago de prueba completado"},
   okD:{ko:"시험 모드라 실제 결제·승인은 하지 않았어요.",en:"Test mode — no real charge or approval was made.",ja:"テストモードのため、実際の決済・承認は行っていません。",zhs:"测试模式，未进行实际付款或授权。",zht:"測試模式，未進行實際付款或授權。",es:"Modo de prueba: no se hizo ningún cobro ni autorización real."},
   failT:{ko:"결제가 완료되지 않았어요",en:"Payment was not completed",ja:"決済が完了しませんでした",zhs:"付款未完成",zht:"付款未完成",es:"El pago no se completó"},
   oid:{ko:"주문번호",en:"Order no.",ja:"注文番号",zhs:"订单号",zht:"訂單號",es:"N.º de pedido"},
@@ -48,6 +49,7 @@ function css(){ if(document.getElementById("tpCss")) return; var s=document.crea
   +"#tpBox .step{display:flex;align-items:center;gap:8px}#tpBox .step button{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:20px;font-weight:800;cursor:pointer}"
   +"#tpBox .tot{font-size:20px;font-weight:900}#tpBox .guest{margin:12px 0;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:13.5px;line-height:1.5}"
   +"#tpBox .go{width:100%;border:0;border-radius:12px;padding:14px;font-size:17px;font-weight:900;background:#3182f6;color:#fff;cursor:pointer;margin-top:10px}#tpBox .go:disabled{opacity:.5}"
+  +"#tpBox .tpcx{display:flex;gap:8px;margin-top:10px;align-items:stretch}#tpBox .tpcx .go{flex:1 1 auto;width:auto;margin:0}#tpBox .tpcxb{border:1.5px solid #adb5bd;background:var(--card);color:var(--ink);border-radius:12px;padding:0 14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;flex:0 0 auto;min-width:84px}"
   +"#tpBox .x{float:right;border:0;background:none;font-size:22px;cursor:pointer;color:var(--sub)}#tpBox .tst{display:inline-block;margin-top:6px;padding:2px 8px;border-radius:999px;background:#fff4e6;color:#d9480f;font-size:12px;font-weight:800}";
   document.head.appendChild(s); }
 function sdk(){ return new Promise(function(ok,no){ if(window.TossPayments) return ok(); var s=document.createElement("script"); s.src=SDK; s.onload=function(){ ok(); }; s.onerror=no; document.head.appendChild(s); }); }
@@ -66,11 +68,11 @@ function openOrder(){ css(); var b=document.getElementById("tpBox"); if(b) b.rem
     +'<div class="guest" id="tpG">'+E(L6(T.guest))+'</div>'
     +'<div class="row"><label for="tpName">'+E(L6(T.name))+'</label><input id="tpName" type="text" autocomplete="name" style="flex:1;min-width:0"></div>'
     +'<div id="tpMethods"><div class="d">'+E(L6(T.load))+'</div></div><div id="tpAgree"></div>'
-    +'<button type="button" class="go" id="tpGo" disabled>'+E(L6(T.pay))+'</button><button type="button" class="go" id="tpPh" style="background:#fff;color:#3182f6;border:1.5px solid #3182f6">'+E(L6(T.phone))+'</button><div class="d" style="margin-top:6px;text-align:center">'+E(window.PAYTEST6?L6(window.PAYTEST6):L6(T.test))+'</div><div class="d" id="tpMsg" style="margin-top:8px;min-height:18px"></div></div>';
+    +'<div class="tpcx"><button type="button" class="tpcxb" id="tpCx">'+E(L6(T.cx))+'</button><button type="button" class="go" id="tpGo" disabled>'+E(L6(T.pay))+'</button></div><button type="button" class="go" id="tpPh" style="background:#fff;color:#3182f6;border:1.5px solid #3182f6">'+E(L6(T.phone))+'</button><div class="d" style="margin-top:6px;text-align:center">'+E(window.PAYTEST6?L6(window.PAYTEST6):L6(T.test))+'</div><div class="d" id="tpMsg" style="margin-top:8px;min-height:18px"></div></div>';
   b.onclick=function(e){ if(e.target===b) b.remove(); }; document.body.appendChild(b);
   var n=1, q=function(i){ return b.querySelector(i); };
   var paint=function(){ q("#tpN").textContent=n; q("#tpU").textContent=won(price(n)); q("#tpT").textContent=won(price(n)*n); if(W) W.setAmount({currency:"KRW",value:price(n)*n}).catch(function(){}); };
-  q("#tpX").onclick=function(){ b.remove(); }; q("#tpM").onclick=function(){ if(n>1){ n--; paint(); } }; q("#tpP").onclick=function(){ if(n<10){ n++; paint(); } };   /* 한 주문 최대 10명 (10-26) */
+  q("#tpX").onclick=function(){ b.remove(); }; q("#tpCx").onclick=function(){ b.remove(); }; q("#tpM").onclick=function(){ if(n>1){ n--; paint(); } }; q("#tpP").onclick=function(){ if(n<10){ n++; paint(); } };   /* 한 주문 최대 10명 (10-26) */
   paint();
   sdk().then(function(){ var tp=window.TossPayments(CK); W=tp.widgets({customerKey:window.TossPayments.ANONYMOUS});
     return W.setAmount({currency:"KRW",value:price(n)*n}).then(function(){ q("#tpMethods").innerHTML=""; return Promise.all([W.renderPaymentMethods({selector:"#tpMethods",variantKey:"DEFAULT"}),W.renderAgreement({selector:"#tpAgree",variantKey:"AGREEMENT"})]); }); })
