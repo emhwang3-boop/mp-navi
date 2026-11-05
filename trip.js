@@ -24,7 +24,7 @@ function T5(o){ return o[window.LANG]||o.en; }   // 다섯 말 문구 (10-20)
 function aiTx(a){ return !a?"":LANG==="ko"?a.ko:(a[LANG]||a.en); }   // AI 설명 — 허브가 그 언어 칸을 주면 그것, 아니면 영어
 function km(a,b){ var R=6371, rd=Math.PI/180, dLa=(b.lat-a.lat)*rd, dLo=(b.lng-a.lng)*rd, h=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(a.lat*rd)*Math.cos(b.lat*rd)*Math.sin(dLo/2)*Math.sin(dLo/2); return 2*R*Math.asin(Math.sqrt(h)); }
 function hm2m(s){ var m=/^(\d{1,2}):(\d{2})$/.exec(s||""); return m?(+m[1])*60+(+m[2]):null; }
-function m2hm(m){ m=Math.round(m); return ("0"+Math.floor(m/60)).slice(-2)+":"+("0"+(m%60)).slice(-2); }
+function m2hm(m){ m=Math.round(m); return ("0"+(Math.floor(m/60)%24)).slice(-2)+":"+("0"+(m%60)).slice(-2); }   // 11-05 사장님 「25시·27시는 00시·02시로」 — 자정 넘으면 24시간제로
 function durTxt(m){ m=Math.round(m); var h=Math.floor(m/60), r=m%60, U={ko:["시간 ","분"],en:["h ","m"],ja:["時間","分"],zhs:["小时","分钟"],zht:["小時","分鐘"],es:[" h "," min"]}[window.LANG]||["h ","m"]; return ((h?h+U[0]:"")+(r||!h?r+U[1]:"")).trim(); }
 var DOW_KO="일월화수목금토", DOW_EN=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 function kstToday(add){ return new Date(Date.now()+9*3600e3+(add||0)*864e5).toISOString().slice(0,10); }
@@ -273,7 +273,7 @@ function fixTimes(H,arr,date,from){ var cur=arr, cs=sched(H,cur,date,from);
 function orderDay(H,arr,date,from){ if(!arr.length) return arr; var o=twoOpt(H,nnOrder(H,arr)), night=o.filter(isNight); o=o.filter(function(x){ return !isNight(x); }).concat(night); return fixTimes(H,o,date,from); }
 function closedOn(x,d){ var f=FACT[x.k]; return !!(f&&f.cl&&f.cl.indexOf(d.getUTCDay())>=0); }
 function perms(a){ if(a.length<=1) return [a]; var r=[]; a.forEach(function(x,i){ perms(a.slice(0,i).concat(a.slice(i+1))).forEach(function(p){ r.push([x].concat(p)); }); }); return r; }
-function compute(H){ var o=TR.opt, D=o.n, from=hm2m(o.from)||570, to=hm2m(o.to)||1200, cap=Math.max(120,to-from), skip=[];
+function compute(H,Dn){ var o=TR.opt, D=Dn||o.n, from=hm2m(o.from)||570, to=hm2m(o.to)||1200, cap=Math.max(120,to-from), skip=[];
   var P=TR.items.filter(function(it){ var c=catOf(it); if(c==="hotel"||c==="trans"){ skip.push(it); return false; } return true; }).map(function(it){ return Object.assign({},it,{stay:stayOf(it)}); });
   var gs=splitDays(H,P,D,cap); while(gs.length<D) gs.push([]);
   // 날짜 배치 — 휴무 겹침이 가장 적은 차례 (7일이면 5040가지)
@@ -289,6 +289,14 @@ function compute(H){ var o=TR.opt, D=o.n, from=hm2m(o.from)||570, to=hm2m(o.to)|
     return {date:dates[di].toISOString().slice(0,10),stops:ord.map(function(x){ return x.k; }),end:s.end}; });
   var pool={}; P.forEach(function(x){ pool[x.k]=x; });
   return {v:1,at:Date.now(),from:from,to:to,hotel:o.hotel&&o.hotel.type!=="here"?o.hotel:(o.hotel?{type:"here"}:null),days:days,pool:pool,skip:skip.map(function(x){ return x.k; }),ai:null}; }
+// 날짜 수 추천 (사장님 11-05) — 고른 날짜로 하루 끝 시각 안에 다 못 돌면, 다 들어가는 가장 짧은 날짜 수를 (고른 수+1)~7일 차례로 짜 보아 찾는다. 7일로도 안 되면 7
+//   「들어간다」= 보고서 ⚠ 경고와 같은 기준 — 그날 시간표(식사 칸 포함, 새 일정의 mealsOf 와 같은 {to,lunch:null,dinner:null}) 숙소 도착 ≤ 하루 끝
+function planFits(H,p){ return p.days.every(function(d){ var arr=d.stops.map(function(k){ return p.pool[k]; }).filter(Boolean);
+  return sched(H,arr,new Date(d.date+"T00:00:00Z"),p.from,{to:p.to,lunch:null,dinner:null}).end<=p.to; }); }
+var SUG={key:""};   // 같은 일정·조건·실제 시간 개수면 다시 안 짠다 (화면에만)
+function sugDays(H,cur,at){ var key=at+"|"+cur+"|"+Object.keys(RT).length+"|"+JSON.stringify(TR.opt); if(SUG.key===key) return SUG.n; var n=7;
+  for(var D=Math.max(2,cur+1);D<=7;D++){ if(planFits(H,compute(H,D))){ n=D; break; } }
+  SUG={key:key,n:n}; return n; }
 function hotelPos(cb){ var h=TR.opt.hotel; if(!h) return cb(null); if(h.type!=="here") return cb({k:"__hotel",ko:h.ko,en:h.en,lat:+h.lat,lng:+h.lng,hotel:1});
   var use=function(p){ cb(p?{k:"__hotel",ko:"현재 위치",en:"Current location",lat:p[0],lng:p[1],hotel:1,here:1}:null); };
   if(window.ME&&ME.pos) use(ME.pos); else myPos().then(use); }
@@ -360,6 +368,19 @@ var GX={
  none:{ko:"근처에 더 넣을 곳을 찾지 못했어요. 지도에서 골라 「내 여행에 담기」로 넣어 주세요.",en:"Couldn’t find more places nearby. Pick some on the map and add them to your trip.",ja:"近くに追加できる場所が見つかりませんでした。地図から選んで「旅行に追加」してください。",zhs:"附近没有找到可添加的地点。请在地图上选择并加入行程。",zht:"附近沒有找到可加入的地點。請在地圖上選擇並加入行程。",es:"No encontramos más lugares cerca. Elige en el mapa y añádelos a tu viaje."},
  re:{ko:"다시 묻기",en:"Ask again",ja:"もう一度",zhs:"重新选择",zht:"重新選擇",es:"Volver a preguntar"}};
 function gTxt(o,v){ return T5(o).replace(/\{(\w)\}/g,function(_,k){ return v[k]; }); }
+// 날짜 수 추천 칸 (사장님 11-05) — 보고서 맨 위 안내 한 줄 + [N박 N+1일로 다시 짜기]. 누르면 날짜 수만 바꿔 「일정 짜기」 길(planGo) 그대로
+var SG6={
+ q1:{ko:"담은 {n}곳은 하루에 다 못 돌아요 — {r}을 추천해요",en:"The {n} places you added won’t fit in one day — we recommend {r}",ja:"追加した{n}か所は1日では回りきれません — {r}がおすすめです",zhs:"已加入的{n}个地点一天逛不完——建议安排{r}",zht:"已加入的{n}個地點一天逛不完——建議安排{r}",es:"Los {n} lugares que añadiste no caben en un día — te recomendamos {r}"},
+ qn:{ko:"담은 {n}곳은 {c}일 안에 다 못 돌아요 — {r}을 추천해요",en:"The {n} places you added won’t fit in {c} days — we recommend {r}",ja:"追加した{n}か所は{c}日では回りきれません — {r}がおすすめです",zhs:"已加入的{n}个地点{c}天内逛不完——建议安排{r}",zht:"已加入的{n}個地點{c}天內逛不完——建議安排{r}",es:"Los {n} lugares que añadiste no caben en {c} días — te recomendamos {r}"},
+ go:{ko:"{r}로 다시 짜기",en:"Re-plan for {r}",ja:"{r}で組み直す",zhs:"改为{r}重新安排",zht:"改為{r}重新安排",es:"Planificar de nuevo para {r}"}};
+function tripLen(n){ var x=n-1; return T5({ko:n<2?"당일":x+"박 "+n+"일",en:n<2?"a day trip":n+" days ("+x+" night"+(x>1?"s":"")+")",ja:n<2?"日帰り":x+"泊"+n+"日",zhs:n<2?"一日游":n+"天"+x+"晚",zht:n<2?"一日遊":n+"天"+x+"夜",es:n<2?"una excursión de un día":n+" días y "+x+" noche"+(x>1?"s":"")}); }
+function sugHtml(cur,rn){ var np=TR.items.filter(function(it){ var c=catOf(it); return c!=="hotel"&&c!=="trans"; }).length, v={n:np,c:cur,r:tripLen(rn)};
+  return '<div class="tgap" id="trSug" data-html2canvas-ignore><b>'+esc(gTxt(cur<2?SG6.q1:SG6.qn,v))+'</b><div class="tgr"><button type="button" class="trbtn" data-sugn="'+rn+'">'+esc(gTxt(SG6.go,v))+'</button></div></div>'; }
+document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("#trRep [data-sugn]"); if(!b) return; e.preventDefault(); var n=+b.dataset.sugn; if(!(n>=1&&n<=7)||b.disabled) return;
+  b.disabled=true; b.textContent=T("짜는 중…","Planning…"); try{ ntap("_trip","trip_sugdays"); }catch(z){}
+  TR.opt.n=n; TR.plan=null; save(); planGo(); });   // 여행 일수 칸을 바꾼 것과 같게(#trN onchange) → 「일정 짜기」
+// 그날 아래 ⚠ 경고 — 쉬운 말로 (사장님 11-05). {t} = 그날 기준 끝 시각(추가 일정으로 정한 시각이 있으면 그것)
+var OVR6={ko:"이 날은 장소가 많아 {t}까지 다 못 돌아요 — 장소를 빼거나 날짜를 늘려 보세요",en:"Too many places to finish this day by {t} — remove a place or add a day",ja:"この日は場所が多く、{t}までに回りきれません — 場所を減らすか日数を増やしてください",zhs:"这一天地点太多，{t}前逛不完——请减少地点或增加天数",zht:"這一天地點太多，{t}前逛不完——請減少地點或增加天數",es:"Este día tiene demasiados lugares para terminar antes de las {t} — quita un lugar o añade un día"};
 function gapAsk(pl,d,di,s){ var gap=pl.to-s.end; if(d.gap==="early") return '<div class="tgap" data-html2canvas-ignore><span>'+esc(T5(GX.ok))+'</span> <a href="#" data-gap="re" data-d="'+di+'">'+esc(T5(GX.re))+'</a></div>';
   if(d.gap&&d.gap.until){ return d.gap.none?'<div class="tgap" data-html2canvas-ignore>'+esc(T5(GX.none))+'</div>':''; }
   if(gap<45) return "";
@@ -381,7 +402,7 @@ document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.
   if(g==="y") d.gap="early"; else if(g==="n") d.gap="ask"; else if(g==="re") delete d.gap;
   else if(g==="go"){ var v=(document.getElementById("tgT"+di)||{}).value||"", un=hm2m(v)||pl.to, got=gapFill(pl,di,un); d.gap={until:un,none:got?0:1}; try{ ntap("_trip","gap_fill"); }catch(z){} }
   save(); repPaint(); });
-function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan; if(!box||!pl) return; var H=REPH, ai=pl.ai||{}, tips=ai.tips||{};
+function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan; if(!box||!pl) return; var H=REPH, ai=pl.ai||{}, tips=ai.tips||{}, over=false;
   var mp=(window.ME&&ME.pos)||GEO; REPME=mp?{k:"__me",ko:"현재 위치",en:"Current location",lat:+mp[0],lng:+mp[1],me:1}:null;
   if(!mp&&!GEOST&&typeof myPos==="function"){ GEOST="ask"; myPos().then(function(q){ GEOST=q?"ok":"fail"; GEO=q||null; if(q&&document.getElementById("trRep")) repPaint(); else { [].forEach.call(document.querySelectorAll("#trRep .tnost"),function(e){ e.hidden=false; }); } }); }   // 폰 안에서만 한 번 묻는다
   var hn=pl.hotel?(pl.hotel.type==="here"?T("현재 위치","Current location"):nm(pl.hotel)):"";
@@ -417,8 +438,10 @@ function repPaint(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan;
     if(s.back) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="__hotel" data-d="'+di+'">'+legTxt(s.back)+(s.back.mode!=="walk"?' <a href="#" class="tlgo">· '+T("실제 경로 보기","See real routes")+'</a>':'')+'<div class="tods"></div></div><div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+MPICO("mi_stay",T("숙소 도착","Back to lodging"),MIS)+'</span></div>';
     else h+='<div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+T("일정 끝","End of day")+'</span></div>';
     h+=gapAsk(pl,d,di,s);
-    if(s.end>((d.gap&&d.gap.until)||pl.to)) h+='<div class="tmemo" style="margin-top:4px">⚠ '+T("하루 끝 시각("+m2hm(pl.to)+")을 넘어요 — 장소를 빼거나 날짜를 늘려 보세요","Runs past your end time ("+m2hm(pl.to)+") — remove a place or add a day")+'</div>';
+    if(s.end>((d.gap&&d.gap.until)||pl.to)){ over=true; h+='<div class="tmemo" style="margin-top:4px">⚠ '+esc(gTxt(OVR6,{t:m2hm((d.gap&&d.gap.until)||pl.to)}))+'</div>'; }
     h+='</div></div>'; });
+  // 그날 ⚠ 경고가 하나라도 있으면 맨 위에 날짜 수 추천 (고른 날짜가 이미 7일이면 더 늘릴 수 없어 안 띄움)
+  if(over&&pl.days.length<7){ var sg=sugHtml(pl.days.length,sugDays(H,pl.days.length,pl.at)); h=h.replace('<div class="trbar"',function(m){ return sg+m; }); }
   h+='<div class="d" style="margin:10px 2px">'+(planUsesReal(pl,H)
     ? T5({ko:"이동 시간은 가능한 구간은 실제 대중교통 기준입니다. 일부 구간은 직선거리 어림이에요. 「실제 경로 보기」로 자세한 길을 볼 수 있어요.",
           en:"Travel times use real public transit where available; some legs are straight-line estimates. Tap “See real routes” for details.",
