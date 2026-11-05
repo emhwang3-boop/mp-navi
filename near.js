@@ -142,6 +142,8 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".gbpr{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:12px 0 0}.gbl{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;margin:4px 0}.gbl>span:first-child{color:var(--sub);flex:0 0 auto}.gbl>span:last-child{text-align:right;min-width:0;word-break:break-word}"
   +".gbt{display:flex;justify-content:space-between;border-top:1px dashed var(--line);margin-top:7px;padding-top:8px;font-size:18px;font-weight:900}"
   +".gbrate{font-size:12.5px;color:var(--sub);line-height:1.5;margin:6px 2px 0}.gbx{font-size:12.5px;color:#c2410c;font-weight:700;line-height:1.5;margin:6px 2px 0}"
+  +".nrcx{display:flex;gap:8px;margin-top:7px;align-items:stretch}.nrcx>.nrsel{flex:1 1 auto;width:auto;margin:0}.nrcxb{border:1.5px solid #adb5bd;background:var(--card);color:var(--ink);border-radius:12px;padding:0 14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;flex:0 0 auto;min-width:84px}"   /* 결제 단추 옆 취소 (11-05) */
+  +".gbcx{display:flex;gap:8px;margin-top:14px;align-items:stretch}.gbcx>.gbgo{flex:1 1 auto;width:auto;margin:0}.gbcxb{border:1.5px solid #adb5bd;background:var(--card);color:var(--ink);border-radius:12px;padding:0 14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;flex:0 0 auto;min-width:84px}"
   +".gbgo{display:block;width:100%;border:0;border-radius:12px;background:#0c8599;color:#fff;font-size:17px;font-weight:900;padding:14px;margin-top:14px;cursor:pointer}.gbgo:disabled{opacity:.5;cursor:default}.gbgo.g2{background:#efece4;color:#1d2433;font-size:15px;padding:11px;margin-top:8px}"
   +".gbrf{font-size:12.5px;color:var(--sub);margin:10px 2px 0;line-height:1.5}.gbrf a{color:#0b7285;font-weight:800}"
   +".gbstamp{position:fixed;inset:0;pointer-events:none;z-index:1037;display:flex;align-items:center;justify-content:center;overflow:hidden}.gbstamp span{transform:rotate(-24deg);font:900 clamp(44px,11vw,120px)/1 'Segoe UI',Arial,sans-serif;letter-spacing:.06em;color:rgba(214,40,40,.4);border:clamp(5px,1vw,12px) solid rgba(214,40,40,.4);border-radius:18px;padding:.12em .3em;white-space:nowrap}"
@@ -282,6 +284,7 @@ window.B4SV6=B4SV6;   // 주문 화면(tosspay.js)도 같은 문장
 function refundLine(o){ if(!o||!o.p||o.external) return ""; return '<div class="d" style="margin-top:3px;color:var(--ink)">'+esc(LG6(o.refund||RF6))+' · <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener" style="all:unset;display:inline;cursor:pointer;font:inherit;color:inherit;line-height:inherit;letter-spacing:inherit;text-decoration:none">'+esc(LG6(RFL6))+'</a></div>'; }   // 앞 문장과 겉모습 100% 같게 — .tgbook a(14.5px·900) 기본값을 all:unset 으로 지우고 상속, 밑줄 없음, 누르면 링크로만 (사장님 10-25)
 window.refundLine=refundLine;
 var PAYB6={ko:"예약·결제",en:"Book & pay",ja:"予約・決済",zhs:"预订·付款",zht:"預訂·付款",es:"Reservar y pagar"};
+var CX6={ko:"취소",en:"Cancel",ja:"キャンセル",zhs:"取消",zht:"取消",es:"Cancelar"};   // 결제 단추 옆 취소 (사장님 11-05) — 누르면 그 화면의 「뒤로」·✕ 와 같음
 var PAYTEST6={ko:"지금은 시험 운영 중이라 실제로 결제되지 않습니다",en:"We are in a test run — no real payment will be made",ja:"現在は試験運用中のため、実際の決済は行われません",zhs:"目前为试运营，不会实际扣款",zht:"目前為試營運，不會實際扣款",es:"Estamos en fase de prueba: no se realizará ningún cobro real"};
 window.PAYTEST6=PAYTEST6;
 var B4PKG={ t:{ko:"K-POP 빅4 사옥 투어",en:"K-pop Big4 Agency Tour",ja:"K-POP BIG4 社屋ツアー",zhs:"K-POP四大社参观团",zht:"K-POP四大社參觀團",es:"Tour de las Big4 del K-pop"},
@@ -311,7 +314,7 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
     +'<div class="d" style="color:var(--ink);margin-top:3px">'+esc(LG6(B4SV6))+'</div>'   // 제공기간·인원 (사장님 10-26, 토스 심사)
     +refundLine(B4PKG)   // 환불 규정 요약 + 링크 — 공통 부품 (토스 PG, 10-25)
     +'<button type="button" class="nrsel" data-nr="b4map" style="margin-top:7px;background:#fff;color:#d9480f;border-color:#ff7a00">'+MPICO("mi_bus",LG6({ko:"투어 노선도 보기",en:"View tour route",ja:"ツアー路線図を見る",zhs:"查看游览路线图",zht:"查看遊覽路線圖",es:"Ver la ruta del tour"}),MIS)+' ›</button>'
-    +'<button type="button" class="nrsel" data-nr="b4pay" style="margin-top:7px;background:#3182f6;color:#fff;border-color:#3182f6">'+esc(LG6(PAYB6))+' ›</button>'   // 「예약·결제」 하나만 — 모든 손님 (사장님 10-25)
+    +'<div class="nrcx"><button type="button" class="nrcxb" data-nr="x">'+esc(LG6(CX6))+'</button><button type="button" class="nrsel" data-nr="b4pay" style="background:#3182f6;color:#fff;border-color:#3182f6">'+esc(LG6(PAYB6))+' ›</button></div>'   // 「예약·결제」 하나만 — 모든 손님 (사장님 10-25)
     +'<div class="d" style="color:var(--sub);margin-top:4px">'+esc(LG6(PAYTEST6))+'</div>'):'')+'</div>';
   var part='<div class="tgpart">'+esc(LG6(PARTNER6))+'</div>';
   if(!TG_PARTNER_SHOW) return pkg+mPerf;   // 제휴 사이트 줄 숨김 (사장님 10-27 「삭제 말고 숨기기」) — 다시 보이려면 TG_PARTNER_SHOW=true
@@ -336,8 +339,8 @@ function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) re
 //   🔴 요금 바꿀 땐 여기 GBK 와 허브 worker.js GBK_PRICE 둘 다. 숫자는 「일단 보고 고치자」 임시값
 var GBK={hr:50000, half:190000, full:360000, big:5, bigHr:10000, hMin:2, hMax:12, dMin:2, dMax:7, dayH:8, nMax:10};
 function gbkCalc(mode,h,d,n){ var P=GBK, hb=function(x){ return x>=8?P.full+(x-8)*P.hr:x>=4?P.half+(x-4)*P.hr:x*P.hr; };
-  var hours=mode==="half"?4:mode==="full"?8:mode==="days"?d*P.dayH:h, base=mode==="days"?d*P.full:hb(hours), extra=n>=P.big?P.bigHr*hours:0;
-  return {hours:hours,base:base,extra:extra,total:base+extra}; }
+  var hours=mode==="half"?4:mode==="full"?8:mode==="days"?d*P.dayH:h, base=mode==="days"?d*P.full:hb(hours), xn=Math.max(0,n-(P.big-1)), extra=xn*P.bigHr*hours;   // 4명을 넘는 1명마다 시간당 bigHr (사장님 11-05 — 옛: 5인 이상이면 한 번만)
+  return {hours:hours,base:base,xn:xn,extra:extra,total:base+extra}; }
 var GB_TCK="test_ck_5OWRapdA8dzyq72vW4gRVo1zEqZK", GB_SDK="https://js.tosspayments.com/v2/standard", GB_KEY="mpv_gbpay";   // shop.js 와 같은 토스 시험 키·SDK (새 PG 연결 아님)
 var GB_PG=false;   // 🔴 PG 붙이면 true — 결제창(토스) → ?gbres= 돌아오기. 지금(11-05 사장님 「결제도 막 눌러」)은 「결제하기」 = 바로 확정(허브 pay:"none")
 function T6(ko,en,ja,zhs,zht,es){ return {ko:ko,en:en,ja:ja,zhs:zhs,zht:zht,es:es}; }
@@ -363,14 +366,14 @@ var GBT={
  ppl:T6("인원","People","人数","人数","人數","Personas"),
  pN:T6("{n}명","{n}","{n}名","{n}人","{n}人","{n}"),
  fee:T6("요금","Price","料金","费用","費用","Precio"),
- rate:T6("시간당 {hr} (1~4인 같은 요금) · 반일 4시간 {half} · 하루 8시간 {full} · {big}인 이상은 시간당 {bh} 추가",
-  "{hr} per hour (same for 1–4 people) · Half day 4 h {half} · Full day 8 h {full} · {big}+ people: {bh} more per hour",
-  "1時間 {hr}（1～4名同料金）・半日4時間 {half}・1日8時間 {full}・{big}名以上は1時間あたり {bh} 追加",
-  "每小时 {hr}（1～4人同价）· 半天4小时 {half} · 一天8小时 {full} · {big}人及以上每小时加 {bh}",
-  "每小時 {hr}（1～4人同價）· 半天4小時 {half} · 一天8小時 {full} · {big}人及以上每小時加 {bh}",
-  "{hr} por hora (igual de 1 a 4 personas) · Medio día 4 h {half} · Día completo 8 h {full} · {big}+ personas: {bh} más por hora"),
+ rate:T6("시간당 {hr} (1~4인 같은 요금) · 반일 4시간 {half} · 하루 8시간 {full} · {big}번째 사람부터 1명당 시간당 {bh} 추가",
+  "{hr} per hour (same for 1–4 people) · Half day 4 h {half} · Full day 8 h {full} · From the {big}th person: {bh} more per person per hour",
+  "1時間 {hr}（1～4名同料金）・半日4時間 {half}・1日8時間 {full}・{big}人目から1名につき1時間あたり {bh} 追加",
+  "每小时 {hr}（1～4人同价）· 半天4小时 {half} · 一天8小时 {full} · 从第{big}人起每人每小时加 {bh}",
+  "每小時 {hr}（1～4人同價）· 半天4小時 {half} · 一天8小時 {full} · 從第{big}人起每人每小時加 {bh}",
+  "{hr} por hora (igual de 1 a 4 personas) · Medio día 4 h {half} · Día completo 8 h {full} · Desde la {big}.ª persona: {bh} más por persona y hora"),
  excl:T6("가이드 교통비·입장료·식사비는 손님 부담입니다 (현장에서 직접 내 주세요).","The guide's transport, admission tickets and meals are paid by you (on the spot).","ガイドの交通費・入場料・食事代はお客様のご負担です（現地でお支払いください）。","向导的交通费、门票和餐费由游客承担（请在现场支付）。","嚮導的交通費、門票和餐費由旅客負擔（請在現場支付）。","El transporte, las entradas y las comidas del guía corren por tu cuenta (se pagan en el momento)."),
- xtra:T6("{big}인 이상 추가","{big}+ people surcharge","{big}名以上の追加料金","{big}人及以上加价","{big}人及以上加價","Suplemento {big}+ personas"),
+ xtra:T6("{big}번째부터 추가","Extra from person {big}","{big}人目から追加","第{big}人起加价","第{big}人起加價","Suplemento desde la persona {big}"),   // 11-05 — 뒤에 (₩10,000 × 8시간 × 2명)
  tot:T6("합계","Total","合計","合计","合計","Total"),
  memo:T6("가고 싶은 곳·원하는 관광 내용 (최대 500자)","Where you want to go · what you would like to do (up to 500 characters)","行きたい場所・ご希望の観光内容（500字まで）","想去的地方·希望的游览内容（最多500字）","想去的地方·希望的遊覽內容（最多500字）","Adónde quieres ir · qué te gustaría hacer (máx. 500 caracteres)"),
  memoPh:T6("예) 오전엔 경복궁·북촌 한옥마을, 점심은 광장시장, 오후엔 N서울타워","e.g. Gyeongbokgung and Bukchon Hanok Village in the morning, lunch at Gwangjang Market, N Seoul Tower in the afternoon","例）午前は景福宮・北村韓屋村、昼は広蔵市場、午後はNソウルタワー","例：上午景福宫·北村韩屋村，午饭在广藏市场，下午N首尔塔","例：上午景福宮·北村韓屋村，午飯在廣藏市場，下午N首爾塔","p. ej.: por la mañana Gyeongbokgung y Bukchon, almuerzo en el mercado de Gwangjang, por la tarde la N Seoul Tower"),
@@ -402,8 +405,8 @@ var GBT={
  amt:T6("결제 금액","Amount paid","決済金額","付款金额","付款金額","Importe pagado"),
  oid:T6("주문번호","Order no.","注文番号","订单号","訂單號","N.º de pedido"),
  endL:T6("끝나는 시간","Ends at","終了時刻","结束时间","結束時間","Termina a las"),   // 11-05 실전 — 시험 결제 문구(tkey·tsv) 대신
- sent:T6("가이드와의 대화·투어 완료·후기는 말풍선(💬)에서 합니다. 새 메시지나 취소 같은 소식은 문자로도 알려 드립니다.","Chat with your guide, tap “Tour completed” and leave a review in the chat (💬). We'll also text you about news such as new messages or a cancellation.","ガイドとのチャット・ツアー完了・レビューは吹き出し（💬）で行います。新しいメッセージやキャンセルなどのお知らせはSMSでもお送りします。","与向导聊天、导览完成和评价都在对话气泡（💬）中进行。新消息、取消等通知也会通过短信告诉您。","與嚮導聊天、導覽完成和評價都在對話氣泡（💬）中進行。新訊息、取消等通知也會透過簡訊告訴您。","El chat con tu guía, «Tour completado» y la reseña se hacen en el chat (💬). También te avisaremos por SMS de novedades como mensajes nuevos o una cancelación."),   // 11-05 접수 안내 문자·메일 끊음 — 화면 + 말풍선
- tdn:T6("투어 완료는 끝나는 시간부터 누를 수 있습니다.","You can tap Tour completed from the time the tour ends.","ツアー完了は終了時刻から押せます。","导览完成从结束时间起可点击。","導覽完成從結束時間起可點擊。","Podrás pulsar Tour completado desde la hora en que termina el tour."),
+ sent:T6("가이드와의 대화·투어 완료·후기는 말풍선(💬)에서 합니다. 새 메시지나 취소 같은 소식은 문자로도 알려 드립니다.","Chat with your guide, tap “Tour done” and leave a review in the chat (💬). We'll also text you about news such as new messages or a cancellation.","ガイドとのチャット・ツアー完了・レビューは吹き出し（💬）で行います。新しいメッセージやキャンセルなどのお知らせはSMSでもお送りします。","与向导聊天、导览完成和评价都在对话气泡（💬）中进行。新消息、取消等通知也会通过短信告诉您。","與嚮導聊天、導覽完成和評價都在對話氣泡（💬）中進行。新訊息、取消等通知也會透過簡訊告訴您。","El chat con tu guía, «Tour completado» y la reseña se hacen en el chat (💬). También te avisaremos por SMS de novedades como mensajes nuevos o una cancelación."),   // 11-05 접수 안내 문자·메일 끊음 — 화면 + 말풍선
+ tdn:T6("투어 완료는 끝나는 시간부터 누를 수 있습니다.","You can tap Tour done from the time the tour ends.","ツアー完了は終了時刻から押せます。","导览完成从结束时间起可点击。","導覽完成從結束時間起可點擊。","Podrás pulsar Tour completado desde la hora en que termina el tour."),
  chatGo:T6("💬 말풍선에서 보기","💬 Open in chat","💬 吹き出し（チャット）で見る","💬 在对话气泡中查看","💬 在對話氣泡中查看","💬 Ver en el chat"),
  pfT:T6("결제가 완료되지 않았어요 (취소 또는 실패).","The payment was not completed (cancelled or failed).","決済が完了しませんでした（キャンセルまたは失敗）。","付款未完成（已取消或失败）。","付款未完成（已取消或失敗）。","El pago no se completó (cancelado o fallido)."),
  home:T6("처음으로","Start over","最初に戻る","返回开始","返回開始","Volver al inicio"),
@@ -418,6 +421,7 @@ function gbF(o,m){ var s=LG6(o); for(var k in m) s=s.split("{"+k+"}").join(m[k])
 function gbWon(x){ return "₩"+Number(x||0).toLocaleString("ko-KR"); }
 function gbDay(add){ return new Date(Date.now()+9*3600e3+add*864e5).toISOString().slice(0,10); }
 function gbInit(){ var o=IG.bk||{}; IG.bk={mode:o.mode||"half",h:o.h||3,d:o.d||2,date:(o.date&&o.date>=gbDay(1))?o.date:gbDay(3),time:o.time||"09:00",n:o.n||2,memo:o.memo||"",cn:o.cn||"",ce:o.ce||"",cp:o.cp||"",pm:"card",err:""}; }
+function gbPpl(n){ return n===1?({ko:"1명",en:"1 person",ja:"1名",zhs:"1人",zht:"1人",es:"1 persona"}[LANG]||"1 person"):gbF(T6("{n}명","{n} people","{n}名","{n}人","{n}人","{n} personas"),{n:n}); }   // 추가 인원 (11-05)
 function gbCalcNow(){ var k=IG.bk; return gbkCalc(k.mode,k.mode==="hours"?k.h:0,k.mode==="days"?k.d:0,k.n); }
 function gbModeTxt(k){ return k.mode==="hours"?gbF(GBT.hN,{n:k.h}):k.mode==="days"?gbF(GBT.dN,{n:k.d}):LG6(GBT[k.mode]); }
 function gbGrab(){ var k=IG.bk; if(!k) return; var v=function(i){ var e=document.getElementById(i); return e?e.value:null; };
@@ -425,7 +429,7 @@ function gbGrab(){ var k=IG.bk; if(!k) return; var v=function(i){ var e=document
   if((x=v("gbMemo"))!=null) k.memo=x.slice(0,500); if((x=v("gbCn"))!=null) k.cn=x; if((x=v("gbCe"))!=null) k.ce=x; if((x=v("gbCp"))!=null) k.cp=x; }
 function gbPriceBox(){ var k=IG.bk, c=gbCalcNow();
   return '<div class="gbl"><span>'+esc(gbModeTxt(k))+'</span><span>'+gbWon(c.base)+'</span></div>'
-    +(c.extra?'<div class="gbl"><span>'+esc(gbF(GBT.xtra,{big:GBK.big}))+' ('+gbWon(GBK.bigHr)+' × '+c.hours+')</span><span>'+gbWon(c.extra)+'</span></div>':'')
+    +(c.extra?'<div class="gbl"><span>'+esc(gbF(GBT.xtra,{big:GBK.big}))+' ('+gbWon(GBK.bigHr)+' × '+esc(gbF(GBT.hN,{n:c.hours}))+' × '+esc(gbPpl(c.xn))+')</span><span>'+gbWon(c.extra)+'</span></div>':'')
     +'<div class="gbt"><span>'+esc(LG6(GBT.tot))+'</span><span>'+gbWon(c.total)+'</span></div>'; }
 function gbGuideCard(g){ return '<div class="igcard" style="margin-top:8px;cursor:default">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b><div class="igm">'+(g.langs||[]).map(igLangName).map(esc).join(" · ")+(g.years?' · '+esc(igYears(g.years)):"")+(g.region?' · '+esc(igRegion(g.region)):"")+'</div></div></div>'; }
 function gbRefund(){ return '<div class="gbrf">'+esc(LG6(GBT.rf))+' <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(LG6(GBT.rfL))+' ›</a></div>'; }
@@ -449,7 +453,7 @@ function gbForm(g){ var k=IG.bk, L=LG6, mn=gbDay(1), mx=gbDay(365), opt=function
     +'<label class="iglb">'+esc(L(GBT.ce))+'</label><input class="igin" id="gbCe" type="email" maxlength="100" autocomplete="email" value="'+esc(k.ce)+'">'
     +'<div class="ignt">'+esc(L(GBT.cpn))+'</div>'
     +(k.err?'<div class="gberr" id="gbM">'+esc(k.err)+'</div>':'<div class="gberr" id="gbM"></div>')
-    +'<button type="button" class="gbgo" id="gbSend">'+esc(L(GBT.send))+'</button>'
+    +'<div class="gbcx"><button type="button" class="gbcxb" data-igback="1">'+esc(L(CX6))+'</button><button type="button" class="gbgo" id="gbSend">'+esc(L(GBT.send))+'</button></div>'
     +gbRefund(); }
 function gbRows(g){ var k=IG.bk, L=LG6, row=function(a,b,cls){ return '<div class="gbl"><span>'+esc(L(a))+'</span><span'+(cls?' class="'+cls+'"':'')+'>'+b+'</span></div>'; };
   return row(GBT.gd,igName(g))+row(T6("날짜","Date","日付","日期","日期","Fecha"),esc(k.date))+row(GBT.tm,esc(k.time)+" (KST)")+row(GBT.dur,esc(gbModeTxt(k)))+row(GBT.ppl,esc(gbF(GBT.pN,{n:k.n})))
@@ -458,7 +462,7 @@ function gbRows(g){ var k=IG.bk, L=LG6, row=function(a,b,cls){ return '<div clas
 function gbConf(g){ var L=LG6;
   return '<div class="iglbl" style="margin-top:8px;font-size:16px;color:var(--ink)">'+esc(L(GBT.cfT))+'</div><div class="ignt" style="margin-top:0">'+esc(L(GBT.cfS))+'</div>'
     +'<div class="gbpr">'+gbRows(g)+'</div><div class="gbpr">'+gbPriceBox()+'</div><div class="gbx">'+esc(L(GBT.excl))+'</div>'+gbRefund()
-    +'<button type="button" class="gbgo" id="gbCf">'+esc(L(GBT.cfGo))+' ›</button><button type="button" class="gbgo g2" data-igback="req">'+esc(L(GBT.edit))+'</button>'; }
+    +'<div class="gbcx"><button type="button" class="gbcxb" data-igback="req">'+esc(L(CX6))+'</button><button type="button" class="gbgo" id="gbCf">'+esc(L(GBT.cfGo))+' ›</button></div>'; }   // 11-05 사장님 「고치기」 뺌 — 「취소」와 같은 동작(신청서로)
 function gbPayHtml(g,busy){ var k=IG.bk, L=LG6, c=gbCalcNow();
   return ''
     +'<div class="iglbl" style="margin-top:8px;font-size:17px;color:var(--ink)">'+esc(L(GBT.pt))+'</div>'
@@ -468,8 +472,7 @@ function gbPayHtml(g,busy){ var k=IG.bk, L=LG6, c=gbCalcNow();
     +'<label class="igchk"><input type="checkbox" id="gbAg"'+(busy?" checked disabled":"")+'> '+esc(L(GBT.agr))+'</label>'
     +gbRefund()
     +(k.err?'<div class="gberr">'+esc(k.err)+'</div>':'')
-    +'<button type="button" class="gbgo" id="gbPay" disabled>'+(busy?esc(L(busy===2?GBT.opn:GBT.sav)):gbWon(c.total)+' '+esc(L(GBT.payb)))+'</button>'
-    +'<button type="button" class="gbgo g2" data-igback="gconf">'+esc(LG6({ko:"돌아가기",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Volver"}))+'</button>'; }
+    +'<div class="gbcx"><button type="button" class="gbcxb" data-igback="gconf">'+esc(L(CX6))+'</button><button type="button" class="gbgo" id="gbPay" disabled>'+(busy?esc(L(busy===2?GBT.opn:GBT.sav)):gbWon(c.total)+' '+esc(L(GBT.payb)))+'</button></div>'; }   // 아래 「돌아가기」는 뺌 — 옆 「취소」가 같은 동작 (사장님 11-05)
 function gbDone(g){ var L=LG6, r=IG.gbRes||{};
   return ''
     +'<div class="iglbl" style="margin-top:8px;font-size:17px;color:var(--ink)">'+esc(L(GBT.pdT))+'</div>'
@@ -878,7 +881,8 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
 // ── 들어가는 곳: 검색창 아래 칩(선물 고르기 옆) · ⋮ 메뉴 ──
 function entries(){ css(); var box=document.getElementById("gfchips");
   if(!box){ var h=document.getElementById("gob")||document.getElementById("hint"); if(!h) return; h.insertAdjacentHTML("afterend",'<div id="gfchips" style="display:flex;justify-content:center;gap:6px;margin:10px 0 0;flex-wrap:wrap"></div>'); box=document.getElementById("gfchips"); }
-  ["ig","tg","am","em","st"].forEach(function(k){ var c=box.querySelector('.nrchip[data-nr="'+k+'"]'); if(!c){ box.insertAdjacentHTML("beforeend",'<button type="button" class="nrchip'+(k!=="am"?' '+k:'')+'" data-nr="'+k+'"></button>'); c=box.querySelector('.nrchip[data-nr="'+k+'"]'); }
+  /* 편의시설(am) 칩은 뺌 — ⋮ 메뉴에만 (그 자리에 「AI와 일정짜기」, reco.js · 사장님 11-05) */
+  ["ig","tg","em","st"].forEach(function(k){ var c=box.querySelector('.nrchip[data-nr="'+k+'"]'); if(!c){ box.insertAdjacentHTML("beforeend",'<button type="button" class="nrchip'+(k!=="am"?' '+k:'')+'" data-nr="'+k+'"></button>'); c=box.querySelector('.nrchip[data-nr="'+k+'"]'); }
     c.textContent=k==="tg"?LG6(TOURS6):k==="ig"?LG6(IG_CHIP6):T(CHIP[k][0],CHIP[k][1]); });
   var mm=document.getElementById("mm"); if(mm) ["tg","am","em","st","ig"].forEach(function(k){ var id="mnear_"+k, a=document.getElementById(id);
     if(!a){ a=document.createElement("a"); a.id=id; a.href="#"; a.className="mi"; a.dataset.nr=k; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); }
