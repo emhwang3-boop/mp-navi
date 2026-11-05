@@ -28,6 +28,8 @@ var W={
  saving:{ko:"검사·번역하는 중…",en:"Checking and translating…",ja:"確認・翻訳中…",zhs:"正在审核和翻译…",zht:"正在審核和翻譯…",es:"Revisando y traduciendo…"},
  saved:{ko:"후기를 올렸습니다. 고맙습니다!",en:"Your review is posted. Thank you!",ja:"レビューを投稿しました。ありがとうございます！",zhs:"评价已发布，谢谢！",zht:"評價已發佈，謝謝！",es:"Reseña publicada. ¡Gracias!"},
  del:{ko:"지우기",en:"Delete",ja:"削除",zhs:"删除",zht:"刪除",es:"Eliminar"},
+ ic_edit:{ko:"수정",en:"Edit",ja:"編集",zhs:"编辑",zht:"編輯",es:"Editar"},   /* 내 후기 아이콘 (사장님 11-05) */
+ ic_del:{ko:"삭제",en:"Delete",ja:"削除",zhs:"删除",zht:"刪除",es:"Eliminar"},
  delq:{ko:"내 후기를 지울까요?",en:"Delete your review?",ja:"自分のレビューを削除しますか？",zhs:"要删除您的评价吗？",zht:"要刪除您的評價嗎？",es:"¿Eliminar su reseña?"},
  login:{ko:"로그인하고 후기 남기기",en:"Sign in to leave a review",ja:"ログインしてレビューを書く",zhs:"登录后写评价",zht:"登入後寫評價",es:"Inicie sesión para dejar una reseña"},
  loginNote:{ko:"구글 또는 애플 계정으로 로그인한 분만 후기를 쓸 수 있습니다. 아이디는 일부를 가려 보여 드립니다.",en:"Only visitors signed in with Google or Apple can write reviews. Your ID is shown partly hidden.",ja:"GoogleまたはAppleでログインした方のみレビューを書けます。IDは一部を隠して表示します。",zhs:"仅限使用Google或Apple登录的用户发表评价。账号将部分隐藏显示。",zht:"僅限使用Google或Apple登入的使用者發表評價。帳號將部分隱藏顯示。",es:"Solo quienes inicien sesión con Google o Apple pueden escribir reseñas. Su ID se muestra parcialmente oculto."},
@@ -64,9 +66,16 @@ function css(){ if(document.getElementById("rvCss")) return; var s=document.crea
   +".rvw .rvr{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}.rvw .rvc{color:var(--sub);font-size:12px;margin-right:auto}"
   +".rvw button,.rvp .rvlg{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 16px;font-size:14px;cursor:pointer}.rvw button.rvgo,.rvp .rvlg{background:#f59f00;border-color:#f59f00;color:#fff;font-weight:700}"
   +".rvmini{display:inline-flex;align-items:center;gap:4px;align-self:flex-start;margin-top:2px;padding:2px 9px;border-radius:999px;background:#fff9db;border:1px solid #ffe066;font-size:12px;color:#5c4a0f}.rvmini b{color:#e67700}"
-  +".rvw button[disabled]{opacity:.6}.rvmsg{font-size:12.5px;margin-top:6px;color:var(--sub)}.rvmsg.e{color:#c92a2a}.rvmsg.o{color:#2b8a3e}.rvsm{font-size:12px;color:var(--sub);line-height:1.5;margin:6px 0}";
+  +".rvw button[disabled]{opacity:.6}.rvmsg{font-size:12.5px;margin-top:6px;color:var(--sub)}.rvmsg.e{color:#c92a2a}.rvmsg.o{color:#2b8a3e}.rvsm{font-size:12px;color:var(--sub);line-height:1.5;margin:6px 0}"
+  +".rvi{position:relative}.rvi .rvm .rvic{border:0;background:transparent;padding:4px;margin:-4px -4px -4px auto;line-height:0;color:var(--ink);cursor:pointer;border-radius:50%;-webkit-tap-highlight-color:transparent}.rvi .rvm .rvic svg{width:20px;height:20px;fill:currentColor}"
+  +".rvmn{position:absolute;right:0;top:30px;z-index:20;display:flex;flex-direction:column;min-width:132px;padding:6px 0;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,.18)}"
+  +".rvmn button{display:flex;align-items:center;gap:14px;border:0;background:transparent;color:var(--ink);padding:10px 16px;font-size:14px;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}.rvmn button:active{background:rgba(128,128,128,.15)}.rvmn svg{width:22px;height:22px;fill:currentColor;flex:none}";   /* 내 후기 수정·삭제 아이콘 — 바탕 투명 (사장님 11-05) */
   document.head.appendChild(s); }
-var SUM={}, OPEN=null, LIST=null, PICK=0, META={};
+var SUM={}, OPEN=null, LIST=null, PICK=0, META={}, EDIT=null;
+var IC={ more:"M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z",
+ edit:"M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z",
+ del:"M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" };   // 유튜브 댓글처럼 ⋮ → 수정·삭제 (사장님 11-05 「유튜브것을 카피해」) — 구글 공개 아이콘 Material Symbols(Apache 2.0)
+function ic(n){ return '<svg viewBox="0 -960 960 960" aria-hidden="true"><path d="'+IC[n]+'"/></svg>'; }   // EDIT = 수정 아이콘으로 고치기 칸을 연 명소 (11-05)
 window.rvSlot=function(k,m){ if(!okK(k)) return ""; css(); if(m&&/^pin:/.test(k)) META[k]={nm:String(m.nm||"").slice(0,60),addr:String(m.addr||"").slice(0,120)};   /* 지도 밖 장소는 이름·주소를 후기와 같이 보낸다(새 그림 후보, 10-29) */ return '<div class="rvs" data-rvk="'+esc(k)+'" hidden></div>'; };
 function slot(k){ if(!k) return document.querySelector("#res .rvs"); var a=document.querySelectorAll(".rvs[data-rvk]"); for(var i=0;i<a.length;i++) if(a[i].dataset.rvk===k) return a[i]; return null; }   // 명소 카드(#res) 또는 상품 상세(#shopBox [data-rvhost]) (10-29)
 function rvp(k){ var a=document.querySelectorAll(".rvp[data-rvk]"); for(var i=0;i<a.length;i++) if(a[i].dataset.rvk===k) return a[i]; return null; }
@@ -88,16 +97,16 @@ function list(k){ var s=sess(); post("/npg/rv/list",{k:k,l:lg(),sess:s||undefine
     if(s&&!j.login){ try{ localStorage.removeItem("mpv_pg_sess"); }catch(e){} }
     SUM[k]={n:j.n,avg:j.avg}; LIST=j; PICK=j.mine?j.mine.st:0; paintSum(k); paintList(k); })
   .catch(function(){ var p=panel(k); if(p&&OPEN===k) p.innerHTML='<div class="rvmsg e">'+esc(t("err"))+'</div>'; }); }
-function itemHtml(x,i){ return '<div class="rvi'+(x.me?' me':'')+'"><div class="rvm">'+stars(x.st,13)+'<b>'+esc(x.nm)+'</b><span>'+esc(day(x.up||x.at))+(x.up?' · '+esc(t("edited")):'')+'</span>'+(x.me?'<span style="color:#e67700;font-weight:700">'+esc(t("mine"))+'</span>':'')+'</div>'
+function itemHtml(x,i){ return '<div class="rvi'+(x.me?' me':'')+'"><div class="rvm">'+stars(x.st,13)+'<b>'+esc(x.nm)+'</b><span>'+esc(day(x.up||x.at))+(x.up?' · '+esc(t("edited")):'')+'</span>'+(x.me?'<span style="color:#e67700;font-weight:700">'+esc(t("mine"))+'</span><button type="button" class="rvic e1" data-rvmore="1" aria-label="⋮">'+ic("more")+'</button>':'')+'</div>'
   +(x.txt?'<div class="rvt" data-i="'+i+'">'+esc(x.txt)+'</div>':'')+(x.o?'<button type="button" class="rvo" data-rvo="'+i+'">'+esc(t("orig"))+'</button> <span style="font-size:11px;color:var(--sub)">'+esc(t("aitr"))+'</span>':'')+'</div>'; }
 function pickHtml(){ var h=""; for(var i=1;i<=5;i++) h+='<span data-rvpick="'+i+'"'+(i<=PICK?' class="on"':'')+'>★</span>'; return h; }
 function paintList(k){ var p=panel(k); if(!p||!LIST) return; var j=LIST, h="";
   h+=(j.items||[]).map(itemHtml).join("")||'<div class="rvsm">'+esc(t("none"))+'</div>';
-  if(sess()&&j.login){ var m=j.mine;
-    h+='<div class="rvw"><div class="rvq">'+esc(t(m?"edit":"write"))+'</div><div class="rvpick">'+pickHtml()+'</div>'
+  if(sess()&&j.login){ var m=j.mine;   // 내 후기가 있으면 고치기 칸은 ✏️ 를 눌렀을 때만 (11-05) · 알림 줄(.rvmsg)은 칸 밖에 두어 접혀도 보이게
+    h+='<div class="rvmsg"></div><div class="rvw"'+(m&&EDIT!==k?' hidden':'')+'><div class="rvq">'+esc(t(m?"edit":"write"))+'</div><div class="rvpick">'+pickHtml()+'</div>'
       +'<textarea maxlength="300" placeholder="'+esc(t("ph"))+'">'+esc(m?m.txt:"")+'</textarea>'
-      +'<div class="rvr"><span class="rvc">'+((m?m.txt:"").length)+' / 300</span>'+(m?'<button type="button" data-rvdel="1">'+esc(t("del"))+'</button>':'')+'<button type="button" class="rvgo" data-rvgo="1">'+esc(t("save"))+'</button></div>'
-      +'<div class="rvmsg"></div><div class="rvsm">'+esc(t("rule"))+'</div></div>'; }
+      +'<div class="rvr"><span class="rvc">'+((m?m.txt:"").length)+' / 300</span><button type="button" class="rvgo" data-rvgo="1">'+esc(t("save"))+'</button></div>'
+      +'<div class="rvsm">'+esc(t("rule"))+'</div></div>'; }
   else h+='<div class="rvw"><button type="button" class="rvlg" data-rvlogin="1">'+esc(t("login"))+'</button><div class="rvsm">'+esc(t("loginNote"))+'</div></div>';
   p.innerHTML=h; }
 function msg(s,c){ var pp=rvp(OPEN), e=pp&&pp.querySelector(".rvmsg"); if(e){ e.className="rvmsg"+(c?" "+c:""); e.textContent=s; } }
@@ -106,7 +115,7 @@ function save(k){ var pp=rvp(k), ta=pp&&pp.querySelector("textarea"), b=pp&&pp.q
   var s=sess(); if(!s){ paintList(k); return; }
   if(b) b.disabled=true; msg(t("saving"));
   post("/npg/rv/put",{sess:s,k:k,st:PICK,txt:ta.value.slice(0,300),l:lg(),nm:META[k]?META[k].nm:undefined,addr:META[k]?META[k].addr:undefined}).then(function(j){ if(b) b.disabled=false;
-    if(j&&j.ok){ SUM[k]={n:j.n,avg:j.avg}; paintSum(k); list(k); setTimeout(function(){ msg(t("saved"),"o"); },400); return; }
+    if(j&&j.ok){ EDIT=null; SUM[k]={n:j.n,avg:j.avg}; paintSum(k); list(k); setTimeout(function(){ msg(t("saved"),"o"); },400); return; }
     var er=j&&j.err;
     if(er==="reject") msg(t("r_"+(W["r_"+j.why]?j.why:"spam")),"e");
     else if(er==="day") msg(t("e_day"),"e");
@@ -115,7 +124,7 @@ function save(k){ var pp=rvp(k), ta=pp&&pp.querySelector("textarea"), b=pp&&pp.q
     else msg(t("e_x"),"e"); })
   .catch(function(){ if(b) b.disabled=false; msg(t("e_x"),"e"); }); }
 function del(k){ if(!confirm(t("delq"))) return; var s=sess(); if(!s) return;
-  post("/npg/rv/del",{sess:s,k:k}).then(function(j){ if(j&&j.ok){ SUM[k]={n:j.n,avg:j.avg}; PICK=0; paintSum(k); list(k); } else msg(t("e_x"),"e"); }).catch(function(){ msg(t("e_x"),"e"); }); }
+  post("/npg/rv/del",{sess:s,k:k}).then(function(j){ if(j&&j.ok){ EDIT=null; SUM[k]={n:j.n,avg:j.avg}; PICK=0; paintSum(k); list(k); } else msg(t("e_x"),"e"); }).catch(function(){ msg(t("e_x"),"e"); }); }
 function loginOpen(k){ if(!window.mpPG) return; window.mpPG.open();   // 로그인 창이 닫히면 후기 칸을 다시 그린다
   var bx=document.getElementById("pgBox"); if(!bx||!window.MutationObserver) return;
   var mo=new MutationObserver(function(){ if(!bx.hidden) return; mo.disconnect(); if(OPEN===k&&slot(k)) list(k); }); mo.observe(bx,{attributes:true,attributeFilter:["hidden"]}); }
@@ -132,9 +141,15 @@ document.addEventListener("touchend",function(e){ var el=e.target.closest&&e.tar
 document.addEventListener("click",function(e){ var p=e.target.closest&&e.target.closest(".rvp[data-rvk]"); if(!p) return; var k=p.dataset.rvk; if(!okK(k)) return;
   var a=e.target.closest("[data-rvpick]"); if(a){ PICK=+a.dataset.rvpick; var w=p.querySelector(".rvpick"); if(w) w.innerHTML=pickHtml(); return; }
   if(e.target.closest("[data-rvgo]")){ save(k); return; }
+  var mn0=p.querySelector(".rvmn"), mr=e.target.closest("[data-rvmore]");
+  if(mr){ if(mn0){ mn0.remove(); return; } var it=mr.closest(".rvi"); if(!it) return; var mn=document.createElement("div"); mn.className="rvmn";
+    mn.innerHTML='<button type="button" data-rvedit="1">'+ic("edit")+'<span>'+esc(t("ic_edit"))+'</span></button><button type="button" data-rvdel="1">'+ic("del")+'<span>'+esc(t("ic_del"))+'</span></button>'; it.appendChild(mn); return; }   // ⋮ 메뉴 (11-05)
+  if(mn0) mn0.remove();
+  if(e.target.closest("[data-rvedit]")){ EDIT=EDIT===k?null:k; if(LIST&&LIST.mine) PICK=LIST.mine.st; paintList(k); var ta=p.querySelector(".rvw:not([hidden]) textarea"); if(ta){ try{ ta.scrollIntoView({block:"center",behavior:"smooth"}); ta.focus(); }catch(x){} } return; }   // ✏️ 수정 — 고치기 칸 열기·닫기 (11-05)
   if(e.target.closest("[data-rvdel]")){ del(k); return; }
   if(e.target.closest("[data-rvlogin]")){ loginOpen(k); return; }
   var o=e.target.closest("[data-rvo]"); if(o&&LIST){ var i=+o.dataset.rvo, x=LIST.items[i], tx=p.querySelector('.rvt[data-i="'+i+'"]'); if(!x||!tx) return;
     var show=o.dataset.on!=="1"; o.dataset.on=show?"1":""; tx.textContent=show?x.o:x.txt; o.textContent=t(show?"trn":"orig"); } });
+document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest(".rvp[data-rvk]")) return; var m=document.querySelector(".rvmn"); if(m) m.remove(); },true);   // ⋮ 메뉴 밖을 누르면 닫기 (11-05)
 document.addEventListener("input",function(e){ if(!e.target.matches||!e.target.matches(".rvp[data-rvk] textarea")) return; var c=e.target.closest(".rvp").querySelector(".rvc"); if(c) c.textContent=e.target.value.length+" / 300"; });
 })();
