@@ -11,8 +11,17 @@
 <meta property="og:site_name" content="Money Puzzle Tour for Korea">
 <meta property="og:title" content="Money Puzzle Tour for Korea — Korea travel map in 6 languages">
 <meta property="og:description" content="An illustrated treasure map of Korea: sights, food, stays, K-pop tours, AI trip plans, interpreter phrases — in English, 한국어, 日本語, 简体中文, 繁體中文 and Español.">
-<meta property="og:image" content="https://navi.moneypuzzle.co.kr/icon-512.png">
+<meta property="og:image" content="https://navi.moneypuzzle.co.kr/img/maps/kr.jpg?h=8850c5bc">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="2048">
+<meta property="og:image:alt" content="Illustrated treasure map of Korea — Money Puzzle Tour for Korea">
 <meta property="og:url" content="https://navi.moneypuzzle.co.kr/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Money Puzzle Tour for Korea — Korea travel map in 6 languages">
+<meta name="twitter:description" content="An illustrated treasure map of Korea: sights, food, stays, K-pop tours, AI trip plans, interpreter phrases — in English, 한국어, 日本語, 简体中文, 繁體中文 and Español.">
+<meta name="twitter:image" content="https://navi.moneypuzzle.co.kr/img/maps/kr.jpg?h=8850c5bc">
+<meta name="twitter:image:alt" content="Illustrated treasure map of Korea — Money Puzzle Tour for Korea"><!-- 11-05 링크 미리보기 = 전국 지도 그림(카톡 카드와 같은 kr.jpg) · 정사각 그림이라 twitter 는 summary(잘림 없음) -->
 <meta name="description" content="An illustrated treasure map of Korea: sights, food, stays, K-pop tours, AI trip plans, interpreter phrases — in 6 languages.">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -89,6 +98,7 @@ try{ window.__mpSrc=window.__mpSrcOf(navigator.userAgent||"",location.search||""
 .shgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.shi{width:17px;height:17px;flex:0 0 auto}
 .shgrid a,.shgrid button{display:flex;align-items:center;gap:6px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;text-align:left;font-family:inherit}
 .shhd{font-size:12px;color:var(--sub);margin:0 2px 8px}.shmsg{font-size:12.5px;color:var(--blue);margin-top:9px;min-height:16px;text-align:center;font-weight:700}
+#shIn .shqr{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:#5b6474;font-weight:600}#shIn .shqr>div{padding:8px;background:#fff;border:1px solid #e6e9ef;border-radius:10px}#shIn .shqr img,#shIn .shqr canvas{display:block;width:160px;height:160px}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;-webkit-text-size-adjust:100%}
@@ -656,6 +666,9 @@ function shBuild(){
   const en=FG(), u="", t="";
   const A=function(href,label){ return '<button class="sht">'+label+'</button>'; };
   let h='<div class="shhd">'+T("이 앱 공유하기","Share this app")+'</div><div class="shgrid">';
+  /* 위챗 (11-05 사장님) — 노래방 공용 공유창(karaoke.js kShare)과 같은 방식: 링크 복사 + QR · 같은 「微」 배지 · 중국어 화면이면 맨 앞, 그 밖엔 「링크 복사」 앞 */
+  const wc='<button class="sht" data-a="wechat"><svg class="shi" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#07C160"/><text x="12" y="17" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="sans-serif">微</text></svg> '+({ko:"위챗",en:"WeChat",ja:"WeChat",zhs:"微信",zht:"微信",es:"WeChat"}[LANG]||"WeChat")+'</button>', zh=LANG==="zhs"||LANG==="zht";
+  if(zh) h+=wc;
   h+=A("https://twitter.com/intent/tweet?text="+t+"&url="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z\"/></svg> X");
   h+=A("sms:?&body="+t+"%20"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#34C759\" d=\"M12 3C6.98 3 3 6.36 3 10.5c0 2.35 1.28 4.43 3.3 5.8-.13 1.02-.5 2.2-1.3 3.2 1.7-.2 3.2-.94 4.3-1.7.85.2 1.75.3 2.7.3 5.02 0 9-3.36 9-7.6S17.02 3 12 3z\"/></svg> "+T("문자","Message"));
   h+=A("https://t.me/share/url?url="+u+"&text="+t,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#26A5E4\" d=\"M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z\"/></svg> "+T("텔레그램","Telegram"));
@@ -665,6 +678,7 @@ function shBuild(){
   h+=A("https://api.whatsapp.com/send?text="+t+"%20"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#25D366\" d=\"M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z\"/></svg> WhatsApp");
   h+=A("mailto:?subject="+""+"&body="+t+"%0A"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg> "+T("메일","Email"));
   h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" rx=\"6\" fill=\"#FEE500\"/><g transform=\"translate(3.2,3.2) scale(0.73)\"><path fill=\"#3C1E1E\" d=\"M22.125 0H1.875C.8394 0 0 .8394 0 1.875v20.25C0 23.1606.8394 24 1.875 24h20.25C23.1606 24 24 23.1606 24 22.125V1.875C24 .8394 23.1606 0 22.125 0zM12 18.75c-.591 0-1.1697-.0413-1.7317-.1209-.5626.3965-3.813 2.6797-4.1198 2.7225 0 0-.1258.0489-.2328-.0141s-.0876-.2282-.0876-.2282c.0322-.2198.8426-3.0183.992-3.5333-2.7452-1.36-4.5701-3.7686-4.5701-6.5135C2.25 6.8168 6.6152 3.375 12 3.375s9.75 3.4418 9.75 7.6875c0 4.2457-4.3652 7.6875-9.75 7.6875zM8.0496 9.8672h-.8777v3.3417c0 .2963-.2523.5372-.5625.5372s-.5625-.2409-.5625-.5372V9.8672h-.8777c-.3044 0-.552-.2471-.552-.5508s.2477-.5508.552-.5508h2.8804c.3044 0 .552.2471.552.5508s-.2477.5508-.552.5508zm10.9879 2.9566a.558.558 0 0 1 .108.4167.5588.5588 0 0 1-.2183.371.5572.5572 0 0 1-.3383.1135.558.558 0 0 1-.4493-.2236l-1.3192-1.7479-.1952.1952v1.2273a.5635.5635 0 0 1-.5627.5628.563.563 0 0 1-.5625-.5625V9.3281c0-.3102.2523-.5625.5625-.5625s.5625.2523.5625.5625v1.209l1.5694-1.5694c.0807-.0807.1916-.1252.312-.1252.1404 0 .2814.0606.3871.1661.0985.0984.1573.2251.1654.3566.0082.1327-.036.2542-.1241.3425l-1.2818 1.2817 1.3845 1.8344zm-8.3502-3.5023c-.095-.2699-.3829-.5475-.7503-.5557-.3663.0083-.6542.2858-.749.5551l-1.3455 3.5415c-.1708.5305-.0217.7272.1333.7988a.8568.8568 0 0 0 .3576.0776c.2346 0 .4139-.0952.4678-.2481l.2787-.7297 1.7152.0001.2785.7292c.0541.1532.2335.2484.4681.2484a.8601.8601 0 0 0 .3576-.0775c.1551-.0713.3041-.2681.1329-.7999l-1.3449-3.5398zm-1.3116 2.4433l.5618-1.5961.5618 1.5961H9.3757zm5.9056 1.3836c0 .2843-.2418.5156-.5391.5156h-1.8047c-.2973 0-.5391-.2314-.5391-.5156V9.3281c0-.3102.2576-.5625.5742-.5625s.5742.2523.5742.5625v3.3047h1.1953c.2974 0 .5392.2314.5392.5156z\"/></g></svg> '+T("카카오톡","KakaoTalk")+'</button>';
+  if(!zh) h+=wc;
   h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"#8a93a3\" stroke-width=\"2\" stroke-linecap=\"round\" d=\"M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.54 3.54 0 0 0-5-5l-1.2 1.2M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.54 3.54 0 0 0 5 5l1.2-1.2\"/></svg> '+T("링크 복사","Copy link")+'</button>';
   if(navigator.share)h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#5b93ff\" d=\"M18 16.08a2.9 2.9 0 0 0-1.96.77L8.9 12.7a3.3 3.3 0 0 0 0-1.4l7.05-4.11A2.92 2.92 0 1 0 15 5a3 3 0 0 0 .06.6L8.04 9.72a3 3 0 1 0 0 4.56l7.1 4.15c-.04.2-.06.4-.06.6a2.92 2.92 0 1 0 2.92-2.95z\"/></svg> '+T("다른 앱으로","Other apps")+'</button>';
   h+='</div><div class="shmsg" id="shMsg"></div>';
@@ -676,8 +690,22 @@ function shHas(l,k,e){ return l.indexOf(k)>=0||l.indexOf(e)>=0||l.indexOf(TE(e))
 function shOwnerFix0(p, appName, tok){
   var url="https://navi.moneypuzzle.co.kr/", txt=appName+" — Money Puzzle";
   var iurl=url+"?install=1", ilab={ko:"앱 설치",en:"Install app",ja:"アプリを入れる",zhs:"安装应用",zht:"安裝應用",es:"Instalar app"}[LANG]||"Install app", itx="\n"+ilab+": "+iurl;   /* 「앱 설치」 링크 = 같은 초대 주소 + &install=1 (사장님 10-25) */   /* 지금 연 주소 그대로 (2026-10-14) */
+  /* 공유 창 안내 문구 6개 언어 (11-05 사장님 — 한국어 화면에 영어로 나오던 것) · ⋮ 메뉴 「링크를 복사했습니다」와 같은 말투 */
+  var L6=function(o){ return o[LANG]||o.en; }, SM={
+    kc:{ko:"카카오톡에 연결하는 중입니다… 잠시 기다려 주세요",en:"Connecting to KakaoTalk… please wait",ja:"カカオトークに接続しています…しばらくお待ちください",zhs:"正在连接 KakaoTalk…请稍候",zht:"正在連接 KakaoTalk…請稍候",es:"Conectando con KakaoTalk… espera un momento"},
+    kna:{ko:"카카오톡을 사용할 수 없어 링크를 복사했습니다: ",en:"KakaoTalk is not available — link copied: ",ja:"カカオトークを利用できないため、リンクをコピーしました：",zhs:"无法使用 KakaoTalk，已复制链接：",zht:"無法使用 KakaoTalk，已複製連結：",es:"KakaoTalk no está disponible; enlace copiado: "},
+    cp:{ko:"링크를 복사했습니다: ",en:"Link copied: ",ja:"リンクをコピーしました：",zhs:"链接已复制：",zht:"已複製連結：",es:"Enlace copiado: "},
+    ko1:{ko:"투어앱 열기",en:"Open app",ja:"アプリを開く",zhs:"打开应用",zht:"開啟應用",es:"Abrir app"},   /* 카톡 카드 첫 단추 (노래방은 「노래방 입장」) */
+    wc:{ko:"링크를 복사했습니다 — 위챗 대화방에 붙여 넣으세요",en:"Link copied — paste it into a WeChat chat",ja:"リンクをコピーしました — WeChatのトークに貼り付けてください",zhs:"已复制链接 — 请粘贴到微信聊天中",zht:"已複製連結 — 請貼到微信聊天中",es:"Enlace copiado — pégalo en un chat de WeChat"},
+    wq:{ko:"위챗으로 QR 코드를 스캔해도 열 수 있습니다.",en:"You can also scan this QR code with WeChat.",ja:"WeChatでこのQRコードを読み取っても開けます。",zhs:"也可以用微信扫描二维码打开。",zht:"也可以用微信掃描 QR 碼開啟。",es:"También puedes escanear este código QR con WeChat."}};
   [].forEach.call(p.querySelectorAll(".sht"),function(b){
     var lab=b.textContent.trim(), href="";
+    if(b.getAttribute("data-a")==="wechat"){   // 위챗 = 웹 공유 주소가 없다 → 글+링크+「앱 설치」 링크 복사 + QR (karaoke.js kShare 와 같은 방식, 11-05)
+      b.classList.remove("sht");
+      b.onclick=function(){ var m=p.querySelector(".shmsg"), wt=txt+"\n"+url+itx; try{ navigator.clipboard.writeText(wt).catch(function(){}); }catch(x){}
+        if(m){ m.innerHTML=esc(L6(SM.wc))+'<div class="shqr"><div></div><span>'+esc(L6(SM.wq))+'</span></div>'; shQr(m.querySelector(".shqr>div"),url); } try{ ntap("_app","share_wechat"); }catch(x){} };
+      return;
+    }
     if(/^X$/.test(lab)) href="https://twitter.com/intent/tweet?text="+encodeURIComponent(txt+itx)+"&url="+encodeURIComponent(url);
     else if(shHas(lab,"문자","Message")) href="sms:?&body="+encodeURIComponent(txt+" "+url+itx);
     else if(shHas(lab,"텔레그램","Telegram")) href="https://t.me/share/url?url="+encodeURIComponent(url)+"&text="+encodeURIComponent(txt+itx);
@@ -689,9 +717,9 @@ function shOwnerFix0(p, appName, tok){
     if(shHas(lab,"카카오톡","KakaoTalk")&&window.Kakao){   // 카카오 SDK — PC 에서도 카카오톡 「친구에게 보내기」 (2026-10-13)
       b.classList.remove("sht");
       b.onclick=function(){ var m=p.querySelector(".shmsg"), ku=url;
-        try{ if(!window.Kakao.isInitialized()) window.Kakao.init("90a47ca48c2a967dd4d14b3b48de2e3b"); if(m) m.textContent=T("Connecting to KakaoTalk… please wait","Connecting to KakaoTalk… please wait");
-          window.Kakao.Share.sendDefault({objectType:"feed",content:{title:txt,description:({ko:"한국 여행 지도 · 6개 언어",en:"Korea travel map in 6 languages",ja:"韓国旅行マップ・6言語",zhs:"韩国旅行地图 · 6种语言",zht:"韓國旅行地圖 · 6種語言",es:"Mapa de viajes de Corea en 6 idiomas"})[LANG]||"Korea travel map in 6 languages",imageUrl:"https://navi.moneypuzzle.co.kr/img/maps/kr.jpg?h=8850c5bc",imageWidth:800,imageHeight:800,link:{webUrl:ku,mobileWebUrl:ku}},buttons:[{title:"Open",link:{webUrl:ku,mobileWebUrl:ku}},{title:ilab,link:{webUrl:iurl,mobileWebUrl:iurl}}]}); }   /* 11-05 사장님 「그림카드로, 전국지도가 나오는 걸로」 — 글자 카드(text)→그림 카드(feed) */
-        catch(e){ try{ navigator.clipboard.writeText(url); }catch(x){} if(m) m.textContent=T("KakaoTalk is not available — link copied: ","KakaoTalk is not available — link copied: ")+url; } };
+        try{ if(!window.Kakao.isInitialized()) window.Kakao.init("90a47ca48c2a967dd4d14b3b48de2e3b"); if(m) m.textContent=L6(SM.kc);
+          window.Kakao.Share.sendDefault({objectType:"feed",content:{title:txt,description:({ko:"한국 여행 지도 · 6개 언어",en:"Korea travel map in 6 languages",ja:"韓国旅行マップ・6言語",zhs:"韩国旅行地图 · 6种语言",zht:"韓國旅行地圖 · 6種語言",es:"Mapa de viajes de Corea en 6 idiomas"})[LANG]||"Korea travel map in 6 languages",imageUrl:"https://navi.moneypuzzle.co.kr/img/maps/kr.jpg?h=8850c5bc",imageWidth:800,imageHeight:800,link:{webUrl:ku,mobileWebUrl:ku}},buttons:[{title:L6(SM.ko1),link:{webUrl:ku,mobileWebUrl:ku}},{title:ilab,link:{webUrl:iurl,mobileWebUrl:iurl}}]}); }   /* 11-05 사장님 「그림카드로, 전국지도가 나오는 걸로」 — 글자 카드(text)→그림 카드(feed) */
+        catch(e){ try{ navigator.clipboard.writeText(url); }catch(x){} if(m) m.textContent=L6(SM.kna)+url; } };
       return;
     }
     b.classList.remove("sht");
@@ -699,10 +727,15 @@ function shOwnerFix0(p, appName, tok){
     b.onclick=function(){   // 카카오톡·링크 복사·다른 앱으로 — 폰 공유창, 안 되면 링크 복사
       var m=p.querySelector(".shmsg");
       if(!shHas(lab,"링크 복사","Copy link")&&navigator.share){ navigator.share({title:txt,text:txt+itx,url:url}).catch(function(){}); return; }
-      try{ navigator.clipboard.writeText(url).then(function(){ if(m) m.textContent=T("Link copied: ","Link copied: ")+url; }); }catch(e){ if(m) m.textContent=url; }
+      try{ navigator.clipboard.writeText(url).then(function(){ if(m) m.textContent=L6(SM.cp)+url; },function(){ if(m) m.textContent=url; }); }catch(e){ if(m) m.textContent=url; }
     };
   });
 }
+// QR 코드 (위챗 스캔용, 11-05) — karaoke.js kQr 와 같은 qrcodejs 1.0.0 (cdnjs, 버전 고정) · 노래방이 먼저 불러왔으면 그것을 쓴다 · 못 불러오면 QR 칸만 뺀다
+var SHQR=null; function shQr(el,u){ if(!el) return; var bad=function(){ var q=el.parentNode; if(q) q.remove(); };
+  var go=function(){ try{ el.innerHTML=""; new QRCode(el,{text:u,width:160,height:160,correctLevel:QRCode.CorrectLevel.M}); }catch(e){ bad(); } };
+  if(window.QRCode) return go(); if(!SHQR) SHQR=new Promise(function(res,rej){ var s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"; s.crossOrigin="anonymous"; s.referrerPolicy="no-referrer"; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+  SHQR.then(go).catch(function(){ SHQR=null; bad(); }); }
 function shOpen(){ ntap("_app","share"); shBuild(); try{ shOwnerFix(document.getElementById("shIn"),"Money Puzzle Tour for Korea"); }catch(e){} document.getElementById("shBox").hidden=false; }
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest(".sht"); if(!t) return; e.preventDefault(); document.getElementById("shMsg").textContent=T("체험판에서는 공유가 되지 않습니다.","Sharing is turned off in this demo."); });
 function resetAll(){ try{ dlDraw(null); viewSet("kr"); }catch(e){} document.getElementById("q").value=""; qxSync(); document.getElementById("res").innerHTML=""; document.getElementById("mm").hidden=true; window.scrollTo(0,0); }
