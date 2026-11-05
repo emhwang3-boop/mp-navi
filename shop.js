@@ -58,7 +58,9 @@ var TX={
  efail:T6("저장하지 못했어요. 잠시 뒤 다시 눌러 주세요.","Could not save. Please try again shortly.","保存できませんでした。しばらくしてからもう一度お試しください。","保存失败，请稍后再试。","儲存失敗，請稍後再試。","No se pudo guardar. Inténtalo de nuevo en un momento."),
  sav:T6("저장 중…","Saving…","保存中…","保存中…","儲存中…","Guardando…"),
  oid:T6("주문번호","Order no.","注文番号","订单号","訂單號","N.º de pedido"),
- sent:T6("예약을 받았습니다. 예약 안내를 메일과 문자로 보냈어요. 가이드가 확정되면 다시 알려 드리고, 투어 가이드 첫 화면 「내 예약」에서 배정된 가이드를 볼 수 있어요.","Your booking is received. We sent the details by email and text message. We will let you know when a guide confirms — you can see your guide under “My bookings” in Tour guide.","ご予約を受け付けました。ご案内をメールとSMSでお送りしました。ガイドが確定したらお知らせします。担当ガイドは「ツアーガイド」の「私の予約」で確認できます。","已收到预约，并已通过邮件和短信发送详情。向导确认后会再通知您，可在「旅游向导」的「我的预约」中查看向导。","已收到預約，並已透過電郵和簡訊發送詳情。嚮導確認後會再通知您，可在「旅遊嚮導」的「我的預約」中查看嚮導。","Hemos recibido tu reserva y te enviamos los detalles por correo y SMS. Te avisaremos cuando un guía confirme; podrás verlo en «Mis reservas» de Guía turístico."),   // 11-05 실전
+ sent:T6("예약을 받았어요. 가이드가 확정되면 문자로 알려 드려요. 진행 상황은 말풍선(💬)에서 볼 수 있어요.","Your booking is received. We'll text you when a guide is confirmed. You can follow the progress in the chat (💬).","ご予約を受け付けました。ガイドが確定したらSMSでお知らせします。進み具合は吹き出し（💬）で確認できます。","已收到预约。向导确认后会用短信通知您，进度可在对话气泡（💬）中查看。","已收到預約。嚮導確認後會用簡訊通知您，進度可在對話氣泡（💬）中查看。","Hemos recibido tu reserva. Te avisaremos por SMS cuando se confirme un guía. Puedes seguir el progreso en el chat (💬)."),   // 11-05 접수 문자·메일 끊음 — 화면 + 말풍선
+ sentX:T6("예약을 받았어요. 확정·취소 같은 소식은 문자로 알려 드려요.","Your booking is received. We'll text you about news such as confirmation or cancellation.","ご予約を受け付けました。確定やキャンセルなどのお知らせはSMSでお送りします。","已收到预约。确认、取消等消息会用短信通知您。","已收到預約。確認、取消等消息會用簡訊通知您。","Hemos recibido tu reserva. Te avisaremos por SMS de novedades como la confirmación o una cancelación."),   // 방 없는 상품(입장권·클래스)
+ chatGo:T6("💬 말풍선에서 보기","💬 Open in chat","💬 吹き出し（チャット）で見る","💬 在对话气泡中查看","💬 在對話氣泡中查看","💬 Ver en el chat"),
  tsv:T6("시험 주문으로 저장했어요. 가이드·예약자에게는 아무것도 보내지 않았어요.","Saved as a test order. Nothing was sent to the guide or to you.","テスト注文として保存しました。ガイドやご予約者には何も送っていません。","已保存为测试订单，未向向导或您发送任何内容。","已儲存為測試訂單，未向嚮導或您傳送任何內容。","Guardado como pedido de prueba. No se envió nada al guía ni a ti."),
  // 토스 결제창 (10-29 카드사 심사 「결제창이 떠야 한다」)
  opn:T6("토스 결제창을 여는 중…","Opening the Toss payment window…","Toss決済画面を開いています…","正在打开Toss付款窗口…","正在開啟Toss付款視窗…","Abriendo la ventana de pago de Toss…"),
@@ -526,7 +528,7 @@ function mockPay(res){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySe
     +'<b>'+esc(L(TX.ord))+'</b><div class="spick">'+(psrc(p)?'<img src="'+esc(psrc(p))+'" alt="">':'')+'<b>'+esc(L(p.t))+'</b></div>'
     +'<div class="sl"><span>'+esc(L(TX.dtm))+'</span><span>'+esc((S.date||"-")+" "+(S.time||""))+'</span></div><div class="sl"><span>'+esc(L(TX.ppl))+'</span><span>'+S.n+'</span></div>'+(kindOf(p)==="tour"?'<div class="sl"><span>'+esc(L(TX.gd))+'</span><span>'+(gnm?esc(gnm):esc(L(TX.none)))+'</span></div>':'')
     +'<div class="stot"><span>'+esc(L(done?TX.amt:TX.tot))+'</span><span>'+won(done?res.amount:tot)+'</span></div>'
-    +(done?'<div class="sl"><span>'+esc(L(TX.oid))+'</span><b>'+esc(res.oid)+'</b></div><div class="sdone">'+esc(L(TX.sent))+'</div>'
+    +(done?'<div class="sl"><span>'+esc(L(TX.oid))+'</span><b>'+esc(res.oid)+'</b></div><div class="sdone">'+esc(L(res.chat?TX.sent:TX.sentX))+'</div>'+(res.chat&&res.tk?'<button type="button" class="spay" id="spmChat">'+esc(L(TX.chatGo))+'</button>':'')
      :'<b>'+esc(L(TX.cu))+'</b>'
      +'<label class="scl">'+esc(L(TX.cn))+'<input type="text" id="spmN" maxlength="40" autocomplete="name" value="'+esc(S.cn)+'"></label>'
      +'<label class="scl">'+esc(L(TX.cp))+'<input type="tel" id="spmP" maxlength="30" autocomplete="tel" value="'+esc(S.cp)+'"></label>'
@@ -555,7 +557,7 @@ function mockPay(res){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySe
          if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err; draw(null,e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(p.hub&&p.days&&p.days.length?TX.edy:TX.edt):e==="notsale"?L(TX.soon):L(TX.efail)); return; }
          try{ ntap("shop","order_"+p.id); }catch(z){}
          if(!SH_PG){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:L(p.t),date:S.date,time:S.time,n:S.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null}); }catch(z){}   // 「내 예약」 (11-05)
-           S.cn=nm; S.ce=em; S.cp=ph; mockPay({ok:true,oid:j.orderId,amount:j.amount}); return; }
+           S.cn=nm; S.ce=em; S.cp=ph; mockPay({ok:true,oid:j.orderId,amount:j.amount,tk:j.tdone||"",chat:!!j.chat}); return; }
          draw(null,"",2);
          // 돌아왔을 때 화면을 다시 그리려고 주문 내용을 이 탭에만 잠깐 둔다 (sessionStorage)
          ss(PKEY,{oid:j.orderId,amount:j.amount,pid:p.id,date:S.date,time:S.time,n:S.n,gid:S.gid||null,gname:gnm,glang:S.glang||"",cn:nm,ce:em,cp:ph,pm:pm,at:Date.now()});
@@ -568,7 +570,9 @@ function mockPay(res){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySe
          return tsdk().then(function(){ return window.TossPayments(TCK).payment({customerKey:window.TossPayments.ANONYMOUS}).requestPayment(req); })
            .catch(function(e){ window.__shTossErr=String((e&&e.code||"")+" "+(e&&e.message||e)); ss(PKEY,null); draw(null,(e&&e.code==="USER_CANCEL")?L(TX.pfT):((e&&e.message)||L(TX.pfT))); }); })
        .catch(function(){ draw(null,L(TX.efail)); }); };
-    o.querySelector("#spmX").onclick=function(){ o.remove(); }; };
+    o.querySelector("#spmX").onclick=function(){ o.remove(); };
+    var chb=o.querySelector("#spmChat"); if(chb) chb.onclick=function(){ if(!window.CHAT) return; close(); CHAT.room(res.tk); };   // 결제 완료 → 그 예약의 말풍선 방 (11-05)
+  };
   draw(null,res&&!res.ok?res.err:""); }
 // 토스 결제창에서 돌아왔을 때 (successUrl ?shres=ok&paymentKey&orderId&amount · failUrl ?shres=fail&code&message&orderId)
 //   ok  → 체험·입장권 상세 화면 위에 결제 완료(주문 내용·주문번호·「시험 결제(테스트 키) — 실제 청구 없음」)
