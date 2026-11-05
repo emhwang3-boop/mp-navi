@@ -652,6 +652,7 @@ var BKT={
  rvAt:T6("투어 날({d})부터 별점·후기를 쓸 수 있습니다.","You can rate and review from the tour day ({d}).","ツアー当日（{d}）から評価・レビューできます。","导览当天（{d}）起可评分·写评价。","導覽當天（{d}）起可評分·寫評價。","Podrás valorar y reseñar desde el día del tour ({d})."),
  rvEarly:T6("투어 날({d})부터 쓸 수 있습니다.","You can write it from the tour day ({d}).","ツアー当日（{d}）から書けます。","导览当天（{d}）起可写。","導覽當天（{d}）起可寫。","Podrás escribirla desde el día del tour ({d})."),
  rvd:T6("후기를 남겨 주셔서 감사합니다.","Thank you for your review.","レビューありがとうございました。","感谢您的评价。","感謝您的評價。","Gracias por tu reseña."),
+ bkr:T6("예약자","Booked by","予約者","预订人","預訂人","Reservado por"),   // 11-05 사장님 「내 폰에서도 보이게」
  other:T6("기타 언어","Other languages","その他の言語","其他语言","其他語言","Otros idiomas"),
  cx:T6("취소된 예약입니다.","This booking was cancelled.","キャンセルされた予約です。","该预约已取消。","該預約已取消。","Esta reserva fue cancelada."),
  bad:T6("예약을 찾을 수 없습니다. 링크를 확인해 주세요.","We could not find this booking. Please check the link.","予約が見つかりません。リンクをご確認ください。","找不到该预约，请检查链接。","找不到該預約，請檢查連結。","No encontramos esta reserva. Revisa el enlace."),
@@ -669,7 +670,7 @@ function bkSave(a){ try{ localStorage.setItem(BKK,JSON.stringify(a.slice(0,12)))
 function bkGet(oid){ return bkAll().filter(function(x){ return x.oid===oid; })[0]||null; }
 function bkPut(x){ var a=bkAll(), o=a.filter(function(y){ return y.oid===x.oid; })[0]||{}; bkSave([Object.assign(o,x)].concat(a.filter(function(y){ return y.oid!==x.oid; }))); }
 function bkDrop(oid){ bkSave(bkAll().filter(function(y){ return y.oid!==oid; })); }
-function bkFrom(j,tk){ return {oid:j.oid,tk:tk,kind:j.kind||"gbk",glang:j.glang||"",pname:j.pname||"",date:j.date,time:j.time,end:+j.end||0,k:j.k||{},n:j.n,amount:j.amount,status:j.status,done:j.done?1:0,rv:j.review||"",rvd:!!j.reviewed,rvFrom:j.rvFrom||"",room:j.room||null,g:j.g||null}; }
+function bkFrom(j,tk){ return {oid:j.oid,tk:tk,kind:j.kind||"gbk",glang:j.glang||"",cust:j.cust||"",pname:j.pname||"",date:j.date,time:j.time,end:+j.end||0,k:j.k||{},n:j.n,amount:j.amount,status:j.status,done:j.done?1:0,rv:j.review||"",rvd:!!j.reviewed,rvFrom:j.rvFrom||"",room:j.room||null,g:j.g||null}; }
 function bkShown(){ return bkAll().filter(function(x){ return !(x.status==="cancelled"||x.status==="refunded"||(x.rvd&&(x.done||x.kind==="pkg"))); }); }   // 완료(투어 완료 + 후기까지 끝남)·취소 예약은 바로 숨김 (사장님 11-05 「2-가」)
 function bkToday(){ return new Date(Date.now()+9*36e5).toISOString().slice(0,10); }
 function bkCard(x){ var L=LG6, g=x.g||null, cx=x.status==="cancelled"||x.status==="refunded", pk=x.kind==="pkg", rm=x.room, foot="";
@@ -684,7 +685,7 @@ function bkCard(x){ var L=LG6, g=x.g||null, cx=x.status==="cancelled"||x.status=
   else foot=chatBtn;
   var head=pk?'<b>'+esc(x.pname||"")+'</b><div class="igm">'+when+' · '+esc(gbF(GBT.pN,{n:x.n||1}))+'</div>'
     :'<div style="display:flex;gap:11px;align-items:flex-start">'+igFace(g||{})+'<div class="igb"><b>'+igName(g||{})+'</b><div class="igm">'+when+' · '+esc(gbModeTxt({mode:(x.k&&x.k.mode)||"half",h:x.k&&x.k.h,d:x.k&&x.k.d}))+' · '+esc(gbF(GBT.pN,{n:x.n||1}))+'</div></div></div>';
-  return '<div class="igcard" style="cursor:default;display:block'+hi+'">'+head+'<div class="igm">'+esc(L(GBT.oid))+' '+esc(x.oid)+'</div>'+foot+'</div>'; }
+  return '<div class="igcard" style="cursor:default;display:block'+hi+'">'+head+(x.cust?'<div class="igm">'+esc(L(BKT.bkr))+' '+esc(x.cust)+'</div>':'')+'<div class="igm">'+esc(L(GBT.oid))+' '+esc(x.oid)+'</div>'+foot+'</div>'; }
 function bkBlock(){ var my=bkShown(), m=IG.bkMsg; if(!my.length&&!m) return "";
   // 가이드 언어별로 묶기 (사장님 11-05 「4-가」) · 많으면(3건 넘음) 칸 안에서 스크롤 (「3」)
   var ORD=["ko","en","ja","zhs","zht","es"], grp={}; my.forEach(function(x){ var l=ORD.indexOf(x.glang)>=0?x.glang:""; (grp[l]=grp[l]||[]).push(x); });
