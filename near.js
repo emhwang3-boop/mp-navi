@@ -134,6 +134,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".igpk{display:inline-block;margin-top:6px;color:#0c8599;font-weight:800;font-size:13px}"
   +".iglb{display:block;font-size:13px;color:var(--sub);font-weight:700;margin:10px 2px 3px}"
   +".igin{width:100%;box-sizing:border-box;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 11px}"
+  +".igin::placeholder{color:#8a929c;opacity:1}:root[data-theme=\"dark\"] .igin::placeholder{color:#6b7584}"   // 입력칸 흐린 안내 글자 (사장님 11-05) — 밝은·어두운 화면 모두 회색으로 흐리게
   +".igchk{display:flex;gap:7px;align-items:flex-start;font-size:13px;color:var(--ink);margin:12px 2px 0;line-height:1.5}.igchk input{width:18px;height:18px;margin-top:1px;flex:0 0 auto}"
   // 가이드 예약·결제 화면 (사장님 10-30)
   +".gbm{display:grid;grid-template-columns:1fr 1fr;gap:7px}.gbm button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:11px 6px;font-size:14.5px;font-weight:800;cursor:pointer;min-height:44px}.gbm button.on{border-color:#0c8599;background:#e3fafc;color:#0b7285}"
@@ -330,14 +331,15 @@ function igDates(){ var out=[]; for(var i=1;i<=2;i++){ var d=new Date(Date.now()
     out.push([s, (i===1?LG6({ko:"내일",en:"Tomorrow",ja:"明日",zhs:"明天",zht:"明天",es:"Mañana"}):LG6({ko:"모레",en:"Day after tomorrow",ja:"明後日",zhs:"后天",zht:"後天",es:"Pasado mañana"}))+" ("+s+")"]); } return out; }
 function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) return GLANG6[i][0]; return c; }
 // ── 가이드 예약·결제 (사장님 2026-10-30 「가이드를 고르면 맨 위 안내 → 반일·하루·시간·기간 → 메모 → 보내기 및 결제 → 결제 화면까지」) ──
-//   흐름: req(안내문·가이드·이용 시간·날짜·시작 시간·인원·요금·메모·예약자) → gconf(요약 확인) → gpay(결제창, UNDER TESTING) → 토스 시험 결제창 → ?gbres=ok|fail → gdone
-//   주문 = 허브 POST /shop/order {pid:"gbk", test:true} (서버가 GBK_PRICE 로 금액 다시 계산 · 텔레그램 「[시험 주문] 가이드 예약」 · 가이드·손님 발송 없음)
+//   흐름: req(안내문·가이드·이용 시간·날짜·시작 시간·인원·요금·메모·예약자) → gconf(요약 확인) → gpay(결제창) → 「결제하기」 = 바로 확정(GB_PG=false, 11-05) → gdone · 「내 예약」 카드(대화방 입구)
+//   주문 = 허브 POST /shop/order {pid:"gbk", sess?} (11-05 실전: 서버가 GBK_PRICE 로 금액 계산 → pay:"none" 확정 → 가이드 메일·문자 · 손님 메일·문자 · 텔레그램 · 대화방 열림)
 //   🔴 요금 바꿀 땐 여기 GBK 와 허브 worker.js GBK_PRICE 둘 다. 숫자는 「일단 보고 고치자」 임시값
 var GBK={hr:50000, half:190000, full:360000, big:5, bigHr:10000, hMin:2, hMax:12, dMin:2, dMax:7, dayH:8, nMax:10};
 function gbkCalc(mode,h,d,n){ var P=GBK, hb=function(x){ return x>=8?P.full+(x-8)*P.hr:x>=4?P.half+(x-4)*P.hr:x*P.hr; };
   var hours=mode==="half"?4:mode==="full"?8:mode==="days"?d*P.dayH:h, base=mode==="days"?d*P.full:hb(hours), extra=n>=P.big?P.bigHr*hours:0;
   return {hours:hours,base:base,extra:extra,total:base+extra}; }
 var GB_TCK="test_ck_5OWRapdA8dzyq72vW4gRVo1zEqZK", GB_SDK="https://js.tosspayments.com/v2/standard", GB_KEY="mpv_gbpay";   // shop.js 와 같은 토스 시험 키·SDK (새 PG 연결 아님)
+var GB_PG=false;   // 🔴 PG 붙이면 true — 결제창(토스) → ?gbres= 돌아오기. 지금(11-05 사장님 「결제도 막 눌러」)은 「결제하기」 = 바로 확정(허브 pay:"none")
 function T6(ko,en,ja,zhs,zht,es){ return {ko:ko,en:en,ja:ja,zhs:zhs,zht:zht,es:es}; }
 var GBT={
  note:T6("자유여행을 하고 싶은 관광객이 반일, 하루 또는 원하는 기간만큼 통역관광가이드와 함께 자유롭게 여행할 수 있는 메뉴입니다. 원하는 가이드를 고르신 뒤 가고 싶은 곳이나 원하는 관광 내용을 간단히 적고 「보내기 및 결제」를 누른 다음 결제해 주세요.",
@@ -377,6 +379,7 @@ var GBT={
  cn:T6("이름 (필수)","Name (required)","お名前（必須）","姓名（必填）","姓名（必填）","Nombre (obligatorio)"),
  ce:T6("이메일 (필수)","Email (required)","メール（必須）","邮箱（必填）","電子郵件（必填）","Correo electrónico (obligatorio)"),
  cp:T6("휴대폰 (필수)","Mobile phone (required)","携帯電話（必須）","手机（必填）","手機（必填）","Móvil (obligatorio)"),
+ cpPh:T6("한국 번호는 010 또는 +82","Korean numbers: 010 or +82","韓国の番号は010または+82","韩国号码请用010或+82","韓國號碼請用010或+82","Números coreanos: 010 o +82"),   // 휴대폰 칸 흐린 안내 글자 (사장님 11-05)
  cpn:T6("입력한 이름·이메일·휴대폰은 예약 안내와 가이드 연결에만 씁니다. 결제가 끝나면 고른 가이드에게 날짜·시간·인원·메모·연락처가 전달됩니다.","Your name, email and phone are used only for booking notices and to connect you with your guide. After payment, the guide you chose receives the date, time, people, notes and your contact.","入力したお名前・メール・携帯電話は予約のご案内とガイドとの連絡にのみ使います。お支払い後、選んだガイドに日時・人数・メモ・連絡先が伝わります。","您填写的姓名、邮箱和手机仅用于预约通知和联系向导。付款后，所选向导会收到日期、时间、人数、备注和您的联系方式。","您填寫的姓名、電子郵件和手機僅用於預約通知和聯絡嚮導。付款後，所選嚮導會收到日期、時間、人數、備註和您的聯絡方式。","Tu nombre, correo y móvil solo se usan para avisos de la reserva y para contactar con tu guía. Tras el pago, el guía elegido recibe la fecha, la hora, las personas, las notas y tu contacto."),
  send:T6("보내기 및 결제","Send & pay","送信して支払う","发送并付款","送出並付款","Enviar y pagar"),
  rf:T6("취소·환불은 환불 규정을 따릅니다 (여행 5일 전까지 취소하면 전액 환불).","Cancellations and refunds follow our refund policy (full refund if you cancel 5 days before).","キャンセル・返金は返金規定に従います（5日前までの取消は全額返金）。","取消·退款按退款规定办理（出发前5天及以前取消全额退款）。","取消·退款依退款規定辦理（出發前5天及以前取消全額退款）。","Las cancelaciones y reembolsos siguen nuestra política (reembolso total si cancelas 5 días antes)."),
@@ -394,12 +397,13 @@ var GBT={
  sav:T6("저장 중…","Saving…","保存中…","保存中…","儲存中…","Guardando…"),
  opn:T6("토스 결제창을 여는 중…","Opening the Toss payment window…","Toss決済画面を開いています…","正在打开Toss付款窗口…","正在開啟Toss付款視窗…","Abriendo la ventana de pago de Toss…"),
  ppn:T6("PayPal 결제는 아직 연결 전이에요. 신용·체크카드(해외 카드 포함)로 결제해 주세요.","PayPal is not connected yet. Please pay by credit/debit card (overseas cards accepted).","PayPal決済はまだ準備中です。クレジット・デビットカード（海外カード可）でお支払いください。","PayPal付款尚未开通，请使用信用卡/借记卡（含境外卡）付款。","PayPal付款尚未開通，請使用信用卡/簽帳卡（含境外卡）付款。","PayPal aún no está disponible. Paga con tarjeta de crédito/débito (se aceptan extranjeras)."),
- pdT:T6("결제 완료","Payment complete","決済完了","付款完成","付款完成","Pago completado"),
- pdS:T6("예약이 접수되었습니다. 가이드가 확인하면 이메일로 안내해 드립니다.","Your booking has been received. We will email you once the guide confirms.","ご予約を受け付けました。ガイドが確認しましたらメールでお知らせします。","预约已受理。向导确认后会通过邮件通知您。","預約已受理。嚮導確認後會透過電子郵件通知您。","Hemos recibido tu reserva. Te escribiremos cuando el guía la confirme."),
+ pdT:T6("예약 확정","Booking confirmed","予約確定","预约已确认","預約已確認","Reserva confirmada"),
+ pdS:T6("예약이 확정되었습니다. 가이드가 이메일이나 전화로 연락드립니다.","Your booking is confirmed. Your guide will contact you by email or phone.","ご予約が確定しました。ガイドからメールまたはお電話でご連絡します。","预约已确认。向导会通过邮件或电话与您联系。","預約已確認。嚮導會透過電郵或電話與您聯絡。","Tu reserva está confirmada. Tu guía te contactará por correo o teléfono."),
  amt:T6("결제 금액","Amount paid","決済金額","付款金额","付款金額","Importe pagado"),
  oid:T6("주문번호","Order no.","注文番号","订单号","訂單號","N.º de pedido"),
- tkey:T6("시험 결제(테스트 키) — 실제 청구 없음","Test payment (test key) — no real charge","テスト決済（テストキー）— 実際の請求はありません","测试付款（测试密钥）— 不会实际扣款","測試付款（測試金鑰）— 不會實際扣款","Pago de prueba (clave de prueba): sin cargo real"),
- tsv:T6("시험 주문으로 저장했어요. 가이드·예약자에게는 아무것도 보내지 않았어요.","Saved as a test order. Nothing was sent to the guide or to you.","テスト注文として保存しました。ガイドやご予約者には何も送っていません。","已保存为测试订单，未向向导或您发送任何内容。","已儲存為測試訂單，未向嚮導或您傳送任何內容。","Guardado como pedido de prueba. No se envió nada al guía ni a ti."),
+ endL:T6("끝나는 시간","Ends at","終了時刻","结束时间","結束時間","Termina a las"),   // 11-05 실전 — 시험 결제 문구(tkey·tsv) 대신
+ sent:T6("예약 확정 안내를 메일과 문자로 보냈습니다.","We sent your booking confirmation by email and text message.","予約確定のご案内をメールとSMSでお送りしました。","已通过邮件和短信发送预约确认。","已透過電郵和簡訊發送預約確認。","Te enviamos la confirmación por correo y SMS."),
+ tdn:T6("가이드와의 대화·투어 완료·후기는 「내 예약」의 대화방에서 합니다. 투어 완료는 끝나는 시간부터 누를 수 있습니다.","Chat with your guide, tap “Tour completed” and leave a review in the chat room under “My bookings”. You can tap Tour completed from the time the tour ends.","ガイドとのチャット・ツアー完了・レビューは「私の予約」のチャットルームで行います。ツアー完了は終了時刻から押せます。","与向导聊天、导览完成和评价都在「我的预约」的聊天室中进行。导览完成从结束时间起可点击。","與嚮導聊天、導覽完成和評價都在「我的預約」的聊天室中進行。導覽完成從結束時間起可點擊。","El chat con tu guía, «Tour completado» y la reseña están en la sala de chat de «Mis reservas». Podrás pulsar Tour completado desde la hora en que termina el tour."),
  pfT:T6("결제가 완료되지 않았어요 (취소 또는 실패).","The payment was not completed (cancelled or failed).","決済が完了しませんでした（キャンセルまたは失敗）。","付款未完成（已取消或失败）。","付款未完成（已取消或失敗）。","El pago no se completó (cancelado o fallido)."),
  home:T6("처음으로","Start over","最初に戻る","返回开始","返回開始","Volver al inicio"),
  enm:T6("이름을 넣어 주세요.","Please enter your name.","お名前を入力してください。","请填写姓名。","請填寫姓名。","Escribe tu nombre."),
@@ -440,7 +444,7 @@ function gbForm(g){ var k=IG.bk, L=LG6, mn=gbDay(1), mx=gbDay(365), opt=function
     +'<label class="iglb">'+esc(L(GBT.memo))+'</label><textarea class="igin" id="gbMemo" maxlength="500" style="min-height:96px" placeholder="'+esc(L(GBT.memoPh))+'">'+esc(k.memo)+'</textarea>'
     +'<div class="iglbl" style="margin-top:14px">'+esc(L(GBT.cu))+'</div>'
     +'<label class="iglb">'+esc(L(GBT.cn))+'</label><input class="igin" id="gbCn" maxlength="40" autocomplete="name" value="'+esc(k.cn)+'">'
-    +'<label class="iglb">'+esc(L(GBT.cp))+'</label><input class="igin" id="gbCp" type="tel" maxlength="30" autocomplete="tel" value="'+esc(k.cp)+'">'
+    +'<label class="iglb">'+esc(L(GBT.cp))+'</label><input class="igin" id="gbCp" type="tel" maxlength="30" autocomplete="tel" placeholder="'+esc(L(GBT.cpPh))+'" value="'+esc(k.cp)+'">'
     +'<label class="iglb">'+esc(L(GBT.ce))+'</label><input class="igin" id="gbCe" type="email" maxlength="100" autocomplete="email" value="'+esc(k.ce)+'">'
     +'<div class="ignt">'+esc(L(GBT.cpn))+'</div>'
     +(k.err?'<div class="gberr" id="gbM">'+esc(k.err)+'</div>':'<div class="gberr" id="gbM"></div>')
@@ -455,8 +459,8 @@ function gbConf(g){ var L=LG6;
     +'<div class="gbpr">'+gbRows(g)+'</div><div class="gbpr">'+gbPriceBox()+'</div><div class="gbx">'+esc(L(GBT.excl))+'</div>'+gbRefund()
     +'<button type="button" class="gbgo" id="gbCf">'+esc(L(GBT.cfGo))+' ›</button><button type="button" class="gbgo g2" data-igback="req">'+esc(L(GBT.edit))+'</button>'; }
 function gbPayHtml(g,busy){ var k=IG.bk, L=LG6, c=gbCalcNow();
-  return '<div class="gbstamp" aria-hidden="true"><span>UNDER TESTING</span></div>'
-    +'<div class="iglbl" style="margin-top:8px;font-size:17px;color:var(--ink)">'+esc(L(GBT.pt))+'<span class="gbut">UNDER TESTING</span></div>'
+  return ''
+    +'<div class="iglbl" style="margin-top:8px;font-size:17px;color:var(--ink)">'+esc(L(GBT.pt))+'</div>'
     +'<div class="gbpr">'+gbRows(g)+'<div class="gbt"><span>'+esc(L(GBT.tot))+'</span><span>'+gbWon(c.total)+'</span></div></div>'
     +'<div class="iglbl" style="margin-top:14px">'+esc(L(GBT.pm))+'</div>'
     +'<label class="gbr"><input type="radio" name="gbpm" value="card"'+(k.pm!=="paypal"?" checked":"")+'> '+esc(L(GBT.card))+'</label><label class="gbr"><input type="radio" name="gbpm" value="paypal"'+(k.pm==="paypal"?" checked":"")+'> PayPal</label>'
@@ -466,12 +470,13 @@ function gbPayHtml(g,busy){ var k=IG.bk, L=LG6, c=gbCalcNow();
     +'<button type="button" class="gbgo" id="gbPay" disabled>'+(busy?esc(L(busy===2?GBT.opn:GBT.sav)):gbWon(c.total)+' '+esc(L(GBT.payb)))+'</button>'
     +'<button type="button" class="gbgo g2" data-igback="gconf">'+esc(LG6({ko:"돌아가기",en:"Back",ja:"戻る",zhs:"返回",zht:"返回",es:"Volver"}))+'</button>'; }
 function gbDone(g){ var L=LG6, r=IG.gbRes||{};
-  return '<div class="gbstamp" aria-hidden="true"><span>UNDER TESTING</span></div>'
-    +'<div class="iglbl" style="margin-top:8px;font-size:17px;color:var(--ink)">'+esc(L(GBT.pdT))+'<span class="gbut">UNDER TESTING</span></div>'
+  return ''
+    +'<div class="iglbl" style="margin-top:8px;font-size:17px;color:var(--ink)">'+esc(L(GBT.pdT))+'</div>'
     +'<div class="gbdone">✓ '+esc(L(GBT.pdS))+'</div>'
-    +'<div class="gbpr">'+gbRows(g)+'<div class="gbt"><span>'+esc(L(GBT.amt))+'</span><span>'+gbWon(r.amount)+'</span></div><div class="gbl"><span>'+esc(L(GBT.oid))+'</span><b>'+esc(r.oid||"")+'</b></div></div>'
-    +'<div class="ignt">'+esc(L(GBT.tkey))+'<br>'+esc(L(GBT.tsv))+'</div>'+gbRefund()
-    +'<button type="button" class="gbgo g2" data-igback="pick">'+esc(L(GBT.home))+'</button>'; }
+    +'<div class="gbpr">'+gbRows(g)+'<div class="gbt"><span>'+esc(L(GBT.amt))+'</span><span>'+gbWon(r.amount)+'</span></div><div class="gbl"><span>'+esc(L(GBT.oid))+'</span><b>'+esc(r.oid||"")+'</b></div>'
+    +(r.end?'<div class="gbl"><span>'+esc(L(GBT.endL))+'</span><b>'+esc(bkWhen(r.end))+'</b></div>':'')+'</div>'
+    +'<div class="ignt">'+esc(L(GBT.sent))+'<br>'+esc(L(GBT.tdn))+'</div>'+gbRefund()
+    +'<button type="button" class="gbgo" data-igback="pick">'+esc(L(BKT.my))+' ›</button>'; }   // 「내 예약」 = 첫 화면 맨 위 카드 (11-05)
 // 「보내기 및 결제」 — 칸 확인 → 요약 확인(gconf)
 function gbSend(){ gbGrab(); var k=IG.bk, L=LG6, err="";
   if(!k.cn.trim()) err=L(GBT.enm);
@@ -481,14 +486,16 @@ function gbSend(){ gbGrab(); var k=IG.bk, L=LG6, err="";
   k.err=err; if(err){ var m=document.getElementById("gbM"); if(m){ m.textContent=err; try{ m.scrollIntoView({block:"center",behavior:"smooth"}); }catch(e){} } return; }
   IG.view="gconf"; paint(); gbTop(); try{ ntap("guide","gbk_conf"); }catch(e){} }
 function gbTop(){ var o=document.getElementById("nrBox"); if(o) o.scrollTop=0; }
-// 결제창 「결제하기」 — 허브에 시험 주문(test:true) → 받은 orderId·금액으로 토스 시험 결제창 (shop.js 와 같은 방식)
+// 결제창 「결제하기」 — 허브 /shop/order(실전 주문) → GB_PG=false 면 바로 확정 화면 · true 면 받은 orderId·금액으로 토스 결제창 (shop.js 와 같은 방식)
 function gbPay(){ var k=IG.bk, g=IG.gobj, L=LG6; if(!k||!g||IG.busy) return;
   if(k.pm==="paypal"){ k.err=L(GBT.ppn); paint(); return; }
   k.err=""; IG.busy=1; gbPaint(1);
-  var body={pid:"gbk",pname:L(GBT.gd)+" · "+gbModeTxt(k),mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0,n:k.n,date:k.date,time:k.time,memo:k.memo,gid:g.id,glang:IG.lang||"",lang:window.LANG||"en",name:k.cn.trim(),email:k.ce.trim(),phone:k.cp.trim(),consent:true,test:true};
+  var body={pid:"gbk",pname:L(GBT.gd)+" · "+gbModeTxt(k),mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0,n:k.n,date:k.date,time:k.time,memo:k.memo,gid:g.id,glang:IG.lang||"",lang:window.LANG||"en",name:k.cn.trim(),email:k.ce.trim(),phone:k.cp.trim(),consent:true,sess:bkSess()||undefined};
   fetch(HUB+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){ return r.json(); }).then(function(j){
     if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err; IG.busy=0; k.err=e==="name"?L(GBT.enm):e==="email"?L(GBT.eem):e==="phone"?L(GBT.eph):(e==="date"||e==="time")?L(GBT.edt):e==="guide"?L(GBT.egd):L(GBT.efail); paint(); return; }
     try{ ntap("guide","gbk_order"); }catch(z){}
+    if(!GB_PG){ IG.busy=0; if(j.tdone) bkPut({oid:j.orderId,tk:j.tdone,kind:"gbk",date:k.date,time:k.time,end:+j.end||0,k:{mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0},n:k.n,amount:j.amount,status:j.status||"confirmed",g:{id:g.id,name:g.name,name_en:g.name_en,name_ja:g.name_ja,name_zh:g.name_zh,langs:g.langs,years:g.years,region:g.region,photo:g.photo},room:{n:0,unread:0}});
+      IG.gbRes={oid:j.orderId,amount:j.amount,end:+j.end||0}; IG.view="gdone"; paint(); gbTop(); try{ window.CHAT&&CHAT.dot(); }catch(z){} return; }
     gbPaint(2);
     try{ sessionStorage.setItem(GB_KEY,JSON.stringify({oid:j.orderId,amount:j.amount,g:{id:g.id,name:g.name,name_en:g.name_en,name_ja:g.name_ja,name_zh:g.name_zh,langs:g.langs,years:g.years,region:g.region,photo:g.photo},lang:IG.lang,bk:k,at:Date.now()})); }catch(z){}
     var base=location.origin+location.pathname, mob=k.cp.replace(/\D/g,"");
@@ -530,7 +537,7 @@ function igRender(b){
       +'<div class="igcard" style="margin-top:8px">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b><div class="igm">'+g.langs.map(igLangName).map(esc).join(" · ")+(g.years?' · '+esc(igYears(g.years)):"")+(g.region?' · '+esc(igRegion(g.region)):"")+'</div></div></div>'
       +'<div class="iglbl" style="margin-top:12px">'+esc(LG6({ko:"요청 내용을 적어 주세요",en:"Fill in your request",ja:"リクエストを入力してください",zhs:"请填写您的请求",zht:"請填寫您的請求",es:"Completa tu solicitud"}))+'</div>'
       +'<label class="iglb">'+esc(LG6({ko:"이름 *",en:"Your name *",ja:"お名前 *",zhs:"您的姓名 *",zht:"您的姓名 *",es:"Tu nombre *"}))+'</label><input class="igin" id="igqNm" maxlength="30">'
-      +'<label class="iglb">'+esc(LG6({ko:"연락처 (이메일 또는 전화) *",en:"Contact (email or phone) *",ja:"連絡先（メールまたは電話）*",zhs:"联系方式（邮箱或电话）*",zht:"聯絡方式（電郵或電話）*",es:"Contacto (correo o teléfono) *"}))+'</label><input class="igin" id="igqCt" maxlength="60">'
+      +'<label class="iglb">'+esc(LG6({ko:"연락처 (이메일 또는 전화) *",en:"Contact (email or phone) *",ja:"連絡先（メールまたは電話）*",zhs:"联系方式（邮箱或电话）*",zht:"聯絡方式（電郵或電話）*",es:"Contacto (correo o teléfono) *"}))+'</label><input class="igin" id="igqCt" maxlength="60" placeholder="'+esc(LG6({ko:"이메일 권장 · 한국 번호는 010 또는 +82",en:"Email recommended · Korean numbers: 010 or +82",ja:"メール推奨 · 韓国の番号は010または+82",zhs:"建议填写邮箱 · 韩国号码请用010或+82",zht:"建議填寫電郵 · 韓國號碼請用010或+82",es:"Se recomienda correo · Números coreanos: 010 o +82"}))+'">'
       +'<label class="iglb">'+esc(LG6({ko:"희망 날짜 (당일 예약은 받지 않습니다)",en:"Date (no same-day booking)",ja:"希望日（当日予約不可）",zhs:"日期（不接受当天预约）",zht:"日期（不接受當天預約）",es:"Fecha (no el mismo día)"}))+'</label><select class="igin" id="igqDt">'+ds.map(function(d){ return '<option value="'+d[0]+'">'+esc(d[1])+'</option>'; }).join("")+'</select>'
       +'<label class="iglb">'+esc(LG6({ko:"요청 메모 (선택)",en:"Message (optional)",ja:"メモ（任意）",zhs:"留言（可选）",zht:"留言（可選）",es:"Mensaje (opcional)"}))+'</label><textarea class="igin" id="igqMs" maxlength="600" style="min-height:70px"></textarea>'
       +'<label class="igchk"><input type="checkbox" id="igqAg"> '+esc(LG6({ko:"내 이름·연락처를 이 가이드에게 전달하는 데 동의합니다.",en:"I agree to share my name and contact with this guide.",ja:"氏名・連絡先をこのガイドに伝えることに同意します。",zhs:"我同意将我的姓名和联系方式转交给该向导。",zht:"我同意將我的姓名和聯絡方式轉交給該嚮導。",es:"Acepto compartir mi nombre y contacto con este guía."}))+'</label>'
@@ -546,10 +553,12 @@ function igRender(b){
   // pick
   var FLAG6={ko:"🇰🇷",en:"🇺🇸",ja:"🇯🇵",zhs:"🇨🇳",zht:"🇹🇼",es:"🇪🇸"};   // 언어 고르기 버튼 국기 (사장님 10-24) — MPICO 안 거치는 평범한 <a> 라 그대로 보인다
   var btns=GLANG6.map(function(l){ return '<a class="iglang" href="#" data-iglang="'+l[1]+'">'+(FLAG6[l[1]]||"")+' '+esc(l[0])+' ›</a>'; }).join("");
-  b.innerHTML=head+'<div class="ignote">ⓘ '+esc(igNote())+'</div>'
+  b.innerHTML=head+bkBlock()+'<div class="ignote">ⓘ '+esc(igNote())+'</div>'   // bkBlock = 「내 예약 · 투어 완료」 카드 (11-05, 예약한 폰에만)
     +'<div class="iglbl">'+esc(LG6({ko:"필요한 언어를 고르세요",en:"Choose the language you need",ja:"必要な言語を選んでください",zhs:"请选择您需要的语言",zht:"請選擇您需要的語言",es:"Elige el idioma que necesitas"}))+'</div><div class="iglangs">'+btns+'</div>'
-    +'<div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--line)"><a href="#" data-igedit="1" style="display:inline-flex;align-items:center;gap:7px;color:var(--sub);font-size:13.5px;font-weight:700;text-decoration:none"><img src="img/menu/mi_guideperson.png" alt="" style="width:20px;height:20px;object-fit:contain">'+esc(LG6({ko:"가이드이신가요? 내 프로필 수정 ›",en:"Are you a guide? Edit my profile ›",ja:"ガイドの方はこちら：プロフィール編集 ›",zhs:"您是向导吗？修改我的资料 ›",zht:"您是嚮導嗎？修改我的資料 ›",es:"¿Eres guía? Editar mi perfil ›"}))+'</a></div>';
-  igWire(b);
+    +'<div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--line)"><a href="#" data-igedit="1" style="display:inline-flex;align-items:center;gap:7px;color:var(--sub);font-size:13.5px;font-weight:700;text-decoration:none"><img src="img/menu/mi_guideperson.png" alt="" style="width:20px;height:20px;object-fit:contain">'+esc(LG6({ko:"가이드이신가요? 내 프로필 수정 ›",en:"Are you a guide? Edit my profile ›",ja:"ガイドの方はこちら：プロフィール編集 ›",zhs:"您是向导吗？修改我的资料 ›",zht:"您是嚮導嗎？修改我的資料 ›",es:"¿Eres guía? Editar mi perfil ›"}))+'</a>'
+    +'<a href="#" data-igme="1" style="display:flex;align-items:center;gap:7px;margin-top:10px;color:var(--sub);font-size:13.5px;font-weight:700;text-decoration:none"><span style="font-size:17px;width:20px;text-align:center">💬</span>'+esc(LG6({ko:"가이드 화면 — 내 예약·손님과 대화 ›",en:"Guide screen — my bookings & chats ›",ja:"ガイド画面 — 予約・お客様とのチャット ›",zhs:"向导页面 — 我的预约·与旅客聊天 ›",zht:"嚮導頁面 — 我的預約·與旅客聊天 ›",es:"Pantalla de guía — mis reservas y chats ›"}))+'</a></div>';   // 가이드 화면 (11-05, chat.js — 구글·애플 로그인 이메일 = 등록 이메일)
+  igWire(b); bkSync();
+  [].forEach.call(b.querySelectorAll("[data-igme]"),function(a){ a.onclick=function(e){ e.preventDefault(); if(window.CHAT) CHAT.guide(); }; });
 }
 // 가이드 이름·지역·경력을 화면 언어로 (사장님 10-25) — 이름: 영·스 = 로마자, 일 = 가타카나, 중 = 한자(있으면)·없으면 로마자 · 한국어가 아니면 옆에 작은 글씨로 한글 이름
 var IGRGN6={"서울":{en:"Seoul",ja:"ソウル",zhs:"首尔",zht:"首爾",es:"Seúl"},"부산":{en:"Busan",ja:"釜山",zhs:"釜山",zht:"釜山",es:"Busan"},"제주":{en:"Jeju",ja:"済州",zhs:"济州",zht:"濟州",es:"Jeju"},"경주":{en:"Gyeongju",ja:"慶州",zhs:"庆州",zht:"慶州",es:"Gyeongju"},"인천":{en:"Incheon",ja:"仁川",zhs:"仁川",zht:"仁川",es:"Incheon"},"전주":{en:"Jeonju",ja:"全州",zhs:"全州",zht:"全州",es:"Jeonju"},"경기":{en:"Gyeonggi",ja:"京畿",zhs:"京畿",zht:"京畿",es:"Gyeonggi"},"강원":{en:"Gangwon",ja:"江原",zhs:"江原",zht:"江原",es:"Gangwon"},"대구":{en:"Daegu",ja:"大邱",zhs:"大邱",zht:"大邱",es:"Daegu"},"대전":{en:"Daejeon",ja:"大田",zhs:"大田",zht:"大田",es:"Daejeon"},"광주":{en:"Gwangju",ja:"光州",zhs:"光州",zht:"光州",es:"Gwangju"},"울산":{en:"Ulsan",ja:"蔚山",zhs:"蔚山",zht:"蔚山",es:"Ulsan"},"세종":{en:"Sejong",ja:"世宗",zhs:"世宗",zht:"世宗",es:"Sejong"},"충북":{en:"Chungbuk",ja:"忠清北道",zhs:"忠清北道",zht:"忠清北道",es:"Chungbuk"},"충남":{en:"Chungnam",ja:"忠清南道",zhs:"忠清南道",zht:"忠清南道",es:"Chungnam"},"전북":{en:"Jeonbuk",ja:"全羅北道",zhs:"全罗北道",zht:"全羅北道",es:"Jeonbuk"},"전남":{en:"Jeonnam",ja:"全羅南道",zhs:"全罗南道",zht:"全羅南道",es:"Jeonnam"},"경북":{en:"Gyeongbuk",ja:"慶尚北道",zhs:"庆尚北道",zht:"慶尚北道",es:"Gyeongbuk"},"경남":{en:"Gyeongnam",ja:"慶尚南道",zhs:"庆尚南道",zht:"慶尚南道",es:"Gyeongnam"},"충청":{en:"Chungcheong",ja:"忠清",zhs:"忠清",zht:"忠清",es:"Chungcheong"},"전라":{en:"Jeolla",ja:"全羅",zhs:"全罗",zht:"全羅",es:"Jeolla"},"경상":{en:"Gyeongsang",ja:"慶尚",zhs:"庆尚",zht:"慶尚",es:"Gyeongsang"},"강릉":{en:"Gangneung",ja:"江陵",zhs:"江陵",zht:"江陵",es:"Gangneung"},"여수":{en:"Yeosu",ja:"麗水",zhs:"丽水",zht:"麗水",es:"Yeosu"},"속초":{en:"Sokcho",ja:"束草",zhs:"束草",zht:"束草",es:"Sokcho"},"수원":{en:"Suwon",ja:"水原",zhs:"水原",zht:"水原",es:"Suwon"},"전국":{en:"Nationwide",ja:"全国",zhs:"全国",zht:"全國",es:"Todo el país"}};
@@ -578,6 +587,8 @@ function igWire(b){
   var gag=b.querySelector("#gbAg"), gpy=b.querySelector("#gbPay"); if(gag&&gpy&&!IG.busy){ gag.onchange=function(){ gpy.disabled=!gag.checked; }; gpy.onclick=gbPay; }
   [].forEach.call(b.querySelectorAll("[data-rvstar]"),function(bt){ bt.onclick=function(){ var t=document.getElementById("igrvText"), n=document.getElementById("igrvName"); if(t) IG.rvText=t.value; if(n) IG.rvName=n.value; IG.rvStars=+bt.dataset.rvstar; paint(); }; });
   var rgo=b.querySelector("#igrvGo"); if(rgo) rgo.onclick=igRvSend;
+  [].forEach.call(b.querySelectorAll("[data-bkchat]"),function(bt){ bt.onclick=function(){ var x=bkGet(bt.dataset.bkchat); if(x&&window.CHAT) CHAT.room(x.tk); }; });   // 내 예약 = 대화방 입구 (11-05)
+  [].forEach.call(b.querySelectorAll("[data-bkrv]"),function(bt){ bt.onclick=function(){ var x=bkGet(bt.dataset.bkrv); if(x&&x.rv) openReview(x.rv); }; });   // 패키지 배정 가이드 별점·후기
   [].forEach.call(b.querySelectorAll("[data-igedit]"),function(a){ a.onclick=function(e){ e.preventDefault(); IG.view="editask"; IG.busy=false; paint(); }; });   // 가이드 본인 — 내 프로필 수정
   var ego=b.querySelector("#igeGo"); if(ego) ego.onclick=igEditSendLink;
   var esv=b.querySelector("#geSave"); if(esv){ esv.onclick=igEditSave; geBind("gePh","gePv","photo"); geBind("geLp","geLv","lic"); gCtBind("geCp","geCv","geCm",GE); }
@@ -619,10 +630,70 @@ function igRvSend(){ if(IG.busy) return; var t=document.getElementById("igrvText
   if(!IG.rvStars){ set(LG6({ko:"별점을 골라 주세요.",en:"Please choose a star rating.",ja:"評価を選んでください。",zhs:"请选择评分。",zht:"請選擇評分。",es:"Elige una valoración."})); return; }
   IG.busy=true; set("…"); var go=document.getElementById("igrvGo"); if(go) go.disabled=true;
   fetch(HUB+"/guide/review",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token:IG.rvToken,stars:IG.rvStars,text:IG.rvText||"",name:IG.rvName||""}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ IG.busy=false; if(go) go.disabled=false;
-    if(j&&j.ok){ IG.rvDone=true; paint(); return; }
+    if(j&&j.ok){ IG.rvDone=true; try{ bkAll().forEach(function(x){ if(x.rv&&x.rv===IG.rvToken) bkPut({oid:x.oid,rvd:true}); }); }catch(z){} paint(); return; }
     if(j&&j.err==="used"){ IG.rvErr="used"; paint(); return; }
+    if(j&&j.err==="early"){ set(gbF(BKT.rvEarly,{d:j.from||""})); return; }   // 패키지 가이드 후기는 투어 날부터 (11-05)
     set(j&&j.err==="stars"?LG6({ko:"별점을 골라 주세요.",en:"Please choose a star rating.",ja:"評価を選んでください。",zhs:"请选择评分。",zht:"請選擇評分。",es:"Elige una valoración."}):LG6({ko:"보내지 못했습니다.",en:"Could not send.",ja:"送信できませんでした。",zhs:"发送失败。",zht:"發送失敗。",es:"No se pudo enviar."})); })
   .catch(function(){ IG.busy=false; if(go) go.disabled=false; set(LG6({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
+// ── 「내 예약」 (사장님 11-05) — 통역·길안내 첫 화면 맨 위 · 예약한 그 폰(localStorage mpv_gbk_v1)에 주문번호·예약 토큰을 둔다 ──
+//   자유 가이드(gbk) 카드 = 대화방 입구만 (예약 내용·대화·「투어 완료」·별점·후기는 대화방 안에만, chat.js)
+//   패키지(체험·입장권) 카드 = 상품·날짜 + 배정되어 수락한 가이드 카드(별점·후기 쓰기 — 산 사람만·한 번·투어 날부터) + 대화방 입구(가이드 수락 ~ 그날 끝)
+//   손님 메일·문자의 ?tdone=<토큰> 링크로 와도 같은 카드 (허브 /guide/booking/check 로 받아 이 폰에도 저장)
+var BKK="mpv_gbk_v1", BKS={};
+var BKT={
+ my:T6("내 예약","My bookings","私の予約","我的预约","我的預約","Mis reservas"),
+ chat:T6("가이드와 대화","Chat with your guide","ガイドとチャット","与向导聊天","與嚮導聊天","Chatear con tu guía"),
+ chatRo:T6("대화 보기 (읽기 전용)","View chat (read only)","チャットを見る（閲覧のみ）","查看聊天（只读）","查看聊天（唯讀）","Ver chat (solo lectura)"),
+ wait:T6("가이드 확정을 기다리는 중입니다.","Waiting for a guide to confirm.","ガイドの確定をお待ちください。","正在等待向导确认。","正在等待嚮導確認。","Esperando la confirmación de un guía."),
+ rv:T6("이 가이드에게 별점·후기 쓰기","Rate & review this guide","このガイドを評価・レビュー","为该向导评分·写评价","為該嚮導評分·寫評價","Valorar y reseñar a este guía"),
+ rvAt:T6("투어 날({d})부터 별점·후기를 쓸 수 있습니다.","You can rate and review from the tour day ({d}).","ツアー当日（{d}）から評価・レビューできます。","导览当天（{d}）起可评分·写评价。","導覽當天（{d}）起可評分·寫評價。","Podrás valorar y reseñar desde el día del tour ({d})."),
+ rvEarly:T6("투어 날({d})부터 쓸 수 있습니다.","You can write it from the tour day ({d}).","ツアー当日（{d}）から書けます。","导览当天（{d}）起可写。","導覽當天（{d}）起可寫。","Podrás escribirla desde el día del tour ({d})."),
+ rvd:T6("후기를 남겨 주셔서 감사합니다.","Thank you for your review.","レビューありがとうございました。","感谢您的评价。","感謝您的評價。","Gracias por tu reseña."),
+ cx:T6("취소된 예약입니다.","This booking was cancelled.","キャンセルされた予約です。","该预约已取消。","該預約已取消。","Esta reserva fue cancelada."),
+ bad:T6("예약을 찾을 수 없습니다. 링크를 확인해 주세요.","We could not find this booking. Please check the link.","予約が見つかりません。リンクをご確認ください。","找不到该预约，请检查链接。","找不到該預約，請檢查連結。","No encontramos esta reserva. Revisa el enlace."),
+ conn:T6("연결에 실패했습니다.","Connection failed.","接続に失敗しました。","连接失败。","連接失敗。","Error de conexión.")};
+function bkSess(){ try{ return localStorage.getItem("mpv_pg_sess")||""; }catch(e){ return ""; } }
+function bkWhen(ms){ var d=new Date((+ms||0)+9*36e5), mo=d.getUTCMonth()+1, da=d.getUTCDate(), hh=("0"+d.getUTCHours()).slice(-2), mi=("0"+d.getUTCMinutes()).slice(-2), l=window.LANG||"en";
+  var same=new Date(Date.now()+9*36e5).toISOString().slice(0,10)===d.toISOString().slice(0,10);   // 오늘이면 시각만 (한국 시간)
+  if(l==="ko") return (same?"":mo+"월 "+da+"일 ")+(+hh)+"시 "+mi+"분";
+  if(l==="ja") return (same?"":mo+"月"+da+"日")+(+hh)+"時"+mi+"分";
+  if(l==="zhs"||l==="zht") return (same?"":mo+"月"+da+"日 ")+hh+":"+mi;
+  if(l==="es") return hh+":"+mi+(same?"":" del "+da+"/"+mo);
+  return hh+":"+mi+(same?"":" on "+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][mo-1]+" "+da); }
+function bkAll(){ try{ var a=JSON.parse(localStorage.getItem(BKK)||"[]"); return Array.isArray(a)?a.filter(function(x){ return x&&x.oid&&/^[0-9a-f]{32}$/.test(x.tk||""); }):[]; }catch(e){ return []; } }
+function bkSave(a){ try{ localStorage.setItem(BKK,JSON.stringify(a.slice(0,12))); }catch(e){} }
+function bkGet(oid){ return bkAll().filter(function(x){ return x.oid===oid; })[0]||null; }
+function bkPut(x){ var a=bkAll(), o=a.filter(function(y){ return y.oid===x.oid; })[0]||{}; bkSave([Object.assign(o,x)].concat(a.filter(function(y){ return y.oid!==x.oid; }))); }
+function bkDrop(oid){ bkSave(bkAll().filter(function(y){ return y.oid!==oid; })); }
+function bkFrom(j,tk){ return {oid:j.oid,tk:tk,kind:j.kind||"gbk",pname:j.pname||"",date:j.date,time:j.time,end:+j.end||0,k:j.k||{},n:j.n,amount:j.amount,status:j.status,done:j.done?1:0,rv:j.review||"",rvd:!!j.reviewed,rvFrom:j.rvFrom||"",room:j.room||null,g:j.g||null}; }
+function bkShown(){ var now=Date.now(); return bkAll().filter(function(x){ return now-(x.end||0)<45*864e5||!(x.rvd||x.status==="cancelled"||x.status==="refunded"); }); }   // 끝난 지 45일 지난 후기 끝·취소 예약은 숨김
+function bkToday(){ return new Date(Date.now()+9*36e5).toISOString().slice(0,10); }
+function bkCard(x){ var L=LG6, g=x.g||null, cx=x.status==="cancelled"||x.status==="refunded", pk=x.kind==="pkg", rm=x.room, foot="";
+  var hi=IG.bkHi===x.oid?';border-color:#0c8599;box-shadow:0 0 0 2px rgba(12,133,153,.18)':'';
+  var badge=rm&&rm.unread>0?' <span style="display:inline-block;min-width:18px;padding:1px 6px;border-radius:999px;background:#e03131;color:#fff;font-size:12px;font-weight:900;text-align:center">'+rm.unread+'</span>':'';
+  var chatBtn=rm&&!cx?'<button type="button" class="gbgo'+(rm.ro?' g2':'')+'" style="margin-top:10px" data-bkchat="'+esc(x.oid)+'">💬 '+esc(L(rm.ro?BKT.chatRo:BKT.chat))+badge+'</button>':'';
+  var when=esc((x.date||"")+" "+(x.time||"")+" (KST)");
+  if(cx) foot='<div class="ignt">'+esc(L(BKT.cx))+'</div>';
+  else if(pk){ var gc=g?'<div class="igcard" style="cursor:default;margin:10px 0 0">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b> '+igBadge(g)+'<div class="igm">'+(g.langs||[]).map(igLangName).map(esc).join(" · ")+'</div></div></div>':'<div class="ignt">'+esc(L(BKT.wait))+'</div>';
+    var rv=""; if(g){ if(x.rvd) rv='<div class="gbdone" style="margin:8px 0 0">✓ '+esc(L(BKT.rvd))+'</div>'; else if(x.rv){ var early=x.rvFrom&&bkToday()<x.rvFrom; rv='<button type="button" class="gbgo g2" style="margin-top:8px" data-bkrv="'+esc(x.oid)+'"'+(early?' disabled':'')+'>★ '+esc(L(BKT.rv))+'</button>'+(early?'<div class="ignt">'+esc(gbF(BKT.rvAt,{d:x.rvFrom}))+'</div>':''); } }
+    foot=gc+rv+chatBtn; }
+  else foot=chatBtn;
+  var head=pk?'<b>'+esc(x.pname||"")+'</b><div class="igm">'+when+' · '+esc(gbF(GBT.pN,{n:x.n||1}))+'</div>'
+    :'<div style="display:flex;gap:11px;align-items:flex-start">'+igFace(g||{})+'<div class="igb"><b>'+igName(g||{})+'</b><div class="igm">'+when+' · '+esc(gbModeTxt({mode:(x.k&&x.k.mode)||"half",h:x.k&&x.k.h,d:x.k&&x.k.d}))+' · '+esc(gbF(GBT.pN,{n:x.n||1}))+'</div></div></div>';
+  return '<div class="igcard" style="cursor:default;display:block'+hi+'">'+head+'<div class="igm">'+esc(L(GBT.oid))+' '+esc(x.oid)+'</div>'+foot+'</div>'; }
+function bkBlock(){ var my=bkShown(), m=IG.bkMsg; if(!my.length&&!m) return "";
+  return '<div class="iglbl" style="margin-top:4px">'+esc(LG6(BKT.my))+'</div>'+(m?'<div class="msg">'+esc(LG6(m==="bad"?BKT.bad:BKT.conn))+'</div>':'')+my.map(bkCard).join("")+'<div style="height:8px"></div>'; }
+// 서버 상태로 한 번 맞춘다 (가이드 배정·수락 · 다른 폰에서 완료·후기 · 관리자 취소 · 안 읽은 수) — 페이지당 예약마다 한 번
+function bkSync(){ bkAll().forEach(function(x){ if(BKS[x.oid]||(x.rvd&&Date.now()-(x.end||0)>7*864e5)) return; BKS[x.oid]=1;
+  fetch(HUB+"/guide/booking/check?token="+encodeURIComponent(x.tk),{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
+    if(j&&j.ok) bkPut(bkFrom(j,x.tk)); else if(j&&j.err==="invalid") bkDrop(x.oid); else return;
+    if(S.k==="ig"&&IG.view==="pick") paint(); }).catch(function(){}); }); }
+// 손님 메일·문자의 ?tdone=<토큰> — 같은 「내 예약」 카드를 연다 (이 폰에도 저장)
+function openTdone(token){ var tk=String(token||"").replace(/[^a-f0-9]/gi,"").toLowerCase().slice(0,32); open("ig");
+  fetch(HUB+"/guide/booking/check?token="+encodeURIComponent(tk),{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
+    if(j&&j.ok){ BKS[j.oid]=1; bkPut(bkFrom(j,tk)); IG.bkHi=j.oid; IG.bkMsg=""; } else IG.bkMsg="bad";
+    if(S.k==="ig"&&IG.view==="pick") paint(); }).catch(function(){ IG.bkMsg="net"; if(S.k==="ig"&&IG.view==="pick") paint(); }); }
+window.NEARBK={all:bkAll,put:bkPut,get:bkGet,from:bkFrom,when:bkWhen,sess:bkSess};   // chat.js 가 같이 쓴다
 function openReview(token){ open("ig"); IG.view="review"; IG.rvToken=String(token||""); IG.rvGuide=null; IG.rvErr=""; IG.rvDone=false; IG.rvStars=0; IG.rvText=""; IG.rvName=""; IG.busy=false; paint(); igRvCheck(); }
 function igLoad(){ var lang=IG.lang; fetch(HUB+"/guide/guides?lang="+encodeURIComponent(lang)).then(function(r){ return r.json(); }).then(function(j){ if(IG.lang!==lang||IG.view!=="list") return;
     if(j&&j.ok){ IG.guides=j.items||[]; } else IG.err="x"; paint(); }).catch(function(){ if(IG.lang===lang&&IG.view==="list"){ IG.err="net"; paint(); } }); }
@@ -893,6 +964,6 @@ function gRegSend(){ var L=LG6, M=document.getElementById("gMsg"), set=function(
     set(j&&j.err==="contract"?L(GCT.err):j&&j.err==="photo"||j&&j.err==="licphoto"?L({ko:"사진을 다시 올려 주세요 (JPEG).",en:"Please re-upload the photo (JPEG).",ja:"写真を再アップロードしてください（JPEG）。",zhs:"请重新上传照片（JPEG）。",zht:"請重新上傳照片（JPEG）。",es:"Vuelve a subir la foto (JPEG)."}):j&&j.err==="rate"?L({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてから。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):L({ko:"보내지 못했습니다. 칸을 확인해 주세요.",en:"Could not send. Please check the fields.",ja:"送信できませんでした。入力をご確認ください。",zhs:"发送失败，请检查填写。",zht:"發送失敗，請檢查填寫。",es:"No se pudo enviar. Revisa los campos."})); })
   .catch(function(){ if(go) go.disabled=false; set(L({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
 window.GUIDEREG=gReg;
-window.NEAR={open:open,close:close,review:openReview,gedit:openGedit,state:function(){ return S; }};
+window.NEAR={open:open,close:close,review:openReview,gedit:openGedit,tdone:openTdone,state:function(){ return S; }};
 var qm=location.search.match(/[?&]near=(am|em)/); if(qm) setTimeout(function(){ open(qm[1]); },300);
 })();
