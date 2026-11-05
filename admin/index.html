@@ -87,7 +87,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["karlog","노래방 이용 기록","곡별 재생·끝까지·시간·이용자 · 협회 보고용 CSV"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["forms","양식함","계약서·서식 내려받기 (PDF·워드)"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·노래방·넷플릭스·유튜브 · 누름·사용 시간"],["karlog","노래방 이용 기록","곡별 재생·끝까지·시간·이용자 · 협회 보고용 CSV"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["gchat","가이드 대화방","손님↔가이드 대화 · 읽기 전용"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["forms","양식함","계약서·서식 내려받기 (PDF·워드)"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -381,6 +381,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="inq"){ inqLoad(); return; }
   if(id==="guide"){ guideLoad(); return; }   // 통역·길안내 가이드 승인 (2026-10-24)
   if(id==="greview"){ grevLoad(); return; }
+  if(id==="gchat"){ gchLoad(); return; }   // 손님 ↔ 가이드 대화방 읽기 전용 (2026-11-05)
   if(id==="shop"){ pdLoad(); return; }   // 상품 관리 (2026-10-29)
   if(id==="forms"){ formsLoad(); return; }   // 양식함 (2026-10-30)
   if(id==="prv"){ prvLoad(); return; }   // 명소 후기 (2026-10-29)   // 가이드 후기 관리 (2026-10-24)
@@ -586,10 +587,10 @@ function gLead(x){ var rl=x.reviewLink||'';
     +'<div style="margin:4px 0"><b>'+esc(x.name||'')+'</b> · '+esc(x.contact||'')+(x.date?' · 희망 날짜 '+esc(x.date):'')+'</div>'
     +(x.msg?'<div style="white-space:pre-wrap">'+esc(x.msg)+'</div>':'')
     +'<div class="row" style="margin-top:6px">'+(x.completed?'':'<button data-id="'+esc(x.id)+'" onclick="gLeadDone(this.dataset.id)">완료 처리 (후기 요청)</button>')+'</div>'
-    +(rl?'<div class="sub" style="margin-top:6px;word-break:break-all">후기 링크: <a href="'+esc(rl)+'" target="_blank">'+esc(rl)+'</a> <button class="g" data-l="'+esc(rl)+'" onclick="gCopy(this.dataset.l)">복사</button>'+(x.reviewed?'':' <span>(손님 연락처가 이메일이면 자동 발송됨 · 전화면 이 링크를 직접 전달)</span>')+'</div>':'')
+    +(rl?'<div class="sub" style="margin-top:6px;word-break:break-all">후기 링크: <a href="'+esc(rl)+'" target="_blank">'+esc(rl)+'</a> <button class="g" data-l="'+esc(rl)+'" onclick="gCopy(this.dataset.l)">복사</button>'+(x.reviewed?'':' <span>(이메일이면 메일 · 한국 휴대폰이면 문자로 자동 발송됨'+(x.rvSent?' — 이번: '+(x.rvSent.via==='mail'?'메일 보냄':x.rvSent.via==='sms'?'문자 보냄':'못 보냄, 이 링크를 직접 전달'):'')+')</span>')+'</div>':'')
     +'</div>'; }
-function gLeadDone(id){ if(!confirm('이 요청을 완료 처리하고 손님에게 후기 링크를 보낼까요?\n(손님 연락처가 이메일이면 자동 발송, 전화면 나오는 링크를 직접 전달)')) return;
-  api("/guide/admin/lead/complete",{method:"POST",body:JSON.stringify({id:id})}).then(function(j){ if(j&&j.ok){ alert('완료 처리했습니다.\n'+(j.isEmail?(j.mailed?'손님 이메일로 후기 링크를 보냈습니다.':'이메일 발송에 실패했습니다. 아래 링크를 직접 전달하세요.'):'전화 연락처라 자동 발송이 안 됩니다. 아래 링크를 직접 전달하세요.')+'\n\n후기 링크:\n'+(j.link||'')); guideLoad(); } else alert('처리하지 못했습니다.'); }).catch(function(){ alert('처리하지 못했습니다.'); }); }
+function gLeadDone(id){ if(!confirm('이 요청을 완료 처리하고 손님에게 후기 링크를 보낼까요?\n(이메일이면 메일, 한국 휴대폰이면 문자로 자동 발송 · 해외 번호면 나오는 링크를 직접 전달)')) return;
+  api("/guide/admin/lead/complete",{method:"POST",body:JSON.stringify({id:id})}).then(function(j){ if(j&&j.ok){ alert((j.already?'이미 완료된 요청입니다. 후기 링크를 다시 보내지 않았습니다.':'완료 처리했습니다.\n'+(j.via==='mail'?'손님 이메일로 후기 링크를 보냈습니다.':j.via==='sms'?'손님 휴대폰으로 후기 링크 문자를 보냈습니다.':j.isEmail?'이메일 발송에 실패했습니다. 아래 링크를 직접 전달하세요.':'한국 휴대폰 번호가 아니라(해외 번호 등) 자동 발송이 안 됩니다. 아래 링크를 직접 전달하세요.'))+'\n\n후기 링크:\n'+(j.link||'')); guideLoad(); } else alert('처리하지 못했습니다.'); }).catch(function(){ alert('처리하지 못했습니다.'); }); }
 function gCopy(t){ try{ navigator.clipboard.writeText(t).then(function(){ alert('복사했습니다.'); },function(){ prompt('복사하세요:',t); }); }catch(e){ prompt('복사하세요:',t); } }
 // ── 가이드 후기 관리 (2026-10-24) — 허브 /guide/admin/reviews · /guide/admin/review (숨기기·삭제). 숨기면 손님 화면·평균에서 빠진다 ──
 function grevStars(n){ n=Math.max(0,Math.min(5,Math.round(n||0))); var s=""; for(var i=0;i<5;i++) s+=(i<n?"★":"☆"); return s; }
@@ -618,6 +619,15 @@ function prvCard(r){ var d=new Date((r.up||r.at)+9*3600e3).toISOString().slice(0
   +(r.txt?'<div style="white-space:pre-wrap">'+esc(r.txt)+'</div>':'')+(r.ko&&r.ko!==r.txt?'<div class="msg" style="white-space:pre-wrap">한국어: '+esc(r.ko)+'</div>':'')
   +'<div class="row" style="margin-top:6px"><button class="g" data-k="'+esc(r.k)+'" data-u="'+esc(r.uid)+'" onclick="prvDel(this.dataset.k,this.dataset.u)">삭제</button></div></div>'; }
 function prvDel(k,u){ if(!confirm('이 후기를 삭제할까요? (되돌릴 수 없습니다)')) return; api("/npg/admin/rv/del",{method:"POST",body:JSON.stringify({k:k,uid:u})}).then(function(j){ if(j&&j.ok) prvLoad(); else alert('지우지 못했습니다.'); }).catch(function(){ alert('지우지 못했습니다.'); }); }
+function gchLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>가이드 대화방</b><div class="msg">불러오는 중…</div></div>';
+  api("/guide/admin/chats").then(function(j){ if(!j.ok) throw new Error("x"); var it=j.items||[];
+    P.innerHTML='<div class="card"><b>가이드 대화방 ('+it.length+')</b><div class="msg">손님과 가이드의 대화를 읽기만 합니다. 자유 가이드 예약은 확정 순간, 패키지는 가이드 수락 순간 열립니다. 자유 가이드는 끝나고 7일 뒤, 패키지는 그날 끝에 읽기 전용.</div>'
+      +(it.length?it.map(function(x){ return '<div class="inv"><div class="sub">'+esc(x.date+" "+x.time)+' · '+(x.kind==="gbk"?"자유 가이드":"패키지 "+esc(x.pname))+' · 가이드 '+esc(x.gname||x.gid)+' · 손님 '+esc(x.cust)+' ('+esc(x.lang)+')'+(x.ro?' · 읽기 전용':'')+(x.done?' · 투어 완료':'')+(x.push?' · 웹 푸시':'')+'</div><div class="row" style="margin-top:6px"><button class="g" data-oid="'+esc(x.oid)+'" onclick="gchView(this.dataset.oid)">대화 '+x.n+'개 보기</button></div><div id="gch_'+esc(x.oid)+'"></div></div>'; }).join(""):'<div class="msg">아직 대화방이 없습니다.</div>')+'</div>';
+  }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+').</div></div>'; }); }
+function gchView(oid){ var b=$("gch_"+oid); if(!b) return; if(b.innerHTML){ b.innerHTML=""; return; } b.innerHTML='<div class="msg">불러오는 중…</div>';
+  api("/guide/admin/chat?oid="+encodeURIComponent(oid)).then(function(j){ if(!j.ok) throw new Error("x"); var t=function(ms){ return new Date(ms+9*36e5).toISOString().slice(5,16).replace("T"," "); };
+    b.innerHTML=(j.msgs||[]).map(function(m){ return '<div style="margin:6px 0;padding:6px 9px;border-radius:9px;background:'+(m.by==="g"?"#e7f5ff":"#f1f3f5")+'"><div class="sub">'+(m.by==="g"?"가이드":"손님")+' · '+t(m.at)+'</div><div style="white-space:pre-wrap">'+esc(m.t)+'</div></div>'; }).join("")||'<div class="msg">메시지 없음</div>';
+  }).catch(function(){ b.innerHTML='<div class="msg err">불러오지 못했습니다.</div>'; }); }
 function grevLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>가이드 후기 관리</b><div class="msg">불러오는 중…</div></div>';
   api("/guide/admin/reviews").then(function(j){ if(!j.ok) throw new Error("x"); var it=j.items||[];
     P.innerHTML='<div class="card"><b>후기 ('+it.length+')</b><div class="msg">악성·부적절한 후기를 숨기거나 지울 수 있습니다. 숨기면 손님 화면에서 사라지고 평균 별점에서도 빠집니다.</div>'+(it.length?it.map(grevCard).join(""):'<div class="msg">아직 후기가 없습니다.</div>')+'</div>';
@@ -688,7 +698,7 @@ function soDraw(){ var t=$("soTab"); if(!t) return; var it=SO.items, real=it.fil
   var gopt=function(sel){ return '<option value="">(미배정)</option>'+(MIS.guides||[]).map(function(g){ return '<option value="'+esc(g.id)+'"'+(g.id===sel?' selected':'')+'>'+esc(g.name)+'</option>'; }).join(""); };
   var sopt=function(x){ var ks=x.test?["test","cancelled"]:["pending","paid","confirmed","cancelled","refunded"]; if(ks.indexOf(x.status)<0) ks.unshift(x.status); return ks.map(function(k){ return '<option value="'+k+'"'+(k===x.status?' selected':'')+'>'+esc(SOS[k]||k)+'</option>'; }).join(""); };
   var h='<tr><th class="l">주문일시</th><th class="l">주문번호</th><th class="l">투어 날짜·시간</th><th class="l">상품</th><th>인원</th><th>금액</th><th class="l">손님</th><th class="l">언어</th><th class="l">가이드</th><th class="l">가이드 답</th><th class="l">상태</th><th></th></tr>';
-  it.forEach(function(x){ h+='<tr'+(x.test?' style="opacity:.75"':'')+'><td class="l">'+esc(x.at)+'</td><td class="l">'+esc(x.oid)+(x.test?' <span class="sub">[시험]</span>':'')+'</td><td class="l">'+esc(x.date+" "+x.time)+'</td><td class="l">'+esc(x.pnameKo||x.pid)+'</td><td>'+x.n+'</td><td>'+won(x.amount)+'</td>'
+  it.forEach(function(x){ h+='<tr'+(x.test?' style="opacity:.75"':'')+'><td class="l">'+esc(x.at)+'</td><td class="l">'+esc(x.oid)+(x.test?' <span class="sub">[시험]</span>':'')+(x.pay==="none"?' <span class="sub">[결제 없음·PG 전]</span>':'')+(x.done?' <span class="sub">[투어 완료]</span>':'')+'</td><td class="l">'+esc(x.date+" "+x.time)+'</td><td class="l">'+esc(x.pnameKo||x.pid)+'</td><td>'+x.n+'</td><td>'+won(x.amount)+'</td>'
     +'<td class="l">'+esc(x.name||"")+'<br><span class="sub">'+esc(x.email||"")+(x.phone?' · '+esc(x.phone):'')+'</span></td><td class="l">'+esc(gLangNm(x.lang))+(x.glang&&x.glang!==x.lang?' / 가이드 '+esc(gLangNm(x.glang)):'')+'</td>'
     +'<td class="l"><select data-oid="'+esc(x.oid)+'" onchange="soSet(this.dataset.oid,{gid:this.value})">'+gopt(x.gid)+'</select>'+(x.gid&&!(MIS.guides||[]).some(function(g){ return g.id===x.gid; })?'<br><span class="sub">'+esc(x.gname||x.gid)+'</span>':'')+'</td>'
     +'<td class="l">'+esc(soGans(x))+'</td><td class="l"><select data-oid="'+esc(x.oid)+'" onchange="soSet(this.dataset.oid,{status:this.value})">'+sopt(x)+'</select></td>'
