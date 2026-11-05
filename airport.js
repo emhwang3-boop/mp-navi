@@ -177,7 +177,14 @@ function paint(){ var b=document.getElementById("apBox"); if(!b) return; var A=A
 document.addEventListener("click",function(e){ var el=e.target.closest&&e.target.closest("#apBox [data-a]"); if(!el) return; var a=el.getAttribute("data-a"), v=el.getAttribute("data-v");
  if(a==="x") close(); else if(a==="dir"){ S.dir=v; paint(); } else if(a==="t"){ S.t=v; paint(); } else if(a==="back"){ S.dir=null; S.t=null; paint(); } });
 var _gb=window.guBack; window.guBack=function(){ if(document.getElementById("apBox")){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };   // 뒤로 = 닫기
-var _hc=window.hitClick; window.hitClick=function(k){ if(k==="icn"||k==="gimpo"){ open(k); return; } return _hc.apply(this,arguments); };
+// 11-05 사장님 「가」 — 공항 아이콘을 누르면 다른 명소처럼 장소 카드(거리·교통편·길찾기·택시)가 먼저. 카드 안 단추로 이용 안내 화면
+var APB={ko:"✈ 공항 이용 안내 (입국·출국 절차)",en:"✈ Airport guide (arrival & departure steps)",ja:"✈ 空港利用ガイド（入国・出国の手順）",zhs:"✈ 机场使用指南（入境·出境流程）",zht:"✈ 機場使用指南（入境·出境流程）",es:"✈ Guía del aeropuerto (llegada y salida)"};
+function apBtn(k){ var r=document.getElementById("res"), it=r&&r.querySelector(".item"); if(!it||it.querySelector(".apgo")) return;
+  var b=document.createElement("button"); b.type="button"; b.className="apgo"; b.textContent=APB[window.LANG]||APB.en;
+  b.style.cssText="display:block;width:100%;margin:8px 0 6px;padding:11px 12px;border:0;border-radius:12px;background:#1e3a8a;color:#fff;font-size:15px;font-weight:800;cursor:pointer;text-align:center";
+  b.onclick=function(e){ e.stopPropagation(); open(k); };
+  var t=it.querySelector(".t"); if(t&&t.parentNode===it) it.insertBefore(b,t.nextSibling); else it.appendChild(b); }
+var _ps=window.placeShow; if(_ps) window.placeShow=function(k){ var r=_ps.apply(this,arguments); if(k==="icn"||k==="gimpo"){ try{ apBtn(k); }catch(e){} } return r; };
 var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ var b=document.getElementById("apBox"); if(b){ var y=b.scrollTop; paint(); b.scrollTop=y; } }catch(e){} return r; };   // 언어 바꾸면 열린 공항 화면도 바로
 window.apOpen=open;
 })();
