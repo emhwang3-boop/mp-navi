@@ -11,8 +11,9 @@ function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ ret
 var HUBU=window.HUB||"https://brief-live-hub.emhwang3.workers.dev";
 function T6(ko,en,ja,zhs,zht,es){ return {ko:ko,en:en,ja:ja,zhs:zhs,zht:zht,es:es}; }
 var TX={
- t:T6("체험·입장권","Try & tickets","体験・入場券","体验·门票","體驗·門票","Prueba y entradas"),
- s:T6("한국 투어·체험·입장권을 골라 바로 예약하세요.","Pick Korea tours, experiences and tickets, and book right away.","韓国のツアー・体験・入場券を選んで、すぐ予約しましょう。","挑选韩国的游览·体验·门票，立即预约。","挑選韓國的遊覽·體驗·門票，立即預約。","Elige tours, experiencias y entradas en Corea y resérvalos al momento."),
+ t:T6("패키지여행","Group Tour","パッケージツアー","跟团游","跟團遊","Tour en grupo"),   // 11-06 사장님 — 옛 「체험·입장권」
+ s:T6("정해진 코스와 시간에 다른 여행자들과 함께 떠나는 상품이에요. 가이드·입장권·체험이 한 번에 들어 있어서 날짜와 인원만 고르면 돼요.","Set routes and times, shared with other travelers. Guide, tickets and activities are all included — just pick a date and the number of people.","決まったコースと時間に、ほかの旅行者と一緒に出かける商品です。ガイド・入場券・体験がすべて含まれているので、日付と人数を選ぶだけです。","按固定路线和时间，与其他游客一起出发的产品。向导、门票和体验全都包含在内，只需选择日期和人数。","按固定路線和時間，與其他旅客一起出發的商品。嚮導、門票和體驗全都包含在內，只需選擇日期和人數。","Rutas y horarios fijos, compartidos con otros viajeros. Guía, entradas y actividades incluidos: solo elige la fecha y el número de personas."),   // 첫 화면 맨 위 설명 (사장님 11-06 확인 초안)
+ s0:T6("한국 투어·체험·입장권을 골라 바로 예약하세요.","Pick Korea tours, experiences and tickets, and book right away.","韓国のツアー・体験・入場券を選んで、すぐ予約しましょう。","挑选韩国的游览·体验·门票，立即预约。","挑選韓國的遊覽·體驗·門票，立即預約。","Elige tours, experiencias y entradas en Corea y resérvalos al momento."),
  x:T6("닫기","Close","閉じる","关闭","關閉","Cerrar"),
  cx:T6("취소","Cancel","キャンセル","取消","取消","Cancelar"),   // 결제 단추 옆 취소 (사장님 11-05)
  n:T6("개 상품","products","商品","个商品","個商品","productos"),
