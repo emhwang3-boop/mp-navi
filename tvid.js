@@ -4,7 +4,7 @@
  *  · 넷플릭스 상영관(app:"netflix")도 같은 창 — Netflix Korea 공식 채널(+Netflix 본 채널) 예고편 data/tvid_nf.json, 맨 아래 「넷플릭스 앱에서 보기」= appGo("netflix")
  *  · 재생은 karaoke.js 와 같은 유튜브 퍼가기 플레이어(IFrame API). 막힌 영상은 「유튜브에서 열기」. 검색창 없음
  *  · 음악 감상실(「__music」 — 서울 전체 관악산 기슭 옛 노래방 칸, 사장님 11-05) = 같은 창·같은 플레이어 + 위에 검색칸.
- *    허브 /ytsearch(공식 YouTube Data API v3, 퍼가기 되는 음악 영상만) → 조회수 많은 순 5개 · 플레이어는 늘 보이고 위를 덮지 않음(막힘 안내는 플레이어 밖) ·
+ *    허브 /ytsearch(공식 YouTube Data API v3, 퍼가기 되는 음악 영상만) → 조회수 많은 순 10개(11-05 5→10) · 이어 듣기·반복·셔플(아이콘 = Material Symbols repeat·shuffle, Apache 2.0) · 플레이어는 늘 보이고 위를 덮지 않음(막힘 안내는 플레이어 밖) ·
  *    앱이 화면에서 사라지면 일시정지 · 창 아래 YouTube 서비스 약관·구글 개인정보처리방침 링크
  *  · 11-05 사장님 「가」 — 유튜브·넷플릭스 상영관도 같은 유튜브 규칙 세 가지: 숨으면 일시정지 · 맨 아래 약관 링크 줄 · 막힌 영상 안내는 플레이어 아래 한 줄
  */
@@ -45,13 +45,15 @@ var TX={
  mq:{ko:"가수·노래 제목·가사 일부",en:"Artist, song title or lyrics",ja:"歌手・曲名・歌詞の一部",zhs:"歌手、歌名或部分歌词",zht:"歌手、歌名或部分歌詞",es:"Artista, canción o parte de la letra"},
  mb:{ko:"검색",en:"Search",ja:"検索",zhs:"搜索",zht:"搜尋",es:"Buscar"},
  mpk:{ko:"노래를 검색해 선택하세요",en:"Search for a song and pick one",ja:"曲を検索して選んでください",zhs:"请搜索并选择歌曲",zht:"請搜尋並選擇歌曲",es:"Busca una canción y elígela"},
- mhint:{ko:"위 칸에 가수·노래 제목·가사 일부를 입력해 검색하세요. 조회수 많은 순으로 5곡을 보여 드려요.",en:"Type an artist, song title or some lyrics above and search. We'll show the 5 most-viewed songs.",ja:"上の欄に歌手・曲名・歌詞の一部を入力して検索してください。再生回数の多い順に5曲を表示します。",zhs:"请在上方输入歌手、歌名或部分歌词后搜索。将按观看次数从高到低显示5首歌曲。",zht:"請在上方輸入歌手、歌名或部分歌詞後搜尋。將依觀看次數由高到低顯示5首歌曲。",es:"Escribe arriba un artista, una canción o parte de la letra y busca. Te mostraremos las 5 canciones más vistas."},
+ mhint:{ko:"위 칸에 가수·노래 제목·가사 일부를 입력해 검색하세요. 조회수 많은 순으로 10곡을 보여 드려요.",en:"Type an artist, song title or some lyrics above and search. We'll show the 10 most-viewed songs.",ja:"上の欄に歌手・曲名・歌詞の一部を入力して検索してください。再生回数の多い順に10曲を表示します。",zhs:"请在上方输入歌手、歌名或部分歌词后搜索。将按观看次数从高到低显示10首歌曲。",zht:"請在上方輸入歌手、歌名或部分歌詞後搜尋。將依觀看次數由高到低顯示10首歌曲。",es:"Escribe arriba un artista, una canción o parte de la letra y busca. Te mostraremos las 10 canciones más vistas."},
  msr:{ko:"검색 중…",en:"Searching…",ja:"検索中…",zhs:"正在搜索…",zht:"正在搜尋…",es:"Buscando…"},
  mno:{ko:"검색 결과가 없어요. 다른 검색어로 다시 검색해 보세요.",en:"No songs found. Try different words.",ja:"見つかりませんでした。別の言葉で検索してみてください。",zhs:"没有找到歌曲，请换个关键词再试。",zht:"沒有找到歌曲，請換個關鍵字再試。",es:"No se encontraron canciones. Prueba con otras palabras."},
  merr:{ko:"지금은 검색할 수 없어요. 잠시 뒤 다시 시도해 주세요.",en:"Search isn't available right now. Please try again later.",ja:"ただいま検索できません。しばらくしてからもう一度お試しください。",zhs:"暂时无法搜索，请稍后再试。",zht:"暫時無法搜尋，請稍後再試。",es:"La búsqueda no está disponible ahora. Inténtalo más tarde."},
  vw:{ko:"조회수 {n}회",en:"{n} views",ja:"{n} 回視聴",zhs:"{n}次观看",zht:"{n}次觀看",es:"{n} visualizaciones"},
  tos:{ko:"YouTube 서비스 약관",en:"YouTube Terms of Service",ja:"YouTube 利用規約",zhs:"YouTube 服务条款",zht:"YouTube 服務條款",es:"Términos del Servicio de YouTube"},
- pp:{ko:"구글 개인정보처리방침",en:"Google Privacy Policy",ja:"Google プライバシー ポリシー",zhs:"Google 隐私权政策",zht:"Google 隱私權政策",es:"Política de Privacidad de Google"}
+ pp:{ko:"구글 개인정보처리방침",en:"Google Privacy Policy",ja:"Google プライバシー ポリシー",zhs:"Google 隐私权政策",zht:"Google 隱私權政策",es:"Política de Privacidad de Google"},
+ rep:{ko:"반복 재생",en:"Repeat",ja:"リピート再生",zhs:"循环播放",zht:"循環播放",es:"Repetir"},
+ shuf:{ko:"셔플 재생",en:"Shuffle",ja:"シャッフル再生",zhs:"随机播放",zht:"隨機播放",es:"Aleatorio"}
 };
 var st=document.createElement("style");
 st.textContent="#tvBox{position:fixed;inset:0;z-index:2147483004;background:radial-gradient(ellipse at 20% 0%,#3a0a0a 0%,#140707 45%,#050303 100%);color:#fff3f0;display:flex;flex-direction:column;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR','Hiragino Sans','PingFang SC','Microsoft YaHei',sans-serif;overflow:hidden}"
@@ -66,10 +68,11 @@ st.textContent="#tvBox{position:fixed;inset:0;z-index:2147483004;background:radi
  +"#tvBox .tsr{display:flex;gap:6px;margin-top:8px;flex:0 0 auto}#tvBox .tsr input{flex:1;min-width:0;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:9px 14px;font-size:16px;outline:none;-webkit-appearance:none;appearance:none}#tvBox .tsr input::placeholder{color:rgba(255,243,240,.55)}#tvBox .tsr input:focus{border-color:#ff7a3c}#tvBox .tsr button{flex:0 0 auto;border:0;border-radius:999px;padding:9px 16px;background:linear-gradient(90deg,#ff2a2a,#ff7a3c);color:#fff;font-size:15px;font-weight:900;cursor:pointer}"
  +"#tvBox .tnote{flex:0 0 auto;margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:800}#tvBox .tnote[hidden]{display:none}#tvBox .tnote a{background:#ff0033;color:#fff;text-decoration:none;border-radius:999px;padding:6px 12px;font-weight:900}"
  +"#tvBox .tit span.tmu{display:block}#tvBox .tmu em{font-style:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}#tvBox .tmu i{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
- +"#tvBox .tft{flex:0 0 auto;text-align:center;font-size:12px;font-weight:600;line-height:1.5;padding:8px 4px calc(10px + env(safe-area-inset-bottom));opacity:.75}#tvBox .tft a{color:inherit;text-decoration:underline}";   /* 음악 감상실 — 검색칸·막힘 안내(플레이어 밖)·후보 줄·약관 링크 (11-05) */
+ +"#tvBox .tft{flex:0 0 auto;text-align:center;font-size:12px;font-weight:600;line-height:1.5;padding:8px 4px calc(10px + env(safe-area-inset-bottom));opacity:.75}#tvBox .tft a{color:inherit;text-decoration:underline}"
+ +"#tvBox .tctl{display:flex;justify-content:center;gap:28px;margin-top:6px;flex:0 0 auto}#tvBox .tctl button{width:46px;height:40px;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:none;color:#fff;opacity:.4;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent}#tvBox .tctl button svg{width:26px;height:26px;fill:currentColor}#tvBox .tctl button.on{opacity:1;color:#ff3b3b;background:rgba(255,59,59,.16)}";   /* 음악 감상실 반복·셔플 — 켜짐 빨강·꺼짐 흐리게 (11-05) */   /* 음악 감상실 — 검색칸·막힘 안내(플레이어 밖)·후보 줄·약관 링크 (11-05) */
 document.head.appendChild(st);
 var MD={yt:{G:G,t:"t",s:"s",f:"data/tvid.json",k:"youtubeth",g:"all"},nf:{G:GNF,t:"nt",s:"ns",f:"data/tvid_nf.json",k:"netflixth",g:"drama"},mu:{G:[],t:"mt",s:"ms",k:"musiclounge",g:""}};
-var T={m:"yt",cache:{},g:"all",all:null,idx:-1,pl:null,ready:false,want:"",res:[],mst:"",sq:0};   // res·mst·sq = 음악 감상실 검색 결과·안내 문구·검색 차례
+var T={m:"yt",cache:{},g:"all",all:null,idx:-1,pl:null,ready:false,want:"",res:[],mst:"",sq:0,ord:[],pos:-1,rep:false,shuf:false};   // ord·pos = 음악 감상실 재생 순서·지금 자리, rep·shuf = 반복·셔플 (기본 끔)   // res·mst·sq = 음악 감상실 검색 결과·안내 문구·검색 차례
 function ytApi(cb){ if(window.YT&&YT.Player) return cb(); var prev=window.onYouTubeIframeAPIReady; window.onYouTubeIframeAPIReady=function(){ try{ prev&&prev(); }catch(e){} cb(); };
   if(!document.getElementById("ytApiJs")){ var s=document.createElement("script"); s.id="ytApiJs"; s.src="https://www.youtube.com/iframe_api"; document.head.appendChild(s); } }
 function box(){ return document.getElementById("tvBox"); }
@@ -94,10 +97,10 @@ function play(i){ var x=items()[i]; if(!x) return; T.idx=i; paintList(); var b=b
     T.pl=new YT.Player("tvYt",{videoId:x.id,playerVars:{autoplay:1,playsinline:1,rel:0},events:{
       onReady:function(){ T.ready=true; if(T.want&&T.pl.getVideoData&&T.pl.getVideoData().video_id!==T.want) T.pl.loadVideoById(T.want); },
       onError:function(){ if(T.cur) blocked(T.cur); },
-      onStateChange:function(ev){ if(ev&&ev.data===1) ov("","lo"); } }}); }); }
+      onStateChange:function(ev){ if(ev&&ev.data===1) ov("","lo"); if(ev&&ev.data===0&&T.m==="mu") muNext(); } }}); }); }   // 0 = 곡 끝 → 음악 감상실 이어 듣기
 function load(){ var m=T.m; if(T.cache[m]&&T.cache[m].length){ T.all=T.cache[m]; paintList(); return; } T.all=null; paintList();
   fetch(MD[m].f+"?v=1028tv").then(function(r){ return r.json(); }).then(function(j){ var a=(j&&j.items)||[]; T.cache[m]=a; if(T.m===m){ T.all=a; paintList(); } }).catch(function(){ if(T.m===m){ T.all=[]; paintList(); } }); }
-function open(mode){ var M=MD[mode]||MD.yt; T.m=MD[mode]?mode:"yt"; T.g=M.g; T.all=null; T.idx=-1; T.pl=null; T.ready=false; T.want=""; T.cur=null; T.res=[]; T.mst="mhint"; T.sq++; var old=box(); if(old) old.remove();
+function open(mode){ var M=MD[mode]||MD.yt; T.m=MD[mode]?mode:"yt"; T.g=M.g; T.all=null; T.idx=-1; T.pl=null; T.ready=false; T.want=""; T.cur=null; T.res=[]; T.mst="mhint"; T.sq++; T.ord=[]; T.pos=-1; T.rep=false; T.shuf=false; var old=box(); if(old) old.remove();
   var b=document.createElement("div"); b.id="tvBox";
   if(T.m==="mu") return muOpen(b,M);
   b.innerHTML='<div class="tin"><div class="thd"><div><b>'+esc(L(TX[M.t]))+'</b><small>'+esc(L(TX[M.s]))+'</small></div><button type="button" class="tx">✕ '+esc(L(TX.x))+'</button></div>'
@@ -109,7 +112,7 @@ function open(mode){ var M=MD[mode]||MD.yt; T.m=MD[mode]?mode:"yt"; T.g=M.g; T.a
   [].forEach.call(b.querySelectorAll(".ttb button"),function(t){ t.onclick=function(){ T.g=t.dataset.g; T.idx=-1; [].forEach.call(b.querySelectorAll(".ttb button"),function(x){ x.classList.toggle("on",x===t); }); paintList(); b.querySelector(".tls").scrollTop=0; }; });
   var nb=b.querySelector(".tnf"); if(nb) nb.onclick=function(){ try{ mpPaid.out(); }catch(e){} try{ T.pl&&T.pl.pauseVideo&&T.pl.pauseVideo(); }catch(e){} try{ appGo("netflix"); }catch(e){} };
   load(); }
-// ── 음악 감상실 (사장님 11-05) — 검색 → 조회수 많은 순 5개 → 골라 듣기(같은 플레이어) ──
+// ── 음악 감상실 (사장님 11-05) — 검색 → 조회수 많은 순 10개 → 골라 듣기(같은 플레이어) → 이어 듣기·반복·셔플 ──
 var LOC={ko:"ko-KR",en:"en-US",ja:"ja-JP",zhs:"zh-CN",zht:"zh-TW",es:"es-ES"};
 function fmtV(n){ var s; try{ s=new Intl.NumberFormat(LOC[window.LANG]||"en-US",{notation:"compact"}).format(+n||0); }catch(e){ s=String(+n||0); } return L(TX.vw).replace("{n}",s); }
 function thumbOf(x){ return /^https:\/\/i\.ytimg\.com\//.test(x.thumb||"")?x.thumb:"https://i.ytimg.com/vi/"+encodeURIComponent(x.id)+"/mqdefault.jpg"; }
@@ -117,21 +120,42 @@ function ftHtml(){ return '<div class="tft"><a href="https://www.youtube.com/t/t
 function paintMu(){ var b=box(); if(!b) return; var el=b.querySelector(".tls");
   if(T.mst){ el.innerHTML='<div class="tst">'+esc(L(TX[T.mst]))+'</div>'; return; }
   el.innerHTML=(T.res||[]).map(function(x,i){ return '<div class="tit'+(i===T.idx?' on':'')+'" data-i="'+i+'"><img loading="lazy" src="'+esc(thumbOf(x))+'" alt=""><span class="tmu"><em>'+esc(x.title)+'</em><i>'+esc(x.channel)+'</i><i>'+esc(fmtV(x.views))+'</i></span></div>'; }).join("");
-  [].forEach.call(el.querySelectorAll(".tit"),function(d){ d.onclick=function(){ play(+d.dataset.i); }; }); }
-function muFind(q){ q=String(q||"").replace(/\s+/g," ").trim().slice(0,100); if(!q) return; var n=++T.sq; T.res=[]; T.idx=-1; T.mst="msr"; paintMu();
+  [].forEach.call(el.querySelectorAll(".tit"),function(d){ d.onclick=function(){ muPick(+d.dataset.i); }; }); }
+function muFind(q){ q=String(q||"").replace(/\s+/g," ").trim().slice(0,100); if(!q) return; var n=++T.sq; T.res=[]; T.idx=-1; T.ord=[]; T.pos=-1; T.mst="msr"; paintMu();
   var bad=function(){ if(n!==T.sq||T.m!=="mu"||!box()) return; T.res=[]; T.mst="merr"; paintMu(); };
   fetch((window.HUB||"https://brief-live-hub.emhwang3.workers.dev")+"/ytsearch?q="+encodeURIComponent(q)+"&lang="+encodeURIComponent(window.LANG||"en")).then(function(r){ return r.json(); }).then(function(j){ if(n!==T.sq||T.m!=="mu"||!box()) return;
-    if(!j||!j.ok) return bad(); T.res=(j.items||[]).filter(function(x){ return x&&/^[A-Za-z0-9_-]{6,20}$/.test(x.id||""); }).slice(0,5); T.mst=T.res.length?"":"mno"; paintMu(); var l=box().querySelector(".tls"); if(l) l.scrollTop=0; }).catch(bad); }
+    if(!j||!j.ok) return bad(); T.res=(j.items||[]).filter(function(x){ return x&&/^[A-Za-z0-9_-]{6,20}$/.test(x.id||""); }).slice(0,10); T.mst=T.res.length?"":"mno"; paintMu(); var l=box().querySelector(".tls"); if(l) l.scrollTop=0; }).catch(bad); }
+// 이어 듣기 (11-05) — 곡이 끝나면 순서(ord)의 다음 곡. 반복 끔 = 마지막 곡 뒤 멈춤 · 반복 켬 = 처음으로(셔플이면 한 바퀴마다 다시 섞기) · 셔플 = 한 바퀴 안에 같은 곡 두 번 없음
+var PREP="M280-80 120-240l160-160 56 58-62 62h406v-160h80v240H274l62 62-56 58Zm-80-440v-240h486l-62-62 56-58 160 160-160 160-56-58 62-62H280v160h-80Z", PSHUF="M560-160v-80h104L537-367l57-57 126 126v-102h80v240H560Zm-344 0-56-56 504-504H560v-80h240v240h-80v-104L216-160Zm151-377L160-744l56-56 207 207-56 56Z";   // Material Symbols Outlined repeat·shuffle (Google, Apache 2.0) — 유튜브·유튜브 뮤직과 같은 모양
+function mix(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function muOrder(first){ var n=(T.res||[]).length, a=[]; for(var i=0;i<n;i++) a.push(i); var f=first!=null&&first>=0&&first<n;
+  if(T.shuf){ if(f){ a.splice(first,1); T.ord=[first].concat(mix(a)); } else T.ord=mix(a); T.pos=0; } else { T.ord=a; T.pos=f?first:0; } }
+function muPick(i){ muOrder(i); play(i); }   // 손님이 고른 곡부터 이어 간다
+function muSee(){ var b=box(), l=b&&b.querySelector(".tls"), it=l&&l.querySelector(".tit.on"); if(!it) return; var lr=l.getBoundingClientRect(), r=it.getBoundingClientRect(); if(r.top<lr.top||r.bottom>lr.bottom) l.scrollTop+=r.top-lr.top-4; }   // 목록 칸만 움직여 지금 곡을 보이게
+function muNext(){ var n=(T.res||[]).length; if(!n||!box()) return;
+  if(T.ord.length!==n){ muOrder(null); play(T.ord[T.pos]); return muSee(); }   // 새로 검색한 목록 = 처음부터 새 순서
+  if(T.pos+1<n) T.pos++;
+  else { if(!T.rep) return;   // 반복 끔 = 마지막 곡 뒤 멈춤
+    var last=T.ord[T.pos]; if(T.shuf){ T.ord=mix(T.ord.slice()); if(n>1&&T.ord[0]===last){ var j=1+Math.floor(Math.random()*(n-1)), t=T.ord[0]; T.ord[0]=T.ord[j]; T.ord[j]=t; } } T.pos=0; }
+  play(T.ord[T.pos]); muSee(); }
+function muCtl(){ var b=box(); if(!b) return; [].forEach.call(b.querySelectorAll(".tctl button"),function(t){ var on=t.dataset.c==="rep"?T.rep:T.shuf; t.classList.toggle("on",on); t.setAttribute("aria-pressed",on?"true":"false"); }); }
+function muTog(c){ if(c==="rep") T.rep=!T.rep;
+  else { T.shuf=!T.shuf; var n=(T.res||[]).length, cur=T.idx;
+    if(n&&cur>=0&&cur<n){ var a=[]; for(var i=0;i<n;i++) if(!T.shuf||i!==cur) a.push(i); if(T.shuf){ T.ord=[cur].concat(mix(a)); T.pos=0; } else { T.ord=a; T.pos=cur; } }   // 셔플 켬 = 지금 곡 다음부터 섞음 · 끔 = 목록 순서로 지금 곡 다음부터
+    else { T.ord=[]; T.pos=-1; } }
+  muCtl(); }
 function muOpen(b,M){
   b.innerHTML='<div class="tin"><div class="thd"><div><b>'+esc(L(TX[M.t]))+'</b><small>'+esc(L(TX[M.s]))+'</small></div><button type="button" class="tx">✕ '+esc(L(TX.x))+'</button></div>'
     +'<form class="tsr" role="search"><input type="search" enterkeyhint="search" maxlength="100" autocomplete="off" placeholder="'+esc(L(TX.mq))+'" aria-label="'+esc(L(TX.mq))+'"><button type="submit">'+esc(L(TX.mb))+'</button></form>'
     +'<div class="tpl"><div class="tmsg">'+esc(L(TX.mpk))+'</div></div><div class="tnote" hidden></div>'
+    +'<div class="tctl">'+[["shuf",PSHUF],["rep",PREP]].map(function(c){ return '<button type="button" data-c="'+c[0]+'" aria-pressed="false" aria-label="'+esc(L(TX[c[0]]))+'" title="'+esc(L(TX[c[0]]))+'"><svg viewBox="0 -960 960 960" aria-hidden="true"><path d="'+c[1]+'"/></svg></button>'; }).join("")+'</div>'   // 셔플·반복 = 플레이어 바깥 한 줄
     +'<div class="tls"></div>'
     +ftHtml()+'</div>';
   document.body.appendChild(b); document.documentElement.style.overflow="hidden";
   b.querySelector(".tx").onclick=close;
   var fm=b.querySelector(".tsr"), inp=fm.querySelector("input");
   fm.onsubmit=function(e){ e.preventDefault(); if(!inp.value.trim()){ inp.focus(); return; } try{ inp.blur(); }catch(z){} muFind(inp.value); };   // 검색 뒤 자판을 내려 후보가 보이게
+  [].forEach.call(b.querySelectorAll(".tctl button"),function(t){ t.onclick=function(){ muTog(t.dataset.c); }; }); muCtl();
   paintMu(); try{ ntap(M.k,"tap"); }catch(e){} }   // 누름 수 (관리자 계기판 장소별 누름)
 document.addEventListener("visibilitychange",function(){ if(document.hidden&&box()&&T.pl&&T.pl.pauseVideo){ try{ T.pl.pauseVideo(); }catch(e){} } });   // 앱이 화면에서 사라지면 일시정지 (유튜브 규칙 — 소리만 뒤에서 재생 금지)
 function close(){ var b=box(); if(b){ try{ T.pl&&T.pl.destroy&&T.pl.destroy(); }catch(e){} b.remove(); } T.pl=null; T.ready=false; document.documentElement.style.overflow=""; try{ mpPaid.end(); }catch(e){} }
