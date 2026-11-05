@@ -649,6 +649,7 @@ var BKT={
  rvAt:T6("투어 날({d})부터 별점·후기를 쓸 수 있습니다.","You can rate and review from the tour day ({d}).","ツアー当日（{d}）から評価・レビューできます。","导览当天（{d}）起可评分·写评价。","導覽當天（{d}）起可評分·寫評價。","Podrás valorar y reseñar desde el día del tour ({d})."),
  rvEarly:T6("투어 날({d})부터 쓸 수 있습니다.","You can write it from the tour day ({d}).","ツアー当日（{d}）から書けます。","导览当天（{d}）起可写。","導覽當天（{d}）起可寫。","Podrás escribirla desde el día del tour ({d})."),
  rvd:T6("후기를 남겨 주셔서 감사합니다.","Thank you for your review.","レビューありがとうございました。","感谢您的评价。","感謝您的評價。","Gracias por tu reseña."),
+ other:T6("기타 언어","Other languages","その他の言語","其他语言","其他語言","Otros idiomas"),
  cx:T6("취소된 예약입니다.","This booking was cancelled.","キャンセルされた予約です。","该预约已取消。","該預約已取消。","Esta reserva fue cancelada."),
  bad:T6("예약을 찾을 수 없습니다. 링크를 확인해 주세요.","We could not find this booking. Please check the link.","予約が見つかりません。リンクをご確認ください。","找不到该预约，请检查链接。","找不到該預約，請檢查連結。","No encontramos esta reserva. Revisa el enlace."),
  conn:T6("연결에 실패했습니다.","Connection failed.","接続に失敗しました。","连接失败。","連接失敗。","Error de conexión.")};
@@ -665,8 +666,8 @@ function bkSave(a){ try{ localStorage.setItem(BKK,JSON.stringify(a.slice(0,12)))
 function bkGet(oid){ return bkAll().filter(function(x){ return x.oid===oid; })[0]||null; }
 function bkPut(x){ var a=bkAll(), o=a.filter(function(y){ return y.oid===x.oid; })[0]||{}; bkSave([Object.assign(o,x)].concat(a.filter(function(y){ return y.oid!==x.oid; }))); }
 function bkDrop(oid){ bkSave(bkAll().filter(function(y){ return y.oid!==oid; })); }
-function bkFrom(j,tk){ return {oid:j.oid,tk:tk,kind:j.kind||"gbk",pname:j.pname||"",date:j.date,time:j.time,end:+j.end||0,k:j.k||{},n:j.n,amount:j.amount,status:j.status,done:j.done?1:0,rv:j.review||"",rvd:!!j.reviewed,rvFrom:j.rvFrom||"",room:j.room||null,g:j.g||null}; }
-function bkShown(){ var now=Date.now(); return bkAll().filter(function(x){ return now-(x.end||0)<45*864e5||!(x.rvd||x.status==="cancelled"||x.status==="refunded"); }); }   // 끝난 지 45일 지난 후기 끝·취소 예약은 숨김
+function bkFrom(j,tk){ return {oid:j.oid,tk:tk,kind:j.kind||"gbk",glang:j.glang||"",pname:j.pname||"",date:j.date,time:j.time,end:+j.end||0,k:j.k||{},n:j.n,amount:j.amount,status:j.status,done:j.done?1:0,rv:j.review||"",rvd:!!j.reviewed,rvFrom:j.rvFrom||"",room:j.room||null,g:j.g||null}; }
+function bkShown(){ return bkAll().filter(function(x){ return !(x.status==="cancelled"||x.status==="refunded"||(x.rvd&&(x.done||x.kind==="pkg"))); }); }   // 완료(투어 완료 + 후기까지 끝남)·취소 예약은 바로 숨김 (사장님 11-05 「2-가」)
 function bkToday(){ return new Date(Date.now()+9*36e5).toISOString().slice(0,10); }
 function bkCard(x){ var L=LG6, g=x.g||null, cx=x.status==="cancelled"||x.status==="refunded", pk=x.kind==="pkg", rm=x.room, foot="";
   var hi=IG.bkHi===x.oid?';border-color:#0c8599;box-shadow:0 0 0 2px rgba(12,133,153,.18)':'';
@@ -682,7 +683,12 @@ function bkCard(x){ var L=LG6, g=x.g||null, cx=x.status==="cancelled"||x.status=
     :'<div style="display:flex;gap:11px;align-items:flex-start">'+igFace(g||{})+'<div class="igb"><b>'+igName(g||{})+'</b><div class="igm">'+when+' · '+esc(gbModeTxt({mode:(x.k&&x.k.mode)||"half",h:x.k&&x.k.h,d:x.k&&x.k.d}))+' · '+esc(gbF(GBT.pN,{n:x.n||1}))+'</div></div></div>';
   return '<div class="igcard" style="cursor:default;display:block'+hi+'">'+head+'<div class="igm">'+esc(L(GBT.oid))+' '+esc(x.oid)+'</div>'+foot+'</div>'; }
 function bkBlock(){ var my=bkShown(), m=IG.bkMsg; if(!my.length&&!m) return "";
-  return '<div class="iglbl" style="margin-top:4px">'+esc(LG6(BKT.my))+'</div>'+(m?'<div class="msg">'+esc(LG6(m==="bad"?BKT.bad:BKT.conn))+'</div>':'')+my.map(bkCard).join("")+'<div style="height:8px"></div>'; }
+  // 가이드 언어별로 묶기 (사장님 11-05 「4-가」) · 많으면(3건 넘음) 칸 안에서 스크롤 (「3」)
+  var ORD=["ko","en","ja","zhs","zht","es"], grp={}; my.forEach(function(x){ var l=ORD.indexOf(x.glang)>=0?x.glang:""; (grp[l]=grp[l]||[]).push(x); });
+  var keys=Object.keys(grp).sort(function(a,b){ var ia=ORD.indexOf(a), ib=ORD.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib); });
+  var body=keys.map(function(l){ return '<div class="igm" style="margin:10px 2px 6px;font-weight:800;color:var(--ink)">'+esc(l?igLangName(l):LG6(BKT.other))+' · '+grp[l].length+'</div>'+grp[l].map(bkCard).join(""); }).join("");
+  return '<div class="iglbl" style="margin-top:4px">'+esc(LG6(BKT.my))+'</div>'+(m?'<div class="msg">'+esc(LG6(m==="bad"?BKT.bad:BKT.conn))+'</div>':'')
+    +(my.length>3?'<div class="bkscr" style="max-height:62vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 4px 4px 0;border:1px solid var(--line);border-radius:12px;padding-left:6px">'+body+'</div>':body)+'<div style="height:8px"></div>'; }
 // 서버 상태로 한 번 맞춘다 (가이드 배정·수락 · 다른 폰에서 완료·후기 · 관리자 취소 · 안 읽은 수) — 페이지당 예약마다 한 번
 function bkSync(){ bkAll().forEach(function(x){ if(BKS[x.oid]||(x.rvd&&Date.now()-(x.end||0)>7*864e5)) return; BKS[x.oid]=1;
   fetch(HUB+"/guide/booking/check?token="+encodeURIComponent(x.tk),{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
