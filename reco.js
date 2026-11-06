@@ -114,6 +114,15 @@ var KCLUB=/(^|\s)(클럽|나이트|나이트클럽|댄스클럽)$/, KCLUBC=/^나
 function kOne(u){ return fetch(u).then(function(r){ return r.json(); }).then(function(j){ return (j&&j.ok&&j.items)||[]; }).catch(function(){ return []; }); }
 function gOne(kw){ var o=origin(); return fetch(HUB+"/gplace?q="+encodeURIComponent(kw)+"&lang="+encodeURIComponent(LANG)+"&lat="+(+o[0]).toFixed(2)+"&lng="+(+o[1]).toFixed(2)).then(function(r){ return r.json(); }).then(function(j){ return (j&&j.ok&&j.items)||[]; }).catch(function(){ return []; }); }   // 구글 — 실패면 빈 목록 → 카카오로 (10-20)
 function kNorm(s){ return String(s||"").replace(/[\s·()\-_.,'’]/g,"").toLowerCase(); }
+// 클럽 (사장님 11-06 「구글 후기가 있어야 함」) — 구글 종류 나이트클럽·댄스홀(허브 /gplace ty=1 → pt) 또는 카카오 「나이트,클럽」과 이름이 같은 구글 장소, 후기 1개 이상, 후기 많은 순. 바·펍·라운지·정보 빈 곳(여보 등)은 빠진다
+function cNorm(s){ return kNorm(s).replace(/클럽|club|홍대|hongdae|이태원|itaewon|강남|gangnam|서울|seoul|나이트|night|라운지|lounge/g,""); }
+function clubGet(kw,lg,pq){ var o=origin();
+  var gq=fetch(HUB+"/gplace?all=1&ty=1&q="+encodeURIComponent(kw)+"&lang="+encodeURIComponent(LANG)+"&lat="+(+o[0]).toFixed(2)+"&lng="+(+o[1]).toFixed(2)).then(function(r){ return r.json(); }).then(function(j){ return (j&&j.ok&&j.items)||[]; }).catch(function(){ return []; });
+  return Promise.all([gq,kOne(HUB+"/kplace?q="+encodeURIComponent(kw)+lg+pq)]).then(function(a){   // near=1(가까운 순)이면 「홍대」를 무시하고 근처 풋살장·탁구클럽을 줌 → 정확도 순
+    var K=a[1].filter(function(x){ var c=String(x.cat||""); return KCLUBC.test(c.split(">").pop().trim())&&!KCLUBX.test(String(x.name)+" "+c); });
+    return a[0].filter(function(g){ if(!(+g.n>0)) return false; if(/^(night_club|dance_hall)$/.test(g.pt||"")) return true;   // 구글 종류가 나이트클럽·댄스홀이면 그대로
+      var gn=cNorm(g.name), gl=[+g.lat,+g.lng];   // 구글이 잘못 매긴 곳(Club FF=단체, 케이크샵=바)은 카카오 「나이트,클럽」 같은 이름이면 넣음
+      return K.some(function(k){ var d=kmLL([+k.y,+k.x],gl), kn=cNorm(k.name); return d<0.5&&kn.length>=2&&gn.length>=2&&(gn.indexOf(kn)>=0||kn.indexOf(gn)>=0); }); }); }); }   // 이름이 맞아야 — 같은 건물 펍·라운지 빼기
 // kws = 종류 검색어(가까운 순 전국) · nms = AI 가 아는 실제 이름(카카오에서 확인된 것만 — 첫 결과가 그 이름일 때)
 function kGet(kws,nms,np,st){ st=st||R;   // st = 상태(기본 R · 「AI와 일정짜기」 화면은 제 상태, 11-05)
   if(!kws.length&&!nms.length) return Promise.resolve([]); var o=origin(), ps=ME&&ME.pos, lg=kpL(), pq=ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"", G=[];
@@ -121,7 +130,10 @@ function kGet(kws,nms,np,st){ st=st||R;   // st = 상태(기본 R · 「AI와 �
   var gOk=function(x){ var ll=[+x.lat,+x.lng], xn=kNorm(x.name); if(!x.id||st.kseen["g:"+x.id]||G.some(function(y){ return y.id===x.id; })) return false;
     return !pk0.some(function(q){ var d=kmLL(q,ll); return d<0.4||(d<50&&q[2].length>=2&&(xn.indexOf(q[2])>=0||q[2].indexOf(xn)>=0)); }); };   // 우리 명소로 이미 고른 곳은 빼기
   var club=kws.some(function(k){ return KCLUB.test(k); });
-  var A=kws.map(function(kw){ var kc=KCLUB.test(kw); return (kc?Promise.resolve([]):gOne(kw)).then(function(g){ g=g.filter(gOk);   // 구글 먼저 — 0곳이면 카카오 (10-20) · 클럽은 카카오만
+  var A=kws.map(function(kw){ var kc=KCLUB.test(kw);
+    if(kc) return clubGet(kw,lg,pq).then(function(g){ var pn=st.picks.map(function(p){ return cNorm(String(PLACES[p.k].ko).split(" (")[0]); });
+      g.forEach(function(x){ if(!x.id||st.kseen["g:"+x.id]||G.some(function(y){ return y.id===x.id; })||pn.indexOf(cNorm(x.name))>=0) return; x._src="g"; x.s=+x.n||0; x.dist=ps?Math.round(kmLL(ps,[+x.lat,+x.lng])*1000):null; G.push(x); }); return []; });
+    return (kc?Promise.resolve([]):gOne(kw)).then(function(g){ g=g.filter(gOk);   // 구글 먼저 — 0곳이면 카카오 (10-20) · 클럽은 카카오만
       if(g.length){ g.forEach(function(x){ x._src="g"; x.dist=ps?Math.round(kmLL(ps,[+x.lat,+x.lng])*1000):null; G.push(x); }); return []; }
       return kOne(HUB+"/kplace?q="+encodeURIComponent(kw)+"&near=1"+lg+pq); }).then(function(it){
       var keep=/약국|병원|은행|ATM|편의점/.test(kw), tk=kw.split(/\s+/).filter(function(t){ return t.length>=2; });   // 손님이 그걸 찾으면 남긴다
@@ -132,7 +144,7 @@ function kGet(kws,nms,np,st){ st=st||R;   // st = 상태(기본 R · 「AI와 �
         if(cm) return cm[1].test(ls)||(cm[2]&&cm[2].test(c));
         return tk.some(function(t){ return ls.indexOf(t)>=0; })||(/관광|명소|여행/.test(c)&&tk.some(function(t){ return String(x.name).indexOf(t)>=0; })); });
       it.forEach(function(x){ x._src="k"; x._g=!kc&&(!!cm||np>0); }); return it; }); });   // 클럽은 가까이 여럿이라 한 곳으로 묶지 않음
-  var B=nms.map(function(nm){ return kOne(HUB+"/kplace?q="+encodeURIComponent(nm)+lg+pq).then(function(it){ var a=kNorm(nm);
+  var B=(club?[]:nms).map(function(nm){ return kOne(HUB+"/kplace?q="+encodeURIComponent(nm)+lg+pq).then(function(it){ var a=kNorm(nm);
       var x=it.slice(0,5).find(function(y){ var b=kNorm(y.name); return (b===a||b.indexOf(a)===0)&&!KBAD.test(String(y.cat||""))&&!/음식점|카페/.test(String(y.cat||""))&&!KHALL.test(String(y.cat||"")+" "+y.name); });
       if(x&&club&&(!KCLUBC.test(String(x.cat||"").split(">").pop().trim())||KCLUBX.test(String(x.name)+" "+String(x.cat||"")))) x=null;   // 클럽 찾는데 바·카페 이름이면 버림
       if(x){ x._src="n"; x._g=!club; } return x?[x]:[]; }); });
