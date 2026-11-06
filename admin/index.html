@@ -666,7 +666,7 @@ function twLoad(){ var P=$("pane"); P.innerHTML='<div class="card twc"><b>시험
   .catch(function(e){ P.innerHTML='<div class="card twc"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div></div>'; }); }
 function twDraw(j){ var on=TW.on, bk=j.backups||[];
   $("pane").innerHTML='<div class="card twc"><div class="twh">론칭 전 시험용 — 실전 뒤 사용 금지</div><br><b style="font-size:17px">시험 자료 모두 지우기</b>'
-   +'<div class="msg">투어앱 거래 자료를 한 번에 지웁니다 — 주문·예약과 QR 바우처 · 가이드 예약·배정 기록 · 손님↔가이드 대화방과 글 · 가이드 후기와 후기 링크(가이드 별점·후기 수는 0으로) · 가이드 인솔 요청 · 가이드에게 일정 PDF 보낸 기록 · 최소 출발 인원 알림 표시 · 제휴 문의(「입점 문의」)와 이메일 인증 기록 · 체험·입장권 상품 후기 · 내비 이용권 발급 기록 · 결제 장부.<br>남는 것: 가이드 등록(계정·사진·계약서) · 상품 · 관리자 설정 · 손님 로그인 계정 · 명소(관광 카드) 후기 · 다른 앱 자료(노래방·부동산·이벤트·뉴스 등).</div>'
+   +'<div class="msg">투어앱 거래 자료를 한 번에 지웁니다 — 주문·예약과 QR 바우처 · 가이드 예약·배정 기록 · 손님↔가이드 대화방과 글 · 가이드 후기와 후기 링크(가이드 별점·후기 수는 0으로) · 가이드 인솔 요청 · 가이드에게 일정 PDF 보낸 기록 · 최소 출발 인원 알림 표시 · 제휴 문의(「입점 문의」)와 이메일 인증 기록 · 체험·입장권 상품 후기 · 내비 이용권 발급 기록(주문번호 짝·5분 체험·통역 횟수·AI 일정 건수 포함) · 결제 장부.<br>남는 것: 가이드 등록(계정·사진·계약서) · 상품 · 관리자 설정 · 손님 로그인 계정 · 명소(관광 카드) 후기 · 다른 앱 자료(노래방·부동산·이벤트·뉴스 등).</div>'
    +'<div class="twst">지금 상태: <b class="'+(on?'twon':'twoff')+'">'+(on?'켜짐':'꺼짐')+'</b>'+(j.at?' <span class="sub">('+esc(j.at)+' 바꿈)</span>':'')+'</div>'
    +(on?'<div class="row" style="margin-top:10px"><button id="twCnt" onclick="twCount()">시험 자료 개수 보기 → 모두 지우기</button><span class="sub">개수를 먼저 보여 드리고, 「정말 지울까요」를 한 번 더 묻습니다.</span></div><div id="twOut"></div>'
        :'<div class="msg twoffm">메뉴가 꺼져 있습니다 — 지우기 단추를 숨겼고, 서버도 지우기 요청을 거절합니다.</div>')
