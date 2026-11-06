@@ -109,6 +109,8 @@ var KHALL=/공간대여|웨딩|예식|돌잔치|연회/;   // AI 가 준 이름�
 var KBAD=/편의점|주차장|부동산|주유소|은행|ATM|세탁|미용|학원|병원|약국/, KFOOD=/카페|커피|맛집|음식|식당|호텔|숙소|펜션|숙박/;
 var KCAT=[[/스키|스노보드/,/^(스키장|슬로프)$/],[/해수욕장|해변|바다/,/해수욕장|해변/],[/온천/,/^온천/],[/아쿠아리움|수족관/,/아쿠아리움/],[/놀이공원|테마파크|놀이동산/,/^(테마파크|놀이공원)$/,null,3],[/사찰|산사|절$|템플/,/사찰/],
   [/캠핑|야영/,/캠핑|야영/],[/휴양림/,/휴양림/],[/계곡/,/계곡/],[/등산|산행/,/^(등산로|산)$/],[/동물원/,/동물원/],[/수목원|식물원/,/수목원|식물원/]];   // 검색어 종류 → 카카오 분류 끝칸
+// 춤추는 클럽 (사장님 11-06 「나이트·댄스 클럽 다 바를 소개」) — 「홍대 클럽」처럼 끝이 클럽·나이트인 검색어는 구글 건너뛰고 카카오 「나이트,클럽」 분류만 (재즈클럽·바·커피집·성인댄스 빼기)
+var KCLUB=/(^|\s)(클럽|나이트|나이트클럽|댄스클럽)$/, KCLUBC=/^나이트,클럽$/, KCLUBX=/콜라텍|관광\s*나이트|성인|카바레/;   // 중장년 무도장은 빼기
 function kOne(u){ return fetch(u).then(function(r){ return r.json(); }).then(function(j){ return (j&&j.ok&&j.items)||[]; }).catch(function(){ return []; }); }
 function gOne(kw){ var o=origin(); return fetch(HUB+"/gplace?q="+encodeURIComponent(kw)+"&lang="+encodeURIComponent(LANG)+"&lat="+(+o[0]).toFixed(2)+"&lng="+(+o[1]).toFixed(2)).then(function(r){ return r.json(); }).then(function(j){ return (j&&j.ok&&j.items)||[]; }).catch(function(){ return []; }); }   // 구글 — 실패면 빈 목록 → 카카오로 (10-20)
 function kNorm(s){ return String(s||"").replace(/[\s·()\-_.,'’]/g,"").toLowerCase(); }
@@ -118,19 +120,22 @@ function kGet(kws,nms,np,st){ st=st||R;   // st = 상태(기본 R · 「AI와 �
   var pk0=st.picks.map(function(p){ var P=PLACES[p.k]; return [+P.lat,+P.lng,kNorm(String(P.ko).split(" (")[0])]; });
   var gOk=function(x){ var ll=[+x.lat,+x.lng], xn=kNorm(x.name); if(!x.id||st.kseen["g:"+x.id]||G.some(function(y){ return y.id===x.id; })) return false;
     return !pk0.some(function(q){ var d=kmLL(q,ll); return d<0.4||(d<50&&q[2].length>=2&&(xn.indexOf(q[2])>=0||q[2].indexOf(xn)>=0)); }); };   // 우리 명소로 이미 고른 곳은 빼기
-  var A=kws.map(function(kw){ return gOne(kw).then(function(g){ g=g.filter(gOk);   // 구글 먼저 — 0곳이면 카카오 (10-20)
+  var club=kws.some(function(k){ return KCLUB.test(k); });
+  var A=kws.map(function(kw){ var kc=KCLUB.test(kw); return (kc?Promise.resolve([]):gOne(kw)).then(function(g){ g=g.filter(gOk);   // 구글 먼저 — 0곳이면 카카오 (10-20) · 클럽은 카카오만
       if(g.length){ g.forEach(function(x){ x._src="g"; x.dist=ps?Math.round(kmLL(ps,[+x.lat,+x.lng])*1000):null; G.push(x); }); return []; }
       return kOne(HUB+"/kplace?q="+encodeURIComponent(kw)+"&near=1"+lg+pq); }).then(function(it){
       var keep=/약국|병원|은행|ATM|편의점/.test(kw), tk=kw.split(/\s+/).filter(function(t){ return t.length>=2; });   // 손님이 그걸 찾으면 남긴다
       it=it.filter(function(x){ var c=String(x.cat||""); return keep||!(KBAD.test(c)||(!KFOOD.test(kw)&&np>0&&/음식점|카페|숙박/.test(c))); });   // 명소를 하나도 못 고른 가게 이름 검색(스타벅스 등)은 카페도 남긴다
-      var cm=KCAT.find(function(z){ return z[0].test(kw); });   // 종류가 검색어와 맞는 곳만 (스키장 ↔ 수상스키·렌탈샵 가르기)
+      var cm=kc?[KCLUB,KCLUBC]:KCAT.find(function(z){ return z[0].test(kw); });   // 종류가 검색어와 맞는 곳만 (스키장 ↔ 수상스키·렌탈샵 가르기)
       it=it.filter(function(x){ var c=String(x.cat||""), ls=c.split(">").pop().trim();
+        if(kc&&KCLUBX.test(String(x.name)+" "+c)) return false;
         if(cm) return cm[1].test(ls)||(cm[2]&&cm[2].test(c));
         return tk.some(function(t){ return ls.indexOf(t)>=0; })||(/관광|명소|여행/.test(c)&&tk.some(function(t){ return String(x.name).indexOf(t)>=0; })); });
-      it.forEach(function(x){ x._src="k"; x._g=!!cm||np>0; }); return it; }); });
+      it.forEach(function(x){ x._src="k"; x._g=!kc&&(!!cm||np>0); }); return it; }); });   // 클럽은 가까이 여럿이라 한 곳으로 묶지 않음
   var B=nms.map(function(nm){ return kOne(HUB+"/kplace?q="+encodeURIComponent(nm)+lg+pq).then(function(it){ var a=kNorm(nm);
       var x=it.slice(0,5).find(function(y){ var b=kNorm(y.name); return (b===a||b.indexOf(a)===0)&&!KBAD.test(String(y.cat||""))&&!/음식점|카페/.test(String(y.cat||""))&&!KHALL.test(String(y.cat||"")+" "+y.name); });
-      if(x){ x._src="n"; x._g=true; } return x?[x]:[]; }); });
+      if(x&&club&&(!KCLUBC.test(String(x.cat||"").split(">").pop().trim())||KCLUBX.test(String(x.name)+" "+String(x.cat||"")))) x=null;   // 클럽 찾는데 바·카페 이름이면 버림
+      if(x){ x._src="n"; x._g=!club; } return x?[x]:[]; }); });
   return Promise.all(B.concat(A)).then(function(ls){ var all=[], pk=st.picks.map(function(p){ var P=PLACES[p.k]; return [+P.lat,+P.lng,kNorm(String(P.ko).split(" (")[0])]; });
     ls.forEach(function(l){ l.forEach(function(x){ var ll=[+x.y,+x.x]; x._k=x.name+"|"+(+x.x).toFixed(3)+"|"+(+x.y).toFixed(3); x.dist=Math.round(kmLL(o,ll)*1000); x._n=1;
       if(st.kseen[x._k]||st.kpos.some(function(q){ return kmLL(q,ll)<0.8; })) return;   // 이미 보여 준 곳·그 곁은 빼기 (다시 짜줘)

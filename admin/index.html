@@ -42,6 +42,19 @@ td.l,th.l{text-align:left;white-space:normal;min-width:120px}
 .err{color:var(--bad)}
 .prep{color:var(--sub);padding:20px 4px}
 .inv{word-break:break-all;background:var(--bg);border-radius:10px;padding:10px;margin-top:8px}
+/* 시험 자료 모두 지우기 (11-06) — 론칭 전 시험용 · 실전 뒤 사용 금지 */
+.menu button#m_twipe{border-color:var(--bad);box-shadow:inset 0 0 0 1px var(--bad)}
+.menu button#m_twipe small{color:var(--bad);font-weight:700}
+.twc{border:2px solid var(--bad)}
+.twh{display:inline-block;background:var(--bad);color:#fff;font-weight:800;font-size:15px;border-radius:8px;padding:5px 12px;margin-bottom:10px}
+.twst{margin-top:12px;font-size:16px}
+.twon{color:var(--ok)}
+.twoff{color:var(--bad)}
+.twoffm{background:var(--bg);border-radius:10px;padding:10px;margin-top:10px;color:var(--ink)}
+.twsw{margin-top:16px;padding-top:12px;border-top:1px dashed var(--line)}
+button.twbad{background:var(--bad)}
+.twask{margin-top:12px;border:2px solid var(--bad);border-radius:12px;padding:12px;background:rgba(201,42,42,.07)}
+.twdone{margin-top:12px;border:2px solid var(--ok);border-radius:12px;padding:12px}
 </style>
 </head>
 <body>
@@ -83,11 +96,12 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
   $("gmsg").textContent="확인 중…";
   api("/ntapstats?from="+kday(0)+"&to="+kday(0)).then(function(j){ if(!j.ok) throw new Error("x");
     try{ localStorage.setItem("mpadm_tok",TOK); }catch(e){} $("tok").value=""; $("gate").hidden=true; $("app").hidden=false; menu(); show("home");
+    twCall("/guide/admin/twipe/state").then(function(t){ if(t&&t.ok) twMark(!!t.on); }).catch(function(){});   // 시험 자료 지우기 메뉴에 켜짐·꺼짐 표시 (11-06)
   }).catch(function(e){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(x){} $("gmsg").innerHTML='<span class="err">'+(e.message==="admin"?"비밀번호가 맞지 않습니다.":e.message==="locked"?"5번 틀려 15분 동안 잠겼습니다. 잠시 뒤 다시 넣어 주세요.":"허브에 닿지 못했습니다.")+'</span>'; });
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["gchat","가이드 대화방","손님↔가이드 대화 · 읽기 전용"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["forms","양식함","계약서·서식 내려받기 (PDF·워드)"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["gchat","가이드 대화방","손님↔가이드 대화 · 읽기 전용"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["forms","양식함","계약서·서식 내려받기 (PDF·워드)"],["twipe","시험 자료 모두 지우기","론칭 전 시험용 — 실전 뒤 사용 금지"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -386,6 +400,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="forms"){ formsLoad(); return; }   // 양식함 (2026-10-30)
   if(id==="prv"){ prvLoad(); return; }   // 명소 후기 (2026-10-29)   // 가이드 후기 관리 (2026-10-24)
   if(id==="mis"){ misLoad(); return; }   // 가이드 예약·결제 장부 MIS (2026-10-24)
+  if(id==="twipe"){ twLoad(); return; }   // 시험 자료 모두 지우기 (2026-11-06) — 론칭 전 시험용
   if(id==="ptn"){ ptnLoad(); return; }   // 제휴 가게 — partner.js (2026-10-16)
   if(id==="inv"){ P.innerHTML='<div class="card"><b>초대 링크 발급</b><div class="msg">받은 사람은 7일 동안 내비를 열 수 있습니다.</div><div class="row" style="margin-top:10px"><button onclick="invMint()">내비 초대 링크 만들기</button></div><div id="invOut"></div></div>'; return; }
   if(id==="pay"){ payLoad(); return; }
@@ -638,6 +653,51 @@ function grevCard(r){ return '<div class="inv"'+(r.hidden?' style="opacity:.55"'
   +'<div class="row" style="margin-top:6px"><button class="g" data-id="'+esc(r.id)+'" data-h="'+(r.hidden?0:1)+'" onclick="grevHide(this.dataset.id,this.dataset.h)">'+(r.hidden?'다시 보이기':'숨기기')+'</button><button class="g" data-id="'+esc(r.id)+'" onclick="grevDel(this.dataset.id)">삭제</button></div></div>'; }
 function grevHide(id,h){ api("/guide/admin/review",{method:"POST",body:JSON.stringify({id:id,hide:h==="1"})}).then(function(j){ if(j&&j.ok) grevLoad(); else alert('처리하지 못했습니다.'); }).catch(function(){ alert('처리하지 못했습니다.'); }); }
 function grevDel(id){ if(!confirm('이 후기를 삭제할까요? (되돌릴 수 없습니다)')) return; api("/guide/admin/review",{method:"POST",body:JSON.stringify({id:id,del:true})}).then(function(j){ if(j&&j.ok) grevLoad(); else alert('지우지 못했습니다.'); }).catch(function(){ alert('지우지 못했습니다.'); }); }
+// ── 시험 자료 모두 지우기 (사장님 11-06) — 론칭 전 시험용 · 실전 뒤 사용 금지 · 허브 /guide/admin/twipe/{state,count,run,switch} ──
+//   개수 보기(드라이런) → 「정말 지울까요」 → 서버가 백업 한 벌(twbak:<시각>)을 남기고 지움 · 메뉴 끄기·켜기는 지금 관리자 비밀번호를 한 번 더 · 꺼지면 서버도 거절
+var TW={tok:"",on:true};
+function twCall(path,body){ var o={method:body?"POST":"GET",headers:{"x-admin":encodeURIComponent(TOK)},cache:"no-store"}; if(body) o.body=JSON.stringify(body);
+  return fetch(HUB+path,o).then(function(r){ return r.json().catch(function(){ return {ok:false,err:"http"+r.status}; }).then(function(j){ j=j||{}; j._s=r.status; return j; }); }); }
+function twErr(j){ var e=j&&j.err; return e==="off"?"메뉴가 꺼져 있어 서버가 거절했습니다.":e==="tok"?"개수 보기가 오래됐습니다(10분). 개수 보기부터 다시 눌러 주세요.":e==="pw"?"비밀번호가 맞지 않습니다.":e==="locked"?"5번 틀려 15분 동안 잠겼습니다. 잠시 뒤 다시 해 주세요.":e==="admin"?"관리 비밀번호가 맞지 않습니다. 다시 들어와 주세요.":e==="box"?"다른 칸("+esc(TWBOX[j.box]||j.box||"")+")에 닿지 못해 아무것도 지우지 않았습니다. 다시 눌러 주세요.":"처리하지 못했습니다 ("+esc(e||"")+")."; }
+var TWBOX={ninq:"제휴 문의",npg:"상품 후기",npass:"내비 이용권",nledger:"결제 장부"};   // 허브가 함께 지우는 다른 칸 (11-06)
+function twMark(on){ var m=$("m_twipe"), s=m&&m.querySelector("small"); if(s) s.textContent="론칭 전 시험용 — 실전 뒤 사용 금지 · "+(on?"켜짐":"꺼짐"); }
+function twLoad(){ var P=$("pane"); P.innerHTML='<div class="card twc"><b>시험 자료 모두 지우기</b><div class="msg">불러오는 중…</div></div>';
+  twCall("/guide/admin/twipe/state").then(function(j){ if(!j.ok) throw new Error(twErr(j)); TW.on=!!j.on; TW.tok=""; twMark(TW.on); twDraw(j); })
+  .catch(function(e){ P.innerHTML='<div class="card twc"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div></div>'; }); }
+function twDraw(j){ var on=TW.on, bk=j.backups||[];
+  $("pane").innerHTML='<div class="card twc"><div class="twh">론칭 전 시험용 — 실전 뒤 사용 금지</div><br><b style="font-size:17px">시험 자료 모두 지우기</b>'
+   +'<div class="msg">투어앱 거래 자료를 한 번에 지웁니다 — 주문·예약과 QR 바우처 · 가이드 예약·배정 기록 · 손님↔가이드 대화방과 글 · 가이드 후기와 후기 링크(가이드 별점·후기 수는 0으로) · 가이드 인솔 요청 · 가이드에게 일정 PDF 보낸 기록 · 최소 출발 인원 알림 표시 · 제휴 문의(「입점 문의」)와 이메일 인증 기록 · 체험·입장권 상품 후기 · 내비 이용권 발급 기록 · 결제 장부.<br>남는 것: 가이드 등록(계정·사진·계약서) · 상품 · 관리자 설정 · 손님 로그인 계정 · 명소(관광 카드) 후기 · 다른 앱 자료(노래방·부동산·이벤트·뉴스 등).</div>'
+   +'<div class="twst">지금 상태: <b class="'+(on?'twon':'twoff')+'">'+(on?'켜짐':'꺼짐')+'</b>'+(j.at?' <span class="sub">('+esc(j.at)+' 바꿈)</span>':'')+'</div>'
+   +(on?'<div class="row" style="margin-top:10px"><button id="twCnt" onclick="twCount()">시험 자료 개수 보기 → 모두 지우기</button><span class="sub">개수를 먼저 보여 드리고, 「정말 지울까요」를 한 번 더 묻습니다.</span></div><div id="twOut"></div>'
+       :'<div class="msg twoffm">메뉴가 꺼져 있습니다 — 지우기 단추를 숨겼고, 서버도 지우기 요청을 거절합니다.</div>')
+   +'<div class="twsw"><b>'+(on?'메뉴 끄기':'메뉴 켜기')+'</b><div class="msg">'+(on?'론칭(실전) 전에 꼭 끄세요. 끄면 서버가 지우기 요청을 거절합니다. ':'')+'지금 관리자 비밀번호를 한 번 더 넣어야 '+(on?'꺼집니다.':'켜집니다.')+'</div>'
+   +'<div class="row" style="margin-top:8px"><input type="password" id="twPw" placeholder="지금 관리자 비밀번호" autocomplete="off" style="flex:1;min-width:200px;max-width:320px"><button class="'+(on?'twbad':'')+'" onclick="twSwitch('+(on?'false':'true')+')">'+(on?'메뉴 끄기':'메뉴 켜기')+'</button></div><div class="msg" id="twSwm"></div></div>'
+   +(bk.length?'<div class="msg" style="margin-top:14px">지난 백업 (서버 저장)</div><div class="tw"><table><tr><th class="l">백업 키</th><th class="l">시각</th><th>지운 개수</th></tr>'+bk.map(function(x){ return '<tr><td class="l">'+esc(x.key)+'</td><td class="l">'+esc(x.at||"")+'</td><td>'+(x.total||0).toLocaleString()+'</td></tr>'; }).join("")+'</table></div>':'')
+   +'</div>'; }
+function twRows(items,extra,rating){ return '<div class="tw"><table><tr><th class="l">자료</th><th>개수</th></tr>'+(items||[]).map(function(x){ return '<tr><td class="l">'+esc(x.t)+'</td><td>'+(x.n||0).toLocaleString()+'</td></tr>'; }).join("")
+  +'<tr><td class="l">색인·짝 키 (함께 지움)</td><td>'+(extra||0).toLocaleString()+'</td></tr>'
+  +'<tr><td class="l">별점·후기 수를 0으로 맞출 가이드</td><td>'+(rating||0).toLocaleString()+'명</td></tr></table></div>'; }
+function twCancel(){ TW.tok=""; var o=$("twOut"); if(o) o.innerHTML=""; }
+function twCount(){ var o=$("twOut"), b=$("twCnt"); if(!o) return; b.disabled=true; o.innerHTML='<div class="msg">세는 중…</div>';
+  twCall("/guide/admin/twipe/count",{}).then(function(j){ b.disabled=false;
+    if(!j.ok){ if(j.err==="off"){ twLoad(); return; } o.innerHTML='<div class="msg err">'+twErr(j)+'</div>'; return; }
+    TW.tok=j.tok||"";
+    o.innerHTML='<div class="msg" style="margin-top:12px"><b>지울 것</b> — 모두 '+(j.total||0).toLocaleString()+'개 (저장 키 기준)</div>'+twRows(j.items,j.extra,j.rating)
+      +'<div class="msg">남는 것 (그대로): '+(j.keep||[]).map(function(x){ return esc(x.t)+' '+(x.n||0).toLocaleString(); }).join(" · ")+'</div>'
+      +(j.total?'<div class="twask"><b>정말 지울까요?</b><div class="msg">지우기 직전에 지울 자료 전체를 서버에 백업 한 벌로 남깁니다. 이 화면에서는 되돌릴 수 없습니다. 이 확인은 10분 동안만 쓸 수 있습니다.</div><div class="row" style="margin-top:8px"><button class="twbad" id="twGo" onclick="twRun()">정말 모두 지우기</button><button class="g" onclick="twCancel()">그만두기</button></div></div>'
+        :'<div class="msg">지울 시험 자료가 없습니다.</div>');
+  }).catch(function(){ b.disabled=false; o.innerHTML='<div class="msg err">허브에 닿지 못했습니다.</div>'; }); }
+function twRun(){ var o=$("twOut"), g=$("twGo"); if(!TW.tok){ twCount(); return; } if(g) g.disabled=true;
+  var w=document.createElement("div"); w.className="msg"; w.textContent="백업하고 지우는 중…"; o.appendChild(w);
+  twCall("/guide/admin/twipe/run",{tok:TW.tok}).then(function(j){ TW.tok="";
+    if(!j.ok){ if(j.err==="off"){ twLoad(); return; } o.innerHTML='<div class="msg err">'+twErr(j)+'</div>'; return; }
+    o.innerHTML='<div class="twdone"><b>지웠습니다 — 모두 '+(j.total||0).toLocaleString()+'개</b><div class="msg">백업 키: <b>'+esc(j.backup||"")+'</b> ('+(j.parts||0)+'조각)'+((j.boxFail||[]).length?' · <span class="err">'+esc((j.boxFail||[]).map(function(b){ return TWBOX[b]||b; }).join("·"))+' 칸은 못 지웠습니다 — 개수 보기부터 다시 눌러 주세요</span>':'')+'</div>'+twRows(j.items,j.extra,j.rating)+'</div>';
+  }).catch(function(){ o.innerHTML='<div class="msg err">허브에 닿지 못했습니다. 개수 보기부터 다시 눌러 주세요.</div>'; }); }
+function twSwitch(on){ var pw=$("twPw").value, m=$("twSwm"); if(!pw){ m.innerHTML='<span class="err">지금 관리자 비밀번호를 넣어 주세요.</span>'; return; }
+  m.textContent="확인 중…";
+  twCall("/guide/admin/twipe/switch",{on:on,pw:pw}).then(function(j){ $("twPw").value="";
+    if(!j.ok){ m.innerHTML='<span class="err">'+twErr(j)+'</span>'; return; }
+    twLoad(); }).catch(function(){ m.innerHTML='<span class="err">허브에 닿지 못했습니다.</span>'; }); }
 function gLic(id){ var box=$("glic_"+id); if(!box) return; if(box.innerHTML){ box.innerHTML=''; return; } box.innerHTML='<div class="msg">불러오는 중…</div>';
   api("/guide/admin/lic?id="+encodeURIComponent(id)).then(function(j){ box.innerHTML=j&&j.ok&&j.data?'<img src="'+j.data+'" style="max-width:100%;border-radius:10px;margin-top:6px">':'<div class="msg">사본을 불러오지 못했습니다.</div>'; }).catch(function(){ box.innerHTML='<div class="msg err">불러오지 못했습니다.</div>'; }); }
 // 서명한 업무위탁 계약서 사본 (10-29) — /guide/admin/contract?id=&n= 장마다
