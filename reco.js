@@ -373,4 +373,9 @@ document.addEventListener("click",function(e){ var b=apBox(), t=e.target; if(!b|
 window.AIPLAN={open:apOpen,back:apBack,close:apClose,state:function(){ return AP; }};
 btn();
 window.RECO={go:recoGo,state:function(){ return R; }};
+// 첫 화면 일반 검색의 클럽 (사장님 11-06 「같은 규칙을 넣어」) — index.html go() 가 부른다. 구글 장소 목록(후기 많은 순)을 돌려준다
+window.RECO.club=function(kws){ var ps=ME&&ME.pos, lg=kpL(), pq=ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"";
+  return Promise.all(kws.map(function(k){ return clubGet(k,lg,pq); })).then(function(ls){ var seen={}, out=[];
+    ls.forEach(function(l){ l.forEach(function(x){ if(!x.id||seen[x.id]) return; seen[x.id]=1; out.push(x); }); });
+    out.sort(function(a,b){ return (+b.n||0)-(+a.n||0); }); return out; }); };
 })();

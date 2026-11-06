@@ -585,10 +585,23 @@ function kpopJump(){ var open=function(){ var p=PLACES.smartium; if(!p) return f
     try{ spinClear(); }catch(e){} var la=+p.lat, lo=+p.lng, id=meBest(la,lo)||NAVI_ROOT; spinGo(id===NAVI_ROOT?"kr":id,la,lo,null); placeShow("smartium"); return true; };
   if(open()) return;   // 이미 약도 자료가 있으면 바로
   Promise.all(Object.keys(CITY).map(function(id){ return mapLoad(id).catch(function(){}); })).then(function(){ if(!open()) resMsg("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words."); }); }
+// 클럽 검색 (사장님 11-06) — 「나이트 클럽·클럽·댄스 클럽」이면 홍대·이태원·강남 클럽을, 「홍대 클럽」이면 그 동네만. 구글 종류 나이트클럽(또는 카카오 나이트,클럽 같은 이름)·후기 1개 이상·후기 많은 순 (reco.js RECO.club). 재즈·골프·탁구 클럽 등은 그대로
+var CLUBQ=/^(?:(\S+?)\s*)?(나이트\s*클럽|댄스\s*클럽|클럽|나이트|night\s*clubs?|nightclubs?|dance\s*clubs?|clubs?|clubbing|クラブ|ナイトクラブ|夜店|夜总会|夜總會|discotecas?|clubs?\s+nocturnos?)$/i,
+    CLUBNO=/재즈|jazz|골프|golf|축구|soccer|football|탁구|테니스|tennis|북|book|독서|헬스|fitness|gym|요가|yoga|수영|swim|볼링|bowling|당구|billiard|등산|러닝|running|스포츠|sports|키즈|kids|회원|member|코미디|comedy|블루스|blues|라틴|latin|살사|salsa|사교|콜라텍|카바레/i,
+    CLUBA={hongdae:"홍대",itaewon:"이태원",gangnam:"강남",홍대:"홍대",이태원:"이태원",강남:"강남"};
+function clubQ(q){ q=String(q||"").trim(); if(!q||CLUBNO.test(q)) return null; var m=CLUBQ.exec(q); if(!m) return null;
+  var a=(m[1]||"").replace(/[^0-9A-Za-z가-힣]/g,""); if(/^(나이트|댄스|night|dance)$/i.test(a)) a="";
+  if(a){ a=CLUBA[a.toLowerCase()]||a; return [a+" 클럽"]; } return ["홍대 클럽","이태원 클럽","강남 클럽"]; }
 function go(kq){
   var q=(typeof kq==="string"&&kq)||document.getElementById("q").value.trim(), out=document.getElementById("res"); if(!q){ out.innerHTML=""; window._RR=null; return; }
   resMsg("찾는 중…","Searching…"); try{ spinClear(); }catch(e){}
   if(kpopQ(q)){ kpopJump(); return; }   // ★ K-pop → 코엑스 아티움(SM타운) (사장님 10-24)
+  var cq=clubQ(q); if(cq&&window.RECO&&RECO.club){ var lg0=LANG;   // ★ 클럽 (11-06)
+    (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(ps){ return RECO.club(cq).then(function(g){
+      var it=g.map(function(p){ return {gid:p.id,name:p.name,addr:p.addr,name_en:p.name,addr_en:p.addr,x:p.lng,y:p.lat,rating:+p.rating||0,n:+p.n||0,cat:"",_l:lg0,dist:ps?Math.round(kmLL(ps,[+p.lat,+p.lng])*1000):null}; });
+      if(!it.length){ resMsg("찾은 곳이 없습니다. 다른 말로 찾아 보세요.","No places found. Try other words."); return; }
+      window._sresQ={q:q,guess:""}; window._sres=it.slice(0,10); sresPaint(); }); }).catch(function(){ resMsg("잠시 뒤 다시 해 주세요.","Please try again shortly."); });
+    return; }
   var ps0=null, lg=LANG;   // 모든 검색에 내 위치(있으면) — 가까운 순 · lg = 이 검색을 받은 언어
   (ME.pos?Promise.resolve(ME.pos):myPos()).then(function(ps){ ps0=ps; return fetch(HUB+"/kplace?q="+encodeURIComponent(q)+kpL()+(ps?"&ux="+ps[1].toFixed(5)+"&uy="+ps[0].toFixed(5):"")); }).then(function(r){ return r.json(); }).then(function(j){
     var it=(j&&j.ok&&j.items)||[]; it.forEach(function(x){ x._l=lg; });
@@ -1703,7 +1716,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}
 /* 손님 「내 예약」 링크로 열렸으면 통역·길안내 첫 화면의 그 예약 카드를 연다 (2026-11-05) */try{ if(window.__mpTdone&&window.NEAR&&window.NEAR.tdone) window.NEAR.tdone(window.__mpTdone); }catch(e){}</script>
-<script src="reco.js?v=1106c2"></script>
+<script src="reco.js?v=1106c3"></script>
 <script src="gu.js?v=1105mu"></script>
 <script src="citytour.js?v=1024icons"></script>
 <script src="pass.js?v=1106sc"></script>
