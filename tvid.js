@@ -135,7 +135,7 @@ function ftHtml(){ return '<div class="tft"><a href="https://www.youtube.com/t/t
 function paintMu(){ var b=box(); if(!b) return; var el=b.querySelector(".tls");
   muDeck(); if(T.mst){ el.innerHTML='<div class="tst">'+esc(L(TX[T.mst]))+'</div>'; return; }
   el.innerHTML=(T.res||[]).map(function(x,i){ return '<div class="tit'+(i===T.idx?' on':'')+'" data-i="'+i+'"><img loading="lazy" src="'+esc(thumbOf(x))+'" alt=""><span class="tmu"><em>'+esc(x.title)+'</em><i>'+esc(x.channel)+' · '+esc(fmtV(x.views))+'</i></span></div>'; }).join("");
-  [].forEach.call(el.querySelectorAll(".tit"),function(d){ d.onclick=function(){ muPick(+d.dataset.i); }; }); }
+  [].forEach.call(el.querySelectorAll(".tit"),function(d){ d.onclick=function(){ muPick(+d.dataset.i); }; }); muFit(); }
 function muFind(q){ q=String(q||"").replace(/\s+/g," ").trim().slice(0,100); if(!q) return; var n=++T.sq; T.res=[]; T.idx=-1; T.ord=[]; T.pos=-1; T.mst="msr"; paintMu();
   var bad=function(){ if(n!==T.sq||T.m!=="mu"||!box()) return; T.res=[]; T.mst="merr"; paintMu(); };
   fetch((window.HUB||"https://brief-live-hub.emhwang3.workers.dev")+"/ytsearch?q="+encodeURIComponent(q)+"&lang="+encodeURIComponent(window.LANG||"en")).then(function(r){ return r.json(); }).then(function(j){ if(n!==T.sq||T.m!=="mu"||!box()) return;
@@ -167,10 +167,20 @@ function muPrev(){ var n=(T.res||[]).length; if(!T.cur) return;
   try{ T.pl.seekTo(0,true); T.pl.playVideo(); }catch(e){} }   // 맨 앞이면 지금 곡 처음부터
 function muStop(){ try{ T.pl&&T.pl.stopVideo&&T.pl.stopVideo(); }catch(e){} setTimeout(muDeck,300); }
 function muMute(){ T.mut=!T.mut; try{ if(T.pl&&T.ready){ if(T.mut) T.pl.mute(); else T.pl.unMute(); } }catch(e){} muDeck(); }
-function muFit(){ var b=box(), w=b&&b.querySelector(".tmw"), jw=w&&w.querySelector(".tjw"); if(!jw) return; var cw=w.clientWidth||360, ch=w.clientHeight||600, need=Math.ceil(MJB.pmin/(MJB.r*MJB.scr[3]/100)), W=Math.max(need,Math.min(cw,Math.floor(ch/MJB.r))), H=W*MJB.r;
-  var ov=Math.max(0,H-ch), cb=Math.min(ov,H*(1-MJB.bot/100)), ct=ov-cb, top=ov?-ct:(ch-H)/2;   // 넘치면 받침(다리)부터, 그다음 위(반달)를 자른다 — 앞판·단추·목록 창은 늘 다 보임
-  jw.style.width=W+"px"; jw.style.left=Math.round((cw-W)/2)+"px"; jw.style.top=Math.round(top)+"px";
-  var ar=jw.querySelector(".tjar"); if(ar) ar.style.visibility=(top+H*(MJB.arc[1]+MJB.arc[3])/100)<34?"hidden":""; }   // 플레이어 세로 202px 이상(유튜브 200 규칙) · 그 안에서 주크박스가 한 화면에 · 양옆도 잘림 (사장님 11-05) · 반달이 34px 도 안 보이면 제목을 숨김
+// 크기·자르기 (11-06 사장님 폰에서 깨짐 → 다시) — 원칙: 앞판 플레이어 202px 이상·안 가림 · 단추 7개 전부 · 목록 창 · 반달(잘려도 됨)이 한 화면에
+//   ① 너비: 플레이어가 202px 되는 크기와 「단추 줄 양끝이 화면 안」인 크기 중 작은 쪽 (화면 폭 기준 상한) → 폭이 좁으면 플레이어만 그림 앞판보다 크게(전구 테 쪽으로)
+//   ② 높이: 모자라면 목록 창부터 줄이고(4곡까지), 그래도 모자라면 위(반달)를 자름 — 플레이어는 절대 안 자름
+function muFit(){ var b=box(), w=b&&b.querySelector(".tmw"), jw=w&&w.querySelector(".tjw"); if(!jw) return; var cw=w.clientWidth, ch=w.clientHeight; if(!cw||!ch) return;
+  var R=MJB.r, P=MJB.pmin, pc=function(v){ return v/100; }, B=MJB.btn, sp=pc(B[B.length-1][1]-B[0][1]+MJB.bd);   // sp = 단추 줄 폭(금테 포함) / 주크박스 폭
+  var W=Math.min(P/(R*pc(MJB.scr[3])), (cw-8)/sp); W=Math.floor(Math.max(W,Math.min(cw,ch/R))); var H=W*R;
+  var gx=pc(MJB.scr[0])*W, gy=pc(MJB.scr[1])*H, gw=pc(MJB.scr[2])*W, gh=pc(MJB.scr[3])*H, pw=Math.max(gw,P), ph=Math.max(gh,P), px=gx+(gw-pw)/2, py=gy+(gh-ph)/2;
+  var lt=pc(MJB.lst[1])*H, lb=lt+pc(MJB.lst[3])*H, it=jw.querySelector(".tjl .tit"), ih=it?it.getBoundingClientRect().height:60, mn=Math.min(lb-lt,ih*4);   // 목록 창은 4곡까지 줄일 수 있음
+  var y0; if(H<=ch) y0=-(ch-H)/2; else { y0=ch-lt<mn?lt+mn-ch:0; y0=Math.max(0,Math.min(y0,py-2)); }
+  var lv=Math.max(0,Math.min(lb,y0+ch)-lt);
+  jw.style.width=W+"px"; jw.style.left=Math.round((cw-W)/2)+"px"; jw.style.top=Math.round(-y0)+"px";
+  var pl=jw.querySelector(".tpl"); if(pl){ pl.style.left=Math.round(px)+"px"; pl.style.top=Math.round(py)+"px"; pl.style.width=Math.round(pw)+"px"; pl.style.height=Math.round(ph)+"px"; }
+  var lw=jw.querySelector(".tjl"); if(lw){ lw.style.height=Math.floor(lv)+"px"; lw.style.visibility=lv<20?"hidden":""; }
+  var ar=jw.querySelector(".tjar"); if(ar) ar.style.visibility=(pc(MJB.arc[1]+MJB.arc[3])*H-y0)<34?"hidden":""; }   // 반달이 34px 도 안 보이면 제목을 숨김
 window.addEventListener("resize",function(){ if(T.m==="mu"&&box()) muFit(); });
 function muTog(c){ if(c==="rep") T.rep=!T.rep;
   else { T.shuf=!T.shuf; var n=(T.res||[]).length, cur=T.idx;
@@ -193,9 +203,10 @@ function muOpen(b,M){
   var J={prev:muPrev,play:muPlay,next:function(){ if(!T.cur) return muPlay(); muNext(); },stop:muStop,rep:function(){ muTog("rep"); },shuf:function(){ muTog("shuf"); },vol:muMute};
   [].forEach.call(b.querySelectorAll(".tjk"),function(t){ t.onclick=function(){ var f=J[t.dataset.j]; if(f) f(); }; });
   muFit(); var im=b.querySelector(".tji"); if(im) im.addEventListener("load",muFit);
+  try{ if(window.ResizeObserver){ T.ro=new ResizeObserver(function(){ muFit(); }); T.ro.observe(b.querySelector(".tmw")); } }catch(e){}   // 주소창·회전·글자 크기·자판으로 칸 크기가 바뀌면 다시 (11-06)
   paintMu(); try{ ntap(M.k,"tap"); }catch(e){} }   // 누름 수 (관리자 계기판 장소별 누름)
 document.addEventListener("visibilitychange",function(){ if(document.hidden&&box()&&T.pl&&T.pl.pauseVideo){ try{ T.pl.pauseVideo(); }catch(e){} } });   // 앱이 화면에서 사라지면 일시정지 (유튜브 규칙 — 소리만 뒤에서 재생 금지)
-function close(){ var b=box(); if(b){ try{ T.pl&&T.pl.destroy&&T.pl.destroy(); }catch(e){} b.remove(); } T.pl=null; T.ready=false; document.documentElement.style.overflow=""; try{ mpPaid.end(); }catch(e){} }
+function close(){ try{ T.ro&&T.ro.disconnect(); }catch(e){} T.ro=null; var b=box(); if(b){ try{ T.pl&&T.pl.destroy&&T.pl.destroy(); }catch(e){} b.remove(); } T.pl=null; T.ready=false; document.documentElement.style.overflow=""; try{ mpPaid.end(); }catch(e){} }
 window.tvidOpen=open;
 var _hcT=window.hitClick; if(_hcT) window.hitClick=function(k){ if(k==="__tv_yt"){ open("yt"); return; } if(k==="__tv_nf"){ open("nf"); return; } if(k==="__music"){ open("mu"); return; } return _hcT.apply(this,arguments); };   // 서울 전체 관악산 기슭 상영관 (gu.js fxPlace, 10-28); window.tvidClose=close; window.tvidState=T;
 var _gb=window.guBack; window.guBack=function(){ if(box()){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };   // 뒤로가기 = 창 닫기
