@@ -117,6 +117,7 @@ html:lang(zh-Hant) body,html:lang(zh-Hant) :is(button,input,select,textarea){fon
 .top{display:flex;align-items:center;gap:10px;margin:6px 0 18px;position:relative;flex-wrap:wrap;row-gap:8px}
 .top .logo{flex:0 0 auto}
 .tbs{display:flex;align-items:center;gap:10px;margin-left:auto}
+.tbs.fit1>*{zoom:.9}.tbs.fit1{gap:4px!important}.tbs.fit2>*{zoom:.8}.tbs.fit2{gap:2px!important}.tbs.fit3>*{zoom:.7}.tbs.fit3{gap:1px!important}   /* 11-06 사장님 「2-가」 — 머리줄이 넘치면 조금씩 줄여 늘 한 줄 */
 .logo{display:flex;align-items:center;gap:6px;white-space:nowrap;min-width:0;font-weight:900;font-size:21px;letter-spacing:-.4px;cursor:pointer}
 @media (max-width:420px){.logo{font-size:18px}}
 @media (max-width:520px){.tbs{flex-wrap:wrap;justify-content:flex-end;gap:6px;row-gap:6px;max-width:100%}.tbs .tb{font-size:12px;padding:6px 8px}#inst{padding:6px 10px!important;font-size:12px!important}#th{font-size:18px!important;padding:2px!important}#mb{font-size:22px!important;padding:2px 4px!important}}   /* 좁은 화면 위쪽 단추 — 작게·두 줄 (10-16) */
@@ -291,7 +292,7 @@ html.mpc-lock #treasIsle{visibility:hidden}
     <div class="logo" onclick="resetAll()"><img src="logo.png" alt=""><span style="white-space:nowrap">Money Puzzle<b style="margin-left:4px" id="ttl">Tour for Korea</b></span></div>
     <div class="tbs">
     <button id="inst" onclick="instGo()" hidden style="white-space:nowrap;margin-left:auto;border:0;border-radius:999px;padding:8px 14px;background:var(--blue);color:#fff;font-weight:700;font-size:13px;cursor:pointer"><img class="miic" src="img/menu/mi_install.png" alt="" style="height:1.1em;width:auto;vertical-align:-0.18em;margin-right:4px">앱 설치</button>
-    <button id="rs" onclick="resetAll()" class="tb">처음으로</button>
+    <button id="rs" onclick="resetAll()" class="hic" aria-label="처음으로" title="처음으로" style="color:var(--ink)"><svg viewBox="0 -960 960 960" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg></button>
     <select id="lang" class="tb" hidden onchange="setLang(this.value)" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="es">Español</option><option value="ja">日本語</option><option value="zhs">简体中文</option><option value="zht">繁體中文</option></select>
     <button id="sh" onclick="shOpen()" aria-label="공유" title="공유" class="hic" style="color:var(--ink)"><svg viewBox="0 -960 960 960" width="24" height="24" fill="currentColor" aria-hidden="true" style="display:block"><path d="M720-80q-50 0-85-35t-35-85q0-7 1-14.5t3-13.5L322-392q-17 15-38 23.5t-44 8.5q-50 0-85-35t-35-85q0-50 35-85t85-35q23 0 44 8.5t38 23.5l282-164q-2-6-3-13.5t-1-14.5q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35q-23 0-44-8.5T638-672L356-508q2 6 3 13.5t1 14.5q0 7-1 14.5t-3 13.5l282 164q17-15 38-23.5t44-8.5q50 0 85 35t35 85q0 50-35 85t-85 35Zm0-640q17 0 28.5-11.5T760-760q0-17-11.5-28.5T720-800q-17 0-28.5 11.5T680-760q0 17 11.5 28.5T720-720ZM240-440q17 0 28.5-11.5T280-480q0-17-11.5-28.5T240-520q-17 0-28.5 11.5T200-480q0 17 11.5 28.5T240-440Zm480 280q17 0 28.5-11.5T760-200q0-17-11.5-28.5T720-240q-17 0-28.5 11.5T680-200q0 17 11.5 28.5T720-160Zm0-600ZM240-480Zm480 280Z"/></svg></button><!-- 11-05 사장님: 공유 = 구글 공개 아이콘(Material Symbols share, Apache 2.0) -->
     <button id="hlg" type="button" aria-label="Language" title="Language" class="hic"><img class="miic" src="img/menu/mi_globe.png" alt=""></button>
@@ -521,7 +522,7 @@ function paint(){
   var _ls=document.getElementById("lang"); if(_ls) _ls.value=LANG; document.documentElement.lang={ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant",es:"es"}[LANG]||"ko";
   document.getElementById("ttl").textContent="Tour for Korea";   /* 앱 이름 Money Puzzle Tour for Korea — 모든 언어 같음 (사장님 10-22) */
   document.getElementById("inst").innerHTML=MPICO("mi_install",T("⬇ 앱 설치","⬇ Install"),MIS);
-  document.getElementById("rs").textContent=T("처음으로","Reset");
+  (function(){ var r=document.getElementById("rs"), t={ko:"처음으로",en:"Home",ja:"ホーム",zhs:"首页",zht:"首頁",es:"Inicio"}[window.LANG]||"Home"; r.setAttribute("aria-label",t); r.title=t; })();   // 11-06 사장님 「처음으로」 글자 → 구글·유튜브 집 아이콘(Material home)
   (function(){ var e=document.getElementById("sh"), t=T("공유","Share"); e.setAttribute("aria-label",t); e.title=t; })();   // 글자 대신 아이콘 — 이름은 읽어 주기·말풍선 도움말로만 (11-05)
   document.getElementById("mcopy").innerHTML='<img class="miic" src="img/menu/mi_copy.png" alt="">'+esc(T("링크 복사","Copy link"));
   document.getElementById("mref").innerHTML='<img class="miic" src="img/menu/mi_refresh.png" alt="">'+esc(T("새로고침","Refresh"));
@@ -2014,6 +2015,14 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",go); else go(); })();</script>
 <style>#mapDev{display:none;position:absolute;top:10px;left:10px;z-index:6;background:#e8590c;color:#fff;font:800 12px/1 system-ui,sans-serif;border-radius:6px;padding:5px 8px;box-shadow:0 1px 4px rgba(0,0,0,.4);pointer-events:none;white-space:nowrap}.map.onkr #mapDev{display:block}</style>
 <script>/* 전국 지도 왼쪽 위 「개발 중」 (사장님 11-05, 노래방 .kdev 와 같은 모양) — 전국 지도(.map.onkr)에서만 보임 · 6개 언어 */(function(){var T={ko:"개발 중",en:"Under development",ja:"開発中",zhs:"开发中",zht:"開發中",es:"En desarrollo"};function p(){var e=document.getElementById("mapDev");if(e)e.textContent=T[window.LANG]||T.en;}document.addEventListener("DOMContentLoaded",function(){var s=window.setLang;if(s)window.setLang=function(){var r=s.apply(this,arguments);try{p();}catch(x){}return r;};p();});})();</script>
+<script>/* 11-06 사장님 「2-가」 머리줄 단추가 두 줄로 넘어가면(글자 크게 한 폰 등) 간격·크기를 줄여 한 줄에 맞춘다 */
+(function(){ var tb=document.querySelector(".tbs"); if(!tb) return; var L=["fit1","fit2","fit3"];
+  function wrapped(){ var c=[].filter.call(tb.children,function(e){ return !e.hidden&&e.offsetParent!==null; }).map(function(e){ var r=e.getBoundingClientRect(); return (r.top+r.bottom)/2; }); if(c.length<2) return false; return Math.max.apply(null,c)-Math.min.apply(null,c)>15; }
+  function fit(){ L.forEach(function(k){ tb.classList.remove(k); }); for(var i=0;i<L.length&&wrapped();i++){ if(i) tb.classList.remove(L[i-1]); tb.classList.add(L[i]); } }
+  var tm; function later(){ clearTimeout(tm); tm=setTimeout(fit,80); }
+  window.addEventListener("resize",later); window.addEventListener("load",later); try{ new MutationObserver(later).observe(tb,{childList:true,subtree:true,attributes:true,attributeFilter:["hidden"]}); }catch(e){}
+  setTimeout(fit,300); setTimeout(fit,1500); })();
+</script>
 <script src="krpop.js?v=1106kp"></script>
 </body>
 </html>
