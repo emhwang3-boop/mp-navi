@@ -303,6 +303,7 @@ html.mpc-lock #treasIsle{visibility:hidden}
     </div>
     <div id="mm" hidden style="position:absolute;right:0;top:50px;z-index:20;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);min-width:200px;overflow:hidden">
       <a href="#" id="mcopy" hidden onclick="mbCopy();return false" class="mi"><img class="miic" src="img/menu/mi_copy.png" alt="">링크 복사</a>
+      <a href="#" id="mabc" onclick="abcOpen();return false" class="mi"><img class="miic" src="img/menu/mi_info.png" alt="">ABC여행사</a><!-- 11-07 사장님: 여행사 이름(가칭 ABC여행사) — 누르면 맨 아래 사업자 정보 팝업 -->
       <a href="#" id="mref" onclick="location.reload();return false" class="mi" style="border-bottom:0"><img class="miic" src="img/menu/mi_refresh.png" alt="">새로고침</a>
     </div>
   </div>
@@ -493,6 +494,19 @@ function LN(o){ return !o?"":LANG==="ko"?o.ko:(o[LANG]||o.en||o.ko); }        //
 function LD(o){ return !o?"":LANG==="ko"?o.dko:(o["d"+LANG]||o.den); }        // 자료 설명 (dja·dzhs·dzht → den)
 function LP(a){ if(!a) return ""; var i={ko:0,en:1,ja:2,zhs:3,zht:4,es:5}[LANG]||0; return a[i]||(i?TE(a[1]):a[0])||a[0]; }   // [한, 영, 일, 简, 繁] 줄
 function L2(){ return LANG==="ko"?"ko":"en"; }   // 허브가 ko/en 만 받는 곳
+// 여행사 이름 (사장님 11-07 — 가칭, 정해지면 여기만 바꾼다) · ⋮ 메뉴 「ABC여행사」 → 맨 아래 사업자 정보(#foot)를 그대로 팝업으로
+var AGN={ko:"ABC여행사",en:"ABC Travel",ja:"ABC旅行社",zhs:"ABC旅行社",zht:"ABC旅行社",es:"ABC Viajes"};
+function abcOpen(){ try{ document.getElementById("mm").hidden=true; }catch(e){} var o=document.getElementById("abcBox"); if(o) o.remove();
+  try{ footBuild(); }catch(e){} var f=document.getElementById("foot"), cl={ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"};
+  o=document.createElement("div"); o.id="abcBox";
+  o.style.cssText="position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px";
+  o.innerHTML='<div style="position:relative;box-sizing:border-box;background:var(--card);color:var(--ink);width:100%;max-width:440px;max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;border-radius:16px;padding:18px 18px 14px;box-shadow:0 12px 34px rgba(0,0,0,.35)">'
+    +'<button type="button" class="abcX" aria-label="'+esc(cl[LANG]||cl.en)+'" style="position:absolute;right:8px;top:6px;border:0;background:none;color:var(--sub);font-size:22px;line-height:1;padding:6px;cursor:pointer">✕</button>'
+    +'<div style="font-size:18px;font-weight:800;margin:0 26px 10px 0">'+esc(AGN[LANG]||AGN.en)+'</div>'
+    +'<div class="abcB" style="color:var(--ink);font-size:13.5px;line-height:1.85;word-break:keep-all">'+(f?f.innerHTML:"")+'</div>'
+    +'<div style="text-align:center;margin-top:12px"><button type="button" class="abcX" style="border:0;border-radius:999px;padding:9px 22px;background:var(--blue);color:#fff;font-weight:700;font-size:14px;cursor:pointer">'+esc(cl[LANG]||cl.en)+'</button></div></div>';
+  o.addEventListener("click",function(e){ if(e.target===o||e.target.closest(".abcX")) o.remove(); });
+  document.body.appendChild(o); }
 // 하단 사업자 정보 배너 (사장님 2026-10-24) — 사업자등록증 기준, 6개 언어, 화면 맨 아래. 통신판매업·위치기반 신고번호는 나오면 추가
 function footBuild(){ var e=document.getElementById("foot"); if(!e) return;
   var em='<a href="mailto:admin@moneypuzzle.co.kr" style="color:inherit;text-decoration:underline">admin@moneypuzzle.co.kr</a>';
@@ -527,6 +541,7 @@ function paint(){
   (function(){ var e=document.getElementById("sh"), t=T("공유","Share"); e.setAttribute("aria-label",t); e.title=t; })();   // 글자 대신 아이콘 — 이름은 읽어 주기·말풍선 도움말로만 (11-05)
   document.getElementById("mcopy").innerHTML='<img class="miic" src="img/menu/mi_copy.png" alt="">'+esc(T("링크 복사","Copy link"));
   document.getElementById("mref").innerHTML='<img class="miic" src="img/menu/mi_refresh.png" alt="">'+esc(T("새로고침","Refresh"));
+  document.getElementById("mabc").innerHTML='<img class="miic" src="img/menu/mi_info.png" alt="">'+esc(AGN[LANG]||AGN.en);
   try{ var _rl={ko:"인트로 다시 보기",en:"Replay intro",es:"Repetir intro",ja:"イントロをもう一度",zhs:"重播片头",zht:"重播片頭"}; document.getElementById("mreplay").innerHTML='<img class="miic" src="img/menu/mi_refresh.png" alt="">'+esc(_rl[LANG]||_rl.en); }catch(e){}
   document.getElementById("q").placeholder=T("예: 경복궁, 해운대 맛집, 전주 한옥마을","e.g. Gyeongbokgung, Haeundae food, Jeonju Hanok Village");
   document.getElementById("gob").textContent=T("검색","Search");
@@ -1683,7 +1698,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
   function backClose(){
     if(window.SHOP&&SHOP.back&&SHOP.back()) return true;   /* 체험·입장권 — 결제창 → 상품 상세 → 목록 (10-29) */
     if(window.AIPLAN&&AIPLAN.back&&AIPLAN.back()) return true;   /* AI와 일정짜기 — 읽던 카드 → 목록 → 「완료」와 같음 (11-05) */
-    var c=[].slice.call(document.querySelectorAll("#infopop,.trpop,#nrBk,#inqBox,#shBox,.trsheet,#gfBox,#nrBox,#itB")).filter(vis);
+    var c=[].slice.call(document.querySelectorAll("#infopop,.trpop,#nrBk,#inqBox,#shBox,.trsheet,#gfBox,#nrBox,#itB,#abcBox")).filter(vis);
     if(c.length){ c.sort(function(a,b){ return (parseInt(getComputedStyle(a).zIndex)||0)-(parseInt(getComputedStyle(b).zIndex)||0); }); var o=c[c.length-1];
       if(o.id==="shBox"){ o.hidden=true; return true; }
       if(o.id==="itB"){ var bg=o.querySelector(".big"); if(bg) bg.remove(); else o.remove(); return true; }   /* 🗣 통역 — 큰 글씨 → 판 차례로 (10-19) */
@@ -1860,7 +1875,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script src="bell.js?v=1106nt"></script>   <!-- 🔔 앱 알림함 — 머리줄 💬 옆 종 · 알림 판(알림 받기·소리·진동·목록) (11-06) — chat.js 뒤에 -->
 <script src="manual.js?v=1105m"></script>
 <script src="karaoke.js?v=1105a"></script>
-<script src="tvid.js?v=1106mb"></script>
+<script src="tvid.js?v=1107jb"></script>
 <script src="pcbang.js?v=1026pc5"></script>
 <script src="pg.js?v=1105st"></script>
 <script src="review.js?v=1105buy"></script>
@@ -2022,7 +2037,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 })();
 </script>
 <script>/* ⋮ 메뉴 순서 (사장님 10-30) — 여러 파일이 항목을 따로 붙여서, 붙을 때마다 이 순서로 다시 줄 세운다 */
-(function(){ var ORD=["mnear_tg","mtrip","mnear_ig","mgift","mnear_am","mnear_st","mnear_em","mpg","mcopy","mref"];
+(function(){ var ORD=["mnear_tg","mtrip","mnear_ig","mgift","mnear_am","mnear_st","mnear_em","mpg","mcopy","mabc","mref"];   /* mabc = ABC여행사 — 새로고침 바로 위 (11-07) */
   function sortM(){ var mm=document.getElementById("mm"); if(!mm) return; var now=[].map.call(mm.children,function(e){ return e.id; }).filter(function(id){ return ORD.indexOf(id)>=0; });
     var want=ORD.filter(function(id){ return now.indexOf(id)>=0; }); if(now.join()===want.join()) return;
     want.forEach(function(id){ var e=document.getElementById(id); if(e) mm.appendChild(e); }); [].slice.call(mm.children).forEach(function(e){ if(ORD.indexOf(e.id)<0) mm.appendChild(e); }); }
