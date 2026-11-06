@@ -124,6 +124,7 @@ function css(){ if(document.getElementById("gfCss")) return; var s=document.crea
   +"#gfchips .gfchip{display:inline-block;width:auto;margin:0;border:1.5px solid #f08c00;background:#fff9db;color:#c2410c;border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:800;cursor:pointer;box-shadow:none}"
   +".gflock,.gflock body{overflow:hidden}#gfBox{position:fixed;inset:0;z-index:1036;background:rgba(0,0,0,.45);overflow:auto;-webkit-overflow-scrolling:touch}"
   +"#gfBox .gfin{background:var(--bg);color:var(--ink);max-width:720px;margin:0 auto;min-height:100%;padding:14px 16px 40px;box-sizing:border-box}"
+  +"@media (min-width:700px){#gfBox{overflow:hidden}#gfBox .gfin{height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-color:var(--sub,#8a94a6) var(--line,#e6e9ef);padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}}"   // 넓은 화면 — 가운데 칸 자체가 스크롤, 스크롤바가 칸 가장자리에 (사장님 11-06) · 폰은 그대로
   +".gftop{display:flex;align-items:center;justify-content:space-between;font-size:18px;margin-bottom:6px}.gfq{font-weight:900;margin:14px 2px 8px;font-size:15px}"
   +".gfopts{display:flex;flex-wrap:wrap;gap:8px}.gfopt{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:9px 13px;font-size:14.5px;font-weight:800;cursor:pointer}"
   +".gfopt.on{border-color:#e8590c;background:#fff4e6;color:#c2410c}"
@@ -193,7 +194,7 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   if(g==="open") return open();
   if(g==="x") return close();
   if(g==="dfs") return dfsGo();
-  if(g==="rs"){ S.who=""; S.bud=""; OPEN={}; paint(); var bx=document.getElementById("gfBox"); if(bx) bx.scrollTop=0; return; }
+  if(g==="rs"){ S.who=""; S.bud=""; OPEN={}; paint(); var bx=document.getElementById("gfBox"); if(bx){ bx.scrollTop=0; var bi=bx.querySelector(".gfin"); if(bi) bi.scrollTop=0; } return; }
   if(g==="w"){ S.who=t.dataset.c; S.bud=S.bud||""; paint(); return; }
   if(g==="b"){ S.bud=t.dataset.c; paint(); var q=document.querySelectorAll("#gfBox .gfq"); if(q[2]) q[2].scrollIntoView({behavior:"smooth",block:"start"}); return; }
   if(g==="nb"){ OPEN[t.dataset.kc]=1; paint(); return; }

@@ -2017,6 +2017,9 @@ var css=document.createElement("style"); css.textContent=
 +".teact{display:block;margin-top:4px}.teact a{display:inline-block;margin:3px 5px 0 0;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;color:var(--ink);background:var(--bg)}.trck{flex-direction:row!important;align-items:center;gap:6px!important;font-size:13px!important}.trck input{width:auto!important}"
 +".trpop{position:fixed;inset:0;z-index:1050;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}.trpop>div{background:var(--card);color:var(--ink);max-width:440px;border-radius:16px;padding:16px 18px;font-size:14.5px;text-align:center}"
 +".trshot{position:absolute;left:-12000px;top:0;width:680px;background:var(--bg);padding:0}.trshot .tday{margin:0}"
+// 넓은 화면(PC 창) — 덮개 대신 가운데 일정 칸 자체가 스크롤, 스크롤바가 칸 오른쪽 가장자리에 (사장님 11-06 「팝업창에도 스크롤바」) · 폰(700px 미만)은 그대로
++"@media (min-width:700px){.trsheet{overflow:hidden}.trsheet .trin{height:100%;min-height:0;box-sizing:border-box;overflow-y:auto;overscroll-behavior:contain;scrollbar-color:var(--sub,#8a94a6) var(--line,#e6e9ef);padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}"
++".trpop>div{max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;box-sizing:border-box;overscroll-behavior:contain;scrollbar-color:var(--sub,#8a94a6) var(--line,#e6e9ef)}}"
 // 공유 칸 단추 (사장님 10-24)
 +".shgrid{display:flex;flex-wrap:wrap;gap:8px}.shgrid button{flex:1 1 40%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 10px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit}.shmsg{font-size:13px;color:var(--sub);margin-top:8px;word-break:break-all}"
 // 가이드에게 PDF 보내기 (사장님 2026-10-24)

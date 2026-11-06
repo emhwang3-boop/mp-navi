@@ -86,6 +86,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +"#gfchips .nrchip.em{border-color:#e03131;background:#fff5f5;color:#c92a2a}"
   +".nrlock,.nrlock body{overflow:hidden}#nrBox{position:fixed;inset:0;z-index:1036;background:rgba(0,0,0,.45);overflow:auto;-webkit-overflow-scrolling:touch}"
   +"#nrBox .nrin{background:var(--bg);color:var(--ink);max-width:720px;margin:0 auto;min-height:100%;padding:14px 16px 40px;box-sizing:border-box}"
+  +"@media (min-width:700px){#nrBox{overflow:hidden}#nrBox .nrin{height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-color:var(--sub,#8a94a6) var(--line,#e6e9ef);padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}}"   // 넓은 화면 — 가운데 칸 자체가 스크롤, 스크롤바가 칸 가장자리에 (사장님 11-06) · 폰은 그대로
   +".nrtop{display:flex;align-items:center;justify-content:space-between;font-size:18px;margin-bottom:8px}.nrx{width:34px;height:34px;border:0;border-radius:50%;background:var(--card);color:var(--sub);font-size:20px;cursor:pointer}"
   +".nrsos{display:flex;gap:8px;margin:0 0 10px}.nrsos a{flex:1;display:block;text-align:center;text-decoration:none;border-radius:12px;padding:10px 6px;font-weight:900;font-size:15px;line-height:1.25}"
   +".nrsos a small{display:block;font-size:11.5px;font-weight:700;opacity:.85}.nrsos .s119{background:#e03131;color:#fff}.nrsos .s1330{background:#1971c2;color:#fff}"
@@ -106,6 +107,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +"#nrBk{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}#nrBk .in{background:var(--card);color:var(--ink);width:100%;max-width:480px;border-radius:16px 16px 0 0;padding:14px 16px 22px;box-sizing:border-box}"
   +"#nrBk .h{font-weight:900;font-size:16px;margin:0 0 4px}#nrBk .s{color:var(--sub);font-size:12.5px;margin:0 0 10px}#nrBk a{display:block;text-align:center;text-decoration:none;border:1.5px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;font-weight:900;font-size:15.5px;color:var(--ink);background:var(--bg)}"
   +"#nrBk button{width:100%;border:0;background:none;color:var(--sub);font-size:14px;padding:10px;cursor:pointer}"
+  +"@media (min-width:700px){#nrBk .in{max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px);overflow-y:auto;overscroll-behavior:contain;scrollbar-color:var(--sub,#8a94a6) var(--line,#e6e9ef);padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))}}"   // 넓은 화면 — 창이 낮아도 예약 칸 안에서 스크롤 (11-06)
   +".nrrank{display:inline-block;min-width:20px;height:20px;line-height:20px;border-radius:50%;background:#1971c2;color:#fff;font-size:12px;text-align:center;vertical-align:1px}.nrem .nrrank{background:#e03131}"
   +".nrsel{display:block;width:100%;margin:0 0 8px;border:1.5px solid #1971c2;background:#e7f5ff;color:#1864ab;border-radius:12px;padding:10px 12px;font-size:16px;font-weight:800;cursor:pointer;min-height:44px}"
   +".nremb{cursor:default}.nremb .c{color:#1864ab;font-size:12.5px;font-weight:900;margin-bottom:2px}.nremb .lks{margin-top:8px}"
@@ -230,7 +232,7 @@ function relang(){ var k=KINDS[S.k]; if(!k) return; if(S.k==="ig"){ paint(); ret
 function open(k){ css(); var mm=document.getElementById("mm"); if(mm) mm.hidden=true;
   if(S.k!==k){ S.tab=0; } S.k=k;
   var o=document.getElementById("nrBox"); if(!o){ o=document.createElement("div"); o.id="nrBox"; o.innerHTML='<div class="nrin"></div>'; o.onclick=function(e){ if(e.target===o) close(); }; document.body.appendChild(o); }
-  document.documentElement.classList.add("nrlock"); o.scrollTop=0; load(); }
+  document.documentElement.classList.add("nrlock"); gbTop(); load(); }
 function close(){ var o=document.getElementById("nrBox"); if(o) o.remove(); document.documentElement.classList.remove("nrlock"); }
 function sos(){ return '<div class="nrsos"><a class="s119" href="tel:119">'+PH+T("응급 119","Emergency 119")+'<small>'+T("구급·화재","Ambulance · Fire")+'</small></a>'
   +'<a class="s1330" href="tel:+82-2-1330">'+PH+'1330<small>'+T("관광통역안내 (24시간)","Travel helpline · English 24h")+'</small></a></div>'; }
@@ -492,7 +494,7 @@ function gbSend(){ gbGrab(); var k=IG.bk, L=LG6, err="";
   else if(!/^\d{4}-\d{2}-\d{2}$/.test(k.date)||k.date<gbDay(1)||k.date>gbDay(365)) err=L(GBT.edt);
   k.err=err; if(err){ var m=document.getElementById("gbM"); if(m){ m.textContent=err; try{ m.scrollIntoView({block:"center",behavior:"smooth"}); }catch(e){} } return; }
   IG.view="gconf"; paint(); gbTop(); try{ ntap("guide","gbk_conf"); }catch(e){} }
-function gbTop(){ var o=document.getElementById("nrBox"); if(o) o.scrollTop=0; }
+function gbTop(){ var o=document.getElementById("nrBox"); if(o){ o.scrollTop=0; var i=o.querySelector(".nrin"); if(i) i.scrollTop=0; } }   // 넓은 화면은 .nrin 이 스크롤 (11-06)
 // 결제창 「결제하기」 — 허브 /shop/order(실전 주문) → GB_PG=false 면 바로 확정 화면 · true 면 받은 orderId·금액으로 토스 결제창 (shop.js 와 같은 방식)
 function gbPay(){ var k=IG.bk, g=IG.gobj, L=LG6; if(!k||!g||IG.busy) return;
   if(k.pm==="paypal"){ k.err=L(GBT.ppn); paint(); return; }

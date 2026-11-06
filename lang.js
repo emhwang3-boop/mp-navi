@@ -113,7 +113,7 @@ function to(l,tmp){ if(l===window.LANG){ label(); return; } var keepL=ls("mpv_la
 window.langTo=to;
 
 // 스크롤 자리 — 바꾸기 직전 값을 다시 그린 뒤에도 그대로 (그림·지도가 늦게 그려져도 0.9초 동안 지킨다, 손님이 만지면 그만)
-var SCR=["#nrBox","#gfBox","#trBox","#trRep","#inqIn","#shIn","#infopop","#psBox"];
+var SCR=["#nrBox","#gfBox","#trBox","#trRep","#inqIn","#shIn","#infopop","#psBox","#nrBox .nrin","#gfBox .gfin","#trBox .trin","#trRep .trin"];   // 뒤 넷 = 넓은 화면(700px~)에선 가운데 칸 자체가 스크롤 (11-06) · 폰에선 스크롤 안 하는 칸이라 아무 일 없음
 // 기준 줄 — 언어마다 줄 높이·순서가 달라도(대사관은 언어마다 나라 이름 순) 보던 그 항목이 같은 높이에 오게
 var AK=".nrit[data-ak],.nrit[data-i],.sres[data-i],.rcit[data-rk],.gfk[data-kc],.tri[data-k],.trw,.tlg,.tdh,.gfq";
 function akKey(e){ var d=e.closest("[data-d]"); return (e.className.split(" ")[0])+"|"+(e.dataset.ak||e.dataset.i||e.dataset.rk||e.dataset.kc||e.dataset.k||[].indexOf.call(e.parentNode.children,e))+(d?"@"+d.dataset.d:""); }
@@ -124,7 +124,7 @@ function snap(){ var o={y:window.scrollY,x:window.scrollX,e:[]}; var res=documen
   SCR.forEach(function(s){ var e=document.querySelector(s); if(e){ var t=topOf(e); o.e.push([e,e.scrollTop,anchor(e,t,t+e.clientHeight)]); } }); return o; }
 function find(root,k){ var a=root.querySelectorAll(AK); for(var i=0;i<a.length;i++) if(akKey(a[i])===k) return a[i]; return null; }
 function room(o){ var b=document.body, need=o.y+window.innerHeight, h=document.documentElement.scrollHeight; if(h<need){ var cur=parseFloat(b.style.paddingBottom)||0; b.style.paddingBottom=(cur+need-h)+"px"; }
-  o.e.forEach(function(a){ var e=a[0], c=e.firstElementChild; if(!e.isConnected||!c) return; var nd=a[1]+e.clientHeight; if(e.scrollHeight<nd){ var cp=parseFloat(c.style.paddingBottom)||parseFloat(getComputedStyle(c).paddingBottom)||0; c.style.paddingBottom=(cp+nd-e.scrollHeight)+"px"; } }); }
+  o.e.forEach(function(a){ var e=a[0], c=/(^| )(nrin|gfin|trin)( |$)/.test(e.className)?e:e.firstElementChild; if(!e.isConnected||!c) return; var nd=a[1]+e.clientHeight; if(e.scrollHeight<nd){ var cp=parseFloat(c.style.paddingBottom)||parseFloat(getComputedStyle(c).paddingBottom)||0; c.style.paddingBottom=(cp+nd-e.scrollHeight)+"px"; } }); }   // 가운데 칸이 스크롤하는 넓은 화면은 그 칸 자체 아래를 늘린다 (11-06)
 function restore(o){ room(o); var stop=false, f=function(){ stop=true; }; ["touchstart","wheel","keydown","pointerdown"].forEach(function(ev){ window.addEventListener(ev,f,{once:true,capture:true,passive:true}); });
   var go=function(){ if(stop) return; room(o);
     var ty=o.y; if(o.a){ var res=document.getElementById("res"), el=res&&find(res,o.a.k); if(el) ty=window.scrollY+(el.getBoundingClientRect().top-o.a.off); }

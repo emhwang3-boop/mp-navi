@@ -255,6 +255,7 @@ table.trn{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:14px}  
 #infomore{position:absolute;right:7%;top:calc(63.5% - 23px);width:30px;height:46px;border:0;border-radius:8px;background:none;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5);font-size:26px;font-weight:900;line-height:1;cursor:pointer}
 #infopop{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
 #infopop>div{background:var(--card);color:var(--ink);max-width:440px;border-radius:16px;padding:16px 18px;line-height:1.6;font-size:15px}
+@media (min-width:700px){#infopop>div{box-sizing:border-box;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;scrollbar-color:var(--sub,#8a94a6) var(--line,#e6e9ef)}}   /* 넓은 화면 — 긴 안내도 칸 안에서 스크롤 (11-06) */
 /* ★ 스타워즈 오프닝 크롤 인트로 (영어 고정) — 자족적, 실패해도 앱은 그대로 (10-24) */
 #mpcrawl{position:fixed;inset:0;z-index:2147483600;background:#02030a;overflow:hidden;opacity:1;transition:opacity .8s ease;color:#ffd54a;font-family:inherit}
 #mpcrawl .mpc-stars{position:absolute;inset:0;background-color:#02030a;background-image:radial-gradient(1px 1px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 62%,#fff,transparent),radial-gradient(1px 1px at 40% 82%,#cdd6ff,transparent),radial-gradient(2px 2px at 85% 24%,#fff,transparent),radial-gradient(1px 1px at 55% 14%,#fff,transparent),radial-gradient(1px 1px at 12% 70%,#eef,transparent),radial-gradient(1px 1px at 90% 86%,#fff,transparent),radial-gradient(1.5px 1.5px at 33% 48%,#fff,transparent),radial-gradient(1px 1px at 64% 38%,#dde,transparent)}
@@ -1693,9 +1694,10 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
-<script src="trip.js?v=1106rs"></script>
-<script src="gift.js?v=1106lv"></script>
-<script src="near.js?v=1106mn"></script>
+<script src="tpick.js?v=1106tp"></script>
+<script src="trip.js?v=1106sc"></script>
+<script src="gift.js?v=1106sc"></script>
+<script src="near.js?v=1106sc"></script>
 <script src="shop.js?v=1106nt"></script>
 <script src="tosspay.js?v=1105aip"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
@@ -1704,7 +1706,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script src="reco.js?v=1106az"></script>
 <script src="gu.js?v=1105mu"></script>
 <script src="citytour.js?v=1024icons"></script>
-<script src="pass.js?v=1024gmatch"></script>
+<script src="pass.js?v=1106sc"></script>
 <script>
 // ── ★ 관심 장소 (사장님 10-17) — 손님 폰 안에만 저장·분석. 서버로 보내지 않는다(통로 FAV_SEND 는 꺼 둠)
 //   저장: 장소 카드 ☆ · 약도를 0.7초 길게 눌러 「여기 저장」 / 모음: 지도 바로 아래 테두리를 따라 작은 노란 별 한 줄(저장한 만큼) — 누르면 목록
@@ -1839,7 +1841,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
     if(_spm&&_spm.getElement){ var r2=_spm.getElement().getBoundingClientRect(); if(r2.width&&Math.hypot(x-(r2.left+r2.width/2),y-(r2.top+r2.height*0.4))<28){ spinCard(); return; } }
   }catch(z){} },true);
 </script>
-<script src="lang.js?v=1026op"></script>
+<script src="lang.js?v=1106sc"></script>
 <script src="interp.js?v=1025qs"></script>
 <script src="chat.js?v=1106ch"></script>   <!-- 손님 ↔ 가이드 대화방 · 말풍선 「가이드 대화」 탭 (11-05) — interp.js 뒤에 -->
 <script src="bell.js?v=1106nt"></script>   <!-- 🔔 앱 알림함 — 머리줄 💬 옆 종 · 알림 판(알림 받기·소리·진동·목록) (11-06) — chat.js 뒤에 -->

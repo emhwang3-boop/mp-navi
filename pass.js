@@ -20,6 +20,7 @@ window.fetch=function(u,o){ try{ var s=typeof u==="string"?u:(u&&u.url)||"";
 function css(){ if(document.getElementById("psCss")) return; var s=document.createElement("style"); s.id="psCss";
   s.textContent="#psBox{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}"
   +"#psBox .in{background:var(--card);color:var(--ink);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:18px 16px 26px}"
+  +"@media (min-width:700px){#psBox .in{box-sizing:border-box;max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px);overflow-y:auto;overscroll-behavior:contain;scrollbar-color:var(--sub,#8a94a6) var(--line,#e6e9ef);padding-bottom:calc(26px + env(safe-area-inset-bottom,0px))}}"   // 넓은 화면 — 창이 낮아도 칸 안에서 스크롤 (11-06)
   +"#psBox input{width:100%;box-sizing:border-box;font-size:16px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);margin:10px 0}"
   +"#psBox button{border:0;border-radius:999px;padding:11px 18px;font-weight:800;font-size:15px;cursor:pointer;background:var(--blue);color:#fff}#psBox button.g{background:var(--bg);color:var(--sub)}"
   +"#psBox .m{font-size:13.5px;color:var(--sub);margin-top:8px;min-height:18px}#psToast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:1050;background:#1f2937;color:#fff;border-radius:12px;padding:10px 16px;font-size:14px;font-weight:700;max-width:90vw;text-align:center}";
