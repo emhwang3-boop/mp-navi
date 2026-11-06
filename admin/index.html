@@ -55,6 +55,9 @@ td.l,th.l{text-align:left;white-space:normal;min-width:120px}
 button.twbad{background:var(--bad)}
 .twask{margin-top:12px;border:2px solid var(--bad);border-radius:12px;padding:12px;background:rgba(201,42,42,.07)}
 .twdone{margin-top:12px;border:2px solid var(--ok);border-radius:12px;padding:12px}
+/* 가이드 장부 — 여행사 직접 예약 카드 안 칸 나눔 · 「앱 주문」 묶음 제목 (11-07) */
+.msec{border-top:1px solid var(--line);margin-top:16px;padding-top:14px}
+.mgrp{font-size:18px;font-weight:800;margin:26px 4px 10px}
 </style>
 </head>
 <body>
@@ -718,18 +721,21 @@ function misMonth(back){ var d=new Date(Date.now()+9*3600e3); d.setUTCDate(1); d
   var y=d.getUTCFullYear(), m=d.getUTCMonth(), f=y+"-"+String(m+1).padStart(2,"0")+"-01", l=new Date(Date.UTC(y,m+1,0));
   return {from:f,to:l.getUTCFullYear()+"-"+String(l.getUTCMonth()+1).padStart(2,"0")+"-"+String(l.getUTCDate()).padStart(2,"0")}; }
 function misSetMode(mode){ MIS.mode=mode;
-  if(mode==="this"){ var r=misMonth(0); MIS.from=r.from; MIS.to=kday(0); }
+  if(mode==="this"){ var r=misMonth(0); MIS.from=r.from; MIS.to=r.to; }   // 이번 달 = 1일~말일 (앞으로 잡힌 예약도 보이게, 11-07)
   else if(mode==="last"){ var r2=misMonth(1); MIS.from=r2.from; MIS.to=r2.to; }
   else { MIS.from=$("misF").value||MIS.from; MIS.to=$("misT").value||MIS.to; }
   if($("misF")) $("misF").value=MIS.from; if($("misT")) $("misT").value=MIS.to;
   ["this","last","custom"].forEach(function(k){ var b=$("misP_"+k); if(b) b.classList.toggle("on",k===mode); });
   misFetch(); }
-function misLoad(){ var P=$("pane"); var r=misMonth(0); MIS.from=r.from; MIS.to=kday(0); MIS.mode="this";
+function misLoad(){ var P=$("pane"); var r=misMonth(0); MIS.from=r.from; MIS.to=r.to; MIS.mode="this";
   P.innerHTML='<div class="card" style="border-color:var(--bar2);background:rgba(245,159,0,.10)"><b>⚠ 요금은 아직 확정 전입니다 (결제 연결 전)</b>'
     +'<div class="msg">새로 넣는 예약은 앱 가이드 예약과 같은 요금(반일 4시간 19만·하루 8시간 36만·시간당 5만, 4명 넘는 1명마다 시간당 1만 원 추가)으로 계산합니다. '
     +'11-06까지 넣은 옛 기록은 옛 가정 요금표(영어 반일 20만 등) 금액 그대로입니다. 결제금액·수수료·지급액은 참고용입니다.</div></div>'
-    +'<div class="card"><div class="row"><b style="flex:1">가이드 예약·결제 장부 (MIS)</b></div>'
-    +'<div class="msg">여행사로 직접 연락 온 가이드 예약을 날짜별로 적고 결제·수수료·지급액을 보는 장부입니다. 앱으로 들어온 주문은 아래 「가이드 인솔 자유여행」·「패키지 투어」 카드에 있습니다.</div>'
+    // 11-07 사장님 「카드가 따로 떨어져 있어 헷갈리네」 → 여행사 직접 예약(넣기·기간·합계·날짜별·가이드별)을 카드 하나로 · 앱 주문 두 카드는 「앱 주문」 제목 아래
+    +'<div class="card"><div class="row"><b style="flex:1;font-size:18px">여행사 직접 예약 (MIS)</b></div>'
+    +'<div class="msg">앱을 거치지 않고 전화·메일 등으로 여행사에 직접 연락 온 가이드 예약 장부입니다. 아래에서 넣으면 이 칸의 「날짜별」·「가이드별 합계」에 바로 잡힙니다. 앱으로 들어온 주문은 맨 아래 「앱 주문」에 있습니다.</div>'
+    +'<div class="msec"><b>＋ 여행사로 직접 연락 온 예약 넣기</b><div class="msg">가이드·손님에게는 아무것도 보내지 않으니 가이드에게는 따로 연락하세요. 금액은 앱 가이드 예약 요금으로 자동 계산되며 고칠 수 있습니다.</div><div id="misAdd"></div></div>'
+    +'<div class="msec"><b>기간</b>'
     +'<div class="row" style="margin-top:8px"><button class="g" id="misP_this" onclick="misSetMode(\'this\')">이번 달</button>'
     +'<button class="g" id="misP_last" onclick="misSetMode(\'last\')">지난 달</button>'
     +'<button class="g" id="misP_custom" onclick="misSetMode(\'custom\')">직접 범위</button>'
@@ -738,9 +744,9 @@ function misLoad(){ var P=$("pane"); var r=misMonth(0); MIS.from=r.from; MIS.to=
     +'<button onclick="misFetch()">보기</button><button class="g" onclick="xlsMis()">엑셀 받기</button>'
     +'<button class="g" onclick="misClearTest()">데모 데이터 지우기</button></div>'
     +'<div id="misSum"></div></div>'
-    +'<div class="card"><b>＋ 여행사로 직접 연락 온 예약 넣기</b><div class="msg">앱을 거치지 않고 전화·메일 등으로 여행사에 직접 연락 온 가이드 예약을 장부에 적어 둘 때 씁니다. 가이드·손님에게는 아무것도 보내지 않으니 가이드에게는 따로 연락하세요. 금액은 앱 가이드 예약 요금으로 자동 계산되며 고칠 수 있습니다.</div><div id="misAdd"></div></div>'
-    +'<div class="card"><div class="row"><b style="flex:1">날짜별</b></div><div class="tw"><table id="misTab"></table></div></div>'
-    +'<div class="card"><b>가이드별 합계 (고른 기간 · 결제완료·완료 건)</b><div class="tw"><table id="misG"></table></div></div>'
+    +'<div class="msec"><b>날짜별</b><div class="tw"><table id="misTab"></table></div></div>'
+    +'<div class="msec"><b>가이드별 합계 (고른 기간 · 결제완료·완료 건)</b><div class="tw"><table id="misG"></table></div></div></div>'
+    +'<div class="mgrp">앱 주문</div>'
     // 주문 카드 둘로 (사장님 11-07): 가이드 인솔 자유여행(pid gbk = 앱 「투어 가이드」) / 패키지 투어(체험·입장권 상품) · 안내 글은 지금 방식(결제 연결 전 「결제하기」 = 실전 주문)
     +'<div class="card" id="soCardG"><div class="row"><b style="flex:1">가이드 인솔 자유여행</b><button onclick="soFetch()">새로고침</button><button class="g" onclick="xlsSo(\'g\')">엑셀 받기</button></div>'
     +'<div class="msg">앱 「투어 가이드」에서 손님이 가이드를 골라 예약한 주문입니다. 결제 연결 전이라 「결제하기」를 누르면 바로 <b>확정</b>되고(가이드 수락·거절 없음), '
