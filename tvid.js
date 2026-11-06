@@ -171,9 +171,12 @@ function muMute(){ T.mut=!T.mut; try{ if(T.pl&&T.ready){ if(T.mut) T.pl.mute(); 
 //   ① 너비: 플레이어가 202px 되는 크기와 「단추 줄 양끝이 화면 안」인 크기 중 작은 쪽 (화면 폭 기준 상한) → 폭이 좁으면 플레이어만 그림 앞판보다 크게(전구 테 쪽으로)
 //   ② 높이: 모자라면 목록 창부터 줄이고(4곡까지), 그래도 모자라면 위(반달)를 자름 — 플레이어는 절대 안 자름
 function muFit(){ var b=box(), w=b&&b.querySelector(".tmw"), jw=w&&w.querySelector(".tjw"); if(!jw) return; var cw=w.clientWidth, ch=w.clientHeight; if(!cw||!ch) return;
-  var R=MJB.r, P=MJB.pmin, pc=function(v){ return v/100; }, B=MJB.btn, sp=pc(B[B.length-1][1]-B[0][1]+MJB.bd);   // sp = 단추 줄 폭(금테 포함) / 주크박스 폭
-  var W=Math.min(P/(R*pc(MJB.scr[3])), (cw-8)/sp); W=Math.floor(Math.max(W,Math.min(cw,ch/R))); var H=W*R;
+  var R=MJB.r, P=MJB.pmin, pc=function(v){ return v/100; }, B=MJB.btn;
+  //   11-07 사장님 「앱에서 깨진다」: 폰에서 주크박스를 화면보다 넓게(384px 화면에 561px) 그려 양옆·위가 잘렸다 → 주크박스 폭은 화면 폭을 넘지 않게(웹처럼 통째로)
+  //   그만큼 앞판 그림이 202px 보다 작아지면 플레이어만 앞판보다 크게(가운데 맞춤) — 단추 줄은 안 덮게 위로 올림
+  var W=Math.min(P/(R*pc(MJB.scr[3])), cw); W=Math.floor(Math.max(W,Math.min(cw,ch/R))); var H=W*R;
   var gx=pc(MJB.scr[0])*W, gy=pc(MJB.scr[1])*H, gw=pc(MJB.scr[2])*W, gh=pc(MJB.scr[3])*H, pw=Math.max(gw,P), ph=Math.max(gh,P), px=gx+(gw-pw)/2, py=gy+(gh-ph)/2;
+  var bt=pc(B[0][2])*H-pc(MJB.bd)*W/2-3; if(py+ph>bt) py=bt-ph;   // 단추 윗끝 3px 위까지
   var lt=pc(MJB.lst[1])*H, lb=lt+pc(MJB.lst[3])*H, it=jw.querySelector(".tjl .tit"), ih=it?it.getBoundingClientRect().height:60, mn=Math.min(lb-lt,ih*4);   // 목록 창은 4곡까지 줄일 수 있음
   var y0; if(H<=ch) y0=-(ch-H)/2; else { y0=ch-lt<mn?lt+mn-ch:0; y0=Math.max(0,Math.min(y0,py-2)); }
   var lv=Math.max(0,Math.min(lb,y0+ch)-lt);
