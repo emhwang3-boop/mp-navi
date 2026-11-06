@@ -26,7 +26,11 @@ function nMsg(n){ return gTxt(DN6,{n:n,d:LANG==="es"?n+(n>1?" días":" día"):n+
 function nInput(id,attr,n){ return '<input type="number" '+(id?'id="'+id+'" ':'')+(attr||"")+' inputmode="numeric" pattern="[0-9]*" min="1" max="'+MAXD+'" step="1" value="'+(+n||1)+'" enterkeyhint="done">'; }
 var TR=load();
 function load(){ var o=null; try{ o=JSON.parse(localStorage.getItem(KEY)||"null"); }catch(e){} if(!o||!Array.isArray(o.items)) o={items:[]};
-  o.opt=Object.assign({n:3,start:"",from:"09:30",to:"20:00",walk:1,hotel:null,food:"any",adv:false},o.opt||{}); return o; }   // 11-06 더한 칸(없어도 됨): hotels{도시 id:숙소} · ap{a,d} · pax · hAll
+  o.opt=Object.assign({n:3,start:"",from:"09:30",to:"20:00",walk:1,hotel:null,food:"any",adv:false},o.opt||{});
+  // 11-06 사장님 「2-가」 — 저장된 첫날이 오늘보다 앞(지난 날짜)이면 내일로 옮겨 보여 준다. 짜 둔 일정은 장소 그대로 날짜만 같이 옮기고, 요일이 바뀌니 AI 설명은 다시 받는다
+  try{ var td=kstToday(0); if(o.opt.start&&o.opt.start<td){ var ns=kstToday(1), dd=Math.round((Date.parse(ns+"T00:00:00Z")-Date.parse(o.opt.start+"T00:00:00Z"))/864e5); o.opt.start=ns;
+    if(o.plan&&Array.isArray(o.plan.days)){ o.plan.days.forEach(function(d){ if(d&&d.date){ var t=Date.parse(d.date+"T00:00:00Z"); if(isFinite(t)) d.date=new Date(t+dd*864e5).toISOString().slice(0,10); } }); o.plan.ai=null; } } }catch(e){}
+  return o; }   // 11-06 더한 칸(없어도 됨): hotels{도시 id:숙소} · ap{a,d} · pax · hAll
 var SAVED_H=JSON.stringify(TR.opt&&TR.opt.hotel||null);   // 11-06 사장님 「숙소를 안 잡았는데 잡혀 있다」 — 예전에 저장된 숙소는 이번 여행에서 고른 것으로 보지 않는다
 function hKey(){ var o=TR.opt||{}; return (o.start||"")+"|"+(o.n||1); }
 function hOkNow(){ var o=TR.opt||{}; return !!o.hotel&&o.hOk===hKey(); }
