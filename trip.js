@@ -1696,7 +1696,7 @@ function lgToast(t){ var o=document.createElement("div"); o.className="tlgtoast"
 document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("#trRep [data-hpick]"); if(!b) return; e.preventDefault(); var pl=TR.plan; if(!pl) return; var ci=b.dataset.hpick===""?null:+b.dataset.hpick; lodgeFor(pl,+b.dataset.hd,ci); },true);
 
 // ══ 「AI일정짜기」 화면 3단계 (사장님 11-06) — ① 항공편 ② 첫날 숙소(「여행 내내 이 숙소」) ③ AI와 일정짜기(reco.js 지금 화면 그대로) · 건너뛸 수 있고, 이미 예약했으면 「있어요 — 입력」 ══
-var ST6={prev:{ko:"지난번 숙소: {h}",en:"Your earlier lodging: {h}",ja:"前回の宿: {h}",zhs:"上次的住宿: {h}",zht:"上次的住宿: {h}",es:"Alojamiento anterior: {h}"},useP:{ko:"이 숙소로",en:"Use this one",ja:"この宿にする",zhs:"就住这里",zht:"就住這裡",es:"Usar este"},otherP:{ko:"다른 숙소 찾기",en:"Find another",ja:"別の宿を探す",zhs:"找其他住宿",zht:"找其他住宿",es:"Buscar otro"},s1:{ko:"① 항공편 예약",en:"① Book flights",ja:"① 航空券の予約",zhs:"① 预订机票",zht:"① 預訂機票",es:"① Reserva tus vuelos"},
+var ST6={rst:{ko:"처음부터 다시",en:"Start over",ja:"最初からやり直す",zhs:"从头开始",zht:"從頭開始",es:"Empezar de nuevo"},rstQ:{ko:"이 폰에 담은 장소·일정·숙소·항공 정보를 모두 지우고 처음부터 다시 시작할까요?",en:"Clear the places, plan, lodging and flight info saved on this phone and start over?",ja:"このスマホに保存した場所・旅程・宿・航空情報をすべて消して、最初からやり直しますか？",zhs:"要清除这部手机上保存的地点、行程、住宿和航班信息，从头开始吗？",zht:"要清除這支手機上儲存的地點、行程、住宿和航班資訊，從頭開始嗎？",es:"¿Borrar los lugares, el plan, el alojamiento y los vuelos guardados en este teléfono y empezar de nuevo?"},prev:{ko:"지난번 숙소: {h}",en:"Your earlier lodging: {h}",ja:"前回の宿: {h}",zhs:"上次的住宿: {h}",zht:"上次的住宿: {h}",es:"Alojamiento anterior: {h}"},useP:{ko:"이 숙소로",en:"Use this one",ja:"この宿にする",zhs:"就住这里",zht:"就住這裡",es:"Usar este"},otherP:{ko:"다른 숙소 찾기",en:"Find another",ja:"別の宿を探す",zhs:"找其他住宿",zht:"找其他住宿",es:"Buscar otro"},s1:{ko:"① 항공편 예약",en:"① Book flights",ja:"① 航空券の予約",zhs:"① 预订机票",zht:"① 預訂機票",es:"① Reserva tus vuelos"},
  s2:{ko:"② 첫날 숙소 예약",en:"② Book your first night",ja:"② 初日の宿の予約",zhs:"② 预订第一晚住宿",zht:"② 預訂第一晚住宿",es:"② Reserva la primera noche"},
  s3:{ko:"③ AI와 일정짜기",en:"③ Plan with AI",ja:"③ AIと旅程づくり",zhs:"③ 与AI规划行程",zht:"③ 與AI規劃行程",es:"③ Planifica con IA"},
  have:{ko:"있어요 — 입력",en:"Already booked — enter it",ja:"予約済み — 入力",zhs:"已预订——填写",zht:"已預訂——填寫",es:"Ya reservado: introducir"},
@@ -1732,6 +1732,7 @@ function stepsPaint(el){ el=el||document.getElementById("aipSteps"); if(!el) ret
       +'<div class="stpr"><input id="stHQ" placeholder="'+esc(T5(ST6.hname))+'" value="'+esc(STS.hq||"")+'"><button type="button" class="tb" data-sth="1">'+MPIMG("mi_search","height:1.2em;width:auto;vertical-align:-0.2em;margin:0")+'</button></div><div id="stHR">'+stHrHtml()+'</div>'
       +'<div class="stpn"><button type="button" class="trbtn" data-sto="3">'+esc(T5(ST6.skip))+' ›</button></div></div>'; }
   h+='</div><div class="stp"><div class="stph" data-sto="3"><b>'+esc(T5(ST6.s3))+'</b></div></div>';
+  h+='<div style="text-align:right;margin:6px 4px 0"><a href="#" data-streset="1" class="d" style="text-decoration:underline">'+esc(T5(ST6.rst))+'</a></div>';   // 11-06 사장님 「테스터 리셋, 다시 해보게」 — 이 폰의 여행 기록을 처음 상태로
   el.innerHTML=h; }
 // ① 항공편 링크 (11-06 사장님) — 기본은 체류 기간 왕복(가는 날 = 첫날 · 오는 날 = 첫날 + 일수 − 1 · 도착 공항 → 출발 공항)
 //   출발 공항 「선택 안 함」 = 돌아가는 편 없이 한국 오는 편도만 · 도착 공항을 안 골랐으면 인천(예전처럼)
@@ -1750,7 +1751,8 @@ document.addEventListener("change",function(e){ var t=e.target, el=document.getE
   if(t.dataset.sts==="start"){ o.start=t.value; save(); } else if(t.dataset.sts==="n"){ var q=nFix(t.value,o.n); STS.nm=q.fix?nMsg(q.n):""; if(q.n!==o.n){ o.n=q.n; TR.plan=null; save(); } } else if(t.dataset.sts==="pax"){ o.pax=+t.value; save(); }
   else if(t.dataset.stap||t.dataset.stt) stApSet(); else if(t.dataset.stc){ STS.city=t.value; }
   stepsPaint(el); },true);
-document.addEventListener("click",function(e){ var el=document.getElementById("aipSteps"); if(!el||!e.target.closest||!el.contains(e.target)) return; var t=e.target.closest("[data-sthok],[data-sto],[data-stl],[data-sth],[data-sthp]"); if(!t) return; e.preventDefault();
+document.addEventListener("click",function(e){ var el=document.getElementById("aipSteps"); if(!el||!e.target.closest||!el.contains(e.target)) return; var t=e.target.closest("[data-streset],[data-sthok],[data-sto],[data-stl],[data-sth],[data-sthp]"); if(!t) return; e.preventDefault();
+  if(t.dataset.streset){ if(!confirm(T5(ST6.rstQ))) return; try{ localStorage.removeItem(KEY); localStorage.removeItem("mpv_trlive"); }catch(z){} location.reload(); return; }
   if(t.dataset.sthok){ TR.opt.hOk=hKey(); save(); STS.open="3"; stepsPaint(el); return; }
   if(t.dataset.sto){ var v=t.dataset.sto; STS.open=STS.open===v?"":v; if(v==="3"){ STS.open=""; try{ var q=document.getElementById("aipQ"); if(q){ q.scrollIntoView({block:"center"}); q.focus(); } }catch(z){} } stepsPaint(el); return; }
   if(t.dataset.stl){ var cid=STS.city||(el.querySelector("[data-stc]")||{}).value||"seoul", c=CITYNM.filter(function(q){ return q[0]===cid; })[0]||CITYNM[0];
