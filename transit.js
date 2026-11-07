@@ -130,7 +130,7 @@ function route(){ if(!S.to) return; S.st="ld"; S.err=""; S.R=null; S.W=null; S.o
     var lg=LANG; S.at=kstMin(); walkGet(my,lg);
     return fetch(HUB+"/ntransit?a="+S.a[0].toFixed(6)+","+S.a[1].toFixed(6)+"&b="+(+S.to.lat).toFixed(6)+","+(+S.to.lng).toFixed(6)+"&lang="+encodeURIComponent(lg)).then(function(r){ return r.json(); }).then(function(j){ if(my!==S.seq) return;
       if(!j||!j.ok){ S.st="err"; S.err=j&&j.err==="same"?"same":"err"; paint(); return; }
-      S.R=j; S.rl=lg; S.st="ok"; paint(); try{ ntap("_transit","transit"); }catch(e){} }); })
+      S.R=j; S.rl=lg; S.st="ok"; wantApply(); paint(); wantJump(); try{ ntap("_transit","transit"); }catch(e){} }); })
   .catch(function(){ if(my!==S.seq) return; S.st="err"; S.err="err"; paint(); }); }
 
 // ── 화면 ──
@@ -414,6 +414,19 @@ function entries(){ css(); var box=document.getElementById("gfchips"); if(!box) 
 var f0=window.setLang; if(typeof f0==="function"&&!f0._tk){ var g0=function(){ var r=f0.apply(this,arguments); try{ entries(); if(document.getElementById("tkBox")){ if(S.R&&S.rl!==LANG&&S.to) route(); else paint(); } }catch(e){} return r; };   // 열린 창은 그 자리에서 그 언어로 (결과는 그 언어 이름으로 다시 받음)
   for(var k0 in f0) if(k0.charAt(0)==="_") g0[k0]=f0[k0]; g0._tk=1; window.setLang=g0; }
 entries();
-window.TRANSIT={open:open,close:close,state:function(){ return S; }};
+// 「AI와 일정 짜기」 이동 줄에서 열기 (사장님 11-07 「이 창과 연계」) — 출발·도착을 채워 바로 길찾기, 누른 탈것 칸(want)을 펼치고 그 칸으로 내려간다
+//   want = w 걷기 · x 택시 · t0 대중교통 첫 칸 · a0 비행기 · ic 기차·버스(열차가 있으면 KTX·SRT, 없으면 고속·시외버스) · 그 칸이 없으면 맨 위 그대로
+function go(o){ if(!o||!o.to||!(+o.to.lat)) return;
+  var f=o.from&&+o.from.lat?o.from:null; S.from=f?{t:"p",k:f.k||"",nm:f.nm||f.ko||"",ko:f.ko||f.nm||"",lat:+f.lat,lng:+f.lng}:{t:"me"};
+  S.to={k:o.to.k||"",nm:o.to.nm||o.to.ko||"",ko:o.to.ko||o.to.nm||"",lat:+o.to.lat,lng:+o.to.lng,sub:o.to.sub||""};
+  S.tq=pNm(S.to); S.tc=null; S.tst=""; S.fs=0; S.fc=null; S.fq=""; S.want=o.open||""; open(); route(); }
+function wantApply(){ var w=S.want, R=S.R; S.want=""; if(!w||!R) return;
+  if(w==="ic") w=(R.rail||[]).length?"r0":(R.bus||[]).length?"b0":"";
+  if(w==="w"&&!S.W) w=(R.t||[]).length?"t0":"";
+  if(w==="t0"&&!(R.t||[]).length) w="";
+  if(w==="a0"&&!(R.air||[]).length) w="";
+  if(w){ S.open[w]=true; S.jump=w; } }
+function wantJump(){ var w=S.jump; S.jump=""; if(!w) return; var el=document.getElementById("tk_"+w); if(el) setTimeout(function(){ try{ el.scrollIntoView({block:"start"}); }catch(e){} },30); }
+window.TRANSIT={open:open,close:close,go:go,state:function(){ return S; }};
 if(/[?&]transit=1/.test(location.search)) setTimeout(open,300);
 })();
