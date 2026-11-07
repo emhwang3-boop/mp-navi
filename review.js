@@ -60,6 +60,7 @@ function stars(n,px){ n=Math.round(n||0); var h=""; for(var i=1;i<=5;i++) h+='<s
 function css(){ if(document.getElementById("rvCss")) return; var s=document.createElement("style"); s.id="rvCss";
   s.textContent=".rvs{display:flex;align-items:center;gap:8px;margin:5px 0 3px;padding:6px 10px;border-radius:12px;background:#fff9db;border:1px solid #ffe066;font-size:13.5px;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}"
   +".rvs b{font-size:15px;color:#e67700}.rvs .rvn{color:var(--ink);font-weight:700}.rvs .rvh{margin-left:auto;color:var(--sub);font-size:11.5px}"
+  +".rvs>.xtg{margin:-4px -4px -4px 0}"   // 오른쪽 끝 공통 ▼/— 단추 — 한 번 누르면 펼침·접기 (11-07)
   +":root[data-theme=dark] .rvs{background:#2b2512;border-color:#5c4a0f}.rvs.on{border-color:#f59f00}"
   +".rvp{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}.rvi{padding:8px 0;border-bottom:1px solid var(--line)}.rvi .rvm{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);flex-wrap:wrap}"
   +".rvi .rvm b{color:var(--ink);font-weight:700}.rvi .rvt{font-size:14px;line-height:1.5;margin-top:3px;white-space:pre-wrap;word-break:break-word;color:var(--ink)}.rvi .rvo{border:0;background:none;color:#1971c2;font-size:12px;padding:2px 0;cursor:pointer}"
@@ -85,7 +86,7 @@ function rvp(k){ var a=document.querySelectorAll(".rvp[data-rvk]"); for(var i=0;
 function paintMini(k){ var s=SUM[k], a=document.querySelectorAll(".rvmini[data-rvm]"); for(var i=0;i<a.length;i++) if(a[i].dataset.rvm===k){ a[i].innerHTML=s&&s.n?'<b>★ '+(+s.avg).toFixed(1)+'</b> '+esc(t("rev",{n:s.n})):esc(t("none")); a[i].hidden=false; } }
 function paintSum(k){ paintMini(k); var e=slot(k); if(!e||e.dataset.rvk!==k) return; var s=SUM[k]||{n:0,avg:0}, on=OPEN===k;
   e.classList.toggle("on",on);
-  e.innerHTML=(s.n?'<b>★ '+(+s.avg).toFixed(1)+'</b><span class="rvn">'+esc(t("rev",{n:s.n}))+'</span>':'<span class="rvn">'+esc(t("none"))+'</span>')+'<span class="rvh">'+esc(t(on?"tap2c":"tap2"))+'</span>';
+  e.innerHTML=(s.n?'<b>★ '+(+s.avg).toFixed(1)+'</b><span class="rvn">'+esc(t("rev",{n:s.n}))+'</span>':'<span class="rvn">'+esc(t("none"))+'</span>')+'<span class="rvh">'+esc(t(on?"tap2c":"tap2"))+'</span>'+(window.XTG?XTG.html(on):'');
   e.hidden=false; }
 function toBottom(){ var it=document.querySelector("#res .item"), el=it&&it.querySelector(".rvs"); if(!el) return; if(it.lastElementChild!==el&&!(it.lastElementChild&&it.lastElementChild.classList.contains("rvp")&&el.nextElementSibling===it.lastElementChild)) { it.appendChild(el); var p=it.querySelector(".rvp"); if(p) it.appendChild(p); } }   // 별점 띠는 카드 맨 아랫줄 (사장님 10-29) — 「내 여행에 담기」 등이 뒤늦게 붙어도 다시 맨 아래로
 window.rvLoad=function(k){ if(!okK(k)) return; OPEN=null; LIST=null; toBottom(); [300,1200,3000].forEach(function(t){ setTimeout(toBottom,t); }); if(SUM[k]) paintSum(k);
@@ -140,9 +141,11 @@ window.rvMiniLoad=function(keys){ (keys||[]).filter(okK).forEach(function(k){ if
 window.rvPaint=function(k){ if(!okK(k)) return; paintSum(k); if(OPEN===k&&!rvp(k)&&LIST) paintList(k); };
 // 두 번 누르기 — 마우스 dblclick · 손가락은 350ms 안에 두 번 톡
 var lastT=0, lastEl=null;
-document.addEventListener("dblclick",function(e){ var el=e.target.closest&&e.target.closest(".rvs[data-rvk]"); if(!el) return; e.preventDefault(); if(Date.now()-lastT<600&&lastEl===null) return; toggle(el.dataset.rvk); });
-document.addEventListener("touchend",function(e){ var el=e.target.closest&&e.target.closest(".rvs[data-rvk]"); if(!el) return; var n=Date.now();
+document.addEventListener("dblclick",function(e){ var el=e.target.closest&&e.target.closest(".rvs[data-rvk]"); if(!el||e.target.closest(".xtg")) return; e.preventDefault(); if(Date.now()-lastT<600&&lastEl===null) return; toggle(el.dataset.rvk); });
+document.addEventListener("touchend",function(e){ var el=e.target.closest&&e.target.closest(".rvs[data-rvk]"); if(!el||e.target.closest(".xtg")) return; var n=Date.now();
   if(lastEl===el&&n-lastT<350){ e.preventDefault(); lastEl=null; lastT=n; toggle(el.dataset.rvk); } else { lastEl=el; lastT=n; } },{passive:false});
+// 공통 ▼/— 단추 (11-07) — 한 번 누르면 펼침·접기 · 두 번 누르기는 띠 다른 곳에서 그대로 (단추 위 누름은 위 두 곳이 건너뛴다)
+document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest(".rvs[data-rvk]>.xtg"); if(!b) return; e.preventDefault(); toggle(b.parentNode.dataset.rvk); });
 document.addEventListener("click",function(e){ var p=e.target.closest&&e.target.closest(".rvp[data-rvk]"); if(!p) return; var k=p.dataset.rvk; if(!okK(k)) return;
   var a=e.target.closest("[data-rvpick]"); if(a){ PICK=+a.dataset.rvpick; var w=p.querySelector(".rvpick"); if(w) w.innerHTML=pickHtml(); return; }
   if(e.target.closest("[data-rvgo]")){ save(k); return; }
