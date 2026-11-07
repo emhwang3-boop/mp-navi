@@ -1746,7 +1746,7 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 })();
 </script>
 <script src="tpick.js?v=1106tp"></script>
-<script src="trip.js?v=1107fx"></script>
+<script src="trip.js?v=1107er"></script>
 <script src="gift.js?v=1107xt"></script>
 <script src="near.js?v=1107xt"></script>
 <script src="shop.js?v=1107xt"></script>
@@ -2077,5 +2077,34 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
   setTimeout(fit,300); setTimeout(fit,1500); })();
 </script>
 <script src="krpop.js?v=1106kp"></script>
+<script>
+/* 버전 (사장님 11-07 「버전으로 관리하자」 「가」 1.0.5 모양) — 올릴 때마다 배포 도구(navi_fast)가 끝자리를 하나 올린다(version.json · 아래 APPV 를 같이)
+   ⋮ 메뉴 맨 아래 「버전 1.0.5」 → 누르면 서버 최신(version.json)과 비교 · 쓰는 중 새 판이 올라오면 위에 「새 버전이 있어요 [새로 받기]」(10분마다·화면으로 돌아올 때 확인) */
+var APPV="1.0.1";
+(function(){ var L6=function(o){ return o[window.LANG]||o.en; }, W={v:{ko:"버전",en:"Version",ja:"バージョン",zhs:"版本",zht:"版本",es:"Versión"},
+  ok:{ko:"최신 버전이에요",en:"You're on the latest version",ja:"最新バージョンです",zhs:"已是最新版本",zht:"已是最新版本",es:"Tienes la última versión"},
+  nw:{ko:"새 버전이 있어요",en:"A new version is available",ja:"新しいバージョンがあります",zhs:"有新版本",zht:"有新版本",es:"Hay una nueva versión"},
+  go:{ko:"새로 받기",en:"Update",ja:"更新する",zhs:"更新",zht:"更新",es:"Actualizar"},
+  ck:{ko:"확인하는 중…",en:"Checking…",ja:"確認中…",zhs:"正在检查…",zht:"正在檢查…",es:"Comprobando…"},
+  er:{ko:"확인하지 못했어요 — 잠시 뒤 다시 눌러 주세요",en:"Couldn't check — please try again shortly",ja:"確認できませんでした — 少ししてからもう一度押してください",zhs:"无法检查——请稍后再试",zht:"無法檢查——請稍後再試",es:"No se pudo comprobar: inténtalo de nuevo en un momento"}};
+  function cmp(a,b){ a=String(a).split(".").map(Number); b=String(b).split(".").map(Number); for(var i=0;i<3;i++){ var d=(a[i]||0)-(b[i]||0); if(d) return d; } return 0; }
+  function latest(){ return fetch("version.json?nc="+Date.now(),{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ return j&&j.v; }); }
+  function upd(){ fetch(location.pathname,{cache:"reload"}).catch(function(){}).then(function(){ location.reload(); }); }   // 화면(html)을 새로 받아 둔 뒤 다시 연다 — 새 화면이 새 js(?v=)를 부른다
+  function bar(v){ if(document.getElementById("verBar")) return; var b=document.createElement("div"); b.id="verBar";
+    b.style.cssText="position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:2147483005;background:#1c7ed6;color:#fff;border-radius:999px;padding:7px 8px 7px 16px;display:flex;align-items:center;gap:10px;font-weight:800;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:calc(100% - 24px);white-space:nowrap";
+    b.innerHTML='<span>'+esc(L6(W.nw))+' ('+esc(v)+')</span><button type="button" style="border:0;background:#fff;color:#1c7ed6;font-weight:900;border-radius:999px;padding:6px 12px;cursor:pointer;font-family:inherit">'+esc(L6(W.go))+'</button><button type="button" aria-label="✕" style="border:0;background:none;color:#fff;font-size:18px;cursor:pointer;padding:0 6px">✕</button>';
+    var bs=b.querySelectorAll("button"); bs[0].onclick=upd; bs[1].onclick=function(){ b.remove(); }; document.body.appendChild(b); }
+  var busy=0;
+  function paint(){ var mm=document.getElementById("mm"); if(!mm||busy) return; var a=document.getElementById("mver");
+    if(!a){ a=document.createElement("a"); a.id="mver"; a.href="#"; a.className="mi"; a.style.cssText="border-bottom:0;justify-content:center;font-size:13px;opacity:.75"; a.onclick=function(e){ e.preventDefault(); check(a); }; mm.appendChild(a); }
+    a.textContent=L6(W.v)+" "+APPV; }
+  function check(a){ busy=1; a.textContent=L6(W.ck); var done=function(t){ a.textContent=t; setTimeout(function(){ busy=0; paint(); },4000); };
+    latest().then(function(v){ if(!v) throw 0; if(cmp(v,APPV)>0){ busy=0; paint(); bar(v); try{ document.getElementById("mm").hidden=true; }catch(e){} } else done(L6(W.v)+" "+APPV+" · "+L6(W.ok)); }).catch(function(){ done(L6(W.er)); }); }
+  var last=0; function auto(){ if(document.hidden||Date.now()-last<600000) return; last=Date.now(); latest().then(function(v){ if(v&&cmp(v,APPV)>0) bar(v); }).catch(function(){}); }
+  function go(){ paint(); var mm=document.getElementById("mm"); if(mm&&window.MutationObserver) new MutationObserver(function(){ if(!mm.hidden) paint(); }).observe(mm,{attributes:true,attributeFilter:["hidden"]}); setTimeout(auto,8000); }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",go); else go();
+  document.addEventListener("visibilitychange",function(){ if(!document.hidden) auto(); }); setInterval(auto,600000);
+})();
+</script>
 </body>
 </html>
