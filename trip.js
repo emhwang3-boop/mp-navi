@@ -305,6 +305,8 @@ var FX6={
  nt:{ko:"⏰ {t} 고정",en:"⏰ fixed at {t}",ja:"⏰ {t} 固定",zhs:"⏰ 固定 {t}",zht:"⏰ 固定 {t}",es:"⏰ fijo a las {t}"},
  set:{ko:"정하기",en:"Set",ja:"決める",zhs:"确定",zht:"確定",es:"Fijar"},
  clr:{ko:"시작 시각 지우기",en:"Clear start time",ja:"開始時刻を消す",zhs:"清除开始时间",zht:"清除開始時間",es:"Quitar hora de inicio"},
+ bEarly:{ko:"{m} 일찍 출발하기 ({t} 출발)",en:"Leave {m} earlier ({t})",ja:"{m}早く出発する（{t}出発）",zhs:"提前{m}出发（{t}出发）",zht:"提前{m}出發（{t}出發）",es:"Salir {m} antes ({t})"},
+ earlyD:{ko:"{d} 출발을 당겼어요 — {t} 출발",en:"{d}: departure moved up to {t}",ja:"{d}の出発を{t}に早めました",zhs:"{d}出发时间提前到{t}",zht:"{d}出發時間提前到{t}",es:"{d}: salida adelantada a las {t}"},
  fix:{ko:"정한 {f}보다 늦은 {a}에 닿아요",en:"You arrive at {a}, later than the {f} you set",ja:"決めた{f}より遅い{a}に着きます",zhs:"比您定的{f}晚，{a}才到",zht:"比您定的{f}晚，{a}才到",es:"Llegas a las {a}, más tarde de las {f} que fijaste"},
  bAdd:{ko:"하루 늘리기",en:"Add a day",ja:"1日増やす",zhs:"增加一天",zht:"增加一天",es:"Añadir un día"},
  bMv:{ko:"다른 날로 옮기기",en:"Move to another day",ja:"別の日に移す",zhs:"移到其他日子",zht:"移到其他日子",es:"Pasar a otro día"},
@@ -1185,11 +1187,15 @@ function ovLast(pl,di){ var d=pl&&pl.days[di]; if(!d) return null; var a=d.stops
 function ckK(pl,q){ return q.k||(q.t==="over"?ovLast(pl,q.di):null); }
 // 검사 창 단추 (사장님 11-07) — 넘치는 날: 하루 늘리기·마지막 장소 다른 날로·빼기 · 낮 장소가 안 맞는 시각(밤에 잡힘·마감 뒤·입장 마감·머무는 동안 마감·정한 시각보다 늦음): 다른 날로·머무는 시간 줄이기·빼기
 //   쉬는 날: 다른 날로·빼기 · 밤 장소가 낮에·문 열기 기다림·도시 오감·식사는 예전 그대로 · 모든 줄에 그대로 두기
+// 일찍 출발 — 정한 시각보다 늦는 분만큼 그날 출발을 당긴다(05:00 보다 이르면 안 권함) → {late, ns}
+function ckEarly(pl,q){ var X=dayX(pl,q.di,REPH||pl.H||null), late=(q.a||0)-(q.f||0), ns=X.from-late; return (late>0&&ns>=300)?{late:late,ns:ns}:null; }
 function ckBtns(pl,q,x){ var K=[["keep",CK6.bKeep]];
   if(q.t==="over") return [pl.days.length<MAXD?["add",FX6.bAdd]:null,x?["mv",FX6.bMv]:null,x?["drop",CK6.bDrop]:null].filter(Boolean).concat(K);
   if(q.t==="meal") return [["eat",CK6.bEat]].concat(K);
   if(q.t==="zig") return x?[["ord",CK6.bOrd]].concat(K):K;
-  if(/^(late|shut|last|cut|fix)$/.test(q.t)) return [["mv",FX6.bMv],["short",FX6.bSh],["drop",CK6.bDrop]].concat(K);
+  if(/^(late|shut|last|cut|fix)$/.test(q.t)){ var d0=pl.days[q.di], ks=d0?d0.stops.filter(function(k){ return pl.pool[k]&&!pl.pool[k].eat; }):[], first=!!x&&ks.indexOf(x.k)<=0, B=[];
+    if(q.t==="fix"){ var e0=ckEarly(pl,q); if(e0) B.push(["early",fill6(FX6.bEarly,{m:durTxt(e0.late),t:m2hm(e0.ns)})]); }   // 늦는 만큼 그날 일찍 출발 (11-07 사장님)
+    B.push(["mv",FX6.bMv]); if(!first) B.push(["short",FX6.bSh]); B.push(["drop",CK6.bDrop]); return B.concat(K); }   // 그날 첫 장소면 「머무는 시간 줄이기」는 소용없어 뺀다 (앞에 줄일 곳이 없다)
   if(q.t==="off") return [["mv",FX6.bMv],["drop",CK6.bDrop]].concat(K);
   return [["ord",CK6.bOrd],["drop",CK6.bDrop]].concat(K); }
 function issTxt(pl,q){ var dd=pl.days[q.di], dt=dd?new Date(dd.date+"T00:00:00Z"):null, v={a:m2hm(q.a||0),o:q.o!=null?m2hm(q.o):"",w:durTxt(Math.max(0,q.w||0)),c:q.c!=null?m2hm(q.c):"",s:durTxt(Math.max(0,q.s||0)),f:q.f!=null?m2hm(q.f):""};
@@ -1226,6 +1232,7 @@ document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.
   if(v==="add"){ dayUp(a); return; }
   if(v==="mv"){ if(!tk||!pl.pool[tk]) return; if(b) b.remove(); mvOpen(q.di,tk); return; }
   if(v==="short"){ if(b) b.remove(); stOpen(q.di,tk); return; }
+  if(v==="early"){ var e1=ckEarly(pl,q); if(!e1) return; pl.days[q.di].fr=e1.ns; pl.chk=2; save(); refresh(); lgToast(gTxt(FX6.earlyD,{d:dLbl(q.di),t:m2hm(e1.ns)})); if(document.getElementById("trRep")) repPaint(); if(b) b.remove(); chkOpen(true); return; }
   if(v==="eat"){ if(b) b.remove(); efOpen({di:q.di,K:q.K,pos:mealPos(pl,q.di,q.K)}); } },true);
 // 하루 늘리기 — 날짜 수 +1 로 「N일로 다시 짜기」(data-sugn)와 같은 길(여행 일수 칸을 바꾼 것과 같게 → 「일정 짜기」) · 전국 일정은 natAlloc 이 넘치는 도시에 날을 준다 · 다시 짠 뒤 검사 창은 「다시 검사」로
 var DAYUP=0;
@@ -2055,9 +2062,10 @@ var MEC=null;
 function mePt(){ var mp=(window.ME&&ME.pos)||GEO; if(!mp) return null; if(MEC&&MEC.lat===+mp[0]&&MEC.lng===+mp[1]) return MEC; return MEC={k:"__me",ko:"현재 위치",en:"Current location",lat:+mp[0],lng:+mp[1],me:1}; }
 function meFor(d,arr){ if(!d||d.date!==kstToday(0)||OLD()) return null; var me=mePt(); if(!me||!arr.length) return null; var near=arr.some(function(x){ return km(me,x)<=80; }); return near?me:null; }
 function dayX(pl,di,H0){ var d=pl.days[di], dt=new Date(d.date+"T00:00:00Z"), arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean);
-  if(!pl.mc){ var me0=meFor(d,arr); return {H:me0?hPair(me0,hE(H0)):H0,from:pl.from,to:pl.to,dt:dt,arr:arr,me:me0?1:0}; }
-  var X={mc:1,dt:dt,arr:arr,from:pl.from,to:pl.to,lim:null,pre:[],city:d.c}, t=pl.from, S=null;
-  if(di===0&&pl.ap&&pl.ap.a){ var A=apPt(pl.ap.a.id), ta=pl.ap.a.t; S=A; if(ta!=null) t=Math.max(pl.from,ta+(pl.ap.a.k==="d"?45:90)); X.pre.push({ap:"a",p:A,t:t,ft:ta}); }
+  var F0=(d.fr!=null&&d.fr>=300)?d.fr:pl.from;   // 그날만 일찍 출발 (11-07 사장님 「늦는 시간만큼 일찍 출발하기」 — 검사 창 단추) · 없으면 조건의 시작 시각
+  if(!pl.mc){ var me0=meFor(d,arr); return {H:me0?hPair(me0,hE(H0)):H0,from:F0,to:pl.to,dt:dt,arr:arr,me:me0?1:0}; }
+  var X={mc:1,dt:dt,arr:arr,from:F0,to:pl.to,lim:null,pre:[],city:d.c}, t=F0, S=null;
+  if(di===0&&pl.ap&&pl.ap.a){ var A=apPt(pl.ap.a.id), ta=pl.ap.a.t; S=A; if(ta!=null) t=Math.max(F0,ta+(pl.ap.a.k==="d"?45:90)); X.pre.push({ap:"a",p:A,t:t,ft:ta}); }
   else { var pc=di>0?pl.days[di-1].nc:d.c; S=(pc!=null&&pc>=0)?hotelPt(pl,pc):null; var me1=meFor(d,arr.length?arr:(d.am!=null&&pl.tr[d.am]?[pl.tr[d.am].sa]:[])); if(me1){ S=me1; X.me=1; } }
   if(d.am!=null&&pl.tr[d.am]){ var st0=(!X.pre.length&&S)?{start:1,p:S,t:t}:null; var r=trRun(pl,pl.tr[d.am],S,t); if(st0){ if(r.rows.ts!=null) st0.t=r.rows.ts; X.pre.push(st0); } X.pre=X.pre.concat(r.rows); S=r.S; t=r.t; }
   X.from=t;
