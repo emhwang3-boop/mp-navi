@@ -150,7 +150,7 @@ wrap("zApply",function(){ flags(); });
 wrap("setLang",function(){ refresh(); if(document.getElementById("trBox")){ var aq=document.getElementById("trAddrQ"), av=aq?aq.value:""; panelPaint(); var aq2=document.getElementById("trAddrQ"); if(aq2) aq2.value=av; addrPaint(); }
   if(document.getElementById("trRep")) repAgain(); });   // 열린 창은 그 자리에서 (lang.js, 10-18)
 // 보고서를 그 자리에서 다시 — 「다음 갈 곳」·「공유」 칸과 펼쳐 둔 「실제 경로」 구간을 그대로 다시 연다 (같은 구간은 sessionStorage 캐시)
-function repAgain(){ var nb=document.getElementById("trNextBox"), nx=nb&&nb.firstElementChild?(nb.querySelector("#trShL")?"share":"next"):"", open=[];
+function repAgain(){ var nb=document.getElementById("trNextBox"), nx=nb&&nb.firstElementChild?(nb.querySelector("#trShG")?"share":"next"):"", open=[];
   [].forEach.call(document.querySelectorAll("#trRep .tlg"),function(r){ var t=r.querySelector(".tods"); if(t&&t.firstElementChild) open.push([r.dataset.a,r.dataset.b,r.dataset.d]); });
   repPaint(); if(nx==="next") nextStop(); else if(nx==="share") shareGo();
   var nt=window.ntap; window.ntap=function(){}; try{ open.forEach(function(o){ var r=[].filter.call(document.querySelectorAll("#trRep .tlg"),function(x){ return x.dataset.a===o[0]&&x.dataset.b===o[1]&&x.dataset.d===o[2]; })[0]; if(r) legRoute(r); }); }catch(e){} window.ntap=nt; }
@@ -249,6 +249,7 @@ var CK6={
  eveQ2:{ko:"저녁 일정이 비어 있어요 — {e}에 일정 끝 · {t}까지 {g} 남아요",en:"Your evening is free — the day ends at {e} · {g} left until {t}",ja:"夜の予定が空いています — {e}に予定終了・{t}まで{g}あります",zhs:"晚上的行程是空的——{e}行程结束 · 到{t}还有{g}",zht:"晚上的行程是空的——{e}行程結束 · 到{t}還有{g}",es:"Tienes la tarde-noche libre: el día termina a las {e} · te quedan {g} hasta las {t}"},
  eveE:{ko:" · 저녁 식사 없음",en:" · no dinner yet",ja:"・夕食なし",zhs:" · 尚未安排晚餐",zht:" · 尚未安排晚餐",es:" · sin cena"},
  eveD:{ko:"이 날은 저녁 식사 자리가 없어요",en:"No dinner planned for this day",ja:"この日は夕食の予定がありません",zhs:"这天没有安排晚餐",zht:"這天沒有安排晚餐",es:"Este día no tiene cena"},
+ eveT:{ko:"일정 추가",en:"Add to your plan",ja:"予定を追加",zhs:"添加行程",zht:"新增行程",es:"Añadir al plan"},
  eveAdd:{ko:"저녁 일정 추가",en:"Add an evening plan",ja:"夜の予定を追加",zhs:"添加晚上行程",zht:"新增晚上行程",es:"Añadir plan de noche"},
  eveEat:{ko:"저녁 식당 찾기",en:"Find a dinner spot",ja:"夕食の店を探す",zhs:"查找晚餐餐厅",zht:"查找晚餐餐廳",es:"Buscar sitio para cenar"},
  eveNo:{ko:"숙소로 일찍 갈게요",en:"I'll head back early",ja:"早めに宿に戻ります",zhs:"我早点回住处",zht:"我早點回住處",es:"Volveré antes"},
@@ -733,8 +734,16 @@ function openReport(H){ if(!TR.plan) return; drLoad(TR.plan); var pl0=TR.plan; i
   sheetClose("trBox"); sheet("trRep"); GEOST=""; GEO=null; /* 열 때마다 위치를 한 번 새로 */ var aiGo=function(){ var pa=TR.plan&&TR.plan.ai; if(TR.plan&&(!pa||aiLangMiss(pa))&&hasPass()) aiFetch();
     else if(pa&&((pa.pend&&pa.pend.length)||(pa.retry&&pa.retry.length))&&hasPass()&&!(AIQ.run&&AIQ.at===TR.plan.at)){ var p0=TR.plan, hn0=p0.mc?"":(p0.hotel&&p0.hotel.type!=="here"?p0.hotel.ko:""); aiFetchParts(p0,hn0,withLC(function(){ return aiDays(p0); }),(pa.pend||[]).concat(pa.retry||[])); } };   // 7일씩 나눠 부르다 앱을 닫았으면 남은 묶음만 (11-06)
   if(H!==undefined){ REPH=H; repPaint(); aiGo(); } else planHotel(function(h){ REPH=h; repPaint(); aiGo(); }); }
-function legTxt(lg){ if(!lg) return ""; var d=lg.km<1?Math.round(lg.km*1000)+" m":lg.km.toFixed(1)+" km";
-  if(lg.mode==="walk") return MPICO("mi_walk",T("🚶 걸어서 약 "+lg.min+"분","🚶 ~"+lg.min+" min walk"),MIS)+" · "+d;
+// 구간 양 끝 이름 (11-07 사장님 「걷는 사람 아이콘 어디서 어디까지 몇 분」) — k = 줄의 data-a/data-b 키 · b = 도착 쪽(숙소 키가 출발·도착 둘 다 __hotel 일 때 가르기)
+var LGC={}, LGME={ko:"지금 내 위치",en:"My location",ja:"現在地",zhs:"我的位置",zht:"我的位置",es:"Mi ubicación"};
+function lgNm(k,di,b){ var pl=TR.plan; if(!pl||!k) return ""; if(k==="__me") return T5(LGME);
+  var x=pl.pool[k]; if(x) return x.eat?eatName(x):nm(x);
+  var m=/^rs:(\d+):(lunch|dinner)$/.exec(k); if(m){ var c=mealsOf(+m[1])[m[2]]; return c?eatName(c):""; }
+  var X=LGC[di]||(LGC[di]=dayX(pl,di,REPH||pl.H||null)), S=hS(X.H), E=hE(X.H);
+  if(k==="__hotel") return ptNm(b?E:S)||ptNm(E||S); if(E&&E.k===k&&b) return ptNm(E); if(S&&S.k===k) return ptNm(S); if(E&&E.k===k) return ptNm(E);
+  return (window.PLACES&&PLACES[k])?nm(PLACES[k]):""; }
+function legTxt(lg,an,bn){ if(!lg) return ""; var d=lg.km<1?Math.round(lg.km*1000)+" m":lg.km.toFixed(1)+" km";
+  if(lg.mode==="walk"){ var ab=an&&bn?an+" → "+bn+" ":""; return MPICO("mi_walk",T("🚶 "+ab+"걸어서 약 "+lg.min+"분","🚶 "+ab+"~"+lg.min+" min walk"),MIS)+" · "+d; }
   if(lg.mode==="transit") return MPICO("mi_subway",T("🚇 대중교통 약 ","🚇 Transit ~"),MIS)+durTxt(lg.min)+(lg.real?" ✓":"")+" · "+d;
   if(lg.mode==="taxi"){ var fr=lg.fare?gTxt(lg.est?TX6.fe:TX6.fr,{f:won(lg.fare)}):"";   // 택시 (11-06) — 네이버 길찾기 값이면 ✓, 어림이면 「약」
     return MPICO("mi_taxi",gTxt(TX6.m,{m:durTxt(lg.min)}),MIS)+(lg.real?" ✓":"")+(fr?" · "+esc(fr):"")+" · "+d+' <i class="txw">'+esc(T5(TX6[lg.live?"live":lg.why]||TX6.short))+'</i>'; }
@@ -797,12 +806,12 @@ document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.
   else if(g==="go"){ var v=(document.getElementById("tgT"+di)||{}).value||"", un=hm2m(v)||pl.to; d.gap={until:un}; try{ ntap("_trip","gap_fill"); }catch(z){} save(); repPaint(); gcOpen(di,un); return; }   // 11-07 — 후보를 보여 주고 손님이 고른다(예전 gapFill 자동 넣기 X)
   save(); repPaint(); });
 function repPaint(){ return withLC(repPaint0); }   // 구간 기억 안에서 (11-06 — 90일 일정)
-function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan; if(!box||!pl) return; var H=REPH, ai=pl.ai||{}, tips=ai.tips||{};
+function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan; if(!box||!pl) return; LGC={}; var H=REPH, ai=pl.ai||{}, tips=ai.tips||{};
   var mp=(window.ME&&ME.pos)||GEO; REPME=mp?{k:"__me",ko:"현재 위치",en:"Current location",lat:+mp[0],lng:+mp[1],me:1}:null;
   if(!mp&&!GEOST&&typeof myPos==="function"){ GEOST="ask"; myPos().then(function(q){ GEOST=q?"ok":"fail"; GEO=q||null; if(q&&document.getElementById("trRep")) repPaint(); else { [].forEach.call(document.querySelectorAll("#trRep .tnost"),function(e){ e.hidden=false; }); } }); }   // 폰 안에서만 한 번 묻는다
   var hn=pl.hotel?(pl.hotel.type==="here"?T("현재 위치","Current location"):nm(pl.hotel)):"";
   var h='<div class="trtop" data-html2canvas-ignore><b>'+MPICO("mi_cart",T("🛒 내 여행 일정","🛒 My trip plan"),MIS)+'</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trRep\')">✕</button></div>'
-    +'<div class="trbar" data-html2canvas-ignore><button type="button" class="trbtn" id="trNext">'+T("➡ 다음 갈 곳","➡ Next stop")+'</button><button type="button" class="trbtn" id="trPdf">'+MPICO("mi_device",T5(SAVE6),MIS)+'</button><button type="button" class="trbtn" id="trMail">'+MPICO("mi_doc",T5(MAIL6),MIS)+'</button><button type="button" class="trbtn" id="trShare">'+T("🔗 공유","🔗 Share")+'</button><button type="button" class="trbtn" id="trEdit">'+T("✏ 고치기","✏ Edit")+'</button><button type="button" class="trbtn ib" id="trInfo" aria-label="info">ⓘ</button></div>'
+    +'<div class="trbar" data-html2canvas-ignore><button type="button" class="trbtn" id="trNext">'+T("➡ 다음 갈 곳","➡ Next stop")+'</button><button type="button" class="trbtn" id="trPdf">'+MPICO("mi_device",T5(SAVE6),MIS)+'</button><button type="button" class="trbtn" id="trMail">'+MPICO("mi_doc",T5(MAIL6),MIS)+'</button><button type="button" class="trbtn" id="trShare">'+SHSVG+T("공유","Share")+'</button><button type="button" class="trbtn" id="trEdit">'+T("✏ 고치기","✏ Edit")+'</button><button type="button" class="trbtn ib" id="trInfo" aria-label="info">ⓘ</button></div>'
     +'<div id="trNextBox" data-html2canvas-ignore></div>'
     +'<div class="d" id="trAiS" data-html2canvas-ignore'+(pl.ai&&!(pl.ai.pend&&pl.ai.pend.length)?" hidden":"")+'>'+T("설명을 쓰는 중… (없어도 일정은 그대로 쓸 수 있어요)","Writing notes… (the plan works without them)")+'</div>'
     +(pl.skip&&pl.skip.length?'<div class="d">'+T("일정에서 뺀 곳(숙소·교통시설): ","Skipped (lodging/transport): ")+esc(pl.skip.map(function(k){ var it=TR.items.filter(function(x){ return x.k===k; })[0]; return it?nm(it):k; }).join(", "))+'</div>':"");
@@ -831,21 +840,21 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
     else if(g0&&(X.me||OLD()||(today&&!REPME))){   // 1번째 장소까지 — 늘 「지금 내 위치」에서(숙소는 날짜 나누기·순서·귀가에만). 모양은 장소 사이 구간과 같게, 실제 경로(ODsay)는 누를 때만, PDF 엔 안 찍음 (10-20)
       if(REPME){ var lg0=leg(REPME,g0), b0=f0.x?f0.x.k:f0.r?"rs:"+di+":"+f0.meal:g0.k;
         h+='<div class="trw h" data-html2canvas-ignore><span class="tt">'+m2hm(Math.max(0,f0.t-lg0.min))+'</span><span class="tp">'+MPIMG("mi_pin",MIS)+T5({ko:"지금 내 위치 출발",en:"Start from where I am now",ja:"今いる場所から出発",zhs:"从我现在的位置出发",zht:"從我現在的位置出發",es:"Salir desde donde estoy ahora"})+'</span></div>'
-          +'<div class="tlg" data-html2canvas-ignore data-a="__me" data-b="'+esc(b0)+'" data-d="'+di+'">'+legTxt(lg0)+legGo(lg0)+'<div class="tods"></div></div>'; prevK="__me"; }
+          +'<div class="tlg" data-html2canvas-ignore data-a="__me" data-b="'+esc(b0)+'" data-d="'+di+'">'+legTxt(lg0,lgNm("__me",di),lgNm(b0,di,1))+legGo(lg0)+'<div class="tods"></div></div>'; prevK="__me"; }
       else h+='<div class="d tnost" data-html2canvas-ignore'+(GEOST==="fail"?"":" hidden")+'>'+T5({ko:"위치를 켜면 1번째 장소까지 가는 길이 보입니다",en:"Turn on location to see the way to your first stop",ja:"位置情報をオンにすると1番目の場所までの行き方が表示されます",zhs:"开启定位后，会显示前往第1个地点的路线",zht:"開啟定位後，會顯示前往第1個地點的路線",es:"Activa la ubicación para ver cómo llegar a tu primera parada"})+'</div>'; }
     var pj=0;   // 이 줄 앞 장소 수(식사 칸에서 「직접 식당 찾기」로 넣을 자리 기본값)
     s.rows.forEach(function(r,ri){ var lgOk=ri>0||!!pre;
-      if(r.x&&r.x.eat){ pj++; if(r.leg&&prevK&&lgOk) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.x.k)+'" data-d="'+di+'">'+legTxt(r.leg)+legGo(r.leg)+'<div class="tods"></div></div>';   // 11-07 손님이 넣은 식당
+      if(r.x&&r.x.eat){ pj++; if(r.leg&&prevK&&lgOk) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.x.k)+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),eatName(r.x))+legGo(r.leg)+'<div class="tods"></div></div>';   // 11-07 손님이 넣은 식당
         var gw=(r.ar!=null&&!lv)?r.t-r.ar:0, gwh=gw>=60?'<span class="tmemo">'+esc(gTxt(CK6.gapM,{t:m2hm(r.t),g:durTxt(gw)}))+'</span><span class="tlvw" data-html2canvas-ignore><button type="button" class="trbtn" style="margin:0;padding:5px 11px;font-size:12.5px" data-ev="add" data-d="'+di+'" data-pos="'+(pj-1)+'">'+esc(T5(CK6.eveAdd))+'</button></span>':'';   // 넣은 식당이 식사 시각을 기다리면 그 빈 시간에 넣을 곳 (11-07)
         h+='<div class="trw l teu" data-uk="'+esc(r.x.k)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+esc(mealLbl(Object.assign({},r.x,{stay:r.st||r.x.stay})))+gwh+'<span class="teat on">'+eatLine(r.x)+'<span class="teact">'+eatLinks(r.x)+rsvLink(r.x)+' <button type="button" class="tebtn" data-ux="'+esc(r.x.k)+'">'+esc(T5(CK6.rm))+'</button></span></span></span></div>';
         prevK=r.x.k; return; }
       if(r.meal){ var mk=di+":"+r.meal, ml=r.meal==="lunch"?T("점심 (1시간)","Lunch (1 h)"):T("저녁 (1시간)","Dinner (1 h)");
-        if(r.r){ if(r.leg&&lgOk&&prevK) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="rs:'+mk+'" data-d="'+di+'">'+legTxt(r.leg)+'<div class="tods"></div></div>';
+        if(r.r){ if(r.leg&&lgOk&&prevK) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="rs:'+mk+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),eatName(r.r))+'<div class="tods"></div></div>';
           h+='<div class="trw l"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+ml+'<span class="teat on">'+eatLine(r.r)+'<span class="teact">'+eatLinks(r.r)+' <button type="button" class="tebtn" data-x="'+mk+'">'+T("바꾸기","Change")+'</button></span></span></span></div>'; prevK="rs:"+mk; }
-        else { if(r.to&&r.leg&&prevK&&lgOk) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.to)+'" data-d="'+di+'">'+legTxt(r.leg)+legGo(r.leg)+'<div class="tods"></div></div>';   // 다음 장소 근처로 먼저 가서 먹는 칸 — 이동이 식사 앞
+        else { if(r.to&&r.leg&&prevK&&lgOk) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.to)+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),lgNm(r.to,di,1))+legGo(r.leg)+'<div class="tods"></div></div>';   // 다음 장소 근처로 먼저 가서 먹는 칸 — 이동이 식사 앞
           h+='<div class="trw l"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+ml+'<span class="teat" id="te_'+mk.replace(":","_")+'" data-k="'+mk+'" data-j="'+pj+'">'+eatList(mk,r.anchor)+'</span></span></div>'; }
         return; }
-      if(r.leg&&prevK&&lgOk) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.x.k)+'" data-d="'+di+'">'+legTxt(r.leg)+legGo(r.leg)+'<div class="tods"></div></div>';
+      if(r.leg&&prevK&&lgOk) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.x.k)+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),nm(r.x))+legGo(r.leg)+'<div class="tods"></div></div>';
       n++; pj++; var tip=tips[r.x.k], memo=r.note.map(function(q){ return Array.isArray(q)?T(q[0],q[1]):gTxt(q.o,q.v||{}); }).concat(IM[di+"|"+r.x.k]||[]), lr=lv&&lv.rec[r.x.k];
       if(r.act===2&&lr) memo.unshift(lr.a!=null?gTxt(LV6.done,{a:m2hm(lr.a),d:m2hm(lr.d!=null?lr.d:r.t+r.st)}):gTxt(LV6.left,{d:m2hm(lr.d)}));
       else if(r.act===1&&lr) memo.unshift(gTxt(LV6.here,{a:m2hm(lr.a)}));
@@ -857,12 +866,13 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
         +(hk===r.x.k?'<span class="tlvw" data-html2canvas-ignore><button type="button" class="tlvb" data-lvleave="'+esc(r.x.k)+'">'+esc(T5(LV6.leave))+'</button></span>':'')+'</span></div>';
       prevK=r.x.k; });
     if(Q.post) h+=natPostHtml(pl,di,X,Q.post,prevK);
-    else if(s.back) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="__hotel" data-d="'+di+'">'+legTxt(s.back)+legGo(s.back)+'<div class="tods"></div></div><div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+MPICO("mi_stay",T("숙소 도착","Back to lodging"),MIS)+'</span></div>';
+    else if(s.back) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="__hotel" data-d="'+di+'">'+legTxt(s.back,lgNm(prevK,di),lgNm("__hotel",di,1))+legGo(s.back)+'<div class="tods"></div></div><div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+MPICO("mi_stay",T("숙소 도착","Back to lodging"),MIS)+'</span></div>';
     else h+='<div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+T("일정 끝","End of day")+'</span></div>';
     if(!Q.post&&pl.days.length>1&&di<pl.days.length-1) h+=nightHtml(pl,di,null);   // 밤마다 숙소 칸 (11-06) — 숙소 하나 일정은 마지막 날 빼고
-    if(!(X.pmTr||X.apD)){ var evh=pl.ord?eveHtml(pl,d,di,s,X,Q.lim,shr!==0):""; h+=evh||gapAsk(pl,d,di,s,shr!==0); }   // 기차·비행기 시각이 정해진 날은 「일찍 끝나요」를 안 묻는다 (11-06) · 11-07 저녁이 빈 날은 저녁 일정 추가·저녁 식당 찾기
+    if(d.gap&&!(X.pmTr||X.apD)) h+=gapAsk(pl,d,di,s,shr!==0);   // 「숙소로 일찍 갈게요」를 고른 날 등 — 그 표시와 되돌리기 (11-07 「일찍 끝나요」 물음은 아래 「일정 추가」 칸이 맡는다)
     var lim=Q.lim;   // 밤 장소가 있는 날은 그 장소 시각까지 (11-06) · 전국 일정은 막차·공항 도착 시각도
     if(s.end>lim&&arr.length) h+='<div class="tmemo" style="margin-top:4px">⚠ '+esc(gTxt(X.apD?NX6.wAp:(X.pmTr&&X.lim!=null&&lim===X.lim)?NX6.wTr:OVR6,{t:m2hm(lim)}))+'</div>';
+    h+=eveHtml(pl,d,di,s,X,lim);   // 11-07 사장님 — 「일정 추가」 칸은 모든 날 일정 맨 끝에 무조건 (일정을 더 짜서 놀고 싶은 사람)
     h+='</div></div>'; });
   // 그날 ⚠ 경고가 하나라도 있으면 맨 위에 날짜 수 추천 (고른 날짜가 이미 90일이면 더 늘릴 수 없어 안 띄움 · 뒤에서 짜는 중이면 다 된 뒤 다시 그릴 때)
   var sgn=(over&&pl.days.length<MAXD)?sugDays(H,pl.days.length,pl.at):null;
@@ -1210,12 +1220,10 @@ document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.
   var nx=eatName(pl.pool[k]); dropPlace(k); lgToast(gTxt(CK6.dropD,{p:nx})); repPaint(); },true);
 // ── 저녁이 빈 날 (그날 끝) — 기준: 숙소 도착이 하루 끝보다 2시간 넘게 이르거나, 저녁 식사가 없는 날(하루 끝이 18:30 뒤일 때) ──
 //   [저녁 일정 추가] = 그날 마지막 장소 근처 지도 명소(6km 안, 가까운 순 8곳) 후보 → 고르면 넣기 전 확인 · [저녁 식당 찾기] = 직접 식당 찾기와 같은 길 · [숙소로 일찍 갈게요] = 예전 「일찍 감」
-function eveHtml(pl,d,di,s,X,lim,hush){ if(!X.arr.length||X.pmTr||X.apD||d.gap||d.eveX) return "";
-  var hasD=s.rows.some(function(r){ return r.meal==="dinner"||(r.x&&r.x.eat&&r.x.meal==="dinner"); }), free=hush?0:lim-s.end, spans=(X.to!=null?X.to:pl.to)>=1110;   // hush = 맨 위 날짜 줄이기 칸이 먼저(빈 시간 물음은 감추고, 저녁 식사 없음만)
-  if(!(free>=120||(!hasD&&spans))) return "";
-  var hh=!!hE(X.H), bt=[]; if(free>=60) bt.push(["add",CK6.eveAdd]); if(!hasD) bt.push(["eat",CK6.eveEat]); bt.push(free>=45&&hh?["no",CK6.eveNo]:["keep",CK6.bKeep]);   // 숙소가 없는 날(마지막 날 등)은 「일정 끝」·「그대로 두기」
-  var msg=free>=120?gTxt(hh?CK6.eveQ:CK6.eveQ2,{e:m2hm(s.end),t:m2hm(lim),g:durTxt(free)})+(!hasD?T5(CK6.eveE):""):T5(CK6.eveD);
-  return '<div class="tgap teve" data-html2canvas-ignore><b>'+MPIMG("mi_moon",MIS)+esc(msg)+'</b><div class="tgr">'+bt.map(function(a){ return '<button type="button" class="trbtn" data-ev="'+a[0]+'" data-d="'+di+'">'+esc(T5(a[1]))+'</button>'; }).join("")+'</div></div>'; }
+function eveHtml(pl,d,di,s,X,lim){   // 「일정 추가」 (11-07 사장님 — 제목은 그냥 「일정 추가」, 모든 날 맨 끝에 무조건) · 단추 셋 그대로: 저녁 일정 추가(늘) · 저녁 식당 찾기(저녁 식사가 없는 날) · 숙소로 일찍 갈게요(숙소로 돌아가는 날, 끝까지 45분 넘게 남을 때)
+  var hasD=s.rows.some(function(r){ return r.meal==="dinner"||(r.x&&r.x.eat&&r.x.meal==="dinner"); }), free=lim-s.end, bt=[["add",CK6.eveAdd]];
+  if(!hasD) bt.push(["eat",CK6.eveEat]); if(hE(X.H)&&X.arr.length&&free>=45&&d.gap!=="early") bt.push(["no",CK6.eveNo]);
+  return '<div class="tgap teve" data-html2canvas-ignore><b>'+esc(T5(CK6.eveT))+'</b><div class="tgr">'+bt.map(function(a){ return '<button type="button" class="trbtn" data-ev="'+a[0]+'" data-d="'+di+'">'+esc(T5(a[1]))+'</button>'; }).join("")+'</div></div>'; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-ev]"); if(!a) return; e.preventDefault(); var pl=TR.plan; if(!pl) return; var di=+a.dataset.d, d=pl.days[di]; if(!d) return; var v=a.dataset.ev;
   try{ ntap("_trip","eve_"+v); }catch(z){}
   if(v==="no"){ d.gap="early"; save(); repPaint(); return; }
@@ -1337,18 +1345,17 @@ function shareData(){ var pl=TR.plan, r=function(n){ return Math.round(n*1e5)/1e
     u:(function(){ var u={}, n=0; for(var k in pl.pool){ var x=pl.pool[k]; if(x&&!x.eat&&+x.um>0){ u[k]=+x.um; n++; } } return n?u:undefined; })()}; }   // 11-07 손님이 고른 머무는 시간(u)·손님이 넣은 식당([5] = {e:끼니, m:분}) — 옛 앱은 모르는 칸이라 버린다   // x = 전국 일정(도시별 숙소·공항·도시 이동 아침/저녁) — 옛 앱은 모르는 칸이라 버린다 (11-06)
 // 일정을 # 뒤에 압축해 담은 공유 링크(읽기 전용으로 앱에서 열린다) — 링크·메일 공용
 function tripUrl(){ return zip(JSON.stringify(shareData())).then(function(z){ return location.origin+location.pathname.replace(/index\.html$/,"")+"?trip=1#tp="+z; }); }
-function shareGo(){ var box=document.getElementById("trNextBox");
-  box.innerHTML='<div class="item"><div class="t">'+T("🔗 공유","🔗 Share")+'</div>'
-    +'<div class="shgrid" style="margin-top:8px"><button type="button" id="trShL">🔗 '+T("링크","Link")+'</button><button type="button" id="trShMail">✉ '+T("메일","Email")+'</button></div>'
-    +'<button type="button" id="trShP" class="gsbtn" style="margin-top:8px">'+MPIMG("mi_guideperson",MIS)+esc(T5({ko:"가이드에게 PDF 보내기",en:"Send PDF to a guide",ja:"ガイドにPDFを送る",zhs:"把PDF发给向导",zht:"把PDF傳給嚮導",es:"Enviar PDF a un guía"}))+'</button>'
-    +'<div class="shmsg" id="trShM"></div></div>';
-  document.getElementById("trShL").onclick=function(){ tripUrl().then(function(u){ var m=document.getElementById("trShM");
-    if(navigator.share) navigator.share({title:T("내 여행 일정","My trip plan"),url:u}).catch(function(){});
-    else { try{ navigator.clipboard.writeText(u); m.textContent=T("링크를 복사했어요","Link copied"); }catch(e){ m.textContent=u; } } window.__trShareUrl=u; try{ ntap("_trip","share"); }catch(e){} }); };
-  // ✉ 메일 — 데스크톱·공유 시트 없을 때도 메일 앱으로 일정 링크를 보낼 수 있게 (사장님 10-24)
-  document.getElementById("trShMail").onclick=function(){ var m=document.getElementById("trShM"); m.textContent=T("메일 여는 중…","Opening email…"); tripUrl().then(function(u){ m.textContent=""; window.__trShareUrl=u;
-    var subj=encodeURIComponent(T("내 여행 일정","My trip plan")), body=encodeURIComponent(T("여행 일정을 공유합니다:","Here is my trip plan:")+"\n"+u); try{ ntap("_trip","share_mail"); }catch(e){} location.href="mailto:?subject="+subj+"&body="+body; }); };
-  document.getElementById("trShP").onclick=function(){ gsOpen(); }; }
+var SHSVG='<svg viewBox="0 0 24 24" style="width:1.05em;height:1.05em;vertical-align:-0.17em;margin-right:4px" aria-hidden="true"><path fill="#5b93ff" d="M18 16.08a2.9 2.9 0 0 0-1.96.77L8.9 12.7a3.3 3.3 0 0 0 0-1.4l7.05-4.11A2.92 2.92 0 1 0 15 5a3 3 0 0 0 .06.6L8.04 9.72a3 3 0 1 0 0 4.56l7.1 4.15c-.04.2-.06.4-.06.6a2.92 2.92 0 1 0 2.92-2.95z"/></svg>';   // 공유 아이콘 = 앱 공유 창 「다른 앱으로」와 같은 모양 (11-07 사장님 — 링크 아이콘이 잘못 붙어 있었다)
+function shareGo(){ var box=document.getElementById("trNextBox");   // 11-07 사장님 — 앱 공유 창 단추(X·문자·텔레그램·LINE·페이스북·밴드·WhatsApp·메일·카카오톡·위챗·링크 복사·다른 앱으로)를 그대로, 보내는 것은 이 일정 링크
+  box.innerHTML='<div class="item"><div class="t">'+SHSVG+T("공유","Share")+'</div>'
+    +'<div id="trShG" style="margin-top:8px"><div class="d">…</div></div>'
+    +'<button type="button" id="trShP" class="gsbtn" style="margin-top:8px">'+MPIMG("mi_guideperson",MIS)+esc(T5({ko:"가이드에게 PDF 보내기",en:"Send PDF to a guide",ja:"ガイドにPDFを送る",zhs:"把PDF发给向导",zht:"把PDF傳給嚮導",es:"Enviar PDF a un guía"}))+'</button></div>';
+  document.getElementById("trShP").onclick=function(){ gsOpen(); };
+  tripUrl().then(function(u){ var g=document.getElementById("trShG"); if(!g) return; window.__trShareUrl=u;
+    var pl=TR.plan, dd=pl&&pl.days&&pl.days.length?pl.days:null, desc=dd?dateTxt(new Date(dd[0].date+"T00:00:00Z"))+(dd.length>1?" – "+dateTxt(new Date(dd[dd.length-1].date+"T00:00:00Z")):""):"";
+    if(typeof window.shareInto==="function") window.shareInto(g,{url:u,txt:T5({ko:"내 여행 일정",en:"My trip plan",ja:"私の旅行日程",zhs:"我的旅行行程",zht:"我的旅行行程",es:"Mi plan de viaje"}),desc:desc||"Money Puzzle Tour for Korea"});
+    else g.innerHTML='<div class="d" style="word-break:break-all">'+esc(u)+'</div>';
+    g.addEventListener("click",function(){ try{ ntap("_trip","share"); }catch(e){} }); }); }
 
 // ── 가이드에게 일정 PDF 보내기 (사장님 2026-10-24) — 「PDF 보내기」를 가이드 전용으로. 언어 고르기 → 가이드 목록 → 확인 → 이메일로 PDF 첨부 발송(+문자 링크는 준비만) ──
 //   near.js 의 통역·길안내(ig) 목록 UX 를 이 창(trNextBox) 안에서 그대로 흉내 낸다. 가이드 자료는 허브 GET /guide/guides?lang= · 보내기는 POST /guide/sendplan
@@ -1921,7 +1928,7 @@ function natPost(pl,di,X,s){ var d=pl.days[di], rows=[], S=hS(X.H), E=hE(X.H), t
   var nc=d.nc!=null?d.nc:d.c; if(nc>=0&&(di<pl.days.length-1||hotelPt(pl,nc))) rows.push({night:1,ci:nc,di:di});
   return o; }
 function rowH(t,ic,txt,cls){ return '<div class="trw h'+(cls?" "+cls:"")+'"><span class="tt">'+(t!=null?m2hm(t):"")+'</span><span class="tp">'+(ic?MPIMG(ic,MIS):"")+txt+'</span></div>'; }
-function legRow(r,di,aK){ var a=(r.a&&r.a.k)||aK, b=(r.b&&r.b.k)||"__hotel"; return '<div class="tlg" data-a="'+esc(a||"")+'" data-b="'+esc(b)+'" data-d="'+di+'">'+legTxt(r.leg)+legGo(r.leg)+'<div class="tods"></div></div>'; }
+function legRow(r,di,aK){ var a=(r.a&&r.a.k)||aK, b=(r.b&&r.b.k)||"__hotel"; return '<div class="tlg" data-a="'+esc(a||"")+'" data-b="'+esc(b)+'" data-d="'+di+'">'+legTxt(r.leg,r.a?ptNm(r.a):lgNm(aK,di),r.b?ptNm(r.b):lgNm("__hotel",di,1))+legGo(r.leg)+'<div class="tods"></div></div>'; }
 function natPreHtml(pl,di,X){ var h=''; X.pre.forEach(function(r){
     if(r.ap==="a") h+=rowH(r.t,"mi_plane",esc(r.ft!=null?gTxt(NX6.apA,{a:ptNm(r.p),f:m2hm(r.ft),t:m2hm(r.t)}):gTxt(NX6.apA0,{a:ptNm(r.p)})));
     else if(r.start) h+=rowH(r.t,"mi_stay",esc(gTxt(NX6.st,{h:ptNm(r.p)})));
