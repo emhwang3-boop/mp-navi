@@ -64,8 +64,8 @@ var TX={
  sentX:T6("예약을 받았어요. 확정·취소 같은 소식은 메일로 알려 드려요.","Your booking is received. We'll email you about news such as confirmation or cancellation.","ご予約を受け付けました。確定やキャンセルなどのお知らせはメールでお送りします。","已收到预约。确认、取消等消息会通过邮件通知您。","已收到預約。確認、取消等消息會透過電郵通知您。","Hemos recibido tu reserva. Te avisaremos por correo de novedades como la confirmación o una cancelación."),   // 11-06 손님 문자 끔   // 방 없는 상품(입장권·클래스)
  chatGo:T6("💬 말풍선에서 보기","💬 Open in chat","💬 吹き出し（チャット）で見る","💬 在对话气泡中查看","💬 在對話氣泡中查看","💬 Ver en el chat"),
  tsv:T6("시험 주문으로 저장했어요. 가이드·예약자에게는 아무것도 보내지 않았어요.","Saved as a test order. Nothing was sent to the guide or to you.","テスト注文として保存しました。ガイドやご予約者には何も送っていません。","已保存为测试订单，未向向导或您发送任何内容。","已儲存為測試訂單，未向嚮導或您傳送任何內容。","Guardado como pedido de prueba. No se envió nada al guía ni a ti."),
- // 토스 결제창 (10-29 카드사 심사 「결제창이 떠야 한다」)
- opn:T6("토스 결제창을 여는 중…","Opening the Toss payment window…","Toss決済画面を開いています…","正在打开Toss付款窗口…","正在開啟Toss付款視窗…","Abriendo la ventana de pago de Toss…"),
+ // 결제창 (KG이니시스 · 포트원, 11-07 — 옛 토스 글자 바꿈)
+ opn:T6("결제창을 여는 중…","Opening the payment window…","決済画面を開いています…","正在打开付款窗口…","正在開啟付款視窗…","Abriendo la ventana de pago…"),
  pdT:T6("결제 완료","Payment done","決済完了","付款完成","付款完成","Pago completado"),
  tkey:T6("시험 결제(테스트 키) — 실제 청구 없음","Test payment (test key) — no real charge","テスト決済（テストキー）— 実際の請求はありません","测试付款（测试密钥）— 不会实际扣款","測試付款（測試金鑰）— 不會實際扣款","Pago de prueba (clave de prueba): sin cargo real"),
  pfT:T6("결제가 완료되지 않았어요 (취소 또는 실패).","The payment was not completed (cancelled or failed).","決済が完了しませんでした（キャンセルまたは失敗）。","付款未完成（已取消或失败）。","付款未完成（已取消或失敗）。","El pago no se completó (cancelado o fallido)."),
@@ -518,15 +518,8 @@ function toList(){ var b=box(); S.det=false; var o=b&&b.querySelector(".spm"); i
 function repaint(){ if(S.det) paintDet(); else paint(); }
 // 결제창 — 11-05 실전(사장님 「시험 판 운영하지 마… 결제도 막 눌러」): 「결제하기」 = 허브 /shop/order 실전 주문 → PG 전(SH_PG=false)이라 허브가 pay:"none" 으로 바로 결제 완료
 //   → 손님 메일·문자 · 고른 가이드에게 수락·거절 링크(거절하면 다른 가이드 자동 배정) · 사장님 텔레그램 · 이 폰 「내 예약」에 저장(배정 가이드 카드·별점·후기)
-//   🔴 PG 붙일 때: SH_PG=true → 아래 옛 흐름(orderId·금액으로 토스 결제창)
-// (옛) 「결제하기」를 누르면 허브 /shop/order 에 시험 주문(test:true, 서버가 금액 계산·orderId 발급, 텔레그램 [시험 주문])을 만들고
-//   그 orderId·금액으로 토스 결제창(API 개별 연동, 우리 상점 시험 키)을 띄운다 (10-29 카드사 심사 「바로 테스트 결제 완료 → 결제창이 떠야」)
-//   돌아오면(?shres=ok|fail) 아래 shopReturn 이 완료/실패 화면. 승인 API(/shop/toss/confirm)는 TOSS_SK 가 없어 부르지 않는다 — 시험 키라 실제 청구 없음
-//   🔴 결제 붙일 때: test:true → false, 돌아오면 paymentKey·orderId·amount 를 허브 /shop/toss/confirm 으로 (worker.js shopRoute 주석)
-var SH_PG=false;   // 🔴 PG 붙이면 true (토스 결제창). 지금은 「결제하기」 = 바로 결제 완료(허브 pay:"none")
-var TCK="test_ck_5OWRapdA8dzyq72vW4gRVo1zEqZK", TSDK="https://js.tosspayments.com/v2/standard", PKEY="mpv_shpay";   // 시험 키 원본 _secrets\toss_test_ck.txt (tosspay.js CK_API 와 같음)
-function tsdk(){ return new Promise(function(ok,no){ if(window.TossPayments) return ok(); var s=document.createElement("script"); s.src=TSDK; s.onload=function(){ ok(); }; s.onerror=no; document.head.appendChild(s); }); }
-function ss(k,v){ try{ if(v===undefined) return JSON.parse(sessionStorage.getItem(k)||"null"); if(v===null) sessionStorage.removeItem(k); else sessionStorage.setItem(k,JSON.stringify(v)); }catch(e){ return null; } }
+//   🔴 PG 붙일 때 (11-07 사장님 「이니시스로 해」 — 토스 아님): tpg.js 의 SH_PG=true + 허브 PORTONE_TOUR_CHANNEL_KEY → 「결제하기」가 pg:1 로 주문 → KG이니시스 결제창(포트원) → 돌아오면 TPG.onRet("pkg") 아래
+function pgOn(){ return !!(window.TPG&&TPG.on); }
 function mockPay(res){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelector(".spm"); if(o) o.remove();
   var unit=unitOf(p,S.n), tot=unit*S.n, gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0], gnm=gg?gName(gg):(S.gid&&S.gname)||"";
   o=document.createElement("div"); o.className="spm"; b.appendChild(o); var agd=false; if(!S.pm) S.pm="card";
@@ -560,47 +553,35 @@ function mockPay(res){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySe
       if(p.hub&&!p.free&&p.days.length&&p.days.indexOf(new Date(S.date+"T00:00:00Z").getUTCDay())<0){ draw(null,L(TX.edy)); return; }   // 진행 요일 (10-29)
       if(S.pm==="paypal"){ draw(null,L(TX.ppn)); return; }   // 토스 해외간편결제(PayPal)는 USD·별도 계약이라 시험 키에서 COMMON_ERROR (10-29 확인) — 주문 만들지 않고 안내만
       draw(null,"",1); var pm="card";
-      fetch(HUBU+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:p.id,pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,glang:S.glang||"",lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,sess:(function(){ try{ return localStorage.getItem("mpv_pg_sess")||undefined; }catch(z){ return undefined; } })()})})
+      fetch(HUBU+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:p.id,pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,glang:S.glang||"",lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,pg:pgOn()?1:0,sess:(function(){ try{ return localStorage.getItem("mpv_pg_sess")||undefined; }catch(z){ return undefined; } })()})})
        .then(function(r){ return r.json(); }).then(function(j){
-         if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err; draw(null,e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(p.hub&&p.days&&p.days.length?TX.edy:TX.edt):e==="notsale"?L(TX.soon):L(TX.efail)); return; }
+         if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err, pe=window.TPG?TPG.errTx(e):""; draw(null,pe||(e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(p.hub&&p.days&&p.days.length?TX.edy:TX.edt):e==="notsale"?L(TX.soon):L(TX.efail))); return; }
          try{ ntap("shop","order_"+p.id); }catch(z){}
-         if(!SH_PG){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:L(p.t),date:S.date,time:S.time,n:S.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null}); }catch(z){}   // 「내 예약」 (11-05)
+         if(j.pay!=="pg"){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:L(p.t),date:S.date,time:S.time,n:S.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null}); }catch(z){}   // 「내 예약」 (11-05)
            S.cn=nm; S.ce=em; S.cp=ph; mockPay({ok:true,oid:j.orderId,amount:j.amount,tk:j.tdone||"",chat:!!j.chat}); return; }
+         // KG이니시스 결제창 (포트원, 11-07) — 돌아왔을 때 화면을 다시 그릴 주문 내용은 tpg.js 가 이 탭에만 둔다
          draw(null,"",2);
-         // 돌아왔을 때 화면을 다시 그리려고 주문 내용을 이 탭에만 잠깐 둔다 (sessionStorage)
-         ss(PKEY,{oid:j.orderId,amount:j.amount,pid:p.id,date:S.date,time:S.time,n:S.n,gid:S.gid||null,gname:gnm,glang:S.glang||"",cn:nm,ce:em,cp:ph,pm:pm,at:Date.now()});
-         var base=location.origin+location.pathname, mob=ph.replace(/\D/g,"");
-         var req={method:"CARD",amount:{currency:"KRW",value:j.amount},orderId:j.orderId,orderName:String(j.orderName||L(p.t)).slice(0,100),
-           successUrl:base+"?shres=ok",failUrl:base+"?shres=fail",customerName:nm.slice(0,40),customerEmail:em};
-         if(/^01\d{8,9}$/.test(mob)) req.customerMobilePhone=mob;   // 토스는 한국 휴대폰 숫자만 받는다
-         req.card={flowMode:"DEFAULT",useEscrow:false,useCardPoint:false,useAppCardOnly:false};   // 카드사 선택 → 카드사 인증창 (토스 결제창)
-         // 🔴 PayPal 붙일 때: method "FOREIGN_EASY_PAY", foreignEasyPay:{provider:"PAYPAL",country:"KR"}, amount 는 USD 여야 한다 (KRW 면 INVALID_AMOUNT_CURRENCY)
-         return tsdk().then(function(){ return window.TossPayments(TCK).payment({customerKey:window.TossPayments.ANONYMOUS}).requestPayment(req); })
-           .catch(function(e){ window.__shTossErr=String((e&&e.code||"")+" "+(e&&e.message||e)); ss(PKEY,null); draw(null,(e&&e.code==="USER_CANCEL")?L(TX.pfT):((e&&e.message)||L(TX.pfT))); }); })
+         return TPG.go(j,{kind:"pkg",oid:j.orderId,amount:j.amount,pid:p.id,pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,gname:gnm,glang:S.glang||"",cn:nm,ce:em,cp:ph,pm:pm},{name:nm,email:em,phone:ph})
+           .then(function(m){ if(m) draw(null,m); }); })
        .catch(function(){ draw(null,L(TX.efail)); }); };
     var sx=o.querySelector("#spmX"); if(sx) sx.onclick=function(){ o.remove(); };
     var cxb=o.querySelector("#spmCx"); if(cxb) cxb.onclick=function(){ o.remove(); };   // 취소 = 「돌아가기」와 같음 (11-05)
     var chb=o.querySelector("#spmChat"); if(chb) chb.onclick=function(){ if(!window.CHAT) return; close(); CHAT.room(res.tk); };   // 결제 완료 → 그 예약의 말풍선 방 (11-05)
   };
   draw(null,res&&!res.ok?res.err:""); }
-// 토스 결제창에서 돌아왔을 때 (successUrl ?shres=ok&paymentKey&orderId&amount · failUrl ?shres=fail&code&message&orderId)
-//   ok  → 체험·입장권 상세 화면 위에 결제 완료(주문 내용·주문번호·「시험 결제(테스트 키) — 실제 청구 없음」)
-//   fail→ 실패/취소 안내를 단 결제창으로 되돌아간다. 주소창 쿼리는 처리 후 지운다
-function shopReturn(){ var sp=new URLSearchParams(location.search), r=sp.get("shres"); if(!r) return;
-  try{ var keep=location.search.slice(1).split("&").filter(function(x){ return !/^(shres|paymentKey|orderId|amount|paymentType|code|message)=/.test(x); }).join("&");
-    history.replaceState(history.state,"",location.pathname+(keep?"?"+keep:"")+location.hash); }catch(e){}
-  var v=ss(PKEY); if(!v||!v.pid) return;
-  loadP().then(function(){ shopRet2(sp,r,v); }); }
-function shopRet2(sp,r,v){ if(!PL().some(function(x){ return x.id===v.pid; })) return;
-  var oid=sp.get("orderId")||"", amt=Math.round(Number(sp.get("amount")||0)), ok=r==="ok"&&oid===v.oid&&amt===v.amount;
-  if(ok) ss(PKEY,null);
+// KG이니시스 결제창(포트원)에서 돌아왔을 때 (11-07 — 옛 토스 ?shres= 자리) — tpg.js 가 허브 /shop/port/confirm 으로 확정한 뒤 부른다
+//   ok  → 체험·입장권 상세 화면 위에 결제 완료(주문번호 · 💬 말풍선) + 「내 예약」 · 실패·취소 → 실패 안내를 단 결제창 · 확인 중 → 그 안내
+if(window.TPG) TPG.onRet("pkg",function(v,r){ loadP().then(function(){ shopRet2(v,r); }); });
+function shopRet2(v,r){ if(!PL().some(function(x){ return x.id===v.pid; })) return;
+  var ok=!!(r&&r.ok), j=(r&&r.j)||{};
   S.date=v.date; S.time=v.time; S.n=v.n; S.gid=v.gid; S.gname=v.gname; S.cn=v.cn||""; S.ce=v.ce||""; S.cp=v.cp||""; S.pm=v.pm;
-  var msg=L(TX.pfT)+(r!=="ok"&&sp.get("message")?" ("+sp.get("message")+")":""), res=ok?{ok:true,oid:v.oid,amount:v.amount}:{ok:false,err:msg};
+  if(ok){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:v.pname||"",date:v.date,time:v.time,n:v.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null}); }catch(z){} }
+  var msg=(window.TPG&&TPG.resTx(r))||(L(TX.pfT)+(r&&r.msg?" ("+r.msg+")":"")), res=ok?{ok:true,oid:j.orderId||v.oid,amount:j.amount||v.amount,tk:j.tdone||"",chat:!!j.chat}:{ok:false,err:msg};
   open(); openDet(v.pid); mockPay(res);
   if(v.glang){ S.glang=v.glang; S.guides=null;   // 가이드 목록은 다시 받아 오되, 다 그린 뒤 결제창을 다시 얹는다
     fetch(HUBU+"/guide/guides?lang="+encodeURIComponent(v.glang)).then(function(q){ return q.json(); }).then(function(j){ S.guides=(j&&j.ok&&j.items)||[]; }).catch(function(){ S.guides=[]; })
       .then(function(){ if(!box()||!S.det) return; var had=!!box().querySelector(".spm"); repaint(); if(had) mockPay(res); }); }
-  try{ ntap("shop",ok?"paid_test_"+v.pid:"payfail_"+v.pid); }catch(z){}
+  try{ ntap("shop",ok?"paid_"+v.pid:"payfail_"+v.pid); }catch(z){}
   window.__shResult=ok?"ok":"fail"; }
 function loadGuides(){ var l=S.glang; S.guides=null; repaint();
   fetch(HUBU+"/guide/guides?lang="+encodeURIComponent(l)).then(function(r){ return r.json(); }).then(function(j){ if(S.glang!==l) return; S.guides=(j&&j.ok&&j.items)||[]; repaint(); }).catch(function(){ if(S.glang===l){ S.guides=[]; repaint(); } }); }
@@ -642,5 +623,5 @@ window.SHOP={open:open,close:close,back:back,
   load:loadP,items:function(){ return PL(); },
   brief:function(p){ var u=minUnit(p); return {id:p.id,c:p.c,t:L(p.t),img:psrc(p),cat:(function(){ try{ return catName(p.c); }catch(e){ return ""; } })(),from:u?won(u)+"~ / "+L(TX.per):"",badge:L(p.real?TX.real:TX.ex),real:!!p.real}; },
   det:function(id){ if(!PL().some(function(x){ return x.id===id; })) return; open(); openDet(id); S.fromAi=true; try{ ntap("shop","p_"+id); }catch(z){} }};
-if(/[?&]shres=/.test(location.search)){ var _sr=function(){ setTimeout(function(){ try{ shopReturn(); }catch(e){ window.__shRetErr=String(e); } },700); }; if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",_sr); else _sr(); }   // 토스 결제창에서 돌아옴 (10-29)
+// 결제창에서 돌아옴 = tpg.js(?tpres=) → 위 TPG.onRet("pkg") (11-07 — 옛 토스 ?shres= 처리기는 지움)
 })();
