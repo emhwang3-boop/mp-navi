@@ -189,7 +189,7 @@ var CK6={
  cT:{ko:"일정 검사 — 확인해 주세요",en:"Plan check — please review",ja:"日程チェック — ご確認ください",zhs:"行程检查——请确认",zht:"行程檢查——請確認",es:"Revisión del plan: compruébalo"},
  cI:{ko:"손님이 정한 순서 그대로 짰어요. 아래는 시간이 맞지 않는 곳이에요 — 어떻게 할지 골라 주세요. (자동으로 고치지 않아요)",en:"We kept your order exactly. These spots don't fit the time well — choose what to do. (We won't change anything automatically)",ja:"お客様が決めた順番のまま組みました。下は時間が合わない場所です — どうするか選んでください。（自動では直しません）",zhs:"已完全按您的顺序安排。以下地点时间不太合适——请选择如何处理。（不会自动修改）",zht:"已完全按您的順序安排。以下地點時間不太合適——請選擇如何處理。（不會自動修改）",es:"Mantuvimos tu orden exacto. Estos lugares no encajan bien con la hora: elige qué hacer. (No cambiamos nada automáticamente)"},
  cI2:{ko:"바뀐 일정을 다시 검사했어요. 아래를 확인해 주세요.",en:"We re-checked the updated plan. Please review the items below.",ja:"変更後の日程をもう一度チェックしました。下をご確認ください。",zhs:"已重新检查修改后的行程，请确认以下内容。",zht:"已重新檢查修改後的行程，請確認以下內容。",es:"Revisamos de nuevo el plan modificado. Mira lo siguiente."},
- cOk:{ko:"일정을 다시 검사했어요 — 하루 끝·문 닫는 시각·식사 모두 문제 없어요",en:"Plan re-checked — end time, closing times and meals all look fine",ja:"日程を再チェックしました — 終了時刻・閉店時刻・食事すべて問題ありません",zhs:"已重新检查行程——结束时间、关门时间和用餐都没有问题",zht:"已重新檢查行程——結束時間、關門時間和用餐都沒有問題",es:"Plan revisado: hora de fin, cierres y comidas, todo bien"},
+ cOk:{ko:"일정을 다시 검사했어요 — 끝나는 시각·문 닫는 시각·식사 모두 문제 없어요",en:"Plan re-checked — end times, closing times and meals all look fine",ja:"日程を再チェックしました — 終了時刻・閉店時刻・食事すべて問題ありません",zhs:"已重新检查行程——结束时间、关门时间和用餐都没有问题",zht:"已重新檢查行程——結束時間、關門時間和用餐都沒有問題",es:"Plan revisado: horas de fin, cierres y comidas, todo bien"},
  cBar:{ko:"⚠ 확인할 곳 {n}곳",en:"⚠ {n} item(s) to check",ja:"⚠ 確認が必要な場所 {n}件",zhs:"⚠ 有{n}项需要确认",zht:"⚠ 有{n}項需要確認",es:"⚠ {n} punto(s) por revisar"},
  cSee:{ko:"보기",en:"View",ja:"見る",zhs:"查看",zht:"查看",es:"Ver"},
  night:{ko:"밤에 여는 곳인데 {a}에 잡혔어요",en:"Opens at night, but it's scheduled at {a}",ja:"夜に開く場所ですが{a}に入っています",zhs:"这是晚上营业的地方，却安排在{a}",zht:"這是晚上營業的地方，卻安排在{a}",es:"Abre de noche, pero está programado a las {a}"},
@@ -203,7 +203,9 @@ var CK6={
  cut:{ko:"머무는 동안 문을 닫아요 ({c} 마감 — {s}만 머물 수 있어요)",en:"It closes while you're there ({c} — only {s} inside)",ja:"滞在中に閉まります（{c}閉店 — {s}しかいられません）",zhs:"停留期间会关门（{c}关门——只能待{s}）",zht:"停留期間會關門（{c}關門——只能待{s}）",es:"Cierra mientras estás dentro ({c}: solo {s})"},
  late:{ko:"보통 낮에만 여는 곳인데 {a}에 잡혔어요 — 운영 시간을 확인하세요",en:"Usually open only in the daytime, but it's scheduled at {a} — check the hours",ja:"ふつうは昼だけ開く場所ですが{a}に入っています — 営業時間をご確認ください",zhs:"一般只在白天开放，却安排在{a}——请确认开放时间",zht:"一般只在白天開放，卻安排在{a}——請確認開放時間",es:"Normalmente solo abre de día, pero está programado a las {a}: revisa el horario"},
  zig:{ko:"도시를 오가요: {r} — 「{p}」부터 다시 {c} 일정이에요",en:"You go back and forth between cities: {r} — you return to {c} at “{p}”",ja:"都市を行き来します：{r} — 「{p}」で{c}に戻ります",zhs:"在城市间来回：{r}——到「{p}」时又回到{c}",zht:"在城市間來回：{r}——到「{p}」時又回到{c}",es:"Vas y vuelves entre ciudades: {r}; en «{p}» regresas a {c}"},
- over:{ko:"{e}에 끝나 하루 끝({t})을 넘어요",en:"Ends at {e}, past your end time ({t})",ja:"{e}に終わり、一日の終わり（{t}）を過ぎます",zhs:"{e}才结束，超过当天结束时间（{t}）",zht:"{e}才結束，超過當天結束時間（{t}）",es:"Termina a las {e}, después de tu hora de fin ({t})"},
+ over:{ko:"이 날은 장소가 많아 {t}까지 다 못 돌아요 ({e}에 끝나요)",en:"Too many places this day — you can’t see them all by {t} (ends at {e})",ja:"この日は場所が多く、{t}までに回りきれません（{e}に終わります）",zhs:"这天地点太多，{t}前逛不完（{e}才结束）",zht:"這天地點太多，{t}前逛不完（{e}才結束）",es:"Demasiados lugares este día: no da tiempo a verlos todos antes de las {t} (termina a las {e})"},
+ overN:{ko:"이 날은 장소가 많아 숙소에 {e}에야 들어가요",en:"Too many places this day — you’ll only get back to your lodging at {e}",ja:"この日は場所が多く、宿に戻るのは{e}になります",zhs:"这天地点太多，要到{e}才能回到住处",zht:"這天地點太多，要到{e}才能回到住處",es:"Demasiados lugares este día: no llegarás al alojamiento hasta las {e}"},
+ overN2:{ko:"이 날은 장소가 많아 {e}에야 끝나요",en:"Too many places this day — it only ends at {e}",ja:"この日は場所が多く、終わるのは{e}になります",zhs:"这天地点太多，要到{e}才结束",zht:"這天地點太多，要到{e}才結束",es:"Demasiados lugares este día: no termina hasta las {e}"},
  mealL:{ko:"점심 식사 자리가 없어요",en:"There's no lunch break",ja:"昼食の時間がありません",zhs:"没有安排午餐",zht:"沒有安排午餐",es:"No hay hueco para comer"},
  mealD:{ko:"저녁 식사 자리가 없어요",en:"There's no dinner break",ja:"夕食の時間がありません",zhs:"没有安排晚餐",zht:"沒有安排晚餐",es:"No hay hueco para cenar"},
  bOrd:{ko:"순서 바꾸기",en:"Change the order",ja:"順番を変える",zhs:"调整顺序",zht:"調整順序",es:"Cambiar el orden"},
@@ -232,7 +234,7 @@ var CK6={
  pN:{ko:"{n}번째 「{p}」 다음",en:"After stop {n} “{p}”",ja:"{n}番目「{p}」の次",zhs:"第{n}个「{p}」之后",zht:"第{n}個「{p}」之後",es:"Después de la parada {n} «{p}»"},
  pE:{ko:" (그날 마지막)",en:" (last of the day)",ja:"（その日の最後）",zhs:"（当天最后）",zht:"（當天最後）",es:" (la última del día)"},
  iPrev:{ko:"넣으면 이 날 {e}에 끝나요 (지금 {c})",en:"With it, this day ends at {e} (now {c})",ja:"入れるとこの日は{e}に終わります（今は{c}）",zhs:"加入后这天{e}结束（现在{c}）",zht:"加入後這天{e}結束（現在{c}）",es:"Con esto, el día termina a las {e} (ahora {c})"},
- iOver:{ko:"하루 끝({t})을 넘어요",en:"past your end time ({t})",ja:"一日の終わり（{t}）を過ぎます",zhs:"超过当天结束时间（{t}）",zht:"超過當天結束時間（{t}）",es:"pasa de tu hora de fin ({t})"},
+ iOver:{ko:"{t}까지 다 못 돌아요",en:"you can’t see them all by {t}",ja:"{t}までに回りきれません",zhs:"{t}前逛不完",zht:"{t}前逛不完",es:"no da tiempo a verlo todo antes de las {t}"},
  iGo:{ko:"넣기",en:"Add",ja:"入れる",zhs:"加入",zht:"加入",es:"Añadir"},
  iNo:{ko:"넣지 않기",en:"Don't add",ja:"入れない",zhs:"不加入",zht:"不加入",es:"No añadir"},
  lunch:{ko:"점심",en:"Lunch",ja:"昼食",zhs:"午餐",zht:"午餐",es:"Comida"},
@@ -243,8 +245,8 @@ var CK6={
  rsvN:{ko:"식당 예약은 네이버 지도의 예약·전화로 해요 — 앱 안에서는 예약하지 않아요",en:"Reserve through Google Maps (reserve / call) — the app doesn't make bookings",ja:"予約はGoogleマップの予約・電話で — アプリ内では予約しません",zhs:"请通过Google地图预订或致电——应用内不提供预订",zht:"請透過Google地圖預訂或致電——應用程式內不提供預訂",es:"Reserva en Google Maps (reservar / llamar): la app no hace reservas"},
  added:{ko:"「{p}」 — 일정에 넣었어요",en:"Added “{p}”",ja:"「{p}」を入れました",zhs:"已加入「{p}」",zht:"已加入「{p}」",es:"Añadido «{p}»"},
  // 저녁이 빈 날
- eveQ:{ko:"저녁 일정이 비어 있어요 — {e} 숙소 도착 · 하루 끝({t})까지 {g}",en:"Your evening is free — back at lodging {e} · {g} until your end time ({t})",ja:"夜の予定が空いています — {e}に宿到着・一日の終わり（{t}）まで{g}",zhs:"晚上的行程是空的——{e}回到住处 · 到结束时间（{t}）还有{g}",zht:"晚上的行程是空的——{e}回到住處 · 到結束時間（{t}）還有{g}",es:"Tienes la tarde-noche libre: llegas al alojamiento a las {e} · {g} hasta tu hora de fin ({t})"},
- eveQ2:{ko:"저녁 일정이 비어 있어요 — {e} 일정 끝 · 하루 끝({t})까지 {g}",en:"Your evening is free — the day ends at {e} · {g} until your end time ({t})",ja:"夜の予定が空いています — {e}に予定終了・一日の終わり（{t}）まで{g}",zhs:"晚上的行程是空的——{e}行程结束 · 到结束时间（{t}）还有{g}",zht:"晚上的行程是空的——{e}行程結束 · 到結束時間（{t}）還有{g}",es:"Tienes la tarde-noche libre: el día termina a las {e} · {g} hasta tu hora de fin ({t})"},
+ eveQ:{ko:"저녁 일정이 비어 있어요 — {e}에 숙소 도착 · {t}까지 {g} 남아요",en:"Your evening is free — back at lodging at {e} · {g} left until {t}",ja:"夜の予定が空いています — {e}に宿到着・{t}まで{g}あります",zhs:"晚上的行程是空的——{e}回到住处 · 到{t}还有{g}",zht:"晚上的行程是空的——{e}回到住處 · 到{t}還有{g}",es:"Tienes la tarde-noche libre: llegas al alojamiento a las {e} · te quedan {g} hasta las {t}"},
+ eveQ2:{ko:"저녁 일정이 비어 있어요 — {e}에 일정 끝 · {t}까지 {g} 남아요",en:"Your evening is free — the day ends at {e} · {g} left until {t}",ja:"夜の予定が空いています — {e}に予定終了・{t}まで{g}あります",zhs:"晚上的行程是空的——{e}行程结束 · 到{t}还有{g}",zht:"晚上的行程是空的——{e}行程結束 · 到{t}還有{g}",es:"Tienes la tarde-noche libre: el día termina a las {e} · te quedan {g} hasta las {t}"},
  eveE:{ko:" · 저녁 식사 없음",en:" · no dinner yet",ja:"・夕食なし",zhs:" · 尚未安排晚餐",zht:" · 尚未安排晚餐",es:" · sin cena"},
  eveD:{ko:"이 날은 저녁 식사 자리가 없어요",en:"No dinner planned for this day",ja:"この日は夕食の予定がありません",zhs:"这天没有安排晚餐",zht:"這天沒有安排晚餐",es:"Este día no tiene cena"},
  eveAdd:{ko:"저녁 일정 추가",en:"Add an evening plan",ja:"夜の予定を追加",zhs:"添加晚上行程",zht:"新增晚上行程",es:"Añadir plan de noche"},
@@ -310,8 +312,8 @@ function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) 
       :'<div class="msg">'+T("아직 담은 곳이 없어요. 지도에서 그림을 누르고 「＋ 내 여행에 담기」를 누르세요.","Nothing added yet. Tap a picture on the map, then “＋ Add to my trip”.")+'</div>')
     +'<div class="trf2"><label>'+T("여행 일수","Days")+nInput("trN","",o.n)+'<span class="d trnm" id="trNm" hidden></span></label>'
     +'<label>'+T("첫날","First day")+'<input type="date" id="trStart" value="'+esc(o.start||kstToday(1))+'"></label>'
-    +'<label>'+T("하루 시작","Start")+'<input type="time" id="trFrom" value="'+esc(o.from)+'"></label>'
-    +'<label>'+T("하루 끝","End")+'<input type="time" id="trTo" value="'+esc(o.to)+'"></label>'
+    +'<label>'+T("시작 시각","Start")+'<input type="time" id="trFrom" value="'+esc(o.from)+'"></label>'
+    +'<label>'+T("끝나는 시각","End")+'<input type="time" id="trTo" value="'+esc(o.to)+'"></label>'
     +'<label>'+T("걷기","Walking")+'<select id="trWalk"><option value="0"'+(o.walk===0?" selected":"")+'>'+T("적게 (1km까지)","Less (≤1 km)")+'</option><option value="1"'+(o.walk===1?" selected":"")+'>'+T("보통 (2km까지)","Normal (≤2 km)")+'</option><option value="2"'+(o.walk===2?" selected":"")+'>'+T("많이 (3km까지)","More (≤3 km)")+'</option></select></label>'
     +'<label>'+T("음식","Food")+'<select id="trFood">'+FOODS.map(function(f){ return '<option value="'+f[0]+'"'+(o.food===f[0]?" selected":"")+'>'+esc(T(f[1],f[2]))+'</option>'; }).join("")+'</select></label>'
     +'<label class="trck"><input type="checkbox" id="trAdv"'+(o.adv?" checked":"")+'> '+T("도전 음식도 괜찮아요","I’m adventurous")+'</label>'
@@ -741,7 +743,7 @@ function legTxt(lg){ if(!lg) return ""; var d=lg.km<1?Math.round(lg.km*1000)+" m
 // 일찍 끝나는 날 (사장님 10-27 「손님이 넣은 끝 시각에 맞춰라, 맘대로 늘리지 마라 — 일찍 끝나면 숙소로 일찍 갈지 묻고, 아니면 언제 도착하고 싶은지 물어 그때 추가 일정」)
 //   d.gap = "early"(일찍 감) · {until:분}(그 시각까지 추가 일정을 넣음). 추가 장소 = 지도 그림 명소 중 그날 마지막 장소에서 가까운 곳(숙소·교통 빼고)
 var GX={
- q:{ko:"이 날은 {e}에 끝나서 하루 끝({t})까지 {g}이 비어요. 숙소로 일찍 돌아갈까요?",en:"This day ends at {e}, leaving {g} free before your end time ({t}). Head back to your lodging early?",ja:"この日は{e}に終わり、終了時刻（{t}）まで{g}空きます。早めに宿に戻りますか？",zhs:"这一天{e}结束，到结束时间（{t}）还空出{g}。要早点回住处吗？",zht:"這一天{e}結束，到結束時間（{t}）還空出{g}。要早點回住處嗎？",es:"Este día termina a las {e} y te quedan {g} libres hasta tu hora de fin ({t}). ¿Vuelves antes al alojamiento?"},
+ q:{ko:"이 날은 {e}에 끝나서 {t}까지 {g}이 비어요. 숙소로 일찍 돌아갈까요?",en:"This day ends at {e}, leaving {g} free until {t}. Head back to your lodging early?",ja:"この日は{e}に終わり、{t}まで{g}空きます。早めに宿に戻りますか？",zhs:"这一天{e}结束，到{t}还空出{g}。要早点回住处吗？",zht:"這一天{e}結束，到{t}還空出{g}。要早點回住處嗎？",es:"Este día termina a las {e} y te quedan {g} libres hasta las {t}. ¿Vuelves antes al alojamiento?"},
  y:{ko:"네, 일찍 갈게요",en:"Yes, go back early",ja:"はい、早めに戻ります",zhs:"好，早点回去",zht:"好，早點回去",es:"Sí, volver antes"},
  n:{ko:"아니요, 더 둘러볼래요",en:"No, I want to see more",ja:"いいえ、もっと回りたい",zhs:"不，我想多逛逛",zht:"不，我想多逛逛",es:"No, quiero ver más"},
  w:{ko:"몇 시쯤 숙소에 도착하길 원하세요?",en:"What time would you like to get back to your lodging?",ja:"何時ごろ宿に着きたいですか？",zhs:"您希望几点左右回到住处？",zht:"您希望幾點左右回到住處？",es:"¿A qué hora quieres llegar al alojamiento?"},
@@ -1070,7 +1072,7 @@ function planIssues(pl,H,DS){ var out=[]; if(!pl||!pl.days) return out;
       if(o!=null&&o-ar>=60&&!isNight(x)){ out.push({t:"early",k:x.k,di:di,a:ar,o:o,w:o-ar}); return; }
       if(!co.last&&co.c!=null&&co.o!=null&&r.t+st>co.c+10){ out.push({t:"cut",k:x.k,di:di,c:co.c,s:co.c-r.t}); return; }
       var dl=(co.c==null&&!co.eve&&!FACT[x.k])?dayOnly(x):0; if(dl&&r.t>=dl) out.push({t:"late",k:x.k,di:di,a:r.t}); });
-    if(s.end>lim) out.push({t:"over",di:di,e:s.end,lim:lim});
+    if(s.end>lim) out.push({t:"over",di:di,e:s.end,lim:lim,nt:lim>((d.gap&&d.gap.until)||X.to||pl.to)?1:0,hb:hE(X.H)?1:0});   // nt = 밤 장소 날(기준이 손님이 정한 시각이 아니라 밤 장소 시각) — 기준 시각 없이 실제 도착만 (11-07)
     var hasK=function(K){ return s.rows.some(function(r){ return r.meal===K||(r.x&&r.x.eat&&r.x.meal===K); }); };
     if(!hasK("lunch")&&X.from<=690&&s.end>=840) out.push({t:"meal",K:"lunch",di:di});
     if(!hasK("dinner")&&X.from<=1050&&s.end>=1200) out.push({t:"meal",K:"dinner",di:di}); });
@@ -1083,7 +1085,7 @@ function issTxt(pl,q){ var dd=pl.days[q.di], dt=dd?new Date(dd.date+"T00:00:00Z"
   if(q.t==="nfirst") return gTxt(CK6.nfirst,{a:v.a,n:q.n});
   if(q.t==="off") return gTxt(CK6.off,{d:dt?dateTxt(dt):""});
   if(q.t==="zig") return gTxt(CK6.zig,{r:(q.rt||[]).map(function(c){ return cnm(pl.cities[c]); }).join(" → "),p:q.k&&pl.pool[q.k]?nm(pl.pool[q.k]):"—",c:cnm(pl.cities[q.c])});
-  if(q.t==="over") return gTxt(CK6.over,{e:m2hm(q.e),t:m2hm(q.lim)});
+  if(q.t==="over") return q.nt?gTxt(q.hb?CK6.overN:CK6.overN2,{e:m2hm(q.e)}):gTxt(CK6.over,{e:m2hm(q.e),t:m2hm(q.lim)});
   if(q.t==="meal") return T5(q.K==="lunch"?CK6.mealL:CK6.mealD);
   return CK6[q.t]?gTxt(CK6[q.t],v):""; }
 // 검사 창 — after = 바뀐 뒤 다시 검사(문제 없으면 한 줄 알림)
@@ -1115,7 +1117,8 @@ var INS=null;
 function insOpen(o){ var pl=TR.plan; if(!pl||!pl.days[o.di]||!o.item) return; INS=o; var old=document.getElementById("trIns"); if(old) old.remove();
   var b=document.createElement("div"); b.id="trIns"; b.className="trpop"; b.onclick=function(e){ if(e.target===b) b.remove(); }; b._rb=insPaint; document.body.appendChild(b); insPaint(); }
 function insPrev(pl,o,pos,stay){ return withLC(function(){ var X=dayX(pl,o.di,REPH||pl.H||null), arr=X.arr, mo=moX(o.di,X), cur=sched(X.H,arr,X.dt,X.from,mo), it=Object.assign({},o.item,{stay:stay}), tr=arr.slice(0,pos).concat([it],arr.slice(pos)), s=sched(X.H,tr,X.dt,X.from,mo), lim=dayLim(pl,pl.days[o.di],X.H,tr,X.dt,X);
-  return esc(gTxt(CK6.iPrev,{e:m2hm(s.end),c:m2hm(cur.end)}))+(s.end>lim?' <b class="insov">⚠ '+esc(gTxt(CK6.iOver,{t:m2hm(lim)}))+'</b>':''); }); }
+  var d0=pl.days[o.di], nt=lim>((d0.gap&&d0.gap.until)||X.to||pl.to);   // 밤 장소 날은 기준 시각 없이 (11-07)
+  return esc(gTxt(CK6.iPrev,{e:m2hm(s.end),c:m2hm(cur.end)}))+(s.end>lim?' <b class="insov">⚠ '+esc(nt?gTxt(hE(X.H)?CK6.overN:CK6.overN2,{e:m2hm(s.end)}):gTxt(CK6.iOver,{t:m2hm(lim)}))+'</b>':''); }); }
 function insPaint(){ var b=document.getElementById("trIns"), pl=TR.plan, o=INS; if(!b||!pl||!o||!pl.days[o.di]){ if(b) b.remove(); return; } var X=dayX(pl,o.di,REPH||pl.H||null), arr=X.arr, it=o.item;
   var s0=b.querySelector("#tiPos"), s1=b.querySelector("#tiStay"), pos=s0?+s0.value:o.pos, stay=s1?+s1.value:o.stay;   // 언어를 바꿔 다시 그릴 때 고른 값 그대로
   if(!(pos>=0&&pos<=arr.length)) pos=arr.length; if(!(stay>0)) stay=o.kind==="eat"?60:stayOf(it);
@@ -1441,8 +1444,8 @@ var LV6={
  here:{ko:"{a} 도착 · 지금 여기",en:"Arrived {a} · you're here",ja:"{a}到着・今ここ",zhs:"{a}到达 · 现在在这里",zht:"{a}到達 · 現在在這裡",es:"Llegada {a} · estás aquí"},
  leave:{ko:"여기 떠나요",en:"I'm leaving here",ja:"ここを出発します",zhs:"我要离开这里",zht:"我要離開這裡",es:"Me voy de aquí"},
  at:{ko:"오늘 일정이 늦어지고 있어요",en:"Today's plan is running late",ja:"今日の予定が遅れています",zhs:"今天的行程正在延误",zht:"今天的行程正在延誤",es:"El plan de hoy va con retraso"},
- ab:{ko:"이대로 가면 {p}% 확률로 하루 끝({t})을 넘기거나 마감 시각에 늦어요.",en:"At this pace there is a {p}% chance you'll go past your end time ({t}) or reach a place after it closes.",ja:"このままだと{p}%の確率で一日の終わり（{t}）を過ぎるか、閉店時刻に間に合いません。",zhs:"照这样下去，有{p}%的可能超过当天结束时间（{t}）或赶不上关门时间。",zht:"照這樣下去，有{p}%的可能超過當天結束時間（{t}）或趕不上關門時間。",es:"A este ritmo hay un {p}% de probabilidad de pasarte de tu hora de fin ({t}) o de llegar a un lugar ya cerrado."},
- bb:{ko:"하루 끝·마감에 늦을 확률 {p}% — 눌러서 남은 일정을 정하세요",en:"{p}% chance of running past your end time or closing times — tap to decide",ja:"終了時刻・閉店に遅れる確率{p}% — 押して残りの予定を決めてください",zhs:"有{p}%的可能赶不上结束或关门时间——点按决定剩余行程",zht:"有{p}%的可能趕不上結束或關門時間——點按決定剩餘行程",es:"{p}% de probabilidad de pasarte de la hora de fin o de cierre — toca para decidir"},
+ ab:{ko:"이대로 가면 {p}% 확률로 {t}까지 다 못 돌거나 마감 시각에 늦어요.",en:"At this pace there is a {p}% chance you won’t see everything by {t} or will reach a place after it closes.",ja:"このままだと{p}%の確率で{t}までに回りきれないか、閉店時刻に間に合いません。",zhs:"照这样下去，有{p}%的可能{t}前逛不完或赶不上关门时间。",zht:"照這樣下去，有{p}%的可能{t}前逛不完或趕不上關門時間。",es:"A este ritmo hay un {p}% de probabilidad de no verlo todo antes de las {t} o de llegar a un lugar ya cerrado."},
+ bb:{ko:"정한 시각까지 다 못 돌거나 마감에 늦을 확률 {p}% — 눌러서 남은 일정을 정하세요",en:"{p}% chance you won’t finish in time or will miss closing times — tap to decide",ja:"予定の時刻までに回りきれないか閉店に遅れる確率{p}% — 押して残りの予定を決めてください",zhs:"有{p}%的可能按时逛不完或赶不上关门时间——点按决定剩余行程",zht:"有{p}%的可能按時逛不完或趕不上關門時間——點按決定剩餘行程",es:"{p}% de probabilidad de no terminar a tiempo o de llegar tras el cierre — toca para decidir"},
  eta:{ko:"도착 예상 {a}",en:"ETA {a}",ja:"到着予想 {a}",zhs:"预计到达 {a}",zht:"預計到達 {a}",es:"Llegada prevista {a}"},
  cl:{ko:"마감 {c}",en:"closes {c}",ja:"閉店 {c}",zhs:"关门 {c}",zht:"關門 {c}",es:"cierra {c}"},
  last:{ko:"입장 마감 {c}",en:"last entry {c}",ja:"入場締切 {c}",zhs:"最晚入场 {c}",zht:"最晚入場 {c}",es:"última entrada {c}"},
