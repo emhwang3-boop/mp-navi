@@ -356,7 +356,7 @@ function detBody(p){ var K=kindOf(p), X=isExt(p), h='', urls=galUrls(p), gi=Math
   h+=(window.rvSlot?'<div class="rvhost" data-rvhost="1">'+rvSlot("shop:"+p.id)+'</div>':'');
   // ⑪ 자주 묻는 질문
   var fq=(p.faq||[]).filter(function(x){ return x&&Lx(x.q); });
-  if(fq.length) h+='<section class="shbx"><h2>'+esc(L(TX.faq))+'</h2>'+fq.map(function(x){ return '<details class="sfq"><summary>'+esc(Lx(x.q))+'</summary><p>'+esc(Lx(x.a))+'</p></details>'; }).join("")+'</section>';
+  if(fq.length) h+='<section class="shbx"><h2>'+esc(L(TX.faq))+'</h2>'+fq.map(function(x){ return '<details class="sfq"><summary><span>'+esc(Lx(x.q))+'</span>'+XTG.html(false,'',1)+'</summary><p>'+esc(Lx(x.a))+'</p></details>'; }).join("")+'</section>';
   return h; }
 var GLANGS=[["en","English"],["ja","日本語"],["zhs","中文(简)"],["zht","中文(繁)"],["es","Español"],["ko","한국어"]];
 var S={cat:"all",prod:null,glang:"",guides:null,gid:null,date:"",n:2,cn:"",ce:"",cp:""};   // cn·ce·cp = 예약자 이름·이메일·전화 (10-28 주문 저장)
@@ -434,7 +434,8 @@ css.textContent+="#shopBox .smeta{font-size:12px;color:#667085;font-weight:700}#
  +"#shopBox .staxi button{align-self:flex-start;border:0;border-radius:10px;background:#1d2433;color:#fff;font-weight:800;font-size:14px;padding:9px 16px;cursor:pointer}"
  +"#shopBox .sbig h2{font-size:18px!important}#shopBox .sbig .sadr b{font-size:19px}#shopBox .sdm .sbig p.sline{font-size:15.5px}"
  +"#shopBox .stk{border:2px solid #ff6a1a}#shopBox .stk>div{display:flex;flex-direction:column;gap:2px}#shopBox .stk small{color:#667085;font-size:12.5px;font-weight:700}#shopBox .stk b{font-size:17px;line-height:1.45}"
- +"#shopBox .sfq{border-top:1px solid #efece4;padding:9px 0}#shopBox .sfq:first-of-type{border-top:0}#shopBox .sfq summary{cursor:pointer;font-weight:800;font-size:14.5px}#shopBox .sdm .sfq p{margin-top:6px;font-size:14px}";
+ +"#shopBox .sfq{border-top:1px solid #efece4;padding:9px 0}#shopBox .sfq:first-of-type{border-top:0}#shopBox .sfq summary{cursor:pointer;font-weight:800;font-size:14.5px}#shopBox .sdm .sfq p{margin-top:6px;font-size:14px}"
+ +"#shopBox .sfq summary{display:flex;align-items:center;gap:8px;list-style:none}#shopBox .sfq summary::-webkit-details-marker{display:none}#shopBox .sfq summary>span:first-child{flex:1}";   // 자주 묻는 질문 — 브라우저 기본 ▶ 대신 오른쪽 끝 공통 ▼/— (11-07)
 document.head.appendChild(css);
 function won(x){ return "₩"+Number(x).toLocaleString("ko-KR"); }
 // 결제 단추 옆 「취소」 (사장님 11-05) — 한 줄에 [취소 회색 테두리][결제 단추 그대로], 높이 같게
@@ -627,8 +628,9 @@ document.addEventListener("click",function(e){ var b=box(); if(!b||!b.contains(e
   else if(t.dataset.s==="b4map"){ e.preventDefault(); e.stopPropagation(); close(); try{ var nb2=window.NEAR&&NEAR.state(); if(nb2&&nb2.k==="tg") NEAR.close(); }catch(z){} try{ ntap("shop","b4map"); }catch(z){} try{ if(window.b4RouteShow) b4RouteShow(); }catch(z){} }
   else if(t.dataset.s==="mock") mockPay();
   else if(t.dataset.s==="pay"){ close(); try{ if(window.TPAY) TPAY.open(); }catch(z){} }   // 빅4 — 기존 결제(tosspay.js) 그대로
-  else if(t.dataset.s==="perf"){ close(); var a=document.querySelector('[data-nr="tgx"][data-g="perf"]'); if(a&&!/▾/.test(a.textContent)) a.click(); }   // 옛 판의 공연관람 펼치기
+  else if(t.dataset.s==="perf"){ close(); var a=document.querySelector('[data-nr="tgx"][data-g="perf"]'); if(a&&!a.querySelector(".xtg.on")) a.click(); }   // 옛 판의 공연관람 펼치기 (11-07 ▾ 글자 → 공통 단추 .xtg.on 으로 열림 확인)
 });
+document.addEventListener("toggle",function(e){ var d=e.target; if(d&&d.classList&&d.classList.contains("sfq")&&window.XTG) XTG.set(d.querySelector("summary>.xtg"),d.open); },true);   // 자주 묻는 질문 펼침·접힘 → ▼/— (11-07, toggle 은 거품이 없어 잡기 단계로)
 document.addEventListener("change",function(e){ if(e.target&&e.target.id==="shopDt"){ S.date=e.target.value; } if(e.target&&e.target.id==="shopTm"){ S.time=e.target.value; } });
 var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ repaint(); }catch(e){} return r; };   // 언어 바꾸면 바로
 var _gb=window.guBack; window.guBack=function(){ if(box()){ if(back()) return true; close(); return true; } return _gb?_gb.apply(this,arguments):false; };   // 뒤로 = 닫기
