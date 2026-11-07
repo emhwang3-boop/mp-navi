@@ -94,8 +94,8 @@ function nbItem(k,x,i){ var fl=L()&&x.name_l, n=fl?x.name_l:x.name, ad=fl?(x.add
     +(fl&&x.name_l!==x.name?'<div class="ko">'+esc(x.name)+'</div>':'')
     +(x.rating?'<div class="d"><b class="st">★ '+(+x.rating).toFixed(1)+'</b> ('+(x.n||0)+')</div>':'')
     +'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div><div class="d"><span class="go">'+W("map")+' ›</span></div></button>'; }
-function nbHtml(k){ if(!OPEN[k.c]) return '<button type="button" class="gfnb" data-gf="nb" data-kc="'+esc(k.c)+'">'+WI("near")+'</button>';
-  var h='<div class="gfnbox"><button type="button" class="gfnx" data-gf="nbx" data-kc="'+esc(k.c)+'">'+W("hide")+' ▴</button>';
+function nbHtml(k){ if(!OPEN[k.c]) return '<button type="button" class="gfnb xtrow" data-gf="nb" data-kc="'+esc(k.c)+'" aria-expanded="false"><span>'+WI("near")+'</span>'+XTG.html(false,'',1)+'</button>';
+  var h='<button type="button" class="gfnb xtrow" data-gf="nbx" data-kc="'+esc(k.c)+'" aria-expanded="true"><span>'+WI("near")+'</span>'+XTG.html(true,'',1)+'</button><div class="gfnbox">';   // 11-07 「접기 ▴」 → 같은 줄(글씨 그대로) 오른쪽 공통 — 단추로 접기
   if(S.bst!=="ok"&&S.bst!=="no") return h+'<div class="msg">'+W("srch")+'</div></div>';
   if(S.bst==="no") return h+'<div class="msg">'+W("loc")+'</div><div class="gfbase"><button type="button" class="gfme" data-gf="me">'+WI("useme")+'</button></div>'+seoulHtml(k)+'</div>';
   var d=NB[nbKey(k)]; if(!d){ nbLoad(k); d=NB[nbKey(k)]; }
@@ -140,6 +140,7 @@ function css(){ if(document.getElementById("gfCss")) return; var s=document.crea
   +".gfx{width:34px;height:34px;border:0;border-radius:50%;background:var(--card);color:var(--sub);font-size:20px;cursor:pointer}"
   +".gfnb{display:block;width:100%;margin:6px 0 0;border:1.5px solid #1c5fb8;background:#fff;color:#1c5fb8;border-radius:12px;padding:9px 12px;font-size:14.5px;font-weight:800;cursor:pointer}[data-theme=dark] .gfnb{background:transparent}"
   +".gfnbox{border-top:1px solid var(--line);margin-top:6px;padding-top:4px}.gfnx{float:right;border:0;background:none;color:var(--sub);font-size:13px;font-weight:800;cursor:pointer;padding:4px 2px}"
+  +".gfnb.xtrow{display:flex;padding-left:44px}.gfnb.xtrow>span:first-child{flex:1;text-align:center}.gfnb>.xtg{margin:-4px -4px -4px 0}"   // 근처 가게 보기 — 글씨는 가운데, 오른쪽 끝 ▼/— (11-07)
   +".gford{display:flex;gap:6px;margin:8px 0 2px;clear:both}.gford button{flex:1;border:1px solid #c5d3e8;background:#fff;color:#1c5fb8;border-radius:999px;padding:7px 0;font-weight:800;font-size:14px;cursor:pointer}.gford button.on{background:#1c5fb8;color:#fff;border-color:#1c5fb8}"
   +".gfbase{color:var(--sub);font-size:12.5px;margin:6px 2px;clear:both}.gfme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:800;cursor:pointer;margin-left:4px}"
   +".gfn{display:block;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);padding:9px 2px;cursor:pointer;font-size:14.5px}.gfn .h{display:flex;align-items:center;gap:6px}.gfn .h b{flex:1}.gfn .h i{font-style:normal;color:var(--sub);font-size:12.5px;white-space:nowrap}"
