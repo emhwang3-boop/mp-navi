@@ -41,8 +41,8 @@ var T={
   amt:{ko:"금액",en:"Amount",ja:"金額",zhs:"金额",zht:"金額",es:"Importe"}
 };
 function css(){ if(document.getElementById("tpCss")) return; var s=document.createElement("style"); s.id="tpCss";
-  s.textContent="#tpBox{position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}"
-  +"#tpBox .in{background:var(--card);color:var(--ink);width:100%;max-width:560px;max-height:94vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px 26px;box-sizing:border-box}"
+  s.textContent="#tpBox{position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:12px;box-sizing:border-box}"
+  +"#tpBox .in{background:var(--card);color:var(--ink);width:100%;max-width:560px;max-height:94vh;overflow:auto;border-radius:18px;padding:18px 16px 26px;box-sizing:border-box}"
   +"#tpBox h3{margin:0 0 4px;font-size:18px}#tpBox .d{font-size:13.5px;color:var(--sub);line-height:1.5}"
   +"#tpBox .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0}#tpBox label{font-weight:800;font-size:14.5px}"
   +"#tpBox input{font-size:16px;padding:9px 11px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font-family:inherit}"
