@@ -27,7 +27,8 @@ st.textContent="#libBox{position:fixed;inset:0;z-index:1045;background:rgba(0,0,
  +"#libBox .lo{margin-top:14px;font-size:13px;font-weight:700;opacity:.7}#libBox .ll{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}"
  +"#libBox .ll a{display:block;border:1.5px solid var(--line,#dde);border-radius:10px;padding:9px 10px;color:inherit;text-decoration:none;font-weight:700;font-size:14px}#libBox .ll a.on{border-color:#2f9e44;color:#2f9e44}"
  +"#libBox .lx{display:block;margin:14px auto 0;border:0;background:none;color:inherit;font-weight:700;font-size:14px;cursor:pointer;opacity:.7}"
- +"#infoboard{aspect-ratio:700/724;background-image:url(board4.png)}#infoboard #pl0{top:10.2%;height:10.6%}#infoboard #plman{top:26.6%;height:14.2%;font-size:clamp(12px,3.5vw,17px);line-height:1.15;color:#ffe08a;font-weight:800;cursor:pointer}#infoboard #plman span{-webkit-line-clamp:3!important}#infoboard #pl1{top:46.1%;height:10.6%}#infoboard #pl2{top:63.8%;height:10.6%}#infoboard #infomore{top:calc(69.1% - 23px)}#infoboard #pl0{cursor:pointer!important}#infoboard #pl0.full{top:6.9%;height:17.4%;font-size:clamp(11px,3.15vw,15px);line-height:1.2}#infoboard #pl0.full span{display:block;-webkit-line-clamp:unset;overflow:visible}";   /* 빨간 주의 문구 — 누르면 전체 펼침·다시 누르면 접힘 (사장님 10-25) */
+ +"#infoboard{aspect-ratio:700/724;background-image:url(board4.png)}#infoboard #pl0{top:10.2%;height:10.6%}#infoboard #plman{top:26.6%;height:14.2%;font-size:clamp(12px,3.5vw,17px);line-height:1.15;color:#ffe08a;font-weight:800;cursor:pointer}#infoboard #plman span{-webkit-line-clamp:3!important}#infoboard #pl1{top:46.1%;height:10.6%}#infoboard #pl2{top:63.8%;height:10.6%}#infoboard #infomore{top:calc(69.1% - 23px)}#infoboard #pl0{cursor:pointer!important}#infoboard #pl0.full{top:6.9%;height:17.4%;font-size:clamp(11px,3.15vw,15px);line-height:1.2}#infoboard #pl0.full span{display:block;-webkit-line-clamp:unset;overflow:visible}"   /* 빨간 주의 문구 — 누르면 전체 펼침·다시 누르면 접힘 (사장님 10-25) */
+ +"#infoboard #pl0{gap:6px}#infoboard #pl0>.xtg{margin-left:auto}";   /* 주의 문구 오른쪽 끝 ▼/— (11-07) */
 document.head.appendChild(st);
 function card(){ var o=document.getElementById("libBox"); if(o) o.remove(); o=document.createElement("div"); o.id="libBox"; o.onclick=function(e){ if(e.target===o) o.remove(); };
   o._rb=function(){ var l=lg(), h='<div><div class="lh"><img src="img/gu/library@main.webp" alt=""><b>'+esc(L(TX.ttl))+'</b></div><div class="ls">'+esc(L(TX.sub))+'</div>'
@@ -50,8 +51,10 @@ function line(){ var b=document.getElementById("infoboard"); if(!b) return; var 
   if(!e){ e=document.createElement("div"); e.id="plman"; e.className="pl"; e.setAttribute("role","button"); var p0=document.getElementById("pl0"); b.insertBefore(e,p0?p0.nextSibling:b.firstChild);
     e.onclick=function(ev){ ev.stopPropagation(); window.libGo(); }; }
   e.innerHTML='<span>'+esc(L(TX.line))+'</span>'; }
-var _ip=window.infoPaint; if(_ip) window.infoPaint=function(){ var r=_ip.apply(this,arguments); try{ line(); }catch(e){} return r; };
-line();
-(function(){ var p0=document.getElementById("pl0"); if(p0) p0.addEventListener("click",function(){ p0.classList.toggle("full"); }); })();
+/* 빨간 주의 문구 오른쪽 끝 공통 ▼/— 단추 (사장님 11-07) — 단추를 눌러도 칸 누름과 같다(아래 click 이 펼침·접힘) · infoPaint 가 글을 다시 쓰면 다시 붙인다 */
+function tg0(){ var p0=document.getElementById("pl0"); if(!p0||!window.XTG) return; var b=p0.querySelector(".xtg"), on=p0.classList.contains("full"); if(b) XTG.set(b,on); else p0.insertAdjacentHTML("beforeend",XTG.html(on)); }
+var _ip=window.infoPaint; if(_ip) window.infoPaint=function(){ var r=_ip.apply(this,arguments); try{ line(); tg0(); }catch(e){} return r; };
+line(); tg0();
+(function(){ var p0=document.getElementById("pl0"); if(p0) p0.addEventListener("click",function(){ p0.classList.toggle("full"); tg0(); }); })();
 var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ line(); var o=document.getElementById("libBox"); if(o&&o._rb) o._rb(); }catch(e){} return r; };
 })();
