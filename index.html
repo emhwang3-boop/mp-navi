@@ -347,8 +347,8 @@ html.mpc-lock #treasIsle{visibility:hidden}
 })();
 </script>
 </div>
-<div id="shBox" hidden style="position:fixed;inset:0;z-index:1030;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.hidden=true">
-  <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
+<div id="shBox" hidden style="position:fixed;inset:0;z-index:1030;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:12px;box-sizing:border-box" onclick="if(event.target===this)this.hidden=true">
+  <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
 <script src="geoconsent.js?v=1027lbs"></script>
@@ -374,8 +374,8 @@ setTimeout(function(){ ntap("_app","visit"); },0);   // 앱 열림 — 오늘 �
 //   허브: /ninq/biz · /ninq/code · /ninq/verify · /ninq.  확인 방식은 inqVerify() 한 곳 — 다른 방식으로 바꿀 땐 이 함수와 허브 ninqIdCheck 만
 var INQ={bno:null,vt:null,busy:false};
 function inqCss(){ if(document.getElementById("inqCss")) return; var s=document.createElement("style"); s.id="inqCss";
-  s.textContent="#inqBox{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}"
-   +"#inqIn{background:var(--card);color:var(--ink);width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px 22px;box-sizing:border-box}"
+  s.textContent="#inqBox{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:12px;box-sizing:border-box}"
+   +"#inqIn{background:var(--card);color:var(--ink);width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:18px;padding:16px 16px 22px;box-sizing:border-box}"
    +"#inqIn h3{margin:0 0 4px;font-size:18px}#inqIn .st{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0}#inqIn .st.ok{border-color:var(--green)}"
    +"#inqIn label{display:block;font-size:13px;color:var(--sub);margin:8px 0 3px}#inqIn input,#inqIn textarea,#inqIn select{width:100%;box-sizing:border-box;font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px}"
    +"#inqIn textarea{min-height:96px;resize:vertical}#inqIn .rw{display:flex;gap:6px}#inqIn .rw input{flex:1}#inqIn button{font:inherit;border:0;border-radius:10px;padding:9px 12px;background:var(--blue);color:#fff;cursor:pointer;white-space:nowrap}"
@@ -704,11 +704,11 @@ function spinCard(){ var p=PLACES.__pin; if(!p) return; if(window.KL) KL.ensure(
 document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest("a")) return; var it=e.target.closest&&e.target.closest("#res .sres"); if(!it) return; var x=(window._sres||[])[+it.dataset.i]; if(x) spinShow(x); });
 // 공유 — 화면은 보여 주되 실제로는 보내지 않는다 (체험판, 사장님 기기 포함 · 2026-10-12)
 // HTS 앱 공유 창을 그대로 옮겨 왔다 — 단추는 모두 막힘 (2026-10-12)
-function shBuild(){
-  var p=document.getElementById("shIn");
+function shBuild(p0,noHd){   // p0·noHd = 다른 창 안에 같은 단추를 넣을 때 (11-07 투어 일정 「공유」)
+  var p=p0||document.getElementById("shIn");
   const en=FG(), u="", t="";
   const A=function(href,label){ return '<button class="sht">'+label+'</button>'; };
-  let h='<div class="shhd">'+T("이 앱 공유하기","Share this app")+'</div><div class="shgrid">';
+  let h=(noHd?'':'<div class="shhd">'+T("이 앱 공유하기","Share this app")+'</div>')+'<div class="shgrid">';
   /* 위챗 (11-05 사장님) — 노래방 공용 공유창(karaoke.js kShare)과 같은 방식: 링크 복사 + QR · 같은 「微」 배지 · 중국어 화면이면 맨 앞, 그 밖엔 「링크 복사」 앞 */
   const wc='<button class="sht" data-a="wechat"><svg class="shi" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#07C160"/><text x="12" y="17" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="sans-serif">微</text></svg> '+({ko:"위챗",en:"WeChat",ja:"WeChat",zhs:"微信",zht:"微信",es:"WeChat"}[LANG]||"WeChat")+'</button>', zh=LANG==="zhs"||LANG==="zht";
   if(zh) h+=wc;
@@ -724,15 +724,15 @@ function shBuild(){
   if(!zh) h+=wc;
   h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"#8a93a3\" stroke-width=\"2\" stroke-linecap=\"round\" d=\"M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.54 3.54 0 0 0-5-5l-1.2 1.2M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.54 3.54 0 0 0 5 5l1.2-1.2\"/></svg> '+T("링크 복사","Copy link")+'</button>';
   if(navigator.share)h+='<button class="sht"><svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#5b93ff\" d=\"M18 16.08a2.9 2.9 0 0 0-1.96.77L8.9 12.7a3.3 3.3 0 0 0 0-1.4l7.05-4.11A2.92 2.92 0 1 0 15 5a3 3 0 0 0 .06.6L8.04 9.72a3 3 0 1 0 0 4.56l7.1 4.15c-.04.2-.06.4-.06.6a2.92 2.92 0 1 0 2.92-2.95z\"/></svg> '+T("다른 앱으로","Other apps")+'</button>';
-  h+='</div><div class="shmsg" id="shMsg"></div>';
+  h+='</div><div class="shmsg"'+(p0?'':' id="shMsg"')+'></div>';
   p.innerHTML=h;
 }
 // 사장님 기기면 진짜 공유 — 받은 사람은 홈페이지에서 앱을 눌러 들어온다 (앱 주소는 홈페이지를 거쳐야 열린다)
 function shOwnerFix(p, appName){ shOwnerFix0(p, appName, ""); }   /* 2026-10-26: 초대 코드 없이 앱 주소 그대로 (누구나 열림) */
 function shHas(l,k,e){ return l.indexOf(k)>=0||l.indexOf(e)>=0||l.indexOf(TE(e))>=0; }   // 단추 글자(한·영·일·중)로 어느 단추인지
-function shOwnerFix0(p, appName, tok){
-  var url="https://navi.moneypuzzle.co.kr/", txt=appName+" — Money Puzzle";
-  var iurl=url+"?install=1", ilab={ko:"앱 설치",en:"Install app",ja:"アプリを入れる",zhs:"安装应用",zht:"安裝應用",es:"Instalar app"}[LANG]||"Install app", itx="\n"+ilab+": "+iurl;   /* 「앱 설치」 링크 = 같은 초대 주소 + &install=1 (사장님 10-25) */   /* 지금 연 주소 그대로 (2026-10-14) */
+function shOwnerFix0(p, appName, tok, o){   // o={url,txt,desc} = 앱 대신 그 주소를 보낸다 (11-07 투어 일정 공유 — 「앱 설치」 줄·카톡 둘째 단추 없이)
+  var url=o?o.url:"https://navi.moneypuzzle.co.kr/", txt=o?o.txt:appName+" — Money Puzzle";
+  var iurl=url+"?install=1", ilab={ko:"앱 설치",en:"Install app",ja:"アプリを入れる",zhs:"安装应用",zht:"安裝應用",es:"Instalar app"}[LANG]||"Install app", itx=o?"":"\n"+ilab+": "+iurl;   /* 「앱 설치」 링크 = 같은 초대 주소 + &install=1 (사장님 10-25) */   /* 지금 연 주소 그대로 (2026-10-14) */
   /* 공유 창 안내 문구 6개 언어 (11-05 사장님 — 한국어 화면에 영어로 나오던 것) · ⋮ 메뉴 「링크를 복사했습니다」와 같은 말투 */
   var L6=function(o){ return o[LANG]||o.en; }, SM={
     kc:{ko:"카카오톡에 연결하는 중입니다… 잠시 기다려 주세요",en:"Connecting to KakaoTalk… please wait",ja:"カカオトークに接続しています…しばらくお待ちください",zhs:"正在连接 KakaoTalk…请稍候",zht:"正在連接 KakaoTalk…請稍候",es:"Conectando con KakaoTalk… espera un momento"},
@@ -761,7 +761,7 @@ function shOwnerFix0(p, appName, tok){
       b.classList.remove("sht");
       b.onclick=function(){ var m=p.querySelector(".shmsg"), ku=url;
         try{ if(!window.Kakao.isInitialized()) window.Kakao.init("90a47ca48c2a967dd4d14b3b48de2e3b"); if(m) m.textContent=L6(SM.kc);
-          window.Kakao.Share.sendDefault({objectType:"feed",content:{title:txt,description:({ko:"한국 여행 지도 · 6개 언어",en:"Korea travel map in 6 languages",ja:"韓国旅行マップ・6言語",zhs:"韩国旅行地图 · 6种语言",zht:"韓國旅行地圖 · 6種語言",es:"Mapa de viajes de Corea en 6 idiomas"})[LANG]||"Korea travel map in 6 languages",imageUrl:"https://navi.moneypuzzle.co.kr/img/maps/kr.jpg?h=8850c5bc",imageWidth:800,imageHeight:800,link:{webUrl:ku,mobileWebUrl:ku}},buttons:[{title:L6(SM.ko1),link:{webUrl:ku,mobileWebUrl:ku}},{title:ilab,link:{webUrl:iurl,mobileWebUrl:iurl}}]}); }   /* 11-05 사장님 「그림카드로, 전국지도가 나오는 걸로」 — 글자 카드(text)→그림 카드(feed) */
+          window.Kakao.Share.sendDefault({objectType:"feed",content:{title:txt,description:o&&o.desc?o.desc:({ko:"한국 여행 지도 · 6개 언어",en:"Korea travel map in 6 languages",ja:"韓国旅行マップ・6言語",zhs:"韩国旅行地图 · 6种语言",zht:"韓國旅行地圖 · 6種語言",es:"Mapa de viajes de Corea en 6 idiomas"})[LANG]||"Korea travel map in 6 languages",imageUrl:"https://navi.moneypuzzle.co.kr/img/maps/kr.jpg?h=8850c5bc",imageWidth:800,imageHeight:800,link:{webUrl:ku,mobileWebUrl:ku}},buttons:o?[{title:L6(SM.ko1),link:{webUrl:ku,mobileWebUrl:ku}}]:[{title:L6(SM.ko1),link:{webUrl:ku,mobileWebUrl:ku}},{title:ilab,link:{webUrl:iurl,mobileWebUrl:iurl}}]}); }   /* 11-05 사장님 「그림카드로, 전국지도가 나오는 걸로」 — 글자 카드(text)→그림 카드(feed) */
         catch(e){ try{ navigator.clipboard.writeText(url); }catch(x){} if(m) m.textContent=L6(SM.kna)+url; } };
       return;
     }
@@ -779,6 +779,7 @@ var SHQR=null; function shQr(el,u){ if(!el) return; var bad=function(){ var q=el
   var go=function(){ try{ el.innerHTML=""; new QRCode(el,{text:u,width:160,height:160,correctLevel:QRCode.CorrectLevel.M}); }catch(e){ bad(); } };
   if(window.QRCode) return go(); if(!SHQR) SHQR=new Promise(function(res,rej){ var s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"; s.crossOrigin="anonymous"; s.referrerPolicy="no-referrer"; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
   SHQR.then(go).catch(function(){ SHQR=null; bad(); }); }
+window.shareInto=function(el,o){ shBuild(el,true); shOwnerFix0(el,"","",o); };   // 투어 일정 「공유」 창 안에 앱 공유 창 단추를 그대로 (11-07 사장님)
 function shOpen(){ ntap("_app","share"); shBuild(); try{ shOwnerFix(document.getElementById("shIn"),"Money Puzzle Tour for Korea"); }catch(e){} document.getElementById("shBox").hidden=false; }
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest(".sht"); if(!t) return; e.preventDefault(); document.getElementById("shMsg").textContent=T("체험판에서는 공유가 되지 않습니다.","Sharing is turned off in this demo."); });
 function resetAll(){ try{ dlDraw(null); viewSet("kr"); }catch(e){} document.getElementById("q").value=""; qxSync(); document.getElementById("res").innerHTML=""; document.getElementById("mm").hidden=true; window.scrollTo(0,0); }
@@ -1726,18 +1727,18 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 })();
 </script>
 <script src="tpick.js?v=1106tp"></script>
-<script src="trip.js?v=1107wd"></script>
+<script src="trip.js?v=1107p5"></script>
 <script src="gift.js?v=1106sc"></script>
-<script src="near.js?v=1106sc"></script>
+<script src="near.js?v=1107p5"></script>
 <script src="shop.js?v=1106nt"></script>
-<script src="tosspay.js?v=1105aip"></script>
+<script src="tosspay.js?v=1107p5"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}
 /* 손님 「내 예약」 링크로 열렸으면 통역·길안내 첫 화면의 그 예약 카드를 연다 (2026-11-05) */try{ if(window.__mpTdone&&window.NEAR&&window.NEAR.tdone) window.NEAR.tdone(window.__mpTdone); }catch(e){}</script>
 <script src="reco.js?v=1106c3"></script>
 <script src="gu.js?v=1105mu"></script>
 <script src="citytour.js?v=1024icons"></script>
-<script src="pass.js?v=1106sc"></script>
+<script src="pass.js?v=1107p5"></script>
 <script>
 // ── ★ 관심 장소 (사장님 10-17) — 손님 폰 안에만 저장·분석. 서버로 보내지 않는다(통로 FAV_SEND 는 꺼 둠)
 //   저장: 장소 카드 ☆ · 약도를 0.7초 길게 눌러 「여기 저장」 / 모음: 지도 바로 아래 테두리를 따라 작은 노란 별 한 줄(저장한 만큼) — 누르면 목록
@@ -1873,16 +1874,16 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
   }catch(z){} },true);
 </script>
 <script src="lang.js?v=1106sc"></script>
-<script src="interp.js?v=1025qs"></script>
-<script src="chat.js?v=1106ch"></script>   <!-- 손님 ↔ 가이드 대화방 · 말풍선 「가이드 대화」 탭 (11-05) — interp.js 뒤에 -->
+<script src="interp.js?v=1107p5"></script>
+<script src="chat.js?v=1107p5"></script>   <!-- 손님 ↔ 가이드 대화방 · 말풍선 「가이드 대화」 탭 (11-05) — interp.js 뒤에 -->
 <script src="bell.js?v=1106nt"></script>   <!-- 🔔 앱 알림함 — 머리줄 💬 옆 종 · 알림 판(알림 받기·소리·진동·목록) (11-06) — chat.js 뒤에 -->
 <script src="manual.js?v=1105m"></script>
-<script src="karaoke.js?v=1105a"></script>
+<script src="karaoke.js?v=1107p5"></script>
 <script src="tvid.js?v=1107pp"></script>
 <script src="pcbang.js?v=1026pc5"></script>
-<script src="pg.js?v=1105st"></script>
+<script src="pg.js?v=1107p5"></script>
 <script src="review.js?v=1105buy"></script>
-<script src="event.js?v=1105band"></script>
+<script src="event.js?v=1107p5"></script>
 <script src="billboard.js?v=1021pl"></script>
 <script src="airport_i18n.js?v=1028pw"></script>
 <script src="airport.js?v=1105apc"></script>
