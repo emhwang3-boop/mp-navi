@@ -1009,6 +1009,16 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
   recsFetch();
   if(pl.chk){ var c0=pl.chk; pl.chk=0; save(); setTimeout(function(){ if(TR.plan===pl&&document.getElementById("trRep")) chkOpen(c0===2); },120); } }   // 11-07 바뀌면 전체 다시 검사 — 고칠지는 손님이
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep .tlgo,#trRep .tlg>.xtg"); if(!a) return; e.preventDefault(); legTog(a.closest(".tlg")); },true);
+// 이동 줄(걷기·대중교통·택시·기차·버스·비행기)을 누르면 「교통」 창 — 출발 = 앞 장소, 도착 = 다음 장소, 누른 줄의 탈것 칸을 펼쳐 둔다 (사장님 11-07)
+//   ▼/— 와 펼친 경로 칸(.tods) 안은 예전 그대로 · 교통 창이 없으면(옛 화면) 아무것도 안 함
+document.addEventListener("click",function(e){ var r=e.target.closest&&e.target.closest("#trRep .tlg"); if(!r||!window.TRANSIT||!TRANSIT.go) return;
+  if(e.target.closest(".xtg,.tods")||(e.target.closest("a,button")&&!e.target.closest(".tlgt"))) return;
+  e.preventDefault(); e.stopPropagation(); legTransit(r); },true);
+function legTransit(row){ var A=row.dataset.a, B=row.dataset.b, di=+row.dataset.d||0, pa=A==="__me"?null:ptK(A), pb=ptK(B); if(!pb||!(+pb.lat)) return;
+  var im=row.querySelector("img"), ic=im?String(im.getAttribute("src")||""):"", w=/mi_walk/.test(ic)?"w":/mi_taxi/.test(ic)?"x":/mi_subway/.test(ic)?"t0":/mi_plane/.test(ic)?"a0":/mi_train/.test(ic)?"ic":"";
+  var pt=function(k,p,b){ return {k:(window.PLACES&&PLACES[k]&&!/^__/.test(k))?k:"",nm:lgNm(k,di,b)||p.ko||"",ko:p.ko||lgNm(k,di,b)||"",lat:+p.lat,lng:+p.lng,sub:p.addr||""}; };
+  try{ ntap("_trip_leg_transit","trip"); }catch(x){}
+  TRANSIT.go({from:pa&&+pa.lat?pt(A,pa,0):null,to:pt(B,pb,1),open:w}); }
 // 「실제 경로 보기」 펼치기·접기 (사장님 11-07) — 공통 ▼/— 단추(.tlg>.xtg) · 접으면 숨기기만(받은 경로는 그대로), 다시 펼치면 그것을 다시 보여 준다(ODsay 다시 안 부름) · 빈 칸일 때만 legRoute
 function legTog(row,on){ if(!row) return; var t=row.querySelector(".tods"), b=row.querySelector(":scope>.xtg"); if(!t) return; if(on==null) on=!(b&&b.classList.contains("on"));
   t.hidden=!on; if(on&&!t.firstElementChild) legRoute(row); if(window.XTG) XTG.set(b,on); }
@@ -1591,7 +1601,7 @@ function lib(u){ return new Promise(function(ok,no){ if(document.querySelector('
   var s=document.createElement("script"); s.src=u; s.crossOrigin="anonymous"; s.onload=function(){ ok(); }; s.onerror=no; document.head.appendChild(s); }); }
 function shotDays(){ return lib(LIBS.h2c).then(function(){ var ds=[].slice.call(document.querySelectorAll("#trRep .tday")), host=document.createElement("div"); host.className="trshot"; document.body.appendChild(host);
   var bg=getComputedStyle(document.body).backgroundColor||"#fff", out=[];
-  return ds.reduce(function(p,d){ return p.then(function(){ var c=d.cloneNode(true); [].forEach.call(c.querySelectorAll(".tods,.tlgo,.tebtn,.teact,.xtg"),function(e){ e.remove(); }); host.innerHTML=""; host.appendChild(c);
+  return ds.reduce(function(p,d){ return p.then(function(){ var c=d.cloneNode(true); [].forEach.call(c.querySelectorAll(".tods,.tlgo,.tlgt,.tebtn,.teact,.xtg"),function(e){ e.remove(); }); host.innerHTML=""; host.appendChild(c);
     return html2canvas(c,{scale:2,backgroundColor:bg,useCORS:true,logging:false}).then(function(cv){ out.push(cv); }); }); },Promise.resolve()).then(function(){ host.remove(); return out; },function(e){ host.remove(); throw e; }); }); }
 function busy(id,on,txt){ var b=document.getElementById(id); if(!b) return; if(on){ if(!b.disabled) b._h=b.innerHTML; b.textContent=txt; b.disabled=true; } else { if(b._h!=null) b.innerHTML=b._h; b.disabled=false; } }   // 끝나면 아이콘까지 원래대로 (10-25)
 // A4 PDF 문서를 만든다 (받기·보내기 공용) — {doc,n,name}
@@ -2178,7 +2188,9 @@ function rsPt(pl,di,X){ var P=X?hpOf(X.H):null; if(P) return P; if(pl&&pl.mc){ v
 function cnm(c){ return !c?"":LANG==="ko"?c.ko:(c[LANG]||c.en||c.ko); }
 function ptNm(p){ if(!p) return ""; if(p.k&&!/^__/.test(p.k)) return nm(p); return LANG==="ko"?p.ko:(p[LANG]||p.en||p.ko); }
 function won(n){ return (+n||0).toLocaleString()+T("원"," KRW"); }
-function legGo(lg){ return (lg&&lg.mode!=="walk"&&lg.mode!=="air")?' <a href="#" class="tlgo">· '+T("실제 경로 보기","See real routes")+'</a>'+(window.XTG?XTG.html(false):''):''; }   // 줄 오른쪽 끝 공통 ▼/— 단추 (11-07)
+
+function legGo(lg){ if(!lg) return ""; var LG6={real:{ko:"실제 경로 보기",en:"See real routes",ja:"実際の経路を見る",zhs:"查看实际路线",zht:"查看實際路線",es:"Ver rutas reales"},walk:{ko:"걷는 길 보기",en:"See the walking route",ja:"徒歩ルートを見る",zhs:"查看步行路线",zht:"查看步行路線",es:"Ver la ruta a pie"}}, a=' <a href="#" class="tlgt">· '+esc(T5(lg.mode==="walk"?LG6.walk:LG6.real))+'</a>';   // 글자 = 「교통」 창으로(사장님 11-07 「이 창과 연계」) · ▼/— = 이 자리에서 펼치기(예전 그대로, 대중교통·택시만)
+  return (lg.mode!=="walk"&&lg.mode!=="air")?a+(window.XTG?XTG.html(false):''):a; }   // 줄 오른쪽 끝 공통 ▼/— 단추 (11-07)
 function hpOf(H){ var E=hE(H), S=hS(H); if(E&&(E.hotel||E.k==="__hotel")) return E; if(S&&(S.hotel||S.k==="__hotel")) return S; return null; }
 function hm4(s){ s=String(s||""); return (+s.slice(0,2))*60+(+s.slice(2,4)); }
 function railMin(d){ return Math.round(15+0.43*d); } function busMin(d){ return Math.round(20+0.75*d); } function flyMin(d){ return Math.round(25+d/10); }
@@ -2906,8 +2918,8 @@ var css=document.createElement("style"); css.textContent=
 +".trw{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:14.5px}.trw .tt{font-weight:900;min-width:46px;color:var(--sub)}.trw .tp{flex:1}.trw.tpk{cursor:pointer}.trw.tpk.on{background:rgba(11,155,110,.10);box-shadow:inset 3px 0 0 #0b9b6e}.trw.h .tp,.trw.l .tp{color:var(--sub);font-weight:700}.trw i{font-style:normal;color:var(--sub);font-size:12.5px}"
 +".tgap{margin-top:8px;border:1.5px dashed #e8590c;background:#fff7ed;border-radius:10px;padding:9px 10px;font-size:13.5px;line-height:1.5}.tgap .tgr{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.tgap .trbtn{margin:0;width:auto;padding:7px 12px}.tgap input{font:inherit;padding:5px 8px;border:1px solid #d6dde5;border-radius:8px}"
 +".tno{display:inline-block;background:#fff;color:#0284c7;border:2px solid #0ea5e9;border-radius:50%;width:22px;height:22px;line-height:18px;text-align:center;font-size:12px}.tmemo{display:block;font-size:12.5px;color:#c2410c;font-weight:700;margin-top:2px}.ttip{display:block;font-size:13px;color:var(--sub);margin-top:3px;line-height:1.45}"
-+".tlg{font-size:12.5px;color:#1a73e8;font-weight:700;padding:3px 0 5px 56px}.tlg a{color:#1a73e8}.tods .trh{font-size:14px;color:var(--ink);padding:0;cursor:auto}"
-+".tlg{position:relative}.tlg:has(>.xtg){padding-right:32px}.tlg>.xtg{position:absolute;right:-2px;top:-2px}.tlg:has(>.xtg)>.tods{margin-right:-32px}.tlg:has(>.xtg)>.tlgo{white-space:nowrap}"   // 「실제 경로 보기」 줄 오른쪽 끝 ▼/— (11-07) · 링크 글자는 중간에서 안 끊기게
++".tlg{font-size:12.5px;color:#1a73e8;font-weight:700;padding:3px 0 5px 56px;cursor:pointer}.tlg a{color:#1a73e8}.tods .trh{font-size:14px;color:var(--ink);padding:0;cursor:auto}"
++".tlg{position:relative}.tlg:has(>.xtg){padding-right:32px}.tlg>.xtg{position:absolute;right:-2px;top:-2px}.tlg:has(>.xtg)>.tods{margin-right:-32px}.tlg:has(>.xtg)>.tlgo,.tlg>.tlgt{white-space:nowrap}"   // 「실제 경로 보기」 줄 오른쪽 끝 ▼/— (11-07) · 링크 글자는 중간에서 안 끊기게
 +".teat{display:block;margin-top:4px;font-weight:500;color:var(--ink)}.tehd{display:block;font-size:12.5px;color:var(--sub);font-weight:800}.tec{display:block;padding:4px 0;border-top:1px dashed var(--line);font-size:13.5px}.tec i,.teat i{font-style:normal;color:var(--sub);font-size:12px}"
 +".tesrc{display:block;font-size:11.5px;color:var(--sub);margin-top:1px}.tesrc a{color:var(--sub)}.tead{display:inline-block;background:#f59f00;color:#fff;border-radius:4px;padding:0 5px;font-size:11px}.tebtn{border:1.5px solid var(--green);background:var(--card);color:#2b8a3e;border-radius:999px;padding:3px 10px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit;margin-left:4px}"
 +".teact{display:block;margin-top:4px}.teact a{display:inline-block;margin:3px 5px 0 0;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;color:var(--ink);background:var(--bg)}.trck{flex-direction:row!important;align-items:center;gap:6px!important;font-size:13px!important}.trck input{width:auto!important}"
