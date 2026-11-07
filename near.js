@@ -338,15 +338,15 @@ function igDates(){ var out=[]; for(var i=1;i<=2;i++){ var d=new Date(Date.now()
     out.push([s, (i===1?LG6({ko:"내일",en:"Tomorrow",ja:"明日",zhs:"明天",zht:"明天",es:"Mañana"}):LG6({ko:"모레",en:"Day after tomorrow",ja:"明後日",zhs:"后天",zht:"後天",es:"Pasado mañana"}))+" ("+s+")"]); } return out; }
 function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) return GLANG6[i][0]; return c; }
 // ── 가이드 예약·결제 (사장님 2026-10-30 「가이드를 고르면 맨 위 안내 → 반일·하루·시간·기간 → 메모 → 보내기 및 결제 → 결제 화면까지」) ──
-//   흐름: req(안내문·가이드·이용 시간·날짜·시작 시간·인원·요금·메모·예약자) → gconf(요약 확인) → gpay(결제창) → 「결제하기」 = 바로 확정(GB_PG=false, 11-05) → gdone · 「내 예약」 카드(대화방 입구)
+//   흐름: req(안내문·가이드·이용 시간·날짜·시작 시간·인원·요금·메모·예약자) → gconf(요약 확인) → gpay(결제창) → 「결제하기」 = 바로 확정(PG 전, 11-05 · PG 뒤엔 KG이니시스 결제창 — tpg.js, 11-07) → gdone · 「내 예약」 카드(대화방 입구)
 //   주문 = 허브 POST /shop/order {pid:"gbk", sess?} (11-05 실전: 서버가 GBK_PRICE 로 금액 계산 → pay:"none" 확정 → 가이드 메일·문자 · 손님 메일·문자 · 텔레그램 · 대화방 열림)
 //   🔴 요금 바꿀 땐 여기 GBK 와 허브 worker.js GBK_PRICE 둘 다. 숫자는 「일단 보고 고치자」 임시값
 var GBK={hr:50000, half:190000, full:360000, big:5, bigHr:10000, hMin:2, hMax:12, dMin:2, dMax:7, dayH:8, nMax:10};
 function gbkCalc(mode,h,d,n){ var P=GBK, hb=function(x){ return x>=8?P.full+(x-8)*P.hr:x>=4?P.half+(x-4)*P.hr:x*P.hr; };
   var hours=mode==="half"?4:mode==="full"?8:mode==="days"?d*P.dayH:h, base=mode==="days"?d*P.full:hb(hours), xn=Math.max(0,n-(P.big-1)), extra=xn*P.bigHr*hours;   // 4명을 넘는 1명마다 시간당 bigHr (사장님 11-05 — 옛: 5인 이상이면 한 번만)
   return {hours:hours,base:base,xn:xn,extra:extra,total:base+extra}; }
-var GB_TCK="test_ck_5OWRapdA8dzyq72vW4gRVo1zEqZK", GB_SDK="https://js.tosspayments.com/v2/standard", GB_KEY="mpv_gbpay";   // shop.js 와 같은 토스 시험 키·SDK (새 PG 연결 아님)
-var GB_PG=false;   // 🔴 PG 붙이면 true — 결제창(토스) → ?gbres= 돌아오기. 지금(11-05 사장님 「결제도 막 눌러」)은 「결제하기」 = 바로 확정(허브 pay:"none")
+// 🔴 PG = KG이니시스 · 포트원 (사장님 11-07 「왜 토스로 하냐 이니시스로 해」) — 스위치는 tpg.js 의 SH_PG 하나(패키지·가이드 인솔·일정 검토 같이) · 지금은 「결제하기」 = 바로 확정(허브 pay:"none")
+function gbPgOn(){ return !!(window.TPG&&TPG.on); }
 function T6(ko,en,ja,zhs,zht,es){ return {ko:ko,en:en,ja:ja,zhs:zhs,zht:zht,es:es}; }
 var GBT={
  note:T6("자유여행을 하고 싶은 관광객이 반일, 하루 또는 원하는 기간만큼 투어 가이드와 함께 자유롭게 여행할 수 있는 메뉴입니다. 원하는 가이드를 고르신 뒤 가고 싶은 곳이나 원하는 관광 내용을 간단히 적고 「보내기 및 결제」를 누른 다음 결제해 주세요.",
@@ -402,7 +402,7 @@ var GBT={
  agr:T6("예약 내용과 환불 규정을 확인했으며 결제에 동의합니다","I have checked the booking and refund policy and agree to pay","予約内容と返金規定を確認し、支払いに同意します","我已确认预约内容和退款规定并同意付款","我已確認預約內容和退款規定並同意付款","He revisado la reserva y la política de reembolso y acepto pagar"),
  payb:T6("결제하기","Pay","支払う","付款","付款","Pagar"),
  sav:T6("저장 중…","Saving…","保存中…","保存中…","儲存中…","Guardando…"),
- opn:T6("토스 결제창을 여는 중…","Opening the Toss payment window…","Toss決済画面を開いています…","正在打开Toss付款窗口…","正在開啟Toss付款視窗…","Abriendo la ventana de pago de Toss…"),
+ opn:T6("결제창을 여는 중…","Opening the payment window…","決済画面を開いています…","正在打开付款窗口…","正在開啟付款視窗…","Abriendo la ventana de pago…"),   // KG이니시스 결제창 (11-07 — 옛 토스 글자 바꿈)
  ppn:T6("PayPal 결제는 아직 연결 전이에요. 신용·체크카드(해외 카드 포함)로 결제해 주세요.","PayPal is not connected yet. Please pay by credit/debit card (overseas cards accepted).","PayPal決済はまだ準備中です。クレジット・デビットカード（海外カード可）でお支払いください。","PayPal付款尚未开通，请使用信用卡/借记卡（含境外卡）付款。","PayPal付款尚未開通，請使用信用卡/簽帳卡（含境外卡）付款。","PayPal aún no está disponible. Paga con tarjeta de crédito/débito (se aceptan extranjeras)."),
  pdT:T6("예약 확정","Booking confirmed","予約確定","预约已确认","預約已確認","Reserva confirmada"),
  pdS:T6("예약이 확정되었습니다. 가이드가 투어앱 안의 말풍선과 전화로 연락드립니다.","Your booking is confirmed. Your guide will contact you through the speech bubble in the tour app and by phone.","ご予約が確定しました。ガイドからツアーアプリの吹き出しとお電話でご連絡します。","预约已确认。向导会通过旅游应用中的对话气泡和电话与您联系。","預約已確認。嚮導會透過旅遊應用程式中的對話氣泡和電話與您聯絡。","Tu reserva está confirmada. Tu guía te contactará por la burbuja de chat de la app de viaje y por teléfono."),   // 11-05 사장님 「3」 — 이모지 없이
@@ -495,37 +495,29 @@ function gbSend(){ gbGrab(); var k=IG.bk, L=LG6, err="";
   k.err=err; if(err){ var m=document.getElementById("gbM"); if(m){ m.textContent=err; try{ m.scrollIntoView({block:"center",behavior:"smooth"}); }catch(e){} } return; }
   IG.view="gconf"; paint(); gbTop(); try{ ntap("guide","gbk_conf"); }catch(e){} }
 function gbTop(){ var o=document.getElementById("nrBox"); if(o){ o.scrollTop=0; var i=o.querySelector(".nrin"); if(i) i.scrollTop=0; } }   // 넓은 화면은 .nrin 이 스크롤 (11-06)
-// 결제창 「결제하기」 — 허브 /shop/order(실전 주문) → GB_PG=false 면 바로 확정 화면 · true 면 받은 orderId·금액으로 토스 결제창 (shop.js 와 같은 방식)
+// 결제창 「결제하기」 — 허브 /shop/order(실전 주문) → PG 전이면 바로 확정 화면 · PG 뒤(tpg.js SH_PG)면 받은 결제 값으로 KG이니시스 결제창(포트원, 11-07 — shop.js 와 같은 길)
+function gbGv(g){ return {id:g.id,name:g.name,name_en:g.name_en,name_ja:g.name_ja,name_zh:g.name_zh,langs:g.langs,years:g.years,region:g.region,photo:g.photo}; }
+function gbDoneSet(k,g,j){ IG.busy=0; if(j.tdone) bkPut({oid:j.orderId,tk:j.tdone,kind:"gbk",date:k.date,time:k.time,end:+j.end||0,k:{mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0},n:k.n,amount:j.amount,status:j.status||"confirmed",g:gbGv(g),room:{n:0,unread:0}});
+  IG.gbRes={oid:j.orderId,amount:j.amount,end:+j.end||0,tk:j.tdone||""}; IG.view="gdone"; paint(); gbTop(); try{ window.CHAT&&CHAT.dot(); }catch(z){} }
 function gbPay(){ var k=IG.bk, g=IG.gobj, L=LG6; if(!k||!g||IG.busy) return;
   if(k.pm==="paypal"){ k.err=L(GBT.ppn); paint(); return; }
   k.err=""; IG.busy=1; gbPaint(1);
-  var body={pid:"gbk",pname:L(GBT.gd)+" · "+gbModeTxt(k),mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0,n:k.n,date:k.date,time:k.time,memo:k.memo,gid:g.id,glang:IG.lang||"",lang:window.LANG||"en",name:k.cn.trim(),email:k.ce.trim(),phone:k.cp.trim(),consent:true,sess:bkSess()||undefined};
+  var body={pid:"gbk",pname:L(GBT.gd)+" · "+gbModeTxt(k),mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0,n:k.n,date:k.date,time:k.time,memo:k.memo,gid:g.id,glang:IG.lang||"",lang:window.LANG||"en",name:k.cn.trim(),email:k.ce.trim(),phone:k.cp.trim(),consent:true,pg:gbPgOn()?1:0,sess:bkSess()||undefined};
   fetch(HUB+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){ return r.json(); }).then(function(j){
-    if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err; IG.busy=0; k.err=e==="name"?L(GBT.enm):e==="email"?L(GBT.eem):e==="phone"?L(GBT.eph):(e==="date"||e==="time")?L(GBT.edt):e==="guide"?L(GBT.egd):L(GBT.efail); paint(); return; }
+    if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err, pe=window.TPG?TPG.errTx(e):""; IG.busy=0; k.err=pe||(e==="name"?L(GBT.enm):e==="email"?L(GBT.eem):e==="phone"?L(GBT.eph):(e==="date"||e==="time")?L(GBT.edt):e==="guide"?L(GBT.egd):L(GBT.efail)); paint(); return; }
     try{ ntap("guide","gbk_order"); }catch(z){}
-    if(!GB_PG){ IG.busy=0; if(j.tdone) bkPut({oid:j.orderId,tk:j.tdone,kind:"gbk",date:k.date,time:k.time,end:+j.end||0,k:{mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0},n:k.n,amount:j.amount,status:j.status||"confirmed",g:{id:g.id,name:g.name,name_en:g.name_en,name_ja:g.name_ja,name_zh:g.name_zh,langs:g.langs,years:g.years,region:g.region,photo:g.photo},room:{n:0,unread:0}});
-      IG.gbRes={oid:j.orderId,amount:j.amount,end:+j.end||0,tk:j.tdone||""}; IG.view="gdone"; paint(); gbTop(); try{ window.CHAT&&CHAT.dot(); }catch(z){} return; }
+    if(j.pay!=="pg"){ gbDoneSet(k,g,j); return; }
     gbPaint(2);
-    try{ sessionStorage.setItem(GB_KEY,JSON.stringify({oid:j.orderId,amount:j.amount,g:{id:g.id,name:g.name,name_en:g.name_en,name_ja:g.name_ja,name_zh:g.name_zh,langs:g.langs,years:g.years,region:g.region,photo:g.photo},lang:IG.lang,bk:k,at:Date.now()})); }catch(z){}
-    var base=location.origin+location.pathname, mob=k.cp.replace(/\D/g,"");
-    var req={method:"CARD",amount:{currency:"KRW",value:j.amount},orderId:j.orderId,orderName:String(j.orderName||"Guide booking").slice(0,100),successUrl:base+"?gbres=ok",failUrl:base+"?gbres=fail",customerName:k.cn.trim().slice(0,40),customerEmail:k.ce.trim()};
-    if(/^01\d{8,9}$/.test(mob)) req.customerMobilePhone=mob;
-    req.card={flowMode:"DEFAULT",useEscrow:false,useCardPoint:false,useAppCardOnly:false};
-    return new Promise(function(ok,no){ if(window.TossPayments) return ok(); var s=document.createElement("script"); s.src=GB_SDK; s.onload=function(){ ok(); }; s.onerror=no; document.head.appendChild(s); })
-      .then(function(){ return window.TossPayments(GB_TCK).payment({customerKey:window.TossPayments.ANONYMOUS}).requestPayment(req); })
-      .catch(function(e){ window.__gbTossErr=String((e&&e.code||"")+" "+(e&&e.message||e)); try{ sessionStorage.removeItem(GB_KEY); }catch(z){} IG.busy=0; k.err=(e&&e.code==="USER_CANCEL")?L(GBT.pfT):((e&&e.message)||L(GBT.pfT)); paint(); }); })
+    return TPG.go(j,{kind:"gbk",oid:j.orderId,amount:j.amount,g:gbGv(g),lang:IG.lang,bk:k},{name:k.cn,email:k.ce,phone:k.cp})
+      .then(function(m){ if(m){ IG.busy=0; k.err=m; paint(); } }); })
   .catch(function(){ IG.busy=0; k.err=L(GBT.efail); paint(); }); }
 function gbPaint(busy){ var b=document.querySelector("#nrBox .nrin"); if(!b||IG.view!=="gpay") return; var bt=b.querySelector("#gbPay"); if(bt){ bt.disabled=true; bt.textContent=LG6(busy===2?GBT.opn:GBT.sav); } var ag=b.querySelector("#gbAg"); if(ag){ ag.checked=true; ag.disabled=true; } }
-// 토스 결제창에서 돌아옴 (?gbres=ok&paymentKey&orderId&amount · ?gbres=fail&code&message) — 주문번호·금액이 맞을 때만 완료 화면
-function gbReturn(){ var sp=new URLSearchParams(location.search), r=sp.get("gbres"); if(!r) return;
-  try{ var keep=location.search.slice(1).split("&").filter(function(x){ return !/^(gbres|paymentKey|orderId|amount|paymentType|code|message)=/.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(keep?"?"+keep:"")+location.hash); }catch(e){}
-  var v=null; try{ v=JSON.parse(sessionStorage.getItem(GB_KEY)||"null"); }catch(e){} if(!v||!v.oid||!v.g) return;
-  var oid=sp.get("orderId")||"", amt=Math.round(Number(sp.get("amount")||0)), ok=r==="ok"&&oid===v.oid&&amt===v.amount;
-  if(ok){ try{ sessionStorage.removeItem(GB_KEY); }catch(e){} }
-  open("ig"); IG.lang=v.lang||""; IG.gobj=v.g; IG.gid=v.g.id; IG.bk=v.bk; IG.bk.err=ok?"":(LG6(GBT.pfT)+(r!=="ok"&&sp.get("message")?" ("+sp.get("message")+")":"")); IG.busy=0;
-  IG.gbRes=ok?{oid:v.oid,amount:v.amount}:null; IG.view=ok?"gdone":"gpay"; paint();
-  try{ ntap("guide",ok?"gbk_paid_test":"gbk_payfail"); }catch(e){} window.__gbResult=ok?"ok":"fail"; }
-if(/[?&]gbres=/.test(location.search)){ var _gr=function(){ setTimeout(function(){ try{ gbReturn(); }catch(e){ window.__gbRetErr=String(e); } },700); }; if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",_gr); else _gr(); }
+// KG이니시스 결제창(포트원)에서 돌아옴 (11-07 — 옛 토스 ?gbres= 자리) — tpg.js 가 허브 /shop/port/confirm 으로 확정한 뒤 부른다 · 확정이면 완료 화면 + 「내 예약」, 아니면 결제창에 안내
+if(window.TPG) TPG.onRet("gbk",function(v,r){ if(!v||!v.g||!v.bk) return;
+  open("ig"); IG.lang=v.lang||""; IG.gobj=v.g; IG.gid=v.g.id; IG.bk=v.bk; IG.busy=0;
+  if(r&&r.ok){ IG.bk.err=""; gbDoneSet(IG.bk,v.g,r.j||{}); }
+  else { IG.bk.err=(window.TPG&&TPG.resTx(r))||(LG6(GBT.pfT)+(r&&r.msg?" ("+r.msg+")":"")); IG.gbRes=null; IG.view="gpay"; paint(); }
+  try{ ntap("guide",r&&r.ok?"gbk_paid":"gbk_payfail"); }catch(e){} window.__gbResult=r&&r.ok?"ok":"fail"; });
 
 // 한 판 안에서 세 화면(pick=언어 고르기 · list=가이드 목록 · req=요청하기) 을 state(IG)로
 function igRender(b){
