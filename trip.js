@@ -213,7 +213,7 @@ var CK6={
  i_nami:{ko:"남이섬은 배를 타고 들어가요 (선착장 대기 포함)",en:"Nami Island is reached by ferry (including the wait at the pier)",ja:"南怡島は船で渡ります（船着き場の待ち時間を含む）",zhs:"南怡岛要坐船进岛（含码头等候）",zht:"南怡島要搭船進島（含碼頭等候）",es:"A la isla Nami se llega en ferri (incluida la espera en el muelle)"},
  // 검사 창
  cT:{ko:"일정 검사 — 확인해 주세요",en:"Plan check — please review",ja:"日程チェック — ご確認ください",zhs:"行程检查——请确认",zht:"行程檢查——請確認",es:"Revisión del plan: compruébalo"},
- cI:{ko:"손님이 정한 순서 그대로 짰어요. 아래는 시간이 맞지 않는 곳이에요 — 어떻게 할지 골라 주세요. (자동으로 고치지 않아요)",en:"We kept your order exactly. These spots don't fit the time well — choose what to do. (We won't change anything automatically)",ja:"お客様が決めた順番のまま組みました。下は時間が合わない場所です — どうするか選んでください。（自動では直しません）",zhs:"已完全按您的顺序安排。以下地点时间不太合适——请选择如何处理。（不会自动修改）",zht:"已完全按您的順序安排。以下地點時間不太合適——請選擇如何處理。（不會自動修改）",es:"Mantuvimos tu orden exacto. Estos lugares no encajan bien con la hora: elige qué hacer. (No cambiamos nada automáticamente)"},
+ cI:{ko:"카트에 놓으신 순서 그대로 짰어요. 아래는 시간이 맞지 않는 곳이에요 — 어떻게 할지 골라 주세요. (자동으로 고치지 않아요)",en:"We kept your order exactly. These spots don't fit the time well — choose what to do. (We won't change anything automatically)",ja:"お客様が決めた順番のまま組みました。下は時間が合わない場所です — どうするか選んでください。（自動では直しません）",zhs:"已完全按您的顺序安排。以下地点时间不太合适——请选择如何处理。（不会自动修改）",zht:"已完全按您的順序安排。以下地點時間不太合適——請選擇如何處理。（不會自動修改）",es:"Mantuvimos tu orden exacto. Estos lugares no encajan bien con la hora: elige qué hacer. (No cambiamos nada automáticamente)"},
  cI2:{ko:"바뀐 일정을 다시 검사했어요. 아래를 확인해 주세요.",en:"We re-checked the updated plan. Please review the items below.",ja:"変更後の日程をもう一度チェックしました。下をご確認ください。",zhs:"已重新检查修改后的行程，请确认以下内容。",zht:"已重新檢查修改後的行程，請確認以下內容。",es:"Revisamos de nuevo el plan modificado. Mira lo siguiente."},
  cOk:{ko:"일정을 다시 검사했어요 — 끝나는 시각·문 닫는 시각·식사 모두 문제 없어요",en:"Plan re-checked — end times, closing times and meals all look fine",ja:"日程を再チェックしました — 終了時刻・閉店時刻・食事すべて問題ありません",zhs:"已重新检查行程——结束时间、关门时间和用餐都没有问题",zht:"已重新檢查行程——結束時間、關門時間和用餐都沒有問題",es:"Plan revisado: horas de fin, cierres y comidas, todo bien"},
  cBar:{ko:"⚠ 확인할 곳 {n}곳",en:"⚠ {n} item(s) to check",ja:"⚠ 確認が必要な場所 {n}件",zhs:"⚠ 有{n}项需要确认",zht:"⚠ 有{n}項需要確認",es:"⚠ {n} punto(s) por revisar"},
@@ -222,9 +222,9 @@ var CK6={
  nightW:{ko:"문 여는 {o}까지 {w} 기다려야 해요",en:"you'd wait {w} until it opens at {o}",ja:"開店の{o}まで{w}待つことになります",zhs:"要等{w}到{o}开门",zht:"要等{w}到{o}開門",es:"tendrías que esperar {w} hasta que abra a las {o}"},
  nfirst:{ko:"밤에 여는 곳이 앞에 있어 뒤 장소 {n}곳이 밤으로 밀려요 (이곳 {a} 도착)",en:"A night spot comes early, pushing the {n} place(s) after it into the night (arrive here {a})",ja:"夜に開く場所が先にあるため、後の{n}か所が夜にずれ込みます（ここは{a}着）",zhs:"晚上营业的地方排在前面，后面{n}个地点被推到晚上（这里{a}到达）",zht:"晚上營業的地方排在前面，後面{n}個地點被推到晚上（這裡{a}到達）",es:"Un lugar nocturno va primero y empuja a la noche los {n} lugares siguientes (llegas aquí a las {a})"},
  nightU:{ko:"보통 저녁(17시 뒤)에 가는 곳이에요",en:"usually visited in the evening (after 5 pm)",ja:"ふつうは夕方（17時以降）に行く場所です",zhs:"一般傍晚（17点后）才去",zht:"一般傍晚（17點後）才去",es:"normalmente se visita por la tarde-noche (después de las 17:00)"},
- early:{ko:"{a}에 닿는데 문 여는 {o}까지 {w} 기다려야 해요",en:"You arrive at {a} but it opens at {o} — a {w} wait",ja:"{a}に着きますが開店の{o}まで{w}待ちます",zhs:"{a}到达，但{o}才开门——要等{w}",zht:"{a}到達，但{o}才開門——要等{w}",es:"Llegas a las {a} pero abre a las {o}: esperarías {w}"},
- shut:{ko:"{a}에 닿는데 이미 문을 닫아요 ({c} 마감)",en:"You arrive at {a}, after it closes ({c})",ja:"{a}に着きますが、もう閉まっています（{c}閉店）",zhs:"{a}到达时已经关门（{c}关门）",zht:"{a}到達時已經關門（{c}關門）",es:"Llegas a las {a}, cuando ya cerró ({c})"},
- last:{ko:"{a}에 닿는데 입장 마감({c})이 지나요",en:"You arrive at {a}, after last entry ({c})",ja:"{a}に着きますが入場締切（{c}）を過ぎます",zhs:"{a}到达时已过最晚入场时间（{c}）",zht:"{a}到達時已過最晚入場時間（{c}）",es:"Llegas a las {a}, pasada la última entrada ({c})"},
+ early:{ko:"{a}에 도착하는데 문 여는 {o}까지 {w} 기다려야 해요",en:"You arrive at {a} but it opens at {o} — a {w} wait",ja:"{a}に着きますが開店の{o}まで{w}待ちます",zhs:"{a}到达，但{o}才开门——要等{w}",zht:"{a}到達，但{o}才開門——要等{w}",es:"Llegas a las {a} pero abre a las {o}: esperarías {w}"},
+ shut:{ko:"{a}에 도착하는데 이미 문을 닫은 뒤예요 ({c} 마감)",en:"You arrive at {a}, after it closes ({c})",ja:"{a}に着きますが、もう閉まっています（{c}閉店）",zhs:"{a}到达时已经关门（{c}关门）",zht:"{a}到達時已經關門（{c}關門）",es:"Llegas a las {a}, cuando ya cerró ({c})"},
+ last:{ko:"{a}에 도착하는데 입장 마감({c})이 지난 뒤예요",en:"You arrive at {a}, after last entry ({c})",ja:"{a}に着きますが入場締切（{c}）を過ぎます",zhs:"{a}到达时已过最晚入场时间（{c}）",zht:"{a}到達時已過最晚入場時間（{c}）",es:"Llegas a las {a}, pasada la última entrada ({c})"},
  off:{ko:"이 날({d})은 쉬는 날이에요",en:"It's closed on this day ({d})",ja:"この日（{d}）は休業日です",zhs:"这天（{d}）休息",zht:"這天（{d}）休息",es:"Está cerrado ese día ({d})"},
  cut:{ko:"머무는 동안 문을 닫아요 ({c} 마감 — {s}만 머물 수 있어요)",en:"It closes while you're there ({c} — only {s} inside)",ja:"滞在中に閉まります（{c}閉店 — {s}しかいられません）",zhs:"停留期间会关门（{c}关门——只能待{s}）",zht:"停留期間會關門（{c}關門——只能待{s}）",es:"Cierra mientras estás dentro ({c}: solo {s})"},
  late:{ko:"보통 낮에만 여는 곳인데 {a}에 잡혔어요 — 운영 시간을 확인하세요",en:"Usually open only in the daytime, but it's scheduled at {a} — check the hours",ja:"ふつうは昼だけ開く場所ですが{a}に入っています — 営業時間をご確認ください",zhs:"一般只在白天开放，却安排在{a}——请确认开放时间",zht:"一般只在白天開放，卻安排在{a}——請確認開放時間",es:"Normalmente solo abre de día, pero está programado a las {a}: revisa el horario"},
@@ -300,14 +300,14 @@ var HLK=null;   // 검사 창 「순서 바꾸기」로 카트에서 눈에 띄�
 // 11-07 사장님 「시작 시각 정하기」 — it.fx = 손님이 정한 그 장소 시작 시각(그날 0시부터 분, 카트 칸) · 일찍 닿으면 그 시각까지 기다리고(simDay), 늦게 닿으면 검사 창(fix)
 //   검사 창 단추 — 하루 늘리기(날짜 수 +1 로 다시 짜기 = 「N일로 다시 짜기」 길) · 다른 날로 옮기기(mvOpen) · 머무는 시간 줄이기(stOpen)
 var FX6={
- b:{ko:"시작 시각",en:"Start time",ja:"開始時刻",zhs:"开始时间",zht:"開始時間",es:"Hora de inicio"},
- on:{ko:"{t} 고정",en:"fixed at {t}",ja:"{t} 固定",zhs:"固定 {t}",zht:"固定 {t}",es:"fijo a las {t}"},
- nt:{ko:"⏰ {t} 고정",en:"⏰ fixed at {t}",ja:"⏰ {t} 固定",zhs:"⏰ 固定 {t}",zht:"⏰ 固定 {t}",es:"⏰ fijo a las {t}"},
+ b:{ko:"도착 시각 정하기",en:"Set arrival time",ja:"到着時刻を決める",zhs:"设定到达时间",zht:"設定到達時間",es:"Fijar hora de llegada"},
+ on:{ko:"{t} 도착",en:"arrive {t}",ja:"{t}着",zhs:"{t}到达",zht:"{t}到達",es:"llegada {t}"},
+ nt:{ko:"⏰ {t} 도착",en:"⏰ arrive {t}",ja:"⏰ {t}着",zhs:"⏰ {t}到达",zht:"⏰ {t}到達",es:"⏰ llegada {t}"},
  set:{ko:"정하기",en:"Set",ja:"決める",zhs:"确定",zht:"確定",es:"Fijar"},
- clr:{ko:"시작 시각 지우기",en:"Clear start time",ja:"開始時刻を消す",zhs:"清除开始时间",zht:"清除開始時間",es:"Quitar hora de inicio"},
+ clr:{ko:"도착 시각 지우기",en:"Clear arrival time",ja:"到着時刻を消す",zhs:"清除到达时间",zht:"清除到達時間",es:"Quitar hora de llegada"},
  bEarly:{ko:"{m} 일찍 출발하기 ({t} 출발)",en:"Leave {m} earlier ({t})",ja:"{m}早く出発する（{t}出発）",zhs:"提前{m}出发（{t}出发）",zht:"提前{m}出發（{t}出發）",es:"Salir {m} antes ({t})"},
  earlyD:{ko:"{d} 출발을 당겼어요 — {t} 출발",en:"{d}: departure moved up to {t}",ja:"{d}の出発を{t}に早めました",zhs:"{d}出发时间提前到{t}",zht:"{d}出發時間提前到{t}",es:"{d}: salida adelantada a las {t}"},
- fix:{ko:"정한 {f}보다 늦은 {a}에 닿아요",en:"You arrive at {a}, later than the {f} you set",ja:"決めた{f}より遅い{a}に着きます",zhs:"比您定的{f}晚，{a}才到",zht:"比您定的{f}晚，{a}才到",es:"Llegas a las {a}, más tarde de las {f} que fijaste"},
+ fix:{ko:"{f} 도착으로 정해 두셨는데 {a}에 도착해요",en:"You chose to arrive at {f}, but you’ll get there at {a}",ja:"{f}到着にしていますが、{a}に着きます",zhs:"您选了{f}到达，但{a}才到",zht:"您選了{f}到達，但{a}才到",es:"Elegiste llegar a las {f}, pero llegas a las {a}"},
  bAdd:{ko:"하루 늘리기",en:"Add a day",ja:"1日増やす",zhs:"增加一天",zht:"增加一天",es:"Añadir un día"},
  bMv:{ko:"다른 날로 옮기기",en:"Move to another day",ja:"別の日に移す",zhs:"移到其他日子",zht:"移到其他日子",es:"Pasar a otro día"},
  bSh:{ko:"머무는 시간 줄이기",en:"Shorten stays",ja:"滞在時間を短くする",zhs:"缩短停留时间",zht:"縮短停留時間",es:"Acortar estancias"},
@@ -315,17 +315,22 @@ var FX6={
  mT:{ko:"다른 날로 옮기기 — {p}",en:"Move to another day — {p}",ja:"別の日に移す — {p}",zhs:"移到其他日子——{p}",zht:"移到其他日子——{p}",es:"Pasar a otro día: {p}"},
  mI:{ko:"날마다 시간이 맞는 가장 좋은 자리를 찾았어요. 그날 다른 장소 순서는 그대로예요.",en:"We found the best spot in each day where the times work. The order of that day’s other places stays the same.",ja:"日ごとに時間が合ういちばん良い位置を探しました。その日のほかの場所の順番はそのままです。",zhs:"已在每一天找出时间合适的最佳位置，当天其他地点的顺序不变。",zht:"已在每一天找出時間合適的最佳位置，當天其他地點的順序不變。",es:"Buscamos en cada día el mejor hueco donde encaja el horario. El orden de los demás lugares de ese día no cambia."},
  mOk:{ko:"{t} 도착 ✓",en:"arrive {t} ✓",ja:"{t}着 ✓",zhs:"{t}到达 ✓",zht:"{t}到達 ✓",es:"llegada {t} ✓"},
- mNo:{ko:"이 날도 문 연 시간에 못 닿아요",en:"Can’t get there during opening hours on this day either",ja:"この日も営業時間内に着けません",zhs:"这天也赶不上营业时间",zht:"這天也趕不上營業時間",es:"Este día tampoco llegas en horario de apertura"},
- mNoF:{ko:"이 날도 정한 {f}에 못 닿아요",en:"Can’t get there by the {f} you set on this day either",ja:"この日も決めた{f}に着けません",zhs:"这天也赶不上您定的{f}",zht:"這天也趕不上您定的{f}",es:"Este día tampoco llegas a las {f} que fijaste"},
+ mNo:{ko:"이 날도 문 연 시간에 도착할 수 없어요",en:"Can’t get there during opening hours on this day either",ja:"この日も営業時間内に着けません",zhs:"这天也赶不上营业时间",zht:"這天也趕不上營業時間",es:"Este día tampoco llegas en horario de apertura"},
+ mNoF:{ko:"이 날도 {f}까지 도착할 수 없어요",en:"Can’t get there by {f} on this day either",ja:"この日も{f}までに着けません",zhs:"这天也赶不上{f}到达",zht:"這天也趕不上{f}到達",es:"Este día tampoco llegas a las {f}"},
  mCity:{ko:"다른 도시에 있는 날이에요",en:"You’re in another city that day",ja:"この日は別の都市にいます",zhs:"这天在其他城市",zht:"這天在其他城市",es:"Ese día estás en otra ciudad"},
  mOth:{ko:"이 날 다른 장소 {n}곳 시간이 안 맞게 돼요",en:"{n} other place(s) that day would stop fitting the time",ja:"この日のほかの{n}か所の時間が合わなくなります",zhs:"当天另外{n}个地点的时间会对不上",zht:"當天另外{n}個地點的時間會對不上",es:"{n} lugar(es) más de ese día dejarían de encajar en el horario"},
  mNone:{ko:"옮길 수 있는 날이 없어요 — 하루를 늘리거나 이 장소를 빼 보세요",en:"There’s no day it fits — add a day or remove this place",ja:"移せる日がありません — 1日増やすか、この場所を外してください",zhs:"没有可以移过去的日子——请增加一天或移除这个地点",zht:"沒有可以移過去的日子——請增加一天或移除這個地點",es:"No hay ningún día donde encaje: añade un día o quita este lugar"},
  mD:{ko:"「{p}」 — {d}로 옮겼어요",en:"Moved “{p}” to {d}",ja:"「{p}」を{d}に移しました",zhs:"已把「{p}」移到{d}",zht:"已把「{p}」移到{d}",es:"«{p}» pasó al {d}"},
  sT:{ko:"머무는 시간 줄이기 — {d}",en:"Shorten stays — {d}",ja:"滞在時間を短くする — {d}",zhs:"缩短停留时间——{d}",zht:"縮短停留時間——{d}",es:"Acortar estancias: {d}"},
- sI:{ko:"앞 장소에서 머무는 시간을 줄이면 「{p}」에 더 일찍 닿아요.",en:"Spend less time at the earlier places to reach “{p}” sooner.",ja:"前の場所の滞在時間を短くすると、「{p}」に早く着きます。",zhs:"缩短前面地点的停留时间，就能更早到达「{p}」。",zht:"縮短前面地點的停留時間，就能更早到達「{p}」。",es:"Si pasas menos tiempo en los lugares anteriores, llegarás antes a «{p}»."},
+ sI:{ko:"앞 장소에서 머무는 시간을 줄이면 「{p}」에 더 일찍 도착해요.",en:"Spend less time at the earlier places to reach “{p}” sooner.",ja:"前の場所の滞在時間を短くすると、「{p}」に早く着きます。",zhs:"缩短前面地点的停留时间，就能更早到达「{p}」。",zht:"縮短前面地點的停留時間，就能更早到達「{p}」。",es:"Si pasas menos tiempo en los lugares anteriores, llegarás antes a «{p}»."},
  sOk:{ko:"「{p}」 — 이제 시간이 맞아요",en:"“{p}” now fits the time",ja:"「{p}」は時間が合うようになりました",zhs:"「{p}」现在时间合适了",zht:"「{p}」現在時間合適了",es:"«{p}» ya encaja en el horario"},
  sEnd:{ko:"이 날 {e}에 끝나요",en:"This day ends at {e}",ja:"この日は{e}に終わります",zhs:"这天{e}结束",zht:"這天{e}結束",es:"Este día termina a las {e}"},
- sGo:{ko:"다시 검사하기",en:"Check again",ja:"もう一度チェック",zhs:"重新检查",zht:"重新檢查",es:"Revisar de nuevo"}};
+ sGo:{ko:"다시 검사하기",en:"Check again",ja:"もう一度チェック",zhs:"重新检查",zht:"重新檢查",es:"Revisar de nuevo"},
+ // 11-07 짤 때 정한 시각에 못 닿는 곳을 같은 도시 다른 날로 옮긴 것 (그 장소 줄에 한 줄)
+ mvA:{ko:"도착한 날엔 {f}까지 갈 수 없어 {d}로 옮겼어요",en:"Couldn't make {f} on arrival day, so we moved it to {d}",ja:"到着日は{f}に間に合わないため{d}に移しました",zhs:"到达当天赶不上{f}，已移到{d}",zht:"抵達當天趕不上{f}，已移到{d}",es:"El día de llegada no llegabas a las {f}; lo pasamos al {d}"},
+ mvN:{ko:"{s}엔 {f}까지 갈 수 없어 {d}로 옮겼어요",en:"Couldn't make {f} on {s}, so we moved it to {d}",ja:"{s}は{f}に間に合わないため{d}に移しました",zhs:"{s}赶不上{f}，已移到{d}",zht:"{s}趕不上{f}，已移到{d}",es:"El {s} no llegabas a las {f}; lo pasamos al {d}"},
+ // 11-07 시작 시각보다 이른 도착 시각에 맞춰 그날 출발을 알아서 당긴 것 (그날 맨 위 한 줄 — fxEarly)
+ frA:{ko:"「{p}」 {f} 도착에 맞춰 {t}에 출발해요",en:"Leaving at {t} to reach “{p}” by {f}",ja:"「{p}」に{f}に着くよう、{t}に出発します",zhs:"为了{f}到达「{p}」，{t}出发",zht:"為了{f}到達「{p}」，{t}出發",es:"Salimos a las {t} para llegar a «{p}» a las {f}"}};
 function fxOf(x){ var v=x&&x.fx; return (v!=null&&v!==""&&isFinite(+v)&&+v>=0&&+v<1440)?Math.round(+v):null; }
 
 // ── 메뉴·칩 ──
@@ -365,6 +370,7 @@ function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) 
     +HOTELS.map(function(h){ return '<option value="'+esc(h.k)+'"'+(o.hotel&&o.hotel.k===h.k?" selected":"")+'>🏨 '+esc(nm(h))+'</option>'; }).join("")
     +(o.hotel&&o.hotel.type==="addr"?'<option value="__addr" selected>'+esc(hotelTxt(o.hotel))+'</option>':"")+'</select>';
   box.innerHTML='<div class="trtop"><b>'+MPICO("mi_cart",T("🛒 내 여행","🛒 My trip"),MIS)+' ('+n+')</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trBox\')">✕</button></div>'
+    +(TR.plan?'<button type="button" class="trbtn" id="trOpenRep" style="margin:0 0 8px">'+MPICO("mi_doc",T5({ko:"📄 내 일정 보기",en:"📄 My plan",ja:"📄 私の日程を見る",zhs:"📄 查看我的行程",zht:"📄 查看我的行程",es:"📄 Ver mi plan"}),MIS)+'</button>':"")   // 11-07 사장님 — 맨 위로 옮기고 「지난 일정 보기」 → 「내 일정 보기」 (짜 둔 일정을 연다 · 다시 짜면 덮어씀)
     +(!sySess()?'<div class="trsync">'+esc(T5(SYL6.q))+'<button type="button" class="trbtn pri" id="trLogin">'+esc(T5(SYL6.b))+'</button></div>':'')
     +(n?(HLK&&has(HLK)?'<div class="trhln">'+esc(gTxt(CK6.hl,{p:nm(TR.items.filter(function(x){ return x.k===HLK; })[0])}))+'</div>':'')+'<ol class="trl" id="trList">'+li+'</ol><button type="button" class="trbtn" id="trClearAll" style="margin:6px 0">'+T("🗑 모두 비우기","🗑 Clear all")+'</button><div class="d">'+esc(T5(CK6.hint))+'</div>'
       :'<div class="msg">'+T("아직 담은 곳이 없어요. 지도에서 그림을 누르고 「＋ 내 여행에 담기」를 누르세요.","Nothing added yet. Tap a picture on the map, then “＋ Add to my trip”.")+'</div>')
@@ -379,7 +385,6 @@ function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) 
     // 11-07 사장님 — 「도시별 숙소」 아래 안내 문장·「숙소 이름·주소로 찾기」 칸·🔍 삭제(도시마다 🏨 숙소 찾기 단추가 있다) · 도시 하나 일정은 이 칸이 유일한 숙소 검색이라 그대로
     +(PANELG?'':'<div class="wide trsr"><input id="trAddrQ" enterkeyhint="search" placeholder="'+T("숙소 이름·주소로 찾기","Search lodging by name/address")+'"><button type="button" class="tb" id="trAddrGo">'+MPIMG("mi_search","height:1.2em;width:auto;vertical-align:-0.2em;margin:0")+'</button></div><div class="wide" id="trAddrR"></div>')+natApRows()+'</div>'
     +'<button type="button" class="trbtn big" id="trPlan"'+(n?"":" disabled")+'>'+MPICO("mi_calendar",T("🗓 일정 짜기","🗓 Plan my trip"),MIS)+'</button>'
-    +(TR.plan?'<button type="button" class="trbtn" id="trOpenRep">'+MPICO("mi_doc",T("📄 지난 일정 보기","📄 Open last plan"),MIS)+'</button>':"")
     +'<div class="d" style="margin-top:8px">'+T("일정은 이 기기에만 저장돼요. 위치는 저장하지 않아요.","Your plan is saved only on this device. Your location is never saved.")+'</div>';
   var g=function(id){ return document.getElementById(id); };
   g("trN").onchange=function(){ var q=nFix(this.value,o.n), m=g("trNm"); this.value=q.n; if(m){ m.hidden=!q.fix; m.textContent=q.fix?nMsg(q.n):""; } if(q.n!==o.n){ o.n=q.n; TR.plan=null; save(); } };   // 숫자 칸 (11-06) — 1~90 밖·빈칸은 맞추고 한 줄 안내
@@ -658,8 +663,11 @@ function compute0(H,Dn){ if(!OLD()){ var nat=null; try{ nat=natPlan(H,Dn); }catc
   if(!OLD()){   // 11-07 사장님 — 순서는 손님이 ☰ 로 놓은 그대로, 날짜만 나눈다(쉬는 날·시간대가 안 맞으면 검사 창으로 알린다 — 옮기지 않는다)
     var dts=[]; for(var q0=0;q0<D;q0++) dts.push(dayDate(q0));
     var sq=seqSplit(H,P,D,cap), pool0={}; P.forEach(function(x){ pool0[x.k]=x; });
-    return {v:1,at:Date.now(),from:from,to:to,hotel:o.hotel&&o.hotel.type!=="here"?o.hotel:(o.hotel?{type:"here"}:null),
-      days:sq.map(function(g,di){ return {date:dts[di].toISOString().slice(0,10),stops:g.map(function(x){ return x.k; }),end:sched(H,g,dts[di],from,{to:to}).end}; }),pool:pool0,skip:skip.map(function(x){ return x.k; }),ai:null,ord:1}; }
+    var pl0={v:1,at:Date.now(),from:from,to:to,hotel:o.hotel&&o.hotel.type!=="here"?o.hotel:(o.hotel?{type:"here"}:null),
+      days:sq.map(function(g,di){ return {date:dts[di].toISOString().slice(0,10),stops:g.map(function(x){ return x.k; })}; }),pool:pool0,skip:skip.map(function(x){ return x.k; }),ai:null,ord:1};
+    fxFix(pl0,H);   // 11-07 정한 시작 시각에 못 닿는 곳 → 다른 날로
+    pl0.days.forEach(function(d,di){ d.end=sched(H,d.stops.map(function(k){ return pool0[k]; }),dts[di],d.fr!=null?d.fr:from,{to:to}).end; });   // d.fr = 이른 도착 시각에 맞춰 당긴 출발 (11-07)
+    return pl0; }
   var gs=splitDays(H,P,D,cap); while(gs.length<D) gs.push([]);
   // 날짜 배치 — 휴무 겹침이 가장 적은 차례 (7일이면 5040가지)
   var dates=[]; for(var i=0;i<D;i++) dates.push(dayDate(i));
@@ -679,7 +687,7 @@ function compute0(H,Dn){ if(!OLD()){ var nat=null; try{ nat=natPlan(H,Dn); }catc
 //   화면을 멈추지 않게 — 0.25초 안에 끝나면 그 자리에서(예전처럼), 넘으면 남은 날짜 수는 하나씩 뒤로 미뤄 짜고 다 되면 보고서를 다시 그린다(그동안 권유 칸은 안 보임)
 //   「들어간다」= 보고서 ⚠ 경고와 같은 기준 — 그날 시간표(식사 칸 포함, 새 일정의 mealsOf 와 같은 {to,lunch:null,dinner:null}) 숙소 도착 ≤ 하루 끝
 function planFits(H,p){ return withLC(function(){ return planFits0(H,p); }); }
-function planFits0(H,p){ return p.days.every(function(d,di){ var X=dayX(p,di,H), arr=X.arr, dt=X.dt;
+function planFits0(H,p){ return p.days.every(function(d,di){ var X=dayX(p,di,H), arr=X.arr, dt=X.dt; if(X.rest&&!arr.length) return true;   // 밤에 도착해 쉬는 날 (11-07)
   return sched(X.H,arr,dt,X.from,{to:X.to,lunch:null,dinner:null}).end<=dayLim(p,{},X.H,arr,dt,X); }); }   // 밤 장소가 있는 날은 그 장소 시각까지가 그날 (11-06) · 전국 일정은 그날 틀(출발점·시작 시각·기차 시각)로
 var SUG={key:""}, SGW=7, SGB=250;   // 같은 일정·조건·실제 시간 개수면 다시 안 짠다 (화면에만)
 // 날짜 수를 차례로 짜 보기 — st=SUG·SHR · Ds=짜 볼 날짜 수 · ok(D)=맞으면 true · none=못 찾을 때 · 답이 아직이면 null(뒤에서 짜는 중)
@@ -744,6 +752,7 @@ function realTimesFetch(pl,H,cb){ var pairs=[], keys=[], seen={};
     if(typeof RT[kk]==="number") return; var sv=null; try{ sv=sessionStorage.getItem("nt:"+kk); }catch(e){} if(sv!=null&&sv!==""){ RT[kk]=+sv; return; }
     keys.push(kk); pairs.push([+a.lat,+a.lng,+b.lat,+b.lng]); };
   pl.days.forEach(function(d,di){ var X=dayX(pl,di,H), arr=X.arr, S=hS(X.H), E=hE(X.H), set=(S?[S]:[]).concat(E&&E!==S?[E]:[],arr);
+    (X.pre||[]).forEach(function(r){ if(r.leg&&r.leg.mode==="transit"&&r.a&&r.b) add(r.a,r.b); });   // 도착한 날 공항 → 숙소 (11-07 — 예전엔 공항 → 첫 장소로 물었다)
     for(var i=0;i<set.length;i++) for(var j=i+1;j<set.length;j++) add(set[i],set[j]); });
   if(!pairs.length){ cb(); return; }
   pairs=pairs.slice(0,60); keys=keys.slice(0,60);   // 플랜마다 구간 상한(허브도 하루 한도로 또 막는다)
@@ -888,6 +897,7 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
   var h='<div class="trtop" data-html2canvas-ignore><b>'+MPICO("mi_cart",T("🛒 내 여행 일정","🛒 My trip plan"),MIS)+'</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trRep\')">✕</button></div>'
     +'<div class="trbar" data-html2canvas-ignore><button type="button" class="trbtn" id="trNext">'+T("➡ 다음 갈 곳","➡ Next stop")+'</button><button type="button" class="trbtn" id="trPdf">'+MPICO("mi_device",T5(SAVE6),MIS)+'</button><button type="button" class="trbtn" id="trMail">'+MPICO("mi_doc",T5(MAIL6),MIS)+'</button><button type="button" class="trbtn" id="trShare">'+SHSVG+T("공유","Share")+'</button><button type="button" class="trbtn" id="trEdit">'+T("✏ 고치기","✏ Edit")+'</button><button type="button" class="trbtn ib" id="trInfo" aria-label="info">ⓘ</button></div>'
     +'<div id="trNextBox" data-html2canvas-ignore></div>'
+    +grvCard()   // 가이드 일정 검토 (선택 · 11-07) — 누르지 않아도 일정은 그대로
     +'<div class="d" id="trAiS" data-html2canvas-ignore'+(pl.ai&&!(pl.ai.pend&&pl.ai.pend.length)?" hidden":"")+'>'+T("설명을 쓰는 중… (없어도 일정은 그대로 쓸 수 있어요)","Writing notes… (the plan works without them)")+'</div>'
     +(pl.skip&&pl.skip.length?'<div class="d">'+T("일정에서 뺀 곳(숙소·교통시설): ","Skipped (lodging/transport): ")+esc(pl.skip.map(function(k){ var it=TR.items.filter(function(x){ return x.k===k; })[0]; return it?nm(it):k; }).join(", "))+'</div>':"");
   // 날마다 시간표 먼저 — ⚠(하루 끝 넘김)가 하나라도 있으면 늘리기, 없으면 줄이기 판단 (11-06) · 오늘 실제 기록이 있거나 손님이 이미 정한 날(일찍 감·추가 일정)·「이대로 둘게요」면 줄이기는 안 묻는다
@@ -899,6 +909,8 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
   var ALLI=[]; try{ ALLI=pl.ord?chkAll(DS):[]; }catch(e){ ALLI=[]; } var ACK=pl.ack||{}, ISS=ALLI.filter(function(q){ return !ACK[q.sig]; }), IM={};
   ALLI.forEach(function(q){ if(!q.k||!/^(night|nfirst|late|cut|zig|off|early|fix)$/.test(q.t)) return; if(q.t==="off"||q.t==="early"){ var xx=pl.pool[q.k], dd=pl.days[q.di], w=xx&&dd?winOf(xx,new Date(dd.date+"T00:00:00Z")):null; if(q.t==="off"&&w&&w.off) return; if(q.t==="early") return; }   // 쉬는 날(구글)·문 열기 기다림은 아래 원래 메모에 이미 있다
     (IM[q.di+"|"+q.k]=IM[q.di+"|"+q.k]||[]).push("⚠ "+issTxt(pl,q)); });
+  var ack0=DS[0]&&DS[0].X&&DS[0].X.chk;   // 11-07 도착한 날 들를 첫날 숙소를 안 정했으면 맨 위에 한 줄 + 숙소 찾기(그날 밤 숙소 칸과 같은 길) — 그동안은 서울역·도시 중심 기준
+  if(pl.mc&&ack0&&ack0.tmp){ var ad0=pl.days[0], aci0=ad0.nc!=null?ad0.nc:ad0.c; h+='<div class="tgap" data-html2canvas-ignore><b>'+esc(T5(NX6.h1st))+'</b><div class="tgr"><button type="button" class="trbtn" data-hpick="'+aci0+'" data-hd="0">'+MPIMG("mi_stay",MIS)+esc(T5(NX6.hPick))+'</button></div></div>'; }
   if(ISS.length) h+='<div class="tchkbar" data-html2canvas-ignore><span>'+esc(gTxt(CK6.cBar,{n:ISS.length}))+'</span><button type="button" class="trbtn" data-ck="open">'+esc(T5(CK6.cSee))+'</button></div>';
   pl.days.forEach(function(d,di){ var Q=DS[di], X=Q.X, dt=Q.dt, arr=Q.arr, lv=Q.lv, s=Q.s, a=(ai.days&&!d.aiX)?ai.days[di]:null, hk=d.date===kstToday(0)?liveHereK(pl,di,arr,s,lv):null;   // 오늘 = 실제 도착·출발로 다시 계산한 시각 (11-06) · d.aiX = 「새로 짜기」로 순서가 바뀐 날(그날 설명만 감춘다 — AI 다시 안 부름)
     var cty=pl.mc&&pl.cities&&pl.cities[d.c]?cnm(pl.cities[d.c]):"", pre=pl.mc&&X.pre&&X.pre.length?X.pre:null;
@@ -917,6 +929,7 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
         h+='<div class="trw h" data-html2canvas-ignore><span class="tt">'+m2hm(Math.max(0,f0.t-lg0.min))+'</span><span class="tp">'+MPIMG("mi_pin",MIS)+T5({ko:"지금 내 위치 출발",en:"Start from where I am now",ja:"今いる場所から出発",zhs:"从我现在的位置出发",zht:"從我現在的位置出發",es:"Salir desde donde estoy ahora"})+'</span></div>'
           +'<div class="tlg" data-html2canvas-ignore data-a="__me" data-b="'+esc(b0)+'" data-d="'+di+'">'+legTxt(lg0,lgNm("__me",di),lgNm(b0,di,1))+legGo(lg0)+'<div class="tods"></div></div>'; prevK="__me"; }
       else h+='<div class="d tnost" data-html2canvas-ignore'+(GEOST==="fail"?"":" hidden")+'>'+T5({ko:"위치를 켜면 1번째 장소까지 가는 길이 보입니다",en:"Turn on location to see the way to your first stop",ja:"位置情報をオンにすると1番目の場所までの行き方が表示されます",zhs:"开启定位后，会显示前往第1个地点的路线",zht:"開啟定位後，會顯示前往第1個地點的路線",es:"Activa la ubicación para ver cómo llegar a tu primera parada"})+'</div>'; }
+    var fa=d.fra, fax=fa&&pl.pool[fa.k]; if(fax&&d.fr===fa.t&&fxOf(fax)===fa.x&&arr.indexOf(fax)>=0) h+='<div class="tmemo" style="margin:2px 0 6px">⏰ '+esc(gTxt(FX6.frA,{p:nm(fax),f:m2hm(fa.x),t:m2hm(fa.t)}))+'</div>';   // 11-07 이른 도착 시각에 맞춰 그날 출발을 당겼으면 한 줄 (fxEarly)
     var pj=0;   // 이 줄 앞 장소 수(식사 칸에서 「직접 식당 찾기」로 넣을 자리 기본값)
     s.rows.forEach(function(r,ri){ var lgOk=ri>0||!!pre;
       if(r.x&&r.x.eat){ pj++; if(r.leg&&prevK&&lgOk) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.x.k)+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),eatName(r.x))+legGo(r.leg)+'<div class="tods"></div></div>';   // 11-07 손님이 넣은 식당
@@ -936,8 +949,9 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
       if(!r.act&&Array.isArray(r.x.oh)&&r.x.oh.length){ var co=closeOf(r.x,dt,r.t); if(co.c!=null&&co.o!=null&&co.c-co.o<1440) memo.push(gTxt(LV6.hrs,{o:m2hm(co.o),c:m2hm(co.c)})); }
       if(needCheck(r.x)) memo.push(T("운영 시간·휴무일 확인 필요","Check opening hours/closures"));
       if(isNight(r.x)) memo.push(T("밤 추천","Best at night"));
+      var fm=pl.fxm&&pl.fxm[r.x.k], fmt=(fm&&fm.t===di&&!r.act)?gTxt(fm.a?FX6.mvA:FX6.mvN,{f:m2hm(fm.x),s:dLbl(fm.f),d:dLbl(fm.t)}):"";   // 11-07 짤 때 정한 시각에 맞춰 옮긴 곳
       h+='<div class="trw tpk" data-k="'+esc(r.x.k)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp"><b class="tno">'+n+'</b> <b>'+esc(nm(r.x))+'</b> <i>'+durTxt(r.st||r.x.stay)+(r.ext?' · '+T(m2hm(r.t+(r.st||r.x.stay))+"까지","until "+m2hm(r.t+(r.st||r.x.stay))):'')+'</i>'
-        +(memo.length?'<span class="tmemo">'+esc(memo.join(" · "))+'</span>':"")+(aiTx(tip)?'<span class="ttip">'+MPIMG("mi_tip",MIS)+esc(aiTx(tip))+'</span>':"")
+        +(memo.length?'<span class="tmemo">'+esc(memo.join(" · "))+'</span>':"")+(fmt?'<span class="tmemo">↪ '+esc(fmt)+'</span>':"")+(aiTx(tip)?'<span class="ttip">'+MPIMG("mi_tip",MIS)+esc(aiTx(tip))+'</span>':"")
         +(hk===r.x.k?'<span class="tlvw" data-html2canvas-ignore><button type="button" class="tlvb" data-lvleave="'+esc(r.x.k)+'">'+esc(T5(LV6.leave))+'</button></span>':'')+'</span></div>';
       prevK=r.x.k; });
     if(Q.post) h+=natPostHtml(pl,di,X,Q.post,prevK);
@@ -1188,7 +1202,7 @@ function ckK(pl,q){ return q.k||(q.t==="over"?ovLast(pl,q.di):null); }
 // 검사 창 단추 (사장님 11-07) — 넘치는 날: 하루 늘리기·마지막 장소 다른 날로·빼기 · 낮 장소가 안 맞는 시각(밤에 잡힘·마감 뒤·입장 마감·머무는 동안 마감·정한 시각보다 늦음): 다른 날로·머무는 시간 줄이기·빼기
 //   쉬는 날: 다른 날로·빼기 · 밤 장소가 낮에·문 열기 기다림·도시 오감·식사는 예전 그대로 · 모든 줄에 그대로 두기
 // 일찍 출발 — 정한 시각보다 늦는 분만큼 그날 출발을 당긴다(05:00 보다 이르면 안 권함) → {late, ns}
-function ckEarly(pl,q){ var X=dayX(pl,q.di,REPH||pl.H||null), late=(q.a||0)-(q.f||0), ns=X.from-late; return (late>0&&ns>=300)?{late:late,ns:ns}:null; }
+function ckEarly(pl,q){ var X=dayX(pl,q.di,REPH||pl.H||null), late=(q.a||0)-(q.f||0), ns=X.from-late; if(X.pre&&X.pre.some(function(r){ return r.ap||r.tr; })) return null; return (late>0&&ns>=300)?{late:late,ns:ns}:null; }   // 비행기·아침 도시 이동으로 시작이 정해진 날(도착한 날 등)은 안 권함 (11-07)
 function ckBtns(pl,q,x){ var K=[["keep",CK6.bKeep]];
   if(q.t==="over") return [pl.days.length<MAXD?["add",FX6.bAdd]:null,x?["mv",FX6.bMv]:null,x?["drop",CK6.bDrop]:null].filter(Boolean).concat(K);
   if(q.t==="meal") return [["eat",CK6.bEat]].concat(K);
@@ -1253,6 +1267,43 @@ function mvFind(pl,di,k){ var H0=REPH||pl.H||null, x=pl.pool[k], src=pl.days[di]
       var oth=Math.max(0,cnt(s,dt,dj,x)-b0), c=(s.end-s0.end)+oth*1000;
       if(!best||c<best.c) best={c:c,p:p,t:r.t,oth:oth}; }
     o.b=best; o.arr=arr; return o; }).filter(Boolean); }
+// 짤 때 정한 시작 시각 지키기 (11-07 사장님 「알리기만 하지 말고 짤 때 피해라」) — 날짜를 나눈 뒤 fx 가 있는 곳이 그날 fx 까지 못 닿으면(일찍 닿아 기다리는 건 괜찮음)
+//   같은 도시의 다른 날에 모든 자리를 넣어 보아 fx 까지 닿는 자리로 — 가장 이른 날 → 그 안에서 가장 덜 늘어나는 자리 · 그날 다른 장소 순서는 그대로(mvFind 와 같은 셈: 그 장소 문제 없음(문 열기 기다림은 괜찮음) · 다른 장소가 새로 안 맞게 되면 X)
+//   옮긴 것 pl.fxm[키]={f:원래 날,t:옮긴 날,x:정한 시각,a:도착한 날이면 1} — 그 장소 줄에 한 줄 · 어느 날도 안 되면 그대로(검사 창 「정한 … 보다 늦은 …」) · 식사 칸 없이 잰다(짤 때와 같게)
+function fxSpot(pl,di,x,H){ var src=pl.days[di], fx=fxOf(x), best=null;
+  var cnt=function(s,dt,dj){ var n=0; s.rows.forEach(function(r,ri){ if(!r.x||r.x===x) return; var q=rowIss(s,r,ri,dt,dj); if(q&&q.t!=="early") n++; }); return n; };
+  for(var dj=0;dj<pl.days.length&&!best;dj++){ var d=pl.days[dj]; if(dj===di||(pl.mc&&d.c!==src.c)) continue;
+    var X=dayX(pl,dj,H); if(X.rest&&!X.arr.length) continue;   // 밤에 도착해 쉬는 날엔 안 넣는다
+    var arr=X.arr.filter(function(y){ return y!==x; }), dt=X.dt, mo={to:X.to}, s0=sched(X.H,arr,dt,X.from,mo), b0=cnt(s0,dt,dj);
+    for(var p=0;p<=arr.length;p++){ var s=sched(X.H,arr.slice(0,p).concat([x],arr.slice(p)),dt,X.from,mo), r=null, ri=-1;
+      s.rows.forEach(function(q,i){ if(q.x===x){ r=q; ri=i; } }); if(!r||(r.ar!=null?r.ar:r.t)>fx) continue;
+      var iq=rowIss(s,r,ri,dt,dj); if(iq&&iq.t!=="early") continue; if(cnt(s,dt,dj)>b0) continue;
+      var c=s.end-s0.end; if(!best||c<best.c) best={dj:dj,p:p,c:c}; } }
+  return best; }
+// 11-07 사장님 「가」 — 시작 시각보다 이른 도착 시각(예: 시작 09:30, N서울타워 09:00)이라 어느 날도 그 시각에 도착할 수 없으면(fxSpot 실패) 그 장소가 있는 날만 출발을 알아서 당긴다(d.fr — 검사 창 「일찍 출발하기」와 같은 칸)
+//   그날이 비행기·아침 도시 이동에 묶인 날(도착한 날 등)이면 같은 도시의 묶이지 않은 가장 이른 날로 옮겨서 당긴다(가장 덜 당기는 자리) · 05:00 보다 이르면 안 함 · 그날 다른 장소가 새로 안 맞게 되면 안 함
+//   → {dj,p(-1 = 그날 그 자리 그대로),ns:새 출발,f0:원래 출발} · 당긴 날 d.fra={k,x:도착 시각,t:출발} = 그날 맨 위 한 줄 「「…」 09:00 도착에 맞춰 08:33에 출발해요」
+function frBound(X){ return !!(X&&X.pre&&X.pre.some(function(r){ return r.ap||r.tr; })); }
+function fxEarly(pl,di,x,H){ var src=pl.days[di], fx=fxOf(x), best=null, X0=dayX(pl,di,H), own=!frBound(X0);
+  var cnt=function(s,dt,dj){ var n=0; s.rows.forEach(function(r,ri){ if(!r.x||r.x===x) return; var q=rowIss(s,r,ri,dt,dj); if(q&&q.t!=="early") n++; }); return n; }, arOf=function(r){ return r.ar!=null?r.ar:r.t; };
+  for(var dj=0;dj<pl.days.length&&!best;dj++){ var d=pl.days[dj]; if(own?dj!==di:(dj===di||(pl.mc&&d.c!==src.c))) continue;
+    var X=dj===di?X0:dayX(pl,dj,H); if(frBound(X)||(X.rest&&!X.arr.length)) continue;
+    var arr=X.arr.filter(function(y){ return y!==x; }), dt=X.dt, mo={to:X.to}, b0=cnt(sched(X.H,dj===di?X.arr:arr,dt,X.from,mo),dt,dj), ps=[-1];
+    if(dj!==di){ ps=[]; for(var q=0;q<=arr.length;q++) ps.push(q); }
+    ps.forEach(function(p){ var tr=p<0?X.arr:arr.slice(0,p).concat([x],arr.slice(p)), ns=X.from, s=null, r=null, ri=-1;
+      for(var it=0;it<4;it++){ s=sched(X.H,tr,dt,ns,mo); r=null; ri=-1; s.rows.forEach(function(q2,i2){ if(q2.x===x){ r=q2; ri=i2; } }); if(!r) return; var late=arOf(r)-fx; if(late<=0) break; ns=Math.floor(ns-late); if(ns<300) return; }   // 앞 장소가 문 열기를 기다리면 당긴 만큼 다 안 당겨지니 몇 번 더
+      if(arOf(r)>fx) return; var iq=rowIss(s,r,ri,dt,dj); if(iq&&iq.t!=="early") return; if(cnt(s,dt,dj)>b0) return;
+      var c=(X.from-ns)*1000+(s.end-ns); if(!best||c<best.c) best={dj:dj,p:p,ns:ns,f0:X.from,c:c}; }); }
+  return best; }
+function fxFix(pl,H){ var done={};
+  for(var di=0;di<pl.days.length;di++){ var d=pl.days[di];
+    for(var i=0;i<d.stops.length;i++){ var k=d.stops[i], x=pl.pool[k], fx=fxOf(x); if(fx==null||x.eat||done[k]) continue;
+      var X=dayX(pl,di,H), s=sched(X.H,X.arr,X.dt,X.from,{to:X.to}), r=null; s.rows.forEach(function(q){ if(q.x===x) r=q; }); if(!r||(r.ar!=null?r.ar:r.t)<=fx) continue;
+      var b=fxSpot(pl,di,x,H), e=null; if(!b){ e=fxEarly(pl,di,x,H); if(!e) continue; b={dj:e.dj,p:e.p}; }   // 다른 날로 옮겨도 안 되면 출발을 당긴다 (11-07)
+      if(b.dj!==di){ d.stops.splice(i,1); i--; var d2=pl.days[b.dj], a2=d2.stops.filter(function(q){ return pl.pool[q]; }), at=b.p<=0?(a2.length?d2.stops.indexOf(a2[0]):0):(b.p>=a2.length?d2.stops.length:d2.stops.indexOf(a2[b.p])); d2.stops.splice(at<0?d2.stops.length:at,0,k);   // mvStop 과 같은 자리 셈
+        (pl.fxm=pl.fxm||{})[k]={f:di,t:b.dj,x:fx,a:(pl.mc&&di===0&&pl.ap&&pl.ap.a)?1:0}; }
+      if(e&&e.ns<e.f0){ var de=pl.days[e.dj]; de.fr=e.ns; de.fra={k:k,x:fx,t:e.ns}; }
+      done[k]=1; } } }
 function mvOpen(di,k){ var pl=TR.plan; if(!pl||!k||!pl.pool[k]||!pl.days[di]) return; MVS={di:di,k:k}; var old=document.getElementById("trMv"); if(old) old.remove();
   var b=document.createElement("div"); b.id="trMv"; b.className="trpop"; b.onclick=function(e){ if(e.target===b) b.remove(); }; b._rb=mvPaint; document.body.appendChild(b); mvPaint(); try{ ntap("_trip","check_mvopen"); }catch(z){} }
 function mvPaint(){ var b=document.getElementById("trMv"), pl=TR.plan, o=MVS; if(!b||!pl||!o||!pl.pool[o.k]||!pl.days[o.di]){ if(b) b.remove(); return; } var x=pl.pool[o.k], fx=fxOf(x);
@@ -1594,6 +1645,131 @@ function gsSend(){ if(GS.busy||!GS.g) return; var nmEl=document.getElementById("
     if(j&&j.ok){ try{ localStorage.setItem("mpv_lastguide",JSON.stringify({id:GS.g.id,name:GS.g.name,langs:GS.g.langs||[],region:GS.g.region||"",lang:GS.lang})); }catch(e){} window.__trSendPlan=j; try{ ntap("_trip","guide_send_ok"); }catch(e){} GS.view="done"; gsPaint(); return; }
     set(j&&j.err==="guide"?T5({ko:"가이드를 찾을 수 없어요.",en:"Guide not found.",ja:"ガイドが見つかりません。",zhs:"找不到该向导。",zht:"找不到該嚮導。",es:"Guía no encontrado."}):j&&j.err==="rate"?T5({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてからもう一度。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):j&&(j.err==="pdfbig"||j.err==="pdf")?T5({ko:"PDF를 만들지 못했어요. 다시 해 주세요.",en:"Could not prepare the PDF. Please try again.",ja:"PDFを準備できませんでした。もう一度お試しください。",zhs:"无法准备PDF，请重试。",zht:"無法準備PDF，請重試。",es:"No se pudo preparar el PDF. Inténtalo de nuevo."}):T5({ko:"보내지 못했어요.",en:"Could not send.",ja:"送信できませんでした。",zhs:"发送失败。",zht:"發送失敗。",es:"No se pudo enviar."})); })
   .catch(function(e){ GS.busy=false; if(go) go.disabled=false; window.__trSendPlanErr=String(e); set(T5({ko:"연결에 실패했어요.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
+// ── 가이드 일정 검토 (사장님 11-07 「나로 하자, 옵션이지 필수는 아님」) — 선택 · 10만 원(외국어 화면 USD 100, 결제는 KRW 100,000) ──
+//   카트 맨 위 작은 칸 → 가운데 창: 받는 것 · 결과 받을 이메일(필수) · 가이드 언어(가이드가 있는 말만 — 허브 GET /shop/grv/info) · 메모 · 금액 · 「결제하기」
+//   「결제하기」 = 허브 /shop/order {pid:"grv", tp(공유 링크 #tp= 뒤 — 가이드가 앱에서 그대로 엶), start, days, glang, email, note} → PG 전이면 바로 결제 완료·가이드 배정·24시간 마감
+//   PG 뒤(tpg.js SH_PG)면 KG이니시스 결제창 → 돌아오면 TPG.onRet("grv") · AI 일정은 무료 그대로라 이 칸을 안 눌러도 모든 기능이 그대로
+var GRV6={
+  card:{ko:"가이드에게 일정 검토 받기",en:"Get your plan checked by a guide",ja:"ガイドに日程をチェックしてもらう",zhs:"请向导检查行程",zht:"請嚮導檢查行程",es:"Que un guía revise tu plan"},
+  cardS:{ko:"(선택 · 10만 원)",en:"(optional · USD 100)",ja:"（任意・USD 100）",zhs:"（可选 · USD 100）",zht:"（可選 · USD 100）",es:"(opcional · USD 100)"},
+  title:{ko:"가이드 일정 검토",en:"Guide itinerary review",ja:"ガイドによる日程チェック",zhs:"向导行程检查",zht:"嚮導行程檢查",es:"Revisión del itinerario por un guía"},
+  opt:{ko:"선택",en:"Optional",ja:"任意",zhs:"可选",zht:"可選",es:"Opcional"},
+  desc:{ko:"현지 가이드가 결제 후 24시간 안에 일정을 살펴보고, 의견과 고친 일정을 이메일로 보내 드려요.",en:"A local guide checks your plan within 24 hours of payment and emails you comments and a revised plan.",ja:"現地ガイドがお支払いから24時間以内に日程をチェックし、コメントと修正した日程をメールでお送りします。",zhs:"当地向导会在付款后24小时内检查您的行程，并通过邮件发送意见和修改后的行程。",zht:"當地嚮導會在付款後24小時內檢查您的行程，並透過電子郵件寄送意見和修改後的行程。",es:"Un guía local revisa tu plan en las 24 horas siguientes al pago y te envía por correo sus comentarios y un plan corregido."},
+  b1:{ko:"동선·이동 시간·순서·문 여는 시간을 살펴봐요",en:"Checks routes, travel times, order and opening hours",ja:"動線・移動時間・順番・営業時間を確認します",zhs:"检查路线、交通时间、顺序和开放时间",zht:"檢查路線、交通時間、順序和開放時間",es:"Revisa rutas, tiempos de traslado, orden y horarios"},
+  b2:{ko:"고친 일정은 링크로 받아 앱에서 바로 열 수 있어요",en:"The revised plan comes as a link that opens right in the app",ja:"修正した日程はリンクで届き、アプリですぐ開けます",zhs:"修改后的行程以链接发送，可直接在应用中打开",zht:"修改後的行程以連結寄送，可直接在應用程式中開啟",es:"El plan corregido llega como enlace y se abre directamente en la app"},
+  b3:{ko:"24시간 안에 답이 없으면 자동으로 전액 환불돼요",en:"No reply within 24 hours means an automatic full refund",ja:"24時間以内に返信がなければ自動で全額返金されます",zhs:"24小时内未回复将自动全额退款",zht:"24小時內未回覆將自動全額退款",es:"Si no hay respuesta en 24 horas, se reembolsa todo automáticamente"},
+  free:{ko:"AI 일정은 지금처럼 무료예요. 검토는 원할 때만 받으세요.",en:"The AI plan stays free. Get a review only if you want one.",ja:"AIの日程はこれまでどおり無料です。チェックはご希望の場合だけどうぞ。",zhs:"AI行程依然免费，只在需要时才申请检查。",zht:"AI行程依然免費，只在需要時才申請檢查。",es:"El plan de la IA sigue siendo gratis. Pide la revisión solo si la quieres."},
+  em:{ko:"결과 받을 이메일 *",en:"Email for the result *",ja:"結果を受け取るメール *",zhs:"接收结果的邮箱 *",zht:"接收結果的電子郵件 *",es:"Correo para recibir el resultado *"},
+  gl:{ko:"가이드 언어",en:"Guide's language",ja:"ガイドの言語",zhs:"向导语言",zht:"嚮導語言",es:"Idioma del guía"},
+  nt:{ko:"요청 메모 (선택)",en:"Notes for the guide (optional)",ja:"ガイドへのメモ（任意）",zhs:"给向导的留言（可选）",zht:"給嚮導的留言（可選）",es:"Notas para el guía (opcional)"},
+  ntp:{ko:"예: 아이와 함께 가요 · 걷는 시간을 줄이고 싶어요",en:"e.g. Traveling with kids · Less walking, please",ja:"例：子ども連れです・歩く時間を減らしたい",zhs:"例如：带孩子同行·希望少走路",zht:"例如：帶孩子同行·希望少走路",es:"p. ej.: Viajamos con niños · Queremos caminar menos"},
+  nm:{ko:"이름",en:"Name",ja:"お名前",zhs:"姓名",zht:"姓名",es:"Nombre"},
+  ph:{ko:"휴대폰 번호",en:"Mobile number",ja:"携帯電話番号",zhs:"手机号码",zht:"手機號碼",es:"Móvil"},
+  pgn:{ko:"PC에서 카드로 결제할 때 필요해요.",en:"Needed for card payment on a computer.",ja:"パソコンでカード決済するときに必要です。",zhs:"在电脑上刷卡付款时需要。",zht:"在電腦上刷卡付款時需要。",es:"Necesario para pagar con tarjeta en un ordenador."},
+  amt:{ko:"결제 금액",en:"Price",ja:"お支払い金額",zhs:"付款金额",zht:"付款金額",es:"Precio"},
+  krw:{ko:"",en:"Charged as KRW 100,000",ja:"KRW 100,000で決済されます",zhs:"按 KRW 100,000 结算",zht:"按 KRW 100,000 結算",es:"Se cobra como KRW 100,000"},
+  agr:{ko:"일정과 메모를 가이드에게 보내는 데 동의하고 결제합니다",en:"I agree to share my plan and notes with the guide and to pay",ja:"日程とメモをガイドに送ることに同意し、支払います",zhs:"我同意将行程和留言发给向导并付款",zht:"我同意將行程和留言傳給嚮導並付款",es:"Acepto compartir mi plan y mis notas con el guía y pagar"},
+  rf:{ko:"취소·환불 정책",en:"Cancellation & refund policy",ja:"キャンセル・返金ポリシー",zhs:"取消·退款政策",zht:"取消·退款政策",es:"Política de cancelación y reembolso"},
+  cx:{ko:"취소",en:"Cancel",ja:"キャンセル",zhs:"取消",zht:"取消",es:"Cancelar"},
+  pay:{ko:"결제하기",en:"Pay",ja:"支払う",zhs:"付款",zht:"付款",es:"Pagar"},
+  sav:{ko:"저장 중…",en:"Saving…",ja:"保存中…",zhs:"保存中…",zht:"儲存中…",es:"Guardando…"},
+  load:{ko:"가이드를 찾는 중…",en:"Finding guides…",ja:"ガイドを探しています…",zhs:"正在查找向导…",zht:"正在尋找嚮導…",es:"Buscando guías…"},
+  none:{ko:"지금은 검토할 수 있는 가이드가 없어요. 잠시 뒤 다시 봐 주세요.",en:"No guide is available for reviews right now. Please check again later.",ja:"現在チェックできるガイドがいません。しばらくしてからご確認ください。",zhs:"目前没有可检查行程的向导，请稍后再看。",zht:"目前沒有可檢查行程的嚮導，請稍後再看。",es:"Ahora no hay guías disponibles para revisiones. Vuelve a mirar más tarde."},
+  eem:{ko:"이메일 주소를 확인해 주세요.",en:"Please check your email address.",ja:"メールアドレスをご確認ください。",zhs:"请检查邮箱地址。",zht:"請檢查電子郵件地址。",es:"Revisa tu correo electrónico."},
+  eph:{ko:"전화번호를 확인해 주세요.",en:"Please check your phone number.",ja:"電話番号をご確認ください。",zhs:"请检查电话号码。",zht:"請檢查電話號碼。",es:"Revisa tu número de teléfono."},
+  egd:{ko:"지금은 이 언어 가이드가 없어요. 다른 언어를 골라 주세요.",en:"No guide speaks this language right now. Please choose another language.",ja:"現在この言語のガイドがいません。別の言語をお選びください。",zhs:"目前没有会这种语言的向导，请选择其他语言。",zht:"目前沒有會這種語言的嚮導，請選擇其他語言。",es:"Ahora no hay guías de este idioma. Elige otro idioma."},
+  enog:{ko:"지금은 이 언어로 검토할 가이드가 없어 주문을 취소했어요. 결제 금액은 전액 환불돼요.",en:"No guide could take this review right now, so we cancelled the order. The full amount will be refunded.",ja:"現在この言語でチェックできるガイドがいないため、ご注文をキャンセルしました。お支払い金額は全額返金されます。",zhs:"目前没有能用这种语言检查的向导，订单已取消，付款金额将全额退款。",zht:"目前沒有能用這種語言檢查的嚮導，訂單已取消，付款金額將全額退款。",es:"Ahora ningún guía puede hacer esta revisión, así que cancelamos el pedido. Se reembolsará el importe total."},
+  eplan:{ko:"일정을 보내지 못했어요. 일정을 다시 짠 뒤 해 주세요.",en:"Could not send the plan. Please make the plan again and retry.",ja:"日程を送れませんでした。日程を作り直してからお試しください。",zhs:"无法发送行程，请重新生成行程后再试。",zht:"無法傳送行程，請重新產生行程後再試。",es:"No se pudo enviar el plan. Vuelve a crearlo e inténtalo de nuevo."},
+  efail:{ko:"저장하지 못했어요. 잠시 뒤 다시 눌러 주세요.",en:"Could not save. Please try again shortly.",ja:"保存できませんでした。しばらくしてからもう一度お試しください。",zhs:"保存失败，请稍后再试。",zht:"儲存失敗，請稍後再試。",es:"No se pudo guardar. Inténtalo de nuevo en un momento."},
+  pfT:{ko:"결제가 완료되지 않았어요 (취소 또는 실패).",en:"The payment was not completed (cancelled or failed).",ja:"決済が完了しませんでした（キャンセルまたは失敗）。",zhs:"付款未完成（已取消或失败）。",zht:"付款未完成（已取消或失敗）。",es:"El pago no se completó (cancelado o fallido)."},
+  dT:{ko:"검토를 요청했어요",en:"Review requested",ja:"チェックを依頼しました",zhs:"已申请检查",zht:"已申請檢查",es:"Revisión solicitada"},
+  dB:{ko:"{g} 가이드가 일정을 살펴보고 {t}(한국 시간)까지 이메일로 보내 드려요.",en:"{g} will check your plan and email you by {t} (Korea time).",ja:"{g}ガイドが日程をチェックし、{t}（韓国時間）までにメールでお送りします。",zhs:"向导{g}会检查您的行程，并在{t}（韩国时间）前通过邮件发送给您。",zht:"嚮導{g}會檢查您的行程，並在{t}（韓國時間）前透過電子郵件寄給您。",es:"{g} revisará tu plan y te escribirá antes de las {t} (hora de Corea)."},
+  gx:{ko:"담당",en:"Your guide",ja:"担当",zhs:"",zht:"",es:"Tu guía"},
+  oid:{ko:"주문번호",en:"Order no.",ja:"注文番号",zhs:"订单号",zht:"訂單號",es:"N.º de pedido"},
+  em2:{ko:"받는 이메일",en:"Sent to",ja:"送信先",zhs:"接收邮箱",zht:"接收電子郵件",es:"Se envía a"},
+  due:{ko:"마감",en:"Due by",ja:"締め切り",zhs:"截止",zht:"截止",es:"Plazo"},
+  x:{ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}};
+var GRV={view:"form",langs:null,lerr:0,em:"",gl:"",nt:"",nm:"",ph:"",ag:false,err:"",busy:0,res:null};
+var GRV_EM=/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/;
+function grvCard(){ return '<div class="trgrv" data-html2canvas-ignore><button type="button" class="trgrvb" id="trGrvB">'+MPIMG("mi_guideperson",MIS)+'<span>'+esc(T5(GRV6.card))+' <i>'+esc(T5(GRV6.cardS))+'</i></span><b aria-hidden="true">›</b></button></div>'; }
+function grvPrice(){ return LANG==="ko"?"10만 원":"USD 100"; }
+function grvDue(ms){ return ms?new Date(ms+9*36e5).toISOString().slice(5,16).replace("T"," "):""; }
+function grvClose(){ var b=document.getElementById("trGrvP"); if(b) b.remove(); }
+function grvGrab(){ var b=document.getElementById("trGrvP"); if(!b||GRV.view!=="form") return; var f=function(id,k){ var e=b.querySelector("#"+id); if(e) GRV[k]=e.value; };
+  f("grvEm","em"); f("grvGl","gl"); f("grvNt","nt"); f("grvNm","nm"); f("grvPh","ph"); var a=b.querySelector("#grvAg"); if(a) GRV.ag=a.checked; }
+// 창 열기 — res 를 주면 끝난 화면(결제 완료·실패) · 이메일은 지난번 넣은 것 → 로그인 계정 이메일 순으로 미리 채운다
+function grvOpen(res){ grvGrab(); grvClose(); if(!TR.plan) return;
+  GRV.err=""; GRV.busy=0; GRV.res=res||null; GRV.view=res?"done":"form";
+  var b=document.createElement("div"); b.id="trGrvP"; b.className="trpop"; b.onclick=function(e){ if(e.target===b&&!GRV.busy) grvClose(); }; b._rb=grvPaint; document.body.appendChild(b);
+  if(!res){ if(!GRV.em){ try{ GRV.em=localStorage.getItem("mpv_grv_em")||""; }catch(e){} }
+    if(!GRV.em&&sySess()) fetch(HUB+"/npg/me",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sess:sySess()})}).then(function(r){ return r.json(); }).then(function(j){
+      var m=String((j&&j.ok&&j.me&&j.me.email)||"").trim(); if(m&&!GRV.em&&GRV_EM.test(m)){ GRV.em=m; var i=document.getElementById("grvEm"); if(i&&!i.value) i.value=m; } }).catch(function(){});
+    GRV.langs=null; GRV.lerr=0;
+    fetch(HUB+"/shop/grv/info").then(function(r){ return r.json(); }).then(function(j){ GRV.langs=(j&&j.ok&&Array.isArray(j.langs))?j.langs:[]; if(!(j&&j.ok)) GRV.lerr=1; })
+      .catch(function(){ GRV.langs=[]; GRV.lerr=1; }).then(function(){ if(document.getElementById("trGrvP")&&GRV.view==="form") grvPaint(); }); }
+  grvPaint(); try{ ntap("_trip",res?"grv_res":"grv_open"); }catch(e){} }
+function grvPaint(){ var b=document.getElementById("trGrvP"); if(!b) return; grvGrab();
+  var h='<div class="grvbox"><button type="button" class="grvx" data-grv="x" aria-label="close"'+(GRV.busy?' disabled':'')+'>✕</button>';
+  if(GRV.view==="done"){ var r=GRV.res||{}, j=r.j||{};
+    if(r.ok) h+='<div class="grvt"><span class="grvok">✓</span> '+esc(T5(GRV6.dT))+'</div><div class="grvd">'+esc(gTxt(GRV6.dB,{g:j.gname||T5(GRV6.gx),t:"\u0001"})).replace("\u0001",'<span class="grvnw">'+esc(grvDue(j.due))+'</span>')+'</div>'
+      +'<div class="grvrs"><div class="grvr"><span>'+esc(T5(GRV6.oid))+'</span><b>'+esc(j.orderId||"")+'</b></div><div class="grvr"><span>'+esc(T5(GRV6.amt))+'</span><b>'+esc(grvPrice())+'</b></div>'
+      +'<div class="grvr"><span>'+esc(T5(GRV6.em2))+'</span><b>'+esc(r.em||"")+'</b></div>'+(j.due?'<div class="grvr"><span>'+esc(T5(GRV6.due))+'</span><b>'+esc(grvDue(j.due))+' (KST)</b></div>':'')+'</div>';
+    else h+='<div class="grvt">'+esc(T5(GRV6.title))+'</div><div class="'+(r.soft?'grvd':'grverr')+'">'+esc(r.msg||T5(GRV6.efail))+'</div>';
+    b.innerHTML=h+'<div class="grvbt"><button type="button" class="trbtn" data-grv="x">'+esc(T5(GRV6.x))+'</button></div></div>'; return; }
+  var L0=GRV.langs, pg=!!(window.TPG&&TPG.on), bz=GRV.busy?' disabled':'', dis=GRV.busy||!GRV.ag||!L0||!L0.length;
+  h+='<div class="grvt">'+esc(T5(GRV6.title))+' <span class="grvo">'+esc(T5(GRV6.opt))+'</span></div>'
+    +'<div class="grvd">'+esc(T5(GRV6.desc))+'</div><ul class="grvl"><li>'+esc(T5(GRV6.b1))+'</li><li>'+esc(T5(GRV6.b2))+'</li><li>'+esc(T5(GRV6.b3))+'</li></ul>'
+    +'<div class="grvn">'+esc(T5(GRV6.free))+'</div>'
+    +'<label class="gslb" for="grvEm">'+esc(T5(GRV6.em))+'</label><input class="gsin" id="grvEm" type="email" inputmode="email" autocomplete="email" maxlength="100" value="'+esc(GRV.em)+'"'+bz+'>'
+    +'<label class="gslb" for="grvGl">'+esc(T5(GRV6.gl))+'</label>';
+  if(!L0) h+='<div class="grvn">'+esc(T5(GRV6.load))+'</div>';
+  else if(!L0.length) h+='<div class="grverr">'+esc(T5(GRV.lerr?GRV6.efail:GRV6.none))+'</div>';
+  else { if(L0.indexOf(GRV.gl)<0) GRV.gl=L0.indexOf(LANG)>=0?LANG:L0[0];   // 처음엔 앱 언어 — 그 언어 가이드가 없으면 있는 말 중 첫째
+    h+='<select class="gsin" id="grvGl"'+bz+'>'+L0.map(function(l){ return '<option value="'+esc(l)+'"'+(l===GRV.gl?' selected':'')+'>'+esc(gsLangName(l))+'</option>'; }).join("")+'</select>'; }
+  h+='<label class="gslb" for="grvNt">'+esc(T5(GRV6.nt))+'</label><textarea class="gsin" id="grvNt" maxlength="1000" rows="2" placeholder="'+esc(T5(GRV6.ntp))+'"'+bz+'>'+esc(GRV.nt)+'</textarea>';
+  if(pg) h+='<label class="gslb" for="grvNm">'+esc(T5(GRV6.nm))+'</label><input class="gsin" id="grvNm" maxlength="40" autocomplete="name" value="'+esc(GRV.nm)+'"'+bz+'>'   // KG이니시스 PC 결제 = 이름·전화·이메일 필요 (PG 켠 뒤에만 보임)
+    +'<label class="gslb" for="grvPh">'+esc(T5(GRV6.ph))+'</label><input class="gsin" id="grvPh" type="tel" maxlength="30" autocomplete="tel" value="'+esc(GRV.ph)+'"'+bz+'><div class="grvn">'+esc(T5(GRV6.pgn))+'</div>';
+  h+='<div class="grvp"><span>'+esc(T5(GRV6.amt))+'</span><span><b>'+esc(grvPrice())+'</b>'+(LANG!=="ko"?'<i>'+esc(T5(GRV6.krw))+'</i>':'')+'</span></div>'
+    +'<label class="gschk"><input type="checkbox" id="grvAg"'+(GRV.ag?' checked':'')+bz+'><span>'+esc(T5(GRV6.agr))+' · <a href="refund.html?lang='+esc(LANG)+'" target="_blank" rel="noopener">'+esc(T5(GRV6.rf))+' ›</a></span></label>'
+    +(GRV.err?'<div class="grverr">'+esc(GRV.err)+'</div>':'')
+    +'<div class="grvbt"><button type="button" class="trbtn" data-grv="x"'+bz+'>'+esc(T5(GRV6.cx))+'</button><button type="button" class="trbtn pri" data-grv="go"'+(dis?' disabled':'')+'>'+esc(GRV.busy===2?((window.TPG&&TPG.tx("opn"))||"…"):GRV.busy?T5(GRV6.sav):T5(GRV6.pay))+'</button></div></div>';
+  b.innerHTML=h;
+  var ag=b.querySelector("#grvAg"); if(ag) ag.onchange=function(){ GRV.ag=ag.checked; var g=b.querySelector('[data-grv="go"]'); if(g) g.disabled=!!GRV.busy||!GRV.ag||!GRV.langs||!GRV.langs.length; }; }
+// 「결제하기」 — 이메일 확인 → 지금 일정의 공유 링크 → 허브 /shop/order (PG 전 = 바로 결제 완료 · PG 뒤 = 결제창)
+function grvGo(){ if(GRV.busy||!TR.plan) return; grvGrab(); var em=String(GRV.em||"").trim(), pg=!!(window.TPG&&TPG.on), pl=TR.plan;
+  if(!GRV_EM.test(em)){ GRV.err=T5(GRV6.eem); grvPaint(); try{ document.getElementById("grvEm").focus(); }catch(e){} return; }
+  if(!GRV.ag||!GRV.langs||GRV.langs.indexOf(GRV.gl)<0) return;
+  GRV.err=""; GRV.busy=1; grvPaint();
+  tripUrl().then(function(u){ var tp=String(u).split("#tp=")[1]||"", d0=(pl.days&&pl.days[0]&&pl.days[0].date)||"";
+    return fetch(HUB+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:"grv",pname:T5(GRV6.title),tp:tp,start:d0,days:pl.days.length,glang:GRV.gl,lang:window.LANG||"en",email:em,note:String(GRV.nt||"").trim().slice(0,1000),
+      name:String(GRV.nm||"").trim()||undefined,phone:String(GRV.ph||"").trim()||undefined,consent:true,pg:pg?1:0,sess:sySess()||undefined})}); })
+    .then(function(r){ return r.json(); }).then(function(j){
+      if(!(j&&j.ok&&j.orderId)){ var e=j&&j.err, pe=window.TPG?TPG.errTx(e):""; GRV.busy=0;
+        if(e==="noguide"){ grvOpen({ok:false,msg:T5(GRV6.enog)}); return; }
+        GRV.err=pe||T5(e==="email"?GRV6.eem:e==="guide"?GRV6.egd:(e==="plan"||e==="long")?GRV6.eplan:e==="phone"?GRV6.eph:GRV6.efail); grvPaint(); return; }
+      try{ localStorage.setItem("mpv_grv_em",em); }catch(z){} try{ ntap("_trip","grv_order"); }catch(z){}
+      if(j.pay!=="pg"){ grvOpen({ok:true,j:j,em:em}); return; }
+      GRV.busy=2; grvPaint();   // KG이니시스 결제창 (tpg.js) — 돌아오면 아래 TPG.onRet("grv")
+      return TPG.go(j,{kind:"grv",oid:j.orderId,em:em},{name:GRV.nm,email:em,phone:GRV.ph}).then(function(m){ if(m){ GRV.busy=0; GRV.err=m; grvPaint(); } }); })
+    .catch(function(){ GRV.busy=0; GRV.err=T5(GRV6.efail); grvPaint(); }); }
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep #trGrvB"); if(!a) return; e.preventDefault(); grvOpen(); });
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trGrvP [data-grv]"); if(!a||a.disabled) return; e.preventDefault(); if(a.dataset.grv==="go") grvGo(); else if(!GRV.busy) grvClose(); });
+if(window.TPG) TPG.onRet("grv",function(v,r){ var n=0, iv=setInterval(function(){ if(!((window.CITY&&Object.keys(CITY).length)||++n>100)) return; clearInterval(iv);   // 지도 자료가 붙은 뒤 카트 보고서 → 끝난 화면 (?trip=1 과 같은 기다림)
+  try{ if(TR.plan&&!document.getElementById("trRep")) openReport(); }catch(e){}
+  if(r&&r.ok) grvOpen({ok:true,j:r.j||{},em:v.em||""});
+  else grvOpen({ok:false,soft:r&&r.err==="wait"?1:0,msg:(r&&r.err==="noguide")?T5(GRV6.enog):((window.TPG&&TPG.resTx(r))||(T5(GRV6.pfT)+(r&&r.msg?" ("+r.msg+")":"")))}); },100); });
+(function(){ var c=document.createElement("style"); c.textContent=""
+  +".trgrv{margin:0 0 8px}.trgrvb{display:flex;align-items:center;gap:2px;width:100%;box-sizing:border-box;border:1.5px dashed #0c8599;background:var(--card);color:#0b7285;border-radius:12px;padding:8px 12px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;text-align:left;line-height:1.35}"
+  +".trgrvb span{flex:1;min-width:0}.trgrvb i{font-style:normal;font-weight:700;color:var(--sub);font-size:12.5px;white-space:nowrap}.trgrvb b{font-size:17px;line-height:1;color:var(--sub)}:root[data-theme=dark] .trgrvb{color:#99e9f2}"
+  +"#trGrvP{z-index:1058}#trGrvP>div.grvbox{position:relative;text-align:left;width:100%;max-width:460px;box-sizing:border-box;padding:14px 16px 16px}"
+  +".grvx{position:absolute;right:6px;top:4px;border:0;background:var(--card);border-radius:50%;width:34px;height:34px;font-size:19px;color:var(--sub);cursor:pointer}"
+  +".grvt{font-size:17px;font-weight:900;margin:2px 36px 6px 0;line-height:1.35}.grvo{display:inline-block;vertical-align:2px;font-size:12px;font-weight:800;color:#0b7285;background:#e3fafc;border-radius:999px;padding:2px 8px}:root[data-theme=dark] .grvo{background:#0a2a30;color:#99e9f2}"
+  +".grvd{font-size:14px;line-height:1.55}.grvl{margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.55}.grvn{font-size:12.5px;color:var(--sub);margin-top:6px;line-height:1.45}"
+  +"#trGrvP textarea.gsin{min-height:58px;resize:vertical}#trGrvP select.gsin{font-size:15px}"
+  +".grvp{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px;padding:9px 11px;border-radius:10px;background:var(--bg);font-size:14px}.grvp b{font-size:18px}.grvp i{display:block;font-style:normal;font-size:12px;color:var(--sub);text-align:right}.grvp>span:last-child{text-align:right}"
+  +".grverr{color:#c2410c;font-weight:800;font-size:13.5px;margin-top:8px;line-height:1.45}.grvbt{display:flex;gap:8px;margin-top:12px}.grvbt .trbtn{margin:0;flex:1;padding:11px 12px;font-size:15px}.grvbt .trbtn[disabled]{opacity:.45;cursor:default}"
+  +".grvok{color:#2b8a3e}.grvrs{margin-top:10px}.grvr{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding:7px 0;font-size:13.5px}.grvr span{color:var(--sub);flex:0 0 auto}.grvr b{text-align:right;word-break:break-all}.grvnw{white-space:nowrap}#trGrvP .gschk a{white-space:nowrap}";
+  document.head.appendChild(c); })();
 function fromShare(z){ return unzip(z).then(function(s){ var o=JSON.parse(s); if(!o||o.v!==1||!Array.isArray(o.d)) throw 0;
   return Promise.all(Object.keys(CITY).map(function(id){ return mapLoad(id).catch(function(){}); })).then(function(){
     var items=[], days=[], pool={};   // 11-06 — 옛 링크(7일까지)·새 링크(90일까지) 모두
@@ -1633,7 +1809,7 @@ var LV6={
  leave:{ko:"여기 떠나요",en:"I'm leaving here",ja:"ここを出発します",zhs:"我要离开这里",zht:"我要離開這裡",es:"Me voy de aquí"},
  at:{ko:"오늘 일정이 늦어지고 있어요",en:"Today's plan is running late",ja:"今日の予定が遅れています",zhs:"今天的行程正在延误",zht:"今天的行程正在延誤",es:"El plan de hoy va con retraso"},
  ab:{ko:"이대로 가면 {p}% 확률로 {t}까지 다 못 돌거나 마감 시각에 늦어요.",en:"At this pace there is a {p}% chance you won’t see everything by {t} or will reach a place after it closes.",ja:"このままだと{p}%の確率で{t}までに回りきれないか、閉店時刻に間に合いません。",zhs:"照这样下去，有{p}%的可能{t}前逛不完或赶不上关门时间。",zht:"照這樣下去，有{p}%的可能{t}前逛不完或趕不上關門時間。",es:"A este ritmo hay un {p}% de probabilidad de no verlo todo antes de las {t} o de llegar a un lugar ya cerrado."},
- bb:{ko:"정한 시각까지 다 못 돌거나 마감에 늦을 확률 {p}% — 눌러서 남은 일정을 정하세요",en:"{p}% chance you won’t finish in time or will miss closing times — tap to decide",ja:"予定の時刻までに回りきれないか閉店に遅れる確率{p}% — 押して残りの予定を決めてください",zhs:"有{p}%的可能按时逛不完或赶不上关门时间——点按决定剩余行程",zht:"有{p}%的可能按時逛不完或趕不上關門時間——點按決定剩餘行程",es:"{p}% de probabilidad de no terminar a tiempo o de llegar tras el cierre — toca para decidir"},
+ bb:{ko:"끝나는 시각까지 다 못 돌거나 마감에 늦을 확률 {p}% — 눌러서 남은 일정을 정하세요",en:"{p}% chance you won’t finish in time or will miss closing times — tap to decide",ja:"予定の時刻までに回りきれないか閉店に遅れる確率{p}% — 押して残りの予定を決めてください",zhs:"有{p}%的可能按时逛不完或赶不上关门时间——点按决定剩余行程",zht:"有{p}%的可能按時逛不完或趕不上關門時間——點按決定剩餘行程",es:"{p}% de probabilidad de no terminar a tiempo o de llegar tras el cierre — toca para decidir"},
  eta:{ko:"도착 예상 {a}",en:"ETA {a}",ja:"到着予想 {a}",zhs:"预计到达 {a}",zht:"預計到達 {a}",es:"Llegada prevista {a}"},
  cl:{ko:"마감 {c}",en:"closes {c}",ja:"閉店 {c}",zhs:"关门 {c}",zht:"關門 {c}",es:"cierra {c}"},
  last:{ko:"입장 마감 {c}",en:"last entry {c}",ja:"入場締切 {c}",zhs:"最晚入场 {c}",zht:"最晚入場 {c}",es:"última entrada {c}"},
@@ -1869,6 +2045,12 @@ var NX6={
  st0:{ko:"{h} 출발",en:"Leave {h}",ja:"{h}を出発",zhs:"从{h}出发",zht:"從{h}出發",es:"Salida de {h}"},
  st:{ko:"{h} 출발 (짐 챙기기)",en:"Leave {h} (with luggage)",ja:"{h}を出発（荷物を持って）",zhs:"从{h}出发（带上行李）",zht:"從{h}出發（帶上行李）",es:"Salida de {h} (con equipaje)"},
  drop:{ko:"{h} — 짐 두기",en:"{h} — drop off luggage",ja:"{h} — 荷物を預ける",zhs:"{h}——寄放行李",zht:"{h}——寄放行李",es:"{h}: dejar el equipaje"},
+ // 11-07 도착한 날 — 공항에서 첫날 숙소로 먼저 (짐 맡기기·체크인 30분) · 밤에 닿으면 쉬기 · 숙소를 안 정했으면 서울역(다른 도시는 도시 중심) 기준
+ chk:{ko:"숙소 들르기 · 짐 맡기기·체크인 (30분)",en:"Stop at your lodging · drop bags / check in (30 min)",ja:"宿に立ち寄り・荷物預け・チェックイン（30分）",zhs:"先去住处 · 寄放行李·办理入住（30分钟）",zht:"先去住處 · 寄放行李·辦理入住（30分鐘）",es:"Pasar por el alojamiento · dejar el equipaje / registrarse (30 min)"},
+ rest:{ko:"숙소 도착 · 쉬기",en:"Arrive at your lodging · rest",ja:"宿に到着・休む",zhs:"到达住处 · 休息",zht:"到達住處 · 休息",es:"Llegada al alojamiento · descansar"},
+ hTmp:{ko:"숙소 미정 — {p} 기준",en:"Lodging not set — using {p}",ja:"宿未定 — {p}を基準に",zhs:"住宿未定——以{p}为准",zht:"住宿未定——以{p}為準",es:"Alojamiento sin elegir: referencia {p}"},
+ cen:{ko:"{c} 중심",en:"central {c}",ja:"{c}中心部",zhs:"{c}市中心",zht:"{c}市中心",es:"centro de {c}"},
+ h1st:{ko:"첫날 숙소를 먼저 정해 주세요",en:"Please choose your first night's lodging first",ja:"まず初日の宿を決めてください",zhs:"请先确定第一晚的住宿",zht:"請先確定第一晚的住宿",es:"Elige primero el alojamiento de la primera noche"},
  bagTip:{ko:"짐은 아침에 숙소나 역 물품보관함에 맡겨 두면 편해요",en:"Tip: leave your luggage at the hotel or a station locker in the morning",ja:"荷物は朝に宿や駅のコインロッカーに預けると楽です",zhs:"建议早上把行李寄存在住处或车站储物柜",zht:"建議早上把行李寄放在住處或車站置物櫃",es:"Consejo: deja el equipaje por la mañana en el hotel o en una consigna de la estación"},
  noH:{ko:"{c} 숙소를 아직 안 정했어요",en:"No lodging yet in {c}",ja:"{c}の宿がまだ決まっていません",zhs:"{c}的住宿还没定",zht:"{c}的住宿還沒定",es:"Aún no hay alojamiento en {c}"},
  hPick:{ko:"숙소 찾기",en:"Find lodging",ja:"宿を探す",zhs:"查找住宿",zht:"查找住宿",es:"Buscar alojamiento"},
@@ -1911,7 +2093,13 @@ function hotelPt(pl,ci){ var c=pl&&pl.cities&&pl.cities[ci]; if(!c||!c.h) return
   if(h.type==="here") return (REPH&&REPH.here)?REPH:((NATH&&NATH.here)?NATH:null);
   var key=c.id+"|"+h.ko+"|"+h.lat+"|"+h.lng; if(HPC[ci]&&HPC[ci].key===key) return HPC[ci].p;
   var p={k:"__ht"+ci,ko:h.ko,en:h.en||h.ko,lat:+h.lat,lng:+h.lng,addr:h.addr||"",hotel:1,ci:ci}; HPC[ci]={key:key,p:p}; return p; }
-function natPt(pl,k){ if(!pl) return null; var m=/^__ht(\d+)$/.exec(k); if(m) return hotelPt(pl,+m[1]); m=/^__ap_(\w+)$/.exec(k); if(m) return apPt(m[1]);
+// 첫날 숙소를 아직 안 정했을 때 도착한 날 들르는 곳 (11-07 사장님) — 서울은 서울역, 다른 도시는 도시 중심(CITYNM) · 둘 다 아니면 그 도시 장소들 가운데
+var TLC={}, SEOUL_ST={ko:"서울역",en:"Seoul Station",ja:"ソウル駅",zhs:"首尔站",zht:"首爾站",es:"Estación de Seúl",lat:37.5547,lng:126.9707};
+function tmpLodge(pl,ci){ var c=pl&&pl.cities&&pl.cities[ci]; if(!c) return null; var key=c.id+"|"+c.lat+"|"+c.lng; if(TLC[ci]&&TLC[ci].key===key) return TLC[ci].p;
+  var id=String(c.id||"").split(/[-+]/)[0], q=CITYNM.filter(function(z){ return z[0]===id; })[0], o=q?nmOf(q):c, p=id==="seoul"?Object.assign({},SEOUL_ST):F6x(NX6.cen,function(l){ return {c:o[l]||o.en||o.ko}; });
+  if(id!=="seoul"){ p.lat=q?q[7]:+c.lat; p.lng=q?q[8]:+c.lng; }
+  p.k="__lt"+ci; p.tmp=1; p.ci=ci; TLC[ci]={key:key,p:p}; return p; }
+function natPt(pl,k){ if(!pl) return null; var m=/^__ht(\d+)$/.exec(k); if(m) return hotelPt(pl,+m[1]); m=/^__lt(\d+)$/.exec(k); if(m) return tmpLodge(pl,+m[1]); m=/^__ap_(\w+)$/.exec(k); if(m) return apPt(m[1]);
   var f=null; (pl.tr||[]).forEach(function(t){ if(t.sa&&t.sa.k===k) f=t.sa; if(t.sb&&t.sb.k===k) f=t.sb; }); if(f) return f;
   m=/^__ct_(.+)$/.exec(k); if(m&&pl.cities) pl.cities.forEach(function(c){ if(c.id===m[1]) f=cityPt(c); }); return f; }
 function bagLeg(a,b,t){ var d=km(a,b); if(d<=0.5) return {mode:"walk",km:d,min:Math.max(3,Math.round(d*1.3/4.5*60))}; return txLeg(a,b,"bag",t); }
@@ -1960,7 +2148,7 @@ function natMerge(ord){ var bi=0, bc=1e18, i;
   var a=ord[bi], b=ord[bi+1], n1=a.pts.length, n2=b.pts.length, g={pts:a.pts.concat(b.pts),first:Math.min(a.first,b.first),lat:(a.lat*n1+b.lat*n2)/(n1+n2),lng:(a.lng*n1+b.lng*n2)/(n1+n2),isle:a.isle,id:a.id+"+"+b.id,h:a.h||b.h,nm:{id:a.id+"+"+b.id}};
   LG6s.forEach(function(l){ g.nm[l]=a.nm[l]+"·"+b.nm[l]; }); ord.splice(bi,2,g); }
 // ③ 날 배분 — L=도시별 일 양(분) · T=이웃 도시 이동(분) · 저녁 이동은 23시(LATE)까지 숙소 도착이 되게 그날 장소를 줄이고, 아침 이동은 그날 시작이 늦어진다
-function natAlloc(L,T,D,cap,red0,redN,to){ var k=L.length; if(k<=1) return {n:[D],f:[]};
+function natAlloc(L,T,D,cap,red0,redN,to){ var k=L.length; if(k<=1) return {n:[D],f:[]};   // 11-07 사장님 「풀어」 — 도착한 날 저녁에도 다른 도시로 옮길 수 있다(「도착한 날 저녁 이동 금지」 뺌)
   var best=null, bs=1e18, n=[];
   var SL=L.reduce(function(a,x){ return a+Math.max(30,x); },0), ST=D*cap-red0-redN;   // 남는 날은 장소 양에 비례해서 (11-06 — 장소 하나뿐인 도시에 빈 날이 몰리지 않게)
   var evalc=function(){ for(var m=0;m<(1<<(k-1));m++){ var f=[], s=0, b, i; for(b=0;b<k-1;b++) f.push((m>>b)&1?"am":"pm");
@@ -2038,7 +2226,8 @@ function natPlanSeq(H,D,P,G,ap,from,to,cap,skip){ var o=TR.opt;   // 「여행 �
   for(i=0;i+1<k;i++){ var tr=natTr(gAnchor(ord[i]),gAnchor(ord[i+1]),ord[i].ci,ord[i+1].ci); TRS.push(tr); T.push(trDoor(tr)); }
   var apIn=A&&km(A,ord[0])>80?natTr(A,gAnchor(ord[0]),-1,ord[0].ci):null, apOut=Dp&&km(Dp,ord[k-1])>80?natTr(gAnchor(ord[k-1]),Dp,ord[k-1].ci,-2):null;
   var red0=0, redN=0;
-  if(A){ var ex=ap.a.t!=null?ap.a.t+(ap.a.k==="d"?45:90):from; red0=Math.max(0,ex-from)+(apIn?trDoor(apIn):Math.round(25+km(A,ord[0])*1.1)); }
+  if(A){ var X0=dayX({mc:1,from:from,to:to,ap:{a:ap.a,d:null},cities:cities,tr:apIn?[apIn]:[],pool:{},days:[{date:dayDate(0).toISOString().slice(0,10),stops:[],c:ord[0].ci,nc:(D<2&&Dp)?-1:ord[0].ci,am:apIn?0:null}]},0,H);
+    red0=X0.rest?cap-60:X0.from-from; }   // 11-07 아침에 내려 시작 시각 전에 숙소를 들렀으면 그날이 그만큼 길다(red0 < 0 — 그날 틀 dayX 와 같게)   // 11-07 도착한 날 — 그날 틀(dayX) 그대로: 공항(먼 도시면 도시 이동) → 첫날 숙소 들르기(30분)까지 뺀 나머지 · 숙소 들른 뒤가 20시 넘으면 0 (예전 = 공항에서 첫 장소까지)
   if(Dp){ var by=ap.d.t!=null?ap.d.t-(ap.d.k==="d"?90:180):to; redN=Math.max(0,to-by)+(apOut?trDoor(apOut):Math.round(25+km(Dp,ord[k-1])*1.1)); }
   var L=ord.map(function(g){ var hp=g.h&&g.h.type!=="here"&&isFinite(+g.h.lat)?{lat:+g.h.lat,lng:+g.h.lng}:null; return seqLoad(hp,g.pts); });
   var al=natAlloc(L,T,D,cap-60,red0,redN,to);
@@ -2051,23 +2240,33 @@ function natPlanSeq(H,D,P,G,ap,from,to,cap,skip){ var o=TR.opt;   // 「여행 �
   if(Dp){ var ld=pl.days.length-1; pl.days[ld].nc=-1; if(apOut&&pl.days[ld].pm==null){ apOut.w="pm"; apOut.di=ld; pl.days[ld].pm=pl.tr.length; pl.tr.push(apOut); } }
   ord.forEach(function(sg,si){ var ds=segD[si]; if(!ds.length) return; var hp=hotelPt(pl,sg.ci);
     var av=ds.map(function(q){ var X=dayX(pl,q,H); return Math.max(30,(X.lim!=null?Math.min(X.lim,to):to)-X.from); });
-    var gs=ds.length===1?[sg.pts.slice()]:seqSplit(hp,sg.pts,ds.length,av);
-    gs.forEach(function(arr,k2){ pl.days[ds[k2]].stops=arr.map(function(x){ return x.k; }); }); });
+    var r0=(ds[0]===0&&ds.length>1&&dayX(pl,0,H).rest)?1:0, ds2=ds.slice(r0), av2=av.slice(r0);   // 11-07 밤에 도착한 날(숙소 들른 뒤 20시 넘음)은 장소 없이 쉬기 — 그 도시 다음 날들로
+    var gs=ds2.length===1?[sg.pts.slice()]:seqSplit(hp,sg.pts,ds2.length,av2);
+    gs.forEach(function(arr,k2){ pl.days[ds2[k2]].stops=arr.map(function(x){ return x.k; }); }); });
+  fxFix(pl,H);   // 11-07 정한 시작 시각에 못 닿는 곳 → 같은 도시 다른 날로
   pl.days.forEach(function(d,q){ var X=dayX(pl,q,H); if(!X.arr.length) return; d.end=sched(X.H,X.arr,X.dt,X.from,{to:X.to}).end; });
   return pl; }
 // 그날 틀 — {H:출발점·도착점, from:시작 분, to:하루 끝, lim:늦어도 되는 끝(막차·공항), pre:[아침 줄], pmTr:저녁 이동, apD:출발 공항} · 옛 일정은 예전 값 그대로
 // 출발점 (사장님 11-06 「가」) — 오늘 일정 = 지금 내 위치(「나」 ME.pos · 보고서가 받은 위치 GEO)에서 · 위치를 모르거나 그날 장소에서 80km 넘게 떨어져 있으면 숙소에서
 //   다른 날 = 전날 밤 숙소에서(미리 보기) — 그날 아침 앱을 열면 그날이 「오늘」이 되어 내 위치로 다시 계산된다 · 끝은 늘 그날 밤 숙소
-var MEC=null;
+var MEC=null, ARR_CHK=30, ARR_REST=20*60;   // 도착한 날 숙소 들르기(분) · 숙소 들른 뒤 이 시각이 넘으면 그날은 쉬기 (11-07)
 function mePt(){ var mp=(window.ME&&ME.pos)||GEO; if(!mp) return null; if(MEC&&MEC.lat===+mp[0]&&MEC.lng===+mp[1]) return MEC; return MEC={k:"__me",ko:"현재 위치",en:"Current location",lat:+mp[0],lng:+mp[1],me:1}; }
 function meFor(d,arr){ if(!d||d.date!==kstToday(0)||OLD()) return null; var me=mePt(); if(!me||!arr.length) return null; var near=arr.some(function(x){ return km(me,x)<=80; }); return near?me:null; }
 function dayX(pl,di,H0){ var d=pl.days[di], dt=new Date(d.date+"T00:00:00Z"), arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean);
   var F0=(d.fr!=null&&d.fr>=300)?d.fr:pl.from;   // 그날만 일찍 출발 (11-07 사장님 「늦는 시간만큼 일찍 출발하기」 — 검사 창 단추) · 없으면 조건의 시작 시각
   if(!pl.mc){ var me0=meFor(d,arr); return {H:me0?hPair(me0,hE(H0)):H0,from:F0,to:pl.to,dt:dt,arr:arr,me:me0?1:0}; }
   var X={mc:1,dt:dt,arr:arr,from:F0,to:pl.to,lim:null,pre:[],city:d.c}, t=F0, S=null;
-  if(di===0&&pl.ap&&pl.ap.a){ var A=apPt(pl.ap.a.id), ta=pl.ap.a.t; S=A; if(ta!=null) t=Math.max(F0,ta+(pl.ap.a.k==="d"?45:90)); X.pre.push({ap:"a",p:A,t:t,ft:ta}); }
+  if(di===0&&pl.ap&&pl.ap.a){ var A=apPt(pl.ap.a.id), ta=pl.ap.a.t; S=A; if(ta!=null) t=ta+(pl.ap.a.k==="d"?45:90); X.pre.push({ap:"a",p:A,t:t,ft:ta}); }   // 11-07 사장님 「가」 — 아침에 내려도 시작 시각까지 공항에서 기다리지 않고 입국(국내 45분·국제 90분) 뒤 바로 숙소로
   else { var pc=di>0?pl.days[di-1].nc:d.c; S=(pc!=null&&pc>=0)?hotelPt(pl,pc):null; var me1=meFor(d,arr.length?arr:(d.am!=null&&pl.tr[d.am]?[pl.tr[d.am].sa]:[])); if(me1){ S=me1; X.me=1; } }
   if(d.am!=null&&pl.tr[d.am]){ var st0=(!X.pre.length&&S)?{start:1,p:S,t:t}:null; var r=trRun(pl,pl.tr[d.am],S,t); if(st0){ if(r.rows.ts!=null) st0.t=r.rows.ts; X.pre.push(st0); } X.pre=X.pre.concat(r.rows); S=r.S; t=r.t; }
+  // 11-07 사장님 「공항에서 바로 구경 가는 사람 없다」 — 도착한 날은 공항(먼 도시면 도시 이동) 뒤 첫날 숙소에 먼저 들러 짐 맡기기·체크인(30분), 장소는 그 뒤 숙소에서
+  //   숙소를 안 정했으면 tmpLodge(서울역·도시 중심) 기준 · 숙소 들른 뒤가 20시 넘으면 X.rest = 그날은 쉬기(장소 없음 — natPlanSeq 가 다음 날로) · 그날 저녁 도시 이동·당일 출국이면 예전 그대로
+  var nc0=d.nc!=null?d.nc:d.c;
+  if(di===0&&pl.ap&&pl.ap.a&&d.pm==null&&nc0!=null&&nc0>=0&&!OLD()){ var lq=X.pre[X.pre.length-1], HB0=hotelPt(pl,nc0), LP=HB0||tmpLodge(pl,nc0), ck=null;
+    if(lq&&lq.drop&&lq.p===LP){ ck=lq; t+=ARR_CHK-15; }   // 아침 도시 이동이 이미 숙소까지 (짐 두기 15분 → 체크인 30분)
+    else if(LP){ var L0=km(S,LP)>0.05?(lq&&lq.tr?bagLeg(S,LP,t):legT(S,LP,t)):null; if(L0){ X.pre.push({leg:L0,a:S,b:LP}); t+=L0.min; } ck={p:LP,t:t}; X.pre.push(ck); t+=ARR_CHK; }
+    if(ck){ delete ck.drop; ck.chk=1; ck.tmp=HB0?0:1; S=LP; X.rest=t>ARR_REST?1:0; ck.rest=X.rest&&!arr.length?1:0; X.chk=ck; } }
+  if(di===0&&pl.ap&&pl.ap.a&&pl.ap.a.t!=null&&t<300) t=Math.max(t,F0);   // 새벽 05:00 전에 숙소까지 다 갔으면(자정 넘어 내린 비행기) 장소는 시작 시각부터
   X.from=t;
   var E=null;
   if(d.pm!=null&&pl.tr[d.pm]){ var tp=pl.tr[d.pm]; E=tp.sa; X.pmTr=tp; X.lim=pmLim(pl,tp); }
@@ -2106,7 +2305,7 @@ function natPost(pl,di,X,s){ var d=pl.days[di], rows=[], S=hS(X.H), E=hE(X.H), t
     var HB=hotelPt(pl,tr.b); if(HB){ var L2=bagLeg(tr.sb,HB,tB); rows.push({leg:L2,a:tr.sb,b:HB}); rows.push({hotel:1,p:HB,t:tB+L2.min}); o.end=tB+L2.min; } else { rows.push({end:1,t:tB}); o.end=tB; }
     rows.push({tip:1}); rows.push({night:1,ci:tr.b,di:di}); return o; }
   if(X.apD){ rows.push({apD:1,p:E,t:t,ft:X.apD.ft,by:X.apD.by,k:X.apD.k}); return o; }
-  if(X.arr.length||(X.pre&&X.pre.length)){ if(E&&(E.hotel||E.k==="__hotel")) rows.push({hotel:1,p:E,t:t}); else rows.push({end:1,t:t}); }   // 장소 없는 날(자유 일정)은 끝 줄 없이 밤 숙소 칸만
+  if(X.arr.length||(X.pre&&X.pre.length&&!X.chk)){ if(E&&(E.hotel||E.k==="__hotel")) rows.push({hotel:1,p:E,t:t}); else rows.push({end:1,t:t}); }   // 장소 없는 날(자유 일정)은 끝 줄 없이 밤 숙소 칸만 · 도착한 날 장소가 없으면 숙소 들르기·쉬기 줄이 끝 (11-07)
   var nc=d.nc!=null?d.nc:d.c; if(nc>=0&&(di<pl.days.length-1||hotelPt(pl,nc))) rows.push({night:1,ci:nc,di:di});
   return o; }
 function rowH(t,ic,txt,cls){ return '<div class="trw h'+(cls?" "+cls:"")+'"><span class="tt">'+(t!=null?m2hm(t):"")+'</span><span class="tp">'+(ic?MPIMG(ic,MIS):"")+txt+'</span></div>'; }
@@ -2116,6 +2315,7 @@ function natPreHtml(pl,di,X){ var h=''; X.pre.forEach(function(r){
     else if(r.start) h+=rowH(r.t,"mi_stay",esc(gTxt(NX6.st,{h:ptNm(r.p)})));
     else if(r.leg) h+=legRow(r,di,null);
     else if(r.tr) h+=trCard(pl,r.tr,r.opt);
+    else if(r.chk) h+=rowH(r.t,"mi_stay",esc(T5(r.rest?NX6.rest:NX6.chk))+' · <b>'+esc(r.tmp?gTxt(NX6.hTmp,{p:ptNm(r.p)}):ptNm(r.p))+'</b>');   // 도착한 날 숙소 들르기 (11-07)
     else if(r.drop) h+=rowH(r.t,"mi_stay",esc(gTxt(NX6.drop,{h:ptNm(r.p)}))); }); return h; }
 function natPostHtml(pl,di,X,post,prevK){ var h=''; post.rows.forEach(function(r){
     if(r.leg) h+=legRow(r,di,prevK);
@@ -2372,7 +2572,7 @@ var NOW6={ttl:{ko:"지금 여기",en:"Right now",ja:"いまここ",zhs:"现在",
  cx:{ko:"취소",en:"Cancel",ja:"キャンセル",zhs:"取消",zht:"取消",es:"Cancelar"},
  today:{ko:"오늘로",en:"Move to today",ja:"今日へ",zhs:"改到今天",zht:"改到今天",es:"Pasar a hoy"},
  stayQ:{ko:"{p}에 더 계시나요?",en:"Still at {p}?",ja:"まだ{p}にいますか？",zhs:"还在{p}吗？",zht:"還在{p}嗎？",es:"¿Sigues en {p}?"},
- stayB:{ko:"예정한 {m}이 지났어요. 더 있으면 뒤 일정을 1시간 밀어 다시 계산해요.",en:"Your planned {m} is up. If you stay, we'll push the rest of today back 1 hour.",ja:"予定の{m}が過ぎました。もう少しいるなら残りの予定を1時間遅らせて計算し直します。",zhs:"计划的{m}已经到了。如果再待一会儿，后面的行程会顺延1小时重新计算。",zht:"計畫的{m}已經到了。如果再待一會兒，後面的行程會順延1小時重新計算。",es:"Ya pasó el tiempo previsto ({m}). Si te quedas, retrasamos 1 hora el resto del día."},
+ stayB:{ko:"머물기로 한 {m}이 지났어요. 더 있으면 뒤 일정을 1시간 밀어 다시 계산해요.",en:"Your planned {m} is up. If you stay, we'll push the rest of today back 1 hour.",ja:"予定の{m}が過ぎました。もう少しいるなら残りの予定を1時間遅らせて計算し直します。",zhs:"计划的{m}已经到了。如果再待一会儿，后面的行程会顺延1小时重新计算。",zht:"計畫的{m}已經到了。如果再待一會兒，後面的行程會順延1小時重新計算。",es:"Ya pasó el tiempo previsto ({m}). Si te quedas, retrasamos 1 hora el resto del día."},
  more:{ko:"더 있을게요",en:"I'll stay longer",ja:"もう少しいます",zhs:"我再待一会儿",zht:"我再待一會兒",es:"Me quedo más"},
  leave:{ko:"떠나요",en:"I'm leaving",ja:"出発します",zhs:"我要走了",zht:"我要走了",es:"Me voy"},
  htQ:{ko:"오늘 못 간 {l}",en:"Not visited today: {l}",ja:"今日行けなかった場所：{l}",zhs:"今天没去成：{l}",zht:"今天沒去成：{l}",es:"Hoy no visitaste: {l}"},
