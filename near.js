@@ -305,13 +305,13 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
   // Trazy (사장님 10-24) — 한국 체험·액티비티 플랫폼. 영어 중심이라 언어 꼬리 없이 www.trazy.com. 설명은 6개 언어
   var tzd='<div class="d">'+LG6({ko:"한국 체험·액티비티",en:"Korea experiences & activities",ja:"韓国の体験・アクティビティ",zhs:"韩国体验·活动",zht:"韓國體驗·活動",es:"Experiencias y actividades en Corea"})+'</div><div class="d">'+LG6({ko:"찜질방·K-뷰티·한복·쿠킹클래스",en:"Jjimjilbang, K-beauty, hanbok, cooking classes",ja:"チムジルバン・K-ビューティー・韓服・料理教室",zhs:"汗蒸幕·K-美妆·韩服·烹饪课",zht:"汗蒸幕·K-美妝·韓服·烹飪課",es:"Jjimjilbang, K-beauty, hanbok, clases de cocina"})+'</div>';
   // ── 우리 메뉴 2개 (맨 위) ──
-  var mPerf='<div class="tgm"><div class="tgh" data-nr="tgx" data-g="perf">'+MPIMG("mi_ticket")+'<span>'+esc(LG6(PERF6))+'</span><span class="tgar">'+(TGX.perf?"▾":"▸")+'</span></div>'
+  var mPerf='<div class="tgm"><div class="tgh" data-nr="tgx" data-g="perf">'+MPIMG("mi_ticket")+'<span>'+esc(LG6(PERF6))+'</span>'+XTG.html(TGX.perf)+'</div>'
     +(TGX.perf?TG_PERF.map(function(r){ return tgRow(r[0],r[1]); }).join(""):"")+'</div>';
   var kBook='<div class="tgbook"><div class="tgbh"><img src="img/kpop_marker.png" alt="">'+esc(LG6(KTOUR6))+'</div><div class="d">'+esc(LG6(KTOURD6))+'</div>'
     +'</div>';
-  var mKpop='<div class="tgm"><div class="tgh" data-nr="tgx" data-g="kpop"><img src="img/kpop_marker.png" alt=""><span>'+esc(LG6(KPOP6))+'</span><span class="tgar">'+(TGX.kpop?"▾":"▸")+'</span></div>'
+  var mKpop='<div class="tgm"><div class="tgh" data-nr="tgx" data-g="kpop"><img src="img/kpop_marker.png" alt=""><span>'+esc(LG6(KPOP6))+'</span>'+XTG.html(TGX.kpop)+'</div>'
     +(TGX.kpop?('<div class="tgsub">'+esc(LG6(KPOPNOTE6))+'</div>'+TG_KPOP.map(function(r){ return tgRow(r[0],r[1]); }).join("")):"")+'</div>';   // K-pop 투어 예약(kBook) 블록 삭제 (사장님 10-25)
-  var pkg='<div class="tgbook b4pkg"><div class="tgbh" data-nr="tgx" data-g="pkg" style="cursor:pointer"><img src="img/kpop_marker.png" alt="">'+esc(LG6(B4PKG.t))+'<span class="tgar" style="margin-left:auto">'+(TGX.pkg?"▾":"▸")+'</span></div>'
+  var pkg='<div class="tgbook b4pkg"><div class="tgbh" data-nr="tgx" data-g="pkg" style="cursor:pointer"><img src="img/kpop_marker.png" alt="">'+esc(LG6(B4PKG.t))+XTG.html(TGX.pkg,'style="margin-left:auto"')+'</div>'
     +(TGX.pkg?('<div class="d" style="font-weight:700;color:var(--ink)">'+esc(LG6(B4PKG.g))+'</div>'
     +'<div class="d">'+esc(LG6(B4PKG.c))+'</div>'
     +'<div class="d" style="font-weight:800;color:var(--ink);margin-top:2px">'+esc(LG6(B4PKG.p))+'</div>'
@@ -876,7 +876,7 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   if(g==="tab"){ S.tab=+t.dataset.i; load(); return; }
   if(g==="ord"){ S.ord=t.dataset.o==="r"?"r":"d"; var kt=KINDS[S.k].tabs[S.tab]; if(S.raw){ S.items=sortIt(S.raw.slice(),kt).slice(0,10); S.byL={}; S.byL[LANG]=S.items; } paint(); return; }
   if(g==="me"){ S.items=null; S.err=""; paint(); myPos().then(function(p){ if(p){ try{ meSet(p); }catch(z){} } load(); }); return; }
-  if(g==="tgx"){ TGX[t.dataset.g]=!TGX[t.dataset.g]; paint(); return; }   // 체험·입장권 우리 메뉴 펼침/접기 (10-25)
+  if(g==="tgx"){ TGX[t.dataset.g]=!TGX[t.dataset.g]; paint(); return; }   // 체험·입장권 우리 메뉴 펼침/접기 (10-25) · 11-07 ▸/▾ → 공통 ▼/— 단추(XTG, 줄 아무 데나 눌러도 그대로)
   if(g==="tgp"){ tgPick(t.dataset.k); return; }   // 그 장소 열기 (공연장=카드+KOPIS, 빅4=카드)
   if(g==="b4pay"){ try{ if(window.TPAY) TPAY.open(); }catch(z){} return; }   // 빅4 투어 주문·결제 (tosspay.js)
   if(g==="b4map"){ close(); try{ if(window.b4RouteShow) b4RouteShow(); }catch(z){} return; }   // 빅4 투어 노선도 보기 (10-25)
