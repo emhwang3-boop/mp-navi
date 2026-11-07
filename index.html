@@ -91,6 +91,25 @@ try{ window.__mpSrc=window.__mpSrcOf(navigator.userAgent||"",location.search||""
 }catch(e){} })();
 </script>
 <script>try{ if(localStorage.getItem("mpv_theme")==="dark") document.documentElement.setAttribute("data-theme","dark"); }catch(e){}</script>
+<script>/* 펼치기·접기 공통 단추 (사장님 11-07) — 앱 안 「펼치는 것」은 모두 같은 모양: 그 줄 오른쪽 끝 작은 회색 동그라미(유튜브 칩처럼)
+ *  · 접혀 있으면 ▼(아래 세모) · 펼쳐 있으면 —(가로 막대) · 눌러서 바꾼다 · 글씨(aria-label) 6개 언어
+ *  · XTG.html(열림, 붙일 속성, span) = 단추 HTML (span=1 이면 단추 안·summary 안에 넣는 그림만) · XTG.set(요소, 열림) = 그 자리에서 바꾸기 · 모양(css)은 여기서 한 번만 넣는다 */
+(function(){
+  var DN='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.2 9.2h11.6L12 16.3z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>',
+      UP='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="10.9" width="12" height="2.2" rx="1.1" fill="currentColor"/></svg>',
+      L6={o:{ko:"펼치기",en:"Expand",ja:"展開する",zhs:"展开",zht:"展開",es:"Expandir"},c:{ko:"접기",en:"Collapse",ja:"折りたたむ",zhs:"收起",zht:"收合",es:"Contraer"}};
+  function lb(on){ var o=on?L6.c:L6.o; return o[window.LANG]||o.en; }
+  var css=".xtg{flex:0 0 auto;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;min-width:28px;padding:0;margin:0;border:0;border-radius:50%;background:#f2f2f2;color:#0f0f0f;cursor:pointer;vertical-align:middle;line-height:0;font:inherit;box-shadow:none;text-shadow:none;-webkit-tap-highlight-color:transparent}"
+    +".xtg svg{display:block;width:14px;height:14px;pointer-events:none}.xtg:active{background:#d9d9d9}@media (hover:hover){.xtg:hover{background:#e5e5e5}}"
+    +":root[data-theme=dark] .xtg{background:var(--line);color:var(--ink)}:root[data-theme=dark] .xtg:active{background:#33405a}@media (hover:hover){:root[data-theme=dark] .xtg:hover{background:#33405a}}"
+    +".xtrow{display:flex;align-items:center;gap:8px}.xtrow>.xtg{margin-left:auto}";
+  try{ var s=document.createElement("style"); s.id="xtgCss"; s.textContent=css; (document.head||document.documentElement).appendChild(s); }catch(e){}
+  window.XTG={css:css,
+    html:function(on,attrs,span){ var tg=span?"span":"button";
+      return '<'+tg+(span?' role="img"':' type="button" aria-expanded="'+(on?"true":"false")+'"')+' class="xtg'+(on?' on':'')+'" aria-label="'+lb(on)+'"'+(attrs?' '+attrs:'')+'>'+(on?UP:DN)+'</'+tg+'>'; },
+    set:function(b,on){ if(!b) return; on=!!on; b.classList.toggle("on",on); if(b.tagName==="BUTTON") b.setAttribute("aria-expanded",on?"true":"false"); b.setAttribute("aria-label",lb(on)); b.innerHTML=on?UP:DN; }};
+})();
+</script>
 <!-- 공유 단추: 2026-10-26 부터 모든 방문자에게 (초대 제한 없앰) -->
 <style>
 :root{--bg:#f4f6fa;--card:#fff;--ink:#111827;--sub:#5b6474;--line:#e6e9ef;--green:#2f9e44;--blue:#3d5af1}
@@ -1727,10 +1746,10 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 })();
 </script>
 <script src="tpick.js?v=1106tp"></script>
-<script src="trip.js?v=1107sy"></script>
-<script src="gift.js?v=1106sc"></script>
-<script src="near.js?v=1107p5"></script>
-<script src="shop.js?v=1107st"></script>
+<script src="trip.js?v=1107fx"></script>
+<script src="gift.js?v=1107xt"></script>
+<script src="near.js?v=1107xt"></script>
+<script src="shop.js?v=1107xt"></script>
 <script src="tosspay.js?v=1107p5"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}
@@ -1877,12 +1896,12 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script src="interp.js?v=1107p5"></script>
 <script src="chat.js?v=1107p5"></script>   <!-- 손님 ↔ 가이드 대화방 · 말풍선 「가이드 대화」 탭 (11-05) — interp.js 뒤에 -->
 <script src="bell.js?v=1106nt"></script>   <!-- 🔔 앱 알림함 — 머리줄 💬 옆 종 · 알림 판(알림 받기·소리·진동·목록) (11-06) — chat.js 뒤에 -->
-<script src="manual.js?v=1105m"></script>
+<script src="manual.js?v=1107xt"></script>
 <script src="karaoke.js?v=1107p5"></script>
 <script src="tvid.js?v=1107pp"></script>
 <script src="pcbang.js?v=1026pc5"></script>
 <script src="pg.js?v=1107p5"></script>
-<script src="review.js?v=1105buy"></script>
+<script src="review.js?v=1107xt"></script>
 <script src="event.js?v=1107p5"></script>
 <script src="billboard.js?v=1021pl"></script>
 <script src="airport_i18n.js?v=1028pw"></script>
