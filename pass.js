@@ -18,8 +18,8 @@ window.fetch=function(u,o){ try{ var s=typeof u==="string"?u:(u&&u.url)||"";
     if(o&&o.body&&typeof o.body==="string"&&s.indexOf(HUB)===0&&PAID.test(s)){ var t=tok(); if(t){ var b=JSON.parse(o.body); if(b&&typeof b==="object"&&!Array.isArray(b)){ b.pt=t; b.pd=dev(); o=Object.assign({},o,{body:JSON.stringify(b)}); } } } }catch(e){}
   return f0.apply(this,[u,o]); };
 function css(){ if(document.getElementById("psCss")) return; var s=document.createElement("style"); s.id="psCss";
-  s.textContent="#psBox{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}"
-  +"#psBox .in{background:var(--card);color:var(--ink);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:18px 16px 26px}"
+  s.textContent="#psBox{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:12px;box-sizing:border-box}"
+  +"#psBox .in{background:var(--card);color:var(--ink);width:100%;max-width:520px;border-radius:18px;padding:18px 16px 26px}"
   +"@media (min-width:700px){#psBox .in{box-sizing:border-box;max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px);overflow-y:auto;overscroll-behavior:contain;scrollbar-color:var(--sub,#8a94a6) var(--line,#e6e9ef);padding-bottom:calc(26px + env(safe-area-inset-bottom,0px))}}"   // 넓은 화면 — 창이 낮아도 칸 안에서 스크롤 (11-06)
   +"#psBox input{width:100%;box-sizing:border-box;font-size:16px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);margin:10px 0}"
   +"#psBox button{border:0;border-radius:999px;padding:11px 18px;font-weight:800;font-size:15px;cursor:pointer;background:var(--blue);color:#fff}#psBox button.g{background:var(--bg);color:var(--sub)}"
