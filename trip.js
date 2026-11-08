@@ -990,7 +990,15 @@ document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.
   if(g==="y") d.gap="early"; else if(g==="n") d.gap="ask"; else if(g==="re"){ delete d.gap; delete d.eveX; }
   else if(g==="go"){ var v=(document.getElementById("tgT"+di)||{}).value||"", un=hm2m(v)||pl.to; d.gap={until:un}; try{ ntap("_trip","gap_fill"); }catch(z){} save(); repPaint(); gcOpen(di,un); return; }   // 11-07 — 후보를 보여 주고 손님이 고른다(예전 gapFill 자동 넣기 X)
   save(); repPaint(); });
-function repPaint(){ return withLC(repPaint0); }   // 구간 기억 안에서 (11-06 — 90일 일정)
+function repPaint(){ var sc=null, an=null; try{ sc=dgSc(); an=repAnchor(sc); }catch(e){} var r=withLC(repPaint0); try{ repRestore(sc,an); }catch(e){} return r; }
+// 11-08 사장님 「N일차에서 뭔가를 고치면 화면이 다른 일차로 이동해 있다 — N일차에 머무르게」 — 다시 그리기 전 보고 있던 날(화면 위쪽에 걸친 날)과 그 위치를 적어 두고, 다시 그린 뒤 같은 자리로
+function repAnchor(sc){ if(!sc) return null; var top=sc===document.getElementById("trRep")?0:sc.getBoundingClientRect().top, best=null;
+  [].some.call(document.querySelectorAll("#trRep .tday"),function(t){ var r=t.getBoundingClientRect(); if(r.bottom>top+70){ best={d:t.dataset.d,off:r.top-top}; return true; } return false; }); return best; }
+function repRestore(sc,an){ if(!sc||!an||!sc.scrollTop&&an.d==="0") return; var t=document.querySelector('#trRep .tday[data-d="'+an.d+'"]'); if(!t) return; var top=sc===document.getElementById("trRep")?0:sc.getBoundingClientRect().top;
+  var fix=function(){ var r=t.getBoundingClientRect(), dv=(r.top-top)-an.off; if(Math.abs(dv)>1) sc.scrollTop+=dv; };
+  fix(); [60,250,700].forEach(function(ms){ setTimeout(function(){ if(document.body.contains(t)&&!DG) fix(); },ms); });   // 위쪽 지도 그림이 늦게 그려지면 높이가 바뀌어 한 번 더 맞춘다
+  var stop=function(){ an.off=null; }; sc.addEventListener("touchstart",stop,{once:true,passive:true}); sc.addEventListener("wheel",stop,{once:true,passive:true});
+  var f0=fix; fix=function(){ if(an.off!=null) f0(); }; }   // 구간 기억 안에서 (11-06 — 90일 일정)
 function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan; if(!box||!pl) return; LGC={}; GPC={}; var H=REPH, ai=pl.ai||{}, tips=ai.tips||{};
   var mp=(window.ME&&ME.pos)||GEO; REPME=mp?{k:"__me",ko:"현재 위치",en:"Current location",lat:+mp[0],lng:+mp[1],me:1}:null;
   if(!mp&&!GEOST&&typeof myPos==="function"){ GEOST="ask"; myPos().then(function(q){ GEOST=q?"ok":"fail"; GEO=q||null; if(q&&document.getElementById("trRep")) repPaint(); else { [].forEach.call(document.querySelectorAll("#trRep .tnost"),function(e){ e.hidden=false; }); } }); }   // 폰 안에서만 한 번 묻는다
@@ -1645,7 +1653,8 @@ var GQ6={am:{ko:"오전으로",en:"morning",ja:"午前",zhs:"上午",zht:"上午
 function eul(s){ var m=/([가-힣])[^가-힣]*$/.exec(String(s||"")); return !m?"을(를)":((m[1].charCodeAt(0)-0xAC00)%28?"을":"를"); }   // 받침 있으면 「을」, 없으면 「를」
 // 장소 사이 빈 시간 — 앞 일정에서 나선 뒤 다음 일정까지 그냥 기다리는 분(문 열기·도착 시각·식사 시각 기다림)이 GAPMIN 넘는 줄 · 이동·식사·숙소에서 쉬기는 빈 시간이 아님 · 그날 첫 일정 앞은 늦게 나서면 되니 뺀다
 //   → [{ri:그 줄, j:넣을 자리(그 앞 장소 수), k:다음 장소, m:그 줄이 식사 칸이면 끼니, a:앞 일정에서 나서는 시각, w:빈 분, b:a+w, end:다음 일정 시작, K:맞는 끼니}]
-function gapsOf(s){ var out=[], j=0, hasL=s.rows.some(function(r){ return r.meal==="lunch"||(r.x&&r.x.eat&&r.x.meal==="lunch"); }); s.rows.forEach(function(r,ri){   // 점심이 이미 있는 날은 빈 시간 「식당 찾기」가 저녁 (11-07 — 있던 점심을 갈아치웠다) var rd=r.meal?r.rd:(r.x?r.ar:null);
+function gapsOf(s){ var out=[], j=0, hasL=s.rows.some(function(r){ return r.meal==="lunch"||(r.x&&r.x.eat&&r.x.meal==="lunch"); }); s.rows.forEach(function(r,ri){   // 점심이 이미 있는 날은 빈 시간 「식당 찾기」가 저녁 (11-07 — 있던 점심을 갈아치웠다)
+    var rd=r.meal?r.rd:(r.x?r.ar:null);   // 11-08 고침 — 이 줄이 위 주석에 붙어 실행되지 않았다(빈 시간 카드가 한 번도 안 뜸)
     if(ri>0&&rd!=null&&!r.act&&!s.rows[ri-1].rest&&r.t-rd>=GAPMIN){ var w=r.t-rd, a=r.meal?(r.t0!=null?r.t0:rd):rd-(r.leg?r.leg.min:0), nx=r.meal?r.next:r.x;
       if(nx) out.push({ri:ri,j:j,k:nx.k,m:r.meal||"",a:a,w:w,b:a+w,end:r.t,K:(!hasL&&(a+a+w)/2<900)?"lunch":"dinner"}); }
     if(r.x) j++; }); return out; }
@@ -3296,10 +3305,10 @@ var css3=document.createElement("style"); css3.id="trBoardCss"; css3.textContent
 +".trows .trw.tpk .tpn{font-weight:800}.teve b{color:#2b8a3e}:root[data-theme=dark] .teve b{color:#8ce99a}#trRep .trows .trw.tpk .tp>b:not(.tno){text-decoration:none}.trows .trw.tpk.on{background:none;box-shadow:none}.trows .trw.tpk.on .tp{border-color:#2f9e44;box-shadow:0 0 0 2px rgba(47,158,68,.2)}"
 +".trows .trw.tcx .tp>.xtg{position:absolute;right:8px;top:10px}"
 +".trw.tcx:not(.open) .tdet,.trw.tcx:not(.open) .teact,.trw.tcx:not(.open) .tesrc{display:none}"
-+".tdet{display:block}.tdbt{display:block;margin-top:6px}"
++".tdet{display:block}.tdbt{display:block;margin-top:6px;text-align:right}"
 +".tsbtn{border:1.5px solid var(--green);background:var(--card);color:#2b8a3e;border-radius:999px;padding:4px 11px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit;margin:0}"
 +".tepk{margin-top:4px}"
-+".tstay{-webkit-appearance:menulist!important;appearance:auto!important;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--sub);font:inherit;font-size:12.5px;font-weight:700;padding:1px 2px;margin-left:2px;max-width:112px;cursor:pointer}.tmact{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.tmact .trbtn{margin:0;padding:5px 11px;font-size:12.5px}"
++".tstay{-webkit-appearance:menulist!important;appearance:auto!important;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--sub);font:inherit;font-size:12.5px;font-weight:700;padding:1px 2px;margin-left:2px;max-width:112px;cursor:pointer}.tmact{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;margin-top:6px}.trows .trw.tcx .tmact,.trows .trw.tcx .tdbt{margin-right:-30px}.tmact .trbtn{margin:0;padding:5px 11px;font-size:12.5px}"
 +".ttoday{margin:6px 0 6px;padding:8px 10px;border:1.5px solid #2f9e44;border-radius:12px;background:#ebfbee}.ttoday b{display:block;font-size:13px;color:#2b8a3e;margin-bottom:5px}.ttoday .tgr{margin-top:0}.ttoday .trbtn{margin:0;padding:6px 12px;font-size:13px}:root[data-theme=dark] .ttoday{background:#13261a}"
 +".trows .trw.tmd .tp{background:var(--card);border:1px solid #cfe3d5;border-radius:12px;padding:8px 10px;box-shadow:0 1px 3px rgba(16,24,40,.07)}.trows .trw.tmd:before{border-color:#2f9e44;background:#2f9e44}.trud{display:inline-block;margin-left:8px;font-size:12.5px;font-weight:700;color:var(--sub)}"
 +".tmemo{color:#e03131}.tmemo.ti{color:var(--sub);font-weight:600}"
