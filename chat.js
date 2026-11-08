@@ -19,7 +19,7 @@ function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ ret
 function post(p,b){ return fetch(HB+p,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b),cache:"no-store"}).then(function(r){ return r.json(); }); }
 function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){} return null; }
 function sess(){ return ls("mpv_pg_sess")||""; }
-function bks(){ try{ return window.NEARBK?NEARBK.all():[]; }catch(e){ return []; } }
+function bks(){ try{ return window.NEARBK?(NEARBK.mine?NEARBK.mine():NEARBK.all()):[]; }catch(e){ return []; } }   // 11-08 — 로그인돼 있으면 계정에 묶인 예약까지(near.js NEARBK.mine)
 function isG(){ return !!sess()&&ls("mpv_isguide")==="1"; }
 function hm(ms){ return new Date((+ms||0)+9*36e5).toISOString().slice(11,16); }
 function won(x){ return "₩"+Number(x||0).toLocaleString("ko-KR"); }
@@ -115,16 +115,26 @@ css.textContent="#hit{position:relative}#hit .chdot{position:absolute;top:-3px;r
  +".chdone{border:1px solid #b2f2bb;background:#ebfbee;color:#2b8a3e;border-radius:12px;padding:10px 12px;font-weight:800;margin:8px 0}.chstars{display:flex;gap:4px;margin:4px 0}.chstars button{border:0;background:none;font-size:32px;line-height:1;color:#ccc;cursor:pointer;padding:2px 4px}.chstars button.on{color:#f59f00}"
  +".chin{width:100%;box-sizing:border-box;border:1.5px solid var(--line,#e6e9ef);border-radius:10px;padding:9px 11px;font:inherit;font-size:14.5px;background:var(--bg,#f4f6fa);color:var(--ink,#111827);margin-top:6px}.chin::placeholder{color:#8a929c;opacity:1}"
  +".chsys{text-align:center;margin:8px 0}.chsys span{display:inline-block;font-size:12px;color:var(--sub,#5b6474);background:var(--bg,#f1f3f5);border:1px solid var(--line,#e6e9ef);border-radius:999px;padding:4px 11px;line-height:1.4}.chsys small{color:#8a929c;margin-left:6px}.chpend{display:inline-block;font-size:11.5px;font-weight:800;color:#e8590c;background:#fff4e6;border-radius:999px;padding:1px 8px;margin-left:6px}.cherr{color:#c92a2a;font-weight:800;font-size:13px;margin-top:6px}.chsmall{font-size:12.5px;color:var(--sub,#5b6474);margin-top:6px;line-height:1.5}"
- +"#itB .chtabs{margin:-16px -14px 10px;padding:12px 12px 8px}";
+ +"#itB .chtabs{margin:-16px -14px 10px;padding:12px 12px 8px}"
+ +".chemb{display:flex;flex-direction:column;height:100%;min-height:0;background:var(--card,#fff);color:var(--ink,#111827);font-family:system-ui,-apple-system,'Segoe UI',sans-serif}.chemb .chhd b{text-align:left}";   // 홈페이지 「내 예약」 오른쪽 칸 (11-08, CHAT.embed)
 document.head.appendChild(css);
 
 // ── 상태 ──
 var X={view:"list",room:null,msgs:[],last:0,rooms:null,gme:null,gerr:"",timer:null,dtm:null,stars:0,busy:false,ver:0};
 var UNREAD={c:0,g:0};
-function box(){ return document.getElementById("chB"); }
+// 홈페이지 「내 예약」 오른쪽 칸에 같은 방을 그린다 (사장님 11-08 「로그인·내 예약」, home/pc_bk.js) — CHAT.embed(칸, 예약 토큰) · CHAT.unembed()
+//   같은 방·같은 그리기(paintRoom·paintTools)·같은 4초 읽기 — 창(#chB) 대신 그 칸 · 위 탭·「목록」 단추만 없음
+//   그 사이 말풍선 창(panel·room)이 열리면 칸은 쉬고(EMBS), 창을 닫으면 칸을 다시 연다
+var EMB=null, EMBS=null;
+function box(){ return EMB?EMB.el:document.getElementById("chB"); }
 function body(){ var b=box(); return b&&b.querySelector(".chbody"); }
 function stopPoll(){ if(X.timer){ clearInterval(X.timer); X.timer=null; } if(X.dtm){ clearTimeout(X.dtm); X.dtm=null; } }
-function close(){ stopPoll(); var b=box(); if(b) b.remove(); X.view="list"; X.room=null; dot(); }
+function close(){ stopPoll(); if(EMB){ X.view="list"; X.room=null; return; } var b=box(); if(b) b.remove(); X.view="list"; X.room=null; dot();
+  if(EMBS){ var s=EMBS; EMBS=null; if(document.body.contains(s.el)) embed(s.el,s.tk); } }
+function embOff(){ if(!EMB) return; stopPoll(); EMBS=EMB; EMB=null; X.view="list"; X.room=null; }
+function embed(el,tk){ if(!el||!/^[0-9a-f]{32}$/.test(String(tk||""))) return; var bx=document.getElementById("chB"); if(bx){ stopPoll(); bx.remove(); }
+  EMBS=null; EMB={el:el,tk:tk}; var r=(X.rooms||[]).filter(function(x){ return x.tk===tk; })[0]||null; openRoom({side:"c",tk:tk,g:r&&r.g,emb:1}); }
+function unembed(){ if(!EMB&&!EMBS) return; if(EMB) stopPoll(); EMB=null; EMBS=null; X.view="list"; X.room=null; }
 function tabs(cur){ var n=UNREAD.c+UNREAD.g;
   return '<div class="chtabs"><button type="button" class="t'+(cur==="chat"?" on":"")+'" data-cht="chat">💬 '+esc(L(TX.tChat))+(n>0?'<span class="n">'+n+'</span>':'')+'</button><button type="button" class="t'+(cur==="int"?" on":"")+'" data-cht="int">'+esc(L(TX.tInt))+'</button><button type="button" class="x" data-chx="1" aria-label="close">✕</button></div>'; }
 function shell(){ var b=box(); if(!b){ b=document.createElement("div"); b.id="chB"; b.onclick=function(e){ if(e.target===b) close(); }; document.body.appendChild(b); } return b; }
@@ -136,10 +146,10 @@ function toInterp(){ close(); var q=document.getElementById("q"), t=q?String(q.v
   var it=document.getElementById("itB"), inn=it&&it.querySelector(".in"); if(inn&&!inn.querySelector(".chtabs")){ var d=document.createElement("div"); d.innerHTML=tabs("int"); inn.insertBefore(d.firstChild,inn.firstChild); var hd=inn.querySelector(".hd button"); if(hd) hd.style.display="none"; wireTabs(inn); } }
 
 // ── 목록 (손님 내 예약 방 + 가이드 화면) ──
-function panel(){ stopPoll(); X.view="list"; X.room=null; var b=shell();
+function panel(){ embOff(); stopPoll(); X.view="list"; X.room=null; var b=shell();
   b.innerHTML='<div class="in">'+tabs("chat")+'<div class="chbody"><div class="chnote">'+esc(L(TX.load))+'</div></div></div>'; wireTabs(b);
   loadLists().then(paintList); X.timer=setInterval(function(){ if(X.view==="list") loadLists().then(paintList); },15000); }
-function loadLists(){ var tks=bks().map(function(x){ return x.tk; }), s=sess(), ps=[];
+function loadLists(){ var tks=bks().map(function(x){ return x.tk; }).filter(Boolean).slice(0,20), s=sess(), ps=[];   // 토큰 없는 일정 검토(계정 목록)는 뺌 (11-08)
   ps.push(tks.length||s?post("/guide/chat",{op:"rooms",tks:tks,sess:s||undefined}).then(function(j){ X.rooms=j&&j.ok?j.items:[]; (X.rooms||[]).forEach(function(r){ try{ if(window.NEARBK&&!NEARBK.get(r.oid)) NEARBK.put(NEARBK.from(r,r.tk)); }catch(e){} }); }).catch(function(){ X.rooms=X.rooms||[]; }):Promise.resolve(X.rooms=[]));
   if(isG()||X.gwant) ps.push(gMe());
   return Promise.all(ps).then(function(){ UNREAD.c=(X.rooms||[]).filter(shown).reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0); UNREAD.g=X.gme?X.gme.items.reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0):0; dotPaint(); bellRooms(X.rooms); }); }
@@ -179,15 +189,16 @@ function sumRows(sm,side){ var r=function(a,b){ return '<div class="r"><span>'+e
     +(side==="g"?r(TX.cust,esc(sm.cust||""))+r(TX.lang,esc(LGN[sm.lang]||sm.lang||""))+(sm.memo?r(TX.memo,esc(sm.memo)):''):'')+'</div>'; }
 function room(tk){ var r=(X.rooms||[]).filter(function(x){ return x.tk===tk; })[0]||null; openRoom({side:"c",tk:tk,g:r&&r.g}); }
 function groom(oid){ openRoom({side:"g",oid:oid}); }
-function openRoom(o){ stopPoll(); X.view="room"; X.room=o; X.msgs=[]; X.last=0; X.stars=0; X.rvText=""; X.rvName=""; X.ver++; var v=X.ver, b=shell();
-  b.innerHTML='<div class="in">'+tabs("chat")+'<div class="chhd"><button type="button" class="bk" data-chback="1">‹ '+esc(L(TX.back))+'</button><b>…</b><span style="width:40px"></span></div><div class="chbody"><div class="chnote">'+esc(L(TX.load))+'</div></div><div class="chft"></div></div>';
-  wireTabs(b); b.querySelector("[data-chback]").onclick=function(){ panel(); };
+function openRoom(o){ if(!o.emb) embOff(); stopPoll(); X.view="room"; X.room=o; X.msgs=[]; X.last=0; X.stars=0; X.rvText=""; X.rvName=""; X.ver++; var v=X.ver, b=shell();
+  b.innerHTML=o.emb?'<div class="in chemb"><div class="chhd"><b>…</b></div><div class="chbody"><div class="chnote">'+esc(L(TX.load))+'</div></div><div class="chft"></div></div>'   // 홈페이지 칸 (11-08) — 탭·「목록」 없음
+    :'<div class="in">'+tabs("chat")+'<div class="chhd"><button type="button" class="bk" data-chback="1">‹ '+esc(L(TX.back))+'</button><b>…</b><span style="width:40px"></span></div><div class="chbody"><div class="chnote">'+esc(L(TX.load))+'</div></div><div class="chft"></div></div>';
+  wireTabs(b); var bk=b.querySelector("[data-chback]"); if(bk) bk.onclick=function(){ panel(); };
   pull(true).then(function(){ if(X.ver!==v) return; X.timer=setInterval(function(){ if(X.view==="room"&&X.ver===v&&!document.hidden) pull(false); },4000); }); }
 function api(op,extra){ var o=X.room, b=Object.assign({op:op},extra||{});
   if(o.side==="g"){ b.sess=sess(); b.oid=o.oid; return post("/guide/gme",b); } b.tk=o.tk; var s=sess(); if(s) b.sess=s; return post("/guide/chat",b); }
 function pull(first){ var v=X.ver; return api("get",{after:X.last}).then(function(j){ if(X.ver!==v) return;
     if(!(j&&j.ok)){ if(first){ var bd=body(); if(bd) bd.innerHTML='<div class="chnote">'+esc(L(TX.err))+'</div>'; } return; }
-    X.room.sum=j.sum; X.room.rm=j.room; if(j.info){ X.room.info=j.info; if(j.info.g) X.room.g=j.info.g; try{ if(window.NEARBK) NEARBK.put(NEARBK.from(j.info,X.room.tk)); }catch(e){} }
+    X.room.sum=j.sum; X.room.rm=j.room; if(j.info){ X.room.info=j.info; if(j.info.g) X.room.g=j.info.g; try{ if(window.NEARBK&&!X.room.emb) NEARBK.put(NEARBK.from(j.info,X.room.tk)); }catch(e){} }   // 홈페이지 칸(로그인 계정 목록)은 이 기기 저장소에 안 씀 (11-08)
     var add=(j.msgs||[]).filter(function(m){ return m.s>X.last; }); if(add.length){ X.msgs=X.msgs.concat(add); X.last=add[add.length-1].s; }
     if(first||add.length) paintRoom(first); else paintTools(); dotSoon(); }).catch(function(){}); }
 function paintRoom(first){ var b=box(); if(!b||X.view!=="room") return; var o=X.room, sm=o.sum||{}, bd=body(), side=o.side;
@@ -243,7 +254,7 @@ function b64uToU8(s){ s=s.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4)
 function pushSub(){ if(!("serviceWorker" in navigator)) return Promise.reject(new Error("nosw"));
   return navigator.serviceWorker.register("/sw.js?l="+encodeURIComponent(window.LANG||"en"),{scope:"/"}).then(function(){ return navigator.serviceWorker.ready; })
   .then(function(reg){ return VAPID_P.then(function(){ if(!X.vapid||!reg.pushManager) return null; return reg.pushManager.getSubscription().then(function(s){ return s||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uToU8(X.vapid)}); }); }); })
-  .then(function(sub){ if(!sub) return null; var tks=X.room&&X.room.side==="c"?[X.room.tk]:[]; bks().forEach(function(x){ if(tks.indexOf(x.tk)<0) tks.push(x.tk); });
+  .then(function(sub){ if(!sub) return null; var tks=X.room&&X.room.side==="c"?[X.room.tk]:[]; bks().forEach(function(x){ if(x.tk&&tks.indexOf(x.tk)<0) tks.push(x.tk); });
     return Promise.all(tks.map(function(tk){ return post("/guide/chat",{op:"push",tk:tk,ep:sub.endpoint}).then(function(){ PUSHED[tk]=1; }).catch(function(){}); })).then(function(){ ls("mpv_chpush","1"); if(X.room&&X.room.rm) X.room.rm.push=true; return sub; }); }); }
 function pushUnsub(){ ls("mpv_chpush",null); PUSHED={}; if(!("serviceWorker" in navigator)) return Promise.resolve();
   return navigator.serviceWorker.getRegistration("/").then(function(reg){ return reg&&reg.pushManager?reg.pushManager.getSubscription():null; }).then(function(s){ return s?s.unsubscribe():null; }).catch(function(){}); }
@@ -269,8 +280,8 @@ function dotPaint(){ var hb=document.getElementById("hit"); if(!hb) return; var 
   if(n>0){ if(!d){ d=document.createElement("span"); d.className="chdot"; hb.appendChild(d); } d.textContent=n>99?"99+":String(n); } else if(d) d.remove();
   [].forEach.call(document.querySelectorAll('.chtabs [data-cht="chat"]'),function(t){ var e=t.querySelector(".n"); if(n>0){ if(!e){ e=document.createElement("span"); e.className="n"; t.appendChild(e); } e.textContent=n; } else if(e) e.remove(); }); }
 var dotT=null; function dotSoon(){ if(dotT) return; dotT=setTimeout(function(){ dotT=null; dot(); },1500); }
-function dot(){ var tks=bks().map(function(x){ return x.tk; }), s=sess(), ps=[];
-  if(tks.length) ps.push(post("/guide/chat",{op:"rooms",tks:tks}).then(function(j){ if(j&&j.ok){ X.rooms=j.items; UNREAD.c=j.items.filter(shown).reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0); bellRooms(j.items); } }).catch(function(){}));
+function dot(){ var tks=bks().map(function(x){ return x.tk; }).filter(Boolean).slice(0,20), s=sess(), ps=[];
+  if(tks.length) ps.push(post("/guide/chat",{op:"rooms",tks:tks,sess:s||undefined}).then(function(j){ if(j&&j.ok){ X.rooms=j.items; UNREAD.c=j.items.filter(shown).reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0); bellRooms(j.items); } }).catch(function(){}));   // sess = 계정에 묶인 방도 (11-08)
   else UNREAD.c=0;
   if(isG()) ps.push(gMe().then(function(){ UNREAD.g=X.gme?X.gme.items.reduce(function(a,r){ return a+(r.room&&r.room.unread||0); },0):0; }));
   else UNREAD.g=0;
@@ -282,6 +293,7 @@ document.addEventListener("visibilitychange",function(){ if(!document.hidden&&ha
 function hook(){ var hb=document.getElementById("hit"); if(!hb||hb._ch) return; var orig=hb.onclick; if(!orig){ setTimeout(hook,300); return; } hb._ch=1;
   hb.onclick=function(e){ if(!has()) return orig.call(this,e); e.preventDefault(); e.stopPropagation(); var q=document.getElementById("q"), t=q?String(q.value||"").trim():""; if(t&&!(UNREAD.c+UNREAD.g)) return orig.call(this,e); panel(); }; }
 hook(); setTimeout(function(){ if(has()) dot(); },1200);
+document.addEventListener("mpbk",function(){ if(has()) dot(); else { UNREAD.c=0; dotPaint(); } });   // 로그인 계정 예약 목록이 오면(near.js, 11-08) 빨간 점 다시
 // 주소 ?gchat=<예약 토큰> · ?gchat=1 · ?gme=1 (메일·문자·알림에서)
 (function(){ var q=location.search, m=/[?&]gchat=([0-9a-f]{32}|1)(?![0-9a-z])/i.exec(q), g=/[?&]gme=1(?![0-9a-z])/.test(q);
   if(/[?&](gchat|gme)=/i.test(q)){ try{ var k=q.slice(1).split("&").filter(function(x){ return !/^(gchat|gme)=/i.test(x); }).join("&"); history.replaceState(history.state,"",location.pathname+(k?"?"+k:"")+location.hash); }catch(e){} }
@@ -289,5 +301,6 @@ hook(); setTimeout(function(){ if(has()) dot(); },1200);
   else if(g) setTimeout(guide,900); })();
 function guide(){ X.gwant=true; panel(); }
 navigator.serviceWorker&&navigator.serviceWorker.addEventListener&&navigator.serviceWorker.addEventListener("message",function(e){ if(e.data&&e.data.mp==="chat") panel(); });
-window.CHAT={panel:panel,room:room,guide:guide,dot:dot,has:has,close:close,pushSub:pushSub,pushUnsub:pushUnsub,repaint:function(){ try{ if(X.view==="room"&&box()) paintTools(); }catch(e){} }};   // pushSub·pushUnsub·repaint = 🔔 알림함(bell.js)과 같은 상태 (11-06)
+window.CHAT={panel:panel,room:room,guide:guide,dot:dot,has:has,close:close,pushSub:pushSub,pushUnsub:pushUnsub,repaint:function(){ try{ if(X.view==="room"&&box()) paintTools(); }catch(e){} },
+  embed:embed,unembed:unembed,embTk:function(){ return EMB?EMB.tk:""; }};   // embed·unembed = 홈페이지 「내 예약」 오른쪽 칸 (11-08)   // pushSub·pushUnsub·repaint = 🔔 알림함(bell.js)과 같은 상태 (11-06)
 })();
