@@ -1348,7 +1348,7 @@ function ctFree(x0,y0,x1,y1,put,m){ if(x0<0||y0<0||x1>1||y1>1) return false; if(
   for(var i=0;i<put.length;i++){ var q=put[i]; if(x0<q[2]&&x1>q[0]&&y0<q[3]&&y1>q[1]) return false; }
   var gx0=Math.max(0,Math.floor((x0-m)*256)), gx1=Math.min(255,Math.floor((x1+m)*256)), gy0=Math.max(0,Math.floor((y0-m)*256)), gy1=Math.min(255,Math.floor((y1+m)*256));
   for(var y=gy0;y<=gy1;y++) for(var x=gx0;x<=gx1;x++) if(HG[y*256+x]) return false; return true; }
-function ctDraw(L){ var w=document.getElementById("map").clientWidth, key="ct|"+LANG+"|"+w+"|"+(ROOTGEO?1:0)+"|"+HIT.keys.length; L.style.display="";
+function ctDraw(L){ var w=document.getElementById("map").clientWidth, key="ct|"+LANG+"|"+w+"|"+(ROOTGEO?1:0)+"|"+HIT.keys.length+(window.PC_HOME?"|"+document.getElementById("map").clientHeight:""); L.style.display="";
   if(LOD.v===key) return; LOD.v=key; L.innerHTML=""; LOD.el={}; if(!ROOTGEO) return;
   var fs=Math.max(window.PC_HOME&&w>=700?8/Math.min(1,(document.getElementById("map").clientHeight||w)/w):3,w*0.0118), bd=Math.max(0.5,fs*0.12), put=[];
   CT.forEach(function(t){ var f=meGeoFrac(NAVI_ROOT,t[1],t[2]), an=t[7]?HIT.keys.indexOf(t[7])+1:0, ab=null;
@@ -1365,7 +1365,7 @@ function ctDraw(L){ var w=document.getElementById("map").clientWidth, key="ct|"+
 function lodDraw(){ var L=document.getElementById("lod"); if(!L) return; var c=CITY[VIEW];
   if(VIEW===NAVI_ROOT&&!DET){ ctDraw(L); return; }
   if(!c||!c.areas||DET){ L.style.display="none"; return; } L.style.display="";
-  var w=document.getElementById("map").clientWidth, as=ASP(), W=w*as, H=w, key=VIEW+"|"+LANG+"|"+w+"|"+(c.subs?1:0);
+  var w=document.getElementById("map").clientWidth, as=ASP(), W=w*as, H=w, key=VIEW+"|"+LANG+"|"+w+"|"+(c.subs?1:0)+(window.PC_HOME?"|"+document.getElementById("map").clientHeight:"");
   if(LOD.v===key) return; LOD.v=key; L.innerHTML=""; LOD.el={};
   var put=[]; function hit(r){ for(var i=0;i<put.length;i++){ var q=put[i]; if(r[0]<q[2]&&r[2]>q[0]&&r[1]<q[3]&&r[3]>q[1]) return true; } return false; }
   var fs=Math.max(window.PC_HOME&&w>=700?8/Math.min(1,(document.getElementById("map").clientHeight||w)/w):3,w*0.0118), bd=Math.max(0.5,fs*0.12);
@@ -2101,7 +2101,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script>
 /* 버전 (사장님 11-07 「버전으로 관리하자」 「가」 1.0.5 모양) — 올릴 때마다 배포 도구(navi_fast)가 끝자리를 하나 올린다(version.json · 아래 APPV 를 같이)
    ⋮ 메뉴 맨 아래 「버전 1.0.5」 → 누르면 서버 최신(version.json)과 비교 · 쓰는 중 새 판이 올라오면 위에 「새 버전이 있어요 [새로 받기]」(10분마다·화면으로 돌아올 때 확인) */
-var APPV="1.0.21";
+var APPV="1.0.22";
 (function(){ var L6=function(o){ return o[window.LANG]||o.en; }, W={v:{ko:"버전",en:"Version",ja:"バージョン",zhs:"版本",zht:"版本",es:"Versión"},
   ok:{ko:"최신 버전이에요",en:"You're on the latest version",ja:"最新バージョンです",zhs:"已是最新版本",zht:"已是最新版本",es:"Tienes la última versión"},
   nw:{ko:"새 버전이 있어요",en:"A new version is available",ja:"新しいバージョンがあります",zhs:"有新版本",zht:"有新版本",es:"Hay una nueva versión"},
