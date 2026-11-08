@@ -206,7 +206,9 @@ var PX={
    T6("JYP 사옥 (강동)","JYP building (Gangdong)","JYP社屋（江東）","JYP大楼（江东）","JYP大樓（江東）","Edificio de JYP (Gangdong)")],
   inc:[T6("가이드 동행","Guide","ガイド同行","向导同行","嚮導同行","Guía"),T6("5곳 동선 안내 (투어 노선도)","Route through 5 stops (tour map)","5か所のルート案内（路線図）","5处路线引导（路线图）","5處路線引導（路線圖）","Ruta por 5 paradas (mapa del tour)")],
   exc:[T6("사옥 내부 입장","Entry inside the buildings","社屋内部への入場","进入大楼内部","進入大樓內部","Entrada al interior de los edificios"),T6("굿즈 구입비","Goods you buy","グッズ購入費","周边购买费用","周邊購買費用","Compras en la tienda"),EXC_OWN],
-  tip:MEET_TBD,note:[NOTE_SHOE,T6("한 주문 최대 10명 · 결제 후 1개월 안의 예약일에 1회 진행합니다.","Up to 10 people per order · runs once on your booked date within 1 month of payment.","1回の注文で最大10名・決済後1か月以内の予約日に1回実施します。","每笔订单最多10人·付款后1个月内的预约日进行1次。","每筆訂單最多10人·付款後1個月內的預約日進行1次。","Máximo 10 personas por pedido · se realiza una vez en la fecha reservada, dentro de 1 mes desde el pago."),NOTE_ACC],
+  // 만나는 곳 = 노선 첫 곳 YG 사옥 (사장님 11-08 「패키지는 늘 같은 곳에서 만난다」) — 주소는 앱 지도 자료(seoulall·hongdae yg)·노선도 B4LL 과 같음 · 옛 「만나는 곳·시간은 예약 확정 뒤 메일」 줄은 뺌(시간 = 예약한 시작 시간)
+  meetN:T6("YG 사옥 앞 (마포 합정)","In front of the YG building (Hapjeong, Mapo)","YG社屋前（麻浦・合井）","YG大楼前（麻浦合井）","YG大樓前（麻浦合井）","Frente al edificio de YG (Hapjeong, Mapo)"),bizKo:"YG엔터테인먼트",addrKo:"서울 마포구 희우정로1길 7",addrEn:"7 Huiujeong-ro 1-gil, Mapo-gu, Seoul",
+  note:[NOTE_SHOE,T6("한 주문 최대 10명 · 결제 후 1개월 안의 예약일에 1회 진행합니다.","Up to 10 people per order · runs once on your booked date within 1 month of payment.","1回の注文で最大10名・決済後1か月以内の予約日に1回実施します。","每笔订单最多10人·付款后1个月内的预约日进行1次。","每筆訂單最多10人·付款後1個月內的預約日進行1次。","Máximo 10 personas por pedido · se realiza una vez en la fecha reservada, dentro de 1 mes desde el pago."),NOTE_ACC],
   faq:[{q:T6("사옥 안에 들어가나요?","Do we go inside the buildings?","社屋の中に入りますか？","会进入大楼内部吗？","會進入大樓內部嗎？","¿Entramos en los edificios?"),a:T6("아니요. 사옥은 외관 관람·사진이고, 굿즈샵(SM KWANGYA)에는 들어갑니다.","No. The buildings are exterior views and photos; we do go into the SM KWANGYA goods shop.","いいえ。社屋は外観と写真で、グッズショップ（SM KWANGYA）には入ります。","不会。大楼为外观参观和拍照，会进入SM KWANGYA周边店。","不會。大樓為外觀參觀和拍照，會進入SM KWANGYA周邊店。","No. Los edificios se ven por fuera y se hacen fotos; sí entramos en la tienda SM KWANGYA.")},FAQ_GD,FAQ_MP]},
  dmz:{kind:"tour",area:T6("DMZ · 서울 출발","DMZ · from Seoul","DMZ・ソウル発","DMZ·首尔出发","DMZ·首爾出發","DMZ · salida desde Seúl"),
   dur:T6("6시간","6 h","6時間","6小时","6小時","6 h"),langs:ALL6,conf:"24h",
@@ -278,7 +280,7 @@ P.forEach(function(p){ var x=PX[p.id]; if(x) Object.keys(x).forEach(function(k){
 // 상품 목록 = 허브 /shop/products (관리자 「상품 관리」, 10-29). 허브가 안 되면 위 P 표 8개 그대로 (대비책)
 //   🔴 고정 상품(P 표 8개)은 허브가 base:1 로 주면 이 파일의 P 를 그대로 쓴다 — 토스 심사 중, 글자·분류·가격·상태 안 바뀜
 var HP=null, PLc=null;
-var PXK=["kind","area","dur","langs","conf","hl","steps","inc","exc","addrKo","addrEn","bizKo","stn","exit","walk","tip","entImg","tel","note","faq","entry"];   // 상세 칸 (10-30)
+var PXK=["kind","area","dur","langs","conf","hl","steps","inc","exc","addrKo","addrEn","bizKo","meetN","stn","exit","walk","tip","entImg","tel","note","faq","entry"];   // 상세 칸 (10-30)
 function hubP(x){ var o=hubP0(x), q=(x.fixed&&PX[x.id])||{};   // 고친 고정 상품에 새 칸이 아직 없으면 위 PX 값
   PXK.forEach(function(k){ var v=x[k], empty=v==null||v===""||(Array.isArray(v)&&!v.length); o[k]=empty&&q[k]!=null?q[k]:v; });
   if(!o.kind) o.kind=o.real==="perf"?"ticket":"tour"; return o; }
@@ -336,7 +338,7 @@ function detBody(p){ var K=kindOf(p), X=isExt(p), h='', urls=galUrls(p), gi=Math
   if((p.inc||[]).length||(p.exc||[]).length) h+='<section class="shbx"><div class="sie"><div><h2>'+esc(L(TX.inc))+'</h2>'+liList(p.inc,"sin1")+'</div><div><h2>'+esc(L(TX.exc))+'</h2>'+liList(p.exc,"sex1")+'</div></div></section>';
   // ⑥ 찾아가는 방법 (투어는 만나는 곳) — 체험은 크게
   if(p.addrKo||Lx(p.tip)||Lx(p.stn)||p.entImg){ var w='';
-    if(p.addrKo){ w+='<div class="sadr">'+(p.bizKo?'<b>'+esc(p.bizKo)+'</b>':'')+'<span>'+esc(p.addrKo)+'</span>'+(p.addrEn?'<span class="sub">'+esc(p.addrEn)+'</span>':'')+'</div>'+mapBtns(p); }
+    if(p.addrKo){ w+='<div class="sadr">'+(Lx(p.meetN)||p.bizKo?'<b>'+esc(Lx(p.meetN)||p.bizKo)+'</b>':'')+'<span>'+esc(p.addrKo)+'</span>'+(p.addrEn?'<span class="sub">'+esc(p.addrEn)+'</span>':'')+'</div>'+mapBtns(p); }
     else w+='<div class="sadr"><b>'+esc(L(TX.tbd))+'</b>'+(Lx(p.area)?'<span>'+esc(Lx(p.area))+'</span>':'')+'</div>';
     if(Lx(p.stn)) w+='<p class="sline"><small>'+esc(L(TX.stn))+'</small> <b>'+esc(Lx(p.stn))+'</b>'+(p.exit?' · '+esc(fmt(TX.ext,p.exit)):'')+(p.walk?' · '+esc(fmt(TX.wk,p.walk)):'')+'</p>';
     if(Lx(p.tip)) w+='<p class="sline">'+(p.addrKo?'<small>'+esc(L(TX.tip))+'</small> ':'')+esc(Lx(p.tip))+'</p>';
