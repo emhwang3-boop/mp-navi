@@ -1045,7 +1045,9 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
     var fa=d.fra, fax=fa&&pl.pool[fa.k]; if(fax&&d.fr===fa.t&&fxOf(fax)===fa.x&&arr.indexOf(fax)>=0) h+='<div class="tmemo ti" style="margin:2px 0 6px">⏰ '+esc(gTxt(FX6.frA,{p:nm(fax),f:m2hm(fa.x),t:m2hm(fa.t)}))+'</div>';   // 11-07 이른 도착 시각에 맞춰 그날 출발을 당겼으면 한 줄 (fxEarly)
     var pj=0;   // 이 줄 앞 장소 수(식사 칸에서 「직접 식당 찾기」로 넣을 자리 기본값)
     var GP=[], GPI={}; if(!lv&&!OLD()){ try{ GP=gapsOf(s); GP.forEach(function(g,gi){ GPI[g.ri]=gi; try{ g.rec=gapRec(pl,di,X,s,g); }catch(e){ g.rec=[]; } }); }catch(e){ GP=[]; GPI={}; } } GPC[di]=GP;   // 11-07 장소 사이 빈 시간 — 그 자리에 「일정 추가」 칸 (오늘 실제 기록 날은 실시간 조정이 맡는다)
+    var lqi=-1; if(!OLD()&&lunchAskOn(pl,d,di,X,s)){ lqi=s.rows.length; for(var q9=0;q9<s.rows.length;q9++){ if(s.rows[q9].t>=720){ lqi=q9; break; } } }   // 11-08 사장님 「점심시간이 비는데 점심을 물어보지 않는다 — 물어봐줘」
     s.rows.forEach(function(r,ri){ var lgOk=ri>0||!!pre;
+      if(ri===lqi) h+=lunchAskHtml(di);
       if(GPI[ri]!=null) h+=gapHtml(pl,di,GP[GPI[ri]],GPI[ri]);   // 앞 일정 ↔ (이동) 다음 일정 사이
       if(r.rest){ var rk=(r.p&&r.p.k)||"__hotel", rn=ptNm(r.p);   // 숙소에서 쉬기 (11-07) — 숙소까지 · 쉬기 줄 · 다음 일정까지는 다음 줄의 구간
         if(r.leg&&prevK) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(rk)+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),rn)+legGo(r.leg)+'<div class="tods"></div></div>';
@@ -1078,6 +1080,7 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
         +'<span class="tdbt" data-html2canvas-ignore><button type="button" class="tsbtn" data-pp="'+esc(r.x.k)+'">'+esc(T5(DG6.det))+'</button></span></span>'
         +(hk===r.x.k?'<span class="tlvw" data-html2canvas-ignore><button type="button" class="tlvb" data-lvleave="'+esc(r.x.k)+'">'+esc(T5(LV6.leave))+'</button></span>':'')+(window.XTG?XTG.html(op,'',true):'')+'</span></div>';
       prevK=r.x.k; });
+    if(lqi===s.rows.length) h+=lunchAskHtml(di);
     if(Q.post) h+=natPostHtml(pl,di,X,Q.post,prevK);
     else if(s.back) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="__hotel" data-d="'+di+'">'+legTxt(s.back,lgNm(prevK,di),lgNm("__hotel",di,1))+legGo(s.back)+'<div class="tods"></div></div><div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+MPICO("mi_stay",T("숙소 도착","Back to lodging"),MIS)+'</span></div>';
     else h+='<div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+T("일정 끝","End of day")+'</span></div>';
@@ -1518,7 +1521,7 @@ function mdInsTxt(pl,di,N){ var f=Math.min(N,mdFreeN(pl,di)), m=N-f; return gTxt
 function mdKeys(obj,fn){ if(!obj) return obj; var o2={}; for(var mk in obj){ var p=String(mk).split(":"), q=fn(+p[0]); if(q!=null&&isFinite(q)) o2[q+":"+p.slice(1).join(":")]=obj[mk]; } return o2; }
 function mdShiftAll(pl,from,delta,drop){ (pl.tr||[]).forEach(function(t){ if(t.di!=null&&t.di>=from) t.di+=delta; });
   if(pl.fxm) for(var fk in pl.fxm){ var fm=pl.fxm[fk]; if(fm.f>=from) fm.f+=delta; if(fm.t>=from) fm.t+=delta; }
-  var fn=function(q){ return (drop!=null&&q===drop)?null:(q>=from?q+delta:q); }; pl.meals=mdKeys(pl.meals,fn); pl.recs=mdKeys(pl.recs,fn); if(pl.mskip) pl.mskip=mdKeys(pl.mskip,fn); }
+  var fn=function(q){ return (drop!=null&&q===drop)?null:(q>=from?q+delta:q); }; pl.meals=mdKeys(pl.meals,fn); pl.recs=mdKeys(pl.recs,fn); if(pl.mskip) pl.mskip=mdKeys(pl.mskip,fn); if(pl.mno) pl.mno=mdKeys(pl.mno,fn); }
 function mdInsert(pl,di,it,N){ var k=it&&it.k, at=di+1; if(!k||!pl.days[di]||pl.pool[k]||!(N>=1)) return false; var f=Math.min(N,mdFreeN(pl,di)), c=pl.days[di].c, i, q;
   var blk=[]; for(i=0;i<N;i++){ var b0={date:"",stops:i===0?[k]:[],md:{k:k,i:i,n:N}}; if(c!=null){ b0.c=c; b0.nc=c; } blk.push(b0); }
   mdShiftAll(pl,at,N,null); pl.days.splice.apply(pl.days,[at,0].concat(blk));
@@ -1566,6 +1569,17 @@ document.addEventListener("change",function(e){ var s=e.target; if(!s||!s.classL
   try{ ntap("_trip","trip_stay_edit"); }catch(z){} pl.chk=0; save(); repPaint(); setTimeout(function(){ if(TR.plan===pl&&document.getElementById("trRep")&&chkList().length) chkOpen(true); },150); },true);
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-mdel]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var pl=TR.plan, mk=a.dataset.mdel; if(!pl||!mk) return;
   pl.mskip=pl.mskip||{}; pl.mskip[mk]=1; if(pl.meals) delete pl.meals[mk]; try{ ntap("_trip","trip_meal_del"); }catch(z){} save(); repPaint(); lgToast(T5(DG6.skipD)); },true);   // 고른 식당 「삭제」 = 그 끼니 건너뛰기(다시 짜면 다시 생김)
+// ── 11-08 점심을 묻는 칸 — 그날 일정이 13시 앞뒤로 걸쳐 있는데 점심(점심 칸·11~15시 식당)이 없으면 12시 자리에 [식당 찾기] [점심 안 먹어요]
+//   「삭제」로 점심을 지운 날(mskip)에도 묻는다 · [점심 안 먹어요]를 누른 날(mno)만 안 묻는다
+var LQ6={q:{ko:"점심 자리가 없어요. 점심은 어떻게 할까요?",en:"There's no lunch on this day. What would you like to do?",ja:"この日は昼食がありません。昼食はどうしますか？",zhs:"这天没有安排午餐。午餐怎么安排？",zht:"這天沒有安排午餐。午餐怎麼安排？",es:"Este día no tiene almuerzo. ¿Qué quieres hacer?"},
+ no:{ko:"점심 안 먹어요",en:"Skip lunch",ja:"昼食はとらない",zhs:"不吃午餐",zht:"不吃午餐",es:"Sin almuerzo"}};
+function lunchAskOn(pl,d,di,X,s){ if(!s||!s.rows.length||(pl.mno&&pl.mno[di+":lunch"])) return false; if(X.from>780||s.end<780) return false;
+  return !s.rows.some(function(r){ return r.meal==="lunch"||(r.x&&r.x.eat&&r.t>=660&&r.t<900); }); }
+function lunchAskHtml(di){ return '<div class="tgap teve tlq" data-html2canvas-ignore><b>'+MPIMG("mi_food",MIS)+esc(T5(LQ6.q))+'</b><div class="tgr"><button type="button" class="trbtn" data-lq="eat" data-d="'+di+'">'+esc(T5(CK6.eveEat))+'</button><button type="button" class="trbtn" data-lq="no" data-d="'+di+'">'+esc(T5(LQ6.no))+'</button></div></div>'; }
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-lq]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var pl=TR.plan, di=+a.dataset.d; if(!pl||!pl.days[di]) return;
+  try{ ntap("_trip","lunch_ask_"+a.dataset.lq); }catch(z){}
+  if(a.dataset.lq==="eat"){ efOpen({di:di,K:"lunch",pos:mealPos(pl,di,"lunch")}); return; }
+  pl.mno=pl.mno||{}; pl.mno[di+":lunch"]=1; save(); repPaint(); lgToast(T5(DG6.skipD)); },true);
 // 넣기 — 그날 그 자리에 · 카트에도 같은 자리에(앞 장소 다음) · 다시 검사
 function insStop(pl,di,pos,it,stay){ var d=pl.days[di]; if(!d||!it||!it.k) return false; var k=it.k; if(d.stops.indexOf(k)>=0) return false;
   var arr=d.stops.filter(function(q){ return pl.pool[q]; });
@@ -3308,6 +3322,7 @@ var css3=document.createElement("style"); css3.id="trBoardCss"; css3.textContent
 +".tdet{display:block}.tdbt{display:block;margin-top:6px;text-align:right}"
 +".tsbtn{border:1.5px solid var(--green);background:var(--card);color:#2b8a3e;border-radius:999px;padding:4px 11px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit;margin:0}"
 +".tepk{margin-top:4px}"
++".teve .tgr{justify-content:flex-end}.tlq b{display:flex;align-items:center;gap:4px}"
 +".tstay{-webkit-appearance:menulist!important;appearance:auto!important;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--sub);font:inherit;font-size:12.5px;font-weight:700;padding:1px 2px;margin-left:2px;max-width:112px;cursor:pointer}.tmact{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;margin-top:6px}.trows .trw.tcx .tmact,.trows .trw.tcx .tdbt{margin-right:-30px}.tmact .trbtn{margin:0;padding:5px 11px;font-size:12.5px}"
 +".ttoday{margin:6px 0 6px;padding:8px 10px;border:1.5px solid #2f9e44;border-radius:12px;background:#ebfbee}.ttoday b{display:block;font-size:13px;color:#2b8a3e;margin-bottom:5px}.ttoday .tgr{margin-top:0}.ttoday .trbtn{margin:0;padding:6px 12px;font-size:13px}:root[data-theme=dark] .ttoday{background:#13261a}"
 +".trows .trw.tmd .tp{background:var(--card);border:1px solid #cfe3d5;border-radius:12px;padding:8px 10px;box-shadow:0 1px 3px rgba(16,24,40,.07)}.trows .trw.tmd:before{border-color:#2f9e44;background:#2f9e44}.trud{display:inline-block;margin-left:8px;font-size:12.5px;font-weight:700;color:var(--sub)}"
