@@ -798,7 +798,7 @@ function flag(c){ if(!c||c.length!==2) return ""; try{ return String.fromCodePoi
 // 대사관 한 줄: 「영문 나라 · 한글 나라」 / 대사관 이름 / 주소 / 전화(흰 전화기 단추) / 길찾기(linksTo)
 function embHtml(x){ var en=L(), tel="", lk;
   if(x.t){ var shown=en?(/^0/.test(x.t)?"+82 "+x.t.slice(1):"+82 "+x.t):x.t; tel='<a class="nrcall am" href="tel:'+esc(telIntl(x.t))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>'; }
-  if(x.y) lk=linksTo(x.n,x.y,x.x,x.n,x.a);
+  if(x.y) lk=linksTo(x.n,x.y,x.x,x.n,x.a,0,null,x.ne||"");
   else { var q=encodeURIComponent(x.a), A=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };   // 좌표 없는 곳은 주소로 지도 검색
     lk=en?A("https://www.google.com/maps/search/?api=1"+(hlG()||"&hl=en")+"&query="+q,TE("Google Maps (English)"))+A("https://map.naver.com/p/search/"+q,TE("Naver Map")):A("https://map.kakao.com/?q="+q,"카카오맵")+A("https://map.naver.com/p/search/"+q,"네이버 지도")+A("https://www.google.com/maps/search/?api=1&query="+q,"구글 지도"); }
   return '<div class="nrit nremb" data-ak="'+esc(x.f)+'"><div class="c">'+flag(x.f)+(embL()?esc(embC(x)):esc(x.e)+' · '+esc(embC(x)))+'</div><div class="h"><b>'+esc(embN(x))+'</b>'+(x.dist!=null?'<i>'+km(x.dist)+'</i>':'')+'</div>'
