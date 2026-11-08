@@ -33,8 +33,8 @@ html.pch .tradd{display:none!important}                  /* 지도는 둘러보�
 #phRoot .ph-tb.pri{background:var(--ph-green);border-color:var(--ph-green);color:#fff}
 #phRoot .ph-tb.pri:hover{background:#2b8a3e;color:#fff}
 
-/* ── 머리줄 2 (48) — 메뉴 · 같은 크기 6칸 ── */
-#phHd .ph-hd2{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));max-width:960px;margin:0 auto;min-height:48px;position:relative;z-index:2}
+/* ── 머리줄 2 (48) — 메뉴 · 같은 크기 7칸 (11-08 밤 「교통」 더함 — 칸 폭 160 그대로) ── */
+#phHd .ph-hd2{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));max-width:1120px;margin:0 auto;min-height:48px;position:relative;z-index:2}
 #phHd .ph-hd2 button{display:flex;align-items:center;justify-content:center;gap:8px;padding:4px 10px;border:0;border-bottom:3px solid transparent;background:none;font-size:15px;font-weight:700;color:var(--ph-hd2);cursor:pointer;text-align:center;line-height:1.25;min-width:0}
 #phHd .ph-hd2 button img{width:24px;height:24px;flex:0 0 auto;display:block}
 #phHd .ph-hd2 button:hover{color:var(--ph-green-d);border-bottom-color:var(--ph-yel)}
@@ -126,8 +126,8 @@ html.pch[data-theme="dark"] #phMapSec .ph-maphint b{color:#51cf66}
 #phRoot .ph-appb .ph-tx h2{margin:0 0 4px;font-size:22px;font-weight:800;letter-spacing:-.4px}
 #phRoot .ph-appb .ph-tx p{margin:0;color:var(--sub);font-size:15px}
 #phRoot .ph-appb .ph-dl{margin-left:auto;display:flex;align-items:center;gap:18px}
-#phRoot .ph-play{display:flex;align-items:center;gap:10px;background:#111827;color:#fff;border-radius:12px;padding:10px 20px 10px 16px;font-weight:800;font-size:15px;line-height:1.2;white-space:nowrap}
-#phRoot .ph-play .ph-tri{color:var(--ph-yel);font-size:20px;line-height:1}
+#phRoot .ph-play{display:flex;align-items:center;gap:10px;background:#fff;color:#111827;border:1.5px solid #c9ced6;border-radius:12px;padding:10px 20px 10px 16px;font-weight:800;font-size:15px;line-height:1.2;white-space:nowrap}
+#phRoot .ph-play .ph-tri{color:#2f9e44;font-size:20px;line-height:1}   /* 11-08 사장님 「구글플레이 라이트 모드를 써줘」 — 흰 바탕·검은 글자 단추(다크 모드에서도 같은 모양) */
 #phRoot .ph-play small{display:block;font-size:11px;font-weight:600;opacity:.75}
 #phRoot .ph-ios{font-size:12px;color:var(--sub);margin-top:6px;text-align:center}
 #phRoot .ph-qr{width:96px;height:96px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;padding:6px;box-sizing:border-box;border:1px solid var(--line)}
@@ -162,7 +162,7 @@ html.pch[data-theme="dark"] #phMapSec .ph-maphint b{color:#51cf66}
   #phRoot .ph-appb .ph-dl{margin-left:0}
 }
 
-/* ── 폰 (412 기준) — 홈페이지를 폰에 맞춘 것 (앱 화면 아님) ── */
+/* ── 폰 (412 기준) — 홈페이지를 폰에 맞춘 것 (앱 화면 아님) · 아랫줄 메뉴 7칸은 긴 낱말 폭만큼은 지킴(겹침 방지, 11-08 밤) ── */
 @media (max-width:640px){
   #phHd .ph-hd1{height:auto;flex-wrap:wrap;padding:10px 14px 6px;gap:6px 10px}
   #phHd .ph-hd1w{border-bottom:0}
@@ -172,7 +172,7 @@ html.pch[data-theme="dark"] #phMapSec .ph-maphint b{color:#51cf66}
   #phHd .ph-ics{order:1;gap:12px;padding:2px 2px 0}
   #phHd .ph-acts{order:2;margin-left:auto;gap:6px}
   #phRoot .ph-tb{padding:6px 12px;font-size:13px}
-  #phHd .ph-hd2{height:auto;grid-template-columns:repeat(6,minmax(0,1fr));padding:4px 6px 8px;border-bottom:1px solid var(--line);background:var(--card);z-index:3;max-width:none}
+  #phHd .ph-hd2{height:auto;grid-template-columns:repeat(7,minmax(min-content,1fr));column-gap:4px;padding:4px 6px 8px;border-bottom:1px solid var(--line);background:var(--card);z-index:3;max-width:none}
   #phHd .ph-hd2 button{flex-direction:column;gap:3px;padding:4px 1px;font-size:11.5px;border-bottom:0;letter-spacing:-.4px;line-height:1.2}
   #phHd .ph-hd2 button img{width:26px;height:26px}
   #phHero{height:auto;align-items:stretch;padding:16px 16px 14px}
@@ -210,4 +210,9 @@ html.pch[data-theme="dark"] #phMapSec .ph-maphint b{color:#51cf66}
   #phRoot .ph-foot .ph-fin{padding:24px 16px 28px}
   #phRoot .ph-flinks{gap:6px 14px;font-size:13px}
   #phRoot .ph-finfo{font-size:12px}
+}
+/* ── 「교통」 창 (앱 transit.js #tkBox 그대로) — 홈페이지 PC 에선 화면 가운데 창 (회사 소개·문의 창과 같은 틀 · 11-08 밤) · 폰 폭은 앱과 같음 ── */
+@media (min-width:641px){
+  html.pch #tkBox{display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;background:rgba(17,24,39,.45);z-index:1044;overflow:hidden}
+  html.pch #tkBox .tkin{width:min(720px,100%);height:auto;min-height:min(560px,calc(100vh - 48px));max-height:calc(100vh - 48px);margin:0;overflow-y:auto;overscroll-behavior:contain;border-radius:18px;padding:20px 26px 24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 }
