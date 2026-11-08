@@ -1,0 +1,205 @@
+/* MosaicTrip.com 홈페이지 — 패키지여행 화면 (home/pc_pkg.js · 11-08 3a단계)
+ *  · 공통(제목 카드·ⓘ·칩·단추·입력칸)은 pc_guide.css 앞쪽 · 상세 본문 칸 이름(.shbx·.sstps…)은 앱 shop.js 것 그대로라 여기서 PC 모양만
+ *  · 색: 초록 var(--ph-green) · 보조 노랑 · 다크는 앱 변수 그대로
+ */
+/* ── 화면 ① 상품 목록 ── */
+#pcPk .pk-cats{display:flex;justify-content:center;margin:0 0 18px}
+#pcPk .pk-catg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px}   /* 한 줄 단추 묶음 = 같은 크기 한 줄 (사장님 11-08) */
+#pcPk .pk-catg button{border:1.5px solid var(--ph-green);background:var(--card);color:var(--ph-green-d);border-radius:999px;padding:7px 16px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;text-align:center}
+#pcPk .pk-catg button:hover{background:var(--ph-gt)}
+#pcPk .pk-catg button.on{background:var(--ph-green);color:#fff}
+#pcPk .pk-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+#pcPk .pk-c{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);display:flex;flex-direction:column;padding:0;text-align:left;color:var(--ink);cursor:pointer;font:inherit;transition:box-shadow .15s,border-color .15s}
+#pcPk .pk-c:hover{box-shadow:0 8px 24px rgba(17,24,39,.10);border-color:#b2dfbd}
+#pcPk .pk-cph{aspect-ratio:4/3;background:var(--bg);position:relative;width:100%}
+#pcPk .pk-cph img{width:100%;height:100%;object-fit:cover;display:block}
+#pcPk .pk-st{position:absolute;left:10px;top:10px;font-size:11.5px;font-weight:800;border-radius:999px;padding:3px 9px;background:rgba(255,255,255,.92);color:#5b6474}
+#pcPk .pk-st.on{background:var(--ph-green);color:#fff}
+#pcPk .pk-cb{padding:14px 16px 16px;display:flex;flex-direction:column;gap:5px;flex:1;width:100%;box-sizing:border-box}
+#pcPk .pk-l1{font-size:12.5px;font-weight:700;color:var(--sub)}
+#pcPk .pk-l2{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.4;min-height:2.8em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#pcPk .pk-l3{font-size:13px;color:var(--sub);line-height:1.5}
+#pcPk .pk-l4{margin-top:auto;padding-top:8px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+#pcPk .pk-l4 small{font-size:13px;color:var(--sub)}
+#pcPk .pk-l4 b{font-size:19px;font-weight:800;letter-spacing:-.3px}
+#pcPk .pk-l4 .pk-rv{margin-left:auto}
+#pcPk .pk-l4 .rvmini{font-size:12px;margin:0}
+
+/* ── 화면 ② 상품 한 개 ── */
+#pcPk.pk-detp>.pg-back{margin-bottom:14px}
+#pcPk .pk-g2{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+#pcPk .pk-main{display:flex;flex-direction:column;gap:16px;min-width:0}
+#pcPk .pk-photo .sdph{position:relative;border-radius:18px;overflow:hidden;background:var(--bg);aspect-ratio:16/9}
+#pcPk .sgal{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+#pcPk .sgal::-webkit-scrollbar{display:none}
+#pcPk .sgal img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start;display:block}
+#pcPk .sdph .stag{position:absolute;left:12px;top:12px;background:rgba(0,0,0,.62);color:#fff;font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 11px}
+#pcPk .sdph .sreal,#pcPk .sdph .sex{position:absolute;right:12px;top:12px;font-size:12px;font-weight:900;border-radius:999px;padding:4px 11px}
+#pcPk .sdph .sreal{background:var(--ph-green);color:#fff}
+#pcPk .sdph .sex{background:rgba(255,255,255,.92);color:#333}
+#pcPk .sdph .sgn{position:absolute;right:12px;bottom:12px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px}
+#pcPk .pk-arr{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#1d2433;font-size:15px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;padding:0}
+#pcPk .pk-arr:disabled{opacity:.35;cursor:default}
+#pcPk .pk-pv{left:14px}#pcPk .pk-nx{right:14px}
+#pcPk .sdth{display:flex;gap:8px;overflow-x:auto;margin-top:10px}
+#pcPk .sdth button{flex:0 0 auto;width:96px;height:64px;padding:0;border:2px solid transparent;border-radius:10px;overflow:hidden;background:var(--bg);cursor:pointer}
+#pcPk .sdth button.on{border-color:var(--ph-green)}
+#pcPk .sdth img{width:100%;height:100%;object-fit:cover;display:block}
+#pcPk .pk-title{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:18px 22px;display:flex;flex-direction:column;gap:8px}
+#pcPk .smeta{font-size:13px;color:var(--sub);font-weight:700}
+#pcPk .sdh{margin:0;font-size:26px;line-height:1.35;font-weight:800;letter-spacing:-.5px}
+#pcPk .pk-title .rvmini{margin:0}
+#pcPk .skey{display:flex;flex-wrap:wrap;gap:6px}
+#pcPk .skey span{font-size:13px;font-weight:700;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 9px;color:var(--ink)}
+#pcPk .skey span small{color:var(--sub);font-weight:600;font-size:12px}
+#pcPk .skey span.g{background:var(--ph-gt);border-color:#b2dfbd;color:var(--ph-green-d)}
+/* 설명 — 앱과 같은 차례, 칸 사이 점선 (배치도) */
+#pcPk .pk-desc{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:6px 22px 18px}
+#pcPk .pk-desc>.shbx{display:flex;flex-direction:column;gap:10px;padding:16px 0;border-top:1px dashed var(--line)}
+#pcPk .pk-desc>.shbx:first-child{border-top:0}
+#pcPk .shbx h2{margin:0;font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px}
+#pcPk .shbx p{margin:0;font-size:14.5px;line-height:1.7;color:var(--ink)}
+#pcPk .shbx ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14.5px;line-height:1.6}
+#pcPk .shbx ul.shl{list-style:none;padding-left:0}
+#pcPk .shbx ul.shl li{position:relative;padding-left:22px;font-weight:600}
+#pcPk .shbx ul.shl li::before{content:"";position:absolute;left:3px;top:.5em;width:9px;height:9px;border-radius:50%;background:var(--ph-yel)}
+#pcPk .sdd{color:var(--sub)!important;font-size:14px!important}
+#pcPk ol.sstps{margin:0;padding:0;list-style:none;counter-reset:st;display:flex;flex-direction:column}
+#pcPk ol.sstps li{counter-increment:st;position:relative;padding:0 0 14px 38px;font-size:14.5px;line-height:1.55;min-height:26px}
+#pcPk ol.sstps li::before{content:counter(st);position:absolute;left:0;top:-1px;width:26px;height:26px;border-radius:50%;background:var(--ph-green);color:#fff;font-size:13px;font-weight:900;display:grid;place-items:center}
+#pcPk ol.sstps li::after{content:"";position:absolute;left:12px;top:26px;bottom:2px;width:2px;background:var(--ph-gt)}
+#pcPk ol.sstps li:last-child{padding-bottom:0}
+#pcPk ol.sstps li:last-child::after{display:none}
+#pcPk ol.sday li::before{background:#e0a100}
+#pcPk ol.sday li::after{background:var(--ph-yt)}
+#pcPk .sie{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+#pcPk .sie h2{margin-bottom:8px}
+#pcPk ul.sin1,#pcPk ul.sex1{list-style:none;padding-left:0}
+#pcPk ul.sin1 li,#pcPk ul.sex1 li{position:relative;padding-left:18px}
+#pcPk ul.sin1 li::before,#pcPk ul.sex1 li::before{position:absolute;left:0;top:0;font-weight:900}
+#pcPk ul.sin1 li::before{content:"+";color:var(--ph-green-d)}
+#pcPk ul.sex1 li::before{content:"−";color:#c92a2a}
+#pcPk .sadr{display:flex;flex-direction:column;gap:2px}
+#pcPk .sadr b{font-size:16px}
+#pcPk .sadr span{font-size:14px}
+#pcPk .sadr .sub{color:var(--sub);font-size:13px}
+#pcPk .smaps{display:flex;flex-wrap:wrap;gap:8px}
+#pcPk .smaps a{flex:1 1 0;min-width:110px;text-align:center;text-decoration:none;border:1.5px solid var(--line);color:var(--ink);font-weight:800;font-size:13.5px;border-radius:10px;padding:8px 6px;background:var(--card)}
+#pcPk .smaps a:hover{border-color:var(--ph-green);color:var(--ph-green-d)}
+#pcPk p.sline{font-size:14px}
+#pcPk .sline small{color:var(--sub);font-weight:700}
+#pcPk .sent{margin:0}
+#pcPk .sent img{width:100%;max-height:320px;object-fit:cover;border-radius:12px;display:block}
+#pcPk .sent figcaption{font-size:12px;color:var(--sub);margin-top:4px}
+#pcPk .staxi{border:2px solid var(--ink);border-radius:14px;padding:14px;background:var(--ph-yt);display:flex;flex-direction:column;gap:6px}
+#pcPk .staxi small{font-size:12.5px;font-weight:800;color:#8a5a00}
+#pcPk .staxi .tb{font-size:22px;line-height:1.3}
+#pcPk .staxi .ta{font-size:19px;line-height:1.4}
+#pcPk .staxi p{font-size:13px!important;color:var(--sub)!important}
+#pcPk .staxi button{align-self:flex-end;border:0;border-radius:10px;background:var(--ph-green);color:#fff;font-weight:800;font-size:14px;padding:9px 16px;cursor:pointer}
+html[data-theme="dark"] #pcPk .staxi small{color:#f5d27a}
+#pcPk .stk{border:2px solid var(--ph-yel)!important;border-radius:14px;padding:14px!important}
+#pcPk .stk>div{display:flex;flex-direction:column;gap:2px}
+#pcPk .stk small{color:var(--sub);font-size:12.5px;font-weight:700}
+#pcPk .stk b{font-size:17px;line-height:1.45}
+#pcPk .srt{display:inline-block;margin-top:4px;border:1.5px solid var(--ph-green);color:var(--ph-green-d);background:var(--card);border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:800;cursor:pointer}
+#pcPk a.srfl{color:var(--ph-green-d);font-weight:800;font-size:14px;text-decoration:none;align-self:flex-start}
+#pcPk .sfq{border-top:1px solid var(--line);padding:10px 0}
+#pcPk .sfq:first-of-type{border-top:0}
+#pcPk .sfq summary{cursor:pointer;font-weight:800;font-size:14.5px;display:flex;align-items:center;gap:8px;list-style:none}
+#pcPk .sfq summary::-webkit-details-marker{display:none}
+#pcPk .sfq summary>span:first-child{flex:1}
+#pcPk .sfq p{margin-top:6px!important;font-size:14px!important}
+#pcPk .rvhost{padding:16px 0 4px;border-top:1px dashed var(--line)}
+#pcPk .pk-desc>.rvhost:first-child{border-top:0}
+/* 진행 순서 (코스) + 오른쪽 투어 노선도 = 앱 지도 */
+#pcPk .pk-rt{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:18px;align-items:start}
+#pcPk .pk-rtl{display:flex;flex-direction:column;gap:10px;min-width:0}
+#pcPk .pk-route{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:var(--ph-sea,#96b2c4)}
+#pcPk .pk-route:not(.on){display:none}
+#pcPk .pk-rt:has(.pk-route.on) .srt{display:none}
+#pcPk .pk-route .map{position:absolute!important;inset:0;width:100%!important;height:100%!important;margin:0!important;border-radius:0!important;box-shadow:none!important;--W:100%}
+#pcPk .pk-route .ph-maphint,#pcPk .pk-route #me,#pcPk .pk-route #meedge,#pcPk .pk-route #medot,#pcPk .pk-route #meTip{display:none!important}   /* 노선도만 — 내 위치 표시는 첫 화면 지도에서 */
+#pcPk .pk-rblock{position:absolute;inset:0;z-index:50}
+#pcPk .pk-rtt{position:absolute;left:10px;top:10px;z-index:51;background:rgba(255,255,255,.92);color:#2a3140;border-radius:999px;padding:4px 12px;font-size:12.5px;font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.12);pointer-events:none}
+/* 오른쪽 예약 칸 (내려도 따라옴) */
+#pcPk .pk-side{position:sticky;top:16px}
+#pcPk .pk-box{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:18px;box-shadow:0 6px 20px rgba(17,24,39,.06);display:flex;flex-direction:column;gap:2px}
+#pcPk .pk-pr .spr{font-size:17px;font-weight:800;line-height:1.45;letter-spacing:-.2px}
+#pcPk .pk-pr .spr small{font-size:13px;color:var(--sub);font-weight:600}
+#pcPk .pk-mp{font-size:13.5px;color:var(--sub);font-weight:700;margin-top:2px}
+#pcPk .pk-ft{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+#pcPk .pk-ft span{font-size:12px;background:var(--ph-yt);border-radius:6px;padding:2px 8px}
+#pcPk .pk-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+#pcPk .pk-row .pg-in{width:auto;flex:0 1 190px;min-height:40px;padding:7px 10px;font-size:14.5px}
+#pcPk .pk-lb{font-size:14px;color:var(--sub);font-weight:700;white-space:nowrap}
+#pcPk .pk-stp{display:flex;align-items:center;gap:12px}
+#pcPk .pk-stp b{min-width:22px;text-align:center;font-size:16px}
+#pcPk .pk-stp button{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:17px;font-weight:900;cursor:pointer;line-height:1;padding:0}
+#pcPk .pk-stp button:hover{border-color:var(--ph-green);color:var(--ph-green-d)}
+#pcPk .pk-gdr{cursor:pointer}
+#pcPk .pk-gdr b{flex:1;text-align:right;font-size:14px;min-width:0}
+#pcPk .pk-gdp{margin-top:8px;padding:10px;border-radius:12px;background:var(--bg)}
+#pcPk .pk-gdp .pk-nt{margin:0 0 8px}
+#pcPk .pk-gl{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+#pcPk .pk-g{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:12px;padding:7px 9px;cursor:pointer;background:var(--card);text-align:left;color:var(--ink);font:inherit;width:100%}
+#pcPk .pk-g.on{border-color:var(--ph-green);background:var(--ph-gt)}
+#pcPk .pk-g img,#pcPk .pk-g .pk-gav{flex:0 0 38px;width:38px;height:38px;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:var(--ph-green);color:#fff;font-weight:900}
+#pcPk .pk-g b{display:block;font-size:14px}
+#pcPk .pk-g small{display:block;color:var(--sub);font-size:12px}
+#pcPk .pk-tot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--line);margin-top:14px;padding-top:12px;font-size:15px;font-weight:700}
+#pcPk .pk-tot b{font-size:22px;font-weight:900}
+#pcPk .pk-nt{font-size:12.5px;color:var(--sub);line-height:1.6;margin:8px 0 0}
+#pcPk .pk-box .pg-ign{display:block;margin-top:12px}
+#pcPk .pk-pfh{font-size:15px;font-weight:800;margin-top:6px}
+#pcPk .pk-pf{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+#pcPk .pk-pf button{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 12px;font-size:14px;font-weight:700;cursor:pointer;text-align:left}
+#pcPk .pk-pf button:hover{border-color:var(--ph-green);color:var(--ph-green-d)}
+#pcPk .pk-pf button span{flex:1}
+#pcPk .pk-pf button i{font-style:normal;color:var(--ph-green-d)}
+/* 앱 결제창(shop.js mockPay) — 이 화면 안, 화면 가운데 */
+#pcPk .spm{position:fixed;inset:0;z-index:1040;background:rgba(10,14,24,.55);display:flex;align-items:center;justify-content:center;padding:24px}
+#pcPk .spm>div{width:min(480px,100%);max-height:calc(100vh - 48px);overflow:auto;background:var(--card);color:var(--ink);border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 60px rgba(0,0,0,.3);box-sizing:border-box}
+#pcPk .spm h3{margin:0;font-size:19px}
+#pcPk .spm .spick{display:flex;gap:10px;align-items:center}
+#pcPk .spm .spick img{width:76px;height:57px;object-fit:cover;border-radius:10px}
+#pcPk .spm .sl{display:flex;justify-content:space-between;gap:10px;font-size:14px}
+#pcPk .spm .sl span:first-child{color:var(--sub)}
+#pcPk .spm .stot{border-top:1px dashed var(--line);padding-top:10px;display:flex;justify-content:space-between;font-size:18px;font-weight:900}
+#pcPk .spm label.sr{display:flex;gap:8px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;font-size:14px;cursor:pointer}
+#pcPk .spm label.scl{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--sub)}
+#pcPk .spm label.scl input{font:inherit;font-size:15px;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:9px 10px}
+#pcPk .spm .snote{color:var(--sub);font-size:13px;margin:0;line-height:1.55}
+#pcPk .spm .serr{background:#fdecec;color:#b42318;border-radius:10px;padding:8px 10px;font-size:13.5px;font-weight:700}
+#pcPk .spm .sdone{background:var(--ph-gt);border:1.5px solid #b2dfbd;color:var(--ph-green-d);font-weight:800;border-radius:12px;padding:10px;text-align:center}
+#pcPk .spm .scx{display:flex;gap:8px;align-items:stretch}
+#pcPk .spm .scxb{flex:0 0 auto;min-width:84px;border:1.5px solid #adb5bd;background:var(--card);color:var(--ink);border-radius:12px;padding:0 14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit}
+#pcPk .spm .spay{flex:1 1 auto;min-width:0;border:0;border-radius:12px;padding:13px;background:var(--ph-green);color:#fff;font-size:16px;font-weight:900;cursor:pointer;font-family:inherit}
+#pcPk .spm .spay:disabled{opacity:.45;cursor:not-allowed}
+#pcPk .spm>div>.spay{flex:0 0 auto}
+
+/* ── 좁은 PC (641~1180) ── */
+@media (max-width:1180px) and (min-width:641px){
+  #pcPk .pk-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #pcPk .pk-catg{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr))}
+  #pcPk .pk-g2{grid-template-columns:minmax(0,1fr) 300px}
+  #pcPk .pk-rt{grid-template-columns:minmax(0,1fr)}
+}
+/* ── 폰 (412 기준) ── */
+@media (max-width:640px){
+  #pcPk .pk-cats{margin-bottom:14px}
+  #pcPk .pk-catg{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%}
+  #pcPk .pk-catg button{padding:6px 2px;font-size:12.5px;white-space:normal}
+  #pcPk .pk-cards{grid-template-columns:minmax(0,1fr);gap:14px}
+  #pcPk .pk-g2{grid-template-columns:minmax(0,1fr);gap:14px}
+  #pcPk .pk-side{position:static}
+  #pcPk .pk-photo .sdph{aspect-ratio:4/3;border-radius:14px}
+  #pcPk .pk-arr{width:36px;height:36px}
+  #pcPk .pk-title{padding:14px 16px}
+  #pcPk .sdh{font-size:21px}
+  #pcPk .pk-desc{padding:4px 16px 14px}
+  #pcPk .sie{grid-template-columns:minmax(0,1fr)}
+  #pcPk .pk-rt{grid-template-columns:minmax(0,1fr)}
+  #pcPk .spm{padding:12px}
+  #pcPk .spm>div{max-height:calc(100vh - 24px);padding:16px}
+}
