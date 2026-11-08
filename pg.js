@@ -22,7 +22,26 @@ var W={
  gNat:{ko:"Google로 로그인",en:"Sign in with Google",ja:"Googleでログイン",zhs:"使用Google登录",zht:"使用Google登入",es:"Iniciar sesión con Google"},
  aNat:{ko:"앱에서는 Apple 로그인을 지원하지 않습니다. Google로 로그인하거나, 웹 브라우저의 사이트에서 Apple로 로그인해 주세요.",en:"Sign in with Apple is not available in the app. Please sign in with Google, or use Apple sign-in on the website in your web browser.",ja:"アプリではAppleでのログインはご利用いただけません。Googleでログインするか、ウェブブラウザのサイトでAppleでログインしてください。",zhs:"应用内不支持Apple登录。请使用Google登录，或在网页浏览器的网站上使用Apple登录。",zht:"App 內不支援 Apple 登入。請使用 Google 登入，或在網頁瀏覽器的網站上使用 Apple 登入。",es:"El inicio de sesión con Apple no está disponible en la app. Inicia sesión con Google o usa Apple en el sitio web desde tu navegador."},
  iosNo:{ko:"아이폰 앱(App Store)은 당분간 지원하지 않습니다. 아이폰에서는 웹 브라우저로 이용해 주세요.",en:"The iPhone app (App Store) is not available for now. On iPhone, please use this website in your web browser.",ja:"iPhoneアプリ（App Store）は当面ご利用いただけません。iPhoneではウェブブラウザでご利用ください。",zhs:"暂不支持iPhone应用（App Store）。在iPhone上请使用网页浏览器访问。",zht:"暫不支援 iPhone App（App Store）。在 iPhone 上請使用網頁瀏覽器瀏覽。",es:"La app para iPhone (App Store) no está disponible por ahora. En iPhone, usa este sitio web desde tu navegador."},
- natUpd:{ko:"이 앱 버전에서는 로그인을 지원하지 않습니다. 앱을 최신 버전으로 업데이트해 주세요.",en:"Sign-in is not supported in this app version. Please update the app to the latest version.",ja:"このアプリのバージョンではログインできません。アプリを最新バージョンに更新してください。",zhs:"此应用版本不支持登录，请将应用更新到最新版本。",zht:"此 App 版本不支援登入，請將 App 更新到最新版本。",es:"Esta versión de la app no admite el inicio de sesión. Actualiza la app a la última versión."}
+ natUpd:{ko:"이 앱 버전에서는 로그인을 지원하지 않습니다. 앱을 최신 버전으로 업데이트해 주세요.",en:"Sign-in is not supported in this app version. Please update the app to the latest version.",ja:"このアプリのバージョンではログインできません。アプリを最新バージョンに更新してください。",zhs:"此应用版本不支持登录，请将应用更新到最新版本。",zht:"此 App 版本不支援登入，請將 App 更新到最新版本。",es:"Esta versión de la app no admite el inicio de sesión. Actualiza la app a la última versión."},
+ // ── 이메일 인증번호 로그인 (사장님 11-08 「로그인·내 예약」 통과 — 배치도 11) ──
+ sub:{ko:"로그인하면 PC·폰 어디서든 같은 카트·플랜·예약을 볼 수 있어요.",en:"Sign in to see the same cart, plans and bookings on any PC or phone.",ja:"ログインすると、PCでもスマホでも同じカート・プラン・予約を見られます。",zhs:"登录后，在电脑和手机上都能看到同样的购物车、行程和预约。",zht:"登入後，在電腦和手機上都能看到同樣的購物車、行程和預約。",es:"Inicia sesión para ver el mismo carrito, planes y reservas en cualquier PC o móvil."},
+ or:{ko:"또는 이메일로",en:"or with email",ja:"またはメールで",zhs:"或使用邮箱",zht:"或使用電子郵件",es:"o con tu correo"},
+ emPh:{ko:"이메일 주소",en:"Email address",ja:"メールアドレス",zhs:"电子邮箱",zht:"電子郵件地址",es:"Correo electrónico"},
+ emSend:{ko:"인증번호 받기",en:"Get code",ja:"認証番号を受け取る",zhs:"获取验证码",zht:"取得驗證碼",es:"Recibir código"},
+ emAgain:{ko:"다시 받기",en:"Resend",ja:"再送信",zhs:"重新获取",zht:"重新取得",es:"Reenviar"},
+ emAgainS:{ko:"다시 받기 ({s}초)",en:"Resend ({s}s)",ja:"再送信（{s}秒）",zhs:"重新获取（{s}秒）",zht:"重新取得（{s}秒）",es:"Reenviar ({s} s)"},
+ emCodePh:{ko:"메일로 온 6자리 번호",en:"6-digit code",ja:"6桁の認証番号",zhs:"6位验证码",zht:"6位驗證碼",es:"Código de 6 cifras"},   // 폰에서 칸이 좁아 짧게 (안내 줄에 「메일로 온 번호」가 있음)
+ emOk:{ko:"확인",en:"Confirm",ja:"確認",zhs:"确认",zht:"確認",es:"Confirmar"},
+ emNote:{ko:"비밀번호는 없어요. 메일로 온 번호를 10분 안에 넣으면 돼요. 처음이면 그대로 가입돼요.",en:"No password needed — just enter the code we email you within 10 minutes. If you're new, this signs you up.",ja:"パスワードは不要です。メールに届いた番号を10分以内に入力するだけです。初めての方はそのまま登録されます。",zhs:"无需密码，只需在10分钟内输入邮件中的验证码。首次使用将直接注册。",zht:"無需密碼，只需在10分鐘內輸入郵件中的驗證碼。首次使用將直接註冊。",es:"Sin contraseña: introduce el código que te enviamos por correo en 10 minutos. Si eres nuevo, así te registras."},
+ emSent:{ko:"{e} 메일함을 확인해 주세요. 번호는 10분 동안 쓸 수 있어요. 메일이 안 보이면 스팸함도 봐 주세요.",en:"We sent a code to {e}. It works for 10 minutes. If you don't see it, check your spam folder.",ja:"{e} に認証番号を送りました。10分間有効です。届かない場合は迷惑メールフォルダもご確認ください。",zhs:"验证码已发送至 {e}，10分钟内有效。如未收到，请查看垃圾邮件文件夹。",zht:"驗證碼已寄至 {e}，10分鐘內有效。如未收到，請查看垃圾郵件資料夾。",es:"Enviamos un código a {e}. Sirve durante 10 minutos. Si no lo ves, revisa la carpeta de spam."},
+ emBad:{ko:"이메일 주소를 확인해 주세요.",en:"Please check the email address.",ja:"メールアドレスをご確認ください。",zhs:"请检查电子邮箱地址。",zht:"請檢查電子郵件地址。",es:"Revisa la dirección de correo."},
+ emWait:{ko:"{s}초 뒤에 다시 받을 수 있어요.",en:"You can get a new code in {s} s.",ja:"{s}秒後にもう一度受け取れます。",zhs:"{s}秒后可重新获取。",zht:"{s}秒後可重新取得。",es:"Podrás pedir otro código en {s} s."},
+ emRate:{ko:"오늘은 인증번호를 더 받을 수 없어요. 내일 다시 하시거나 구글·애플로 로그인해 주세요.",en:"Too many codes today. Please try again tomorrow, or sign in with Google or Apple.",ja:"本日はこれ以上認証番号を受け取れません。明日もう一度お試しいただくか、GoogleまたはAppleでログインしてください。",zhs:"今天获取验证码的次数已达上限。请明天再试，或使用Google或Apple登录。",zht:"今天取得驗證碼的次數已達上限。請明天再試，或使用Google或Apple登入。",es:"Has pedido demasiados códigos hoy. Inténtalo mañana o inicia sesión con Google o Apple."},
+ emMail:{ko:"메일을 보내지 못했어요. 잠시 뒤 다시 하시거나 구글·애플로 로그인해 주세요.",en:"We couldn't send the email. Please try again later, or sign in with Google or Apple.",ja:"メールを送れませんでした。しばらくしてからもう一度お試しいただくか、GoogleまたはAppleでログインしてください。",zhs:"邮件发送失败。请稍后再试，或使用Google或Apple登录。",zht:"郵件寄送失敗。請稍後再試，或使用Google或Apple登入。",es:"No pudimos enviar el correo. Inténtalo más tarde o inicia sesión con Google o Apple."},
+ emNeed:{ko:"메일로 온 6자리 번호를 넣어 주세요.",en:"Please enter the 6-digit code from the email.",ja:"メールに届いた6桁の番号を入力してください。",zhs:"请输入邮件中的6位验证码。",zht:"請輸入郵件中的6位驗證碼。",es:"Introduce el código de 6 cifras del correo."},
+ emCode:{ko:"번호가 맞지 않아요. {n}번 더 넣을 수 있어요.",en:"That code is not right. You have {n} more tries.",ja:"番号が違います。あと{n}回入力できます。",zhs:"验证码不正确，还可以输入{n}次。",zht:"驗證碼不正確，還可以輸入{n}次。",es:"El código no es correcto. Te quedan {n} intentos."},
+ emLock:{ko:"5번 틀려서 이 번호는 쓸 수 없어요. 인증번호를 다시 받아 주세요.",en:"Too many wrong tries — this code no longer works. Please get a new code.",ja:"5回間違えたため、この番号は使えません。認証番号をもう一度受け取ってください。",zhs:"已输错5次，此验证码失效。请重新获取验证码。",zht:"已輸錯5次，此驗證碼失效。請重新取得驗證碼。",es:"Fallaste 5 veces y este código ya no sirve. Pide un código nuevo."},
+ emExp:{ko:"번호가 만료됐어요. 인증번호를 다시 받아 주세요.",en:"This code has expired. Please get a new code.",ja:"番号の有効期限が切れました。認証番号をもう一度受け取ってください。",zhs:"验证码已过期，请重新获取。",zht:"驗證碼已過期，請重新取得。",es:"El código caducó. Pide uno nuevo."}
 };
 /* 다른 사이트(노래방 karaoke.moneypuzzle.co.kr, 10-30)가 같은 pg.js 를 쓸 때 — window.PG_SITE={W:{문구},simple,aredir}. 투어앱엔 PG_SITE 가 없어 그대로 */
 var PGS=window.PG_SITE||null; if(PGS&&PGS.W) for(var _pk in PGS.W) W[_pk]=PGS.W[_pk];
@@ -46,7 +65,15 @@ function css(){ if(document.getElementById("pgCss")) return; var s=document.crea
   +":root[data-theme=dark] #pgIn .pggrad{background:#1b2b3d;color:#a5d8ff}#pgIn .pgbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 16px;font-size:14px;cursor:pointer}"
   +"#pgIn .pgbtn[disabled]{opacity:.6;cursor:default}#pgIn .pgdim{color:var(--sub)}#pgGbtn{margin:12px 0 6px;min-height:44px}#pgAbtn{margin:0 0 12px;min-height:44px}#appleid-signin{width:240px;height:40px;cursor:pointer}"
   +"#pgIn .pgbd{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:6px 0 2px}#pgIn .pgbd div{background:var(--line);border-radius:12px;padding:8px 2px;text-align:center;font-size:11px;color:var(--sub)}"
-  +"#pgIn .pgbd img{width:32px;height:32px;display:block;margin:0 auto 4px}#pgIn .pgbd b{display:block;font-size:18px;color:var(--ink)}#pgIn .pgdim0{opacity:.35}";
+  +"#pgIn .pgbd img{width:32px;height:32px;display:block;margin:0 auto 4px}#pgIn .pgbd b{display:block;font-size:18px;color:var(--ink)}#pgIn .pgdim0{opacity:.35}"
+  /* 이메일 인증번호 (11-08) — 상징색 초록(#2f9e44) · 두 단추는 같은 크기 */
+  +"#pgIn .pgor{display:flex;align-items:center;gap:10px;color:var(--sub);font-size:13px;margin:14px 0 10px}#pgIn .pgor:before,#pgIn .pgor:after{content:\"\";flex:1;height:1px;background:var(--line)}"
+  +"#pgIn .pgr2{display:flex;gap:8px;margin:0 0 8px}#pgIn .pgr2 input{flex:1;min-width:0;box-sizing:border-box;height:44px;border:1.5px solid var(--line);border-radius:12px;padding:0 12px;font:inherit;font-size:15px;background:var(--card);color:var(--ink)}"
+  +"#pgIn .pgr2 input::placeholder{color:#8a929c;opacity:1}#pgIn .pgr2 input:focus{outline:none;border-color:#2f9e44}"
+  +"#pgIn .pgr2 button{flex:0 0 140px;box-sizing:border-box;height:44px;border-radius:12px;padding:0 6px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap}"
+  +"#pgIn .pgEs{background:#2f9e44;border:1.5px solid #2f9e44;color:#fff}#pgIn .pgEv{background:var(--card);border:1.5px solid #2f9e44;color:#2f9e44}#pgIn .pgr2 button[disabled]{opacity:.55;cursor:default}"
+  +"#pgIn .pgemsg{font-size:13px;line-height:1.5;margin:0 2px 6px}#pgIn .pgemsg:empty{display:none}#pgIn .pgemsg.ok{color:#2b8a3e}#pgIn .pgemsg.er{color:#c92a2a}:root[data-theme=dark] #pgIn .pgemsg.ok{color:#8ce99a}:root[data-theme=dark] #pgIn .pgemsg.er{color:#ffa8a8}"
+  +"#pgIn .pgnote{margin:2px 2px 4px;font-size:12.5px}";
   document.head.appendChild(s); }
 function box(){ var b=document.getElementById("pgBox"); if(b) return b; css(); b=document.createElement("div"); b.id="pgBox"; b.hidden=true; b.innerHTML='<div id="pgIn"></div>';
   b.addEventListener("click",function(e){ if(e.target===b) close(); var a=e.target.closest&&e.target.closest("[data-pg]"); if(!a) return; var k=a.dataset.pg; if(k==="x") close(); else if(k==="out") logout(); });
@@ -60,10 +87,11 @@ function gisLoad(){ if(window.google&&google.accounts&&google.accounts.id) retur
   GIS=new Promise(function(ok,no){ var s=document.createElement("script"); s.src="https://accounts.google.com/gsi/client"; s.async=true; s.onload=ok; s.onerror=function(){ GIS=null; no(); }; document.head.appendChild(s); }); return GIS; }
 var GLOC={ko:"ko",en:"en",ja:"ja",zhs:"zh_CN",zht:"zh_TW",es:"es"};
 function paintLogin(msg){ var I=document.getElementById("pgIn");
-  I.innerHTML=head()+(t("intro")?'<div class="pgp">'+esc(t("intro"))+'</div>':'')+(t("ask")?'<div class="pgp" style="color:var(--ink)">'+esc(t("ask"))+'</div>':'')+(msg?'<div class="pgp" style="color:#c92a2a">'+esc(msg)+'</div>':'')
+  I.innerHTML=head()+(t("intro")?'<div class="pgp">'+esc(t("intro"))+'</div>':'')+(t("ask")?'<div class="pgp" style="color:var(--ink)">'+esc(t("ask"))+'</div>':'')+(PGS?'':'<div class="pgp">'+esc(t("sub"))+'</div>')+(msg?'<div class="pgp" style="color:#c92a2a">'+esc(msg)+'</div>':'')
     +'<div id="pgGbtn"><button type="button" class="pgbtn" disabled>'+esc(t("load"))+'</button></div><div id="pgAbtn"></div>'
     +(natApp()?'':'<div class="pgp" style="color:var(--ink)">'+esc(t("iosNo"))+'</div>')   /* 아이폰 앱 없음 안내 — 웹만 (사장님 11-04 「가」, 노래방·투어앱 둘 다) */
-    +rvHtml()+privHtml();
+    +emHtml()+rvHtml()+privHtml();
+  emWire();   /* 이메일 인증번호 (11-08) — 투어앱·홈페이지만(노래방 사이트 PG_SITE 는 그대로) · 구글·애플 단추는 위 그대로 */
   if(natApp()){ natPaint(); rvWire(); return; }   /* 앱(StageSong 등) 안 — 웹 구글·애플 로그인은 WebView 에서 막힘(흰 화면) → 앱 전용 로그인 (10-31) */
   appleBtn(); rvWire();
   cfg().then(function(c){ var g=document.getElementById("pgGbtn"); if(!g) return; c={cid:(c&&c.cid)||PG_CID};
@@ -119,6 +147,45 @@ function login(b){ var I=document.getElementById("pgIn"); if(I) I.innerHTML=head
   post("/npg/login",b).then(function(j){ if(!j||!j.ok||!j.sess){ paintLogin(t("lerr")); return; } ls("mpv_pg_sess",j.sess); paintMe(j.me); menuPaint(); })
     .catch(function(){ paintLogin(t("lerr")); }); }
 function onCred(r){ login({cred:r&&r.credential}); }
+// ── 이메일 인증번호 로그인 (사장님 11-08 「로그인·내 예약」 통과, 배치도 11) — 비밀번호 없음 · 처음이면 그대로 가입 ──
+//   허브 POST /npg/ecode {email,l} → 메일로 6자리 번호(10분) · POST /npg/everify {email,code,dev,own} → 구글·애플과 같은 세션(mpv_pg_sess)
+//   같은 이메일의 구글·애플 계정이 있으면 허브가 그 계정으로 로그인시킨다(계정 하나) · 노래방 사이트(PG_SITE)에는 안 보인다
+var EMS={em:"",code:"",until:0,msg:"",cls:"",busy:0}, EMT=null;
+function emOn(){ return !PGS; }
+function emValid(e){ return /^[^\s@<>"'(),;:\\]{1,64}@[^\s@<>"'(),;:\\]{1,190}\.[a-z]{2,}$/i.test(e); }
+function emHtml(){ if(!emOn()) return "";
+  return '<div class="pgor"><span>'+esc(t("or"))+'</span></div>'
+    +'<div class="pgr2"><input id="pgEm" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="'+esc(t("emPh"))+'" aria-label="'+esc(t("emPh"))+'" value="'+esc(EMS.em)+'"><button type="button" class="pgEs" id="pgEs"></button></div>'
+    +'<div class="pgr2"><input id="pgEc" type="text" autocomplete="one-time-code" inputmode="numeric" maxlength="6" placeholder="'+esc(t("emCodePh"))+'" aria-label="'+esc(t("emCodePh"))+'" value="'+esc(EMS.code)+'"><button type="button" class="pgEv" id="pgEv">'+esc(t("emOk"))+'</button></div>'
+    +'<div class="pgemsg '+EMS.cls+'" id="pgEmsg" role="status" aria-live="polite">'+esc(EMS.msg)+'</div>'
+    +'<div class="pgp pgnote">'+esc(t("emNote"))+'</div>'; }
+function emMsg(m,cls){ EMS.msg=m||""; EMS.cls=cls||""; var e=document.getElementById("pgEmsg"); if(e){ e.textContent=EMS.msg; e.className="pgemsg "+EMS.cls; } }
+function emBtn(){ var b=document.getElementById("pgEs"); if(!b) return; var left=Math.ceil((EMS.until-Date.now())/1000);
+  if(left>0){ b.textContent=t("emAgainS",{s:left}); b.disabled=true; } else { b.textContent=t(EMS.until?"emAgain":"emSend"); b.disabled=!!EMS.busy; } }
+function emTick(){ if(EMT) return; EMT=setInterval(function(){ emBtn(); var bx=document.getElementById("pgBox"); if(Date.now()>=EMS.until||!bx||bx.hidden){ clearInterval(EMT); EMT=null; emBtn(); } },1000); }
+function emWire(){ if(!emOn()) return; var em=document.getElementById("pgEm"), ec=document.getElementById("pgEc"), es=document.getElementById("pgEs"), ev=document.getElementById("pgEv"); if(!em) return;
+  em.oninput=function(){ EMS.em=em.value; }; ec.oninput=function(){ var v=ec.value.replace(/\D/g,"").slice(0,6); if(v!==ec.value) ec.value=v; EMS.code=v; };
+  em.onkeydown=function(e){ if(e.key==="Enter"){ e.preventDefault(); emSend(); } }; ec.onkeydown=function(e){ if(e.key==="Enter"){ e.preventDefault(); emVerify(); } };
+  es.onclick=emSend; ev.onclick=emVerify; emBtn(); if(EMS.until>Date.now()) emTick(); }
+function emSend(){ var em=document.getElementById("pgEm"), v=String((em&&em.value)||EMS.em||"").trim(); EMS.em=v;
+  if(!emValid(v)){ emMsg(t("emBad"),"er"); try{ em.focus(); }catch(e){} return; }
+  if(EMS.busy||EMS.until>Date.now()) return; EMS.busy=1; emBtn();
+  post("/npg/ecode",{email:v,l:lg()}).then(function(j){ EMS.busy=0;
+    if(j&&j.ok){ EMS.until=Date.now()+((+j.gap||60)*1000); emMsg(t("emSent",{e:v}),"ok"); emBtn(); emTick(); var c=document.getElementById("pgEc"); if(c) try{ c.focus(); }catch(e){} return; }
+    var er=j&&j.err;
+    if(er==="wait"){ EMS.until=Date.now()+((+j.wait||60)*1000); emMsg(t("emWait",{s:+j.wait||60}),"er"); emBtn(); emTick(); return; }
+    emMsg(er==="email"?t("emBad"):er==="rate"?t("emRate"):t("emMail"),"er"); emBtn(); })
+  .catch(function(){ EMS.busy=0; emMsg(t("emMail"),"er"); emBtn(); }); }
+function emVerify(){ var em=document.getElementById("pgEm"), ec=document.getElementById("pgEc"), v=String((em&&em.value)||EMS.em||"").trim(), c=String((ec&&ec.value)||"").replace(/\D/g,"");
+  EMS.em=v; EMS.code=c; if(!emValid(v)){ emMsg(t("emBad"),"er"); return; } if(c.length!==6){ emMsg(t("emNeed"),"er"); try{ ec.focus(); }catch(e){} return; }
+  var b=document.getElementById("pgEv"); if(EMS.busy) return; EMS.busy=2; if(b) b.disabled=true;
+  var own=0; try{ own=localStorage.getItem("mp_owner")?1:0; }catch(e){}
+  post("/npg/everify",{email:v,code:c,dev:dev(),own:own}).then(function(j){ EMS.busy=0; if(b) b.disabled=false;
+    if(j&&j.ok&&j.sess){ ls("mpv_pg_sess",j.sess); EMS.code=""; EMS.msg=""; EMS.cls=""; EMS.until=0; paintMe(j.me); menuPaint(); return; }   // 구글·애플 login() 과 같은 마무리
+    var er=j&&j.err; if(er==="code"){ emMsg(t("emCode",{n:j.left!=null?j.left:""}),"er"); try{ ec.select(); }catch(e){} return; }
+    if(er==="locked"||er==="expired"){ EMS.code=""; if(ec) ec.value=""; EMS.until=0; emBtn(); }
+    emMsg(er==="locked"?t("emLock"):er==="expired"?t("emExp"):er==="email"?t("emBad"):t("lerr"),"er"); })
+  .catch(function(){ EMS.busy=0; if(b) b.disabled=false; emMsg(t("lerr"),"er"); }); }
 function logout(){ ls("mpv_pg_sess",null); try{ if(window.google&&google.accounts&&google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){} try{ var P=natSL(); if(P&&SLI) P.logout({provider:"google"}).catch(function(){}); }catch(e){} menuPaint(); var b=document.getElementById("pgBox"); if(b&&!b.hidden) paintLogin(); }
 function paintMe(m){ var I=document.getElementById("pgIn"); if(!I||!m) return;
   if(PGS&&PGS.simple){ I.innerHTML=head()+'<div class="pgp" style="color:var(--ink)">'+esc(m.name||"")+(m.email?' <span class="pgdim">· '+esc(m.email)+'</span>':'')+'</div><div class="pgp">'+esc(t("intro"))+'</div>'+privHtml()+'<div style="margin-top:10px"><button type="button" class="pgbtn" data-pg="out">'+esc(t("logout"))+'</button></div>'; return; }   /* 노래방 사이트 — 배지 없이 계정만 */   /* 내 배지 (10-27) — /npg/me 의 wins·twins·kwins·dw·fin·gr·hof */
