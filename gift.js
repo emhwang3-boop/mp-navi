@@ -165,7 +165,8 @@ function open(){ css(); var mm=document.getElementById("mm"); if(mm) mm.hidden=t
   paint(); load().then(paint,function(){ var b=o.querySelector(".gfin"); if(b) b.insertAdjacentHTML("beforeend",'<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>'); }); }
 function close(){ var o=document.getElementById("gfBox"); if(o) o.remove(); document.documentElement.classList.remove("gflock"); }
 function opt(kind,c,label,on){ return '<button type="button" class="gfopt'+(on?' on':'')+'" data-gf="'+kind+'" data-c="'+esc(c)+'">'+label+'</button>'; }
-function paint(){ var b=document.querySelector("#gfBox .gfin"); if(!b) return;
+var PCH=null;   // PC 홈페이지(PC_HOME)만 — 근처 가게·명품 매장을 받으면 홈페이지 「선물 고르기」 화면도 다시 (home/pc_gift.js, 11-08 4a) · 폰 앱은 늘 null
+function paint(){ if(PCH){ try{ PCH(); }catch(e){} } var b=document.querySelector("#gfBox .gfin"); if(!b) return;
   var h='<div class="gftop"><b>'+MPICO("mi_gift",T("🎁 선물 고르기","🎁 Gift finder"),MIS)+'</b><button type="button" class="gfx" data-gf="x" aria-label="close">✕</button></div>';
   if(S.lux){ b.innerHTML=luxHtml(h); return; }   // 11-08 명품 고르기
   if(!G){ b.innerHTML=h+'<div class="msg">'+T("불러오는 중…","Loading…")+'</div>'; return; }
@@ -304,5 +305,9 @@ var sc0=window.spinCard; if(typeof sc0==="function"&&!sc0._gf){ var sc1=function
 var f=window.setLang; if(typeof f==="function"&&!f._gf){ var g=function(){ var r=f.apply(this,arguments); try{ entries(); paint(); }catch(e){} return r; }; g._gf=1; g._tr=f._tr; window.setLang=g; }
 entries();
 window.GIFT={open:open,close:close,state:function(){ return S; },data:function(){ return G; },nb:function(){ return NB; }};
+// PC 홈페이지 「선물 고르기」(home/pc_gift.js, 11-08 4a) — 이 파일의 자료·순서·근처 가게(/gshop)·광고(/npartner)·명품(lux.json·/kplace 매장 거르기)을 그대로 쓴다 (폰 앱은 PC_HOME 이 없어 그대로)
+if(window.PC_HOME) window.GIFTPC={S:S,load:load,G:function(){ return G; },ranked:ranked,local:localKinds,findK:findK,GI:GI,W:W,WI:WI,kmT:kmT,KM:KM,
+  nbKey:nbKey,nbLoad:nbLoad,nbList:nbList,NB:function(){ return NB; },ads:adsFor,gLL:gLL,css:css,hook:function(f){ PCH=f||null; },
+  lux:{load:luxLoad,X:function(){ return LX; },T:LX6,brand:lxBrand,name:lxName,norm:lxNorm,hit:lxHit,logo:lxLogo,cr1:lxCr1,credits:lxCredits,key:lxKey,get:lxLoad,S:LXS}};
 if(/[?&]gift=1/.test(location.search)) setTimeout(open,300);
 })();
