@@ -2064,7 +2064,7 @@ function shareGo(){ var box=document.getElementById("trNextBox");   // 11-07 사
   document.getElementById("trShP").onclick=function(){ gsOpen(); };
   tripUrl().then(function(u){ var g=document.getElementById("trShG"); if(!g) return; window.__trShareUrl=u;
     var pl=TR.plan, dd=pl&&pl.days&&pl.days.length?pl.days:null, desc=dd?dateTxt(new Date(dd[0].date+"T00:00:00Z"))+(dd.length>1?" – "+dateTxt(new Date(dd[dd.length-1].date+"T00:00:00Z")):""):"";
-    if(typeof window.shareInto==="function") window.shareInto(g,{url:u,txt:T5({ko:"내 여행 일정",en:"My trip plan",ja:"私の旅行日程",zhs:"我的旅行行程",zht:"我的旅行行程",es:"Mi plan de viaje"}),desc:desc||"Puzzle Tour for Korea"});
+    if(typeof window.shareInto==="function") window.shareInto(g,{url:u,txt:T5({ko:"내 여행 일정",en:"My trip plan",ja:"私の旅行日程",zhs:"我的旅行行程",zht:"我的旅行行程",es:"Mi plan de viaje"}),desc:desc||"Puzzle Tour Nations for Korea"});
     else g.innerHTML='<div class="d" style="word-break:break-all">'+esc(u)+'</div>';
     g.addEventListener("click",function(){ try{ ntap("_trip","share"); }catch(e){} }); }); }
 
