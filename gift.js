@@ -146,7 +146,16 @@ function css(){ if(document.getElementById("gfCss")) return; var s=document.crea
   +".gfn{display:block;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);padding:9px 2px;cursor:pointer;font-size:14.5px}.gfn .h{display:flex;align-items:center;gap:6px}.gfn .h b{flex:1}.gfn .h i{font-style:normal;color:var(--sub);font-size:12.5px;white-space:nowrap}"
   +".gfn .ko{color:var(--sub);font-size:12.5px;margin:1px 0 0 26px}.gfn .d{color:var(--sub);font-size:12.5px;margin:2px 0 0 26px;line-height:1.45}.gfn .st{color:#e8590c}.gfn .go{color:#1a73e8;font-weight:800;font-size:13px}"
   +".gfnr{display:inline-block;min-width:20px;height:20px;line-height:20px;border-radius:50%;background:#1971c2;color:#fff;font-size:12px;text-align:center}.gfsl{font-weight:900;font-size:13px;color:var(--sub);margin:8px 2px 0}"
-  +".gflh{font-weight:900;font-size:15px;margin:14px 2px 4px;color:#c2410c}.gfk.gfl{border-color:#f3c99b}";
+  +".gflh{font-weight:900;font-size:15px;margin:14px 2px 4px;color:#c2410c}.gfk.gfl{border-color:#f3c99b}"
+  // 11-08 명품 고르기 — 글자만 황금색, 제목처럼 왼쪽(사장님 「황금 네모 칸을 없애고 글자만」 「위의 다른 제목과 왼쪽 정렬」) · 로고 칸은 바탕 투명(사장님 「로고는 배경을 투명으로」) · 로고는 모두 검은색 한 가지(밝은 로고도 보이게)·다크 모드는 흰색
+  +".gflux{display:block;width:auto;margin:14px 2px 4px;padding:2px 0;border:0;background:none;text-align:left;font-size:15px;font-weight:900;letter-spacing:.2px;cursor:pointer;box-shadow:none;background-image:linear-gradient(90deg,#a8780a,#d9a520 40%,#b8860b 70%,#e0b84a);-webkit-background-clip:text;background-clip:text;color:#b8860b;-webkit-text-fill-color:transparent}"
+  +".gflxt{font-size:20px;font-weight:900;margin:12px 2px 2px;color:#a8780a}.gflxd{color:var(--sub);font-size:13.5px;line-height:1.5;margin:2px 2px 10px}"
+  +".gflcat{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 10px}.gflcat button{border:1.5px solid #c9971c;background:var(--card);color:#8a6100;border-radius:999px;padding:7px 0;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;min-width:0}.gflcat button.on{background:#c9971c;color:#fff}"
+  +".gflg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media (min-width:700px){.gflg{grid-template-columns:repeat(4,1fr)}}"
+  +".gflb{background:transparent;border:1.5px solid #e2c98a;border-radius:12px;height:86px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;padding:6px;min-width:0}"
+  +".gflb img{max-width:86%;max-height:34px;object-fit:contain}.gflb span{font-size:11.5px;color:#8a6100;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}"
+  +".gflt{font-family:Georgia,'Times New Roman',serif;font-size:14px;letter-spacing:1px;color:var(--ink);text-align:center;line-height:1.2}"
+  +".gflbig{display:flex;flex-direction:column;align-items:center;gap:8px;background:transparent;border:1.5px solid #e2c98a;border-radius:14px;padding:16px;margin:8px 0 4px}.gflbig img{max-width:60%;max-height:56px;object-fit:contain}.gflbig b{color:#8a6100}.gflimg{filter:brightness(0)}[data-theme=dark] .gflimg{filter:brightness(0) invert(1)}[data-theme=dark] .gflb span,[data-theme=dark] .gflbig b{color:#e2c98a}.gflbig .gflt{font-size:20px}";
   document.head.appendChild(s); }
 function open(){ css(); var mm=document.getElementById("mm"); if(mm) mm.hidden=true;
   var o=document.getElementById("gfBox"); if(!o){ o=document.createElement("div"); o.id="gfBox"; o.innerHTML='<div class="gfin"></div>'; o.onclick=function(e){ if(e.target===o) close(); }; document.body.appendChild(o); }
@@ -157,13 +166,15 @@ function close(){ var o=document.getElementById("gfBox"); if(o) o.remove(); docu
 function opt(kind,c,label,on){ return '<button type="button" class="gfopt'+(on?' on':'')+'" data-gf="'+kind+'" data-c="'+esc(c)+'">'+label+'</button>'; }
 function paint(){ var b=document.querySelector("#gfBox .gfin"); if(!b) return;
   var h='<div class="gftop"><b>'+MPICO("mi_gift",T("🎁 선물 고르기","🎁 Gift finder"),MIS)+'</b><button type="button" class="gfx" data-gf="x" aria-label="close">✕</button></div>';
+  if(S.lux){ b.innerHTML=luxHtml(h); return; }   // 11-08 명품 고르기
   if(!G){ b.innerHTML=h+'<div class="msg">'+T("불러오는 중…","Loading…")+'</div>'; return; }
   if(S.who) h+='<button type="button" class="gfrs" data-gf="rs">'+T("↺ 처음부터 다시","↺ Start over")+'</button>';
   h+='<div class="gfq">1. '+T("누구에게 주나요?","Who is it for?")+'</div><div class="gfopts">'+G.who.map(function(x){ return opt("w",x.c,GI(x)+esc(nm(x)),S.who===x.c); }).join("")+'</div>';
-  if(S.who) h+='<div class="gfq">2. '+T("예산은요? (1개 기준)","Budget? (per gift)")+'</div><div class="gfopts">'+G.budget.map(function(x){ return opt("b",x.c,esc(nm(x)),S.bud===x.c); }).join("")+'</div>';
+  h+='<div class="gfq">2. '+T("예산은요? (1개 기준)","Budget? (per gift)")+'</div><div class="gfopts">'+G.budget.map(function(x){ return opt("b",x.c,esc(nm(x)),S.bud===x.c); }).join("")+'</div>';   // 11-08 처음부터 보임 — 3번 명품 고르기가 1번 바로 밑에 붙지 않게
+  h+='<button type="button" class="gflux" data-gf="lux">3. '+esc(LP(LX6.t))+' ›</button>';   // 11-08 사장님 「앱에서도 명품 고르기를 3번으로」 — 글자만 황금색
   if(S.who&&S.bud){ var R=ranked();
     if(!S.bst) setTimeout(function(){ baseGo(false); },0);
-    h+='<div class="gfq">3. '+T("이런 선물을 추천해요","Our picks for you")+'</div>'+dfsHtml();
+    h+='<div class="gfq">4. '+T("이런 선물을 추천해요","Our picks for you")+'</div>'+dfsHtml();
     var LK=localKinds(); if(LK.length) h+='<div class="gflh">'+WI("local")+'</div>'+LK.map(function(k){ return '<div class="gfk gfl" data-kc="'+esc(k.c)+'"><div class="h">'+GI(k)+esc(nm(k))+'</div><div class="d">'+esc(LD(k))+'</div>'+nbHtml(k)+'</div>'; }).join("");
     h+=R.map(function(k,i){ var n=[k.note&&k.note[S.who],k.note&&k.note[S.bud]].filter(Boolean).map(function(a){ return '<div class="n">'+MPIMG("mi_g_point",MIS)+esc(t2(a))+'</div>'; }).join("");
       return '<div class="gfk" data-kc="'+esc(k.c)+'"><div class="h"><span class="gfrank">'+(i+1)+'</span>'+GI(k)+esc(nm(k))+'</div><div class="d">'+esc(LD(k))+'</div>'+n
@@ -172,6 +183,54 @@ function paint(){ var b=document.querySelector("#gfBox .gfin"); if(!b) return;
   b.innerHTML=h;
   if(S.who&&S.bud) ranked().forEach(function(k){ adsFor(k).then(function(ads){ var box=b.querySelector('.gfk[data-kc="'+k.c+'"] .gfads'); if(!box||!ads.length) return;
     box.innerHTML=ads.map(function(a,j){ return '<button type="button" class="gfs" data-gf="a" data-kc="'+esc(k.c)+'" data-j="'+j+'"><b><span class="gfad">'+T("광고","Ad")+'</span>'+esc(L()?(a.en||a.ko):a.ko)+'</b><i>'+(a.dist!=null?(a.dist<1000?a.dist+" m":(a.dist/1000).toFixed(1)+" km"):"")+'</i><span class="go">'+T("지도","Map")+' ›</span></button>'; }).join(""); box._ads=ads; }); }); }
+// ── 명품 고르기 (사장님 11-08 「황금색으로 명품 고르기를 넣어줘 · 명품 브랜드의 로고 · 어디에 매장이 있는지」 「이건 앱에서도」) ──
+//   브랜드 = data/lux.json (갤러리아·롯데·현대·신세계 백화점, 롯데·신세계·현대·신라 면세점의 해외명품·명품 시계·명품 주얼리 — 사장님 「가」) · 로고 = img/lux/ (위키미디어 공용의 공식 로고 파일)
+//   로고를 누르면 가까운 매장 = 허브 /kplace(카카오, 가까운 순) 가운데 백화점·면세점 안 매장만(사장님 「백화점 면세점에 있는 매장만 골라」) — 아울렛·회사·중고·수선·딴 업종 뺌 · 카카오라 비용 없음
+var LX=null, LXP=null, LXS={};
+function luxLoad(){ return LXP||(LXP=fetch("data/lux.json?v="+(window.NAVI_V||"")).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }).then(function(j){ LX=j; return j; },function(e){ LXP=null; throw e; })); }
+var LX6={t:["명품 고르기","Luxury Brands","高級ブランド","奢侈品牌","精品品牌","Marcas de lujo"],
+ d:["백화점·면세점에 매장이 있는 명품 브랜드예요. 로고를 누르면 가까운 매장을 알려 드려요.","Luxury brands with boutiques in Korean department stores and duty-free shops. Tap a logo to see the nearest ones.","百貨店・免税店に店舗がある高級ブランドです。ロゴを押すと近くの店舗をご案内します。","在韩国百货店和免税店设有门店的奢侈品牌。点击标志即可查看附近门店。","在韓國百貨公司和免稅店設有門市的精品品牌。點選標誌即可查看附近門市。","Marcas de lujo con tiendas en grandes almacenes y tiendas libres de impuestos de Corea. Toca un logotipo para ver las más cercanas."],
+ back:["‹ 선물 고르기","‹ Gift finder","‹ ギフト選び","‹ 选礼物","‹ 選禮物","‹ Buscador de regalos"],
+ all:["‹ 브랜드 목록","‹ All brands","‹ ブランド一覧","‹ 品牌列表","‹ 品牌列表","‹ Todas las marcas"],
+ c_all:["전체","All","すべて","全部","全部","Todas"],
+ c_fashion:["패션·가방","Fashion & bags","ファッション・バッグ","时装·箱包","時裝·包款","Moda y bolsos"],
+ c_watch:["시계","Watches","時計","腕表","腕錶","Relojes"],
+ c_jewelry:["주얼리","Jewelry","ジュエリー","珠宝","珠寶","Joyería"],
+ near:["가까운 백화점·면세점 매장","Nearest boutiques in department stores & duty-free shops","近くの百貨店・免税店の店舗","附近百货店·免税店的门店","附近百貨公司·免稅店的門市","Tiendas más cercanas en grandes almacenes y duty free"],
+ bme:["내 위치에서 가까운 순","Nearest to you","現在地から近い順","离我最近","離我最近","Más cercanas a ti"],
+ far:["60km 안에는 매장이 없어, 더 먼 곳을 보여 드려요.","No boutique within 60 km — showing ones farther away.","60km以内に店舗がないため、遠くの店舗を表示しています。","60公里内没有门店，显示较远的门店。","60公里內沒有門市，顯示較遠的門市。","No hay tiendas a menos de 60 km; te mostramos otras más lejanas."],
+ none:["가까운 백화점·면세점에서 이 브랜드 매장을 찾지 못했어요.","No boutique of this brand found in nearby department stores or duty-free shops.","近くの百貨店・免税店でこのブランドの店舗が見つかりませんでした。","附近的百货店和免税店没有找到该品牌门店。","附近的百貨公司和免稅店沒有找到該品牌門市。","No encontramos tiendas de esta marca en grandes almacenes ni duty free cercanos."]};
+function gfTop(){ var bx=document.getElementById("gfBox"); if(bx){ bx.scrollTop=0; var bi=bx.querySelector(".gfin"); if(bi) bi.scrollTop=0; } }
+function lxBrand(id){ return ((LX&&LX.brands)||[]).filter(function(x){ return x.id===id; })[0]; }
+function lxName(x){ return LANG==="ko"?x.ko:x.en; }
+function lxLogo(x){ return x.logo?'<img class="gflimg" src="img/lux/'+esc(x.logo)+'" alt="'+esc(x.en)+'" loading="lazy">':'<b class="gflt">'+esc(x.en)+'</b>'; }
+document.addEventListener("error",function(e){ var im=e.target; if(!im||im.tagName!=="IMG"||!im.classList||!im.classList.contains("gflimg")) return; var t=document.createElement("b"); t.className="gflt"; t.textContent=im.alt; im.replaceWith(t); },true);   // 로고 파일이 없으면 영문 이름 글자로
+function lxKey(x){ return x.id+"|"+LANG+"|"+S.base[0].toFixed(3)+","+S.base[1].toFixed(3); }
+var LXOK=/백화점|면세점|에비뉴엘|더\s?현대|갤러리아|명품관|헤리티지|(롯데|신세계|현대)\s?본점/, LXNO=/아울렛|코리아|본사|지사|서비스센터|수선|중고|리페어/, LXCAT=/음식|카페|제과|베이커리|숙박|부동산|여행|노래방|미용실|피부관리|이발|섬유|제조|기업|전자|음향|안경|주거|술집|스포츠|아웃도어|인쇄|침구|생활용품/;
+function lxFit(x,it){ var n=String(it.name||""), k=String(x.kq||x.ko).replace(/\s/g,""); return n.replace(/\s/g,"").indexOf(k)>=0&&LXOK.test(n)&&!LXNO.test(n)&&!LXCAT.test(String(it.cat||"")); }
+function lxLoad(x){ var key=lxKey(x); if(LXS[key]) return; LXS[key]={st:"ld"}; var b=S.base;
+  fetch(HUB+"/kplace?q="+encodeURIComponent(x.kq||x.ko)+"&near=1&ux="+b[1].toFixed(4)+"&uy="+b[0].toFixed(4)+kpL()).then(function(r){ return r.json(); }).then(function(j){ if(!j||!j.ok) throw new Error("fail"); var seen={};
+      LXS[key]={st:"ok",items:(j.items||[]).filter(function(it){ return lxFit(x,it); }).map(function(it){ var o=Object.assign({},it); o.dist=Math.round(KM(b,[+it.y,+it.x])*1000); return o; })
+        .filter(function(o){ var q=o.name+"|"+o.addr; if(seen[q]) return false; seen[q]=1; return true; }).sort(function(a,c){ return a.dist-c.dist; })}; var A=LXS[key].items, nr=A.filter(function(o){ return o.dist<=60000; });   // 60km 안만 · 없으면 먼 곳 3곳에 안내 한 줄
+      if(nr.length) LXS[key].items=nr.slice(0,10); else { LXS[key].items=A.slice(0,3); LXS[key].far=A.length?1:0; } paint(); })
+    .catch(function(){ LXS[key]={st:"err"}; paint(); }); }
+function lxStores(x){ var h='<button type="button" class="gfrs" data-gf="lxa">'+esc(LP(LX6.all))+'</button><div class="gflbig">'+lxLogo(x)+'<b>'+esc(lxName(x))+'</b></div><div class="gfq">'+esc(LP(LX6.near))+'</div>';
+  if(S.bst!=="ok"&&S.bst!=="no"){ if(!S.bst) setTimeout(function(){ baseGo(false); },0); return h+'<div class="msg">'+W("srch")+'</div>'; }
+  if(S.bst==="no") return h+'<div class="msg">'+W("loc")+'</div><div class="gfbase"><button type="button" class="gfme" data-gf="me">'+WI("useme")+'</button></div>';
+  var d=LXS[lxKey(x)]; if(!d){ lxLoad(x); d=LXS[lxKey(x)]; }
+  h+='<div class="gfbase">'+(S.src==="me"?MPICO("mi_pin",LP(LX6.bme),MIS):WI("bmap"))+(S.src!=="me"?' <button type="button" class="gfme" data-gf="me">'+WI("useme")+'</button>':'')+'</div>';
+  if(d.st==="ld") return h+'<div class="msg">'+W("srch")+'</div>';
+  if(d.st==="err") return h+'<div class="msg">'+W("err")+'</div>';
+  if(!d.items.length) return h+'<div class="msg">'+esc(LP(LX6.none))+'</div>';
+  return h+(d.far?'<div class="gfbase">'+esc(LP(LX6.far))+'</div>':'')+d.items.map(function(it,i){ var fl=L()&&it.name_en&&it.name_en!==it.name, ct=String(it.cat||"").split(">").pop().trim();
+    return '<button type="button" class="gfn" data-gf="lxs" data-j="'+i+'"><div class="h"><span class="gfnr">'+(i+1)+'</span><b>'+esc(fl?it.name_en:it.name)+'</b><i>'+kmT(it.dist)+'</i></div>'+(fl?'<div class="ko">'+esc(it.name)+'</div>':'')
+      +'<div class="d">'+esc((L()&&it.addr_en)||it.addr||"")+(ct&&!L()?' · '+esc(ct):'')+'</div><div class="d"><span class="go">'+W("map")+' ›</span></div></button>'; }).join(""); }
+function luxHtml(h){ h+='<button type="button" class="gfrs" data-gf="lxb">'+esc(LP(LX6.back))+'</button><div class="gflxt">'+esc(LP(LX6.t))+'</div>';
+  if(!LX){ luxLoad().then(paint,function(){}); return h+'<div class="msg">'+W("srch")+'</div>'; }
+  if(S.lb){ var x=lxBrand(S.lb); if(x) return h+lxStores(x); S.lb=""; }
+  var c0=S.lc||"all", B=(LX.brands||[]).filter(function(x){ return c0==="all"||x.cat===c0; }).slice().sort(function(a,c){ return String(a.en).toUpperCase().localeCompare(String(c.en).toUpperCase()); });
+  return h+'<div class="gflxd">'+esc(LP(LX6.d))+'</div><div class="gflcat">'+["all","fashion","watch","jewelry"].map(function(c){ return '<button type="button" data-gf="lxc" data-c="'+c+'" class="'+(c0===c?'on':'')+'">'+esc(LP(LX6["c_"+c]))+'</button>'; }).join("")+'</div>'
+    +'<div class="gflg">'+B.map(function(x){ return '<button type="button" class="gflb" data-gf="lx" data-id="'+esc(x.id)+'">'+lxLogo(x)+'<span>'+esc(lxName(x))+'</span></button>'; }).join("")+'</div>'; }
 // 면세점은 목록 대신 검색으로 (사장님 10-16) — 기존 검색 흐름(go) 그대로, 결과를 누르면 검색 핀
 function dfsHtml(){ return '<div class="gfdfs"><button type="button" class="gfdb" data-gf="dfs">'+MPICO("mi_search",T("🔎 면세점","🔎 Duty-free shops"),MIS)+'</button></div>'; }
 function dfsGo(){ close(); var q=document.getElementById("q"); if(q){ q.value=T("면세점","duty free"); try{ qxSync(); }catch(e){} } try{ ntap("_dfs","gift"); }catch(e){}
@@ -196,6 +255,13 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   if(g==="x") return close();
   if(g==="dfs") return dfsGo();
   if(g==="rs"){ S.who=""; S.bud=""; OPEN={}; paint(); var bx=document.getElementById("gfBox"); if(bx){ bx.scrollTop=0; var bi=bx.querySelector(".gfin"); if(bi) bi.scrollTop=0; } return; }
+  if(g==="lux"){ S.lux=1; S.lb=""; try{ ntap("_lux","gift"); }catch(z){} paint(); gfTop(); return; }
+  if(g==="lxb"){ S.lux=0; S.lb=""; paint(); gfTop(); return; }
+  if(g==="lxc"){ S.lc=t.dataset.c; paint(); return; }
+  if(g==="lx"){ S.lb=t.dataset.id; try{ ntap("lux_"+S.lb,"gift"); }catch(z){} paint(); gfTop(); return; }
+  if(g==="lxa"){ S.lb=""; paint(); gfTop(); return; }
+  if(g==="lxs"){ var xb=lxBrand(S.lb), dd=xb&&S.base&&LXS[lxKey(xb)], it=dd&&dd.items&&dd.items[+t.dataset.j]; if(!it) return; close(); var fl=L()&&it.name_en&&it.name_en!==it.name;
+    spinShow({name:it.name,name_en:fl?it.name_en:it.name,addr:it.addr||"",addr_en:fl?(it.addr_en||it.addr||""):(it.addr||""),y:it.y,x:it.x,tel:it.tel||"",cat:it.cat||"",cat_en:it.cat_en||"",_l:fl?LANG:"ko"}); return; }
   if(g==="w"){ S.who=t.dataset.c; S.bud=S.bud||""; paint(); return; }
   if(g==="b"){ S.bud=t.dataset.c; paint(); var q=document.querySelectorAll("#gfBox .gfq"); if(q[2]) q[2].scrollIntoView({behavior:"smooth",block:"start"}); return; }
   if(g==="nb"){ OPEN[t.dataset.kc]=1; paint(); return; }
