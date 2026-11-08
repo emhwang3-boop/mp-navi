@@ -1,0 +1,38 @@
+/* MosaicTrip.com 홈페이지 — 「고객 게시판」 (home/pc_board.js · 11-09)
+ *  · 틀: 맨 윗줄은 다른 화면과 같은 꼴(pc_near.css .pn-hd) · 가운데 목록·글 + 오른쪽 360 이용 안내
+ *  · 목록·글·글쓰기 모양은 board.js(.mtb-*) — 여기서는 홈페이지 색(--ph-green)·크기만 맞춘다
+ *  · 색: 초록 var(--ph-green) · 보조 노랑 var(--ph-yel) · 빨강은 삭제에만 (투어앱 규칙서 4장)
+ */
+#pcPage .bd3{max-width:1400px;margin:0 auto;padding:24px 24px 40px;box-sizing:border-box;color:var(--ink)}
+#pcPage .bd3 button{font-family:inherit}
+#pcPage .bd-g{display:grid;grid-template-columns:minmax(0,1fr) 360px;column-gap:20px;align-items:start}
+#pcPage .bd-main{min-width:0}
+#pcPage .bd-side{position:sticky;top:16px;border:1px solid var(--line);border-radius:18px;background:var(--card);padding:16px 18px}
+#pcPage .bd-side h2{margin:0 0 8px;font-size:16px;font-weight:800}
+#pcPage .bd-side ul{margin:0;padding:0 0 0 18px;color:var(--sub);font-size:13.5px;line-height:1.6}
+#pcPage .bd-side li+li{margin-top:6px}
+#pcPage .bd-side li::marker{color:var(--ph-yel)}
+/* 목록·글 — 홈페이지는 글자를 조금 크게 */
+#pcPage .bd-main .mtb-it{padding:14px 18px;margin-bottom:12px}
+#pcPage .bd-main .mtb-it:hover{border-color:var(--ph-green);background:var(--ph-gt)}
+#pcPage .bd-main .mtb-ih b{font-size:16px}
+#pcPage .bd-main .mtb-pv{font-size:15px}
+#pcPage .bd-main .mtb-card{padding:20px 24px}
+#pcPage .bd-main .mtb-card .mtb-bd{font-size:16px}
+#pcPage .bd-main .mtb-f{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:20px 24px}
+#pcPage .bd-main .mtb-f h3{font-size:20px}
+#pcPage .bd-main .mtb textarea{min-height:200px}
+#pcPage .bd-main .mtb-tb .mtb-n{font-size:14.5px}
+@media (max-width:1000px){
+  #pcPage .bd-g{grid-template-columns:minmax(0,1fr);row-gap:16px}
+  #pcPage .bd-side{position:static}
+}
+@media (max-width:640px){
+  #pcPage .bd3{padding:14px 12px 28px}
+  #pcPage .bd-main .mtb-it{padding:12px 14px}
+  #pcPage .bd-main .mtb-card{padding:14px 15px}
+  #pcPage .bd-main .mtb-f{padding:14px 15px}
+  #pcPage .bd-main .mtb-f h3{font-size:18px}
+  #pcPage .bd-main .mtb textarea{min-height:160px}
+  #pcPage .bd-side{padding:12px 14px}
+}
