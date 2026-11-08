@@ -11,7 +11,11 @@
 (function(){
 "use strict";
 var KINDS={
-  am:{e:"amenity", t:["🏪 편의시설","🏪 Convenience"], tabs:[{c:"CS2",ko:"편의점",en:"Convenience store",i:"🏪",r:1000},{c:"FD6",g:1,ko:"음식점",en:"Restaurant",i:"🍽",r:1500},{c:"FX",ko:"환전소",en:"Currency Exchange",i:"",r:2000},{c:"EMB",ko:"대사관",en:"Embassies",i:"",fixed:1}]},   // 편의시설은 풀다운 하나 (10-16) · 마트 → 음식점(구글, 별점) (사장님 10-21) · 환전소 = 허브 키워드 검색, 은행 뺌 · 여행사(구글 /gnear?type=travel_agency, 별점, 3→10→30km) — 계획 없이 온 손님이 근처 가이드 투어 찾기 (사장님 10-22)
+  // 11-08 사장님 「편의시설 안에 있는 메뉴들을 다 꺼내서 메뉴에서 보여주고 편의시설은 그냥 편의점만」 — 편의점(am)·음식점(fd)·환전소(fx)·대사관(eb) 따로 · 칸 내용은 예전 그대로(누름 집계 e 도 amenity 그대로)
+  am:{e:"amenity", t:["🏪 편의점","🏪 Convenience store"], tabs:[{c:"CS2",ko:"편의점",en:"Convenience store",i:"🏪",r:1000}]},
+  fd:{e:"amenity", t:["🍽 음식점","🍽 Restaurants"], tabs:[{c:"FD6",g:1,ko:"음식점",en:"Restaurant",i:"🍽",r:1500}]},
+  fx:{e:"amenity", t:["환전소","Currency exchange"], tabs:[{c:"FX",ko:"환전소",en:"Currency Exchange",i:"",r:2000}]},
+  eb:{e:"amenity", t:["대사관","Embassies"], tabs:[{c:"EMB",ko:"대사관",en:"Embassies",i:"",fixed:1}]},   // 편의시설은 풀다운 하나 (10-16) · 마트 → 음식점(구글, 별점) (사장님 10-21) · 환전소 = 허브 키워드 검색, 은행 뺌 · 여행사(구글 /gnear?type=travel_agency, 별점, 3→10→30km) — 계획 없이 온 손님이 근처 가이드 투어 찾기 (사장님 10-22)
   // 투어 가이드 (사장님 10-23) — 맨 앞 칩. Klook·GetYourGuide 링크만 (근처 여행사 목록은 아웃바운드라 뺌)
   tg:{e:"tour", t:["🧭 투어 가이드","🧭 Tour guide"], tabs:[{c:"TA",ko:"투어",en:"Tour",i:"🧭"}]},
   em:{e:"emergency", t:["🚑 긴급","🚑 Emergency"], tabs:[{c:"HP8",ko:"병원",en:"Hospital",i:"🏥",r:2000},{c:"PM9",ko:"약국",en:"Pharmacy",i:"💊",r:2000}]},
@@ -23,8 +27,10 @@ var KINDS={
 // 칩 글자 (아이콘 없이, 사장님 10-16) · ⋮ 메뉴 글자
 var CHIP={tg:["투어 가이드","Tour guide"],am:["편의시설","Convenience"],em:["긴급","Emergency"],st:["숙소","Stay"]};
 var MENU={tg:["투어 가이드","Tour guide"],am:["🏪 편의시설 (편의점·음식점·환전소·대사관)","🏪 Convenience (stores · restaurants · exchange · embassies)"],em:["🚑 긴급 (병원·약국)","🚑 Emergency (hospital · pharmacy)"],st:["🏨 숙소 (호텔·모텔·게스트하우스·한옥)","🏨 Stay (hotel · motel · guesthouse · hanok)"]};
-var MENU_ICON={tg:"mi_guide",am:"mi_amenity",em:"mi_emergency",st:"mi_stay"};   // ⋮ 메뉴 라벨 앞 그림 아이콘 (후보3, 사장님 10-23)
-function miLbl(k){ var lbl=k==="tg"?LG6(TOURS6):T(MENU[k][0],MENU[k][1]).replace(/^[\u{1F000}-\u{1FAFF}☀-➿⬀-⯿️]+\s*/u,""); return '<img class="miic" src="img/menu/'+MENU_ICON[k]+'.png" alt="">'+esc(lbl); }
+var MENU_ICON={tg:"mi_guide",am:"mi_amenity",fd:"mi_food",fx:"mi_exchange",eb:"mi_embassy",em:"mi_emergency",st:"mi_stay"};   // 11-08 환전소·대사관 그림 = 나노바나나(메뉴 아이콘 후보 3 그림체)
+// 11-08 ⋮ 메뉴·창 제목 6개 언어 (편의점·음식점·환전소·대사관)
+var MENU6={am:{ko:"편의점",en:"Convenience stores",ja:"コンビニ",zhs:"便利店",zht:"便利商店",es:"Tiendas de conveniencia"},fd:{ko:"음식점",en:"Restaurants",ja:"飲食店",zhs:"餐厅",zht:"餐廳",es:"Restaurantes"},fx:{ko:"환전소",en:"Currency exchange",ja:"両替所",zhs:"货币兑换",zht:"貨幣兌換",es:"Casas de cambio"},eb:{ko:"대사관",en:"Embassies",ja:"大使館",zhs:"大使馆",zht:"大使館",es:"Embajadas"}};   // ⋮ 메뉴 라벨 앞 그림 아이콘 (후보3, 사장님 10-23)
+function miLbl(k){ var lbl=k==="tg"?LG6(TOURS6):MENU6[k]?LG6(MENU6[k]):T(MENU[k][0],MENU[k][1]).replace(/^[\u{1F000}-\u{1FAFF}☀-➿⬀-⯿️]+\s*/u,""); return '<img class="miic" src="img/menu/'+MENU_ICON[k]+'.png" alt="">'+esc(lbl); }
 // 대사관 (사장님 10-16) — 고정 목록 37곳(G20·동남아·고용허가제 송출국). 나라 영문 이름 알파벳 순(거리로 줄 세우지 않음)
 //  이름·주소·전화: 외교부 「주한공관주소록」 국문·영문판(mofa.go.kr inKoEmblgbdAdres, 2026-10-16 읽음) · 전화는 첫 번호만
 //  좌표: 허브 /kplace 카카오 「<나라> 대사관」 자리(전화 또는 외교부 주소 검색 자리와 맞춘 것). 몽골은 카카오 자리와 외교부 주소가 580m 어긋나 좌표 비움(주소로 지도 검색)
@@ -797,11 +803,11 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
   if(S.k==="ig"){ b.className="nrin"; igRender(b); return; }   // 통역·길안내 판 (10-24) — 가이드 등록·매칭
   var k=KINDS[S.k], em=S.k==="em";
   b.className="nrin"+(em?" nrem":"")+(S.k==="st"?" nrst":"");
-  var h='<div class="nrtop"><b>'+MPICO(MENU_ICON[S.k],S.k==="tg"?LG6(TOURS6):T(k.t[0],k.t[1]),MIS)+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
+  var h='<div class="nrtop"><b>'+MPICO(MENU_ICON[S.k],S.k==="tg"?LG6(TOURS6):MENU6[S.k]?LG6(MENU6[S.k]):T(k.t[0],k.t[1]),MIS)+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
   if(em) h+=sos();
-  if(S.k==="am") h+='<select class="nrsel" id="nrSel" aria-label="'+T("종류","Type")+'">'+k.tabs.map(function(t,i){ return '<option value="'+i+'"'+(i===S.tab?' selected':'')+'>'+esc(T(t.ko,t.en))+'</option>'; }).join("")+'</select>';   // 편의시설 = 풀다운 (사장님 10-16, 이모지 없이)
+  if(S.k==="am"&&k.tabs.length>1) h+='<select class="nrsel" id="nrSel" aria-label="'+T("종류","Type")+'">'+k.tabs.map(function(t,i){ return '<option value="'+i+'"'+(i===S.tab?' selected':'')+'>'+esc(T(t.ko,t.en))+'</option>'; }).join("")+'</select>';   // 편의시설 = 풀다운 (사장님 10-16, 이모지 없이)
   else if(S.k==="tg"){ b.innerHTML=h+tgHtml(); return; }   // 투어 가이드 — Klook·GetYourGuide 두 칸, 그 아래 설명 세 줄 (사장님 10-23)
-  else h+='<div class="nrtabs">'+k.tabs.map(function(t,i){ return '<button type="button" class="nrtab'+(i===S.tab?' on':'')+'" data-nr="tab" data-i="'+i+'">'+MPICO(({"🏥":"mi_emergency","💊":"mi_pharmacy","🏨":"mi_stay","🛏":"mi_motel","🎒":"mi_guesthouse","🏯":"mi_hanok"})[t.i]||"",T(t.ko,t.en),MIS)+'</button>'; }).join("")+'</div>';
+  else if(k.tabs.length>1) h+='<div class="nrtabs">'+k.tabs.map(function(t,i){ return '<button type="button" class="nrtab'+(i===S.tab?' on':'')+'" data-nr="tab" data-i="'+i+'">'+MPICO(({"🏥":"mi_emergency","💊":"mi_pharmacy","🏨":"mi_stay","🛏":"mi_motel","🎒":"mi_guesthouse","🏯":"mi_hanok"})[t.i]||"",T(t.ko,t.en),MIS)+'</button>'; }).join("")+'</div>';
   if(S.err==="loc") h+='<div class="msg">'+T("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요. 또는 지도를 보고 싶은 동네로 옮긴 뒤 다시 눌러 주세요.","Could not get your location — please allow location access, or move the map to the area you want and try again.")+'</div><div class="nrbase"><button type="button" class="nrme" data-nr="me">'+MPICO("mi_pin",T("내 위치 다시 받기","Try my location again"),MIS)+'</button></div>';
   else if(S.err) h+='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>';
   else if(k.tabs[S.tab].fixed&&S.items) h+='<div class="nrbase">'+(embL()?TE("Sorted by country name (local order)"):T("나라 영문 이름 순","Sorted by country name (A–Z)"))+'</div>'+S.items.map(embHtml).join("");
@@ -863,7 +869,7 @@ document.addEventListener("change",function(e){ if(e.target&&e.target.id==="nrSe
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("[data-nr]"); if(!t||!t.closest("#nrBox,#gfchips,#mm")) return;
   if(e.target.closest("a[href^='tel:']")) return;   // 전화는 그대로 건다
   e.preventDefault(); var g=t.dataset.nr;
-  if(g==="tg"||g==="am"||g==="em"||g==="st"||g==="ig") return open(g);
+  if(g==="tg"||g==="am"||g==="fd"||g==="fx"||g==="eb"||g==="em"||g==="st"||g==="ig") return open(g);
   if(g==="x") return close();
   if(g==="tab"){ S.tab=+t.dataset.i; load(); return; }
   if(g==="ord"){ S.ord=t.dataset.o==="r"?"r":"d"; var kt=KINDS[S.k].tabs[S.tab]; if(S.raw){ S.items=sortIt(S.raw.slice(),kt).slice(0,10); S.byL={}; S.byL[LANG]=S.items; } paint(); return; }
@@ -880,7 +886,7 @@ function entries(){ css(); var box=document.getElementById("gfchips");
   /* 편의시설(am) 칩은 뺌 — ⋮ 메뉴에만 (그 자리에 「AI와 일정짜기」, reco.js · 사장님 11-05) */
   ["ig","tg","em","st"].forEach(function(k){ var c=box.querySelector('.nrchip[data-nr="'+k+'"]'); if(!c){ box.insertAdjacentHTML("beforeend",'<button type="button" class="nrchip'+(k!=="am"?' '+k:'')+'" data-nr="'+k+'"></button>'); c=box.querySelector('.nrchip[data-nr="'+k+'"]'); }
     if(k==="ig"){ var l2=IG_CHIP2[window.LANG]||IG_CHIP2.en; c.innerHTML=esc(l2[0])+"<br>"+esc(l2[1]); c.setAttribute("aria-label",LG6(IG_CHIP6)); } else c.textContent=k==="tg"?LG6(TOURS6):T(CHIP[k][0],CHIP[k][1]); });   // 「가이드인솔 / 자유여행」 두 줄 — 같은 줄 「패키지여행」 칩은 격자(grid) 늘이기로 높이가 같다
-  var mm=document.getElementById("mm"); if(mm) ["am","em","st"].forEach(function(k){   /* 11-06 사장님 ⋮ 메뉴에서 「Group Tour(패키지여행)」·「Travel with Guide(가이드인솔 자유여행)」 삭제 — 첫 화면 칩에 있음 */ var id="mnear_"+k, a=document.getElementById(id);
+  var mm=document.getElementById("mm"); if(mm) ["am","fd","fx","eb","em","st"].forEach(function(k){   /* 11-06 사장님 ⋮ 메뉴에서 「Group Tour(패키지여행)」·「Travel with Guide(가이드인솔 자유여행)」 삭제 — 첫 화면 칩에 있음 */ var id="mnear_"+k, a=document.getElementById(id);
     if(!a){ a=document.createElement("a"); a.id=id; a.href="#"; a.className="mi"; a.dataset.nr=k; var r=document.getElementById("mref"); mm.insertBefore(a,r||null); }
     a.innerHTML=k==="ig"?'<img class="miic" src="img/menu/mi_guideperson.png" alt="">'+esc(LG6(IG_CHIP6)):miLbl(k); }); }
 var f=window.setLang; if(typeof f==="function"&&!f._nr){ var g=function(){ var r=f.apply(this,arguments); try{ entries(); if(document.getElementById("nrBox")) relang(); var bk=document.getElementById("nrBk"); if(bk&&BK) bookOpen(); }catch(e){} return r; }; g._nr=1; g._gf=f._gf; g._tr=f._tr; window.setLang=g; }   // 열린 목록·예약 창은 그 자리에서 (10-18)
