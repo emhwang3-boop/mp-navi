@@ -707,13 +707,18 @@ function bkMine(){ var a=bkAll(), s=bkSess(); if(!s||s!==BKSRV_S||!BKSRV.length)
   BKSRV.forEach(function(x){ m[x.oid]=x; }); a.forEach(function(x){ var y=m[x.oid]; out.push(y?Object.assign({},x,y,{tk:x.tk||y.tk}):x); delete m[x.oid]; });
   BKSRV.forEach(function(x){ if(m[x.oid]) out.push(x); }); return out; }
 function bkSrvEv(){ try{ document.dispatchEvent(new CustomEvent("mpbk")); }catch(e){} if(S.k==="ig"&&IG.view==="pick") paint(); }
-function bkSrv(force){ var s=bkSess(); if(!s){ if(BKSRV.length||BKSRV_S){ BKSRV=[]; BKSRV_S=""; bkSrvEv(); } return Promise.resolve(null); }
+// 11-09 사장님 「고쳐」 — 서버에서 지운 예약은 이 기기 목록(mpv_gbk_v1)에서도 지운다 (허브가 gone 으로 알려 줌 · 로그인 없이는 op alive, 1분에 한 번)
+function bkGone(g){ if(!g||!g.length) return false; var a=bkAll(), b=a.filter(function(x){ return g.indexOf(x.tk)<0; }); if(b.length===a.length) return false; bkSave(b); return true; }
+var BKALIVE_AT=0;
+function bkAlive(){ var tks=bkAll().map(function(x){ return x.tk; }).slice(0,20); if(!tks.length||Date.now()-BKALIVE_AT<60000) return; BKALIVE_AT=Date.now();
+  fetch(HUB+"/guide/mybk",{method:"POST",headers:{"Content-Type":"application/json"},cache:"no-store",body:JSON.stringify({op:"alive",tks:tks})}).then(function(r){ return r.json(); }).then(function(j){ if(j&&j.ok&&bkGone(j.gone)) bkSrvEv(); }).catch(function(){}); }
+function bkSrv(force){ var s=bkSess(); if(!s){ if(BKSRV.length||BKSRV_S){ BKSRV=[]; BKSRV_S=""; bkSrvEv(); } bkAlive(); return Promise.resolve(null); }
   if(!force&&BKSRV_P&&s===BKSRV_S&&Date.now()-BKSRV_AT<30000) return BKSRV_P;
   if(!force&&BKSRV_P&&BKSRV_P._s===s&&BKSRV_P._busy) return BKSRV_P;
   BKSRV_AT=Date.now();
   var p=fetch(HUB+"/guide/mybk",{method:"POST",headers:{"Content-Type":"application/json"},cache:"no-store",body:JSON.stringify({op:"list",sess:s,tks:bkAll().map(function(x){ return x.tk; }).slice(0,20)})}).then(function(r){ return r.json(); }).then(function(j){ p._busy=0;
     if(bkSess()!==s) return null;
-    if(j&&j.ok){ BKSRV=(j.items||[]).map(bkSrvFrom); BKSRV_S=s; bkSrvEv(); return BKSRV; }
+    if(j&&j.ok){ bkGone(j.gone); BKSRV=(j.items||[]).map(bkSrvFrom); BKSRV_S=s; bkSrvEv(); return BKSRV; }
     if(j&&j.err==="sess"){ BKSRV=[]; BKSRV_S=""; try{ localStorage.removeItem("mpv_pg_sess"); }catch(e){} try{ document.dispatchEvent(new CustomEvent("mppg")); }catch(e){} bkSrvEv(); }   // 세션이 끝남 — 다른 화면과 같게 로그아웃
     return null; }).catch(function(){ p._busy=0; return null; });
   p._s=s; p._busy=1; BKSRV_P=p; return p; }
