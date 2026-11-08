@@ -25,6 +25,7 @@ var AGN=window.AGN||T6("모자이크트립.com","MosaicTrip.com","MosaicTrip.com
 var TX={
  bk:T6("내 예약","My bookings","予約確認","我的预约","我的預約","Mis reservas"),
  lin:T6("로그인","Sign in","ログイン","登录","登入","Iniciar sesión"),
+ lout:T6("로그아웃","Sign out","ログアウト","退出登录","登出","Cerrar sesión"),   // 11-08 사장님 — 로그인돼 있을 때 (앱 로그아웃 글과 같게)
  about:T6("회사 소개","About us","会社案内","关于我们","關於我們","Sobre nosotros"),
  contact:T6("문의","Contact","お問い合わせ","联系我们","聯絡我們","Contacto"),
  nav:T6("메뉴","Menu","メニュー","菜单","選單","Menú"),
@@ -68,10 +69,11 @@ var TX={
  appp:T6("여행 중에는 앱이 편해요. 지도, 내 일정, 가이드 대화방을 폰에서 바로 열어요.","On the road, the app is easier. Open the map, your plan and your guide chat right on your phone.","旅行中はアプリが便利です。地図・日程・ガイドとのチャットをスマホですぐ開けます。","旅途中用应用更方便。在手机上直接打开地图、我的行程和向导聊天。","旅途中用應用程式更方便。在手機上直接打開地圖、我的行程和嚮導聊天。","De viaje, la app es más cómoda. Abre el mapa, tu plan y el chat con tu guía en el móvil."),
  ios:T6("App Store는 출시 후 안내","App Store: coming after launch","App Storeはリリース後にご案内","App Store 上架后另行通知","App Store 上架後另行通知","App Store: disponible tras el lanzamiento"),
  qr:T6("폰 카메라로 찍으면 앱이 열려요","Scan with your phone camera to open the app","スマホのカメラで読み取るとアプリが開きます","用手机相机扫描即可打开应用","用手機相機掃描即可打開應用程式","Escanéalo con la cámara del móvil para abrir la app"),
- ver:T6("버전","Version","バージョン","版本","版本","Versión")
+ ver:T6("버전","Version","バージョン","版本","版本","Versión"),
+ tr:T6("교통","Transport","交通","交通","交通","Transporte")   // 아랫줄 메뉴 「교통」 — 앱 교통 칩과 같은 말 (transit.js X.chip)
 };
-var NAVK=[["st","mi_stay"],["gift","mi_gift"],["am","mi_amenity"],["em","mi_emergency"],["about","mi_info"],["contact","mi_phone"]];
-function navLbl(k){ return k==="st"?T2("숙소","Stay"):k==="gift"?T2("선물 고르기","Gift finder"):k==="am"?T2("편의시설","Convenience"):k==="em"?T2("긴급","Emergency"):L6(TX[k]); }
+var NAVK=[["st","mi_stay"],["tr","mi_bus"],["gift","mi_gift"],["am","mi_amenity"],["em","mi_emergency"],["about","mi_info"],["contact","mi_phone"]];
+function navLbl(k){ return k==="tr"?L6(TX.tr):k==="st"?T2("숙소","Stay"):k==="gift"?T2("선물 고르기","Gift finder"):k==="am"?T2("편의시설","Convenience"):k==="em"?T2("긴급","Emergency"):L6(TX[k]); }
 function ttl(){ return window.LANG==="ko"?"모자이크트립.com - 대한민국":"MosaicTrip.com for Korea"; }   // 사장님 11-08 제목줄
 function homeUrl(){ return location.origin+"/home/"; }
 function img(n){ return '<img src="img/menu/'+n+'.png" alt="">'; }
@@ -117,13 +119,20 @@ function share(e){ if(e){ e.preventDefault(); e.stopPropagation(); }
   catch(x){ try{ shOpen(); }catch(y){} } }
 
 // ── 머리줄 단추 ──
-$("phIn").onclick=function(){ try{ if(window.mpPG) mpPG.open(); }catch(e){} };   // 지금은 앱 로그인 창 (구글·애플) — 이메일 인증번호 로그인 팝업은 다음 단계
+// 로그인 단추 (11-08 사장님) — 로그인돼 있으면 「로그아웃」(누르면 앱 로그아웃 mpPG.logout), 아니면 「로그인」(앱 로그인 창 구글·애플)
+function signed(){ try{ return !!localStorage.getItem("mpv_pg_sess"); }catch(e){ return false; } }
+var _inK="";
+function inPaint(force){ var b=$("phIn"); if(!b) return; var on=signed(), k=(on?1:0)+"|"+(window.LANG||""); if(!force&&k===_inK) return; _inK=k; b.textContent=L6(on?TX.lout:TX.lin); }
+$("phIn").onclick=function(){ try{ if(signed()){ if(window.mpPG&&mpPG.logout) mpPG.logout(); else localStorage.removeItem("mpv_pg_sess"); inPaint(1); } else if(window.mpPG) mpPG.open(); }catch(e){} };
+D.addEventListener("mppg",function(){ inPaint(); });   // pg.js 가 로그인·로그아웃 때 알린다
+window.addEventListener("storage",function(e){ if(!e||!e.key||e.key==="mpv_pg_sess") inPaint(); });   // 다른 탭에서 로그인·로그아웃
+setInterval(function(){ inPaint(); },2000);   // 세션이 끝나 다른 화면이 지운 경우(허브 sess 오류)도 맞춘다 — 이 PC 저장소만 읽음
 $("phLogo").onclick=function(e){ if(e.ctrlKey||e.metaKey||e.shiftKey||e.button) return; e.preventDefault(); try{ if(location.hash&&window.PCGO) PCGO(""); resetAll(); }catch(x){ window.scrollTo(0,0); } };   // 다른 화면(#/guide 등)이면 첫 화면으로 (11-08 3a)
 
 // ── 그리기 (언어를 바꾸면 다시) ──
 function paint(){ var lg=window.LANG||"ko";
   $("phTtl").textContent=ttl(); D.title=ttl();
-  $("phBk").textContent=L6(TX.bk); $("phIn").textContent=L6(TX.lin);
+  $("phBk").textContent=L6(TX.bk); inPaint(1);
   $("phNav").setAttribute("aria-label",L6(TX.nav));
   [].forEach.call($("phNav").children,function(b){ b.querySelector("span").textContent=navLbl(b.dataset.ph); });
   $("phH1").innerHTML=L6(TX.h1);
@@ -137,15 +146,16 @@ function waysPaint(){ $("phWaysT").textContent=L6(TX.ways);
 // 카드 단추 같은 크기 (사장님 11-08 「카드 단추는 같은 크기·오른쪽 맞춤」)
 function eqGo(){ var bs=[].slice.call(D.querySelectorAll("#phWaysL .ph-go")); bs.forEach(function(b){ b.style.minWidth=""; }); var w=0; bs.forEach(function(b){ w=Math.max(w,b.offsetWidth); }); if(w) bs.forEach(function(b){ b.style.minWidth=Math.ceil(w)+"px"; }); }
 
-// ── 대표 패키지 상품 — 앱 상품 자료(SHOP.items) 그대로 · 바깥 예매처 상품(공연 관람 등)은 뺀다 ──
+// ── 대표 패키지 상품 — 앱 상품 자료(SHOP.items) 그대로, 앱 목록과 같은 차례 (11-08 밤 사장님 — 공연 관람도 넣음, 1단계엔 뺐었음) ──
 var PKGLOADED=false;
-function pkgList(){ try{ return (window.SHOP&&SHOP.items?SHOP.items():[]).filter(function(p){ return p&&p.id&&!(p.real==="perf"||(p.hub&&p.link)); }); }catch(e){ return []; } }
+function pkgList(){ try{ return (window.SHOP&&SHOP.items?SHOP.items():[]).filter(function(p){ return p&&p.id; }); }catch(e){ return []; } }
 function langOf(p){ var a=(p.langs||[]).filter(function(x){ return /^(ko|en|ja|zhs|zht|es)$/.test(x); }); if(!a.length) return "";
   if(a.length>=6) return L6((p.kind||"tour")==="tour"?TX.g6:TX.l6);
   var N={ko:"한국어",en:"English",ja:"日本語",zhs:"中文(简)",zht:"中文(繁)",es:"Español"}; return a.map(function(x){ return N[x]; }).join(" · "); }
 function pkgCard(p){ var b={}; try{ b=SHOP.brief(p)||{}; }catch(e){}
   var m=/₩\s?([\d,]+)/.exec(b.from||""), pr="";
   if(m) pr=window.LANG==="ko"?'<small>'+E(L6(TX.per))+'</small><b>'+E(L6(TX.won).replace("{n}",m[1]))+'</b>':'<b>'+E(L6(TX.won).replace("{n}",m[1]))+'</b><small>'+E(L6(TX.per))+'</small>';
+  else try{ var X=SHOP.pc; if(X&&X.isExt(p)) pr='<small>'+E(X.L(X.TX.pxt))+'</small>'; }catch(e){}   // 공연 관람 등 바깥 예매처 — 「가격은 예매처에서」 (앱 카드·패키지 목록과 같은 말)
   var mt=[Lx(p.dur),langOf(p)].filter(Boolean).join(" · "), area=Lx(p.area), rv=window.rvMini?rvMini("shop:"+p.id):"";
   return '<button type="button" class="ph-pc" data-p="'+E(p.id)+'"><div class="ph-ph">'+(b.img?'<img src="'+E(b.img)+'" alt="" loading="lazy">':'')+(b.badge?'<span class="ph-st'+(b.real?' on':'')+'">'+E(b.badge)+'</span>':'')+(area?'<span class="ph-area">'+E(area)+'</span>':'')+'</div>'
    +'<div class="ph-bd"><div class="ph-nm">'+E(b.t||Lx(p.t))+'</div>'+(mt?'<div class="ph-mt">'+E(mt)+'</div>':'')+'<div class="ph-pr">'+pr+'<span class="ph-rv">'+rv+'</span></div></div></button>'; }
@@ -169,6 +179,8 @@ var NAVR={st:"stay",gift:"gift",am:"near",em:"sos"};   // 11-08 4b — 편의시
 $("phNav").addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("button[data-ph]"), r=b&&NAVR[b.dataset.ph]; if(r&&window.PCGO) PCGO(r); });
 // 회사 소개·문의 = 따로 화면 없이 화면 가운데 창 (home/pc_info.js, 11-08 4b 사장님)
 $("phNav").addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("button[data-ph]"), k=b&&b.dataset.ph; if(!window.PCINFO) return; if(k==="about") PCINFO.about(); else if(k==="contact") PCINFO.contact(); });
+// 교통 = 앱 「교통」 창(transit.js) 그대로 화면 가운데 창으로 (11-08 밤 사장님 — 출발·도착 → 모든 수단 · 모양은 home/pc.css #tkBox)
+$("phNav").addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("button[data-ph]"); if(!b||b.dataset.ph!=="tr"||!window.TRANSIT) return; try{ TRANSIT.open(); }catch(x){} });
 function navOn(){ var h=(location.hash||"").replace(/^#\/?/,"").split("/")[0]; [].forEach.call($("phNav").children,function(b){ b.classList.toggle("on",!!h&&NAVR[b.dataset.ph]===h); }); }
 window.addEventListener("hashchange",navOn); navOn();
 
