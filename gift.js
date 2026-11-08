@@ -150,12 +150,13 @@ function css(){ if(document.getElementById("gfCss")) return; var s=document.crea
   // 11-08 명품 고르기 — 글자만 황금색, 제목처럼 왼쪽(사장님 「황금 네모 칸을 없애고 글자만」 「위의 다른 제목과 왼쪽 정렬」) · 로고 칸은 바탕 투명(사장님 「로고는 배경을 투명으로」) · 로고는 모두 검은색 한 가지(밝은 로고도 보이게)·다크 모드는 흰색
   +".gflux{display:block;width:auto;margin:14px 2px 4px;padding:2px 0;border:0;background:none;text-align:left;font-size:15px;font-weight:900;letter-spacing:.2px;cursor:pointer;box-shadow:none;background-image:linear-gradient(90deg,#a8780a,#d9a520 40%,#b8860b 70%,#e0b84a);-webkit-background-clip:text;background-clip:text;color:#b8860b;-webkit-text-fill-color:transparent}"
   +".gflxt{font-size:20px;font-weight:900;margin:12px 2px 2px;color:#a8780a}.gflxd{color:var(--sub);font-size:13.5px;line-height:1.5;margin:2px 2px 10px}"
-  +".gflcat{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 10px}.gflcat button{border:1.5px solid #c9971c;background:var(--card);color:#8a6100;border-radius:999px;padding:7px 0;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;min-width:0}.gflcat button.on{background:#c9971c;color:#fff}"
+  +".gflq{margin:0 0 10px}.gflq input{width:100%;box-sizing:border-box;font:inherit;font-size:15px;color:var(--ink);background:var(--card);border:1.5px solid #c9971c;border-radius:12px;padding:10px 12px}"
+  +".gflcat{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 10px}.gflcat button{border:1.5px solid #c9971c;background:var(--card);color:#8a6100;border-radius:14px;height:46px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 4px;font-size:12.5px;font-weight:800;cursor:pointer;min-width:0;line-height:1.15;white-space:normal;word-break:keep-all;overflow-wrap:break-word}.gflcat button.on{background:#c9971c;color:#fff}.gflcat.off button.on{background:var(--card);color:#8a6100}"
   +".gflg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media (min-width:700px){.gflg{grid-template-columns:repeat(4,1fr)}}"
-  +".gflb{background:transparent;border:1.5px solid #e2c98a;border-radius:12px;height:86px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;padding:6px;min-width:0}"
-  +".gflb img{max-width:86%;max-height:34px;object-fit:contain}.gflb span{font-size:11.5px;color:#8a6100;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}"
+  +".gflb{background:transparent;border:1.5px solid #e2c98a;border-radius:12px;height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;padding:6px;min-width:0}"
+  +".gflb img{max-width:86%;max-height:34px;object-fit:contain}.gflb span{font-size:11.5px;color:#8a6100;font-weight:700;max-width:100%;text-align:center;line-height:1.15;word-break:keep-all;overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}"
   +".gflt{font-family:Georgia,'Times New Roman',serif;font-size:14px;letter-spacing:1px;color:var(--ink);text-align:center;line-height:1.2}"
-  +".gflbig{display:flex;flex-direction:column;align-items:center;gap:8px;background:transparent;border:1.5px solid #e2c98a;border-radius:14px;padding:16px;margin:8px 0 4px}.gflbig img{max-width:60%;max-height:56px;object-fit:contain}.gflbig b{color:#8a6100}.gflimg{filter:brightness(0)}[data-theme=dark] .gflimg{filter:brightness(0) invert(1)}[data-theme=dark] .gflb span,[data-theme=dark] .gflbig b{color:#e2c98a}.gflbig .gflt{font-size:20px}";
+  +".gflbig{display:flex;flex-direction:column;align-items:center;gap:8px;background:transparent;border:1.5px solid #e2c98a;border-radius:14px;padding:16px;margin:8px 0 4px}.gflbig img{max-width:60%;max-height:56px;object-fit:contain}.gflbig b{color:#8a6100}.gflcr{font-size:11px;color:var(--sub);line-height:1.5;margin:14px 2px 0}.gflcr a{color:var(--sub)}.gflimg{filter:brightness(0)}[data-theme=dark] .gflimg{filter:brightness(0) invert(1)}[data-theme=dark] .gflb span,[data-theme=dark] .gflbig b{color:#e2c98a}.gflbig .gflt{font-size:20px}";
   document.head.appendChild(s); }
 function open(){ css(); var mm=document.getElementById("mm"); if(mm) mm.hidden=true;
   var o=document.getElementById("gfBox"); if(!o){ o=document.createElement("div"); o.id="gfBox"; o.innerHTML='<div class="gfin"></div>'; o.onclick=function(e){ if(e.target===o) close(); }; document.body.appendChild(o); }
@@ -196,25 +197,42 @@ var LX6={t:["명품 고르기","Luxury Brands","高級ブランド","奢侈品�
  c_fashion:["패션·가방","Fashion & bags","ファッション・バッグ","时装·箱包","時裝·包款","Moda y bolsos"],
  c_watch:["시계","Watches","時計","腕表","腕錶","Relojes"],
  c_jewelry:["주얼리","Jewelry","ジュエリー","珠宝","珠寶","Joyería"],
+ c_beauty:["향수·화장품","Perfume & Beauty","香水・化粧品","香水·化妆品","香水·化妝品","Perfumes y belleza"],   // 11-08 사장님 「가」
+ q:["브랜드 찾기 (예: 샤넬, Chanel, シャネル, 香奈儿)","Search brands (e.g. Chanel, 샤넬, シャネル, 香奈儿)","ブランドを探す（例：シャネル、Chanel、샤넬）","搜索品牌（例：香奈儿、Chanel、샤넬）","搜尋品牌（例：香奈兒、Chanel、샤넬）","Buscar marcas (p. ej., Chanel, 샤넬, 香奈儿)"],
+ cr:["로고 출처 (위키미디어 공용)","Logo credits (Wikimedia Commons)","ロゴの出典（ウィキメディア・コモンズ）","标志来源（维基共享资源）","標誌來源（維基共享資源）","Créditos de logotipos (Wikimedia Commons)"],   // 11-08 사장님 「가」 — CC BY·CC BY-SA 로고는 출처 한 줄
+ nf:["찾는 브랜드가 없어요.","No matching brand.","該当するブランドがありません。","没有找到该品牌。","沒有找到該品牌。","No se encontró la marca."],
  near:["가까운 백화점·면세점 매장","Nearest boutiques in department stores & duty-free shops","近くの百貨店・免税店の店舗","附近百货店·免税店的门店","附近百貨公司·免稅店的門市","Tiendas más cercanas en grandes almacenes y duty free"],
  bme:["내 위치에서 가까운 순","Nearest to you","現在地から近い順","离我最近","離我最近","Más cercanas a ti"],
  far:["60km 안에는 매장이 없어, 더 먼 곳을 보여 드려요.","No boutique within 60 km — showing ones farther away.","60km以内に店舗がないため、遠くの店舗を表示しています。","60公里内没有门店，显示较远的门店。","60公里內沒有門市，顯示較遠的門市。","No hay tiendas a menos de 60 km; te mostramos otras más lejanas."],
  none:["가까운 백화점·면세점에서 이 브랜드 매장을 찾지 못했어요.","No boutique of this brand found in nearby department stores or duty-free shops.","近くの百貨店・免税店でこのブランドの店舗が見つかりませんでした。","附近的百货店和免税店没有找到该品牌门店。","附近的百貨公司和免稅店沒有找到該品牌門市。","No encontramos tiendas de esta marca en grandes almacenes ni duty free cercanos."]};
 function gfTop(){ var bx=document.getElementById("gfBox"); if(bx){ bx.scrollTop=0; var bi=bx.querySelector(".gfin"); if(bi) bi.scrollTop=0; } }
 function lxBrand(id){ return ((LX&&LX.brands)||[]).filter(function(x){ return x.id===id; })[0]; }
-function lxName(x){ return LANG==="ko"?x.ko:x.en; }
+function lxName(x){ return LANG==="ko"?x.ko:(LANG==="ja"||LANG==="zhs"||LANG==="zht")?(x[LANG]||x.en):x.en; }
+// 11-08 사장님 「검색창을 하나 만들어서 6개 언어로 검색할 수 있게」 — 한·영·일·简·繁 이름 + 다른 표기(alt)를 화면 언어와 상관없이 다 본다 · 악센트·띄어쓰기·점 무시(Hermes = Hermès)
+function lxNorm(t){ t=String(t||"").toLowerCase(); try{ t=t.normalize("NFKD").replace(/[\u0300-\u036f]/g,""); }catch(e){} return t.replace(/[\s·・.,'’&\-_\/()（）]+/g,""); }
+function lxHit(x,q){ if(!q) return true; var sh=q.length<3&&/^[a-z0-9]+$/.test(q);   // 짧은 영문(LV·AP)은 단어 첫머리만 — Salvatore 안의 lv 로 페라가모가 걸리지 않게
+  return [x.ko,x.en,x.ja,x.zhs,x.zht,x.id].concat(x.alt||[]).some(function(v){ if(!v) return false; var w=lxNorm(v); if(!sh) return w.indexOf(q)>=0;
+    return w.indexOf(q)===0||String(v).toLowerCase().split(/[\s·・.,'’&\-_\/()（）]+/).some(function(t){ return lxNorm(t).indexOf(q)===0; }); }); }
+function lxCr1(x){ return '<a href="'+esc(x.src||"")+'" target="_blank" rel="noopener">'+esc(lxName(x))+'</a>'+(x.by?' — '+esc(x.by):'')+', '+esc(x.lic); }
+function lxCredits(){ var C=((LX&&LX.brands)||[]).filter(function(x){ return x.lic&&/CC BY/i.test(x.lic); }); if(!C.length) return "";
+  return '<div class="gflcr">'+esc(LP(LX6.cr))+': '+C.map(lxCr1).join(" · ")+'</div>'; }
+function lxGrid(){ var c0=S.lc||"all", q=lxNorm(S.lq||""), B=((LX&&LX.brands)||[]).filter(function(x){ return q?lxHit(x,q):(c0==="all"||x.cat===c0||x.cat2===c0); }).slice().sort(function(a,c){ return String(a.en).toUpperCase().localeCompare(String(c.en).toUpperCase()); });
+  if(!B.length) return '<div class="msg">'+esc(LP(LX6.nf))+'</div>';
+  return '<div class="gflg">'+B.map(function(x){ return '<button type="button" class="gflb" data-gf="lx" data-id="'+esc(x.id)+'">'+lxLogo(x)+'<span>'+esc(lxName(x))+'</span></button>'; }).join("")+'</div>'; }
+document.addEventListener("input",function(e){ var t=e.target; if(!t||t.id!=="gflQ") return; S.lq=t.value; var g=document.getElementById("gflG"); if(g) g.innerHTML=lxGrid(); var c=document.querySelector("#gfBox .gflcat"); if(c) c.classList.toggle("off",!!lxNorm(S.lq)); },true);   // 칠 때마다 바둑판만 다시(입력 칸은 그대로)
 function lxLogo(x){ return x.logo?'<img class="gflimg" src="img/lux/'+esc(x.logo)+'" alt="'+esc(x.en)+'" loading="lazy">':'<b class="gflt">'+esc(x.en)+'</b>'; }
 document.addEventListener("error",function(e){ var im=e.target; if(!im||im.tagName!=="IMG"||!im.classList||!im.classList.contains("gflimg")) return; var t=document.createElement("b"); t.className="gflt"; t.textContent=im.alt; im.replaceWith(t); },true);   // 로고 파일이 없으면 영문 이름 글자로
 function lxKey(x){ return x.id+"|"+LANG+"|"+S.base[0].toFixed(3)+","+S.base[1].toFixed(3); }
 var LXOK=/백화점|면세점|에비뉴엘|더\s?현대|갤러리아|명품관|헤리티지|(롯데|신세계|현대)\s?본점/, LXNO=/아울렛|코리아|본사|지사|서비스센터|수선|중고|리페어/, LXCAT=/음식|카페|제과|베이커리|숙박|부동산|여행|노래방|미용실|피부관리|이발|섬유|제조|기업|전자|음향|안경|주거|술집|스포츠|아웃도어|인쇄|침구|생활용품/;
-function lxFit(x,it){ var n=String(it.name||""), k=String(x.kq||x.ko).replace(/\s/g,""); return n.replace(/\s/g,"").indexOf(k)>=0&&LXOK.test(n)&&!LXNO.test(n)&&!LXCAT.test(String(it.cat||"")); }
+function lxFit(x,it){ var n=String(it.name||""), c=n.replace(/\s/g,"").toLowerCase(), ks=[x.ko,x.en].concat(x.alt||[]).map(function(v){ return String(v||"").replace(/\s/g,"").toLowerCase(); }).filter(function(v){ return v.length>=2||/[가-힣]/.test(v); });   // 11-08 매장 이름은 브랜드 이름(한·영·다른 표기)으로 맞춤 — 검색어(kq)는 「맥 화장품」처럼 넓게 둬도 됨
+  return ks.some(function(k){ return c.indexOf(k)>=0; })&&LXOK.test(n)&&!LXNO.test(n)&&!LXCAT.test(String(it.cat||"")); }
 function lxLoad(x){ var key=lxKey(x); if(LXS[key]) return; LXS[key]={st:"ld"}; var b=S.base;
   fetch(HUB+"/kplace?q="+encodeURIComponent(x.kq||x.ko)+"&near=1&ux="+b[1].toFixed(4)+"&uy="+b[0].toFixed(4)+kpL()).then(function(r){ return r.json(); }).then(function(j){ if(!j||!j.ok) throw new Error("fail"); var seen={};
       LXS[key]={st:"ok",items:(j.items||[]).filter(function(it){ return lxFit(x,it); }).map(function(it){ var o=Object.assign({},it); o.dist=Math.round(KM(b,[+it.y,+it.x])*1000); return o; })
         .filter(function(o){ var q=o.name+"|"+o.addr; if(seen[q]) return false; seen[q]=1; return true; }).sort(function(a,c){ return a.dist-c.dist; })}; var A=LXS[key].items, nr=A.filter(function(o){ return o.dist<=60000; });   // 60km 안만 · 없으면 먼 곳 3곳에 안내 한 줄
       if(nr.length) LXS[key].items=nr.slice(0,10); else { LXS[key].items=A.slice(0,3); LXS[key].far=A.length?1:0; } paint(); })
     .catch(function(){ LXS[key]={st:"err"}; paint(); }); }
-function lxStores(x){ var h='<button type="button" class="gfrs" data-gf="lxa">'+esc(LP(LX6.all))+'</button><div class="gflbig">'+lxLogo(x)+'<b>'+esc(lxName(x))+'</b></div><div class="gfq">'+esc(LP(LX6.near))+'</div>';
+function lxStores(x){ var h='<button type="button" class="gfrs" data-gf="lxa">'+esc(LP(LX6.all))+'</button><div class="gflbig">'+lxLogo(x)+'<b>'+esc(lxName(x))+'</b>'+(x.lic&&/CC BY/i.test(x.lic)?'<div class="gflcr" style="margin:0;text-align:center">'+lxCr1(x)+'</div>':'')+'</div><div class="gfq">'+esc(LP(LX6.near))+'</div>';
   if(S.bst!=="ok"&&S.bst!=="no"){ if(!S.bst) setTimeout(function(){ baseGo(false); },0); return h+'<div class="msg">'+W("srch")+'</div>'; }
   if(S.bst==="no") return h+'<div class="msg">'+W("loc")+'</div><div class="gfbase"><button type="button" class="gfme" data-gf="me">'+WI("useme")+'</button></div>';
   var d=LXS[lxKey(x)]; if(!d){ lxLoad(x); d=LXS[lxKey(x)]; }
@@ -228,9 +246,11 @@ function lxStores(x){ var h='<button type="button" class="gfrs" data-gf="lxa">'+
 function luxHtml(h){ h+='<button type="button" class="gfrs" data-gf="lxb">'+esc(LP(LX6.back))+'</button><div class="gflxt">'+esc(LP(LX6.t))+'</div>';
   if(!LX){ luxLoad().then(paint,function(){}); return h+'<div class="msg">'+W("srch")+'</div>'; }
   if(S.lb){ var x=lxBrand(S.lb); if(x) return h+lxStores(x); S.lb=""; }
-  var c0=S.lc||"all", B=(LX.brands||[]).filter(function(x){ return c0==="all"||x.cat===c0; }).slice().sort(function(a,c){ return String(a.en).toUpperCase().localeCompare(String(c.en).toUpperCase()); });
-  return h+'<div class="gflxd">'+esc(LP(LX6.d))+'</div><div class="gflcat">'+["all","fashion","watch","jewelry"].map(function(c){ return '<button type="button" data-gf="lxc" data-c="'+c+'" class="'+(c0===c?'on':'')+'">'+esc(LP(LX6["c_"+c]))+'</button>'; }).join("")+'</div>'
-    +'<div class="gflg">'+B.map(function(x){ return '<button type="button" class="gflb" data-gf="lx" data-id="'+esc(x.id)+'">'+lxLogo(x)+'<span>'+esc(lxName(x))+'</span></button>'; }).join("")+'</div>'; }
+  var c0=S.lc||"all", cats=["all","fashion","watch","jewelry"].concat((LX.brands||[]).some(function(x){ return x.cat==="beauty"||x.cat2==="beauty"; })?["beauty"]:[]);
+  return h+'<div class="gflxd">'+esc(LP(LX6.d))+'</div>'
+    +'<div class="gflq"><input id="gflQ" type="search" enterkeyhint="search" autocomplete="off" placeholder="'+esc(LP(LX6.q))+'" value="'+esc(S.lq||"")+'"></div>'
+    +'<div class="gflcat'+(lxNorm(S.lq||"")?' off':'')+'" style="grid-template-columns:repeat('+cats.length+',1fr)">'+cats.map(function(c){ return '<button type="button" data-gf="lxc" data-c="'+c+'" class="'+(c0===c?'on':'')+'">'+esc(LP(LX6["c_"+c]))+'</button>'; }).join("")+'</div>'
+    +'<div id="gflG">'+lxGrid()+'</div>'+lxCredits(); }
 // 면세점은 목록 대신 검색으로 (사장님 10-16) — 기존 검색 흐름(go) 그대로, 결과를 누르면 검색 핀
 function dfsHtml(){ return '<div class="gfdfs"><button type="button" class="gfdb" data-gf="dfs">'+MPICO("mi_search",T("🔎 면세점","🔎 Duty-free shops"),MIS)+'</button></div>'; }
 function dfsGo(){ close(); var q=document.getElementById("q"); if(q){ q.value=T("면세점","duty free"); try{ qxSync(); }catch(e){} } try{ ntap("_dfs","gift"); }catch(e){}
@@ -257,7 +277,7 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   if(g==="rs"){ S.who=""; S.bud=""; OPEN={}; paint(); var bx=document.getElementById("gfBox"); if(bx){ bx.scrollTop=0; var bi=bx.querySelector(".gfin"); if(bi) bi.scrollTop=0; } return; }
   if(g==="lux"){ S.lux=1; S.lb=""; try{ ntap("_lux","gift"); }catch(z){} paint(); gfTop(); return; }
   if(g==="lxb"){ S.lux=0; S.lb=""; paint(); gfTop(); return; }
-  if(g==="lxc"){ S.lc=t.dataset.c; paint(); return; }
+  if(g==="lxc"){ S.lc=t.dataset.c; S.lq=""; paint(); return; }
   if(g==="lx"){ S.lb=t.dataset.id; try{ ntap("lux_"+S.lb,"gift"); }catch(z){} paint(); gfTop(); return; }
   if(g==="lxa"){ S.lb=""; paint(); gfTop(); return; }
   if(g==="lxs"){ var xb=lxBrand(S.lb), dd=xb&&S.base&&LXS[lxKey(xb)], it=dd&&dd.items&&dd.items[+t.dataset.j]; if(!it) return; close(); var fl=L()&&it.name_en&&it.name_en!==it.name;
