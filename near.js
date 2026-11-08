@@ -151,7 +151,8 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".gbrow{display:flex;gap:8px}.gbrow>div{flex:1;min-width:0}"
   +".gbpr{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:12px 0 0}.gbl{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;margin:4px 0}.gbl>span:first-child{color:var(--sub);flex:0 0 auto}.gbl>span:last-child{text-align:right;min-width:0;word-break:break-word}"
   +".gbt{display:flex;justify-content:space-between;border-top:1px dashed var(--line);margin-top:7px;padding-top:8px;font-size:18px;font-weight:900}"
-  +".gbrate{font-size:12.5px;color:var(--sub);line-height:1.5;margin:6px 2px 0}.gbx{font-size:12.5px;color:#c2410c;font-weight:700;line-height:1.5;margin:6px 2px 0}"
+  +".gbrate{font-size:12.5px;color:var(--sub);line-height:1.5;margin:6px 2px 0}.gbtbl{width:100%;border-collapse:collapse;margin:6px 0 0;font-size:12.5px;color:var(--sub);line-height:1.45}.gbtbl td{padding:3px 2px;vertical-align:top}.gbtbl tr+tr td{border-top:1px dashed var(--line)}.gbtbl td.r{text-align:right;white-space:nowrap;font-weight:800;color:var(--ink);padding-left:12px}.gbtbl td span{white-space:nowrap}"   // 요금 안내 표 (11-08 밤)
+  +".gbx{font-size:12.5px;color:#c2410c;font-weight:700;line-height:1.5;margin:6px 2px 0}"
   +".nrcx{display:flex;gap:8px;margin-top:7px;align-items:stretch}.nrcx>.nrsel{flex:1 1 auto;width:auto;margin:0}.nrcxb{border:1.5px solid #adb5bd;background:var(--card);color:var(--ink);border-radius:12px;padding:0 14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;flex:0 0 auto;min-width:84px}"   /* 결제 단추 옆 취소 (11-05) */
   +".gbcx{display:flex;gap:8px;margin-top:14px;align-items:stretch}.gbcx>.gbgo{flex:1 1 auto;width:auto;margin:0}.gbcxb{border:1.5px solid #adb5bd;background:var(--card);color:var(--ink);border-radius:12px;padding:0 14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;flex:0 0 auto;min-width:84px}"
   +".gbgo{display:block;width:100%;border:0;border-radius:12px;background:#0c8599;color:#fff;font-size:17px;font-weight:900;padding:14px;margin-top:14px;cursor:pointer}.gbgo:disabled{opacity:.5;cursor:default}.gbgo.g2{background:#efece4;color:#1d2433;font-size:15px;padding:11px;margin-top:8px}"
@@ -352,7 +353,7 @@ function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) re
 //   흐름: req(안내문·가이드·이용 시간·날짜·시작 시간·인원·요금·메모·예약자) → gconf(요약 확인) → gpay(결제창) → 「결제하기」 = 바로 확정(PG 전, 11-05 · PG 뒤엔 KG이니시스 결제창 — tpg.js, 11-07) → gdone · 「내 예약」 카드(대화방 입구)
 //   주문 = 허브 POST /shop/order {pid:"gbk", sess?} (11-05 실전: 서버가 GBK_PRICE 로 금액 계산 → pay:"none" 확정 → 가이드 메일·문자 · 손님 메일·문자 · 텔레그램 · 대화방 열림)
 //   🔴 요금 바꿀 땐 여기 GBK 와 허브 worker.js GBK_PRICE 둘 다. 숫자는 「일단 보고 고치자」 임시값
-var GBK={hr:50000, half:190000, full:360000, big:5, bigHr:10000, hMin:2, hMax:12, dMin:2, dMax:7, dayH:8, nMax:10};
+var GBK={hr:50000, half:190000, full:360000, big:5, bigHr:10000, hMin:4, hMax:12, dMin:2, dMax:7, dayH:8, nMax:10};   // hMin 2→4 (11-08 밤 사장님 「시간 직접 선택은 4시간부터」 — 요금은 그대로)
 function gbkCalc(mode,h,d,n){ var P=GBK, hb=function(x){ return x>=8?P.full+(x-8)*P.hr:x>=4?P.half+(x-4)*P.hr:x*P.hr; };
   var hours=mode==="half"?4:mode==="full"?8:mode==="days"?d*P.dayH:h, base=mode==="days"?d*P.full:hb(hours), xn=Math.max(0,n-(P.big-1)), extra=xn*P.bigHr*hours;   // 4명을 넘는 1명마다 시간당 bigHr (사장님 11-05 — 옛: 5인 이상이면 한 번만)
   return {hours:hours,base:base,xn:xn,extra:extra,total:base+extra}; }
@@ -388,6 +389,9 @@ var GBT={
   "每小時 {hr}（1～4人同價）· 半天4小時 {half} · 一天8小時 {full} · 從第{big}人起每人每小時加 {bh}",
   "{hr} por hora (igual de 1 a 4 personas) · Medio día 4 h {half} · Día completo 8 h {full} · Desde la {big}.ª persona: {bh} más por persona y hora"),
  excl:T6("가이드 교통비·입장료·식사비는 손님 부담입니다 (현장에서 직접 내 주세요).","The guide's transport, admission tickets and meals are paid by you (on the spot).","ガイドの交通費・入場料・食事代はお客様のご負担です（現地でお支払いください）。","向导的交通费、门票和餐费由游客承担（请在现场支付）。","嚮導的交通費、門票和餐費由旅客負擔（請在現場支付）。","El transporte, las entradas y las comidas del guía corren por tu cuenta (se pagan en el momento)."),
+ rt1:T6("1~{b}명 / 반일 4시간","1–{b} people / Half day, 4 h","1～{b}名 / 半日4時間","1～{b}人 / 半天4小时","1～{b}人 / 半天4小時","1–{b} personas / Medio día, 4 h"),   // 요금 안내 표 (11-08 밤 사장님) — 왼쪽 이름 · 오른쪽 금액(GBK)
+ rt2:T6("1~{b}명 / 하루 8시간","1–{b} people / Full day, 8 h","1～{b}名 / 1日8時間","1～{b}人 / 一天8小时","1～{b}人 / 一天8小時","1–{b} personas / Día completo, 8 h"),
+ rt3:T6("{big}번째 사람부터 1명 추가마다 / 한 시간","Each extra person from the {big}th / per hour","{big}人目から1名追加ごと / 1時間","从第{big}人起每加1人 / 每小时","從第{big}人起每加1人 / 每小時","Cada persona extra desde la {big}.ª / por hora"),
  xtra:T6("{big}번째부터 추가","Extra from person {big}","{big}人目から追加","第{big}人起加价","第{big}人起加價","Suplemento desde la persona {big}"),   // 11-05 — 뒤에 (₩10,000 × 8시간 × 2명)
  tot:T6("합계","Total","合計","合计","合計","Total"),
  memo:T6("가고 싶은 곳·원하는 관광 내용 (최대 500자)","Where you want to go · what you would like to do (up to 500 characters)","行きたい場所・ご希望の観光内容（500字まで）","想去的地方·希望的游览内容（最多500字）","想去的地方·希望的遊覽內容（最多500字）","Adónde quieres ir · qué te gustaría hacer (máx. 500 caracteres)"),
@@ -434,8 +438,11 @@ var GBT={
 };
 function gbF(o,m){ var s=LG6(o); for(var k in m) s=s.split("{"+k+"}").join(m[k]); return s; }
 function gbWon(x){ return "₩"+Number(x||0).toLocaleString("ko-KR"); }
+// 요금 안내 표 (11-08 밤 사장님) — 앱 가이드 예약 칸·홈페이지 #/guide 「요금 안내」가 같이 씀 · 기본 요금엔 「한 시간」 줄 없음
+function gbRateTbl(){ var r=function(t,v){ var i=t.lastIndexOf(" / "); return '<tr><td>'+(i>0?esc(t.slice(0,i))+' <span>'+esc(t.slice(i+1))+'</span>':esc(t))+'</td><td class="r">'+gbWon(v)+'</td></tr>'; };   // 「/ 한 시간」은 한 덩어리로 (좁은 칸에서 「한」·「시간」이 갈라지지 않게)
+  return '<table class="gbtbl">'+r(gbF(GBT.rt1,{b:GBK.big-1}),GBK.half)+r(gbF(GBT.rt2,{b:GBK.big-1}),GBK.full)+r(gbF(GBT.rt3,{big:GBK.big}),GBK.bigHr)+'</table>'; }
 function gbDay(add){ return new Date(Date.now()+9*3600e3+add*864e5).toISOString().slice(0,10); }
-function gbInit(){ var o=IG.bk||{}; IG.bk={mode:o.mode||"half",h:o.h||3,d:o.d||2,date:(o.date&&o.date>=gbDay(1))?o.date:gbDay(3),time:o.time||"09:00",n:o.n||2,memo:o.memo||"",cn:o.cn||"",ce:o.ce||"",cp:o.cp||"",pm:"card",err:""}; }
+function gbInit(){ var o=IG.bk||{}; IG.bk={mode:o.mode||"half",h:Math.max(GBK.hMin,o.h||GBK.hMin),d:o.d||2,date:(o.date&&o.date>=gbDay(1))?o.date:gbDay(3),time:o.time||"09:00",n:o.n||2,memo:o.memo||"",cn:o.cn||"",ce:o.ce||"",cp:o.cp||"",pm:"card",err:""}; }
 function gbPpl(n){ return n===1?({ko:"1명",en:"1 person",ja:"1名",zhs:"1人",zht:"1人",es:"1 persona"}[LANG]||"1 person"):gbF(T6("{n}명","{n} people","{n}名","{n}人","{n}人","{n} personas"),{n:n}); }   // 추가 인원 (11-05)
 function gbCalcNow(){ var k=IG.bk; return gbkCalc(k.mode,k.mode==="hours"?k.h:0,k.mode==="days"?k.d:0,k.n); }
 function gbModeTxt(k){ return k.mode==="hours"?gbF(GBT.hN,{n:k.h}):k.mode==="days"?gbF(GBT.dN,{n:k.d}):LG6(GBT[k.mode]); }
@@ -459,7 +466,7 @@ function gbForm(g){ var k=IG.bk, L=LG6, mn=gbDay(1), mx=gbDay(365), opt=function
     +'<div class="gbrow"><div><label class="iglb">'+esc(L(GBT.tm))+'</label><select class="igin" id="gbTm">'+tms.map(function(x){ return '<option'+(x===k.time?" selected":"")+'>'+x+'</option>'; }).join("")+'</select></div>'
     +'<div><label class="iglb">'+esc(L(GBT.ppl))+'</label><select class="igin" id="gbN">'+opt(1,GBK.nMax,k.n,function(i){ return gbF(GBT.pN,{n:i}); })+'</select></div></div>'
     +'<label class="iglb">'+esc(L(GBT.fee))+'</label><div class="gbpr" style="margin-top:0" id="gbPr">'+gbPriceBox()+'</div>'
-    +'<div class="gbrate">'+esc(gbF(GBT.rate,{hr:gbWon(GBK.hr),half:gbWon(GBK.half),full:gbWon(GBK.full),big:GBK.big,bh:gbWon(GBK.bigHr)}))+'</div>'
+    +gbRateTbl()
     +'<div class="gbx">'+esc(L(GBT.excl))+'</div>'
     +'<label class="iglb">'+esc(L(GBT.memo))+'</label><textarea class="igin" id="gbMemo" maxlength="500" style="min-height:96px" placeholder="'+esc(L(GBT.memoPh))+'">'+esc(k.memo)+'</textarea>'
     +'<div class="iglbl" style="margin-top:14px">'+esc(L(GBT.cu))+'</div>'
@@ -988,7 +995,7 @@ window.GUIDEREG=gReg;
 window.NEAR={open:open,close:close,review:openReview,gedit:openGedit,tdone:openTdone,state:function(){ return S; }};
 // PC 홈페이지(home/pc_guide.js · pc_pkg.js, 11-08) — 가이드 인솔을 PC 배치로 그릴 때 이 파일의 요금·검사·주문·확인창을 그대로 쓴다 (폰 앱은 PC_HOME 이 없어 그대로)
 //   pick = 가이드 고르기(앱 「요청하기」와 같음) · send = 앱 「보내기 및 결제」 검사(gbSend, 칸 id 같음) → 통과하면 앱 확인 창(gconf → 결제 → 확정)
-if(window.PC_HOME) window.NEARIG={GBK:GBK,GBT:GBT,LANGS:GLANG6,calc:gbkCalc,modeTxt:gbModeTxt,F:gbF,won:gbWon,day:gbDay,priceBox:gbPriceBox,grab:gbGrab,
+if(window.PC_HOME) window.NEARIG={GBK:GBK,GBT:GBT,LANGS:GLANG6,calc:gbkCalc,modeTxt:gbModeTxt,F:gbF,won:gbWon,day:gbDay,priceBox:gbPriceBox,grab:gbGrab,rateTbl:gbRateTbl,
   title:IG_CHIP6,desc:IG_DESC6,noteT:IGN_T,note:igNote,payT:PAYB6,cx:CX6,name:igName,badge:igBadge,stars:igStars,langName:igLangName,region:igRegion,years:igYears,css:css,perf:TG_PERF,tgPick:tgPick,
   photo:function(g){ return g&&g.photo?HUB+"/guide/photo?id="+encodeURIComponent(g.id):""; },
   pick:function(g,lang){ IG.lang=lang||""; IG.gobj=g; IG.gid=g.id; IG.view="req"; IG.busy=0; gbInit(); return IG.bk; },
