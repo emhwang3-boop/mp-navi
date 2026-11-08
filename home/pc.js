@@ -84,7 +84,7 @@ var root=D.createElement("div"); root.id="phRoot";
 root.innerHTML=
   '<header id="phHd"><div class="ph-hd1w"><div class="ph-in ph-hd1">'
  +  '<a class="ph-logo" id="phLogo" href="/home/"><img src="logo.png" alt=""><span id="phTtl"></span></a>'
- +  '<div class="ph-tools"><div class="ph-ics" id="phIcs"></div><div class="ph-acts"><button type="button" class="ph-tb" id="phBd"></button><button type="button" class="ph-tb" id="phBk"></button><button type="button" class="ph-tb pri" id="phIn"></button></div></div>'
+ +  '<div class="ph-tools"><div class="ph-ics" id="phIcs"></div><div class="ph-acts"><button type="button" class="ph-tb" id="phAd" hidden></button><button type="button" class="ph-tb" id="phBd"></button><button type="button" class="ph-tb" id="phBk"></button><button type="button" class="ph-tb pri" id="phIn"></button></div></div>'
  + '</div></div><nav class="ph-hd2" id="phNav">'+NAVK.map(function(x){ return '<button type="button" data-ph="'+x[0]+'">'+img(x[1])+'<span></span></button>'; }).join("")+'</nav></header>'
  +'<main id="phMain">'
  + '<section id="phHero"><img class="ph-branch" src="home/img/mugunghwa_branch.webp" alt="" aria-hidden="true"><h1 id="phH1"></h1></section>'
@@ -134,12 +134,15 @@ $("phBk").onclick=function(){ try{ if(signed()){ _bkWant=false; if(window.PCGO) 
 D.addEventListener("mppg",function(){ if(_bkWant&&signed()){ _bkWant=false; try{ if(window.PCGO) PCGO("bookings"); }catch(e){} } });
 // 「고객 게시판」 단추 (11-09 사장님 — 「내 예약」 옆) — #/board (home/pc_board.js) · 로그인 없이 누구나
 $("phBd").onclick=function(){ try{ if(window.PCGO) PCGO("board"); }catch(e){} };
+// 11-09 사장님 「가로하지」 — 관리자 단추: 사장님 기기(mp_owner, ?me=EM2410 로 연 기기)에서만 보이고, 누르면 관리자 화면(/admin/)을 새 탭으로
+$("phAd").onclick=function(){ try{ window.open(location.origin+"/admin/","_blank","noopener"); }catch(e){} };
+try{ if(localStorage.getItem("mp_owner")) $("phAd").hidden=false; }catch(e){}
 $("phLogo").onclick=function(e){ if(e.ctrlKey||e.metaKey||e.shiftKey||e.button) return; e.preventDefault(); try{ if(location.hash&&window.PCGO) PCGO(""); resetAll(); }catch(x){ window.scrollTo(0,0); } };   // 다른 화면(#/guide 등)이면 첫 화면으로 (11-08 3a)
 
 // ── 그리기 (언어를 바꾸면 다시) ──
 function paint(){ var lg=window.LANG||"ko";
   $("phTtl").textContent=ttl(); D.title=ttl();
-  $("phBk").textContent=L6(TX.bk); $("phBd").textContent=L6(TX.bd); inPaint(1);
+  $("phBk").textContent=L6(TX.bk); $("phBd").textContent=L6(TX.bd); $("phAd").textContent=L6(T6("관리자","Admin","管理者","管理员","管理員","Admin")); inPaint(1);
   $("phNav").setAttribute("aria-label",L6(TX.nav));
   [].forEach.call($("phNav").children,function(b){ b.querySelector("span").textContent=navLbl(b.dataset.ph); });
   $("phH1").innerHTML=L6(TX.h1);
