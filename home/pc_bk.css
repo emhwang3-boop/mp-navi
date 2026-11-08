@@ -1,0 +1,99 @@
+/* MosaicTrip.com 홈페이지 — 「내 예약」 (home/pc_bk.js · 11-08 · 배치도 12_내예약_배치도)
+ *  · PC 1400: 왼쪽 240 · 가운데 예약 카드 · 오른쪽 420 대화방(따라옴) · 맨 윗줄은 다른 화면과 같은 꼴(pc_near.css .pn-hd)
+ *  · 색: 초록 var(--ph-green) · 보조 노랑 var(--ph-yel) · 빨강은 안 읽은 수·취소에만 (투어앱 규칙서 4장)
+ *  · 단추: 한 줄 묶음은 같은 크기 · 카드 단추는 같은 크기 오른쪽 맞춤 (사장님 11-08)
+ */
+#phRoot .ph-tb.on{border-color:var(--ph-green);color:var(--ph-green-d);box-shadow:inset 0 -3px 0 var(--ph-yel)}
+#pcPage .bk3{max-width:1400px;margin:0 auto;padding:24px 24px 40px;box-sizing:border-box;color:var(--ink)}
+#pcPage .bk3 button{font-family:inherit}
+#pcPage .bk-hd .bk-who{margin-left:auto;font-size:14px;color:var(--sub);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#pcPage .bk-lnk{border:0;background:none;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px;font-size:14px;cursor:pointer}
+#pcPage .bk-lnk:hover{color:var(--ph-green-d)}
+/* 세 칸 */
+#pcPage .bk-g{display:grid;grid-template-columns:240px minmax(0,1fr) 420px;column-gap:20px;align-items:start}
+#pcPage .bk3.lo .bk-g{grid-template-columns:minmax(0,1fr)}
+#pcPage .bk3.lo .bk-side,#pcPage .bk3.lo .bk-r{display:none}
+#pcPage .bk-side{position:sticky;top:16px;border:1px solid var(--line);border-radius:18px;background:var(--card);padding:16px}
+#pcPage .bk-side h3{margin:0 0 8px;font-size:15px;font-weight:800}
+#pcPage .bk-side h3+.bk-ch{margin-bottom:16px}
+#pcPage .bk-ch{display:grid;gap:6px}
+#pcPage .bk-ch.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+#pcPage .bk-ch button{border:1.5px solid var(--ph-green);background:var(--card);color:var(--ph-green-d);border-radius:999px;padding:7px 2px;font-size:13px;font-weight:700;cursor:pointer;min-width:0;line-height:1.25;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pcPage .bk-ch button:hover{background:var(--ph-gt)}
+#pcPage .bk-ch button.on{background:var(--ph-green);color:#fff}
+#pcPage .bk-nt{margin:0;font-size:12.5px;color:var(--sub);line-height:1.55}
+/* 예약 카드 */
+#pcPage .bk-main{min-width:0}
+#pcPage .bk-c{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px 16px 12px;margin:0 0 12px;cursor:default}
+#pcPage .bk-c.on{border:2px solid var(--ph-green);background:var(--ph-gt);padding:13px 15px 11px}
+#pcPage .bk-c.cx{opacity:.78}
+#pcPage .bk-ct{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+#pcPage .bk-k{display:inline-block;font-size:12px;font-weight:800;border-radius:6px;padding:2px 8px;background:#e7f5ff;color:#1c4f7a}
+#pcPage .bk-k.k-pkg{background:var(--ph-yt);color:#8a6100}
+#pcPage .bk-k.k-grv{background:var(--ph-gt);color:var(--ph-green-d)}
+html[data-theme="dark"] #pcPage .bk-k{background:#1b2b3d;color:#a5d8ff}
+html[data-theme="dark"] #pcPage .bk-k.k-pkg{color:#ffd43b}
+html[data-theme="dark"] #pcPage .bk-k.k-grv{color:#8ce99a}
+#pcPage .bk-s{margin-left:auto;font-size:13px;font-weight:800;text-align:right}
+#pcPage .bk-s.s-ok{color:var(--ph-green-d)}
+#pcPage .bk-s.s-w{color:#d9480f}
+#pcPage .bk-s.s-x{color:var(--sub)}
+html[data-theme="dark"] #pcPage .bk-s.s-w{color:#ffa94d}
+#pcPage .bk-c h3{margin:0 0 4px;font-size:16.5px;font-weight:800;line-height:1.4}
+#pcPage .bk-m{font-size:13.5px;color:var(--sub);line-height:1.5}
+#pcPage .bk-bs{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;margin-top:10px}
+#pcPage .bk-bs.c{justify-content:center}
+#pcPage .bk-b,.bk-ov .bk-b{display:inline-flex;align-items:center;justify-content:center;gap:5px;box-sizing:border-box;min-height:38px;border:1.5px solid var(--ph-green);background:var(--card);color:var(--ph-green-d);border-radius:999px;padding:6px 16px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;font-family:inherit}
+#pcPage .bk-b:hover:not(:disabled),.bk-ov .bk-b:hover{background:var(--ph-gt)}
+#pcPage .bk-b.pri,.bk-ov .bk-b.pri{background:var(--ph-green);color:#fff}
+#pcPage .bk-b.pri:hover:not(:disabled),.bk-ov .bk-b.pri:hover{background:var(--ph-green-d)}
+#pcPage .bk-b:disabled{opacity:.55;cursor:default}
+#pcPage .bk-u{display:inline-block;min-width:18px;height:18px;line-height:18px;border-radius:9px;background:#fff;color:var(--ph-green-d);font-size:11.5px;font-weight:900;text-align:center;padding:0 4px;box-sizing:border-box}
+#pcPage .bk-b:not(.pri) .bk-u{background:#e03131;color:#fff}
+#pcPage .bk-foot{margin:4px 2px 0;font-size:12.5px;color:var(--sub);line-height:1.55}
+#pcPage .bk-empty{border:1px dashed var(--line);border-radius:14px;background:var(--card);padding:28px 20px;text-align:center}
+#pcPage .bk-empty p{margin:0;color:var(--sub);font-size:14.5px;line-height:1.6}
+/* 오른쪽 대화방 (chat.js CHAT.embed) */
+#pcPage .bk-r{position:sticky;top:16px;border:1px solid var(--line);border-radius:18px;background:var(--card);padding:14px;display:flex;flex-direction:column;height:min(calc(100vh - 32px),max(460px,calc(100vh - 250px)));box-sizing:border-box}   /* 처음 화면(머리 두 줄 아래)에서 입력칸까지 보이게 */
+#pcPage .bk-rh h2{margin:0;font-size:17px;font-weight:800}
+#pcPage .bk-rh p{margin:2px 0 10px;font-size:12.5px;color:var(--sub)}
+#pcPage .bk-room{flex:1;min-height:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+#pcPage .bk-room>.chemb{flex:1}
+#pcPage .bk-room .chft{padding:8px 10px}
+#pcPage .bk-room .chft button{background:var(--ph-green)}
+#pcPage .bk-room .chmsg.me .bb{background:#d3f9d8;color:#1d2433}
+#pcPage .bk-room .chmsg.me .tm{color:#5b6474}
+html[data-theme="dark"] #pcPage .bk-room .chmsg.me .bb{background:#1f3d27;color:#e9f7ec}
+html[data-theme="dark"] #pcPage .bk-room .chmsg.me .tm{color:#9fb5a5}
+#pcPage .bk-room .chgo{background:var(--ph-green)}
+#pcPage .bk-room .chgo.g2{background:var(--ph-gt);color:var(--ph-green-d)}
+#pcPage .bk-rp{margin:auto;padding:24px;text-align:center;color:var(--sub);font-size:14px;line-height:1.6}
+/* 예약 내용 — 화면 가운데 창 */
+.bk-ov{position:fixed;inset:0;z-index:1060;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}
+.bk-ov .bk-pop{background:var(--card);color:var(--ink);width:100%;max-width:480px;max-height:calc(100vh - 32px);overflow:auto;border-radius:18px;padding:18px 20px 16px;box-sizing:border-box;box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.bk-ov .bk-ph{display:flex;align-items:center;margin-bottom:8px}
+.bk-ov .bk-ph h3{margin:0;font-size:18px;font-weight:800}
+.bk-ov .bk-x{margin-left:auto;border:0;background:var(--bg,#f1f3f5);border-radius:50%;width:34px;height:34px;font-size:17px;color:var(--sub);cursor:pointer}
+.bk-ov .bk-dr{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.bk-ov .bk-dr span{color:var(--sub);flex:0 0 auto}
+.bk-ov .bk-dr b{font-weight:700;text-align:right;min-width:0;overflow-wrap:anywhere}
+.bk-ov .bk-bs{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+/* 좁은 화면 — 대화방은 앱처럼 가운데 창 */
+@media (max-width:1280px){ #pcPage .bk-g{grid-template-columns:220px minmax(0,1fr) 360px} }
+@media (max-width:1000px){
+  #pcPage .bk-g{grid-template-columns:220px minmax(0,1fr)}
+  #pcPage .bk-r{display:none}
+}
+@media (max-width:640px){
+  #pcPage .bk3{padding:14px 12px 28px}
+  #pcPage .bk-hd .bk-who{margin-left:0;flex-basis:100%;font-size:13px}
+  #pcPage .bk-g{grid-template-columns:minmax(0,1fr);row-gap:12px}
+  #pcPage .bk-side{position:static;padding:12px}
+  #pcPage .bk-side h3{margin-bottom:6px}
+  #pcPage .bk-side h3+.bk-ch{margin-bottom:10px}
+  #pcPage .bk-ch.c2.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #pcPage .bk-c{padding:12px 13px 10px}
+  #pcPage .bk-c h3{font-size:15.5px}
+  #pcPage .bk-bs{gap:6px}
+  #pcPage .bk-b{padding:6px 12px;font-size:13.5px}
+}
