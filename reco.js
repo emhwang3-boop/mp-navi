@@ -295,7 +295,8 @@ function apPop(){ var p=document.createElement("div"); p.className="trpop aippop
   p.onclick=function(e){ if(e.target===p||(e.target.closest&&e.target.closest("[data-apok]"))) p.remove(); };
   draw(); p._rb=draw; document.body.appendChild(p); }
 // 폰 뒤로가기 (index.html backClose 가 부름) — 체험·입장권 상품 화면이 위에 떠 있으면 그것만 닫고 이 화면으로
-function apBack(){ if(!apBox()) return false; if($("shopBox")){ try{ SHOP.close(); return true; }catch(e){ return false; } }
+function apBack(){ if(!apBox()) return false; if(window.PC_HOME&&apBox().getAttribute("data-pc")) return false;   // 11-08 홈페이지 — 화면 칸 안의 AI 창은 뒤로가기로 닫지 않는다(주소 #/ai 가 맡음)
+  if($("shopBox")){ try{ SHOP.close(); return true; }catch(e){ return false; } }
   if(AP.det!=null){ apToList(); return true; } apDone(); return true; }
 function apGo(q){ if(!q){ try{ $("aipQ").focus(); }catch(e){} return; }
   if(!pass()){ try{ openPricing(); }catch(e){} return; }   // 이용권 자리 — 지금은 hasPass()=true (옛 「추천받기」와 같음)
@@ -370,7 +371,7 @@ document.addEventListener("click",function(e){ var b=apBox(), t=e.target; if(!b|
   if(t.closest("a")) return;   // 전화·길찾기·구글 지도 링크는 그대로
   var k=t.closest("[data-ak]"); if(k){ e.preventDefault(); try{ SHOP.det(k.dataset.ak); }catch(x){} return; }
   var c=t.closest(".apc[data-ai]"); if(c&&AP.det==null) apDet(+c.dataset.ai); });
-window.AIPLAN={open:apOpen,back:apBack,close:apClose,state:function(){ return AP; }};
+window.AIPLAN={open:apOpen,back:apBack,close:apClose,state:function(){ return AP; },paint:function(){ if(apBox()) apPaint(); },det:function(i){ return apDetHtml(i); },list:function(){ return apList(); }};
 btn();
 window.RECO={go:recoGo,state:function(){ return R; }};
 // 첫 화면 일반 검색의 클럽 (사장님 11-06 「같은 규칙을 넣어」) — index.html go() 가 부른다. 구글 장소 목록(후기 많은 순)을 돌려준다
