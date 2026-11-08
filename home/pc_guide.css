@@ -1,0 +1,163 @@
+/* MosaicTrip.com 홈페이지 — 가이드 인솔 자유여행 화면 (home/pc_guide.js · 11-08 3a단계)
+ *  · 앞쪽 「공통」은 패키지 화면(pc_pkg.css)도 같이 쓴다 (제목 카드·ⓘ 주의 사항·칩·단추·입력칸·요금 칸)
+ *  · 색: 초록 var(--ph-green) · 보조 노랑 var(--ph-yel) · 다크는 앱 변수 그대로 (투어앱 규칙서 4장)
+ *  · 단추: 한 줄 묶음은 같은 크기 한 줄 · 카드 단추는 같은 크기 오른쪽 맞춤 (사장님 11-08)
+ */
+/* ── 공통 ── */
+/* 따라오는 칸(sticky)이 되게 — 앱 html,body{overflow-x:hidden} 은 body 를 스크롤 상자로 만들어 sticky 가 안 붙는다. PC 화면(#/…)에서만 clip 으로 (가로 넘침은 그대로 잘림) */
+html.pch:not(.nrlock):not(.mpc-lock) body.pcpg{overflow-x:clip;overflow-y:visible}
+#pcPage .pg3{max-width:1400px;margin:0 auto;padding:24px 24px 0;box-sizing:border-box;color:var(--ink)}
+#pcPage .pg3 button{font-family:inherit}
+#pcPage .pg-tc{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:20px 24px 22px;margin-bottom:20px}
+#pcPage .pg-tc:not(.on){padding:12px 24px}
+#pcPage .pg-tch{display:flex;align-items:center;gap:12px;cursor:pointer}
+#pcPage .pg-tch h1{margin:0;flex:1;min-width:0;font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.3;display:flex;align-items:center;gap:10px}
+#pcPage .pg-tch h1::before{content:"";width:6px;height:24px;border-radius:3px;background:var(--ph-yel);flex:0 0 auto}
+#pcPage .pg-tc:not(.on) .pg-tch h1{font-size:20px}
+#pcPage .pg-tcb p{margin:8px 0 0;color:var(--sub);font-size:15px;line-height:1.65;max-width:1040px}
+/* ⓘ 주의 사항 — 처음엔 접힌 한 줄, 누르면 전문 (규칙서 5장 11-08) */
+#pcPage .pg-ign{margin-top:14px;border:1px solid #f2d37f;background:var(--ph-yt);border-radius:12px;padding:6px 8px 6px 14px;display:inline-block;max-width:100%;box-sizing:border-box}
+#pcPage .pg-ign.on{display:block;padding-bottom:12px}
+#pcPage .pg-ignh{display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:800;font-size:14.5px;color:#8a5a00}
+#pcPage .pg-ignh span{flex:1;min-width:0}
+#pcPage .pg-ignb{margin:6px 6px 0 0;font-size:14px;line-height:1.7;color:var(--ink)}
+html[data-theme="dark"] #pcPage .pg-ign{border-color:#5c4a0f}
+html[data-theme="dark"] #pcPage .pg-ignh{color:#f5d27a}
+#pcPage .pg-chips{display:grid;gap:6px}
+#pcPage .pg-chips button{border:1.5px solid var(--ph-green);background:var(--card);color:var(--ph-green-d);border-radius:999px;padding:6px 4px;font-size:13px;font-weight:700;cursor:pointer;min-width:0;line-height:1.25;text-align:center}
+#pcPage .pg-chips button:hover{background:var(--ph-gt)}
+#pcPage .pg-chips button.on{background:var(--ph-green);color:#fff}
+#pcPage .pg-btn{border:0;background:var(--ph-green);color:#fff;border-radius:999px;padding:9px 20px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;line-height:1.2}
+#pcPage .pg-btn:hover{background:#2b8a3e}
+#pcPage .pg-cbr{margin-top:auto;padding-top:12px;display:flex;justify-content:flex-end;gap:8px}
+#pcPage .pg-msg{border:1px dashed var(--line);border-radius:16px;padding:32px 20px;text-align:center;color:var(--sub);font-weight:700;background:var(--card);font-size:15px}
+#pcPage .pg-back{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 18px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+#pcPage .pg-back:hover{border-color:var(--ph-green);color:var(--ph-green-d)}
+#pcPage .pg-in{width:100%;box-sizing:border-box;font:inherit;font-size:15px;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;min-height:44px}
+#pcPage .pg-in:focus{outline:0;border-color:var(--ph-green);box-shadow:0 0 0 3px rgba(47,158,68,.15)}
+#pcPage textarea.pg-in{resize:vertical;min-height:112px;line-height:1.55}
+html[data-theme="dark"] #pcPage .pg-in{color-scheme:dark}
+#pcPage .pg-pay{display:block;width:100%;box-sizing:border-box;margin-top:14px;border:0;border-radius:12px;background:var(--ph-green);color:#fff;font-size:17px;font-weight:800;padding:14px;cursor:pointer;text-align:center;text-decoration:none;line-height:1.3}
+#pcPage .pg-pay:hover{background:#2b8a3e}
+#pcPage .pg-rf{font-size:12.5px;color:var(--sub);line-height:1.6;margin-top:10px}
+#pcPage .pg-rf a{color:var(--ph-green-d);font-weight:800;text-decoration:none;white-space:nowrap}
+#pcPage .pg-x{color:#c2410c;font-weight:700;font-size:12.5px;line-height:1.55;margin-top:8px}
+html[data-theme="dark"] #pcPage .pg-x{color:#ffa94d}
+
+/* ── 화면 ① 가이드 고르기 ── */
+#pcGd .pg-g1{display:grid;grid-template-columns:280px minmax(0,1fr);gap:20px;align-items:start}
+#pcGd .pg-side{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:18px;position:sticky;top:16px}
+#pcGd .pg-side h2{margin:0;font-size:18px;font-weight:800}
+#pcGd .pg-fl{margin-top:16px}
+#pcGd .pg-flt{font-size:13px;font-weight:700;color:var(--sub);margin-bottom:7px}
+#pcGd .pg-fee p{margin:0;font-size:12.5px;color:var(--sub);line-height:1.6}
+#pcGd .pg-fee p.pg-x{color:#c2410c;margin-top:6px}
+html[data-theme="dark"] #pcGd .pg-fee p.pg-x{color:#ffa94d}
+#pcGd .pg-glk{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:9px}
+#pcGd .pg-glk a{display:flex;align-items:center;gap:7px;color:var(--sub);font-size:13px;font-weight:700;text-decoration:none;line-height:1.4}
+#pcGd .pg-glk a:hover{color:var(--ph-green-d)}
+#pcGd .pg-glk img,#pcGd .pg-glk span{width:18px;height:18px;flex:0 0 auto;text-align:center;font-size:15px;line-height:18px}
+#pcGd .pg-cnt{font-size:14px;color:var(--sub);font-weight:700;margin:2px 2px 10px}
+#pcGd .pg-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+#pcGd .pg-gc{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s,border-color .15s}
+#pcGd .pg-gc:hover{box-shadow:0 8px 24px rgba(17,24,39,.10);border-color:#b2dfbd}
+#pcGd .pg-gc:focus-visible{outline:3px solid rgba(47,158,68,.35);outline-offset:2px}
+#pcGd .pg-gph{aspect-ratio:4/3;background:var(--ph-gt)}
+#pcGd .pg-gim{width:100%;height:100%;object-fit:cover;object-position:50% 25%;display:block}
+#pcGd .pg-noph{display:flex;align-items:center;justify-content:center;font-size:56px;width:100%;height:100%}
+#pcGd .pg-gbd{padding:14px 16px 16px;display:flex;flex-direction:column;gap:5px;flex:1}
+#pcGd .pg-l1{display:flex;align-items:baseline;gap:4px 8px;flex-wrap:wrap}
+#pcGd .pg-l1 b{font-size:17px;font-weight:800;letter-spacing:-.2px}
+#pcGd .pg-l1 b small{font-size:12.5px}
+#pcGd .pg-l2{font-size:13.5px;color:var(--sub);line-height:1.5}
+#pcGd .pg-l3{font-size:14px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:1.55em}
+
+/* ── 화면 ② 예약하기 ── */
+#pcGd .pg-g2{display:grid;grid-template-columns:340px minmax(0,1fr) 320px;gap:20px;align-items:start}
+#pcGd .pg-gl{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:18px}
+#pcGd .pg-gbig{aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:var(--ph-gt);margin-bottom:14px}
+#pcGd .pg-gbim{width:100%;height:100%;object-fit:cover;display:block}
+#pcGd .pg-gbig .pg-noph{font-size:80px}
+#pcGd .pg-big b{font-size:21px}
+#pcGd .pg-intro{margin-top:8px;font-size:14.5px;line-height:1.65}
+#pcGd .pg-rvw{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+#pcGd .pg-rvh{font-size:15px;font-weight:800;margin-bottom:6px}
+#pcGd .pg-sub{font-size:13.5px;color:var(--sub)}
+#pcGd .pg-stars{color:#f59f00;letter-spacing:1px}
+#pcGd .pg-rvs{font-size:14px;color:var(--sub);margin-bottom:6px}
+#pcGd .pg-rvs b{color:var(--ink)}
+#pcGd .pg-rv{border:1px solid var(--line);border-radius:12px;padding:9px 11px;margin-top:8px}
+#pcGd .pg-rvm{font-size:13px}
+#pcGd .pg-rvm small{color:var(--sub);margin-left:4px}
+#pcGd .pg-rvt{font-size:13.5px;line-height:1.55;margin-top:4px;white-space:pre-wrap}
+#pcGd .pg-more{display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:13.5px;font-weight:700;color:var(--sub)}
+#pcGd .pg-more span{flex:1}
+#pcGd .pg-gl .pg-back{margin-top:18px}
+#pcGd .pg-form{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:20px 24px 24px;min-width:0}
+#pcGd .pg-form h2{margin:0;font-size:20px;font-weight:800}
+#pcGd .pg-form h3{margin:22px 0 0;padding-top:16px;border-top:1px solid var(--line);font-size:16px;font-weight:800}
+#pcGd .pg-lb{display:block;font-size:13px;color:var(--sub);font-weight:700;margin:14px 2px 6px;line-height:1.45}
+#pcGd .pg-modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#pcGd .pg-modes button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 6px;font-size:14px;font-weight:700;cursor:pointer;line-height:1.3;min-width:0}
+#pcGd .pg-modes button:hover{border-color:var(--ph-green)}
+#pcGd .pg-modes button.on{border-color:var(--ph-green);background:var(--ph-gt);color:var(--ph-green-d)}
+#pcGd .pg-half{max-width:calc((100% - 24px) / 3)}
+#pcGd .pg-r3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 12px;align-items:end}
+#pcGd .pg-rc{grid-template-columns:minmax(0,.8fr) minmax(0,1.1fr) minmax(0,1.1fr)}   /* 휴대폰 칸 흐린 안내(010 또는 +82)가 잘리지 않게 */
+#pcGd .pg-rc .pg-in::placeholder{font-size:14px}
+#pcGd .pg-nt{font-size:12.5px;color:var(--sub);line-height:1.6;margin-top:10px}
+#pcGd .pg-err{margin-top:12px}
+#pcGd .pg-err:empty{display:none}
+#pcGd .pg-conf{margin-top:16px;background:var(--ph-gt);color:var(--ph-green-d);border-radius:12px;padding:12px 14px;font-weight:700;font-size:14px;line-height:1.6}
+#pcGd .pg-sum{position:sticky;top:16px}
+#pcGd .pg-sumin{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:18px;box-shadow:0 6px 20px rgba(17,24,39,.06)}
+#pcGd .pg-sumin h3{margin:0;font-size:18px;font-weight:800}
+#pcGd .pg-sumsel{margin-top:4px;color:var(--sub);font-size:14px;font-weight:700}
+#pcGd .pg-pb{margin-top:10px;padding-top:6px;border-top:1px solid var(--line)}
+#pcGd .pg-pb .gbl{font-size:13.5px}
+#pcGd .pg-pb .gbt{font-size:20px}
+#pcGd .pg-pb .gbl>span:first-child{flex:1 1 auto;min-width:0}
+#pcGd .pg-pb .gbl>span:last-child,#pcGd .pg-pb .gbt>span:last-child{flex:0 0 auto;white-space:nowrap}   /* 금액이 한 글자씩 세로로 쪼개지지 않게 */
+#pcGd .pg-sumin .pg-ign{display:block;margin-top:12px}
+
+/* 앱 확인·결제·확정 창 — PC 에선 화면 가운데 (규칙서 4장 「팝업은 가운데」) · 단추는 초록 */
+html.pch #nrBox.pcg{display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;overflow:hidden}
+html.pch #nrBox.pcg .nrin{width:min(560px,100%);max-width:560px;height:auto!important;min-height:0!important;max-height:calc(100vh - 48px);margin:0;border-radius:18px;padding:18px 22px 22px!important;overflow-y:auto;background:var(--card);box-shadow:0 20px 60px rgba(0,0,0,.3);box-sizing:border-box}
+html.pch #nrBox.pcg .gbgo{background:var(--ph-green)}
+html.pch #nrBox.pcg .gbgo:disabled{opacity:.5}
+html.pch #nrBox.pcg .igback{color:var(--ph-green-d)}
+html.pch #nrBox.pcg .gbpr{background:var(--bg)}
+
+/* ── 좁은 PC (641~1180) ── */
+@media (max-width:1180px) and (min-width:641px){
+  #pcGd .pg-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #pcGd .pg-g2{grid-template-columns:minmax(0,1fr) 300px}
+  #pcGd .pg-gl{grid-column:1/-1;display:grid;grid-template-columns:200px minmax(0,1fr);gap:0 20px;align-items:start}
+  #pcGd .pg-gl>*{grid-column:2}
+  #pcGd .pg-gl .pg-gbig{grid-column:1;grid-row:1/span 6;margin:0}
+}
+/* ── 폰 (412 기준) — 홈페이지를 폰에 맞춤 ── */
+@media (max-width:640px){
+  #pcPage .pg3{padding:14px 12px 0}
+  #pcPage .pg-tc{padding:14px 16px 16px;margin-bottom:14px}
+  #pcPage .pg-tc:not(.on){padding:10px 16px}
+  #pcPage .pg-tch h1{font-size:21px}
+  #pcPage .pg-tc:not(.on) .pg-tch h1{font-size:18px}
+  #pcPage .pg-tcb p{font-size:14px}
+  #pcGd .pg-g1{grid-template-columns:minmax(0,1fr);gap:14px}
+  #pcGd .pg-side{position:static;padding:14px 16px}
+  #pcGd .pg-cards{grid-template-columns:minmax(0,1fr);gap:12px}
+  #pcGd .pg-g2{grid-template-columns:minmax(0,1fr);gap:14px}
+  #pcGd .pg-gl{display:grid;grid-template-columns:96px minmax(0,1fr);gap:0 14px;align-items:start;padding:14px}
+  #pcGd .pg-gl>*{grid-column:2}
+  #pcGd .pg-gl .pg-gbig{grid-column:1;grid-row:1/span 3;margin:0}
+  #pcGd .pg-gl .pg-rvw,#pcGd .pg-gl .pg-back{grid-column:1/-1}
+  #pcGd .pg-big b{font-size:18px}
+  #pcGd .pg-form{padding:16px}
+  #pcGd .pg-modes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #pcGd .pg-r3,#pcGd .pg-rc{grid-template-columns:minmax(0,1fr)}
+  #pcGd .pg-half{max-width:none}
+  #pcGd .pg-sum{position:static}
+  html.pch #nrBox.pcg{padding:12px}
+  html.pch #nrBox.pcg .nrin{max-height:calc(100vh - 24px);padding:14px 16px 18px!important}
+}
