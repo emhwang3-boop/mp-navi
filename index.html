@@ -654,7 +654,7 @@ function sresPaint(){ var S=window._sresQ, it=window._sres, out=document.getElem
   out.innerHTML=gs+it.map(function(x,i){
       var en=FG()&&x.name_en, ttl=KS(en?x.name_en:x.name), ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
       return '<div class="item sres" data-i="'+i+'" style="cursor:pointer"><div class="t">'+MPICO("mi_pin",ttl,MIS)+'</div>'+(en?'<div class="d" style="margin:1px 0 0">'+esc(x.name)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+(x.dist!=null?' · <b>'+kmTxt(x.dist)+'</b>':'')+(x.rating?' · <b style="color:#e8590c">★ '+x.rating.toFixed(1)+'</b> ('+x.n+')':'')+'</div>'
-        +telLine(x.tel)+linksTo(x.name,x.y,x.x,x.name,x.addr)+'</div>';   // 목록에도 전화 (사장님 10-16)
+        +telLine(x.tel)+linksTo(x.name,x.y,x.x,x.name,x.addr,0,null,txEn(x))+'</div>';   // 목록에도 전화 (사장님 10-16)
     }).join("");
   window._RR={f:sresPaint,sres:1}; }
 // ── 검색 핀 (사장님 10-15) — 검색 결과를 누르면 그 자리를 덮는 가장 자세한 약도에 빨간 핀 + 작은 이름표.
@@ -719,7 +719,7 @@ function spinCard(){ var p=PLACES.__pin; if(!p) return; if(window.KL) KL.ensure(
   try{ var sl=document.querySelector("#spin .spl"); if(sl) sl.textContent=FG()?KS(p.en||p.ko):p.ko; }catch(e){}
   var en=FG(), nm=LN(p), ad=en?p.addr_en:p.addr, ct=en?p.cat_en:String(p.cat||"").split(">").pop().trim();
   var d="", rk="pin:"+(+p.lat).toFixed(4)+"_"+(+p.lng).toFixed(4); window._cardK="__pin";
-  document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine("__pin")+'<div class="t">'+MPICO("mi_pin",nm,MIS)+'</div>'+(en&&p.en!==p.ko?'<div class="d" style="margin:1px 0 0">'+esc(p.ko)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+d+'</div>'+telLine(p.tel)+linksTo(p.ko,p.lat,p.lng,p.ko,p.addr,p.own)+(window.rvSlot?rvSlot(rk,{nm:p.ko,addr:p.addr}):"")+'</div>'; try{ cphLoad("__pin",p.ko,p.lat,p.lng); }catch(e){}
+  document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine("__pin")+'<div class="t">'+MPICO("mi_pin",nm,MIS)+'</div>'+(en&&p.en!==p.ko?'<div class="d" style="margin:1px 0 0">'+esc(p.ko)+'</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+d+'</div>'+telLine(p.tel)+linksTo(p.ko,p.lat,p.lng,p.ko,p.addr,p.own,null,txEn(p))+(window.rvSlot?rvSlot(rk,{nm:p.ko,addr:p.addr}):"")+'</div>'; try{ cphLoad("__pin",p.ko,p.lat,p.lng); }catch(e){}
   try{ if(window.rvLoad) rvLoad(rk); }catch(e){} }   // 지도 밖 장소도 별점·후기 — 키 "pin:<위도>_<경도>" 소수 4자리, 맨 아랫줄 (사장님 10-29) — review.js
 document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest("a")) return; var it=e.target.closest&&e.target.closest("#res .sres"); if(!it) return; var x=(window._sres||[])[+it.dataset.i]; if(x) spinShow(x); });
 // 공유 — 화면은 보여 주되 실제로는 보내지 않는다 (체험판, 사장님 기기 포함 · 2026-10-12)
@@ -894,7 +894,7 @@ function areaExpVenue(x){ var ol=LANG!=="ko"&&x.name_l&&x.name_l!==x.name, nm=es
     +(ol?'<div class="d" style="color:#999;margin:1px 0 2px">'+esc(x.name)+'</div>':'')
     +(x.rating?'<div class="d" style="margin:2px 0 4px"><b style="color:#e8590c">★ '+x.rating.toFixed(1)+'</b> ('+(x.n||0)+')'+(ct?' · '+ct:'')+'</div>':(ct?'<div class="d" style="margin:2px 0 4px">'+ct+'</div>':''))
     +(ad?'<div class="d" style="margin:0 0 5px">'+ad+'</div>':'')
-    +linksTo(x.name,x.y,x.x,x.name,x.addr)+telLine(x.tel)+'</div>'; }
+    +linksTo(x.name,x.y,x.x,x.name,x.addr,0,null,txEn(x))+telLine(x.tel)+'</div>'; }
 function areaExpShow(k){ var cat=AREAEXP[k]; if(!cat) return; var p=PLACES[k]; if(!p||!(+p.lat)) return;
   var cc=p.lat.toFixed(5)+","+p.lng.toFixed(5), hd=MPICO(GA_IC[cat]||"mi_star",LP(GA_H[cat]||["이 안의 추천","What’s inside","この中のおすすめ","这里的推荐","這裡的推薦","Lo que hay dentro"]),MIS);
   var res=document.getElementById("res"); if(!res) return;
@@ -964,7 +964,7 @@ function tipTag(p){ var t=p&&p.tip; if(!t) return ""; var s=typeof t==="string"?
 function placeShow(k){ var p=PLACES[k]; if(!p) return; inBlur(); ntap(k,"tap"); if(k==="adinq"){ try{ inqOpen(); }catch(e){} return; } if(p.app){ if(window.tvidOpen&&(p.app==="youtube"||p.app==="netflix")) tvidOpen(p.app==="netflix"?"nf":"yt"); else appGo(p.app); return; } var nm=LN(p), ll=p.lat+","+p.lng;
   document.getElementById("q").value=nm; qxSync();
   window._cardK=k; document.getElementById("res").innerHTML='<div class="item">'+cphSlot()+meDistLine(k)+'<div class="t">'+esc(nm)+'</div>'+tipTag(p)+(window.rvSlot?rvSlot(k):"")+(LD(p)?'<div class="d" style="color:var(--ink);margin:3px 0 2px">'+esc(LD(p))+'</div>':'')+'<div class="d">'+esc(FG()?(p.addr_en||p.addr):p.addr)+'</div>'+telLine(p.tel)
-    +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng,null,p.addr))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
+    +(k==="mpstat"?"":linksTo(p.ko,p.lat,p.lng,null,p.addr,0,null,txEn(p)))+'</div>';   // 통계청은 가상 사옥 — 길찾기 없음 (사장님 10-15)
   if(k==="smartium") try{ cphVideo(); }catch(e){}   // 코엑스 아티움 = 호랑이 영상 (사장님 10-26)
   else if(k!=="mpstat") try{ cphLoad(k,p.ko,p.lat,p.lng); }catch(e){}   // 카드 빈자리에 구글 사진 (사장님 10-23)
   /*nolink*/   // 영어 화면은 카카오(한글뿐) 빼고 구글 먼저 · 출발지는 내 위치(있으면)
@@ -1204,7 +1204,7 @@ function routePlan(a,b,km){ var p=PLACES[a], q=PLACES[b], na=encodeURIComponent(
   }
   if(ia==="ulleung"&&ib==="ulleung") return {train:false,html:'<div class="trh">'+MPICO("mi_ferry",T("울릉도에서 독도 가는 배","Boat from Ulleungdo to Dokdo"),MIS)+'</div>'+L("https://island.haewoon.co.kr/",T("여객선 예매","Ferry booking"))};
   if(km<=60) return {train:false,ods:true,html:'<div id="ods"></div><div class="trh">'+(ia==="jeju"?MPICO("mi_bus",T("버스·택시","Bus, taxi"),MIS):MPICO("mi_subway",T("지하철·버스·택시","Subway, bus, taxi"),MIS))+'</div>'
-    +(FG()?L(go+"transit",TE("Google Maps (English)"))+L(nv+"transit",TE("Naver transit"))+L(nv+"car",TE("Taxi (fare, Naver)"))+krideL(q.ko,q.addr)
+    +(FG()?L(go+"transit",TE("Google Maps (English)"))+L(nv+"transit",TE("Naver transit"))+L(nv+"car",TE("Taxi (fare, Naver)"))+krideL(q.ko,q.addr,0,txEn(q))
       +'<div class="d" style="margin-top:6px">'+esc(TE("Tip: in the Naver Map app, Settings → Language → English shows routes in English."))+'</div>'
      :L(nv+"transit","네이버 대중교통")+L(kk,"카카오맵 길찾기")+L(nv+"car","택시 (요금 보기)")+L(go+"transit","구글 지도")+kakaoTL(q.ko,q.addr))};
   return {train:ia==="land",html:'<div class="trh">'+MPICO("mi_guide",T("고속버스·자동차","Express bus, car"),MIS)+'</div>'
@@ -1624,7 +1624,13 @@ function bldName(n){ n=String(n||""); if(!BLD_RX.test(n)) return null; var T=n.r
   var isB=function(t){ return /^(롯데|신세계|현대|더현대|갤러리아|에비뉴엘|신라|HDC|동화|AK|NC|타임스퀘어)/.test(t)||/(백화점|면세점|본점|점|관|EAST|WEST|헤리티지)$/i.test(t); };
   var i=-1, e=-1; for(var k=0;k<T.length;k++){ if(isB(T[k])){ if(i<0) i=k; e=k; } else if(i>=0&&e>=0&&k>e+1) break; }   // 첫 건물 낱말부터 마지막 건물 낱말까지(사이 「잠실」 같은 지명 한 낱말은 이어 붙임)
   if(i<0) return null; return T.slice(i,e+1).join(" ")||null; }
-function linksTo(nmKo,lat,lng,naverName,addr,own,tx){ lat=+lat; lng=+lng; tx=own?null:(tx||bldName(nmKo)); var f=meFrom(), ll=lat+","+lng, nm=encodeURIComponent(nmKo);
+// 11-08 사장님 「그래」 — K.Ride(외국어 화면)는 영어 이름을 복사. 영어 이름: LL.en → 영어 자료 → 없으면 그 언어 이름 → 그래도 없으면 한글
+function txEn(o){ if(!o) return ""; var c=[o.LL&&o.LL.en&&o.LL.en.n,(!o._l||o._l==="en")?(o.name_en||o.en):null,o.name_en,o.en,o.name_l,LANG!=="ko"?o[LANG]:null];
+  for(var i=0;i<c.length;i++){ if(c[i]&&!/[가-힣]/.test(c[i])) return String(c[i]); } return ""; }
+// 영어 이름도 건물(지점)까지만 — 「Chanel Cosmetics Lotte Department Store Jamsil Branch C1」 → 「Lotte Department Store Jamsil Branch」
+function enBld(n){ n=String(n||""); var m=n.match(/\b(The Hyundai|Lotte|Shinsegae|Hyundai|Galleria|Avenuel|Shilla|HDC|Dongwha|AK|NC|Times Square)\b.*?\b(Branch|Main Store)\b/i)
+  ||n.match(/\b(The Hyundai|Lotte|Shinsegae|Hyundai|Galleria|Avenuel|Shilla|HDC|Dongwha|AK|NC|Times Square)\b.*?\b(Department Store|Duty Free)\b/i); return m?m[0]:null; }
+function linksTo(nmKo,lat,lng,naverName,addr,own,tx,en){ lat=+lat; lng=+lng; tx=own?null:(tx||bldName(nmKo)); var te=own||!en?"":(tx&&tx!==nmKo?(enBld(en)||en):en); var f=meFrom(), ll=lat+","+lng, nm=encodeURIComponent(nmKo);
   var go="https://www.google.com/maps/dir/?api=1"+hlG()+(f?"&origin="+f.lat+","+f.lng:"")+"&destination="+ll;
   var kk=f?"https://map.kakao.com/link/from/"+encodeURIComponent("내 위치")+","+f.lat+","+f.lng+"/to/"+nm+","+ll:"https://map.kakao.com/link/to/"+nm+","+ll;
   var nv; if(f){ var A=m3857(f.lat,f.lng), B=m3857(lat,lng); nv="https://map.naver.com/p/directions/"+A[0]+","+A[1]+","+encodeURIComponent("내 위치")+",,/"+B[0]+","+B[1]+","+nm+",,/-/transit"; }
@@ -1633,7 +1639,7 @@ function linksTo(nmKo,lat,lng,naverName,addr,own,tx){ lat=+lat; lng=+lng; tx=own
   // 「자세히 보기」(사장님 10-20) — 외국어 화면은 구글 지도 장소 화면(앱 언어 hl 연동), 한국어 화면은 네이버 플레이스(이름 검색)
   var gq=nmKo+(addr?" "+addr:""), mr=FG()?"https://www.google.com/maps/search/?api=1"+hlG()+"&query="+encodeURIComponent(gq):"https://search.naver.com/search.naver?query="+encodeURIComponent(nmKo);   // 한국어 화면 = 네이버 통합검색(지식백과·블로그·플레이스 한 화면, 사장님 10-22)
   var mt={ko:"ℹ️ 자세히 보기 (네이버)",en:"ℹ️ More info (Google)",ja:"ℹ️ 詳しく見る (Google)",zhs:"ℹ️ 查看详情 (Google)",zht:"ℹ️ 查看詳情 (Google)",es:"ℹ️ Más información (Google)"}[LANG]||"ℹ️ More info (Google)";
-  return L(mr,MPICO("mi_info",mt,MIS))+(FG()?L(go,TE("Google Maps (English)"))+L(nv,TE("Naver Map"))+krideL(tx||nmKo,addr,own):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도")+kakaoTL(tx||nmKo,addr,own)); }
+  return L(mr,MPICO("mi_info",mt,MIS))+(FG()?L(go,TE("Google Maps (English)"))+L(nv,TE("Naver Map"))+krideL(tx||nmKo,addr,own,te):L(kk,"카카오맵 길찾기")+L(nv,"네이버 지도")+L(go,"구글 지도")+kakaoTL(tx||nmKo,addr,own)); }
 // 영어 화면 — 외국인용 카카오 택시 앱 K.Ride (사장님 10-15). 주소·패키지는 스토어에서 확인함(2026-10-15):
 //   Play com.kakaomobility.kride · App Store id6474654222 · 소개 kride.kakaomobility.com
 //   안드로이드는 깔려 있으면 앱을 열고(MAIN/LAUNCHER 꼴) 없으면 Play 상세로, 아이폰은 App Store, PC 는 소개 페이지. 누르면 목적지 이름·주소를 복사한다
@@ -1642,14 +1648,14 @@ function krideHref(){ var ua=navigator.userAgent||"";
   if(/Android/i.test(ua)) return "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.kakaomobility.kride;S.browser_fallback_url="+encodeURIComponent(KRIDE_PLAY)+";end";
   if(/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)) return KRIDE_IOS;
   return KRIDE_WEB; }
-function krideL(ko,addr,own){ var h=krideHref(), app=/^intent:/.test(h), pc=h===KRIDE_WEB;   // PC = 앱 설치 화면으로 안 보내고 안내 한 줄만 (사장님 10-23)
-  return '<a href="'+(pc?'#':esc(h))+'"'+(app||pc?'':' target="_blank" rel="noopener"')+' class="kride'+(pc?' kpc':'')+'" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'"'+(own?' data-own="1"':'')+'>'+MPICO("mi_taxi",TE("🚕 Call a taxi (K.Ride)"),MIS)+'</a>'; }
+function krideL(ko,addr,own,en){ var h=krideHref(), app=/^intent:/.test(h), pc=h===KRIDE_WEB;   // PC = 앱 설치 화면으로 안 보내고 안내 한 줄만 (사장님 10-23)
+  return '<a href="'+(pc?'#':esc(h))+'"'+(app||pc?'':' target="_blank" rel="noopener"')+' class="kride'+(pc?' kpc':'')+'" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'"'+(en?' data-en="'+esc(en)+'"':'')+(own?' data-own="1"':'')+'>'+MPICO("mi_taxi",TE("🚕 Call a taxi (K.Ride)"),MIS)+'</a>'; }
 // 한국어 화면 — 카카오 T (사장님 10-28 「K.Ride 처럼」). 스토어 확인 2026-10-28: Play com.kakao.taxi · App Store id981110422 (카카오모빌리티)
 var KT_PLAY="https://play.google.com/store/apps/details?id=com.kakao.taxi", KT_IOS="https://apps.apple.com/kr/app/id981110422";
 function kakaoTL(ko,addr,own){ var ua=navigator.userAgent||"", h=/Android/i.test(ua)?"intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.kakao.taxi;S.browser_fallback_url="+encodeURIComponent(KT_PLAY)+";end":(/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1))?KT_IOS:"", app=/^intent:/.test(h), pc=!h;
   return '<a href="'+(pc?'#':esc(h))+'"'+(app||pc?'':' target="_blank" rel="noopener"')+' class="kride kt'+(pc?' kpc':'')+'" data-ko="'+esc(ko||"")+'" data-ad="'+esc(addr||"")+'"'+(own?' data-own="1"':'')+'>'+MPICO("mi_taxi","카카오 T",MIS)+'</a>'; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("a.kride"); if(!a) return;
-  var t=a.dataset.own==="1"?(a.dataset.ad||a.dataset.ko||""):(a.dataset.ko||a.dataset.ad||""), m=a.parentNode.querySelector(".kmsg");   // 11-05 사장님 「가」 — 이름+주소를 붙이면 K.Ride·카카오 T 가 못 찾음 → 이름만. 손님이 이름 붙인 곳(길게 눌러 저장)은 주소만
+  var t=a.dataset.own==="1"?(a.dataset.ad||a.dataset.ko||""):((!a.classList.contains("kt")&&a.dataset.en)||a.dataset.ko||a.dataset.ad||""), m=a.parentNode.querySelector(".kmsg");   // 11-05 사장님 「가」 — 이름+주소를 붙이면 K.Ride·카카오 T 가 못 찾음 → 이름만. 손님이 이름 붙인 곳(길게 눌러 저장)은 주소만
   if(!m){ m=document.createElement("div"); m.className="d kmsg"; m.style.cssText="margin:8px 0 0;padding:10px 12px;border:2px solid #1a73e8;border-radius:12px;background:#e7f1fb;color:#174ea6;font-weight:800;font-size:14px;line-height:1.5"; a.insertAdjacentElement("afterend",m); }
   var kt=a.classList.contains("kt");
   if(a.classList.contains("kpc")){ e.preventDefault(); m.textContent=kt?"택시 호출은 폰의 카카오 T 앱에서 됩니다.":TE("Taxi booking works on your phone (K.Ride app)."); return; }
@@ -1758,9 +1764,9 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 </script>
 <script src="tpick.js?v=1106tp"></script>
 <script src="tpg.js?v=1107gr"></script>   <!-- 투어앱 결제 = KG이니시스·포트원 (패키지·가이드 인솔·일정 검토 공용, 11-07) — trip·near·shop 보다 먼저 -->
-<script src="trip.js?v=1108pt"></script>
+<script src="trip.js?v=1108kr"></script>
 <script src="gift.js?v=1108lc2"></script>
-<script src="near.js?v=1108nf"></script>
+<script src="near.js?v=1108kr"></script>
 <script src="shop.js?v=1107gr"></script>
 <script src="tosspay.js?v=1107p5"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
@@ -2093,7 +2099,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script>
 /* 버전 (사장님 11-07 「버전으로 관리하자」 「가」 1.0.5 모양) — 올릴 때마다 배포 도구(navi_fast)가 끝자리를 하나 올린다(version.json · 아래 APPV 를 같이)
    ⋮ 메뉴 맨 아래 「버전 1.0.5」 → 누르면 서버 최신(version.json)과 비교 · 쓰는 중 새 판이 올라오면 위에 「새 버전이 있어요 [새로 받기]」(10분마다·화면으로 돌아올 때 확인) */
-var APPV="1.0.19";
+var APPV="1.0.20";
 (function(){ var L6=function(o){ return o[window.LANG]||o.en; }, W={v:{ko:"버전",en:"Version",ja:"バージョン",zhs:"版本",zht:"版本",es:"Versión"},
   ok:{ko:"최신 버전이에요",en:"You're on the latest version",ja:"最新バージョンです",zhs:"已是最新版本",zht:"已是最新版本",es:"Tienes la última versión"},
   nw:{ko:"새 버전이 있어요",en:"A new version is available",ja:"新しいバージョンがあります",zhs:"有新版本",zht:"有新版本",es:"Hay una nueva versión"},
