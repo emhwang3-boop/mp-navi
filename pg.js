@@ -205,4 +205,14 @@ var f=window.setLang; if(typeof f==="function"&&!f._pg){ var g=function(){ var r
 menuPaint();
 window.mpPG={open:open,close:close,logout:logout,on:function(){ return !!ls("mpv_pg_sess"); }};
 if(/[?&]pg=1(?![0-9a-z])/i.test(location.search)||(/[?&]grac=1(?![0-9a-z])/i.test(location.search)&&!ls("mpv_pg_sess"))) setTimeout(open,400);   // 심사용 주소는 로그인 창부터
+/* ⋮ 메뉴 「로그인 / 로그아웃」 (11-09 사장님 「넣어」 — 「내 배지」를 없앤 뒤 앱 안 로그아웃 자리) · 그림 mi_login(나노바나나 11-09)
+   로그인돼 있으면 「로그아웃」(누르면 바로 로그아웃), 아니면 「로그인」(로그인 창) — 홈페이지 초록 단추와 같은 동작. 노래방 사이트(PG_SITE)·홈페이지(⋮ 없음)엔 안 붙는다 */
+if(!PGS){ (function(){
+  function mpgPaint(){ var mm=document.getElementById("mm"); if(!mm) return; var a=document.getElementById("mpg"), on=!!ls("mpv_pg_sess");
+    if(!a){ a=document.createElement("a"); a.id="mpg"; a.href="#"; a.className="mi"; a.onclick=function(e){ e.preventDefault(); try{ document.getElementById("mm").hidden=true; }catch(x){} if(ls("mpv_pg_sess")) logout(); else open(); }; mm.insertBefore(a,document.getElementById("mref")||null); }
+    a.innerHTML='<img class="miic" src="img/menu/mi_login.png" alt="">'+esc(t(on?"logout":"login")); }
+  document.addEventListener("mppg",mpgPaint);
+  function hook(){ mpgPaint(); try{ var mm=document.getElementById("mm"); if(mm&&window.MutationObserver) new MutationObserver(function(){ if(!document.getElementById("mpg")||!mm.hidden) mpgPaint(); }).observe(mm,{attributes:true,attributeFilter:["hidden"],childList:true}); }catch(e){} }   // 언어를 바꾸면 메뉴를 새로 그려 이 줄이 빠지므로 다시 붙인다
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",hook); else hook();
+})(); }
 })();
