@@ -1027,7 +1027,7 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
     var cty=pl.mc&&pl.cities&&pl.cities[d.c]?cnm(pl.cities[d.c]):"", pre=pl.mc&&X.pre&&X.pre.length?X.pre:null;
     var np=arr.filter(function(x){ return !x.eat; }).length, f00=s.rows[0], a00=pre?((pre[0]&&pre[0].t!=null)?pre[0].t:X.from):(f00?Math.max(0,f00.t-(f00.leg?f00.leg.min:0)):X.from), b00=Q.post?Q.post.end:s.end;   // 11-08 날마다 요약 한 줄 — 장소 수 · 나서는 시각~끝 시각
     h+='<div class="tday" data-d="'+di+'"><div class="tdh"><span>'+T((di+1)+"일차",'Day '+(di+1))+'</span> · '+esc(dateTxt(dt))+(cty?'<b class="tcty">'+esc(cty)+'</b>':'')+(np?'<em class="tsum">'+esc(gTxt(DG6.sum,{n:np,a:m2hm(a00),b:m2hm(b00)}))+'</em>':'')+'</div>';
-    if(d.date===kstToday(0)&&arr.length) h+=tdBar(di);   // 11-08 사장님 — 여행 중 「오늘」인 날에만 [진행] [하루 미루기] [일정 취소]
+    if(arr.length) h+=tdBar(di,d.date===kstToday(0));   // 11-08 사장님 「모든 날에 보이게 해줘」 — 날마다 [진행] [하루 미루기] [일정 취소] (오늘은 초록 칸 「오늘 일정」, 다른 날은 작은 단추만)
     if(!arr.length&&!pre&&!(Q.post&&Q.post.tr)){ h+='<div class="d" style="padding:6px 0">'+esc(T5({ko:"자유 일정",en:"Free day",ja:"自由行動",zhs:"自由活动",zht:"自由活動",es:"Día libre"}))+'</div>'+(Q.post&&Q.post.rows.length?'<div class="trows">'+natPostHtml(pl,di,X,Q.post,null)+'</div>':'')+eveHtml(pl,d,di,s,X,Q.lim)+'</div>'; return; }   // 11-08 남는 날도 「일정 추가」 칸
     if(aiTx(a)) h+='<div class="tai">'+esc(aiTx(a))+'</div>';
     if(lv) h+='<div class="tlvn" data-html2canvas-ignore>'+esc(T5(LV6.pred))+'</div>';
@@ -1547,8 +1547,16 @@ var TD6={t:{ko:"오늘 일정",en:"Today's plan",ja:"今日の予定",zhs:"今�
  pushX:{ko:"맨 뒤에 남는 날이 없어 여행을 하루 늘렸어요",en:"There was no free day left, so your trip is now one day longer",ja:"空いている日がなかったので、旅行を1日延ばしました",zhs:"最后没有空余的日子，所以旅行延长了一天",zht:"最後沒有空餘的日子，所以旅行延長了一天",es:"No quedaba ningún día libre, así que el viaje dura un día más"},
  pushNo:{ko:"떠나는 비행기 날짜가 정해져 있고 남는 날이 없어 미룰 수 없어요. 「일정 취소」를 써 주세요.",en:"Your departure flight date is fixed and there is no free day left, so this can't be postponed. Use “Cancel today” instead.",ja:"出発便の日付が決まっていて空きの日もないため、延期できません。「今日の予定を取り消す」を使ってください。",zhs:"返程航班日期已定且没有空余的日子，无法推迟。请使用「取消今天行程」。",zht:"回程航班日期已定且沒有空餘的日子，無法延後。請使用「取消今天行程」。",es:"La fecha del vuelo de salida es fija y no queda ningún día libre, así que no se puede aplazar. Usa «Cancelar hoy»."},
  cxQ:{ko:"오늘 일정({n}곳)을 취소할까요? 일정표에서 빠지고 카트에는 남아요. 내일 일정은 그대로예요.",en:"Cancel today's plan ({n} places)? They leave your schedule but stay in your cart. Tomorrow stays the same.",ja:"今日の予定（{n}か所）を取り消しますか？日程からは外れますが、カートには残ります。明日の予定はそのままです。",zhs:"要取消今天的行程（{n}个地点）吗？会从行程中移除，但仍留在购物车中。明天的行程不变。",zht:"要取消今天的行程（{n}個地點）嗎？會從行程中移除，但仍留在購物車中。明天的行程不變。",es:"¿Cancelar el plan de hoy ({n} lugares)? Saldrán del itinerario pero seguirán en tu carrito. Mañana no cambia."},
+ cxd:{ko:"일정 취소",en:"Cancel this day",ja:"この日の予定を取り消す",zhs:"取消当天行程",zht:"取消當天行程",es:"Cancelar este día"},
+ goDd:{ko:"{d} 일정대로 진행해요",en:"Going ahead with the plan for {d}",ja:"{d}の予定どおり進めます",zhs:"按{d}的行程进行",zht:"按{d}的行程進行",es:"Seguimos con el plan del {d}"},
+ pushQd:{ko:"{d}는 비워 두고, {d}부터 일정을 하루씩 뒤로 미룰까요?",en:"Keep {d} free and move everything from {d} back by one day?",ja:"{d}は空けて、{d}からの予定を1日ずつ後ろにずらしますか？",zhs:"{d}空出来，并把从{d}起的行程都往后推一天吗？",zht:"{d}空出來，並把從{d}起的行程都往後延一天嗎？",es:"¿Dejar libre el {d} y retrasar un día todo desde el {d}?"},
+ pushDd:{ko:"{d}부터 일정을 하루씩 미뤘어요",en:"Moved your plan back one day from {d}",ja:"{d}からの予定を1日ずつ後ろにずらしました",zhs:"已将{d}起的行程推迟一天",zht:"已將{d}起的行程延後一天",es:"Retrasamos un día el plan desde el {d}"},
+ cxQd:{ko:"{d} 일정({n}곳)을 취소할까요? 일정표에서 빠지고 카트에는 남아요. 다음 날 일정은 그대로예요.",en:"Cancel the plan for {d} ({n} places)? They leave your schedule but stay in your cart. The next day stays the same.",ja:"{d}の予定（{n}か所）を取り消しますか？日程からは外れますが、カートには残ります。翌日の予定はそのままです。",zhs:"要取消{d}的行程（{n}个地点）吗？会从行程中移除，但仍留在购物车中。第二天的行程不变。",zht:"要取消{d}的行程（{n}個地點）嗎？會從行程中移除，但仍留在購物車中。隔天的行程不變。",es:"¿Cancelar el plan del {d} ({n} lugares)? Saldrán del itinerario pero seguirán en tu carrito. El día siguiente no cambia."},
+ cxDd:{ko:"{d} 일정을 취소했어요",en:"Cancelled the plan for {d}",ja:"{d}の予定を取り消しました",zhs:"已取消{d}的行程",zht:"已取消{d}的行程",es:"Cancelamos el plan del {d}"},
  cxD:{ko:"오늘 일정을 취소했어요",en:"Cancelled today's plan",ja:"今日の予定を取り消しました",zhs:"已取消今天的行程",zht:"已取消今天的行程",es:"Cancelamos el plan de hoy"}};
-function tdBar(di){ return '<div class="ttoday" data-html2canvas-ignore><b>'+esc(T5(TD6.t))+'</b><div class="tgr"><button type="button" class="trbtn" data-td="go" data-d="'+di+'">'+esc(T5(TD6.go))+'</button><button type="button" class="trbtn" data-td="push" data-d="'+di+'">'+esc(T5(TD6.push))+'</button><button type="button" class="trbtn" data-td="cx" data-d="'+di+'">'+esc(T5(TD6.cx))+'</button></div></div>'; }
+function dL6(di){ var n=di+1; return T5({ko:n+"일차",en:"Day "+n,ja:n+"日目",zhs:"第"+n+"天",zht:"第"+n+"天",es:"Día "+n}); }
+function tdBar(di,today){ var bt='<button type="button" class="trbtn" data-td="go" data-d="'+di+'">'+esc(T5(TD6.go))+'</button><button type="button" class="trbtn" data-td="push" data-d="'+di+'">'+esc(T5(TD6.push))+'</button><button type="button" class="trbtn" data-td="cx" data-d="'+di+'">'+esc(T5(today?TD6.cx:TD6.cxd))+'</button>';
+  return today?'<div class="ttoday" data-html2canvas-ignore><b>'+esc(T5(TD6.t))+'</b><div class="tgr">'+bt+'</div></div>':'<div class="tdays" data-html2canvas-ignore>'+bt+'</div>'; }
 function tdPush(pl,di){ var f=mdFreeN(pl,di); if(!f&&pl.ap&&pl.ap.d) return -1;
   var d0=pl.days[di], c=pl.mc?((di>0&&pl.days[di-1].nc!=null&&pl.days[di-1].nc>=0)?pl.days[di-1].nc:d0.c):null, nd={date:"",stops:[]}; if(c!=null){ nd.c=c; nd.nc=c; }
   mdShiftAll(pl,di,1,null); pl.days.splice(di,0,nd); if(pl.ai&&Array.isArray(pl.ai.days)) pl.ai.days.splice(di,0,null);
@@ -1559,9 +1567,10 @@ function tdPush(pl,di){ var f=mdFreeN(pl,di); if(!f&&pl.ap&&pl.ap.d) return -1;
 function tdCancel(pl,di){ var d=pl.days[di]; if(!d) return; d.stops=[]; if(pl.meals){ delete pl.meals[di+":lunch"]; delete pl.meals[di+":dinner"]; } delete d.gap; delete d.rs; delete d.fr; delete d.fra; d.aiX=1; pl.chk=0; save(); refresh(); }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-td]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var pl=TR.plan, di=+a.dataset.d, d=pl&&pl.days[di]; if(!d) return; var v=a.dataset.td;
   try{ ntap("_trip","today_"+v); }catch(z){}
-  if(v==="go"){ lgToast(T5(TD6.goD)); return; }
-  if(v==="push"){ if(!mdFreeN(pl,di)&&pl.ap&&pl.ap.d){ lgToast(T5(TD6.pushNo)); return; } if(!confirm(T5(TD6.pushQ))) return; var r=tdPush(pl,di); if(r<0){ lgToast(T5(TD6.pushNo)); return; } repPaint(); lgToast(T5(r?TD6.pushX:TD6.pushD)); return; }
-  if(v==="cx"){ var n=d.stops.filter(function(k){ var x=pl.pool[k]; return x&&!x.eat; }).length; if(!confirm(gTxt(TD6.cxQ,{n:n}))) return; tdCancel(pl,di); repPaint(); lgToast(T5(TD6.cxD)); } },true);
+  var td=d.date===kstToday(0), dl=dL6(di);   // 오늘이면 「오늘」, 다른 날이면 「2일차」 (11-08 모든 날에)
+  if(v==="go"){ lgToast(td?T5(TD6.goD):gTxt(TD6.goDd,{d:dl})); return; }
+  if(v==="push"){ if(!mdFreeN(pl,di)&&pl.ap&&pl.ap.d){ lgToast(T5(TD6.pushNo)); return; } if(!confirm(td?T5(TD6.pushQ):gTxt(TD6.pushQd,{d:dl}))) return; var r=tdPush(pl,di); if(r<0){ lgToast(T5(TD6.pushNo)); return; } repPaint(); lgToast(r?T5(TD6.pushX):(td?T5(TD6.pushD):gTxt(TD6.pushDd,{d:dl}))); return; }
+  if(v==="cx"){ var n=d.stops.filter(function(k){ var x=pl.pool[k]; return x&&!x.eat; }).length; if(!confirm(td?gTxt(TD6.cxQ,{n:n}):gTxt(TD6.cxQd,{d:dl,n:n}))) return; tdCancel(pl,di); repPaint(); lgToast(td?T5(TD6.cxD):gTxt(TD6.cxDd,{d:dl})); } },true);
 // ── 11-08 사장님 「장소 또는 식당에서 머무는 시간을 고칠 수 있게 — 고치면 그날 일정은 다시 계산」 · 식당 칸 「삭제」 ──
 function stSel(k,cur,hi){ return '<select class="tstay" data-sk="'+esc(k)+'" aria-label="'+esc(T5(CK6.stay))+'">'+stayOpts(cur>0?cur:60,30,hi)+'</select>'; }
 document.addEventListener("change",function(e){ var s=e.target; if(!s||!s.classList||!s.classList.contains("tstay")||!s.closest||!s.closest("#trRep")) return; var pl=TR.plan, m=+s.value; if(!pl||!(m>0)) return;
@@ -3322,7 +3331,7 @@ var css3=document.createElement("style"); css3.id="trBoardCss"; css3.textContent
 +".tdet{display:block}.tdbt{display:block;margin-top:6px;text-align:right}"
 +".tsbtn{border:1.5px solid var(--green);background:var(--card);color:#2b8a3e;border-radius:999px;padding:4px 11px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit;margin:0}"
 +".tepk{margin-top:4px}"
-+".teve .tgr{justify-content:flex-end}.tlq b{display:flex;align-items:center;gap:4px}"
++".tdays{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;margin:2px 0 8px}.tdays .trbtn{margin:0;padding:4px 10px;font-size:12px;font-weight:700;color:var(--sub)}.teve .tgr{justify-content:flex-end}.tlq b{display:flex;align-items:center;gap:4px}"
 +".tstay{-webkit-appearance:menulist!important;appearance:auto!important;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--sub);font:inherit;font-size:12.5px;font-weight:700;padding:1px 2px;margin-left:2px;max-width:112px;cursor:pointer}.tmact{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;margin-top:6px}.trows .trw.tcx .tmact,.trows .trw.tcx .tdbt{margin-right:-30px}.tmact .trbtn{margin:0;padding:5px 11px;font-size:12.5px}"
 +".ttoday{margin:6px 0 6px;padding:8px 10px;border:1.5px solid #2f9e44;border-radius:12px;background:#ebfbee}.ttoday b{display:block;font-size:13px;color:#2b8a3e;margin-bottom:5px}.ttoday .tgr{margin-top:0}.ttoday .trbtn{margin:0;padding:6px 12px;font-size:13px}:root[data-theme=dark] .ttoday{background:#13261a}"
 +".trows .trw.tmd .tp{background:var(--card);border:1px solid #cfe3d5;border-radius:12px;padding:8px 10px;box-shadow:0 1px 3px rgba(16,24,40,.07)}.trows .trw.tmd:before{border-color:#2f9e44;background:#2f9e44}.trud{display:inline-block;margin-left:8px;font-size:12.5px;font-weight:700;color:var(--sub)}"
