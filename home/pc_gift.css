@@ -1,0 +1,116 @@
+/* MosaicTrip.com 홈페이지 — 선물 고르기 화면 (home/pc_gift.js · 11-08 4a단계)
+ *  · 배치도 tour_site\wireframes\6_선물고르기_배치도 · 6b_선물고르기_명품_배치도 (1400×800) — 왼쪽 310 · 가운데 종류 카드 3줄씩 / 명품 로고 5줄씩 · 오른쪽 390 따라오는 살 곳
+ *  · 바탕 칸·고르기·찾기·지도·가운데 창은 숙소와 같은 부품(pc_stay.css 「공통」) · 명품은 앱 명품 고르기와 같은 황금색(글자·로고 칸만)
+ */
+#pcGf .pcs-cols{grid-template-columns:310px minmax(0,1fr) 390px}
+#pcGf .pcs-l .pcs-pn{padding:16px 14px}
+#pcGf .pcs-cch button{font-size:12.5px;padding:6px 0}
+.pgf-ic{width:20px;height:20px;display:block;flex:0 0 auto}
+/* ── 왼쪽 ── */
+#pcGf .pgf-who button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-radius:14px;padding:6px 2px;min-height:62px;font-size:12.5px}
+#pcGf .pgf-who button img{width:30px;height:30px;margin:0!important;display:block}
+#pcGf .pgf-who button.on img{filter:drop-shadow(0 0 1px #fff)}
+#pcGf .pgf-who button span{display:block;line-height:1.2}
+#pcGf .pgf-luxb{display:inline-block;margin:0;padding:2px 0;border:0;background:none;text-align:left;font-size:16px;font-weight:900;letter-spacing:.2px;cursor:pointer;box-shadow:none;background-image:linear-gradient(90deg,#a8780a,#d9a520 40%,#b8860b 70%,#e0b84a);-webkit-background-clip:text;background-clip:text;color:#b8860b;-webkit-text-fill-color:transparent;text-decoration:none}   /* 앱 「명품 고르기」와 같은 황금 글자만 (사장님 11-08 「황금 네모 칸을 없애고 글자만」) */
+#pcGf .pgf-luxb:hover,#pcGf .pgf-luxb.on{text-decoration:underline;text-decoration-color:#c9971c;text-underline-offset:4px}
+#pcGf .pgf-tips h3{gap:6px;align-items:center}
+#pcGf .pgf-tm{display:none}
+#pcGf .pgf-tip{font-size:13px;line-height:1.55;padding:6px 0;border-top:1px solid var(--line);color:var(--ink)}
+#pcGf .pgf-tip:first-of-type{border-top:0;padding-top:0}
+#pcGf .pgf-tip a{color:var(--sub);font-size:11.5px;margin-left:2px}
+/* ── 가운데: 종류 카드 ── */
+#pcGf .pgf-ch{margin:2px 2px 12px}
+#pcGf .pgf-ch h2{margin:0;font-size:20px;font-weight:900;letter-spacing:-.3px;line-height:1.35}
+#pcGf .pcs-src{font-size:13px;color:var(--sub);margin-top:2px;line-height:1.5}
+#pcGf .pgf-kinds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+#pcGf .pgf-k{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 16px;cursor:pointer;min-width:0;transition:box-shadow .15s,border-color .15s}
+#pcGf .pgf-k:hover{box-shadow:0 8px 22px rgba(17,24,39,.10);border-color:#b2dfbd}
+#pcGf .pgf-k.on{border-color:var(--ph-green);background:var(--ph-gt);box-shadow:0 0 0 2px rgba(47,158,68,.18)}
+#pcGf .pgf-kic{width:48px;height:48px;border-radius:12px;background:var(--ph-gt);display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+#pcGf .pgf-k.on .pgf-kic{background:var(--card)}
+#pcGf .pgf-kic img{width:38px;height:38px;margin:0!important;display:block}
+#pcGf .pgf-k b{font-size:16px;font-weight:800;line-height:1.35}
+#pcGf .pgf-kd{font-size:13px;color:var(--sub);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+#pcGf .pgf-kn{font-size:12.5px;color:#8a5a00;background:var(--ph-yt);border-radius:8px;padding:3px 8px;line-height:1.45;margin-top:2px}
+html.pch[data-theme="dark"] #pcGf .pgf-kn{color:#f5d27a}
+#pcGf .pgf-loc{position:absolute;right:10px;top:10px;background:var(--ph-yt);border:1px solid #f2d37f;color:#8a5a00;border-radius:999px;font-size:11.5px;font-weight:800;padding:2px 9px;line-height:1.4;max-width:calc(100% - 80px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.pch[data-theme="dark"] #pcGf .pgf-loc{border-color:#5c4a0f;color:#f5d27a}
+/* ── 오른쪽: 살 곳 ── */
+#pcGf .pgf-rp{padding:16px}
+#pcGf .pgf-hint{display:flex;gap:10px;align-items:flex-start;color:var(--sub);font-size:14px;font-weight:700;line-height:1.6;padding:14px 4px}
+#pcGf .pgf-hint img{width:22px;height:22px;flex:0 0 auto;margin-top:1px}
+#pcGf .pgf-rh{margin:0 0 2px;font-size:17px;font-weight:900;line-height:1.4}
+#pcGf .pgf-rs{font-size:13px;font-weight:800;color:var(--sub);margin:14px 2px 6px}
+#pcGf .pgf-row{display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;margin-top:6px;cursor:pointer;line-height:1.35;min-height:44px}
+#pcGf .pgf-row:hover{border-color:var(--ph-green);background:var(--ph-gt)}
+#pcGf .pgf-row.pgf-fl{animation:pcsFl 1.1s ease-out 1}
+#pcGf .pgf-no{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--ph-green);color:#fff;font-size:12px;font-weight:800;line-height:22px;text-align:center}
+#pcGf .pgf-rn{flex:1;min-width:0}
+#pcGf .pgf-rn b{font-size:14px;font-weight:800}
+#pcGf .pgf-rn small{font-size:12.5px;color:var(--sub);font-weight:600;margin-left:6px;white-space:nowrap}
+#pcGf .pgf-rt{color:#e8590c;font-weight:800}
+html.pch[data-theme="dark"] #pcGf .pgf-rt{color:#ffa94d}
+#pcGf .pgf-rb{flex:0 0 auto;border:1.5px solid var(--ph-green);color:var(--ph-green-d);border-radius:999px;padding:4px 14px;font-size:13px;font-weight:800;min-width:56px;text-align:center;box-sizing:border-box}
+#pcGf .pgf-ord{margin-bottom:2px}
+#pcGf .pgf-adb{display:inline-block;width:auto;height:auto;border-radius:6px;background:#868e96;color:#fff;font-size:11px;font-weight:800;padding:1px 6px;line-height:1.5}
+#pcGf .pgf-ad .pgf-no{width:auto;height:auto;background:none;line-height:1}
+#pcGf .pcs-qm{margin:10px 2px 0}
+
+/* ── 명품 고르기 ── */
+#pcGf .pgf-lh{margin:0 2px 12px}
+#pcGf .pgf-back{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 14px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:8px}
+#pcGf .pgf-back:hover{border-color:#c9971c;color:#8a6100}
+#pcGf .pgf-lt{margin:0;font-size:21px;font-weight:900;color:#a8780a;letter-spacing:-.2px}
+html.pch[data-theme="dark"] #pcGf .pgf-lt{color:#e2c98a}
+#pcGf .pgf-lq{margin:0 0 10px}
+#pcGf .pgf-lq .pcs-in{border-color:#e2c98a;padding-right:12px}
+#pcGf .pgf-lq .pcs-in:focus{border-color:#c9971c;box-shadow:0 0 0 3px rgba(201,151,28,.18)}
+#pcGf .pgf-lc{display:grid;gap:8px;margin:0 0 14px}
+#pcGf .pgf-lc button{border:1.5px solid #c9971c;background:var(--card);color:#8a6100;border-radius:999px;padding:7px 4px;font-size:13px;font-weight:800;cursor:pointer;min-width:0;line-height:1.25;text-align:center}
+#pcGf .pgf-lc button.on{background:#c9971c;color:#fff}
+#pcGf .pgf-lc.off button.on{background:var(--card);color:#8a6100}
+html.pch[data-theme="dark"] #pcGf .pgf-lc button{color:#e2c98a}
+html.pch[data-theme="dark"] #pcGf .pgf-lc button.on{color:#1d1600}
+#pcGf .pgf-lg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+#pcGf .pgf-lb{background:transparent;border:1.5px solid #e2c98a;border-radius:12px;height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;padding:6px;min-width:0;color:var(--ink)}
+#pcGf .pgf-lb:hover{border-color:#c9971c;box-shadow:0 6px 16px rgba(168,120,10,.12)}
+#pcGf .pgf-lb.on{border-color:#c9971c;background:rgba(245,191,42,.12);box-shadow:0 0 0 2px rgba(201,151,28,.25)}
+#pcGf .pgf-lb img{max-width:86%;max-height:34px;object-fit:contain}
+#pcGf .pgf-lb span{font-size:11.5px;color:#8a6100;font-weight:700;max-width:100%;text-align:center;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+html.pch[data-theme="dark"] #pcGf .pgf-lb span{color:#e2c98a}
+#pcGf .gflcr{font-size:11px;color:var(--sub);line-height:1.6;margin:16px 2px 0}
+#pcGf .gflcr a{color:var(--sub)}
+#pcGf .pgf-lbig{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 12px;border:1.5px solid #e2c98a;border-radius:14px;padding:8px 12px;margin-bottom:10px}
+#pcGf .pgf-lbig img{max-width:150px;max-height:30px;object-fit:contain}
+#pcGf .pgf-lbig b{color:#8a6100;font-size:14px}
+html.pch[data-theme="dark"] #pcGf .pgf-lbig b{color:#e2c98a}
+#pcGf .pgf-lbig .gflcr{margin:0;text-align:center;flex-basis:100%}
+#pcGf .pgf-lbig .gflt{font-size:20px}
+#pcGf .pgf-lsw{max-height:212px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-right:2px}   /* 매장 다섯 곳쯤 보이고 지도가 화면 안에 (배치도 6b) */
+#pcGf .pgf-ls{min-height:40px;padding:7px 12px}
+#pcGf .pgf-map{margin-top:10px}
+#pcGf .pcs-cap{font-size:12.5px;color:var(--sub);line-height:1.5;margin:6px 2px 0}
+
+/* ── 좁은 PC (641~1180) ── */
+@media (max-width:1180px) and (min-width:641px){
+  #pcGf .pcs-cols{grid-template-columns:280px minmax(0,1fr)}
+  #pcGf .pcs-r{grid-column:1/-1;position:static}
+  #pcGf .pgf-kinds{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #pcGf .pgf-lg{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+/* ── 폰 (412 기준) ── */
+@media (max-width:640px){
+  #pcGf .pgf-lsw{max-height:none;overflow:visible}
+  #pcGf .pgf-tipsL{display:none}
+  #pcGf .pgf-tm{display:block;padding:14px 12px 0}
+  #pcGf .pgf-tm .pcs-pn{padding:14px}
+  #pcGf .pgf-tm h3{margin:0 0 9px;font-size:16px;font-weight:900;display:flex}
+  #pcGf .pgf-kinds{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  #pcGf .pgf-k{padding:12px}
+  #pcGf .pgf-k b{font-size:15px}
+  #pcGf .pgf-loc{position:static;max-width:100%;margin-bottom:2px}
+  #pcGf .pgf-lg{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  #pcGf .pgf-lc{gap:5px}
+  #pcGf .pgf-lc button{font-size:12px;padding:7px 2px}
+  #pcGf .pgf-ch h2{font-size:18px}
+}
