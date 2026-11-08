@@ -93,7 +93,7 @@ root.innerHTML=
  + '<section class="ph-sec" id="phPkg"><div class="ph-sh"><h2 id="phPkgT"></h2><button type="button" class="ph-more" id="phPkgAll"></button></div>'
  +   '<div class="ph-car"><button type="button" class="ph-arr" id="phPv">◀</button><div class="ph-track" id="phTk"></div><button type="button" class="ph-arr" id="phNx">▶</button></div></section>'
  + '<div class="ph-appw"><section class="ph-appb" id="phApp"><img class="ph-ai" src="icon-192.png" alt=""><div class="ph-tx"><h2 id="phAppT"></h2><p id="phAppP"></p></div>'
- +   '<div class="ph-dl"><div><span class="ph-play" role="img" aria-label="Google Play"><span class="ph-tri" aria-hidden="true">▶</span><span><small>GET IT ON</small>Google Play</span></span><div class="ph-ios" id="phIos"></div></div><div class="ph-qr" id="phQr"><div></div></div></div></section></div>'
+ +   '<div class="ph-dl"><div><img class="ph-gp" id="phGp" src="home/img/gplay/light/ko.png" alt="Google Play" width="646" height="250"><div class="ph-ios" id="phIos"></div></div><div class="ph-qr" id="phQr"><div></div></div></div></section></div>'
  +'</main>'
  +'<footer class="ph-foot"><div class="ph-fin"><nav class="ph-flinks" id="phFl"></nav><div class="ph-finfo" id="phFi"></div><div class="ph-fcred" id="phFc"></div><div class="ph-fbot"><span id="phCopy"></span><span class="ph-ver" id="phVer"></span></div></div></footer>';
 D.body.insertBefore(root,D.body.firstChild);
@@ -190,7 +190,8 @@ window.addEventListener("hashchange",navOn); navOn();
 
 // ── 앱 받기 ──
 var QRU="https://navi.moneypuzzle.co.kr/?install=1";   // 앱 공유 창의 「앱 설치」 주소와 같음
-function appPaint(){ $("phAppT").textContent=L6(TX.app); $("phAppP").textContent=L6(TX.appp); $("phIos").textContent=L6(TX.ios);
+function appPaint(){ try{ var gp=$("phGp"); if(gp) gp.src="home/img/gplay/light/"+({ko:"ko",en:"en",ja:"ja",zhs:"zh-cn",zht:"zh-tw",es:"es"}[window.LANG]||"en")+".png"; }catch(e){}   /* 11-09 사장님 「가」 — 구글 공식 배지 그림(언어별, play.google.com 배지 안내에서 받음) — 사장님 「라이트모드로 넣어」: 흰 바탕·검은 글자판(light/, 무채색만 밝기 뒤집음). 투어앱이 플레이 스토어에 올라가면 링크를 건다 */
+  $("phAppT").textContent=L6(TX.app); $("phAppP").textContent=L6(TX.appp); $("phIos").textContent=L6(TX.ios);
   var qr=$("phQr"); if(qr){ qr.title=L6(TX.qr); qr.setAttribute("aria-label",L6(TX.qr)); qr.setAttribute("role","img"); } }
 function qrMake(){ var qr=$("phQr"); if(!qr||qr._done) return; qr._done=1; try{ if(window.shQr) shQr(qr.firstElementChild,QRU); else qr.remove(); }catch(e){ try{ qr.remove(); }catch(x){} } }
 
