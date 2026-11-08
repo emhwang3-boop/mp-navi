@@ -1283,7 +1283,7 @@ function nextStop(){ var pl=TR.plan, box=document.getElementById("trNextBox"); i
     s.rows.forEach(function(r){ if(!pick&&r.x&&!r.lunch&&r.act!==2&&r.t+(r.st||r.x.stay)>nm0) pick=r.x; }); });
   if(!pick){ for(var i=0;i<pl.days.length&&!pick;i++){ var d=pl.days[i]; if(d.date>=today&&d.stops.length) pick=pl.pool[d.stops[0]]; } }
   if(!pick) for(i=0;i<pl.days.length&&!pick;i++) if(pl.days[i].stops.length) pick=pl.pool[pl.days[i].stops[0]];
-  if(!pick) return; box.dataset.p="next"; box.innerHTML='<div class="item"><div class="t xtrow"><span>➡ '+esc(nm(pick))+'</span>'+nbX()+'</div><div class="d">'+esc(L()?(pick.addr_en||pick.addr||""):(pick.addr||""))+'</div>'+linksTo(pick.ko,pick.lat,pick.lng,null,pick.addr)+'</div>'; }
+  if(!pick) return; box.dataset.p="next"; box.innerHTML='<div class="item"><div class="t xtrow"><span>➡ '+esc(nm(pick))+'</span>'+nbX()+'</div><div class="d">'+esc(L()?(pick.addr_en||pick.addr||""):(pick.addr||""))+'</div>'+linksTo(pick.ko,pick.lat,pick.lng,null,pick.addr,0,null,(window.txEn?txEn(pick):""))+'</div>'; }
 // 「다음 갈 곳」·「공유」 칸 접기 (사장님 11-07) — 칸 맨 윗줄 오른쪽 공통 — 단추 · 같은 툴바 단추를 다시 눌러도 접힌다
 //   접기 = 칸 비우기(repAgain 은 빈 칸을 「닫힘」으로 본다) · box.dataset.p = 지금 열린 칸(next·share) · GS.view="off" = 가이드 목록 받는 중이던 것이 다시 그리지 않게
 function nbX(){ return window.XTG?XTG.html(true,'data-nbx="1"'):""; }
@@ -1335,7 +1335,7 @@ function eatLine(c){ var kd=c.src==="near"?(L()?(c.cat_en||kindX(c.kind)):String
     +(c.srcs&&c.srcs.length?'<span class="tesrc">'+MPIMG("mi_doc",MIS)+(c.url&&/^https:\/\//.test(c.url)?'<a href="'+esc(c.url)+'" target="_blank" rel="noopener">':'')+esc(c.srcs.map(function(q){ return LP(q); }).join(" · "))+(c.url?'</a>':'')+'</span>':'')
     +(c.note?'<span class="tmemo">'+esc(c.note)+'</span>':'')+(c.src==="ad"&&LD(c)?'<span class="ttip">'+esc(LD(c))+'</span>':''); }
 function eatLinks(c){ var t=String(c.tel||"").replace(/\s/g,""), tl=t?'<a class="tel" href="tel:'+esc(telIntl(t))+'">'+MPIMG("mi_phone",MIS)+esc(L()?telIntl(t).replace("-"," "):t)+'</a>':"";
-  return tl+linksTo(c.ko,c.lat,c.lng,c.ko,c.addr); }
+  return tl+linksTo(c.ko,c.lat,c.lng,c.ko,c.addr,0,null,(window.txEn?txEn(c):"")); }
 var EATC={};
 function eatList(mk,anchor){ var pl=TR.plan, rc=pl.recs&&pl.recs[mk];
   if(!rc||(anchor&&rc.ak!==anchor.k)) return '<span class="d">'+T("근처 식당 찾는 중…","Finding places to eat nearby…")+'</span>';
@@ -2831,7 +2831,7 @@ function natPostHtml(pl,di,X,post,prevK){ var h='', pk=prevK, pn=X.arr.filter(fu
 function nightCity(pl,di){ if(pl.mc){ var d=pl.days[di], nc=d.nc!=null?d.nc:d.c; return nc>=0?pl.cities[nc]:null; } var arr=pl.days[di].stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), H=REPH||pl.H, p=H&&!H.here?H:arr[arr.length-1]; if(!p) return null;
   var b=null, bd=1e9; CITYNM.forEach(function(c){ var q=km(p,{lat:c[7],lng:c[8]}); if(q<bd){ bd=q; b=c; } }); return b&&bd<=40?(function(){ var o=nmOf(b); o.lat=b[7]; o.lng=b[8]; return o; })():null; }
 function nightHotel(pl,di,ci){ if(pl.mc) return ci!=null&&ci>=0?hotelPt(pl,ci):null; var H=REPH||pl.H; return H&&!H.here?H:null; }
-function taxiBtn(h){ try{ return (typeof FG==="function"&&FG())?(window.krideL?krideL(h.ko,h.addr||""):""):(window.kakaoTL?kakaoTL(h.ko,h.addr||""):""); }catch(e){ return ""; } }
+function taxiBtn(h){ try{ return (typeof FG==="function"&&FG())?(window.krideL?krideL(h.ko,h.addr||"",0,(window.txEn?txEn(h):"")):""):(window.kakaoTL?kakaoTL(h.ko,h.addr||""):""); }catch(e){ return ""; } }
 function nightHtml(pl,di,ci){ var c=pl.mc?(ci!=null&&ci>=0?pl.cities[ci]:null):nightCity(pl,di), hp=nightHotel(pl,di,ci); if(pl.mc&&!c) return ""; if(hp) return "";   // 11-08 사장님 「삭제한다」 — 숙소를 정한 밤 칸은 「숙소 도착」 줄과 겹쳐 없앰 (안 정했으면 「숙소 찾기」 칸만 남김)
   var cn=c?cnm(c):"", hn=hp?ptNm(hp):T5(NX6.nightX);
   return '<div class="tnight'+(hp?'':' no')+'" data-html2canvas-ignore><b>🌙 '+esc(gTxt(NX6.night,{n:di+1,c:cn||"—",h:hn}))+'</b>'
@@ -3178,7 +3178,7 @@ function nowAct(v,b){ var N=null; try{ N=nowState(); }catch(e){} var pq=LIVE.pq,
   if(v==="stop"){ NOWS.stop=NOWS.stop?0:1; if(pq&&pq.t==="stay"){ delete LIVE.pq; liveSave(); } nowPaint(); return; }
   if(v==="go"){ var t=N&&(N.going?N.going.x:N.nxt&&N.nxt.x); if(!t) return; try{ ntap("_trip","now_route"); }catch(z){}
     if(window.PLACES&&PLACES[t.k]&&!/^pin_/.test(t.k)&&typeof placeShow==="function"){ try{ placeShow(t.k); var rs=document.getElementById("res"); if(rs) rs.scrollIntoView({block:"start",behavior:"smooth"}); }catch(z){} return; }
-    var g=document.getElementById("trNowGo"); if(g) g.innerHTML='<div class="tnl"><b>➡ '+esc(nm(t))+'</b><br>'+(typeof linksTo==="function"?linksTo(t.ko,t.lat,t.lng,null,t.addr):"")+'</div>'; nowFit((document.getElementById("trNow")||{}).offsetHeight||0); return; }
+    var g=document.getElementById("trNowGo"); if(g) g.innerHTML='<div class="tnl"><b>➡ '+esc(nm(t))+'</b><br>'+(typeof linksTo==="function"?linksTo(t.ko,t.lat,t.lng,null,t.addr,0,null,(window.txEn?txEn(t):"")):"")+'</div>'; nowFit((document.getElementById("trNow")||{}).offsetHeight||0); return; }
   if(v==="tm"||v==="cx"){ if(!N) return; var ks=remainKeys(N); r=v==="tm"?liveMoveSet(N.L.di,ks):liveCancelSet(N.L.di,ks); NOWS.stop=0; nowMsgSet(resMsg(r,v)); liveSave(); liveChanged("stop"); return; }
   if(!pq) { nowPaint(); return; }
   if(v==="more"&&pq.t==="stay"){ rec=liveRecs(pq.d,1); if(rec[pq.k]) rec[pq.k].u=Date.now()+STAYQ; delete LIVE.pq; liveSave(); try{ ntap("_trip","stay_more"); }catch(z){} liveChanged("more"); return; }
@@ -3260,7 +3260,7 @@ function ppHtml(){ var pl=TR.plan, s=PPS; if(!pl||!s) return ""; var h='', ai=(p
       +(c.srcs&&c.srcs.length?'<div class="d">'+MPIMG("mi_doc",MIS)+esc(c.srcs.map(function(q){ return LP(q); }).join(" · "))+'</div>':'')
       +(c.rating?'<div class="d">'+esc(T5(PP6.rt))+' ★'+(+c.rating).toFixed(1)+(c.n?' ('+c.n+')':'')+'</div>':'')
       +(Array.isArray(c.oh)&&c.oh.length&&pl.days[s.di]?(function(){ var dt=new Date(pl.days[s.di].date+"T00:00:00Z"); return '<div class="pph"><b>'+esc(gTxt(PP6.hrs,{d:dateTxt(dt)}))+'</b> '+esc(efHrs(c,dt))+'</div>'; })():'')   // 구글 평점·영업시간 (11-07)
-      +'<div class="d">'+esc(L()?(c.addr_en||c.addr||""):(c.addr||""))+'</div>'+telLine(c.tel)+linksTo(c.ko,c.lat,c.lng,c.ko,c.addr)+'<div class="ppr">'+rsvLink(c)+'</div></div>';   // 예약은 아웃링크 (11-07)
+      +'<div class="d">'+esc(L()?(c.addr_en||c.addr||""):(c.addr||""))+'</div>'+telLine(c.tel)+linksTo(c.ko,c.lat,c.lng,c.ko,c.addr,0,null,(window.txEn?txEn(c):""))+'<div class="ppr">'+rsvLink(c)+'</div></div>';   // 예약은 아웃링크 (11-07)
     return h; }
   var x=s.x||pl.pool[s.k]; if(!x) return ""; var p=(!x.pin&&window.PLACES&&PLACES[s.k])||x, d=pl.days[s.di], dt=d?new Date(d.date+"T00:00:00Z"):null, nmx=nm(x);
   h='<div class="item"><div class="cph" hidden></div><div class="t">'+(x.pin?MPICO("mi_pin",nmx,MIS):esc(nmx))+'</div>'+(x.pin&&L()&&x.en!==x.ko?'<div class="d">'+esc(x.ko)+'</div>':'')+(!x.pin?tipTag(p):'')
@@ -3273,7 +3273,7 @@ function ppHtml(){ var pl=TR.plan, s=PPS; if(!pl||!s) return ""; var h='', ai=(p
     else if(needCheck(x)) hr.push(T("운영 시간·휴무일 확인 필요","Check opening hours/closures"));
     if(hr.length) h+='<div class="pph"><b>'+esc(gTxt(PP6.hrs,{d:dateTxt(dt)}))+'</b> '+esc(hr.join(" · "))+'</div>'; }
   if(aiTx(ai[s.k])) h+='<div class="ttip">'+MPIMG("mi_tip",MIS)+'<b>'+esc(T5(PP6.ai))+'</b> '+esc(aiTx(ai[s.k]))+'</div>';
-  h+='<div class="d">'+esc(L()?(p.addr_en||p.addr||""):(p.addr||""))+'</div>'+telLine(p.tel||x.tel)+linksTo(p.ko||x.ko,x.lat,x.lng,x.pin?x.ko:null,p.addr||x.addr)+'</div>';
+  h+='<div class="d">'+esc(L()?(p.addr_en||p.addr||""):(p.addr||""))+'</div>'+telLine(p.tel||x.tel)+linksTo(p.ko||x.ko,x.lat,x.lng,x.pin?x.ko:null,p.addr||x.addr,0,null,(window.txEn?txEn((p.ko?p:x)):""))+'</div>';
   return h; }
 function ppOpen(o){ var old=document.getElementById("trPp"); if(old) old.remove(); PPS=o; var b=document.createElement("div"); b.id="trPp"; b.className="trpop"; b.onclick=function(e){ if(e.target===b) b.remove(); };
   var draw=function(){ var h=ppHtml(); if(!h){ b.remove(); return; } b.innerHTML='<div class="ppbox"><button type="button" class="ppx" aria-label="'+esc(T5(PP6.x))+'" onclick="this.closest(\'.trpop\').remove()">✕</button>'+h+'</div>';
