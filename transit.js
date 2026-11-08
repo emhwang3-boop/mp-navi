@@ -155,7 +155,7 @@ function css(){ if(document.getElementById("tkCss")) return; var s=document.crea
   +".tkg{margin:16px 0 0}.tkg>h4{font-size:15.5px;font-weight:900;margin:0 2px 6px;display:flex;align-items:center}"
   +".tko{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:8px 0;overflow:hidden}.tko.hl{box-shadow:0 0 0 2px #2f9e44}"
   +".tkoh{padding:10px 10px 10px 12px;cursor:pointer}.tkom{flex:1;min-width:0}.tkom>b{font-size:16px}.tkom .s{color:var(--sub);font-size:13px;margin-top:2px;line-height:1.45}.tkom .c{margin-top:5px;font-size:13px;line-height:1.75}"
-  +".tkos{border-top:1px solid var(--line);padding:8px 12px 12px;font-size:14px;line-height:1.55}.tkst{display:flex;gap:8px;padding:5px 0}.tkst>.i{flex:0 0 22px;text-align:center;line-height:1.3}.tkst>.t{flex:1;min-width:0}.tkst .s{color:var(--sub);font-size:12.5px}"
+  +".tkos{border-top:1px solid var(--line);padding:8px 12px 12px;font-size:14px;line-height:1.55}.tkst{display:flex;gap:8px;padding:5px 0}.tkst>.i{flex:0 0 22px;text-align:center;line-height:1.3}.tkst>.t{flex:1;min-width:0}.tkst .s{color:var(--sub);font-size:12.5px}.item .tkst>.t{font-weight:400;font-size:inherit}.item table.tktt{max-width:640px}"   // 검색 결과 카드(.item .t = 카드 제목 굵게)에 넣을 때 칸 글자가 굵어지지 않게 (11-08)
   +".tkst img.miic{height:18px;width:auto}.tklk a{display:inline-block;margin:8px 8px 0 0;border:1px solid #1a73e8;color:#1a73e8;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:800;text-decoration:none}"
   +".tklk a.kride{border-color:#f59f00;color:#c2410c}.tkno{color:var(--sub);font-size:13.5px;margin:2px 4px 4px;line-height:1.5}.tkbad{display:inline-block;padding:1px 7px;border-radius:6px;color:#fff;font-weight:800;font-size:12px;vertical-align:1px;margin-right:4px;white-space:nowrap}"
   +".tkft{color:var(--sub);font-size:11.5px;margin:18px 2px 0;line-height:1.5}"
@@ -256,7 +256,8 @@ function ttHtml(l,id,p){ var a=kx(l,"s"), b=kx(l,"e"); if(!a||!b) return ""; var
 function kday(add){ return new Date(Date.now()+9*3600e3+(add||0)*864e5).toISOString().slice(0,10).replace(/-/g,""); }
 function ttGet(a,b,d){ var TC=window._trC||(window._trC={}), ck=a+"|"+b+"|"+d;   // index.html 열차 칸과 같은 캐시
   return (TC[ck]||(TC[ck]=fetch(HUB+"/train?dep="+a+"&arr="+b+"&date="+d).then(function(r){ return r.json(); }).catch(function(e){ delete TC[ck]; throw e; }))).then(function(j){ return ((j&&j.ok&&j.items)||[]).filter(function(x){ return /^\d{4}$/.test(x.dp)&&/^\d{4}$/.test(x.ar); }).sort(function(p,q){ return p.dp<q.dp?-1:1; }); }); }
-function ttLoad(key,a,b){ Promise.all([ttGet(a,b,kday(0)),ttGet(a,b,kday(1)).catch(function(){ return []; })]).then(function(r){ S.TT[key]={st:"ok",d:r[0],m:r[1]}; paint(); },function(){ S.TT[key]={st:"err"}; paint(); }); }
+function ttLoad(key,a,b){ var st=S, rp=function(){ if(st===IC) icPaint(); else paint(); };   // 부른 쪽(교통 창 · 검색 결과 카드 IC)에 시간표를 넣고 그쪽을 다시 그린다 (11-08)
+  Promise.all([ttGet(a,b,kday(0)),ttGet(a,b,kday(1)).catch(function(){ return []; })]).then(function(r){ st.TT[key]={st:"ok",d:r[0],m:r[1]}; rp(); },function(){ st.TT[key]={st:"err"}; rp(); }); }
 function book(p,g){ var L=function(h,t){ return '<a href="'+h+'" target="_blank" rel="noopener">'+t+'</a>'; };
   if(g==="rail") return railGr(p)==="SRT"?L("https://etk.srail.kr/",MPIMG("mi_ticket",MIS)+E("bkS")):L("https://www.letskorail.com/",MPIMG("mi_ticket",MIS)+E("bkK"));
   if(g==="bus") return p.k===6?L("https://txbus.t-money.co.kr/",MPIMG("mi_ticket",MIS)+E("bk6")):L("https://www.kobus.co.kr/",MPIMG("mi_ticket",MIS)+E("bk5"));
@@ -427,6 +428,30 @@ function wantApply(){ var w=S.want, R=S.R; S.want=""; if(!w||!R) return;
   if(w==="a0"&&!(R.air||[]).length) w="";
   if(w){ S.open[w]=true; S.jump=w; } }
 function wantJump(){ var w=S.jump; S.jump=""; if(!w) return; var el=document.getElementById("tk_"+w); if(el) setTimeout(function(){ try{ el.scrollIntoView({block:"start"}); }catch(e){} },30); }
-window.TRANSIT={open:open,close:close,go:go,state:function(){ return S; }};
+// ── 검색 결과 카드 「내 위치 ↔ 장소」 — 60km 넘는 육지 (사장님 11-08 밤) · index.html routePlan·distShow 가 부른다 ──
+//  · 교통 창과 같은 허브 /ntransit(같은 구간·같은 언어 10분 캐시 — 여기서도 10분 기억)·같은 칸(card): 대중교통(있을 때) · 고속·시외버스 · KTX·SRT (· 비행기가 있으면)
+//  · 칸을 누르면 그 자리에서 펼친다(역까지 가는 길·열차 시간표·예매 단추 — 교통 창과 같음) · 길은 새로 짜지 않는다 · 카드 아래 바깥 지도 단추는 그대로
+//  · 그릴 때만 S 를 이 카드 상태(IC)로 잠깐 바꿔 교통 창의 그리기 함수를 그대로 쓴다
+var IC=null, ICC={};
+function icHtml(){ var R=S.R; if(S.st==="ld") return '<div class="tkno">'+E("route")+'</div>'; if(S.st!=="ok"||!R) return "";
+  if(/^(cap|busy|relay)$/.test(R.od)) return '<div class="tkno">'+E(R.od==="cap"?"cap":"busy")+'</div>';
+  var grp=function(ic,k,list,g,noK){ return '<div class="tkg"><h4>'+MPIMG(ic,MIS)+E(k)+'</h4>'+(list.length?list.map(function(p,i){ return card(g.charAt(0)+i,g,p); }).join(""):'<div class="tkno">'+E(noK)+'</div>')+'</div>'; };
+  var h=(R.t||[]).length?grp("mi_subway","gT",R.t,"t","nT"):"";
+  h+=grp("mi_bus","gB",R.bus||[],"bus","nB")+grp("mi_train","gR",R.rail||[],"rail","nR");
+  if((R.air||[]).length) h+=grp("mi_plane","gA",R.air,"air","nR");
+  return h+'<div class="d" style="font-size:11px;text-align:right;margin:4px 0 8px">powered by www.ODsay.com</div>'; }
+function icPaint(){ var Q=IC; if(!Q||!Q.el||!document.body.contains(Q.el)) return; var s0=S; S=Q; try{ Q.el.innerHTML=icHtml(); }catch(e){} S=s0; }
+function ic(el,ka,kb){ var p=PLACES[ka], q=PLACES[kb]; if(!el||!p||!q||!(+p.lat)||!(+q.lat)) return;
+  var a=[+p.lat,+p.lng], b=[+q.lat,+q.lng], lg=LANG, ck=a[0].toFixed(3)+","+a[1].toFixed(3)+">"+b[0].toFixed(3)+","+b[1].toFixed(3)+"|"+lg;
+  var Q=IC={el:el,from:ka==="__me"?{t:"me"}:{t:"p",k:ka,nm:LN(p),ko:p.ko||"",lat:a[0],lng:a[1]},to:{k:kb,nm:LN(q),ko:q.ko||"",lat:b[0],lng:b[1],sub:LANG==="ko"?(q.addr||""):(q.addr_en||q.addr||"")},
+    a:a,at:kstMin(),st:"ld",R:null,rl:lg,open:{},TT:{},W:null};
+  var done=function(j){ if(IC!==Q) return; if(j&&j.ok){ Q.R=j; Q.st="ok"; } else Q.st="err"; icPaint(); };
+  var c=ICC[ck]; if(c&&Date.now()-c.t<6e5) return done(c.j);
+  icPaint();
+  fetch(HUB+"/ntransit?a="+a[0].toFixed(6)+","+a[1].toFixed(6)+"&b="+b[0].toFixed(6)+","+b[1].toFixed(6)+"&lang="+encodeURIComponent(lg)).then(function(r){ return r.json(); })
+    .then(function(j){ if(j&&j.ok) ICC[ck]={t:Date.now(),j:j}; done(j); try{ ntap("_transit","card_far"); }catch(e){} },function(){ done(null); }); }
+document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("[data-tk]"); if(!t||!IC||!IC.el||!IC.el.contains(t)) return; e.preventDefault(); e.stopPropagation();
+  if(t.dataset.tk==="tg"){ var id=t.dataset.id; IC.open[id]=!IC.open[id]; icPaint(); } });
+window.TRANSIT={open:open,close:close,go:go,ic:ic,state:function(){ return S; }};
 if(/[?&]transit=1/.test(location.search)) setTimeout(open,300);
 })();
