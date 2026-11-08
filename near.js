@@ -986,5 +986,23 @@ function gRegSend(){ var L=LG6, M=document.getElementById("gMsg"), set=function(
   .catch(function(){ if(go) go.disabled=false; set(L({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
 window.GUIDEREG=gReg;
 window.NEAR={open:open,close:close,review:openReview,gedit:openGedit,tdone:openTdone,state:function(){ return S; }};
+// PC 홈페이지(home/pc_guide.js · pc_pkg.js, 11-08) — 가이드 인솔을 PC 배치로 그릴 때 이 파일의 요금·검사·주문·확인창을 그대로 쓴다 (폰 앱은 PC_HOME 이 없어 그대로)
+//   pick = 가이드 고르기(앱 「요청하기」와 같음) · send = 앱 「보내기 및 결제」 검사(gbSend, 칸 id 같음) → 통과하면 앱 확인 창(gconf → 결제 → 확정)
+if(window.PC_HOME) window.NEARIG={GBK:GBK,GBT:GBT,LANGS:GLANG6,calc:gbkCalc,modeTxt:gbModeTxt,F:gbF,won:gbWon,day:gbDay,priceBox:gbPriceBox,grab:gbGrab,
+  title:IG_CHIP6,desc:IG_DESC6,noteT:IGN_T,note:igNote,payT:PAYB6,cx:CX6,name:igName,badge:igBadge,stars:igStars,langName:igLangName,region:igRegion,years:igYears,css:css,perf:TG_PERF,tgPick:tgPick,
+  photo:function(g){ return g&&g.photo?HUB+"/guide/photo?id="+encodeURIComponent(g.id):""; },
+  pick:function(g,lang){ IG.lang=lang||""; IG.gobj=g; IG.gid=g.id; IG.view="req"; IG.busy=0; gbInit(); return IG.bk; },
+  send:function(){ var o=IG; if(!o.bk||!o.gobj||o.busy) return false; gbSend(); if(o.view!=="gconf") return false;
+    open("ig"); IG.lang=o.lang; IG.gobj=o.gobj; IG.gid=o.gid; IG.bk=o.bk; IG.busy=0; IG.view="gconf"; paint(); gbTop(); return true; },
+  editAsk:function(){ open("ig"); IG.view="editask"; IG.busy=false; paint(); },
+  state:function(){ return IG; }};
+// PC 홈페이지 「숙소」 화면(home/pc_stay.js, 11-08 4a) — 앱 숙소 찾기(종류 넷·카카오 숙박+관광공사 표시·구글 별점·한옥 먼 곳)와 예약 창(Agoda·Booking.com·Trip.com)을 그대로 쓴다 (폰 앱은 PC_HOME 이 없어 그대로)
+if(window.PC_HOME) window.NEARST={tabs:KINDS.st.tabs,fetch:fetchKind,km:km,css:css,
+  book:function(nm,lat,lng){ css(); BK={nm:String(nm||""),lat:+lat,lng:+lng,key:""}; bookOpen(); },
+  tap:function(t){ try{ ntap(t.kind||t.c.toLowerCase(),KINDS.st.e); }catch(e){} }};
+// PC 홈페이지 「편의시설」·「긴급」 화면(home/pc_near.js · pc_sos.js, 11-08 4b) — 앱과 같은 종류·찾는 거리(KINDS)·대사관 37곳(EMB)·받기(fetchKind, 카카오 /kplace · 음식점 구글 /gnear)·차례(sortIt)를 그대로 쓴다 (폰 앱은 PC_HOME 이 없어 그대로)
+if(window.PC_HOME) window.NEARPC={K:KINDS,EMB:EMB,MENU6:MENU6,ICON:MENU_ICON,fetch:fetchKind,km:km,css:css,embN:embN,embC:embC,embKey:embKey,embL:embL,
+  sort:function(it,t,o){ var o0=S.ord; S.ord=o||""; try{ return sortIt(it,t); }finally{ S.ord=o0; } },   // o = "r" 별점순(구글) · 그 밖 = 앱 기본(가까운 순, 음식점은 비슷한 거리면 별점)
+  tap:function(k,t){ try{ ntap(t.kind||t.c.toLowerCase(),KINDS[k].e); }catch(e){} }};
 var qm=location.search.match(/[?&]near=(am|em)/); if(qm) setTimeout(function(){ open(qm[1]); },300);
 })();
