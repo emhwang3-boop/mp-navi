@@ -1,0 +1,235 @@
+/* MosaicTrip.com 홈페이지 — AI와 자유여행 겉모양 (11-08 3b단계 · home/pc_ai.js)
+ *  · 시안 tour_site\mock\ai_1·ai_2 (1400×800) 크기·간격 · 색은 상징색 초록·보조색 노랑·회색(빨강은 경고만) · 다크는 앱 변수 그대로
+ *  · 앱 카트·일정표·AI 창의 진짜 요소를 이 칸들에 옮겨 쓴다 — 여기서는 겉모양만
+ */
+#pcAi{color:var(--ink);padding-bottom:8px}
+#pcAi [hidden]{display:none!important}
+#pcAi button{font-family:inherit}
+
+/* ── 이 화면 맨 윗줄 (66) — 제목 · 내 플랜 · 🛒 ── */
+#pcAi .pa-barw{border-bottom:1px solid var(--line);background:linear-gradient(90deg,var(--ph-gt),var(--card) 60%)}
+#pcAi .pa-bar{max-width:1400px;margin:0 auto;min-height:66px;display:flex;align-items:center;gap:8px 14px;padding:8px 24px;box-sizing:border-box;flex-wrap:wrap}
+#pcAi .pa-h1{margin:0;font-size:23px;font-weight:900;letter-spacing:-.5px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+#pcAi .pa-h1 img{width:28px;height:28px;display:block}
+#pcAi .pa-sub{font-size:14px;color:var(--sub);min-width:0}
+#pcAi .pa-br{margin-left:auto;display:flex;align-items:center;gap:12px;min-width:0}
+#pcAi .pa-plan .trpbar{margin:0;flex-wrap:nowrap;gap:10px}
+#pcAi .pa-plan .trpsel{flex:0 1 auto;font-size:14px;font-weight:700;padding:7px 10px;border-radius:10px;border:1.5px solid var(--ph-green);background:var(--card);color:var(--ink);height:38px}
+#pcAi .pa-plan .trpbt{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin:0}   /* 한 줄 단추 묶음은 같은 크기 (사장님 11-08) */
+#pcAi .pa-plan .trbtn{margin:0;border-radius:999px;padding:7px 16px;font-size:14px;font-weight:800;border:1.5px solid var(--line);background:var(--card);color:var(--ink);white-space:nowrap;text-align:center}
+#pcAi .pa-plan .trbtn.trpnew{border-color:var(--ph-green);color:var(--ph-green-d)}
+#pcAi .pa-plan .trbtn:hover{border-color:var(--ph-green)}
+#pcAi .pa-cartb{position:relative;border:0;background:none;color:var(--ink);padding:4px;margin:0 8px 0 4px;cursor:pointer;line-height:0;flex:0 0 auto}
+#pcAi .pa-cartb b{position:absolute;right:-9px;top:-5px;background:var(--ph-green);color:#fff;border-radius:999px;font-size:12px;line-height:18px;min-width:18px;text-align:center;padding:0 5px;font-weight:800;box-sizing:border-box}
+
+/* ── 세 칸 ── */
+#pcAi .pa-cols{max-width:1400px;margin:14px auto 0;padding:0 24px;box-sizing:border-box;display:grid;gap:18px;align-items:start}
+#pcAi.pa-v1 .pa-cols{grid-template-columns:300px minmax(0,1fr) 340px}
+#pcAi.pa-v2 .pa-cols{grid-template-columns:250px minmax(0,1fr) 440px}
+#pcAi .pa-l,#pcAi .pa-c,#pcAi .pa-r{min-width:0}
+#pcAi .pa-pn{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:0 2px 10px rgba(17,24,39,.04);box-sizing:border-box}
+html.pch[data-theme="dark"] #pcAi .pa-pn{box-shadow:none}
+#pcAi .pa-r{position:sticky;top:16px}   /* 오른쪽 = 내려도 따라옴 */
+#pcAi.pa-v1 .pa-cartp{max-height:calc(100vh - 32px);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#pcAi .pa-cartp.pa-fl{animation:paFl 1s ease-out 1}
+@keyframes paFl{0%{box-shadow:0 0 0 0 rgba(47,158,68,.55)}100%{box-shadow:0 0 0 14px rgba(47,158,68,0)}}
+
+/* ── ① 왼쪽 — 항공편 · 첫날 숙소 · 조건 (앱 카트 조건 칸을 옮긴 것) ── */
+#pcAi .pa-s+.pa-s{border-top:1px dashed var(--line);margin-top:14px;padding-top:12px}
+#pcAi .pa-s h3{margin:0 0 10px;font-size:16px;font-weight:900;display:flex;align-items:center;gap:8px}
+#pcAi .pa-ok{margin-left:auto;font-style:normal;font-size:12.5px;font-weight:800;color:var(--ph-green-d);background:var(--ph-gt);border-radius:999px;padding:2px 10px;white-space:nowrap}
+#pcAi .pa-f label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--sub);font-weight:700;min-width:0}
+#pcAi .pa-f select,#pcAi .pa-f input:not([type=checkbox]){font-size:13.5px;padding:7px 8px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-family:inherit;width:100%;box-sizing:border-box;min-width:0;height:38px;margin:0}
+#pcAi .pa-f .tpk{height:38px}
+#pcAi .pa-f .tpk select{height:38px;padding:6px 2px!important;font-size:14px}
+#pcAi .pa-row{display:grid;gap:8px;margin-bottom:8px}
+#pcAi .pa-row.c3{grid-template-columns:minmax(0,1.55fr) minmax(0,.85fr) minmax(0,.8fr)}
+#pcAi .pa-row.c2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+#pcAi .pa-row .trnm{font-size:11px!important}
+/* 공항 줄 — 「도착 공항 | 도착 시각」 위에 이름, 아래에 칸 (국제선·국내선은 공항에 맞춰 저절로 · 칸은 숨김) */
+#pcAi .pa-f .trapr{display:grid;grid-template-columns:minmax(0,1fr) 116px;column-gap:8px;row-gap:3px;margin:0 0 8px}
+#pcAi .pa-f .trapl{grid-column:1;grid-row:1;font-size:12px;color:var(--sub);font-weight:700}
+#pcAi .pa-f .trapt{grid-column:2;grid-row:1;font-size:12px;color:var(--sub);font-weight:700;line-height:1.35}
+#pcAi .pa-f .trapf{display:contents}
+#pcAi .pa-f .trapf>select:first-child{grid-column:1;grid-row:2}
+#pcAi .pa-f .trapf>.tpk,#pcAi .pa-f .trapf>input[type=time]{grid-column:2;grid-row:2;width:auto!important}
+#pcAi .pa-f .trapf>select[id^=trApK]{display:none}
+#pcAi .pa-note{font-size:11.5px;color:var(--sub);line-height:1.45;margin:2px 0 0}
+#pcAi .pa-f .pa-lt{white-space:nowrap}
+#pcAi .pa-f .pa-ref{font-weight:600;font-size:11px}
+#pcAi .pa-f .trck{margin-top:2px;color:var(--ink)!important;font-weight:600!important;font-size:13.5px!important}
+#pcAi .pa-f .trck input{width:16px!important;height:16px}
+#pcAi .pa-f .trsr{display:flex;gap:6px;margin-top:8px}
+#pcAi .pa-f .trsr input{flex:1}
+#pcAi .pa-f .trsr .tb{flex:0 0 40px;height:38px;border:1px solid var(--line);border-radius:10px;background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+#pcAi .pa-f .trch{margin:0}
+#pcAi .pa-f .tra{font-size:13.5px}
+
+/* ── ① 가운데 — AI에게 묻기 (앱 #aipBox 를 칸 안에) ── */
+#pcAi .pa-ask h2{margin:2px 0 12px;font-size:20px;font-weight:900;letter-spacing:-.4px}
+#pcAi #aipBox{position:static!important;inset:auto!important;z-index:auto!important;background:none!important;overflow:visible!important;color:inherit}
+#pcAi #aipBox .apin{max-width:none;margin:0;padding:0}
+#pcAi #aipBox .aptop,#pcAi #aipBox #aipDesc,#pcAi #aipBox #aipSteps{display:none!important}
+#pcAi #aipF{display:flex;align-items:center;gap:10px;height:52px;border:2px solid var(--ph-green);border-radius:26px;background:var(--card);padding:0 6px 0 18px;box-shadow:0 4px 16px rgba(47,158,68,.10);margin:0;box-sizing:border-box}
+#pcAi #aipF:focus-within{box-shadow:0 0 0 4px rgba(47,158,68,.16)}
+#pcAi #aipF .pa-qic{width:22px;height:22px;flex:0 0 auto;display:block}
+#pcAi #aipQ{flex:1 1 auto;min-width:0;width:auto;height:100%;border:0;outline:0;background:transparent;padding:0;margin:0;font-size:15.5px;border-radius:0;box-shadow:none;color:var(--ink)}
+#pcAi #aipGo{position:static;transform:none;width:auto;height:auto;flex:0 0 auto;border:0;border-radius:999px;background:var(--ph-green);color:#fff;padding:9px 18px;font-weight:800;font-size:14px;white-space:nowrap;cursor:pointer;line-height:1.2}
+#pcAi #aipGo:hover{background:#2b8a3e}
+/* 버튼 8개 — 같은 크기 한 줄 (넘치면 pc_ai.js 가 글씨만 줄임) */
+#pcAi .pa-chips{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;margin:12px 0 2px}
+#pcAi .pa-chip{border:1.5px solid var(--ph-green);color:var(--ph-green-d);background:var(--card);border-radius:999px;padding:6px 4px;font-size:var(--pa-cf,13.5px);font-weight:800;white-space:nowrap;cursor:pointer;text-align:center;min-width:0;overflow:hidden;line-height:1.3}
+#pcAi .pa-chip:hover{background:var(--ph-gt)}
+#pcAi .pa-chip.on{background:var(--ph-green);color:#fff}
+#pcAi #aipSub{margin:8px 2px 0;font-size:13px}
+#pcAi .pa-rh{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin:14px 2px 0}
+#pcAi .pa-rh b{font-size:15px}
+#pcAi .pa-rh span{font-size:13px;color:var(--sub)}
+/* 추천 카드 — 3장씩 */
+#pcAi #aipRes{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:14px;margin-top:6px;align-items:stretch}
+#pcAi #aipRes>:not(.item){grid-column:1/-1}
+#pcAi #aipRes .apsec{margin:8px 2px -4px}
+#pcAi #aipRes .item.apc,#pcAi #aipRes .item.apk{margin:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--card);box-shadow:none;cursor:pointer;min-width:0;transition:box-shadow .15s,border-color .15s}
+#pcAi #aipRes .item.apc:hover,#pcAi #aipRes .item.apk:hover{border-color:#cfe9d5;box-shadow:0 6px 18px rgba(17,24,39,.08)}
+#pcAi #aipRes .apc .apn{font-size:15px;font-weight:900;align-items:flex-start}
+#pcAi #aipRes .apc .apno{background:var(--ph-green)}
+#pcAi #aipRes .apc .apw{font-size:13px;line-height:1.45;color:var(--ink)}
+#pcAi #aipRes .apc .d{font-size:12.5px}
+#pcAi #aipRes .apbt{margin-top:auto;padding-top:8px;justify-content:flex-end}
+#pcAi #aipRes .apmore{display:none}
+#pcAi #aipBox .apadd{background:var(--ph-green);border-color:var(--ph-green);color:#fff;font-size:13px;padding:5px 14px}
+#pcAi #aipBox .apadd.on{background:var(--ph-gt);border-color:transparent;color:var(--ph-green-d)}
+#pcAi #aipRes .apk{padding:0;overflow:hidden}
+#pcAi #aipRes .apk img{width:100%;height:118px;border-radius:0;object-fit:cover}
+#pcAi #aipRes .apk .apkb{padding:10px 12px 12px}
+#pcAi #aipRes .apk .apmore{display:none}
+/* 카드 사진 (앱 장소 사진과 같은 /gphoto · 찍은 사람·Google 표시) — 받는 동안 옅은 칸, 없거나 실패하면 칸을 접는다 */
+#pcAi .pa-ph{position:relative;overflow:hidden;background:var(--bg)}
+#pcAi #aipRes .apc .pa-ph{margin:-12px -14px 10px;height:118px;border-radius:13px 13px 0 0}
+#pcAi .pa-ph img{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
+#pcAi .pa-ph .cpa{position:absolute;right:6px;bottom:5px;max-width:calc(100% - 12px);box-sizing:border-box;font-size:10px;line-height:1.5;color:#fff;background:rgba(0,0,0,.48);border-radius:6px;padding:0 6px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pcAi .pa-ph .cpa a{all:unset;color:#fff;text-decoration:underline;cursor:pointer}   /* 앱 .item a(둥근 단추 모양)를 끈다 — 앱 장소 카드 .cph .cpa a 와 같게 */
+#pcAi .apno{background:var(--ph-green)!important}
+html.pch[data-theme="dark"] #pcAi .item a{background:var(--bg);border-color:var(--line)}   /* 앱 .item a 바탕이 밝은 색 고정이라 다크에서 글자가 안 보임 — 이 화면만 */
+#pcAi .pa-det .pa-phd{height:230px;margin:0 0 12px;border-radius:12px}
+/* 자세히 보기 — 화면 가운데 창 */
+#pcAi .pa-det>.pa-detb{position:relative;text-align:left;width:100%;max-width:520px;max-height:86vh;overflow:auto;box-sizing:border-box;padding:18px 20px 16px}
+#pcAi .pa-det .apback{display:none}
+#pcAi .pa-det .item{margin:0;border:0;box-shadow:none;padding:0;background:none}
+#pcAi .pa-det .apn{font-size:18px;font-weight:900;margin-right:36px}
+#pcAi .pa-det .apbt{justify-content:flex-end;margin-top:12px}
+#pcAi .pa-x{position:absolute;right:8px;top:8px;width:34px;height:34px;border:0;border-radius:50%;background:var(--bg);color:var(--sub);font-size:17px;cursor:pointer}
+
+/* ── ① 오른쪽 — 내 카트 (앱 카트 그대로) ── */
+#pcAi .pa-ch{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:900;margin:0 0 10px}
+#pcAi .pa-ch span{margin-left:auto;font-size:12.5px;color:var(--sub);font-weight:700;text-align:right}
+#pcAi .pcsheet .trin{padding:0;margin:0;background:none;max-width:none;min-height:0;color:var(--ink)}
+#pcAi #trBox .trtop{display:none}
+#pcAi #trBox .trsync{margin:0 0 10px;font-size:12.5px}
+#pcAi #trBox #trOpenRep{width:100%;margin:0 0 8px!important;border-color:var(--ph-green);color:var(--ph-green-d)}
+#pcAi #trBox .trl{margin:0}
+#pcAi #trBox .tri{gap:8px;padding:7px 10px;margin:0 0 6px;border-radius:12px;align-items:flex-start}
+#pcAi #trBox .trh{padding-top:1px;font-size:16px}
+#pcAi #trBox .trn{width:22px;height:22px;min-width:22px;border-radius:11px;background:var(--ph-green);color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;padding:0;margin-top:1px;box-sizing:border-box}
+#pcAi #trBox .trt{font-size:14px;line-height:1.4}
+#pcAi #trBox .trsw{margin-top:4px;gap:5px;flex-wrap:nowrap}
+#pcAi #trBox .trswl{font-size:0;gap:0}
+#pcAi #trBox .trswl img{display:none}
+#pcAi #trBox .trswl select{font-size:12px;padding:2px 2px 2px 6px;border-radius:999px;max-width:92px}
+#pcAi #trBox .trfxb,#pcAi #trBox .trfx{font-size:11.5px;white-space:nowrap}
+#pcAi #trBox .trfxb{padding:3px 8px}
+#pcAi #trBox .trfxw{min-width:0}
+#pcAi #trBox .trx{font-size:15px;padding:0 2px}
+#pcAi #trBox #trClearAll{margin:4px 0 0!important;padding:5px 12px;font-size:12.5px}
+#pcAi #trBox .trin>.d{font-size:12px;line-height:1.45}
+#pcAi #trBox .psbox{margin:10px 0 0}
+#pcAi #trBox #trPlan{position:sticky;bottom:6px;z-index:2;margin-top:12px;border-radius:999px;font-size:16.5px;font-weight:900;padding:13px 10px;box-shadow:0 6px 16px rgba(47,158,68,.25);background:var(--ph-green);border-color:var(--ph-green)}
+#pcAi #trBox #trPlan:disabled{box-shadow:none}
+#pcAi #trBox #trPlanS{font-size:13px;padding:7px 10px}
+
+/* ── ② 왼쪽 — 날짜 목록 + 단추 5개 (따라옴) ── */
+#pcAi.pa-v2 .pa-l{position:sticky;top:16px}
+#pcAi .pa-days{display:flex;flex-direction:column;max-height:calc(100vh - 32px);padding:16px 14px}
+#pcAi .pa-days h3{margin:0 4px 10px;font-size:16px;font-weight:900}
+#pcAi .pa-dl{overflow:auto;min-height:44px;flex:0 1 auto;scrollbar-width:thin;overscroll-behavior:contain}
+#pcAi .pa-dli{display:flex;justify-content:space-between;align-items:center;gap:6px;width:100%;border:0;background:none;padding:10px;margin:0 0 4px;border-radius:10px;font-size:14px;color:var(--ink);cursor:pointer;text-align:left;box-sizing:border-box}
+#pcAi .pa-dli span{white-space:nowrap}
+#pcAi .pa-dli b{color:var(--ph-green-d);margin-right:2px}
+#pcAi .pa-dli i{font-style:normal;font-size:12.5px;color:var(--sub);white-space:nowrap}
+#pcAi .pa-dli:hover{background:var(--bg)}
+#pcAi .pa-dli.on{background:var(--ph-gt);font-weight:800}
+#pcAi .pa-lb{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:14px;flex:0 0 auto}
+#pcAi .pa-lbt{width:100%;max-width:190px;border:1.5px solid var(--ph-green);background:var(--card);color:var(--ph-green-d);border-radius:999px;padding:8px 10px;font-size:14px;font-weight:800;cursor:pointer;text-align:center;line-height:1.3}
+#pcAi .pa-lbt:hover{background:var(--ph-gt)}
+#pcAi .pa-lbt.g{border-color:var(--line);color:var(--ink)}
+#pcAi .pa-lbt:disabled{opacity:.6;cursor:default}
+
+/* ── ② 가운데 — 앱 일정표 그대로 (맨 위 단추 줄·날마다 작은 지도는 왼쪽·오른쪽 칸이 맡음) ── */
+#pcAi #trRep .trtop,#pcAi #trRep .trbar,#pcAi #trRep .trgrv{display:none}
+#pcAi #trRep .tmap{display:none}
+#pcAi #trRep .tday{margin:0 0 14px;padding:14px 16px 10px}
+#pcAi #trRep .tdh{margin:-14px -16px 4px;padding:14px 16px 8px}
+#pcAi #trRep .tdays .trbtn{border-color:var(--ph-green);color:var(--ph-green-d);background:var(--card);font-weight:800}
+#pcAi #trRep .tdhint{margin:0 4px 10px}
+#pcAi #trRep #trNextBox:not(:empty){margin:0 0 12px}
+
+/* ── ② 오른쪽 — 그날 큰 지도 (따라옴) ── */
+#pcAi .pa-map{padding:10px}
+#pcAi .pa-mw{position:relative;border-radius:12px;overflow:hidden;background:var(--ph-sea,#96b2c4)}
+#pcAi .pa-mi img{display:block;width:100%;height:auto}
+#pcAi .pa-mno{aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;box-sizing:border-box;color:var(--sub);font-size:14px;background:var(--bg)}
+#pcAi .pa-mo{position:absolute;inset:0;pointer-events:none}
+#pcAi .pa-mo b{position:absolute;left:0;top:0;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:#fff;border:3px solid #0ea5e9;color:#0284c7;font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center;box-sizing:border-box;opacity:0;transform:scale(.6);transition:opacity .15s,transform .15s;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+#pcAi .pa-mo b.on{opacity:1;transform:scale(1.35)}
+#pcAi .pa-mc{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;font-size:13.5px;margin:8px 4px 2px;line-height:1.45}
+#pcAi .pa-mc b{color:var(--ph-green-d);white-space:nowrap}
+#pcAi .pa-mc small{flex:1 1 100%;text-align:right;font-size:12px;color:var(--sub)}
+
+/* ── 좁은 PC (641~1180) — 두 칸 ── */
+@media (max-width:1180px) and (min-width:641px){
+  #pcAi .pa-sub{flex:1 1 100%;order:3}
+  #pcAi.pa-v1 .pa-cols{grid-template-columns:280px minmax(0,1fr)}
+  #pcAi.pa-v1 .pa-l{grid-column:1;grid-row:1}
+  #pcAi.pa-v1 .pa-r{grid-column:1;grid-row:2;position:static}
+  #pcAi.pa-v1 .pa-c{grid-column:2;grid-row:1/span 2}
+  #pcAi.pa-v1 .pa-cartp{max-height:none}
+  #pcAi .pa-chips{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #pcAi.pa-v2 .pa-cols{grid-template-columns:220px minmax(0,1fr)}
+  #pcAi.pa-v2 .pa-r{display:none}
+  #pcAi.pa-v2 #trRep .tmap{display:block}
+}
+/* ── 폰 (412 기준) — 한 줄로 쌓는다 · 일정표는 날마다 지도를 그 자리에(앱처럼) ── */
+@media (max-width:640px){
+  #pcAi .pa-bar{padding:10px 14px;gap:6px 10px}
+  #pcAi .pa-h1{font-size:19px}#pcAi .pa-h1 img{width:24px;height:24px}
+  #pcAi .pa-sub{flex:1 1 100%;order:3;font-size:13px}
+  #pcAi .pa-br{flex:1 1 100%;order:4;margin-left:0}
+  #pcAi .pa-plan{flex:1;min-width:0}
+  #pcAi .pa-plan .trpbar{flex-wrap:wrap}
+  #pcAi .pa-plan .trpsel{flex:1 1 100%;max-width:none}
+  #pcAi .pa-plan .trpbt{flex:1;margin-left:0}
+  #pcAi .pa-plan .trbtn{padding:6px 10px;font-size:13px}
+  #pcAi .pa-cartb{margin:0 8px 0 0;align-self:flex-start}
+  #pcAi .pa-cols{grid-template-columns:minmax(0,1fr)!important;padding:0 12px;gap:12px;margin-top:12px}
+  #pcAi .pa-l,#pcAi .pa-r{position:static!important}
+  #pcAi .pa-pn{padding:14px}
+  #pcAi.pa-v1 .pa-cartp{max-height:none}
+  #pcAi .pa-ask h2{font-size:18px}
+  #pcAi #aipF{height:48px;padding:0 5px 0 14px;gap:8px}
+  #pcAi #aipGo{padding:8px 12px;font-size:13px}
+  #pcAi .pa-chips{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #pcAi #aipRes{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+  #pcAi #aipRes .apc .pa-ph{height:96px}
+  #pcAi .pa-det .pa-phd{height:180px}
+  #pcAi.pa-v2 .pa-r{display:none}
+  #pcAi.pa-v2 #trRep .tmap{display:block}
+  #pcAi .pa-days{max-height:none;padding:12px}
+  #pcAi .pa-days h3{display:none}
+  #pcAi .pa-dl{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding-bottom:2px}
+  #pcAi .pa-dli{flex:0 0 auto;width:auto;flex-direction:column;align-items:flex-start;gap:0;border:1px solid var(--line);margin:0;padding:6px 10px;font-size:13px}
+  #pcAi .pa-lb{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;margin-top:10px;gap:6px}
+  #pcAi .pa-lbt{max-width:none;font-size:13px;padding:7px 6px}
+  #pcAi .pa-lbt[data-lb=edit]{grid-column:1/-1}
+  #pcAi #trRep .tday{padding:12px 12px 8px}
+  #pcAi #trRep .tdh{margin:-12px -12px 4px;padding:12px 12px 8px}
+}
