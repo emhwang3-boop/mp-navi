@@ -1,0 +1,213 @@
+/* MosaicTrip.com 홈페이지 겉모양 (11-08) — home/index.html(mk_home.py) 맨 끝에서 읽는다. html.pch 일 때만 듣는다
+ *  · 색: 상징색 초록 var(--green) #2f9e44 · 보조색 노랑 #f5bf2a (투어앱 규칙서 4장) · 다크는 앱 변수(--card·--ink·--sub·--line·--bg) 그대로
+ *  · 시안 C:\kiwoom_work\tour_site\mock\index.html (11-07 통과) 크기·간격을 따른다
+ */
+html.pch{--ph-green:#2f9e44;--ph-green-d:#2b8a3e;--ph-gt:#ebf7ee;--ph-yel:#f5bf2a;--ph-yt:#fff6da;--ph-sea:#96b2c4;--ph-hd2:#2a3140}
+html.pch[data-theme="dark"]{--ph-gt:#16301f;--ph-yt:#2a2412;--ph-hd2:#d3d9e2;--ph-green-d:#51cf66}
+html.pch body{background:var(--card);line-height:1.5}
+/* 앱 겉모양 감추기 — 지도·검색칸·결과·머리 단추는 pc.js 가 이 화면 자리로 옮겼다 */
+html.pch .wrap{display:none!important}
+html.pch #mapDev{display:none!important}                 /* 지도 왼쪽 위는 「지도를 눌러 보세요」 안내 (시안) */
+html.pch .tradd{display:none!important}                  /* 지도는 둘러보기·검색만 — 「내 여행에 담기」 없음 (담기는 AI와 자유여행 화면에서) */
+#phRoot{color:var(--ink)}
+#phRoot button{font-family:inherit}
+#phRoot .ph-in{max-width:1400px;margin:0 auto;position:relative}
+
+/* ── 머리줄 1 (72) ── */
+#phHd{position:relative;z-index:30}
+#phHd .ph-hd1w{background:var(--card);border-bottom:1px solid var(--line);position:relative;z-index:3}
+#phHd .ph-hd1{height:72px;display:flex;align-items:center;gap:16px;padding:0 24px}
+#phHd .ph-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:23px;letter-spacing:-.5px;white-space:nowrap;color:var(--ink);text-decoration:none;min-width:0}
+#phHd .ph-logo img{width:38px;height:38px;flex:0 0 auto;display:block}
+#phHd .ph-logo span{overflow:hidden;text-overflow:ellipsis}
+#phHd .ph-tools{margin-left:auto;display:flex;align-items:center;gap:18px}
+#phHd .ph-ics{display:flex;align-items:center;gap:18px}
+/* 아이콘 = 앱 머리줄 단추를 그대로 옮긴 것 (홈·공유·언어·알림·라이트/다크) — 같은 크기 24px·바탕 투명 */
+#phHd .ph-ics>button{border:0!important;background:none!important;padding:2px!important;margin:0!important;line-height:0!important;cursor:pointer;color:var(--ink)!important;flex:0 0 auto;font-size:0!important;zoom:1!important;position:relative}
+#phHd .ph-ics>button svg,#phHd .ph-ics>button img,#phHd .ph-ics>button img.miic{width:24px!important;height:24px!important;display:block!important;margin:0!important;vertical-align:0!important}
+#phHd .ph-ics>button .bldot{font-size:10px}
+/* 내 예약 · 로그인 — 한 줄 단추 묶음은 같은 크기 (사장님 11-08) */
+#phHd .ph-acts{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin-left:6px}
+#phRoot .ph-tb{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;line-height:1.2;text-align:center}
+#phRoot .ph-tb:hover{border-color:var(--ph-green);color:var(--ph-green-d)}
+#phRoot .ph-tb.pri{background:var(--ph-green);border-color:var(--ph-green);color:#fff}
+#phRoot .ph-tb.pri:hover{background:#2b8a3e;color:#fff}
+
+/* ── 머리줄 2 (48) — 메뉴 · 같은 크기 6칸 ── */
+#phHd .ph-hd2{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));max-width:960px;margin:0 auto;min-height:48px;position:relative;z-index:2}
+#phHd .ph-hd2 button{display:flex;align-items:center;justify-content:center;gap:8px;padding:4px 10px;border:0;border-bottom:3px solid transparent;background:none;font-size:15px;font-weight:700;color:var(--ph-hd2);cursor:pointer;text-align:center;line-height:1.25;min-width:0}
+#phHd .ph-hd2 button img{width:24px;height:24px;flex:0 0 auto;display:block}
+#phHd .ph-hd2 button:hover{color:var(--ph-green-d);border-bottom-color:var(--ph-yel)}
+
+/* ── 한 줄 소개 + 검색 (120) — 바탕 없음 · 오른쪽 위에서 수묵화 무궁화 가지 ── */
+#phHero{height:120px;position:relative;display:flex;flex-direction:column;align-items:center;padding:12px 24px 0;max-width:1400px;margin:0 auto;box-sizing:border-box}
+#phHero .ph-branch{position:absolute;right:0;top:-48px;width:372px;height:auto;pointer-events:none;z-index:1;user-select:none;display:block}
+html.pch[data-theme="dark"] #phHero .ph-branch{content:url(img/mugunghwa_branch_dark.webp)}   /* 11-08 사장님 「다크모드에서 무궁화 가지는 옅은 회색」 — 가지·잎 옅은 회색, 꽃 분홍 */
+#phHero h1{position:relative;z-index:2;margin:0;font-size:27px;line-height:36px;font-weight:800;letter-spacing:-.6px;text-align:center}
+#phHero h1 em{font-style:normal;color:var(--ph-green)}
+html.pch[data-theme="dark"] #phHero h1 em{color:#51cf66}
+#phHero h1 .mbr{display:none}
+/* 앱 검색칸(.sbox)을 그대로 옮겨 모양만 — 엔터로 앱 검색(go) */
+html.pch #phHero form.sbox{display:flex!important;flex-direction:row!important;justify-content:center;align-items:center;position:relative;z-index:2;margin:12px 0 0;width:100%;padding:0;gap:0}
+html.pch #phHero form.sbox>*:not(.qw):not(#gob){display:none!important}
+html.pch #phHero form.sbox .qw{display:flex!important;align-items:center;gap:10px;width:600px!important;max-width:100%;height:54px;border:2px solid var(--ph-green);border-radius:28px;background:var(--card);padding:0 20px;box-shadow:0 4px 16px rgba(47,158,68,.10);position:relative;box-sizing:border-box;grid-column:auto!important;flex:0 1 auto!important;min-width:0!important}
+html.pch #phHero form.sbox .qw:focus-within{border-color:var(--ph-green-d);box-shadow:0 0 0 4px rgba(47,158,68,.16)}
+html.pch #phHero form.sbox .qw .ph-sic{width:22px;height:22px;flex:0 0 auto;display:block}
+html.pch #phHero form.sbox input#q{flex:1 1 auto;min-width:0;width:auto!important;height:100%;border:0!important;outline:0!important;background:transparent!important;padding:0 34px 0 0!important;margin:0;font-size:16px!important;color:var(--ink);box-shadow:none!important;border-radius:0!important;font-family:inherit;text-overflow:ellipsis}
+html.pch #phHero form.sbox input#q::placeholder{color:#8a93a3;font-size:16px}
+html.pch #phHero form.sbox #qx{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:26px!important;height:26px!important;line-height:26px!important;font-size:12px!important;padding:0;border:0}
+
+/* 검색 결과·장소 카드(앱 #res) — 지도 바로 위 */
+#phRes{max-width:1400px;margin:0 auto;padding:0 24px;box-sizing:border-box}
+#phRes #res{margin-top:6px}
+#phRes #res:empty{margin:0}
+
+/* ── 전국 지도 (첫 화면 나머지를 채움 — 높이 --phMH 는 pc.js 가 잰다) ── */
+#phMapSec{max-width:1400px;margin:0 auto;padding:8px 24px 0;box-sizing:border-box}
+#phMapSec #vbar{margin:4px 0 8px}
+html.pch #phMapSec #map{width:100%!important;margin:0!important;height:var(--phMH,640px)!important;border-radius:18px;background:var(--ph-sea);box-shadow:0 2px 14px rgba(0,0,0,.08);--W:100%}
+#phMapSec .ph-maphint{position:absolute;left:18px;top:16px;z-index:8;background:rgba(255,255,255,.92);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:700;color:#2a3140;box-shadow:0 2px 10px rgba(0,0,0,.10);pointer-events:none;max-width:calc(100% - 36px);line-height:1.35}
+#phMapSec .ph-maphint b{color:#2b8a3e}
+html.pch[data-theme="dark"] #phMapSec .ph-maphint{background:rgba(23,29,43,.92);color:var(--ink)}
+html.pch[data-theme="dark"] #phMapSec .ph-maphint b{color:#51cf66}
+#phMapSec #map:not(.onkr) .ph-maphint{display:none}
+#phMapSec #favbar{margin:4px 6px 0}
+#phMapSec #favbar:empty{display:none!important}   /* 관심 장소 별이 없으면 빈 줄 없이 */
+
+/* ── 아래 섹션 공통 ── */
+#phRoot .ph-sec{max-width:1400px;margin:56px auto 0;padding:0 24px;box-sizing:border-box}
+#phRoot .ph-sh{display:flex;align-items:baseline;gap:12px;margin:0 2px 18px}
+#phRoot .ph-sh h2{margin:0;font-size:24px;font-weight:800;letter-spacing:-.5px;display:flex;align-items:center;gap:10px}
+#phRoot .ph-sh h2::before{content:"";width:6px;height:22px;border-radius:3px;background:var(--ph-yel);flex:0 0 auto}
+#phRoot .ph-more{margin-left:auto;font-size:14px;font-weight:700;color:var(--ph-green-d);border:0;background:none;padding:0;cursor:pointer;white-space:nowrap}
+
+/* 세 가지 여행 방법 — 카드 단추는 같은 크기·오른쪽 맞춤 (사장님 11-08) */
+#phRoot .ph-ways{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+#phRoot .ph-way{position:relative;border:1px solid var(--line);border-radius:18px;padding:26px 26px 22px;background:var(--card);min-height:200px;display:flex;flex-direction:column;transition:box-shadow .15s,border-color .15s}
+#phRoot .ph-way:hover{border-color:#cfe9d5;box-shadow:0 8px 24px rgba(17,24,39,.08)}
+#phRoot .ph-way .ph-ic{width:56px;height:56px;border-radius:16px;background:var(--ph-gt);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+#phRoot .ph-way .ph-ic img{width:34px;height:34px;display:block}
+#phRoot .ph-way h3{margin:0 0 6px;font-size:20px;font-weight:800;letter-spacing:-.4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#phRoot .ph-way p{margin:0;color:var(--sub);font-size:15px}
+#phRoot .ph-way .ph-meta{margin-top:10px;font-size:14px;font-weight:700;color:var(--ink);opacity:.9}
+#phRoot .ph-way .ph-gorow{margin-top:auto;padding-top:16px;display:flex;justify-content:flex-end}
+#phRoot .ph-go{border:1.5px solid var(--ph-green);background:var(--card);color:var(--ph-green-d);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;text-align:center;line-height:1.2}
+#phRoot .ph-go:hover{background:var(--ph-gt)}
+#phRoot .ph-free{display:inline-block;background:var(--ph-yel);color:#3a2c00;font-size:12px;font-weight:800;border-radius:999px;padding:3px 9px;letter-spacing:0;line-height:1.3}
+#phRoot .ph-opt{display:inline-block;margin-left:4px;font-size:12px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:1px 7px}
+
+/* 대표 패키지 상품 ◀▶ — 앱 상품 자료(shop.js) */
+#phRoot .ph-car{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:16px;align-items:center}
+#phRoot .ph-arr{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);font-size:15px;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:0}
+#phRoot .ph-arr:hover:not(:disabled){border-color:var(--ph-green);color:var(--ph-green-d)}
+#phRoot .ph-arr:disabled{opacity:.35;cursor:default}
+#phRoot .ph-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding:4px 0 10px}
+#phRoot .ph-track::-webkit-scrollbar{display:none}
+#phRoot .ph-pc{flex:0 0 calc((100% - 60px) / 4);scroll-snap-align:start;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);display:flex;flex-direction:column;transition:box-shadow .15s;padding:0;text-align:left;color:var(--ink);cursor:pointer;font:inherit}
+#phRoot .ph-pc:hover{box-shadow:0 8px 24px rgba(17,24,39,.10)}
+#phRoot .ph-pc .ph-ph{aspect-ratio:4/3;background:var(--bg);position:relative;width:100%}
+#phRoot .ph-pc .ph-ph img{width:100%;height:100%;object-fit:cover;display:block}
+#phRoot .ph-pc .ph-area{position:absolute;left:10px;bottom:10px;background:rgba(17,24,39,.72);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;max-width:calc(100% - 20px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#phRoot .ph-pc .ph-st{position:absolute;left:10px;top:10px;font-size:11.5px;font-weight:800;border-radius:999px;padding:3px 9px;background:rgba(255,255,255,.92);color:#5b6474}
+#phRoot .ph-pc .ph-st.on{background:var(--ph-green);color:#fff}
+#phRoot .ph-pc .ph-bd{padding:14px 16px 16px;display:flex;flex-direction:column;flex:1;width:100%;box-sizing:border-box}
+#phRoot .ph-pc .ph-nm{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.4;min-height:2.8em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#phRoot .ph-pc .ph-mt{margin-top:6px;font-size:13px;color:var(--sub)}
+#phRoot .ph-pc .ph-pr{margin-top:auto;padding-top:12px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+#phRoot .ph-pc .ph-pr small{font-size:13px;color:var(--sub)}
+#phRoot .ph-pc .ph-pr b{font-size:19px;font-weight:800;letter-spacing:-.3px}
+#phRoot .ph-pc .ph-pr .ph-rv{margin-left:auto;font-size:12px;color:#8a93a3}
+#phRoot .ph-pc .ph-pr .ph-rv .rvmini{font-size:12px}
+
+/* 앱 받기 */
+#phRoot .ph-appb{max-width:1352px;margin:56px auto 0;background:var(--ph-yt);border-radius:20px;padding:26px 36px;display:flex;align-items:center;gap:24px;min-height:140px;box-sizing:border-box}
+#phRoot .ph-appw{padding:0 24px}
+#phRoot .ph-appb .ph-ai{width:76px;height:76px;border-radius:18px;box-shadow:0 4px 12px rgba(0,0,0,.12);display:block;flex:0 0 auto}
+#phRoot .ph-appb .ph-tx h2{margin:0 0 4px;font-size:22px;font-weight:800;letter-spacing:-.4px}
+#phRoot .ph-appb .ph-tx p{margin:0;color:var(--sub);font-size:15px}
+#phRoot .ph-appb .ph-dl{margin-left:auto;display:flex;align-items:center;gap:18px}
+#phRoot .ph-play{display:flex;align-items:center;gap:10px;background:#111827;color:#fff;border-radius:12px;padding:10px 20px 10px 16px;font-weight:800;font-size:15px;line-height:1.2;white-space:nowrap}
+#phRoot .ph-play .ph-tri{color:var(--ph-yel);font-size:20px;line-height:1}
+#phRoot .ph-play small{display:block;font-size:11px;font-weight:600;opacity:.75}
+#phRoot .ph-ios{font-size:12px;color:var(--sub);margin-top:6px;text-align:center}
+#phRoot .ph-qr{width:96px;height:96px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;padding:6px;box-sizing:border-box;border:1px solid var(--line)}
+#phRoot .ph-qr>div,#phRoot .ph-qr img,#phRoot .ph-qr canvas{width:84px!important;height:84px!important;display:block}
+
+/* 맨 아래 — 사업자 정보 = 앱 맨 아래 줄 그대로 */
+#phRoot .ph-foot{margin-top:56px;background:var(--bg);border-top:1px solid var(--line)}
+#phRoot .ph-foot .ph-fin{max-width:1400px;margin:0 auto;padding:30px 24px 34px;min-height:200px;position:relative;box-sizing:border-box}
+#phRoot .ph-flinks{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:14px;font-weight:700;margin-bottom:16px}
+#phRoot .ph-flinks a{color:var(--ink);text-decoration:none!important}
+#phRoot .ph-flinks a:hover{color:var(--ph-green-d)}
+#phRoot .ph-flinks a.pv{color:var(--ph-green-d)}
+#phRoot .ph-finfo{font-size:13px;color:var(--sub);line-height:1.8}
+#phRoot .ph-finfo b{color:var(--ink);font-weight:700}
+#phRoot .ph-finfo a{color:var(--ph-green-d)!important;font-weight:700}
+#phRoot .ph-fcred{margin-top:12px;font-size:11.5px;color:var(--sub);line-height:1.6;opacity:.9}
+#phRoot .ph-fbot{display:flex;align-items:center;gap:12px;margin-top:18px;font-size:12px;color:#8a93a3}
+#phRoot .ph-fbot .ph-ver{margin-left:auto}
+
+/* ── 좁은 PC (641~1300) — 무궁화 가지가 아랫줄 메뉴·검색칸에 걸리지 않게 작게, 소개 줄 높이에서 ── */
+@media (max-width:1300px) and (min-width:641px){
+  #phHero .ph-branch{width:22vw;top:0}
+}
+/* ── 가운데 폭 (641~1000) ── */
+@media (max-width:1000px) and (min-width:641px){
+  #phHd .ph-logo{font-size:19px}#phHd .ph-logo img{width:32px;height:32px}
+  #phHd .ph-tools,#phHd .ph-ics{gap:12px}
+  #phHd .ph-hd2 button{font-size:14px;gap:6px;padding:4px 6px}
+  #phRoot .ph-ways{grid-template-columns:1fr}
+  #phRoot .ph-pc{flex:0 0 calc((100% - 20px) / 2)}
+  #phRoot .ph-appb{flex-wrap:wrap}
+  #phRoot .ph-appb .ph-dl{margin-left:0}
+}
+
+/* ── 폰 (412 기준) — 홈페이지를 폰에 맞춘 것 (앱 화면 아님) ── */
+@media (max-width:640px){
+  #phHd .ph-hd1{height:auto;flex-wrap:wrap;padding:10px 14px 6px;gap:6px 10px}
+  #phHd .ph-hd1w{border-bottom:0}
+  #phHd .ph-logo{font-size:19px;gap:8px}#phHd .ph-logo img{width:32px;height:32px}
+  #phHd .ph-tools{display:contents}
+  #phHd .ph-logo{flex:1 1 100%}   /* 윗줄 = 로고·제목 · 둘째 줄 = 아이콘(왼쪽) + 내 예약·로그인(오른쪽) — 제목이 길어 한 줄에 다 안 들어감 */
+  #phHd .ph-ics{order:1;gap:12px;padding:2px 2px 0}
+  #phHd .ph-acts{order:2;margin-left:auto;gap:6px}
+  #phRoot .ph-tb{padding:6px 12px;font-size:13px}
+  #phHd .ph-hd2{height:auto;grid-template-columns:repeat(6,minmax(0,1fr));padding:4px 6px 8px;border-bottom:1px solid var(--line);background:var(--card);z-index:3;max-width:none}
+  #phHd .ph-hd2 button{flex-direction:column;gap:3px;padding:4px 1px;font-size:11.5px;border-bottom:0;letter-spacing:-.4px;line-height:1.2}
+  #phHd .ph-hd2 button img{width:26px;height:26px}
+  #phHero{height:auto;align-items:stretch;padding:16px 16px 14px}
+  #phHero .ph-branch{width:180px;top:0;right:0}
+  #phHero h1{font-size:21px;line-height:30px;text-align:left}
+  #phHero h1::before{content:"";float:right;width:128px;height:56px}   /* 무궁화 가지 자리 — 첫 두 줄만 비켜 쓰고 그 아래는 꽉 차게 */
+  #phHero h1 .mbr{display:inline}
+  html.pch #phHero form.sbox{margin-top:14px}
+  html.pch #phHero form.sbox .qw{width:100%!important;height:50px;padding:0 16px}
+  html.pch #phHero form.sbox input#q,html.pch #phHero form.sbox input#q::placeholder{font-size:15px!important}
+  #phRes{padding:0 12px}
+  #phMapSec{padding:2px 12px 0}
+  html.pch #phMapSec #map{height:auto!important;aspect-ratio:1/1;border-radius:16px}
+  #phMapSec .ph-maphint{left:10px;top:10px;font-size:11.5px;padding:5px 11px;max-width:calc(100% - 20px)}
+  #phRoot .ph-sec{margin-top:36px;padding:0 14px}
+  #phRoot .ph-sh h2{font-size:20px}
+  #phRoot .ph-ways{grid-template-columns:1fr;gap:12px}
+  #phRoot .ph-way{min-height:0;padding:18px 18px 16px}
+  #phRoot .ph-way .ph-ic{width:48px;height:48px;border-radius:14px;margin-bottom:10px}#phRoot .ph-way .ph-ic img{width:30px;height:30px}
+  #phRoot .ph-way h3{font-size:18px}
+  #phRoot .ph-way p{font-size:14px}
+  #phRoot .ph-car{grid-template-columns:minmax(0,1fr);gap:0}
+  #phRoot .ph-arr{display:none}
+  #phRoot .ph-track{gap:12px;margin:0 -14px;padding:4px 14px 10px;scroll-padding:0 14px}
+  #phRoot .ph-pc{flex:0 0 72%}
+  #phRoot .ph-appw{padding:0 14px}
+  #phRoot .ph-appb{margin-top:36px;flex-wrap:wrap;padding:20px 18px;gap:14px}
+  #phRoot .ph-appb .ph-ai{width:60px;height:60px;border-radius:14px}
+  #phRoot .ph-appb .ph-tx{flex:1;min-width:0}
+  #phRoot .ph-appb .ph-tx h2{font-size:19px}#phRoot .ph-appb .ph-tx p{font-size:14px}
+  #phRoot .ph-appb .ph-dl{margin-left:0;width:100%;justify-content:space-between}
+  #phRoot .ph-qr{width:84px;height:84px}
+  #phRoot .ph-qr>div,#phRoot .ph-qr img,#phRoot .ph-qr canvas{width:72px!important;height:72px!important}
+  #phRoot .ph-foot{margin-top:36px}
+  #phRoot .ph-foot .ph-fin{padding:24px 16px 28px}
+  #phRoot .ph-flinks{gap:6px 14px;font-size:13px}
+  #phRoot .ph-finfo{font-size:12px}
+}
