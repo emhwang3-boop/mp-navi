@@ -1,0 +1,77 @@
+/* MosaicTrip.com 홈페이지 — 「회사 소개」·「문의」 창 (home/pc_info.js · 11-08 4b단계 · 배치도 9_회사소개_팝업 · 10_문의_팝업)
+ *  · 화면 가운데 창 폭 700 (폰·PC 모두 가운데 — 투어앱 규칙서 4장) · 초록 #2f9e44 · 다크는 앱 변수 그대로
+ *  · 한 줄 단추 묶음(탭·세 가지 여행 방법)은 같은 크기 · 카드 오른쪽 단추는 같은 크기 오른쪽 맞춤 (사장님 11-08)
+ */
+html.pilock{overflow:hidden}
+#pcInfo.pi-ov{position:fixed;inset:0;z-index:1044;background:rgba(17,24,39,.45);display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
+#pcInfo .pi-pop{position:relative;width:min(700px,100%);max-height:calc(100vh - 48px);overflow-y:auto;overscroll-behavior:contain;background:var(--card);color:var(--ink);border-radius:18px;padding:22px 28px 20px;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,.35);word-break:keep-all;overflow-wrap:break-word;line-height:1.5;text-align:left}
+#pcInfo button,#pcInfo input,#pcInfo select,#pcInfo textarea{font-family:inherit}
+#pcInfo .pi-hd{display:flex;align-items:center;gap:10px}
+#pcInfo .pi-lg{width:34px;height:34px;border-radius:8px;flex:0 0 auto;display:block}
+#pcInfo .pi-hd h2{margin:0;flex:1;min-width:0;font-size:22px;font-weight:800;letter-spacing:-.3px;line-height:1.3}
+#pcInfo .pi-x{flex:0 0 auto;width:36px;height:36px;border:0;border-radius:50%;background:var(--bg);color:var(--sub);font-size:17px;line-height:36px;padding:0;cursor:pointer}
+#pcInfo .pi-x:hover{color:var(--ink)}
+/* 회사 소개 */
+#pcInfo .pi-lead{font-size:17px;font-weight:800;margin:16px 0 4px;line-height:1.45}
+#pcInfo .pi-lead em{font-style:normal;color:var(--ph-green)}
+html[data-theme="dark"] #pcInfo .pi-lead em{color:#51cf66}
+#pcInfo .pi-p{margin:0 0 14px;font-size:14px;color:var(--sub);line-height:1.7}
+#pcInfo .pi-ways{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+#pcInfo .pi-ways button{border:1.5px solid #cfe9d5;background:var(--ph-gt);color:var(--ph-green-d);border-radius:10px;padding:9px 6px;font-size:13.5px;font-weight:800;line-height:1.3;cursor:pointer;text-align:center;min-width:0}
+#pcInfo .pi-ways button:hover{border-color:var(--ph-green)}
+html[data-theme="dark"] #pcInfo .pi-ways button{border-color:#2b5a37}
+#pcInfo .pi-tb{width:100%;border-collapse:collapse;font-size:13.5px}
+#pcInfo .pi-tb th,#pcInfo .pi-tb td{border-top:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left;line-height:1.5}
+#pcInfo .pi-tb th{width:190px;color:var(--sub);font-weight:700}
+#pcInfo .pi-tb a,#pcInfo .pi-box a{color:inherit;text-decoration:none}
+#pcInfo .pi-tb a:hover,#pcInfo .pi-box span a:hover{color:var(--ph-green-d);text-decoration:underline}
+#pcInfo .pi-bl{color:var(--sub);white-space:pre}
+/* 단추 */
+#pcInfo .pi-ft{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+#pcInfo .pi-b{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;border:1.5px solid var(--ph-green);background:var(--ph-green);color:#fff;border-radius:999px;padding:8px 18px;font-size:14px;font-weight:800;line-height:1.2;cursor:pointer;text-decoration:none;white-space:nowrap;flex:0 0 auto}
+#pcInfo .pi-b:hover{background:#2b8a3e;border-color:#2b8a3e;color:#fff}
+#pcInfo .pi-b.w{background:var(--card);color:var(--ph-green-d)}
+#pcInfo .pi-b.w:hover{background:var(--ph-gt);color:var(--ph-green-d)}
+#pcInfo .pi-b.g{background:var(--card);border-color:var(--line);color:var(--ink)}
+#pcInfo .pi-b.g:hover{border-color:var(--ph-green);color:var(--ph-green-d);background:var(--card)}
+/* 문의 — 탭 셋 같은 크기 */
+#pcInfo .pi-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0 12px}
+#pcInfo .pi-tabs button{border:1.5px solid var(--ph-green);background:var(--card);color:var(--ph-green-d);border-radius:999px;padding:9px 6px;font-size:14px;font-weight:800;line-height:1.25;cursor:pointer;min-width:0;text-align:center}
+#pcInfo .pi-tabs button:hover{background:var(--ph-gt)}
+#pcInfo .pi-tabs button.on{background:var(--ph-green);color:#fff}
+#pcInfo .pi-box{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;font-size:13.5px;color:var(--sub);line-height:1.55}
+#pcInfo .pi-box>b{display:block;color:var(--ink);font-size:14.5px;font-weight:800}
+#pcInfo .pi-r{display:flex;align-items:center;gap:12px;margin-top:6px}
+#pcInfo .pi-r>span{flex:1;min-width:0}
+#pcInfo .pi-r .pi-b{padding:6px 14px;font-size:13.5px}
+#pcInfo .pi-msg{border:1px dashed var(--line);border-radius:12px;padding:24px;text-align:center;color:var(--sub);font-weight:700}
+/* 앱 창(제휴 문의 inqOpen · 가이드 등록 GUIDEREG)을 탭 안에 — 떠 있는 창 모양만 풀고 내용·확인·보내기는 앱 그대로 · 단추는 사이트 초록 */
+#pcInfo #inqBox{position:static;inset:auto;z-index:auto;background:none;display:block;padding:0}
+#pcInfo #inqIn{max-width:none;max-height:none;overflow:visible;padding:2px 2px 4px;border-radius:0;background:none;width:auto}
+#pcInfo #inqIn button{background:var(--ph-green)}
+#pcInfo #inqIn button.g{background:transparent}
+#pcInfo #inqIn .st.ok{border-color:var(--ph-green)}
+#pcInfo #gregBox{position:static;inset:auto;z-index:auto;background:none;overflow:visible}
+#pcInfo #gregBox .gin{max-width:none;margin:0;padding:2px 2px 4px}
+#pcInfo #gregBox .gx{display:none}
+#pcInfo #gregBox h3{margin-top:0}
+#pcInfo #gregBox .gbtn{background:var(--ph-green)}
+#pcInfo #gregBox a[href*="guide_contract"]{border-color:var(--ph-green)!important;color:var(--ph-green-d)!important}
+/* 폰 (412 기준) */
+@media (max-width:640px){
+  #pcInfo.pi-ov{padding:12px}
+  #pcInfo .pi-pop{max-height:calc(100vh - 24px);padding:16px 16px 14px;border-radius:16px}
+  #pcInfo .pi-hd h2{font-size:19px}
+  #pcInfo .pi-lead{font-size:15.5px}
+  #pcInfo .pi-p{font-size:13.5px}
+  #pcInfo .pi-ways{gap:6px}
+  #pcInfo .pi-ways button{font-size:12.5px;padding:8px 4px}
+  #pcInfo .pi-tb,#pcInfo .pi-tb tbody,#pcInfo .pi-tb tr,#pcInfo .pi-tb th,#pcInfo .pi-tb td{display:block;width:auto}
+  #pcInfo .pi-tb tr{border-top:1px solid var(--line);padding:6px 2px}
+  #pcInfo .pi-tb th,#pcInfo .pi-tb td{border:0;padding:0}
+  #pcInfo .pi-tb th{font-size:12.5px}
+  #pcInfo .pi-tabs{gap:6px}
+  #pcInfo .pi-tabs button{font-size:12.5px;padding:8px 4px;border-radius:14px}
+  #pcInfo .pi-r{flex-wrap:wrap;gap:6px 10px}
+  #pcInfo .pi-r .pi-b{margin-left:auto}
+}
