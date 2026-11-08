@@ -1,6 +1,6 @@
 {
- "name": "Puzzle Tour for Korea",
- "short_name": "Puzzle Tour",
+ "name": "Puzzle Tour Nations for Korea",
+ "short_name": "Puzzle Tour Nations",
  "id": "./",
  "start_url": "./?src=pwa",
  "scope": "./",
