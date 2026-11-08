@@ -609,6 +609,7 @@ function igWire(b){
   var gch=b.querySelector("[data-gbchat]"); if(gch) gch.onclick=function(){ var t=IG.gbRes&&IG.gbRes.tk; if(t&&window.CHAT){ close(); CHAT.room(t); } };   // 예약 확정 화면 → 그 방 (11-05)
   [].forEach.call(b.querySelectorAll("[data-bkchat]"),function(bt){ bt.onclick=function(){ var x=bkGet(bt.dataset.bkchat); if(x&&window.CHAT) CHAT.room(x.tk); }; });   // 내 예약 = 대화방 입구 (11-05)
   [].forEach.call(b.querySelectorAll("[data-bkrv]"),function(bt){ bt.onclick=function(){ var x=bkGet(bt.dataset.bkrv); if(x&&x.rv) openReview(x.rv); }; });   // 패키지 배정 가이드 별점·후기
+  [].forEach.call(b.querySelectorAll("[data-bkplan]"),function(bt){ bt.onclick=function(){ bkPlan(bt.dataset.bkplan,bt.dataset.rev==="1",bt); }; });   // 일정 검토 — 내 일정·고친 일정 (11-08, 로그인 계정 목록)
   [].forEach.call(b.querySelectorAll("[data-igedit]"),function(a){ a.onclick=function(e){ e.preventDefault(); IG.view="editask"; IG.busy=false; paint(); }; });   // 가이드 본인 — 내 프로필 수정
   var ego=b.querySelector("#igeGo"); if(ego) ego.onclick=igEditSendLink;
   var esv=b.querySelector("#geSave"); if(esv){ esv.onclick=igEditSave; geBind("gePh","gePv","photo"); geBind("geLp","geLv","lic"); gCtBind("geCp","geCv","geCm",GE); }
@@ -673,7 +674,14 @@ var BKT={
  other:T6("기타 언어","Other languages","その他の言語","其他语言","其他語言","Otros idiomas"),
  cx:T6("취소된 예약입니다.","This booking was cancelled.","キャンセルされた予約です。","该预约已取消。","該預約已取消。","Esta reserva fue cancelada."),
  bad:T6("예약을 찾을 수 없습니다. 링크를 확인해 주세요.","We could not find this booking. Please check the link.","予約が見つかりません。リンクをご確認ください。","找不到该预约，请检查链接。","找不到該預約，請檢查連結。","No encontramos esta reserva. Revisa el enlace."),
- conn:T6("연결에 실패했습니다.","Connection failed.","接続に失敗しました。","连接失败。","連接失敗。","Error de conexión.")};
+ conn:T6("연결에 실패했습니다.","Connection failed.","接続に失敗しました。","连接失败。","連接失敗。","Error de conexión."),
+ // 일정 검토(grv) 카드 — 로그인 계정 목록에만 있다 (11-08)
+ grvT:T6("가이드 일정 검토","Guide itinerary review","ガイドによる日程チェック","向导行程检查","嚮導行程檢查","Revisión del itinerario por un guía"),
+ grvD:T6("{d}부터 {n}일","{n} days from {d}","{d}から{n}日間","{d}起 {n}天","{d}起 {n}天","{n} días desde el {d}"),
+ grvWait:T6("검토 중 · {t}까지 메일로 보내 드려요","Under review · we'll email it to you by {t}","チェック中・{t}までにメールでお送りします","检查中 · {t}前通过邮件发送给您","檢查中 · {t}前以電子郵件寄給您","En revisión · te lo enviamos por correo antes de las {t}"),
+ grvSent:T6("검토 끝 · 메일로 보내 드렸어요","Review done · sent to your email","チェック完了・メールでお送りしました","检查完成 · 已发送到您的邮箱","檢查完成 · 已寄到您的電子郵件","Revisión lista · enviada a tu correo"),
+ plan:T6("내 일정 보기","View my plan","日程を見る","查看我的行程","查看我的行程","Ver mi plan"),
+ planRev:T6("고친 일정 보기","View the revised plan","修正した日程を見る","查看修改后的行程","查看修改後的行程","Ver el plan corregido")};
 function bkSess(){ try{ return localStorage.getItem("mpv_pg_sess")||""; }catch(e){ return ""; } }
 function bkWhen(ms){ var d=new Date((+ms||0)+9*36e5), mo=d.getUTCMonth()+1, da=d.getUTCDate(), hh=("0"+d.getUTCHours()).slice(-2), mi=("0"+d.getUTCMinutes()).slice(-2), l=window.LANG||"en";
   var same=new Date(Date.now()+9*36e5).toISOString().slice(0,10)===d.toISOString().slice(0,10);   // 오늘이면 시각만 (한국 시간)
@@ -684,14 +692,45 @@ function bkWhen(ms){ var d=new Date((+ms||0)+9*36e5), mo=d.getUTCMonth()+1, da=d
   return hh+":"+mi+(same?"":" on "+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][mo-1]+" "+da); }
 function bkAll(){ try{ var a=JSON.parse(localStorage.getItem(BKK)||"[]"); return Array.isArray(a)?a.filter(function(x){ return x&&x.oid&&/^[0-9a-f]{32}$/.test(x.tk||""); }):[]; }catch(e){ return []; } }
 function bkSave(a){ try{ localStorage.setItem(BKK,JSON.stringify(a.slice(0,12))); }catch(e){} }
-function bkGet(oid){ return bkAll().filter(function(x){ return x.oid===oid; })[0]||null; }
-function bkPut(x){ var a=bkAll(), o=a.filter(function(y){ return y.oid===x.oid; })[0]||{}; bkSave([Object.assign(o,x)].concat(a.filter(function(y){ return y.oid!==x.oid; }))); }
+function bkGet(oid){ return bkMine().filter(function(x){ return x.oid===oid; })[0]||null; }   // 11-08 — 로그인 계정 목록까지
+function bkPut(x){ var a=bkAll(), o=a.filter(function(y){ return y.oid===x.oid; })[0]||{}; if(!/^[0-9a-f]{32}$/.test(x.tk||o.tk||"")) return; bkSave([Object.assign(o,x)].concat(a.filter(function(y){ return y.oid!==x.oid; }))); }
 function bkDrop(oid){ bkSave(bkAll().filter(function(y){ return y.oid!==oid; })); }
 function bkFrom(j,tk){ return {oid:j.oid,tk:tk,kind:j.kind||"gbk",glang:j.glang||"",cust:j.cust||"",pname:j.pname||"",date:j.date,time:j.time,end:+j.end||0,k:j.k||{},n:j.n,amount:j.amount,status:j.status,done:j.done?1:0,rv:j.review||"",rvd:!!j.reviewed,rvFrom:j.rvFrom||"",room:j.room||null,g:j.g||null}; }
-function bkShown(){ return bkAll().filter(function(x){ return !(x.status==="cancelled"||x.status==="refunded"||(x.rvd&&(x.done||x.kind==="pkg"))); }); }   // 완료(투어 완료 + 후기까지 끝남)·취소 예약은 바로 숨김 (사장님 11-05 「2-가」)
+function bkShown(){ return bkMine().filter(function(x){ return !(x.status==="cancelled"||x.status==="refunded"||(x.rvd&&(x.done||x.kind==="pkg"))||(x.kind==="grv"&&x.grv&&(x.grv.end||(x.grv.sent&&(x.end||0)<Date.now())))); }); }   // 완료(투어 완료 + 후기까지 끝남)·취소 예약은 바로 숨김 (사장님 11-05 「2-가」) · 일정 검토는 검토를 받고 여행이 끝나면 숨김 (11-08)
+// ── 「내 예약」 로그인 계정 목록 (사장님 11-08 「로그인·내 예약」 통과) — 로그인돼 있으면 허브 POST /guide/mybk 가 계정에 묶인 예약(다른 폰·PC 에서 한 것 포함)을 준다 ──
+//   · 이 기기 예약(mpv_gbk_v1)의 토큰을 같이 보내 계정에 묶는다 — 로그인할 때(mppg)·이 화면을 열 때 · 처음 열 때 한 번
+//   · 계정 목록은 메모리에만 둔다(이 기기 저장소에 안 씀) — 로그아웃하면 지금처럼 이 기기 예약만 · 일정 검토(grv)는 계정 목록에만 있다(기기 토큰 없음)
+//   · 홈페이지 「내 예약」(home/pc_bk.js)·대화방(chat.js)도 NEARBK.mine·srv 로 같이 쓴다 · 다 받으면 document 에 「mpbk」 이벤트
+var BKSRV=[], BKSRV_S="", BKSRV_AT=0, BKSRV_P=null;
+function bkSrvFrom(j){ var x=bkFrom(j,j.tk||""); x.kind=j.kind||x.kind; x.pid=j.pid||""; x.paid=j.paid||""; x.grv=j.grv||null; x.srv=1; return x; }
+function bkMine(){ var a=bkAll(), s=bkSess(); if(!s||s!==BKSRV_S||!BKSRV.length) return a; var m={}, out=[];
+  BKSRV.forEach(function(x){ m[x.oid]=x; }); a.forEach(function(x){ var y=m[x.oid]; out.push(y?Object.assign({},x,y,{tk:x.tk||y.tk}):x); delete m[x.oid]; });
+  BKSRV.forEach(function(x){ if(m[x.oid]) out.push(x); }); return out; }
+function bkSrvEv(){ try{ document.dispatchEvent(new CustomEvent("mpbk")); }catch(e){} if(S.k==="ig"&&IG.view==="pick") paint(); }
+function bkSrv(force){ var s=bkSess(); if(!s){ if(BKSRV.length||BKSRV_S){ BKSRV=[]; BKSRV_S=""; bkSrvEv(); } return Promise.resolve(null); }
+  if(!force&&BKSRV_P&&s===BKSRV_S&&Date.now()-BKSRV_AT<30000) return BKSRV_P;
+  if(!force&&BKSRV_P&&BKSRV_P._s===s&&BKSRV_P._busy) return BKSRV_P;
+  BKSRV_AT=Date.now();
+  var p=fetch(HUB+"/guide/mybk",{method:"POST",headers:{"Content-Type":"application/json"},cache:"no-store",body:JSON.stringify({op:"list",sess:s,tks:bkAll().map(function(x){ return x.tk; }).slice(0,20)})}).then(function(r){ return r.json(); }).then(function(j){ p._busy=0;
+    if(bkSess()!==s) return null;
+    if(j&&j.ok){ BKSRV=(j.items||[]).map(bkSrvFrom); BKSRV_S=s; bkSrvEv(); return BKSRV; }
+    if(j&&j.err==="sess"){ BKSRV=[]; BKSRV_S=""; try{ localStorage.removeItem("mpv_pg_sess"); }catch(e){} try{ document.dispatchEvent(new CustomEvent("mppg")); }catch(e){} bkSrvEv(); }   // 세션이 끝남 — 다른 화면과 같게 로그아웃
+    return null; }).catch(function(){ p._busy=0; return null; });
+  p._s=s; p._busy=1; BKSRV_P=p; return p; }
+// 일정 검토 — 내 일정(손님이 보낸 일정)·고친 일정(가이드가 보낸 링크) 열기 · 그 계정 주문만 (허브 op plan)
+function bkPlan(oid,rev,bt){ var s=bkSess(); if(!s) return; if(bt) bt.disabled=true; var w=null; try{ w=window.open("about:blank","_blank"); }catch(e){}
+  fetch(HUB+"/guide/mybk",{method:"POST",headers:{"Content-Type":"application/json"},cache:"no-store",body:JSON.stringify({op:"plan",oid:oid,sess:s})}).then(function(r){ return r.json(); }).then(function(j){ if(bt) bt.disabled=false;
+    var u=j&&j.ok?(rev?j.rev:j.plan):""; if(!u||!/^https:\/\/navi\.moneypuzzle\.co\.kr\//.test(u)){ if(w) try{ w.close(); }catch(e){} alert(LG6(BKT.conn)); return; }
+    if(w&&!w.closed) w.location.href=u; else location.href=u; }).catch(function(){ if(bt) bt.disabled=false; if(w) try{ w.close(); }catch(e){} alert(LG6(BKT.conn)); }); }
+document.addEventListener("mppg",function(){ if(bkSess()) bkSrv(true); else bkSrv(); });   // 로그인(구글·애플·이메일) = 이 기기 예약을 계정에 묶고 목록 · 로그아웃 = 이 기기 예약만
+setTimeout(function(){ if(bkSess()) bkSrv(); },2500);
 function bkToday(){ return new Date(Date.now()+9*36e5).toISOString().slice(0,10); }
 function bkCard(x){ var L=LG6, g=x.g||null, cx=x.status==="cancelled"||x.status==="refunded", pk=x.kind==="pkg", rm=x.room, foot="";
   var hi=IG.bkHi===x.oid?';border-color:#0c8599;box-shadow:0 0 0 2px rgba(12,133,153,.18)':'';
+  if(x.kind==="grv"){ var gv=x.grv||{};   // 가이드 일정 검토 (11-08 — 로그인 계정 목록) · 결과는 메일, 대화방 없음
+    return '<div class="igcard" style="cursor:default;display:block'+hi+'"><b>'+esc(L(BKT.grvT))+'</b><div class="igm">'+esc(gbF(BKT.grvD,{d:x.date||"",n:gv.days||1}))+' · '+esc(gbWon(x.amount||0))+'</div>'
+      +'<div class="igm">'+esc(L(GBT.oid))+' '+esc(x.oid)+'</div><div class="ignt">'+esc(cx?L(BKT.cx):gv.sent?L(BKT.grvSent):gbF(BKT.grvWait,{t:bkWhen(gv.due||0)}))+'</div>'
+      +(cx?'':'<button type="button" class="gbgo g2" style="margin-top:10px" data-bkplan="'+esc(x.oid)+'">'+esc(L(BKT.plan))+'</button>'+(gv.sent?'<button type="button" class="gbgo" style="margin-top:8px" data-bkplan="'+esc(x.oid)+'" data-rev="1">'+esc(L(BKT.planRev))+'</button>':''))+'</div>'; }
   var badge=rm&&rm.unread>0?' <span style="display:inline-block;min-width:18px;padding:1px 6px;border-radius:999px;background:#e03131;color:#fff;font-size:12px;font-weight:900;text-align:center">'+rm.unread+'</span>':'';
   var chatBtn=rm&&!cx?'<button type="button" class="gbgo'+(rm.ro?' g2':'')+'" style="margin-top:10px" data-bkchat="'+esc(x.oid)+'">💬 '+esc(L(rm.ro?BKT.chatRo:BKT.chat))+badge+'</button>':'';
   var when=esc((x.date||"")+" "+(x.time||"")+" (KST)");
@@ -714,13 +753,14 @@ function bkBlock(){ var my=bkShown(), m=IG.bkMsg; if(!my.length&&!m) return "";
 function bkSync(){ bkAll().forEach(function(x){ if(BKS[x.oid]||(x.rvd&&Date.now()-(x.end||0)>7*864e5)) return; BKS[x.oid]=1;
   fetch(HUB+"/guide/booking/check?token="+encodeURIComponent(x.tk),{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
     if(j&&j.ok) bkPut(bkFrom(j,x.tk)); else if(j&&j.err==="invalid") bkDrop(x.oid); else return;
-    if(S.k==="ig"&&IG.view==="pick") paint(); }).catch(function(){}); }); }
+    if(S.k==="ig"&&IG.view==="pick") paint(); }).catch(function(){}); });
+  bkSrv(); }   // 로그인돼 있으면 계정 목록도 (30초에 한 번까지, 11-08)
 // 손님 메일·문자의 ?tdone=<토큰> — 같은 「내 예약」 카드를 연다 (이 폰에도 저장)
 function openTdone(token){ var tk=String(token||"").replace(/[^a-f0-9]/gi,"").toLowerCase().slice(0,32); open("ig");
   fetch(HUB+"/guide/booking/check?token="+encodeURIComponent(tk),{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
     if(j&&j.ok){ BKS[j.oid]=1; bkPut(bkFrom(j,tk)); IG.bkHi=j.oid; IG.bkMsg=""; } else IG.bkMsg="bad";
     if(S.k==="ig"&&IG.view==="pick") paint(); }).catch(function(){ IG.bkMsg="net"; if(S.k==="ig"&&IG.view==="pick") paint(); }); }
-window.NEARBK={all:bkAll,put:bkPut,get:bkGet,from:bkFrom,when:bkWhen,sess:bkSess};   // chat.js 가 같이 쓴다
+window.NEARBK={all:bkAll,put:bkPut,get:bkGet,from:bkFrom,when:bkWhen,sess:bkSess,mine:bkMine,srv:bkSrv,plan:bkPlan,TX:BKT};   // chat.js 가 같이 쓴다 · mine·srv·plan = 로그인 계정 목록 (11-08, chat.js·홈페이지 pc_bk.js)
 function openReview(token){ open("ig"); IG.view="review"; IG.rvToken=String(token||""); IG.rvGuide=null; IG.rvErr=""; IG.rvDone=false; IG.rvStars=0; IG.rvText=""; IG.rvName=""; IG.busy=false; paint(); igRvCheck(); }
 function igLoad(){ var lang=IG.lang; fetch(HUB+"/guide/guides?lang="+encodeURIComponent(lang)).then(function(r){ return r.json(); }).then(function(j){ if(IG.lang!==lang||IG.view!=="list") return;
     if(j&&j.ok){ IG.guides=j.items||[]; } else IG.err="x"; paint(); }).catch(function(){ if(IG.lang===lang&&IG.view==="list"){ IG.err="net"; paint(); } }); }
