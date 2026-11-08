@@ -1025,6 +1025,9 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
   pl.days.forEach(function(d,di){ if(d.md){ h+=mdHtml(pl,d,di,DS[di]); return; }   // 11-08 일 단위로 머무는 날
     var Q=DS[di], X=Q.X, dt=Q.dt, arr=Q.arr, lv=Q.lv, s=Q.s, a=(ai.days&&!d.aiX)?ai.days[di]:null, hk=d.date===kstToday(0)?liveHereK(pl,di,arr,s,lv):null;   // 오늘 = 실제 도착·출발로 다시 계산한 시각 (11-06) · d.aiX = 「새로 짜기」로 순서가 바뀐 날(그날 설명만 감춘다 — AI 다시 안 부름)
     var cty=pl.mc&&pl.cities&&pl.cities[d.c]?cnm(pl.cities[d.c]):"", pre=pl.mc&&X.pre&&X.pre.length?X.pre:null;
+    if(cty){ var trp=d.pm!=null&&pl.tr?pl.tr[d.pm]:null, tra=d.am!=null&&pl.tr?pl.tr[d.am]:null, c2="";   // 11-08 사장님 — 도시를 옮기는 날 명찰 「부산 → 서울」
+      if(trp) c2=(trp.b>=0&&pl.cities[trp.b])?cnm(pl.cities[trp.b]):(trp.sb?ptNm(trp.sb):""); if(trp&&c2&&c2!==cty) cty=cty+" → "+c2;
+      else if(tra&&tra.a>=0&&pl.cities[tra.a]){ var c1=cnm(pl.cities[tra.a]); if(c1!==cty) cty=c1+" → "+cty; } }
     var np=arr.filter(function(x){ return !x.eat; }).length, f00=s.rows[0], a00=pre?((pre[0]&&pre[0].t!=null)?pre[0].t:X.from):(f00?Math.max(0,f00.t-(f00.leg?f00.leg.min:0)):X.from), b00=Q.post?Q.post.end:s.end;   // 11-08 날마다 요약 한 줄 — 장소 수 · 나서는 시각~끝 시각
     h+='<div class="tday" data-d="'+di+'"><div class="tdh"><span>'+T((di+1)+"일차",'Day '+(di+1))+'</span> · '+esc(dateTxt(dt))+(cty?'<b class="tcty">'+esc(cty)+'</b>':'')+(np?'<em class="tsum">'+esc(gTxt(DG6.sum,{n:np,a:m2hm(a00),b:m2hm(b00)}))+'</em>':'')+'</div>';
     if(arr.length) h+=tdBar(di,d.date===kstToday(0));   // 11-08 사장님 「모든 날에 보이게 해줘」 — 날마다 [진행] [하루 미루기] [일정 취소] (오늘은 초록 칸 「오늘 일정」, 다른 날은 작은 단추만)
@@ -1370,7 +1373,7 @@ function chkOpen(after){ var old=document.getElementById("trChk"); if(old) old.r
   b._rb=draw; draw(); document.body.appendChild(b); try{ ntap("_trip","trip_check"); }catch(e){} return b; }
 // 장소 빼기 — 카트와 일정 모두에서(다른 날·순서는 그대로) · 다시 검사
 function dropPlace(k){ if(!k) return; var pl=TR.plan; TR.items=TR.items.filter(function(x){ return x.k!==k; }); if(HLK===k) HLK=null;
-  if(pl){ pl.days.forEach(function(d){ d.stops=d.stops.filter(function(q){ return q!==k; }); }); delete pl.pool[k]; pl.chk=2; } save(); refresh(); }
+  if(pl){ pl.days.forEach(function(d){ d.stops=d.stops.filter(function(q){ return q!==k; }); if(d.post) d.post=d.post.filter(function(q){ return q!==k; }); }); delete pl.pool[k]; pl.chk=2; } save(); refresh(); }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trChk [data-ck], #trRep [data-ck]"); if(!a) return; e.preventDefault(); var v=a.dataset.ck, pl=TR.plan, b=document.getElementById("trChk");
   if(v==="x"){ if(b) b.remove(); return; } if(v==="open"){ chkOpen(false); return; } if(!pl) return;
   var q=chkList().filter(function(z){ return z.sig===a.dataset.sig; })[0]; if(!q){ if(b&&b._rb) b._rb(); return; }
@@ -1496,7 +1499,7 @@ function insOpen(o){ var pl=TR.plan; if(!pl||!pl.days[o.di]||!o.item) return; IN
 function insPrev(pl,o,pos,stay){ return withLC(function(){ var X=dayX(pl,o.di,REPH||pl.H||null), arr=X.arr, mo=moX(o.di,X), cur=sched(X.H,arr,X.dt,X.from,mo), it=Object.assign({},o.item,{stay:stay}), tr=arr.slice(0,pos).concat([it],arr.slice(pos)), s=sched(X.H,tr,X.dt,X.from,mo), lim=dayLim(pl,pl.days[o.di],X.H,tr,X.dt,X);
   var d0=pl.days[o.di], nt=lim>((d0.gap&&d0.gap.until)||X.to||pl.to);   // 밤 장소 날은 기준 시각 없이 (11-07)
   return esc(gTxt(CK6.iPrev,{e:m2hm(s.end),c:m2hm(cur.end)}))+(s.end>lim?' <b class="insov">⚠ '+esc(nt?gTxt(hE(X.H)?CK6.overN:CK6.overN2,{e:m2hm(s.end)}):gTxt(CK6.iOver,{t:m2hm(lim)}))+'</b>':''); }); }
-function insPaint(){ var b=document.getElementById("trIns"), pl=TR.plan, o=INS; if(!b||!pl||!o||!pl.days[o.di]){ if(b) b.remove(); return; } var X=dayX(pl,o.di,REPH||pl.H||null), arr=X.arr, it=o.item;
+function insPaint(){ var b=document.getElementById("trIns"), pl=TR.plan, o=INS; if(!b||!pl||!o||!pl.days[o.di]){ if(b) b.remove(); return; } if(o.post){ insPaintPost(b,pl,o); return; }   // 11-08 도착 후 일정 var X=dayX(pl,o.di,REPH||pl.H||null), arr=X.arr, it=o.item;
   var s0=b.querySelector("#tiPos"), s1=b.querySelector("#tiStay"), pos=s0?+s0.value:o.pos, stay=s1?+s1.value:o.stay;   // 언어를 바꿔 다시 그릴 때 고른 값 그대로
   var ud0=(s1&&/^d\d+$/.test(s1.value))?+s1.value.slice(1):0;   // 11-08 일 단위 (템플스테이 등)
   if(!(pos>=0&&pos<=arr.length)) pos=arr.length; if(!(stay>0)) stay=o.kind==="eat"?60:stayOf(it);
@@ -1564,7 +1567,7 @@ function tdPush(pl,di){ var f=mdFreeN(pl,di); if(!f&&pl.ap&&pl.ap.d) return -1;
   pl.days.forEach(function(d2,i2){ d2.date=dayDate(i2).toISOString().slice(0,10); });
   if(TR.opt.n!==pl.days.length){ var hk0=hKey(), hok=TR.opt.hOk===hk0; TR.opt.n=pl.days.length; if(hok) TR.opt.hOk=hKey(); }
   pl.chk=0; save(); refresh(); return ext; }
-function tdCancel(pl,di){ var d=pl.days[di]; if(!d) return; d.stops=[]; if(pl.meals){ delete pl.meals[di+":lunch"]; delete pl.meals[di+":dinner"]; } delete d.gap; delete d.rs; delete d.fr; delete d.fra; d.aiX=1; pl.chk=0; save(); refresh(); }
+function tdCancel(pl,di){ var d=pl.days[di]; if(!d) return; d.stops=[]; d.post=[]; if(pl.meals){ delete pl.meals[di+":lunch"]; delete pl.meals[di+":dinner"]; } delete d.gap; delete d.rs; delete d.fr; delete d.fra; d.aiX=1; pl.chk=0; save(); refresh(); }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-td]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var pl=TR.plan, di=+a.dataset.d, d=pl&&pl.days[di]; if(!d) return; var v=a.dataset.td;
   try{ ntap("_trip","today_"+v); }catch(z){}
   var td=d.date===kstToday(0), dl=dL6(di);   // 오늘이면 「오늘」, 다른 날이면 「2일차」 (11-08 모든 날에)
@@ -1589,6 +1592,53 @@ document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.
   try{ ntap("_trip","lunch_ask_"+a.dataset.lq); }catch(z){}
   if(a.dataset.lq==="eat"){ efOpen({di:di,K:"lunch",pos:mealPos(pl,di,"lunch")}); return; }
   pl.mno=pl.mno||{}; pl.mno[di+":lunch"]=1; save(); repPaint(); lgToast(T5(DG6.skipD)); },true);
+// ── 11-08 도착 후 일정 (도시를 옮기는 날 열차·비행기 뒤) ──
+var PO6={dep:{ko:"출국 준비",en:"Before your flight",ja:"出国の準備",zhs:"出境准备",zht:"出境準備",es:"Antes de tu vuelo"},
+ p0:{ko:"도착 바로 뒤",en:"Right after arriving",ja:"到着直後",zhs:"到达后立刻",zht:"抵達後立刻",es:"Justo al llegar"},
+ ins:{ko:"도착한 뒤 일정에 넣어요",en:"Adds it after you arrive",ja:"到着後の予定に入れます",zhs:"加入到达后的行程",zht:"加入抵達後的行程",es:"Se añade después de tu llegada"},
+ hot:{ko:"숙소 도착 {t}",en:"Back at lodging {t}",ja:"宿到着 {t}",zhs:"回到住处 {t}",zht:"回到住處 {t}",es:"Llegada al alojamiento {t}"},
+ ap:{ko:"공항 도착 {t}",en:"At the airport {t}",ja:"空港到着 {t}",zhs:"抵达机场 {t}",zht:"抵達機場 {t}",es:"Llegada al aeropuerto {t}"},
+ end:{ko:"일정 끝 {t}",en:"Day ends {t}",ja:"予定終了 {t}",zhs:"行程结束 {t}",zht:"行程結束 {t}",es:"Fin del día {t}"},
+ late:{ko:"비행기 시각에 늦어요 — {t}까지 공항에 가야 해요",en:"Too late for your flight — be at the airport by {t}",ja:"飛行機に間に合いません — {t}までに空港へ",zhs:"会赶不上航班——需在{t}前到达机场",zht:"會趕不上航班——需在{t}前抵達機場",es:"Llegarías tarde al vuelo: debes estar en el aeropuerto a las {t}"}};
+function postTr(pl,di){ var d=pl.days[di]; return d&&d.pm!=null&&pl.tr?pl.tr[d.pm]:null; }
+function postAnchor(pl,di){ var d=pl.days[di], tr=postTr(pl,di), ps=((d&&d.post)||[]).map(function(k){ return pl.pool[k]; }).filter(Boolean); return ps.length?ps[ps.length-1]:(tr?tr.sb:null); }
+function postRun(pl,di){ return withLC(function(){ var X=dayX(pl,di,REPH||pl.H||null), s=sched(X.H,X.arr,X.dt,X.from,moX(di,X)); return natPost(pl,di,X,s); }); }
+function postAt(pl,di){ var o=postRun(pl,di), t=o.tB; (o.rows||[]).forEach(function(r){ if(r.px) t=r.t+r.px.stay; }); return t; }
+// x 를 도착 후 일정 pos 자리에 넣었다고 치고 끝(숙소·공항 도착) — {end, miss, ap:공항이면 1, by}
+function postEndWith(pl,di,x,pos,stay){ var d=pl.days[di], bak=d.post, tk="__ptmp"; pl.pool[tk]=Object.assign({},x,{k:tk,stay:stay||x.stay}); d.post=(bak||[]).slice(); d.post.splice(pos==null?d.post.length:pos,0,tk);
+  var o=null; try{ o=postRun(pl,di); }catch(e){} d.post=bak; delete pl.pool[tk]; if(!o) return null; var last=o.rows[o.rows.length-1]||{}, ap=null; o.rows.forEach(function(r){ if(r.apD) ap=r; });
+  return {end:o.end,miss:!!o.miss,ap:ap?1:0,by:ap?ap.by:null,hot:last.hotel?1:0}; }
+function gcCandsPost(pl,di){ var last=postAnchor(pl,di), used={}, pts=[]; if(!last) return [];
+  pl.days.forEach(function(x){ x.stops.forEach(function(k){ used[k]=1; }); (x.post||[]).forEach(function(k){ used[k]=1; }); }); TR.items.forEach(function(x){ used[x.k]=1; });
+  for(var pk in pl.pool){ var pp=pl.pool[pk]; if(pp&&isFinite(+pp.lat)) pts.push(pp); }
+  var cand=[]; for(var k in (window.PLACES||{})){ if(used[k]||k.charAt(0)==="_") continue; var q=PLACES[k]; if(!q||!isFinite(+q.lat)||!isFinite(+q.lng)) continue;
+    var it={k:k,ko:q.ko,en:q.en||q.ko,lat:+q.lat,lng:+q.lng,addr:q.addr||"",addr_en:q.addr_en||"",d:q.dko||"",den:q.den||""}, c=catOf(it); if(c==="hotel"||c==="trans"||PERFK[k]) continue;
+    var dk=km(last,it); if(dk>6) continue; if(pts.some(function(p){ return km(p,it)<0.08; })) continue; it.stay=stayOf(it); cand.push({d:dk,x:it}); }
+  cand.sort(function(a,b){ return a.d-b.d; }); var out=[], sn={};
+  cand.forEach(function(c){ if(out.length>=8) return; var key=Math.round(c.x.lat*1e3)+","+Math.round(c.x.lng*1e3)+"|"+String(c.x.ko).slice(0,4); if(sn[key]) return; sn[key]=1; out.push(c); });
+  out.forEach(function(c){ var r=postEndWith(pl,di,c.x,null,c.x.stay); c.end=r?r.end:null; c.fit=!!r&&!r.miss; c.at=null; c.ap=r?r.ap:0; c.hot=r?r.hot:0; c.by=r?r.by:null; });
+  return out; }
+function insPost(pl,di,pos,it,stay){ var d=pl.days[di]; if(!d||!it||!it.k) return false; var k=it.k; d.post=d.post||[]; if(d.post.indexOf(k)>=0||d.stops.indexOf(k)>=0) return false;
+  pl.pool[k]=Object.assign({},it,{stay:stay,um:stay,ins:1}); d.post.splice(Math.max(0,Math.min(pos,d.post.length)),0,k);
+  if(!has(k)&&TR.items.length<MAXN){ var ci=Object.assign({},it,{um:stay}); delete ci.stay; delete ci.ins; var ks=TR.items.map(function(x){ return x.k; }), last=null;
+    d.stops.concat(d.post).forEach(function(q){ if(q!==k&&ks.indexOf(q)>=0) last=q; }); TR.items.splice(last?ks.indexOf(last)+1:TR.items.length,0,ci); }
+  pl.chk=2; save(); refresh(); return true; }
+function insPaintPost(b,pl,o){ var d=pl.days[o.di], it=o.item, ps=(d.post||[]).map(function(k){ return pl.pool[k]; }).filter(Boolean), s0=b.querySelector("#tiPos"), s1=b.querySelector("#tiStay");
+  var pos=s0?+s0.value:(o.pos!=null?o.pos:ps.length), stay=s1?+s1.value:(o.kind==="eat"?60:(o.stay||stayOf(it))); if(!(pos>=0&&pos<=ps.length)) pos=ps.length; if(!(stay>0)) stay=60;
+  var opts='<option value="0"'+(pos===0?' selected':'')+'>'+esc(T5(PO6.p0))+'</option>'+ps.map(function(x,i){ return '<option value="'+(i+1)+'"'+(pos===i+1?' selected':'')+'>'+esc(gTxt(CK6.pN,{n:i+1,p:x.eat?eatName(x):nm(x)})+(i===ps.length-1?T5(CK6.pE):''))+'</option>'; }).join("");
+  b.innerHTML='<div class="insbox"><div class="talh" style="color:var(--ink)">'+esc(T5(CK6.iT))+'</div><div class="d" style="margin:0 0 4px">'+esc(dLbl(o.di))+' · '+esc(dateTxt(new Date(d.date+"T00:00:00Z")))+'</div>'
+    +'<div class="insn">'+(o.kind==="eat"?MPIMG("mi_food",MIS)+eatLine(it):'<b>'+esc(nm(it))+'</b> <i>'+esc(kindL(it))+'</i>')+'</div>'
+    +'<label class="insl">'+esc(T5(CK6.iPos))+'<select id="tiPos">'+opts+'</select></label>'
+    +'<label class="insl">'+esc(T5(CK6.iStay))+'<select id="tiStay">'+stayOpts(stay,30,o.kind==="eat"?180:480)+'</select></label>'
+    +'<div class="insp" id="tiPrev"></div>'
+    +'<div class="talb"><button type="button" data-ins="go">'+esc(T5(CK6.iGo))+'</button><button type="button" data-ins="no" class="insno">'+esc(T5(CK6.iNo))+'</button></div></div>';
+  var upd=function(){ var p2=+b.querySelector("#tiPos").value, s2=+b.querySelector("#tiStay").value, r=postEndWith(pl,o.di,it,p2,s2), t="";
+    if(r){ t=esc(T5(PO6.ins))+' · '+esc(gTxt(r.ap?PO6.ap:r.hot?PO6.hot:PO6.end,{t:m2hm(r.end)})); if(r.miss&&r.by!=null) t+=' <b class="insov">⚠ '+esc(gTxt(PO6.late,{t:m2hm(r.by)}))+'</b>'; }
+    b.querySelector("#tiPrev").innerHTML=t; };
+  b.querySelector("#tiPos").onchange=upd; b.querySelector("#tiStay").onchange=upd; upd(); }
+function pxHtml(pl,di,r,n){ var x=r.px, k=x.k, del='<span class="tmact" data-html2canvas-ignore><button type="button" class="trbtn" data-ux="'+esc(k)+'">'+esc(T5(DG6.del))+'</button></span>';
+  if(x.eat){ var op=!!EXP["u:"+k]; return '<div class="trw l teu tcx'+(op?' open':'')+'" data-uk="'+esc(k)+'" data-xk="u:'+esc(k)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+esc(T5(CK6[r.t<900?"lunch":"dinner"]||CK6.meal))+' '+stSel(k,x.stay,180)+'<span class="teat on">'+eatLine(x)+del+'<span class="teact">'+eatLinks(x)+rsvLink(x)+' <button type="button" class="tsbtn" data-pp="eat">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(op,'',true):'')+'</span></div>'; }
+  var xk="p:"+k, op2=!!EXP[xk]; return '<div class="trw tpk tcx'+(op2?' open':'')+'" data-k="'+esc(k)+'" data-xk="'+esc(xk)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp"><b class="tno">'+n+'</b><b class="tpn">'+esc(nm(x))+'</b> <i>'+stSel(k,x.stay,480)+'</i>'+del+'<span class="tdet"><span class="tdbt" data-html2canvas-ignore><button type="button" class="tsbtn" data-pp="'+esc(k)+'">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(op2,'',true):'')+'</span></div>'; }
 // 넣기 — 그날 그 자리에 · 카트에도 같은 자리에(앞 장소 다음) · 다시 검사
 function insStop(pl,di,pos,it,stay){ var d=pl.days[di]; if(!d||!it||!it.k) return false; var k=it.k; if(d.stops.indexOf(k)>=0) return false;
   var arr=d.stops.filter(function(q){ return pl.pool[q]; });
@@ -1600,14 +1650,14 @@ function insStop(pl,di,pos,it,stay){ var d=pl.days[di]; if(!d||!it||!it.k) retur
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trIns [data-ins]"); if(!a) return; e.preventDefault(); var b=document.getElementById("trIns"), o=INS, pl=TR.plan;
   if(a.dataset.ins==="no"||!o||!pl){ if(b) b.remove(); return; }
   var pos=+b.querySelector("#tiPos").value, sv=b.querySelector("#tiStay").value, stay=+sv, nmx=o.kind==="eat"?eatName(o.item):nm(o.item), dn=/^d\d+$/.test(sv)?+sv.slice(1):0;
-  if(dn?mdInsert(pl,o.di,o.item,dn):insStop(pl,o.di,pos,o.item,stay)){ try{ ntap(o.kind==="eat"?"_trip":(/^[A-Za-z0-9_-]+$/.test(o.item.k)?o.item.k:"_trip"),o.kind==="eat"?"trip_eat_ins":"trip_ins"); }catch(z){} }
+  if(o.post?insPost(pl,o.di,pos,o.item,stay):dn?mdInsert(pl,o.di,o.item,dn):insStop(pl,o.di,pos,o.item,stay)){ try{ ntap(o.kind==="eat"?"_trip":(/^[A-Za-z0-9_-]+$/.test(o.item.k)?o.item.k:"_trip"),o.kind==="eat"?"trip_eat_ins":"trip_ins"); }catch(z){} }
   ["trIns","trEf","trGc"].forEach(function(id){ var x=document.getElementById(id); if(x) x.remove(); }); INS=null; lgToast(gTxt(CK6.added,{p:nmx}));
   if(document.getElementById("trRep")) repPaint(); else chkOpen(true); },true);
 // ── 직접 식당 찾기 (식사 칸에 맞는 식당이 없을 때·저녁 식당 찾기·검사 창 「식당 찾기」) ──
 //   조건을 넓혀서: 반경 5km(산 위 석굴암처럼 2km 안에 식당이 없는 곳이 있어서 — 카카오는 가까운 순이라 넓혀도 가까운 곳부터) · 음식 종류 아무거나(고른 조건과 다를 수 있으면 표시) · 평점 기준 없음(카카오 자료엔 평점이 없다)
 //   후보 = 이미 받은 것(그 칸 근처 카카오 15곳·제휴·이름난 식당 eats.json·같은 일정 다른 칸 근처 식당) + 허브 /kplace kw=음식점 반경 5km 한 번(카카오 무료, 같은 자리·언어는 이 화면에서 다시 안 부름)
 var EFW={}, EFS=null;
-function efAnchor(pl,o){ if(o.mk&&pl.recs&&pl.recs[o.mk]&&pl.recs[o.mk].a) return {lat:+pl.recs[o.mk].a[0],lng:+pl.recs[o.mk].a[1]};
+function efAnchor(pl,o){ if(o.post){ var A0=postAnchor(pl,o.di); return A0?{lat:+A0.lat,lng:+A0.lng}:null; } if(o.mk&&pl.recs&&pl.recs[o.mk]&&pl.recs[o.mk].a) return {lat:+pl.recs[o.mk].a[0],lng:+pl.recs[o.mk].a[1]};
   var X=dayX(pl,o.di,REPH||pl.H||null), arr=X.arr, p=arr[Math.max(0,Math.min(arr.length-1,(o.pos||0)-1))]||arr[0]||hE(X.H)||hS(X.H); return p?{lat:+p.lat,lng:+p.lng}:null; }
 function efWide(A,cb){ var key=(+A.lat).toFixed(3)+","+(+A.lng).toFixed(3)+"|"+LANG; if(EFW[key]) return cb(EFW[key]); if(EFW[key+"?"]) return; EFW[key+"?"]=1;
   fetch(HUB+"/kplace?kw="+encodeURIComponent("음식점")+"&x="+(+A.lng).toFixed(3)+"&y="+(+A.lat).toFixed(3)+"&radius=5000"+kpL()).then(function(r){ return r.json(); })
@@ -1656,7 +1706,7 @@ function efPaint(){ var b=document.getElementById("trEf"), pl=TR.plan, o=EFS; if
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trEf [data-efx], #trEf [data-efd], #trEf [data-efp]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var b=document.getElementById("trEf"), o=EFS;
   if(a.dataset.efx){ if(b) b.remove(); return; } if(!o||!o.list) return; var c=o.list[+(a.dataset.efd!=null?a.dataset.efd:a.dataset.efp)]; if(!c) return;
   if(a.dataset.efd!=null){ ppOpen({t:"eat",c:c,di:o.di}); return; }   // 장소 상세 팝업(일정 화면과 같은 것) — 닫으면 이 목록으로
-  insOpen({di:o.di,kind:"eat",K:o.K,pos:o.pos,item:eatItem(c,o.K,o.di),stay:60}); },true);
+  insOpen({di:o.di,kind:"eat",K:o.K,pos:o.pos,item:eatItem(c,o.K,o.di),stay:60,post:o.post}); },true);
 function eatItem(c,K,di){ var h=0, s0=(c.ko||"")+"|"+(+c.lat).toFixed(5)+"|"+(+c.lng).toFixed(5); for(var i=0;i<s0.length;i++) h=(h*31+s0.charCodeAt(i))|0;
   var it=Object.assign({},c,{k:"ue_"+(h>>>0).toString(36)+"_"+(K||"m")+di,eat:1,meal:K||"",pin:1,lat:+c.lat,lng:+c.lng}); delete it.dist; delete it.cond; return it; }
 // 식당 예약 = 아웃링크(앱 안 예약 없음) — 한국어 화면 네이버 지도 장소 검색(예약·전화), 외국어 화면 구글 지도 장소 검색(Reserve·Call)
@@ -1700,14 +1750,15 @@ function gapRec(pl,di,X,s,g){ var src=pl.days[di], arr=X.arr, dt=X.dt, mo=moX(di
       if(best) out.push(best); }); });
   out.sort(function(a,b){ return (a.st?1:0)-(b.st?1:0)||a.idle-b.idle||Math.abs(a.dj-di)-Math.abs(b.dj-di); });
   return out.slice(0,2); }
-function evBtns(di,gi){ return [["add",CK6.eveAdd],["eat",CK6.eveEat],["no",CK6.eveNo],["rest",CK6.eveRest]].map(function(a){ return '<button type="button" class="trbtn" data-ev="'+a[0]+'" data-d="'+di+'"'+(gi!=null?' data-gi="'+gi+'"':'')+'>'+esc(T5(a[1]))+'</button>'; }).join(""); }
-function eveHtml(pl,d,di,s,X,lim){ return '<div class="tgap teve" data-html2canvas-ignore><b>'+esc(T5(CK6.eveT))+'</b><div class="tgr">'+evBtns(di,null)+'</div></div>'; }   // 그날 끝 — 모든 날 맨 끝에 무조건
+function evBtns(di,gi,post){ return [["add",CK6.eveAdd],["eat",CK6.eveEat],["no",CK6.eveNo],["rest",CK6.eveRest]].map(function(a){ return '<button type="button" class="trbtn" data-ev="'+a[0]+'" data-d="'+di+'"'+(gi!=null?' data-gi="'+gi+'"':'')+(post?' data-post="1"':'')+'>'+esc(T5(a[1]))+'</button>'; }).join(""); }
+function eveHtml(pl,d,di,s,X,lim){ var dep=!!(pl.ap&&pl.ap.d&&di===pl.days.length-1), post=!!(X&&X.pmTr); return '<div class="tgap teve" data-html2canvas-ignore><b>'+esc(T5(dep?PO6.dep:CK6.eveT))+'</b><div class="tgr">'+evBtns(di,null,post)+'</div></div>'; }   // 11-08 출국하는 날 = 「출국 준비」(단추 그대로) · 도시를 옮기는 날 = 도착한 도시에서 찾기   // 그날 끝 — 모든 날 맨 끝에 무조건
 function gapHtml(pl,di,G,gi){ var rc=(G.rec||[]).map(function(q,i){ var x=pl.pool[q.k]; if(!x) return ""; var pn=nm(x), pd=q.t<720?"am":q.t<1020?"pm":"ev";   // 빈 시간 — 그 자리에, 같은 모양
     return '<button type="button" class="tgrec" data-gr="'+i+'" data-gi="'+gi+'" data-d="'+di+'">'+esc(gTxt(CK6.gRec,{d:dLbl(q.dj),p:pn,j:eul(pn),q:T5(GQ6[pd]),t:m2hm(q.t)}))+(q.st?'<small>'+esc(gTxt(CK6.gRecS,{m:durTxt(q.st)}))+'</small>':'')+'</button>'; }).join("");
   return '<div class="tgap teve tgp" data-html2canvas-ignore><b>'+esc(T5(CK6.eveT))+'</b><span class="tgpsub">'+esc(gTxt(CK6.gapT,{a:m2hm(G.a),b:m2hm(G.b),g:durTxt(G.w)}))+'</span>'+rc+'<div class="tgr">'+evBtns(di,gi)+'</div></div>'; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-ev]"); if(!a) return; e.preventDefault(); var pl=TR.plan; if(!pl) return; var di=+a.dataset.d, d=pl.days[di]; if(!d) return; var v=a.dataset.ev, G=a.dataset.gi!=null?(GPC[di]||[])[+a.dataset.gi]:null;
   try{ ntap("_trip",(G?"gap_":"eve_")+v); }catch(z){}
   if(G){ if(v==="add") gcOpen(di,G.end,G.j,G); else if(v==="eat") efOpen({di:di,K:G.K,pos:G.j}); else if(v==="no") goOpen(di,G); else if(v==="rest") rsSet(pl,di,G); return; }   // 빈 시간 칸 — 그 자리에
+  if(a.dataset.post==="1"&&(v==="add"||v==="eat")){ if(v==="add") gcOpen(di,null,null,null,1); else { var tA=postAt(pl,di); efOpen({di:di,K:(tA!=null&&tA<840)?"lunch":"dinner",pos:(d.post||[]).length,post:1}); } return; }   // 11-08 도착한 도시에서
   if(v==="no"||v==="rest"){ d.gap="early"; save(); repPaint(); return; }   // 그날 끝 — 「숙소에서 쉴게요」도 숙소로 가는 것과 같다
   if(v==="keep"){ d.eveX=1; save(); repPaint(); return; }
   var X=dayX(pl,di,REPH), lim=(d.gap&&d.gap.until)||dayLim(pl,d,X.H,X.arr,X.dt,X);
@@ -1749,7 +1800,7 @@ function goLater(pl,di,ks){ var src=pl.days[di], mv=0, kept=0, dst={}, att={}, H
     kept++; });
   if(!kept) src.gap="early"; pl.chk=2; save(); return {mv:mv,kept:kept}; }
 var GCS=null;
-function gcCands(pl,di,until,pos,gp){ var X=dayX(pl,di,REPH||pl.H||null), arr=X.arr, H=X.H, dt=X.dt, mo=moX(di,X), used={}, pts=[], P0=(pos!=null&&pos>=0&&pos<arr.length)?pos:arr.length;   // pos = 넣을 자리(그 앞 장소 근처) — 없으면 그날 끝
+function gcCands(pl,di,until,pos,gp,post){ if(post) return gcCandsPost(pl,di); var X=dayX(pl,di,REPH||pl.H||null), arr=X.arr, H=X.H, dt=X.dt, mo=moX(di,X), used={}, pts=[], P0=(pos!=null&&pos>=0&&pos<arr.length)?pos:arr.length;   // pos = 넣을 자리(그 앞 장소 근처) — 없으면 그날 끝
   pl.days.forEach(function(x){ x.stops.forEach(function(k){ used[k]=1; }); }); TR.items.forEach(function(x){ used[x.k]=1; });
   for(var pk in pl.pool){ var pp=pl.pool[pk]; if(pp&&isFinite(+pp.lat)) pts.push(pp); }
   var last=(P0<arr.length?arr.slice(0,P0):arr).filter(function(x){ return !isNight(x)&&!x.eat; }).pop()||arr[P0-1]||arr[arr.length-1]||hE(H)||hS(H); if(!last) return [];
@@ -1764,20 +1815,20 @@ function gcCands(pl,di,until,pos,gp){ var X=dayX(pl,di,REPH||pl.H||null), arr=X.
       c.fit=!!r&&(!iq||iq.t==="early")&&s.viol<=cur.viol&&s.end<=cur.end+1&&(tn==null||t0==null||tn<=t0+1); }
     else c.fit=s.end<=until&&s.viol===0; });
   return out; }
-function gcOpen(di,until,pos,gp){ var pl=TR.plan; if(!pl||!pl.days[di]) return; GCS={di:di,until:until,pos:pos,gp:gp||null}; var L0=withLC(function(){ return gcCands(pl,di,until,pos,gp); });
+function gcOpen(di,until,pos,gp,post){ var pl=TR.plan; if(!pl||!pl.days[di]) return; GCS={di:di,until:until,pos:pos,gp:gp||null,post:post?1:0}; var L0=withLC(function(){ return gcCands(pl,di,until,pos,gp,post); });
   if(!L0.length){ var d=pl.days[di]; if(d.gap&&d.gap.until){ d.gap.none=1; save(); repPaint(); } else lgToast(T5(GX.none)); return; }
   var old=document.getElementById("trGc"); if(old) old.remove(); var b=document.createElement("div"); b.id="trGc"; b.className="trpop"; b.onclick=function(e){ if(e.target===b) b.remove(); };
   b._rb=gcPaint; document.body.appendChild(b); gcPaint(); }
-function gcPaint(){ var b=document.getElementById("trGc"), pl=TR.plan, o=GCS; if(!b||!pl||!o||!pl.days[o.di]){ if(b) b.remove(); return; } var Lc=withLC(function(){ return gcCands(pl,o.di,o.until,o.pos,o.gp); }); o.list=Lc;
+function gcPaint(){ var b=document.getElementById("trGc"), pl=TR.plan, o=GCS; if(!b||!pl||!o||!pl.days[o.di]){ if(b) b.remove(); return; } var Lc=withLC(function(){ return gcCands(pl,o.di,o.until,o.pos,o.gp,o.post); }); o.list=Lc;
   var dt=new Date(pl.days[o.di].date+"T00:00:00Z"), mid=o.pos!=null&&o.pos>=0&&o.pos<dayX(pl,o.di,REPH||pl.H||null).arr.length;   // 장소 사이에 넣을 때는 「빈 시간 바로 앞 장소 근처」 (11-07)
   b.innerHTML='<div class="efbox"><button type="button" class="ppx" aria-label="'+esc(T5(PP6.x))+'" data-gcx="1">✕</button><div class="talh" style="color:var(--ink);margin-right:34px">'+MPIMG("mi_moon",MIS)+esc(gTxt(CK6.gT,{d:dLbl(o.di)+" · "+dateTxt(dt)}))+'</div><div class="d" style="margin:2px 0 8px;line-height:1.5">'+esc(T5(mid?CK6.gI2:CK6.gI))+'</div>'
     +Lc.map(function(c,i){ var dd=c.d<1?Math.round(c.d*1000)+" m":c.d.toFixed(1)+" km";
-      return '<div class="efi"><div><b>'+esc(nm(c.x))+'</b> <i>'+esc(kindL(c.x))+' · '+esc(gTxt(CK6.km,{d:dd}))+(isNight(c.x)?' · '+esc(T("밤 추천","Best at night")):'')+'</i></div><div class="efm">'+esc(durTxt(c.x.stay))+' · '+(c.fit?esc(o.gp?gTxt(FX6.mOk,{t:m2hm(c.at)}):gTxt(hE(dayX(pl,o.di,REPH||pl.H||null).H)?CK6.gFit:CK6.gFit2,{e:m2hm(c.end)})):'<b style="color:#c2410c">'+esc(gTxt(CK6.gNo,{t:m2hm(o.until)}))+'</b>')+'</div>'
+      return '<div class="efi"><div><b>'+esc(nm(c.x))+'</b> <i>'+esc(kindL(c.x))+' · '+esc(gTxt(CK6.km,{d:dd}))+(isNight(c.x)?' · '+esc(T("밤 추천","Best at night")):'')+'</i></div><div class="efm">'+esc(durTxt(c.x.stay))+' · '+(o.post?(c.fit?esc(gTxt(c.ap?PO6.ap:c.hot?PO6.hot:PO6.end,{t:m2hm(c.end)})):'<b style="color:#c2410c">'+esc(gTxt(PO6.late,{t:m2hm(c.by)}))+'</b>'):c.fit?esc(o.gp?gTxt(FX6.mOk,{t:m2hm(c.at)}):gTxt(hE(dayX(pl,o.di,REPH||pl.H||null).H)?CK6.gFit:CK6.gFit2,{e:m2hm(c.end)})):'<b style="color:#c2410c">'+esc(gTxt(CK6.gNo,{t:m2hm(o.until)}))+'</b>')+'</div>'
         +'<div class="tgr"><button type="button" class="trbtn" data-gcd="'+i+'">'+esc(T5(CK6.det))+'</button><button type="button" class="trbtn pri" data-gcp="'+i+'">'+esc(T5(CK6.pick))+'</button></div></div>'; }).join("")+'</div>'; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trGc [data-gcx], #trGc [data-gcd], #trGc [data-gcp]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var b=document.getElementById("trGc"), o=GCS, pl=TR.plan;
   if(a.dataset.gcx){ if(b) b.remove(); return; } if(!o||!o.list||!pl) return; var c=o.list[+(a.dataset.gcd!=null?a.dataset.gcd:a.dataset.gcp)]; if(!c) return;
   if(a.dataset.gcd!=null){ ppOpen({t:"place",k:c.x.k,x:c.x,di:o.di}); return; }
-  var X=dayX(pl,o.di,REPH||pl.H||null); insOpen({di:o.di,kind:"place",pos:(o.pos!=null&&o.pos>=0&&o.pos<X.arr.length)?o.pos:X.arr.length,item:c.x,stay:c.x.stay}); },true);
+  var X=dayX(pl,o.di,REPH||pl.H||null); insOpen({di:o.di,kind:"place",pos:o.post?(pl.days[o.di].post||[]).length:(o.pos!=null&&o.pos>=0&&o.pos<X.arr.length)?o.pos:X.arr.length,item:c.x,stay:c.x.stay,post:o.post}); },true);
 // ── PDF (화면을 그림으로 떠서 — 한글 글꼴 문제 없음) · cdnjs 정확한 판 고정 ──
 var LIBS={h2c:"https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",pdf:"https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"};
 function lib(u){ return new Promise(function(ok,no){ if(document.querySelector('script[src="'+u+'"]')&&(window.html2canvas||window.jspdf)){ var t=0, iv=setInterval(function(){ if((u===LIBS.h2c&&window.html2canvas)||(u===LIBS.pdf&&window.jspdf)||++t>100){ clearInterval(iv); ok(); } },50); return; }
@@ -2604,9 +2655,17 @@ function natPost(pl,di,X,s){ var d=pl.days[di], rows=[], S=hS(X.H), E=hE(X.H), t
   else t=(X.apD&&X.apD.by!=null&&!X.arr.length)?Math.max(X.from,X.apD.by-30):X.from;
   o.end=t;
   if(X.pmTr){ var tr=X.pmTr, opt=trPick(tr,t+(tr.kind==="air"?60:15)); o.tr=tr; rows.push({tr:tr,opt:opt,ta:t}); if(opt.miss) o.miss=1;
-    var tB=opt.ar+(tr.kind==="air"?20:0);
-    if(tr.b===-2){ var q=pl.ap&&pl.ap.d, by=q&&q.t!=null?q.t-(q.k==="d"?90:180):null; rows.push({apD:1,p:tr.sb,t:tB,ft:q?q.t:null,by:by,k:q?q.k:"i"}); if(by!=null&&tB>by) o.miss=1; o.end=tB; return o; }
-    var HB=hotelPt(pl,tr.b); if(HB){ var L2=bagLeg(tr.sb,HB,tB); rows.push({leg:L2,a:tr.sb,b:HB}); rows.push({hotel:1,p:HB,t:tB+L2.min}); o.end=tB+L2.min; } else { rows.push({end:1,t:tB}); o.end=tB; }
+    var tB=opt.ar+(tr.kind==="air"?20:0); o.tB=tB;
+    // 11-08 사장님 「도착한 뒤엔 그 도시에서 일정 추가·식당 찾기」 — 도착 후 일정 d.post: 도착 지점에서 차례로(식당은 점심 12시·저녁 18시 전이면 기다림) · 그 뒤 숙소(또는 공항)
+    var PS=(d.post||[]).map(function(k){ return pl.pool[k]; }).filter(Boolean), pp=tr.sb, tp=tB;
+    var walkPost=function(){ PS.forEach(function(x){ var lg=legT(pp,x,tp); tp+=lg.min; if(x.eat){ var K=tp<900?"lunch":"dinner"; if(tp<ML[K].lo) tp=ML[K].lo; } rows.push({px:x,t:tp,leg:lg,a:pp}); tp+=x.stay; pp=x; }); };
+    if(tr.b===-2){ var q=pl.ap&&pl.ap.d, by=q&&q.t!=null?q.t-(q.k==="d"?90:180):null;
+      if(!PS.length){ rows.push({apD:1,p:tr.sb,t:tB,ft:q?q.t:null,by:by,k:q?q.k:"i"}); if(by!=null&&tB>by) o.miss=1; o.end=tB; return o; }
+      rows.push({arr:1,p:tr.sb,t:tB}); walkPost(); var AP=q?apPt(q.id):null;
+      if(AP){ var L3=legT(pp,AP,tp); rows.push({leg:L3,a:pp,b:AP}); tp+=L3.min; rows.push({apD:1,p:AP,t:tp,ft:q.t,by:by,k:q.k}); if(by!=null&&tp>by) o.miss=1; }
+      o.end=tp; return o; }
+    if(PS.length){ rows.push({arr:1,p:tr.sb,t:tB}); walkPost(); }
+    var HB=hotelPt(pl,tr.b); if(HB){ var L2=PS.length?legT(pp,HB,tp):bagLeg(tr.sb,HB,tB); rows.push({leg:L2,a:pp,b:HB}); rows.push({hotel:1,p:HB,t:tp+L2.min}); o.end=tp+L2.min; } else { rows.push({end:1,t:tp}); o.end=tp; }
     rows.push({tip:1}); rows.push({night:1,ci:tr.b,di:di}); return o; }
   if(X.apD){ rows.push({apD:1,p:E,t:t,ft:X.apD.ft,by:X.apD.by,k:X.apD.k}); return o; }
   if(X.arr.length||(X.pre&&X.pre.length&&!X.chk)){ if(E&&(E.hotel||E.k==="__hotel")) rows.push({hotel:1,p:E,t:t}); else rows.push({end:1,t:t}); }   // 장소 없는 날(자유 일정)은 끝 줄 없이 밤 숙소 칸만 · 도착한 날 장소가 없으면 숙소 들르기·쉬기 줄이 끝 (11-07)
@@ -2621,7 +2680,9 @@ function natPreHtml(pl,di,X){ var h=''; X.pre.forEach(function(r){
     else if(r.tr) h+=trCard(pl,r.tr,r.opt);
     else if(r.chk) h+=rowH(r.t,"mi_stay",esc(T5(r.rest?NX6.rest:NX6.chk))+' · <b>'+esc(r.tmp?gTxt(NX6.hTmp,{p:ptNm(r.p)}):ptNm(r.p))+'</b>');   // 도착한 날 숙소 들르기 (11-07)
     else if(r.drop) h+=rowH(r.t,"mi_stay",esc(gTxt(NX6.drop,{h:ptNm(r.p)}))); }); return h; }
-function natPostHtml(pl,di,X,post,prevK){ var h=''; post.rows.forEach(function(r){
+function natPostHtml(pl,di,X,post,prevK){ var h='', pk=prevK, pn=X.arr.filter(function(x){ return !x.eat; }).length; post.rows.forEach(function(r){
+    if(r.px){ h+=legRow({leg:r.leg,a:r.a,b:r.px},di,pk)+pxHtml(pl,di,r,r.px.eat?0:++pn); pk=r.px.k; return; }   // 11-08 도착 후 일정
+    if(r.arr){ h+=rowH(r.t,"mi_train",esc(gTxt(NX6.apD,{a:ptNm(r.p)}))); return; }
     if(r.leg) h+=legRow(r,di,prevK);
     else if(r.tr) h+=trCard(pl,r.tr,r.opt)+(r.opt.miss?'<div class="tmemo">⚠ '+esc(gTxt(NX6.miss,{t:m2hm(r.opt.last?r.opt.last.dp:r.opt.dp)}))+'</div>':'');
     else if(r.hotel) h+=rowH(r.t,"mi_stay",esc(T("숙소 도착","Back to lodging"))+' · <b>'+esc(ptNm(r.p))+'</b>');
