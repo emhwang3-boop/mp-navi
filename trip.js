@@ -650,7 +650,7 @@ function simDay(H,arr,date,from,mo,MP,lv,to){ var t=from, p=hS(H), rows=[], viol
       var o=nx?openAt(nx,date,ready+la):null; if(j===0&&!lv&&o==null&&ready<ML[K].la) return;   // 첫 장소 앞 식사는 그 장소가 아직 안 열었거나(밤 장소 앞 저녁) 식사 시각에 첫 장소에 닿을 때만 — 나오자마자 점심 X
       var m=past?ready:mealAt(K,ready,la,o,end,to,!!lv); if(m==null) return;
       var wt=Math.max(0,m-ready); if(RST){ RST.e=RST.t+wt; RST=null; wt=0; ready=m; }   // 숙소에서 쉬다 나서면 기다림이 없다
-      if(rows.length) idle+=wt; if(lg) tv+=lg.min; if(mv) tv+=mv.min; t=m+60;
+      if(rows.length) idle+=wt; if(lg) tv+=lg.min; if(mv) tv+=mv.min; t=m+((r&&r.stay>=30)?r.stay:60);   // 고른 식당 머무는 시간 (11-08 — 일정표에서 고침, 기본 1시간)
       rows.push({meal:K,lunch:1,t:m,anchor:(at==="next"||j===0)?nx:arr[j-1],next:nx,r:r,leg:lg||mv,to:(!r&&at==="next"&&!here&&nx)?nx.k:null,t0:t0,rd:ready});   // t0 = 앞 일정에서 나서는 시각 · rd = 먹을 수 있는 때 (빈 시간 = t − rd, 11-07)
       if(r){ p=r; pre=null; } else if(at==="next"&&!here){ p=nx; pre=nx; } }); };   // 다음 장소 근처로 먼저 갔으면 거기서 들어간다(이동 한 번)
   arr.forEach(function(x,i){ meals(i); rest(i); var lg=pre===x?null:(p?legT(p,x,t,lv):null); pre=null; if(lg){ t+=lg.min; tv+=lg.min; } var ar0=t, f=FACT[x.k], dw=date.getUTCDay(), note=[], st=x.stay, act=0, R=lv&&lv.rec[x.k], w0=wait;   // ar0 = 문 열기·행사를 기다리기 전 닿는 시각 (11-07 검사용)
@@ -681,7 +681,7 @@ function sched(H,arr,date,from,mo,lv){ var to=(mo&&mo.to)||TO0();
   var mb={to:to,rs:mo&&mo.rs}, MP={}, cur=simDay(H,arr,date,from,mb,MP,null,to), n=arr.length; if(!n) return simDay(H,arr,date,from,mo,MP,null,to);   // 자리는 고른 식당 없이 정한다 — 식당을 골라도 식사 자리가 안 바뀌게
   var jn=-1; for(var i=0;i<n;i++) if(isNight(arr[i])){ jn=i; break; }
   var lg=-1;
-  ["lunch","dinner"].forEach(function(K){ var best=null; if(arr.some(function(x){ return x&&x.eat&&x.meal===K; })) return;   // 손님이 그 끼니 식당을 직접 넣은 날 (11-07)
+  ["lunch","dinner"].forEach(function(K){ var best=null; if(mo&&mo.skip&&mo.skip[K]) return; if(arr.some(function(x){ return x&&x.eat&&x.meal===K; })) return;   // 손님이 그 끼니 식당을 직접 넣은 날 (11-07)
     for(var j=(K==="dinner"&&lg>=0)?lg:0;j<=n;j++){ if(K==="dinner"&&jn>=0&&j>jn) break;   // 저녁은 밤 장소 앞까지만
       if(cur.gt[j]>ML[K].ha) break;   // 그 자리에 닿는 시각이 이미 늦으면 뒤 자리도 다 늦다 (식사를 넣으면 늦어지기만 한다) — 장소가 많은 날 계산을 줄인다
       var M2=addM(MP,j,K), s=simDay(H,arr,date,from,mb,M2,null,to), mr=null; s.rows.forEach(function(r){ if(r.meal===K) mr=r; }); if(!mr) continue;
@@ -1044,12 +1044,13 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
         h+='<div class="trw h"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_stay",MIS)+esc(gTxt(CK6.rsRow,{a:m2hm(r.t),b:m2hm(r.e)}))+' · <b>'+esc(r.p&&r.p.tmp?gTxt(NX6.hTmp,{p:rn}):rn)+'</b><span class="tlvw" data-html2canvas-ignore> <button type="button" class="tebtn" data-rsx="'+esc(r.k)+'" data-d="'+di+'">'+esc(T5(CK6.rm))+'</button></span></span></div>';
         prevK=rk; return; }
       if(r.x&&r.x.eat){ pj++; if(r.leg&&prevK&&lgOk) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.x.k)+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),eatName(r.x))+legGo(r.leg)+'<div class="tods"></div></div>';   // 11-07 손님이 넣은 식당
-        var gw=(r.ar!=null&&!lv)?r.t-r.ar:0, gwh=gw>=60?'<span class="tmemo ti">'+esc(gTxt(CK6.gapM,{t:m2hm(r.t),g:durTxt(gw)}))+'</span>'+(GPI[ri]!=null?'':'<span class="tlvw" data-html2canvas-ignore><button type="button" class="trbtn" style="margin:0;padding:5px 11px;font-size:12.5px" data-ev="add" data-d="'+di+'" data-pos="'+(pj-1)+'">'+esc(T5(CK6.eveAdd))+'</button></span>'):'';   // 2시간 넘게 비면 위 「일정 추가」 칸이 맡는다 (11-07)   // 넣은 식당이 식사 시각을 기다리면 그 빈 시간에 넣을 곳 (11-07)
-        h+='<div class="trw l teu tcx'+(EXP["u:"+r.x.k]?' open':'')+'" data-uk="'+esc(r.x.k)+'" data-xk="u:'+esc(r.x.k)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+esc(mealLbl(Object.assign({},r.x,{stay:r.st||r.x.stay,meal:r.t<900?"lunch":"dinner"})))+gwh+'<span class="teat on">'+eatLine(r.x)+'<span class="teact">'+eatLinks(r.x)+rsvLink(r.x)+' <button type="button" class="tebtn" data-ux="'+esc(r.x.k)+'">'+esc(T5(CK6.rm))+'</button> <button type="button" class="tsbtn" data-pp="eat">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(!!EXP["u:"+r.x.k],'',true):'')+'</span></div>';
+        var gw=(r.ar!=null&&!lv)?r.t-r.ar:0, gwh=gw>=60?'<span class="tmemo ti">'+esc(gTxt(CK6.gapM,{t:m2hm(r.t),g:durTxt(gw)}))+'</span>':'';
+        var acts='<span class="tmact" data-html2canvas-ignore>'+((gw>=60&&GPI[ri]==null)?'<button type="button" class="trbtn" data-ev="add" data-d="'+di+'" data-pos="'+(pj-1)+'">'+esc(T5(CK6.eveAdd))+'</button>':'')+'<button type="button" class="trbtn" data-ux="'+esc(r.x.k)+'">'+esc(T5(DG6.del))+'</button></span>';   // 11-08 사장님 — 「일정 추가」 옆에 「삭제」(식사가 겹칠 때) · 펼치지 않아도 보임   // 2시간 넘게 비면 위 「일정 추가」 칸이 맡는다 (11-07)   // 넣은 식당이 식사 시각을 기다리면 그 빈 시간에 넣을 곳 (11-07)
+        h+='<div class="trw l teu tcx'+(EXP["u:"+r.x.k]?' open':'')+'" data-uk="'+esc(r.x.k)+'" data-xk="u:'+esc(r.x.k)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+esc(T5(CK6[r.t<900?"lunch":"dinner"]||CK6.meal))+' '+stSel(r.x.k,r.x.stay,180)+gwh+'<span class="teat on">'+eatLine(r.x)+acts+'<span class="teact">'+eatLinks(r.x)+rsvLink(r.x)+' <button type="button" class="tsbtn" data-pp="eat">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(!!EXP["u:"+r.x.k],'',true):'')+'</span></div>';
         prevK=r.x.k; return; }
       if(r.meal){ var mk=di+":"+r.meal, ml=r.meal==="lunch"?T("점심 (1시간)","Lunch (1 h)"):T("저녁 (1시간)","Dinner (1 h)");
         if(r.r){ if(r.leg&&lgOk&&prevK) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="rs:'+mk+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),eatName(r.r))+'<div class="tods"></div></div>';
-          h+='<div class="trw l tcx'+(EXP["m:"+mk]?' open':'')+'" data-xk="m:'+mk+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+ml+'<span class="teat on">'+eatLine(r.r)+'<span class="teact">'+eatLinks(r.r)+' <button type="button" class="tebtn" data-x="'+mk+'">'+T("바꾸기","Change")+'</button> <button type="button" class="tsbtn" data-pp="eat">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(!!EXP["m:"+mk],'',true):'')+'</span></div>'; prevK="rs:"+mk; }
+          h+='<div class="trw l tcx'+(EXP["m:"+mk]?' open':'')+'" data-xk="m:'+mk+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+esc(T5(CK6[r.meal]||CK6.meal))+' <select class="tstay" data-smk="'+mk+'" aria-label="'+esc(T5(CK6.stay))+'">'+stayOpts(r.r.stay>=30?r.r.stay:60,30,180)+'</select><span class="teat on">'+eatLine(r.r)+'<span class="tmact" data-html2canvas-ignore><button type="button" class="trbtn" data-mdel="'+mk+'">'+esc(T5(DG6.del))+'</button></span><span class="teact">'+eatLinks(r.r)+' <button type="button" class="tebtn" data-x="'+mk+'">'+T("바꾸기","Change")+'</button> <button type="button" class="tsbtn" data-pp="eat">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(!!EXP["m:"+mk],'',true):'')+'</span></div>'; prevK="rs:"+mk; }
         else { if(r.to&&r.leg&&prevK&&lgOk) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.to)+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),lgNm(r.to,di,1))+legGo(r.leg)+'<div class="tods"></div></div>';   // 다음 장소 근처로 먼저 가서 먹는 칸 — 이동이 식사 앞
           h+='<div class="trw l"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+ml+'<span class="teat" id="te_'+mk.replace(":","_")+'" data-k="'+mk+'" data-j="'+pj+'">'+eatPickRow(mk,r.anchor,pj)+'</span></span></div>'; }
         return; }
@@ -1063,7 +1064,7 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
       if(isNight(r.x)) det.push(T("밤 추천","Best at night"));
       var fm=pl.fxm&&pl.fxm[r.x.k], fmt=(fm&&fm.t===di&&!r.act)?gTxt(fm.a?FX6.mvA:FX6.mvN,{f:m2hm(fm.x),s:dLbl(fm.f),d:dLbl(fm.t)}):"";   // 11-07 짤 때 정한 시각에 맞춰 옮긴 곳
       var xk="p:"+r.x.k, op=!!EXP[xk];
-      h+='<div class="trw tpk tcx'+(op?' open':'')+'" data-k="'+esc(r.x.k)+'" data-xk="'+esc(xk)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp"><b class="tno">'+n+'</b><b class="tpn">'+esc(nm(r.x))+'</b> <i>'+durTxt(r.st||r.x.stay)+(r.ext?' · '+T(m2hm(r.t+(r.st||r.x.stay))+"까지","until "+m2hm(r.t+(r.st||r.x.stay))):'')+'</i>'
+      h+='<div class="trw tpk tcx'+(op?' open':'')+'" data-k="'+esc(r.x.k)+'" data-xk="'+esc(xk)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp"><b class="tno">'+n+'</b><b class="tpn">'+esc(nm(r.x))+'</b> <i>'+stSel(r.x.k,r.x.stay,480)+(r.ext?' · '+T(m2hm(r.t+(r.st||r.x.stay))+"까지","until "+m2hm(r.t+(r.st||r.x.stay))):'')+'</i>'
         +(warn.length?'<span class="tmemo">'+esc(warn.join(" · "))+'</span>':"")+(memo.length?'<span class="tmemo ti">'+esc(memo.join(" · "))+'</span>':"")
         +'<span class="tdet">'+(det.length?'<span class="tmemo ti">'+esc(det.join(" · "))+'</span>':"")+(fmt?'<span class="tmemo ti">↪ '+esc(fmt)+'</span>':"")+(aiTx(tip)?'<span class="ttip">'+MPIMG("mi_tip",MIS)+esc(aiTx(tip))+'</span>':"")
         +'<span class="tdbt" data-html2canvas-ignore><button type="button" class="tsbtn" data-pp="'+esc(r.x.k)+'">'+esc(T5(DG6.det))+'</button></span></span>'
@@ -1221,7 +1222,7 @@ var RX={meat:/육류|고기|갈비|삼겹|불고기|족발|보쌈|치킨|닭|돈
   skip:/술집|간식|카페|호프|주점|포장마차|이자카야|와인|칵테일/};
 function hardHit(s){ s=String(s||""); for(var i=0;i<HARD_FOOD.length;i++) if(s.indexOf(HARD_FOOD[i])>=0) return true; return false; }
 var EATS=null; function eatsLoad(){ if(EATS) return Promise.resolve(EATS); return jget("eats.json").then(function(j){ EATS=(j&&j.items)||[]; return EATS; },function(){ EATS=[]; return EATS; }); }
-function mealsOf(di){ var pl=TR.plan, m=(pl&&pl.meals)||{}; return {to:pl?pl.to:1200,lunch:m[di+":lunch"]||null,dinner:m[di+":dinner"]||null}; }
+function mealsOf(di){ var pl=TR.plan, m=(pl&&pl.meals)||{}, sk=(pl&&pl.mskip)||{}; return {to:pl?pl.to:1200,lunch:m[di+":lunch"]||null,dinner:m[di+":dinner"]||null,skip:{lunch:!!sk[di+":lunch"],dinner:!!sk[di+":dinner"]}}; }   // skip = 「삭제」로 건너뛴 끼니 (11-08)
 function kindOf(cat){ var a=String(cat||"").split(">").map(function(x){ return x.trim(); }); return a[1]||a[0]||""; }
 var KCODE={"한식":"korean","중식":"chinese","일식":"japanese","양식":"western","분식":"snack","아시아음식":"asian","패스트푸드":"fast","뷔페":"buffet"};
 // 후보 하나 → 통과면 {note}, 아니면 null. ①② 는 태그로, ③ 은 카카오 종류·이름 글자로(정확하지 않으면 「확인 필요」)
@@ -1509,7 +1510,7 @@ function mdInsTxt(pl,di,N){ var f=Math.min(N,mdFreeN(pl,di)), m=N-f; return gTxt
 function mdKeys(obj,fn){ if(!obj) return obj; var o2={}; for(var mk in obj){ var p=String(mk).split(":"), q=fn(+p[0]); if(q!=null&&isFinite(q)) o2[q+":"+p.slice(1).join(":")]=obj[mk]; } return o2; }
 function mdShiftAll(pl,from,delta,drop){ (pl.tr||[]).forEach(function(t){ if(t.di!=null&&t.di>=from) t.di+=delta; });
   if(pl.fxm) for(var fk in pl.fxm){ var fm=pl.fxm[fk]; if(fm.f>=from) fm.f+=delta; if(fm.t>=from) fm.t+=delta; }
-  var fn=function(q){ return (drop!=null&&q===drop)?null:(q>=from?q+delta:q); }; pl.meals=mdKeys(pl.meals,fn); pl.recs=mdKeys(pl.recs,fn); }
+  var fn=function(q){ return (drop!=null&&q===drop)?null:(q>=from?q+delta:q); }; pl.meals=mdKeys(pl.meals,fn); pl.recs=mdKeys(pl.recs,fn); if(pl.mskip) pl.mskip=mdKeys(pl.mskip,fn); }
 function mdInsert(pl,di,it,N){ var k=it&&it.k, at=di+1; if(!k||!pl.days[di]||pl.pool[k]||!(N>=1)) return false; var f=Math.min(N,mdFreeN(pl,di)), c=pl.days[di].c, i, q;
   var blk=[]; for(i=0;i<N;i++){ var b0={date:"",stops:i===0?[k]:[],md:{k:k,i:i,n:N}}; if(c!=null){ b0.c=c; b0.nc=c; } blk.push(b0); }
   mdShiftAll(pl,at,N,null); pl.days.splice.apply(pl.days,[at,0].concat(blk));
@@ -1550,6 +1551,13 @@ document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.
   if(v==="go"){ lgToast(T5(TD6.goD)); return; }
   if(v==="push"){ if(!mdFreeN(pl,di)&&pl.ap&&pl.ap.d){ lgToast(T5(TD6.pushNo)); return; } if(!confirm(T5(TD6.pushQ))) return; var r=tdPush(pl,di); if(r<0){ lgToast(T5(TD6.pushNo)); return; } repPaint(); lgToast(T5(r?TD6.pushX:TD6.pushD)); return; }
   if(v==="cx"){ var n=d.stops.filter(function(k){ var x=pl.pool[k]; return x&&!x.eat; }).length; if(!confirm(gTxt(TD6.cxQ,{n:n}))) return; tdCancel(pl,di); repPaint(); lgToast(T5(TD6.cxD)); } },true);
+// ── 11-08 사장님 「장소 또는 식당에서 머무는 시간을 고칠 수 있게 — 고치면 그날 일정은 다시 계산」 · 식당 칸 「삭제」 ──
+function stSel(k,cur,hi){ return '<select class="tstay" data-sk="'+esc(k)+'" aria-label="'+esc(T5(CK6.stay))+'">'+stayOpts(cur>0?cur:60,30,hi)+'</select>'; }
+document.addEventListener("change",function(e){ var s=e.target; if(!s||!s.classList||!s.classList.contains("tstay")||!s.closest||!s.closest("#trRep")) return; var pl=TR.plan, m=+s.value; if(!pl||!(m>0)) return;
+  if(s.dataset.sk) stSet(s.dataset.sk,m); else if(s.dataset.smk&&pl.meals&&pl.meals[s.dataset.smk]) pl.meals[s.dataset.smk].stay=m; else return;
+  try{ ntap("_trip","trip_stay_edit"); }catch(z){} pl.chk=0; save(); repPaint(); setTimeout(function(){ if(TR.plan===pl&&document.getElementById("trRep")&&chkList().length) chkOpen(true); },150); },true);
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-mdel]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var pl=TR.plan, mk=a.dataset.mdel; if(!pl||!mk) return;
+  pl.mskip=pl.mskip||{}; pl.mskip[mk]=1; if(pl.meals) delete pl.meals[mk]; try{ ntap("_trip","trip_meal_del"); }catch(z){} save(); repPaint(); lgToast(T5(DG6.skipD)); },true);   // 고른 식당 「삭제」 = 그 끼니 건너뛰기(다시 짜면 다시 생김)
 // 넣기 — 그날 그 자리에 · 카트에도 같은 자리에(앞 장소 다음) · 다시 검사
 function insStop(pl,di,pos,it,stay){ var d=pl.days[di]; if(!d||!it||!it.k) return false; var k=it.k; if(d.stops.indexOf(k)>=0) return false;
   var arr=d.stops.filter(function(q){ return pl.pool[q]; });
@@ -3062,13 +3070,15 @@ var DG6={
  hM:{ko:"장소 카드를 끌면 다른 자리나 다른 날로 옮길 수 있어요. 다른 카드 위에 놓으면 서로 바뀌어요.",en:"Drag a place card to another spot or day. Drop it on another card to swap them.",ja:"場所カードをドラッグすると、別の位置や別の日に移せます。別のカードの上に置くと入れ替わります。",zhs:"拖动地点卡片，可移到其他位置或其他日期。放在另一张卡片上即可互换。",zht:"拖曳地點卡片，可移到其他位置或其他日期。放在另一張卡片上即可互換。",es:"Arrastra una tarjeta de lugar a otro sitio o día. Suéltala sobre otra tarjeta para intercambiarlas."},
  ord:{ko:"「{p}」 순서를 바꿨어요",en:"Moved “{p}”",ja:"「{p}」の順番を変えました",zhs:"已调整「{p}」的顺序",zht:"已調整「{p}」的順序",es:"Se movió «{p}»"},
  sw:{ko:"「{a}」, 「{b}」 자리를 서로 바꿨어요",en:"Swapped “{a}” and “{b}”",ja:"「{a}」と「{b}」を入れ替えました",zhs:"已互换「{a}」和「{b}」",zht:"已互換「{a}」和「{b}」",es:"Se intercambiaron «{a}» y «{b}»"},
+ del:{ko:"삭제",en:"Delete",ja:"削除",zhs:"删除",zht:"刪除",es:"Eliminar"},
+ skipD:{ko:"이 끼니는 건너뛰어요",en:"Skipping this meal",ja:"この食事は省きます",zhs:"已跳过这顿饭",zht:"已跳過這頓飯",es:"Se omite esta comida"},
  city:{ko:"같은 도시 날에만 넣을 수 있어요",en:"You can only move it to a day in the same city",ja:"同じ都市の日にだけ移せます",zhs:"只能移到同一城市的日期",zht:"只能移到同一城市的日期",es:"Solo puedes moverlo a un día en la misma ciudad"}};
 function DGC(){ try{ return matchMedia("(pointer:coarse)").matches; }catch(e){ return false; } }
 // 카드 펼치기/접기 — 다시 그려도 그대로 (p:장소 · m:고른 식사 · u:넣은 식당)
 var EXP={};
 function tcxTog(r){ var k=r.dataset.xk; if(!k) return; var on=!r.classList.contains("open"); r.classList.toggle("open",on); if(on) EXP[k]=1; else delete EXP[k];
   var x=r.querySelector(".tp>.xtg"); if(x&&window.XTG) XTG.set(x,on); }
-function eatOfRow(rw){ var pl=TR.plan; if(!rw||!pl) return null; var bx=rw.querySelector(".tebtn[data-x]"), bu=rw.querySelector(".tebtn[data-ux]");
+function eatOfRow(rw){ var pl=TR.plan; if(!rw||!pl) return null; var bx=rw.querySelector(".tebtn[data-x]"), bu=rw.querySelector("[data-ux]");
   if(bx){ var mk=bx.dataset.x; return pl.meals&&pl.meals[mk]?{c:pl.meals[mk],mk:mk}:null; }
   if(bu&&pl.pool[bu.dataset.ux]) return {c:pl.pool[bu.dataset.ux],mk:""}; return null; }
 // 안 고른 식사 — 일정 안엔 한 줄 「후보 N곳에서 고르기」, 누르면 가운데 창에서 고른다 (못 찾으면 예전처럼 그 자리에 「직접 식당 찾기」)
@@ -3289,6 +3299,7 @@ var css3=document.createElement("style"); css3.id="trBoardCss"; css3.textContent
 +".tdet{display:block}.tdbt{display:block;margin-top:6px}"
 +".tsbtn{border:1.5px solid var(--green);background:var(--card);color:#2b8a3e;border-radius:999px;padding:4px 11px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit;margin:0}"
 +".tepk{margin-top:4px}"
++".tstay{-webkit-appearance:menulist!important;appearance:auto!important;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--sub);font:inherit;font-size:12.5px;font-weight:700;padding:1px 2px;margin-left:2px;max-width:112px;cursor:pointer}.tmact{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.tmact .trbtn{margin:0;padding:5px 11px;font-size:12.5px}"
 +".ttoday{margin:6px 0 6px;padding:8px 10px;border:1.5px solid #2f9e44;border-radius:12px;background:#ebfbee}.ttoday b{display:block;font-size:13px;color:#2b8a3e;margin-bottom:5px}.ttoday .tgr{margin-top:0}.ttoday .trbtn{margin:0;padding:6px 12px;font-size:13px}:root[data-theme=dark] .ttoday{background:#13261a}"
 +".trows .trw.tmd .tp{background:var(--card);border:1px solid #cfe3d5;border-radius:12px;padding:8px 10px;box-shadow:0 1px 3px rgba(16,24,40,.07)}.trows .trw.tmd:before{border-color:#2f9e44;background:#2f9e44}.trud{display:inline-block;margin-left:8px;font-size:12.5px;font-weight:700;color:var(--sub)}"
 +".tmemo{color:#e03131}.tmemo.ti{color:var(--sub);font-weight:600}"
