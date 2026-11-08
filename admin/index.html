@@ -104,7 +104,7 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
 }
 function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
 
-var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["gchat","가이드 대화방","손님↔가이드 대화 · 읽기 전용"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["forms","양식함","계약서·서식 내려받기 (PDF·워드)"],["twipe","시험 자료 모두 지우기","론칭 전 시험용 — 실전 뒤 사용 금지"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
+var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["board","고객 게시판","MosaicTrip.com 손님 글 · 답변·삭제"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["gchat","가이드 대화방","손님↔가이드 대화 · 읽기 전용"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["forms","양식함","계약서·서식 내려받기 (PDF·워드)"],["twipe","시험 자료 모두 지우기","론칭 전 시험용 — 실전 뒤 사용 금지"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
 function hc(q){ return fetch(HUB+"/hc"+(q||""),{cache:"no-store"}).then(function(r){ return r.json(); }); }
 function won(n){ return Math.round(n||0).toLocaleString()+"원"; }
@@ -167,6 +167,29 @@ function voiceLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>고객�
 function vRead(id){ api("/nvoice?read="+encodeURIComponent(id),{method:"POST"}).then(voiceLoad); }
 function vDel(id){ if(!confirm("이 글을 지울까요?")) return; api("/nvoice?del="+encodeURIComponent(id),{method:"POST"}).then(voiceLoad); }
 function vContact(b){ api("/nvoice?contact="+encodeURIComponent(b.dataset.id)).then(function(j){ var s=document.createElement("span"); s.textContent=j.contact||"(없음)"; s.style.padding="8px"; b.replaceWith(s); }); }
+// ── 고객 게시판 (사장님 11-09) — MosaicTrip.com 홈페이지 #/board · 앱 아래 「고객 게시판」 칸의 글 · 허브 /mtb/admin/* (x-admin) ──
+//   비밀글도 내용이 보인다 · 답변은 손님 화면에 「모자이크트립.com 답변」으로 · 글마다 답변 여러 개 · 글 삭제는 한 번 묻고
+var MTBA={page:1,only:false};
+function mtbaLoad(pg){ if(pg) MTBA.page=pg; var P=$("pane"); if(!$("mtbal")) P.innerHTML='<div class="card"><b>고객 게시판 (MosaicTrip.com)</b><div class="msg">홈페이지 「고객 게시판」과 앱 아래 「고객 게시판」 칸의 글입니다. 비밀글도 여기서는 내용이 보입니다. 답변은 손님 화면에 글 아래 「모자이크트립.com 답변」으로 보입니다.</div><div id="mtbasum" class="msg"></div><div id="mtbal"><div class="msg">불러오는 중…</div></div></div>';
+  api("/mtb/admin/list?per=50&page="+MTBA.page).then(function(j){ if(!j.ok) throw new Error("x");
+    $("mtbasum").innerHTML='전체 <b>'+j.total+'</b>개 · 답변 대기 <b>'+j.unans+'</b>개 <label style="margin-left:10px;color:var(--ink)"><input type="checkbox" id="mtbaonly"'+(MTBA.only?' checked':'')+' onchange="MTBA.only=this.checked;mtbaLoad()"> 답변 대기만 보기</label>';
+    var it=(j.items||[]).filter(function(x){ return !MTBA.only||!x.ans.length; });
+    var pgs=j.pages>1?'<div class="row" style="justify-content:center;margin-top:12px"><button class="g"'+(j.page<=1?' disabled':'')+' onclick="mtbaLoad('+(j.page-1)+')">‹ 이전</button><span class="sub">'+j.page+' / '+j.pages+'</span><button class="g"'+(j.page>=j.pages?' disabled':'')+' onclick="mtbaLoad('+(j.page+1)+')">다음 ›</button></div>':'';
+    $("mtbal").innerHTML=(it.length?it.map(mtbaCard).join(""):'<div class="msg">'+(j.total?'이 쪽에 답변 대기 글이 없습니다.':'아직 글이 없습니다.')+'</div>')+pgs;
+  }).catch(function(e){ $("mtbal").innerHTML='<div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div>'; }); }
+var MTBALG={ko:"한국어",en:"영어",ja:"일본어",zhs:"중국어 간체",zht:"중국어 번체",es:"스페인어"};
+function mtbaCard(x){ var id=esc(x.id);
+  return '<div class="inv" style="'+(x.ans.length?'':'border-left:4px solid var(--acc)')+'"><div class="sub">'+esc(x.at)+' · '+(x.sec?'🔒 비밀글':'공개글')+(x.lang?' · '+esc(MTBALG[x.lang]||x.lang)+' 화면':'')+(x.sec?'':' · 삭제: '+(x.acct?'쓴 기기·로그인 계정':'쓴 기기만'))+' · '+(x.ans.length?'답변 '+x.ans.length+'개':'<b>답변 대기</b>')+'</div>'
+   +'<div style="margin:4px 0"><b>'+esc(x.nick)+'</b></div><div style="white-space:pre-wrap;margin:4px 0 8px">'+esc(x.body)+'</div>'
+   +x.ans.map(function(a){ return '<div style="border-left:3px solid var(--ok);padding:6px 10px;margin:6px 0;background:var(--card);border-radius:0 8px 8px 0"><div class="sub">모자이크트립.com 답변 · '+esc(a.at)+'</div><div style="white-space:pre-wrap">'+esc(a.body)+'</div>'
+     +'<div class="row" style="justify-content:flex-end;margin-top:4px"><button class="g" data-id="'+id+'" data-aid="'+esc(a.id)+'" onclick="mtbaAnsDel(this)">답변 삭제</button></div></div>'; }).join("")
+   +'<textarea id="mtbaa_'+id+'" maxlength="2000" placeholder="답변 쓰기 (손님 화면에 그대로 보입니다)" style="width:100%;min-height:70px;margin-top:6px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;color:inherit;resize:vertical"></textarea>'
+   +'<div class="row" style="justify-content:flex-end;margin-top:6px"><span class="msg" id="mtbam_'+id+'" style="margin:0 auto 0 0"></span><button class="g" data-id="'+id+'" onclick="mtbaDel(this)" style="color:var(--bad)">글 삭제</button><button data-id="'+id+'" onclick="mtbaAns(this)">답변 달기</button></div></div>'; }
+function mtbaPost(path,body){ return api(path,{method:"POST",body:JSON.stringify(body)}); }
+function mtbaAns(b){ var id=b.dataset.id, t=$("mtbaa_"+id), m=$("mtbam_"+id), v=t?t.value.trim():""; if(!v){ m.textContent="답변을 적어 주세요."; return; } b.disabled=true; m.textContent="올리는 중…";
+  mtbaPost("/mtb/admin/answer",{id:id,body:v}).then(function(j){ if(!j.ok) throw new Error(j.err||"x"); mtbaLoad(); }).catch(function(e){ b.disabled=false; m.innerHTML='<span class="err">올리지 못했습니다 ('+esc(e.message)+')</span>'; }); }
+function mtbaAnsDel(b){ if(!confirm("이 답변을 삭제할까요?")) return; mtbaPost("/mtb/admin/answer/del",{id:b.dataset.id,aid:b.dataset.aid}).then(function(){ mtbaLoad(); }).catch(function(e){ alert("삭제하지 못했습니다 ("+e.message+")"); }); }
+function mtbaDel(b){ if(!confirm("이 글을 삭제할까요? 손님 화면에서도 사라지고 되돌릴 수 없습니다.")) return; mtbaPost("/mtb/admin/delete",{id:b.dataset.id}).then(function(){ mtbaLoad(); }).catch(function(e){ alert("삭제하지 못했습니다 ("+e.message+")"); }); }
 // ── 비밀번호 변경 — 허브가 지금 비밀번호를 확인한 뒤에만 바꾼다 (저장은 소금+해시) ──
 function pwChange(){ var a=$("pw0").value, b=$("pw1").value, c=$("pw2").value, m=$("pwm");
   if(!a){ m.innerHTML='<span class="err">지금 비밀번호를 넣어 주세요.</span>'; return; }
@@ -395,6 +418,7 @@ function show(id){ MENU.forEach(function(m){ $("m_"+m[0]).classList.toggle("on",
   if(id==="karlog"){ klLoad(); return; }   // 노래방 이용 기록 (2026-10-30)   // 위치 이용·제공사실 확인자료 (2026-10-27)
   if(id==="visit"){ visitLoad(); return; }
   if(id==="voice"){ voiceLoad(); return; }
+  if(id==="board"){ mtbaLoad(1); return; }   // MosaicTrip.com 고객 게시판 (11-09)
   if(id==="inq"){ inqLoad(); return; }
   if(id==="guide"){ guideLoad(); return; }   // 통역·길안내 가이드 승인 (2026-10-24)
   if(id==="greview"){ grevLoad(); return; }
