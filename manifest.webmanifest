@@ -1,6 +1,6 @@
 {
- "name": "Puzzle Tour Nations for Korea",
- "short_name": "Puzzle Tour Nations",
+ "name": "MosaicTrip.com for Korea",
+ "short_name": "MosaicTrip.com",
  "id": "./",
  "start_url": "./?src=pwa",
  "scope": "./",
