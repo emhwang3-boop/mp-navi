@@ -93,7 +93,7 @@ function list(box){ var n=N(), lg=gLang(), G=ST.G[lg]; loadG(lg);
    +'<div class="pg-fl"><div class="pg-flt">'+E(L6(TX.lang))+'</div>'+chips("gl",LANGS(),lg,function(v){ return n.langName(v); },3)+'</div>'
    +'<div class="pg-fl"><div class="pg-flt">'+E(L6(TX.rgn))+'</div>'+chips("rg",RGN,ST.rg,rgName,3)+'</div>'
    +'<div class="pg-fl"><div class="pg-flt">'+E(L6(TX.sort))+'</div>'+chips("so",["rv","yr"],ST.sort,function(v){ return L6(v==="rv"?TX.sRv:TX.sYr); },2)+'</div>'
-   +'<div class="pg-fl pg-fee"><div class="pg-flt">'+E(L6(TX.fee))+'</div><p>'+E(F(n.GBT.rate,{hr:n.won(n.GBK.hr),half:n.won(n.GBK.half),full:n.won(n.GBK.full),big:n.GBK.big,bh:n.won(n.GBK.bigHr)}))+'</p><p class="pg-x">'+E(L6(n.GBT.excl))+'</p></div>'
+   +'<div class="pg-fl pg-fee"><div class="pg-flt">'+E(L6(TX.fee))+'</div>'+(n.rateTbl?n.rateTbl():'')+'<p class="pg-x">'+E(L6(n.GBT.excl))+'</p></div>'   // 요금 안내 = 앱과 같은 표 (near.js gbRateTbl · 11-08 밤 사장님)
    +'<div class="pg-glk"><a href="#" data-pg="gedit"><img src="img/menu/mi_guideperson.png" alt="">'+E(L6(TX.gedit))+'</a><a href="#" data-pg="gme"><span aria-hidden="true">💬</span>'+E(L6(TX.gme))+'</a></div></aside>';
   var main='';
   if(G==null) main='<div class="pg-msg">'+E(L6(TX.load))+'</div>';
