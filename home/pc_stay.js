@@ -162,7 +162,7 @@ var TX={
  kind:T6("종류","Type","種類","类型","類型","Tipo"),
  sort:T6("정렬","Sort by","並べ替え","排序","排序","Ordenar"),
  sNear:T6("가까운 순","Nearest","近い順","距离最近","距離最近","Más cercanos"),
- sKto:T6("관광공사 실린 곳 먼저","KTO-listed first","観光公社掲載を先に","韩国观光公社收录优先","韓國觀光公社收錄優先","Primero los de la KTO"),
+ sKto:T6("관광공사에 실린 곳 먼저","KTO-listed first","観光公社掲載を先に","韩国观光公社收录优先","韓國觀光公社收錄優先","Primero los de la KTO"),   // 11-08 밤 사장님 — 「관광공사 실린」→「관광공사에 실린」 (다른 언어는 그대로 자연스러움)
  head:T6("{p} 근처 {k} · {s}","{k} near {p} · {s}","{p}周辺の{k}・{s}","{p}附近的{k} · {s}","{p}附近的{k} · {s}","{k} cerca de {p} · {s}"),
  headF:T6("{p} 근처 {k}","{k} near {p}","{p}周辺の{k}","{p}附近的{k}","{p}附近的{k}","{k} cerca de {p}"),
  src:T6("카카오 숙소 자료 · {r} 안","Kakao lodging data · within {r}","カカオの宿泊データ・{r}以内","Kakao 住宿资料 · {r}以内","Kakao 住宿資料 · {r}以內","Datos de alojamiento de Kakao · a menos de {r}"),
@@ -185,7 +185,7 @@ function load(){ var n=NS(); if(!n) return; var t=n.tabs[ST.tab], b=WS.base, p=[
   n.fetch(t,p).then(function(a){ if(my!==ST.seq) return; ST.far=!!(a&&a.far);
       ST.raw=(a||[]).map(function(x){ var o=Object.assign({},x); o.dist=Math.round(KMs(p,[+x.y,+x.x])*1000); return o; }); sortNow(); drawMain(); },
     function(){ if(my!==ST.seq) return; ST.err="net"; drawMain(); }); }
-// 가까운 순 · 관광공사 실린 곳 먼저(그다음 가까운 순) — 10곳 (앱 목록과 같은 수) · 한옥 먼 곳(별점 순)은 받은 차례 그대로
+// 가까운 순 · 관광공사에 실린 곳 먼저(그다음 가까운 순) — 10곳 (앱 목록과 같은 수) · 한옥 먼 곳(별점 순)은 받은 차례 그대로
 function sortNow(){ var a=(ST.raw||[]).slice(); if(!ST.far) a.sort(function(x,y){ if(ST.sort==="k"){ var d=(y.kto?1:0)-(x.kto?1:0); if(d) return d; } return x.dist-y.dist; }); ST.items=a.slice(0,10); }
 function rLbl(){ var t=tabs()[ST.tab]||{r:3000}, mx=0; (ST.items||[]).forEach(function(x){ mx=Math.max(mx,x.dist||0); }); var r=mx>t.r?10000:t.r; if(mx>10000) r=Math.ceil(mx/1000)*1000; return (r/1000)+" km"; }
 
