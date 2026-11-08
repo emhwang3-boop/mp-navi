@@ -1,0 +1,599 @@
+{
+ "v": "1108",
+ "src": "갤러리아·롯데·현대·신세계 백화점, 롯데·신세계·현대·신라 면세점 공식 안내(롯데면세점은 카카오맵으로만) — 해외명품·명품 시계·명품 주얼리 (사장님 「가」)",
+ "brands": [
+  {
+   "id": "chanel",
+   "ko": "샤넬",
+   "en": "CHANEL",
+   "cat": "fashion",
+   "kq": "샤넬",
+   "logo": "chanel.svg"
+  },
+  {
+   "id": "hermes",
+   "ko": "에르메스",
+   "en": "Hermès",
+   "cat": "fashion",
+   "kq": "에르메스",
+   "logo": "hermes.svg"
+  },
+  {
+   "id": "louisvuitton",
+   "ko": "루이비통",
+   "en": "LOUIS VUITTON",
+   "cat": "fashion",
+   "kq": "루이비통",
+   "logo": "louisvuitton.svg"
+  },
+  {
+   "id": "dior",
+   "ko": "디올",
+   "en": "DIOR",
+   "cat": "fashion",
+   "kq": "디올",
+   "logo": "dior.svg"
+  },
+  {
+   "id": "gucci",
+   "ko": "구찌",
+   "en": "GUCCI",
+   "cat": "fashion",
+   "kq": "구찌",
+   "logo": "gucci.svg"
+  },
+  {
+   "id": "prada",
+   "ko": "프라다",
+   "en": "PRADA",
+   "cat": "fashion",
+   "kq": "프라다",
+   "logo": "prada.svg"
+  },
+  {
+   "id": "miumiu",
+   "ko": "미우미우",
+   "en": "MIU MIU",
+   "cat": "fashion",
+   "kq": "미우미우",
+   "logo": "miumiu.svg"
+  },
+  {
+   "id": "celine",
+   "ko": "셀린느",
+   "en": "CELINE",
+   "cat": "fashion",
+   "kq": "셀린느",
+   "logo": "celine.svg"
+  },
+  {
+   "id": "bottegaveneta",
+   "ko": "보테가베네타",
+   "en": "BOTTEGA VENETA",
+   "cat": "fashion",
+   "kq": "보테가베네타",
+   "logo": "bottegaveneta.svg"
+  },
+  {
+   "id": "saintlaurent",
+   "ko": "생로랑",
+   "en": "SAINT LAURENT",
+   "cat": "fashion",
+   "kq": "생로랑",
+   "logo": "saintlaurent.svg"
+  },
+  {
+   "id": "balenciaga",
+   "ko": "발렌시아가",
+   "en": "BALENCIAGA",
+   "cat": "fashion",
+   "kq": "발렌시아가",
+   "logo": "balenciaga.svg"
+  },
+  {
+   "id": "fendi",
+   "ko": "펜디",
+   "en": "FENDI",
+   "cat": "fashion",
+   "kq": "펜디",
+   "logo": "fendi.svg"
+  },
+  {
+   "id": "burberry",
+   "ko": "버버리",
+   "en": "BURBERRY",
+   "cat": "fashion",
+   "kq": "버버리",
+   "logo": "burberry.svg"
+  },
+  {
+   "id": "loewe",
+   "ko": "로에베",
+   "en": "LOEWE",
+   "cat": "fashion",
+   "kq": "로에베",
+   "logo": "loewe.svg"
+  },
+  {
+   "id": "valentino",
+   "ko": "발렌티노",
+   "en": "VALENTINO",
+   "cat": "fashion",
+   "kq": "발렌티노",
+   "logo": "valentino.svg"
+  },
+  {
+   "id": "ferragamo",
+   "ko": "페라가모",
+   "en": "Ferragamo",
+   "cat": "fashion",
+   "kq": "페라가모",
+   "logo": "ferragamo.svg"
+  },
+  {
+   "id": "goyard",
+   "ko": "고야드",
+   "en": "GOYARD",
+   "cat": "fashion",
+   "kq": "고야드",
+   "logo": "goyard.svg"
+  },
+  {
+   "id": "tods",
+   "ko": "토즈",
+   "en": "TOD'S",
+   "cat": "fashion",
+   "kq": "토즈",
+   "logo": "tods.svg"
+  },
+  {
+   "id": "jimmychoo",
+   "ko": "지미추",
+   "en": "JIMMY CHOO",
+   "cat": "fashion",
+   "kq": "지미추",
+   "logo": "jimmychoo.svg"
+  },
+  {
+   "id": "berluti",
+   "ko": "벨루티",
+   "en": "BERLUTI",
+   "cat": "fashion",
+   "kq": "벨루티",
+   "logo": "berluti.svg"
+  },
+  {
+   "id": "brunellocucinelli",
+   "ko": "브루넬로 쿠치넬리",
+   "en": "BRUNELLO CUCINELLI",
+   "cat": "fashion",
+   "kq": "브루넬로쿠치넬리",
+   "logo": "brunellocucinelli.png"
+  },
+  {
+   "id": "zegna",
+   "ko": "제냐",
+   "en": "ZEGNA",
+   "cat": "fashion",
+   "kq": "제냐",
+   "logo": "zegna.svg"
+  },
+  {
+   "id": "brioni",
+   "ko": "브리오니",
+   "en": "BRIONI",
+   "cat": "fashion",
+   "kq": "브리오니",
+   "logo": "brioni.svg"
+  },
+  {
+   "id": "kiton",
+   "ko": "키톤",
+   "en": "KITON",
+   "cat": "fashion",
+   "kq": "키톤",
+   "logo": "kiton.svg"
+  },
+  {
+   "id": "stefanoricci",
+   "ko": "스테파노 리치",
+   "en": "STEFANO RICCI",
+   "cat": "fashion",
+   "kq": "스테파노리치",
+   "logo": "stefanoricci.png"
+  },
+  {
+   "id": "canali",
+   "ko": "까날리",
+   "en": "CANALI",
+   "cat": "fashion",
+   "kq": "까날리",
+   "logo": "canali.svg"
+  },
+  {
+   "id": "tomford",
+   "ko": "톰포드",
+   "en": "TOM FORD",
+   "cat": "fashion",
+   "kq": "톰포드",
+   "logo": "tomford.svg"
+  },
+  {
+   "id": "versace",
+   "ko": "베르사체",
+   "en": "VERSACE",
+   "cat": "fashion",
+   "kq": "베르사체",
+   "logo": "versace.svg"
+  },
+  {
+   "id": "dolcegabbana",
+   "ko": "돌체앤가바나",
+   "en": "DOLCE&GABBANA",
+   "cat": "fashion",
+   "kq": "돌체앤가바나",
+   "logo": "dolcegabbana.svg"
+  },
+  {
+   "id": "giorgioarmani",
+   "ko": "조르지오 아르마니",
+   "en": "GIORGIO ARMANI",
+   "cat": "fashion",
+   "kq": "조르지오아르마니",
+   "logo": "giorgioarmani.svg"
+  },
+  {
+   "id": "balmain",
+   "ko": "발망",
+   "en": "BALMAIN",
+   "cat": "fashion",
+   "kq": "발망",
+   "logo": "balmain.svg"
+  },
+  {
+   "id": "alaia",
+   "ko": "알라이아",
+   "en": "ALAÏA",
+   "cat": "fashion",
+   "kq": "알라이아",
+   "logo": "alaia.png"
+  },
+  {
+   "id": "chloe",
+   "ko": "끌로에",
+   "en": "Chloé",
+   "cat": "fashion",
+   "kq": "끌로에",
+   "logo": "chloe.svg"
+  },
+  {
+   "id": "therow",
+   "ko": "더로우",
+   "en": "THE ROW",
+   "cat": "fashion",
+   "kq": "더로우",
+   "logo": "therow.svg"
+  },
+  {
+   "id": "alexandermcqueen",
+   "ko": "알렉산더 맥퀸",
+   "en": "ALEXANDER McQUEEN",
+   "cat": "fashion",
+   "kq": "알렉산더맥퀸",
+   "logo": "alexandermcqueen.svg"
+  },
+  {
+   "id": "marni",
+   "ko": "마르니",
+   "en": "MARNI",
+   "cat": "fashion",
+   "kq": "마르니",
+   "logo": "marni.svg"
+  },
+  {
+   "id": "lanvin",
+   "ko": "랑방",
+   "en": "LANVIN",
+   "cat": "fashion",
+   "kq": "랑방",
+   "logo": "lanvin.svg"
+  },
+  {
+   "id": "akris",
+   "ko": "아크리스",
+   "en": "AKRIS",
+   "cat": "fashion",
+   "kq": "아크리스",
+   "logo": "akris.svg"
+  },
+  {
+   "id": "agnona",
+   "ko": "아뇨나",
+   "en": "AGNONA",
+   "cat": "fashion",
+   "kq": "아뇨나",
+   "logo": "agnona.png"
+  },
+  {
+   "id": "moncler",
+   "ko": "몽클레르",
+   "en": "MONCLER",
+   "cat": "fashion",
+   "kq": "몽클레르",
+   "logo": "moncler.svg"
+  },
+  {
+   "id": "etro",
+   "ko": "에트로",
+   "en": "ETRO",
+   "cat": "fashion",
+   "kq": "에트로",
+   "logo": "etro.svg"
+  },
+  {
+   "id": "maxmara",
+   "ko": "막스마라",
+   "en": "Max Mara",
+   "cat": "fashion",
+   "kq": "막스마라",
+   "logo": "maxmara.svg"
+  },
+  {
+   "id": "maisonmargiela",
+   "ko": "메종 마르지엘라",
+   "en": "Maison Margiela",
+   "cat": "fashion",
+   "kq": "메종마르지엘라",
+   "logo": "maisonmargiela.svg"
+  },
+  {
+   "id": "jilsander",
+   "ko": "질샌더",
+   "en": "JIL SANDER",
+   "cat": "fashion",
+   "kq": "질샌더",
+   "logo": "jilsander.svg"
+  },
+  {
+   "id": "yohjiyamamoto",
+   "ko": "요지 야마모토",
+   "en": "Yohji Yamamoto",
+   "cat": "fashion",
+   "kq": "요지야마모토",
+   "logo": "yohjiyamamoto.png"
+  },
+  {
+   "id": "hugoboss",
+   "ko": "휴고보스",
+   "en": "BOSS",
+   "cat": "fashion",
+   "kq": "휴고보스",
+   "logo": "hugoboss.svg"
+  },
+  {
+   "id": "montblanc",
+   "ko": "몽블랑",
+   "en": "MONTBLANC",
+   "cat": "fashion",
+   "kq": "몽블랑",
+   "logo": "montblanc.svg"
+  },
+  {
+   "id": "rolex",
+   "ko": "롤렉스",
+   "en": "ROLEX",
+   "cat": "watch",
+   "kq": "롤렉스",
+   "logo": "rolex.svg"
+  },
+  {
+   "id": "patekphilippe",
+   "ko": "파텍필립",
+   "en": "PATEK PHILIPPE",
+   "cat": "watch",
+   "kq": "파텍필립",
+   "logo": "patekphilippe.png"
+  },
+  {
+   "id": "audemarspiguet",
+   "ko": "오데마피게",
+   "en": "AUDEMARS PIGUET",
+   "cat": "watch",
+   "kq": "오데마피게",
+   "logo": "audemarspiguet.svg"
+  },
+  {
+   "id": "vacheronconstantin",
+   "ko": "바쉐론 콘스탄틴",
+   "en": "VACHERON CONSTANTIN",
+   "cat": "watch",
+   "kq": "바쉐론콘스탄틴",
+   "logo": "vacheronconstantin.svg"
+  },
+  {
+   "id": "alangesohne",
+   "ko": "랑에운트죄네",
+   "en": "A. LANGE & SÖHNE",
+   "cat": "watch",
+   "kq": "랑에운트죄네",
+   "logo": "alangesohne.svg"
+  },
+  {
+   "id": "breguet",
+   "ko": "브레게",
+   "en": "Breguet",
+   "cat": "watch",
+   "kq": "브레게",
+   "logo": "breguet.svg"
+  },
+  {
+   "id": "blancpain",
+   "ko": "블랑팡",
+   "en": "BLANCPAIN",
+   "cat": "watch",
+   "kq": "블랑팡",
+   "logo": "blancpain.svg"
+  },
+  {
+   "id": "jaegerlecoultre",
+   "ko": "예거 르쿨트르",
+   "en": "JAEGER-LECOULTRE",
+   "cat": "watch",
+   "kq": "예거르쿨트르",
+   "logo": "jaegerlecoultre.png"
+  },
+  {
+   "id": "iwc",
+   "ko": "IWC",
+   "en": "IWC SCHAFFHAUSEN",
+   "cat": "watch",
+   "kq": "IWC",
+   "logo": "iwc.svg"
+  },
+  {
+   "id": "panerai",
+   "ko": "파네라이",
+   "en": "PANERAI",
+   "cat": "watch",
+   "kq": "파네라이",
+   "logo": "panerai.svg"
+  },
+  {
+   "id": "omega",
+   "ko": "오메가",
+   "en": "OMEGA",
+   "cat": "watch",
+   "kq": "오메가",
+   "logo": "omega.svg"
+  },
+  {
+   "id": "hublot",
+   "ko": "위블로",
+   "en": "HUBLOT",
+   "cat": "watch",
+   "kq": "위블로",
+   "logo": "hublot.svg"
+  },
+  {
+   "id": "piaget",
+   "ko": "피아제",
+   "en": "PIAGET",
+   "cat": "watch",
+   "kq": "피아제",
+   "logo": "piaget.svg"
+  },
+  {
+   "id": "rogerdubuis",
+   "ko": "로저드뷔",
+   "en": "ROGER DUBUIS",
+   "cat": "watch",
+   "kq": "로저드뷔",
+   "logo": "rogerdubuis.svg"
+  },
+  {
+   "id": "jacobco",
+   "ko": "제이콥앤코",
+   "en": "JACOB & CO.",
+   "cat": "watch",
+   "kq": "제이콥앤코",
+   "logo": "jacobco.png"
+  },
+  {
+   "id": "hmoser",
+   "ko": "모저앤씨",
+   "en": "H. Moser & Cie.",
+   "cat": "watch",
+   "kq": "모저앤씨",
+   "logo": "hmoser.svg"
+  },
+  {
+   "id": "lepee1839",
+   "ko": "레페 1839",
+   "en": "L'Epée 1839",
+   "cat": "watch",
+   "kq": "레페 1839",
+   "logo": "lepee1839.png"
+  },
+  {
+   "id": "cartier",
+   "ko": "까르띠에",
+   "en": "Cartier",
+   "cat": "jewelry",
+   "kq": "까르띠에",
+   "logo": "cartier.svg"
+  },
+  {
+   "id": "bvlgari",
+   "ko": "불가리",
+   "en": "BVLGARI",
+   "cat": "jewelry",
+   "kq": "불가리",
+   "logo": "bvlgari.svg"
+  },
+  {
+   "id": "tiffany",
+   "ko": "티파니앤코",
+   "en": "Tiffany & Co.",
+   "cat": "jewelry",
+   "kq": "티파니앤코",
+   "logo": "tiffany.svg"
+  },
+  {
+   "id": "vancleefarpels",
+   "ko": "반클리프 아펠",
+   "en": "Van Cleef & Arpels",
+   "cat": "jewelry",
+   "kq": "반클리프아펠",
+   "logo": "vancleefarpels.svg"
+  },
+  {
+   "id": "chopard",
+   "ko": "쇼파드",
+   "en": "Chopard",
+   "cat": "jewelry",
+   "kq": "쇼파드",
+   "logo": "chopard.svg"
+  },
+  {
+   "id": "chaumet",
+   "ko": "쇼메",
+   "en": "CHAUMET",
+   "cat": "jewelry",
+   "kq": "쇼메",
+   "logo": "chaumet.svg"
+  },
+  {
+   "id": "damiani",
+   "ko": "다미아니",
+   "en": "DAMIANI",
+   "cat": "jewelry",
+   "kq": "다미아니",
+   "logo": "damiani.svg"
+  },
+  {
+   "id": "pomellato",
+   "ko": "포멜라토",
+   "en": "POMELLATO",
+   "cat": "jewelry",
+   "kq": "포멜라토",
+   "logo": "pomellato.svg"
+  },
+  {
+   "id": "repossi",
+   "ko": "레포시",
+   "en": "REPOSSI",
+   "cat": "jewelry",
+   "kq": "레포시",
+   "logo": "repossi.png"
+  },
+  {
+   "id": "qeelin",
+   "ko": "키린",
+   "en": "QEELIN",
+   "cat": "jewelry",
+   "kq": "키린",
+   "logo": "qeelin.svg"
+  }
+ ],
+ "note": "11-08 사장님 「26개 다 삭제해」 — 로고 없는 브랜드는 목록에서 뺌"
+}
