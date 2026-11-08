@@ -24,6 +24,7 @@ function touch(){ return window.matchMedia&&matchMedia("(hover:none)").matches; 
 var AGN=window.AGN||T6("모자이크트립.com","MosaicTrip.com","MosaicTrip.com","MosaicTrip.com","MosaicTrip.com","MosaicTrip.com");
 var TX={
  bk:T6("내 예약","My bookings","予約確認","我的预约","我的預約","Mis reservas"),
+ bd:T6("고객 게시판","Customer board","お客様掲示板","客户留言板","客戶留言板","Foro de clientes"),   // 11-09 사장님 — 「내 예약」 옆 (home/pc_board.js · board.js 와 같은 말)
  lin:T6("로그인","Sign in","ログイン","登录","登入","Iniciar sesión"),
  lout:T6("로그아웃","Sign out","ログアウト","退出登录","登出","Cerrar sesión"),   // 11-08 사장님 — 로그인돼 있을 때 (앱 로그아웃 글과 같게)
  about:T6("회사 소개","About us","会社案内","关于我们","關於我們","Sobre nosotros"),
@@ -83,7 +84,7 @@ var root=D.createElement("div"); root.id="phRoot";
 root.innerHTML=
   '<header id="phHd"><div class="ph-hd1w"><div class="ph-in ph-hd1">'
  +  '<a class="ph-logo" id="phLogo" href="/home/"><img src="logo.png" alt=""><span id="phTtl"></span></a>'
- +  '<div class="ph-tools"><div class="ph-ics" id="phIcs"></div><div class="ph-acts"><button type="button" class="ph-tb" id="phBk"></button><button type="button" class="ph-tb pri" id="phIn"></button></div></div>'
+ +  '<div class="ph-tools"><div class="ph-ics" id="phIcs"></div><div class="ph-acts"><button type="button" class="ph-tb" id="phBd"></button><button type="button" class="ph-tb" id="phBk"></button><button type="button" class="ph-tb pri" id="phIn"></button></div></div>'
  + '</div></div><nav class="ph-hd2" id="phNav">'+NAVK.map(function(x){ return '<button type="button" data-ph="'+x[0]+'">'+img(x[1])+'<span></span></button>'; }).join("")+'</nav></header>'
  +'<main id="phMain">'
  + '<section id="phHero"><img class="ph-branch" src="home/img/mugunghwa_branch.webp" alt="" aria-hidden="true"><h1 id="phH1"></h1></section>'
@@ -131,12 +132,14 @@ setInterval(function(){ inPaint(); },2000);   // 세션이 끝나 다른 화면�
 var _bkWant=false;
 $("phBk").onclick=function(){ try{ if(signed()){ _bkWant=false; if(window.PCGO) PCGO("bookings"); } else { _bkWant=true; if(window.mpPG) mpPG.open(); } }catch(e){} };
 D.addEventListener("mppg",function(){ if(_bkWant&&signed()){ _bkWant=false; try{ if(window.PCGO) PCGO("bookings"); }catch(e){} } });
+// 「고객 게시판」 단추 (11-09 사장님 — 「내 예약」 옆) — #/board (home/pc_board.js) · 로그인 없이 누구나
+$("phBd").onclick=function(){ try{ if(window.PCGO) PCGO("board"); }catch(e){} };
 $("phLogo").onclick=function(e){ if(e.ctrlKey||e.metaKey||e.shiftKey||e.button) return; e.preventDefault(); try{ if(location.hash&&window.PCGO) PCGO(""); resetAll(); }catch(x){ window.scrollTo(0,0); } };   // 다른 화면(#/guide 등)이면 첫 화면으로 (11-08 3a)
 
 // ── 그리기 (언어를 바꾸면 다시) ──
 function paint(){ var lg=window.LANG||"ko";
   $("phTtl").textContent=ttl(); D.title=ttl();
-  $("phBk").textContent=L6(TX.bk); inPaint(1);
+  $("phBk").textContent=L6(TX.bk); $("phBd").textContent=L6(TX.bd); inPaint(1);
   $("phNav").setAttribute("aria-label",L6(TX.nav));
   [].forEach.call($("phNav").children,function(b){ b.querySelector("span").textContent=navLbl(b.dataset.ph); });
   $("phH1").innerHTML=L6(TX.h1);
