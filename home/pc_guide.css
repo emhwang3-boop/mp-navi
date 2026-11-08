@@ -60,10 +60,10 @@ html[data-theme="dark"] #pcGd .pg-fee p.pg-x{color:#ffa94d}
 #pcGd .pg-glk img,#pcGd .pg-glk span{width:18px;height:18px;flex:0 0 auto;text-align:center;font-size:15px;line-height:18px}
 #pcGd .pg-cnt{font-size:14px;color:var(--sub);font-weight:700;margin:2px 2px 10px}
 #pcGd .pg-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-#pcGd .pg-gc{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s,border-color .15s;height:420px;box-sizing:border-box}   /* 11-09 사장님 「사진이 상반신이 나오게」「어깨가 안 보인다 · 사진을 좀 올려봐」 — 사진 칸 250·아래쪽까지 보이게, 높이 300→420 · 배치도 카드 크기(한 줄 셋) 그대로 — 가이드 수와 상관없이 (11-08 밤 사장님) */
+#pcGd .pg-gc{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s,border-color .15s;height:auto;box-sizing:border-box}   /* 11-09 사장님 「관리자 화면 가이드 프로필 사진이 그대로 나오게」 — 사진을 자르지 않고 정사각형 통째로, 카드 높이는 사진 따라(한 줄 셋 그대로) · 옛: 상반신 250·높이 420 · 배치도 카드 크기(한 줄 셋) 그대로 — 가이드 수와 상관없이 (11-08 밤 사장님) */
 #pcGd .pg-gc:hover{box-shadow:0 8px 24px rgba(17,24,39,.10);border-color:#b2dfbd}
 #pcGd .pg-gc:focus-visible{outline:3px solid rgba(47,158,68,.35);outline-offset:2px}
-#pcGd .pg-gph{height:250px;flex:0 0 auto;overflow:hidden;background:var(--ph-gt)}   /* 사진이 카드를 늘리지 않게 높이 고정 (옛 4/3 은 정사각 사진에 밀려 늘어났음) */
+#pcGd .pg-gph{aspect-ratio:1/1;height:auto;flex:0 0 auto;overflow:hidden;background:var(--ph-gt)}   /* 사진이 카드를 늘리지 않게 높이 고정 (옛 4/3 은 정사각 사진에 밀려 늘어났음) */
 #pcGd .pg-gim{width:100%;height:100%;object-fit:cover;object-position:50% 45%;display:block}
 #pcGd .pg-noph{display:flex;align-items:center;justify-content:center;font-size:56px;width:100%;height:100%}
 #pcGd .pg-gbd{padding:12px 16px 14px;display:flex;flex-direction:column;gap:4px;flex:1;min-height:0}
