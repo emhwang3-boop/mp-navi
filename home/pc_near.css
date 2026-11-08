@@ -1,0 +1,187 @@
+/* MosaicTrip.com 홈페이지 — 편의시설 화면 + 편의시설·긴급 공통 (home/pc_near.js · 11-08 4b단계)
+ *  · 배치도 tour_site\wireframes\7_편의시설_배치도 · 7b_편의시설_대사관_배치도 — PC 1400: 왼쪽 300 · 가운데 목록 · 오른쪽 400(따라옴)
+ *  · 색: 초록 var(--ph-green) · 보조 노랑 var(--ph-yel) · 번호 핀은 배치도대로 파랑 · 다크는 앱 변수 그대로 (투어앱 규칙서 4장)
+ *  · 단추: 한 줄 묶음은 같은 크기 한 줄 · 카드 단추는 같은 크기 오른쪽 맞춤 (사장님 11-08)
+ */
+/* 아랫줄 메뉴 — 지금 화면에 노랑 밑줄 (배치도 「아랫줄 편의시설에 노랑 밑줄」) */
+#phHd .ph-hd2 button.on{color:var(--ph-green-d);border-bottom-color:var(--ph-yel)}
+@media (max-width:640px){ #phHd .ph-hd2 button.on{box-shadow:inset 0 -3px 0 var(--ph-yel)} }
+
+#pcPage .pn3{max-width:1400px;margin:0 auto;padding:24px 24px 40px;box-sizing:border-box;color:var(--ink)}
+#pcPage .pn3 button,#pcPage .pn3 input{font-family:inherit}
+/* ── 맨 윗줄: 제목 · 한 줄 설명 · 탭(같은 크기) ── */
+#pcPage .pn-hd{display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px;border:1px solid var(--line);border-radius:18px;background:var(--card);padding:16px 24px;margin-bottom:20px}
+#pcPage .pn-hd h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.3;display:flex;align-items:center;gap:10px;flex:0 0 auto}
+#pcPage .pn-hd h1::before{content:"";width:6px;height:24px;border-radius:3px;background:var(--ph-yel);flex:0 0 auto}
+#pcPage .pn-hd p{margin:0;color:var(--sub);font-size:14.5px;line-height:1.5;flex:1 1 220px;min-width:0}
+#pcPage .pn-tabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:10px;flex:0 0 auto;margin-left:auto}
+#pcPage .pn-tabs.t4{width:620px}
+#pcPage .pn-tabs.t2{width:330px}
+#pcPage .pn-tabs button{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;min-height:46px;border:1.5px solid var(--ph-green);background:var(--card);color:var(--ph-green-d);border-radius:999px;padding:6px 12px;font-size:14.5px;font-weight:800;line-height:1.2;cursor:pointer;text-align:center}
+#pcPage .pn-tabs button:hover{background:var(--ph-gt)}
+#pcPage .pn-tabs button.on{background:var(--ph-green);color:#fff}
+#pcPage .pn-tabs .pn-ic{width:24px;height:24px;flex:0 0 auto;display:block}
+#pcPage .pn-ic{width:18px;height:18px;flex:0 0 auto;vertical-align:-3px}
+
+/* ── 세 칸 ── */
+#pcPage .pn-g{display:grid;grid-template-columns:300px minmax(0,1fr) 400px;grid-template-areas:"side top map" "side main map";grid-template-rows:auto 1fr;column-gap:20px;align-items:start}
+#pcPage .pn-side{grid-area:side;position:sticky;top:16px;border:1px solid var(--line);border-radius:18px;background:var(--card);padding:18px}
+#pcPage .pn-top{grid-area:top;margin-bottom:18px}
+#pcPage .pn-main{grid-area:main;min-width:0}
+#pcPage .pn-r{grid-area:map;position:sticky;top:16px;min-width:0}
+
+/* 왼쪽 「어디 근처?」 */
+#pcPage .pn-side h2{margin:0 0 10px;font-size:18px;font-weight:800}
+#pcPage .pn-side h3{margin:18px 0 8px;font-size:15px;font-weight:800}
+#pcPage .pn-chips{display:grid;gap:6px}
+#pcPage .pn-chips.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+#pcPage .pn-chips.c4 button{font-size:12.5px;letter-spacing:-.2px;padding:7px 1px;white-space:nowrap}   /* 「Gyeongju」 같은 낱말이 중간에서 끊기지 않게 (규칙서 4장) */
+#pcPage .pn-chips.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+#pcPage .pn-chips button{border:1.5px solid var(--ph-green);background:var(--card);color:var(--ph-green-d);border-radius:999px;padding:7px 4px;font-size:13.5px;font-weight:700;cursor:pointer;min-width:0;line-height:1.25;text-align:center}
+#pcPage .pn-chips button:hover{background:var(--ph-gt)}
+#pcPage .pn-chips button.on{background:var(--ph-green);color:#fff}
+#pcPage .pn-lb{display:block;margin:12px 0 0;font-size:12.5px;font-weight:700;color:var(--sub)}
+#pcPage .pn-q{display:flex;align-items:center;margin:5px 0 0;border:1.5px solid var(--line);border-radius:10px;background:var(--card);padding:0 4px 0 12px;min-height:44px;box-sizing:border-box}
+#pcPage .pn-q:focus-within{border-color:var(--ph-green);box-shadow:0 0 0 3px rgba(47,158,68,.15)}
+#pcPage .pn-q input{flex:1 1 auto;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font-size:14px;padding:8px 0}
+#pcPage .pn-q input::placeholder{color:#8a93a3}
+#pcPage .pn-q button{border:0;background:none;padding:6px;cursor:pointer;line-height:0;flex:0 0 auto}
+#pcPage .pn-q button img{width:20px;height:20px}
+html[data-theme="dark"] #pcPage .pn-q input{color-scheme:dark}
+#pcPage .pn-wide{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;margin-top:8px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:9px 12px;cursor:pointer;text-align:left;line-height:1.3}
+#pcPage .pn-wide:hover:not(:disabled){border-color:var(--ph-green)}
+#pcPage .pn-wide.on{border-color:var(--ph-green);background:var(--ph-gt)}
+#pcPage .pn-wide:disabled{cursor:default;opacity:.62}
+#pcPage .pn-wide .pn-ic{width:22px;height:22px}
+#pcPage .pn-wide span{display:flex;flex-direction:column;min-width:0}
+#pcPage .pn-wide b{font-size:14px;font-weight:800}
+#pcPage .pn-wide small{font-size:12px;color:var(--sub);margin-top:1px}
+#pcPage .pn-st{font-size:12.5px;color:var(--sub);margin-top:8px;line-height:1.5}
+#pcPage .pn-st.e{display:none}
+#pcPage .pn-st.bad{color:#c92a2a;font-weight:700}
+html[data-theme="dark"] #pcPage .pn-st.bad{color:#ff8787}
+#pcPage .pn-nt{font-size:12.5px;color:var(--sub);line-height:1.6;margin-top:12px}
+#pcPage .pn-nt b{color:var(--ink);font-weight:700}
+#pcPage .pn-p{margin:0 0 8px;font-size:13.5px;color:var(--sub);line-height:1.6}
+
+/* 가운데 목록 */
+#pcPage .pn-lh{margin:2px 2px 12px}
+#pcPage .pn-lh h2{margin:0;font-size:19px;font-weight:800;letter-spacing:-.3px;line-height:1.35}
+#pcPage .pn-ls{font-size:13px;color:var(--sub);margin-top:2px;min-height:1.3em}
+#pcPage .pn-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#pcPage .pn-it{display:flex;flex-direction:column;gap:3px;border:1px solid var(--line);border-radius:14px;background:var(--card);padding:12px 14px;min-height:122px;box-sizing:border-box;transition:border-color .15s,box-shadow .15s,background .3s}
+#pcPage .pn-it:hover{border-color:#b2dfbd;box-shadow:0 6px 18px rgba(17,24,39,.08)}
+#pcPage .pn-it.flash{background:var(--ph-yt);border-color:var(--ph-yel)}
+#pcPage .pn-ith{display:flex;align-items:flex-start;gap:7px}
+#pcPage .pn-no{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:#1c7ed6;color:#fff;font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-top:1px}
+#pcPage .pn-nm{font-size:15.5px;font-weight:800;line-height:1.35;min-width:0}
+#pcPage .pn-nm[data-pn]{cursor:pointer}
+#pcPage .pn-nm[data-pn]:hover{color:var(--ph-green-d);text-decoration:underline}
+#pcPage .pn-ko{font-size:12.5px;color:var(--sub);padding-left:29px}
+#pcPage .pn-meta{font-size:13px;color:var(--sub);line-height:1.5}
+#pcPage .pn-star{color:#e8590c;font-weight:800}
+#pcPage .pn-ad{font-size:13px;color:var(--sub);line-height:1.5}
+#pcPage .pn-tel{color:var(--sub);text-decoration:none;white-space:nowrap}
+#pcPage .pn-tel:hover{color:var(--ph-green-d)}
+#pcPage .pn-tel .pn-ic{width:15px;height:15px;margin-right:3px}
+#pcPage .pn-bt{margin-top:auto;margin-left:auto;padding-top:8px;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;width:max-content;max-width:100%}
+#pcPage .pn-b{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-width:84px;box-sizing:border-box;border:1.5px solid var(--ph-green);background:var(--ph-green);color:#fff;border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:800;line-height:1.2;cursor:pointer;text-decoration:none;white-space:nowrap}
+#pcPage .pn-b:hover{background:#2b8a3e;border-color:#2b8a3e}
+#pcPage .pn-b.w{background:var(--card);color:var(--ph-green-d)}
+#pcPage .pn-b.w:hover{background:var(--ph-gt)}
+#pcPage .pn-b.red{background:#e03131;border-color:#e03131}
+#pcPage .pn-b.red:hover{background:#c92a2a;border-color:#c92a2a}
+#pcPage .pn-b.off{background:var(--bg);border-color:var(--line);color:var(--sub);cursor:default}
+#pcPage .pn-b .pn-ic{width:16px;height:16px;vertical-align:0}
+#pcPage .pn-msg{border:1px dashed var(--line);border-radius:16px;padding:32px 20px;text-align:center;color:var(--sub);font-weight:700;background:var(--card);font-size:15px}
+#pcPage .pn-note{font-size:13px;color:#8a5a00;background:var(--ph-yt);border:1px solid #f2d37f;border-radius:10px;padding:7px 12px;margin-bottom:10px}
+html[data-theme="dark"] #pcPage .pn-note{color:#f5d27a;border-color:#5c4a0f}
+
+/* 오른쪽 그림 지도 */
+#pcPage .pn-mapw{border:1px solid var(--line);border-radius:18px;background:var(--card);overflow:hidden}
+#pcPage .pn-map{background:#f3efe4}
+html[data-theme="dark"] #pcPage .pn-map{background:#2a2f38}
+#pcPage .pn-mc{position:relative;width:100%;overflow:hidden;background:#f3efe4;user-select:none}
+#pcPage .pn-mc img{position:absolute;display:block;max-width:none;max-height:none;margin:0;pointer-events:none;-webkit-user-drag:none}
+#pcPage .pn-mc img.c{object-fit:contain}
+#pcPage .pn-mmsg{min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;color:var(--sub);font-weight:700;font-size:14.5px;line-height:1.5;box-sizing:border-box}
+#pcPage .pn-mph{min-height:460px;background:repeating-linear-gradient(45deg,var(--ph-gt),var(--ph-gt) 14px,var(--card) 14px,var(--card) 28px)}
+#pcPage .pn-mmsg .pn-ic{width:44px;height:44px}
+#pcPage .pn-pin{position:absolute;z-index:3;transform:translate(-50%,-50%);width:26px;height:26px;padding:0;border-radius:50%;border:2px solid #fff;background:#1c7ed6;color:#fff;font-size:12px;font-weight:800;line-height:1;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;transition:transform .12s,background .12s}
+#pcPage .pn-pin:hover,#pcPage .pn-pin.hi,#pcPage .pn-pin.on{transform:translate(-50%,-50%) scale(1.45);z-index:6;background:#1864ab}
+#pcPage .pn-pin.on{box-shadow:0 0 0 4px rgba(245,191,42,.75),0 2px 6px rgba(0,0,0,.35)}
+#pcPage .pn-mk{position:absolute;z-index:3;transform:translate(-50%,-100%);line-height:0}
+#pcPage .pn-mk img{position:static!important;width:40px;height:40px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+#pcPage .pn-bdot{position:absolute;z-index:2;width:12px;height:12px;border-radius:50%;background:var(--ph-green);border:3px solid #fff;box-shadow:0 0 0 4px rgba(47,158,68,.35);transform:translate(-50%,-50%)}
+#pcPage .pn-bdot.s{position:relative;display:inline-block;transform:none;width:8px;height:8px;border-width:2px;box-shadow:0 0 0 3px rgba(47,158,68,.3);margin:0 9px 0 3px;vertical-align:1px}
+#pcPage .pn-mcap{padding:10px 14px 12px;font-size:13px;color:var(--sub);line-height:1.5;border-top:1px solid var(--line)}
+#pcPage .pn-mcap:empty{display:none}
+#pcPage .pn-mcap>b{display:block;color:var(--ink);font-size:14.5px;font-weight:800}
+#pcPage .pn-mcap small{display:block;font-size:12.5px;margin-top:2px}
+
+/* 대사관 — 국기 그림 + EU 별 (PC 만) */
+#pcPage .pn-eq{margin:0 0 12px;min-height:46px}
+#pcPage .pn-egrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#pcPage .pn-ec{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--line);border-radius:14px;background:var(--card);padding:11px 12px;cursor:pointer;min-height:96px;box-sizing:border-box;transition:border-color .15s,box-shadow .15s}
+#pcPage .pn-ec:hover{border-color:#b2dfbd;box-shadow:0 6px 18px rgba(17,24,39,.08)}
+#pcPage .pn-ec.on{border-color:var(--ph-green);background:var(--ph-gt);box-shadow:inset 0 0 0 1px var(--ph-green)}
+#pcPage .pn-ec:focus-visible{outline:3px solid rgba(47,158,68,.35);outline-offset:2px}
+#pcPage .pn-fw{position:relative;width:78px;height:52px;flex:0 0 auto;display:block}
+#pcPage .pn-fl{width:78px;height:52px;object-fit:cover;border-radius:5px;box-shadow:0 0 0 1px rgba(0,0,0,.15);display:block;background:#e9ecef}
+#pcPage .pn-eu{position:absolute;right:3px;top:3px;width:18px;height:18px;filter:drop-shadow(0 0 1px rgba(0,0,0,.8));pointer-events:none}
+#pcPage .pn-fw.s{width:48px;height:32px}
+#pcPage .pn-fw.s .pn-fl{width:48px;height:32px;border-radius:4px}
+#pcPage .pn-fw.s .pn-eu{width:12px;height:12px;right:2px;top:2px}
+#pcPage .pn-et{display:flex;flex-direction:column;gap:1px;min-width:0;font-size:12.5px;color:var(--sub);line-height:1.45}
+#pcPage .pn-ec1{color:#1864ab;font-weight:800;font-size:12px}
+html[data-theme="dark"] #pcPage .pn-ec1{color:#74c0fc}
+#pcPage .pn-et b{color:var(--ink);font-size:14.5px;font-weight:800;line-height:1.35}
+#pcPage .pn-ead{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#pcPage .pn-etel .pn-ic{width:14px;height:14px;margin-right:3px}
+#pcPage .pn-esel{display:flex;align-items:center;gap:10px}
+#pcPage .pn-esel>span{display:flex;flex-direction:column;min-width:0}
+#pcPage .pn-esel b{color:var(--ink);font-size:15px;font-weight:800;line-height:1.35}
+#pcPage .pn-esel .pn-ko{padding:0}
+#pcPage .pn-ead2{margin-top:6px;font-size:13px}
+#pcPage .pn-mcap .pn-bt{padding-top:10px}
+
+/* 「자세히」 — 앱 장소 카드를 화면 가운데 창에 */
+html.pnlock{overflow:hidden}
+#pcnDet.pn-ov{position:fixed;inset:0;z-index:1045;background:rgba(17,24,39,.45);display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
+#pcnDet .pn-pop{position:relative;width:min(600px,100%);max-height:calc(100vh - 48px);overflow-y:auto;overscroll-behavior:contain;background:var(--card);color:var(--ink);border-radius:18px;padding:18px 20px 20px;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+#pcnDet .pn-x{position:absolute;right:12px;top:12px;z-index:3;width:34px;height:34px;border:0;border-radius:50%;background:var(--bg);color:var(--sub);font-size:17px;line-height:34px;padding:0;cursor:pointer}
+#pcnDet .pn-x:hover{color:var(--ink)}
+#pcnDet #res{margin:0!important;padding:0!important;max-width:none!important}
+#pcnDet #res>.xbtn{display:none!important}   /* 앱 카드 ✕ — 이 창은 오른쪽 위 ✕ 하나로 */
+#pcnDet #res .item{margin:0!important;border:0!important;box-shadow:none!important;padding:4px 36px 0 0!important;background:none!important}
+html.pch #pcnDet .tradd{display:inline-block!important}   /* 첫 화면 지도에선 감춘 「＋ 내 여행에 담기」 — 이 창에선 보인다 (배치도 「자세히」) */
+
+/* ── 좁은 PC (641~1180) — 왼쪽 + 가운데(지도 위·목록 아래) ── */
+@media (max-width:1180px) and (min-width:641px){
+  #pcPage .pn-g{grid-template-columns:270px minmax(0,1fr);grid-template-areas:"side top" "side map" "side main";grid-template-rows:auto auto 1fr}
+  #pcPage .pn-r{position:static;margin-bottom:18px}
+  #pcPage .pn-tabs.t4{width:100%;margin-left:0}
+}
+@media (max-width:900px) and (min-width:641px){
+  #pcPage .pn-grid,#pcPage .pn-egrid{grid-template-columns:minmax(0,1fr)}
+}
+/* ── 폰 (412 기준) — 한 줄로: 제목·탭 → (긴급 전화) → 어디 근처 → 지도 → 목록 ── */
+@media (max-width:640px){
+  #pcPage .pn3{padding:14px 12px 28px}
+  #pcPage .pn-hd{padding:14px 14px 12px;margin-bottom:14px;gap:6px 10px}
+  #pcPage .pn-hd h1{font-size:21px}
+  #pcPage .pn-hd p{flex-basis:100%;font-size:13.5px}
+  #pcPage .pn-tabs,#pcPage .pn-tabs.t4,#pcPage .pn-tabs.t2{width:100%;margin:4px 0 0;gap:6px}
+  #pcPage .pn-tabs.t4 button{flex-direction:column;gap:3px;border-radius:14px;padding:6px 2px;font-size:12px;min-height:58px;letter-spacing:-.3px}
+  #pcPage .pn-tabs.t4 .pn-ic{width:22px;height:22px}
+  #pcPage .pn-g{grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "side" "map" "main";grid-template-rows:none;row-gap:14px}
+  #pcPage .pn-top{margin:0}
+  #pcPage .pn-side{position:static;padding:14px}
+  #pcPage .pn-r{position:static}
+  #pcPage .pn-grid,#pcPage .pn-egrid{grid-template-columns:minmax(0,1fr);gap:10px}
+  #pcPage .pn-mmsg{min-height:200px}
+  #pcPage .pn-mph{min-height:180px}
+  #pcPage .pn-lh h2{font-size:17px}
+  #pcnDet.pn-ov{padding:12px}
+  #pcnDet .pn-pop{max-height:calc(100vh - 24px);padding:14px 14px 16px}
+}
