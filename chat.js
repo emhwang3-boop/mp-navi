@@ -31,6 +31,7 @@ var TX={
  gScr:T6("가이드 화면","Guide screen","ガイド画面","向导页面","嚮導頁面","Pantalla de guía"),
  gLogin:T6("가이드로 등록한 이메일과 같은 구글·애플 계정으로 로그인해 주세요.","Please sign in with the Google or Apple account that uses the email you registered as a guide.","ガイド登録したメールと同じGoogle・Appleアカウントでログインしてください。","请使用与向导登记邮箱相同的Google或Apple账号登录。","請使用與嚮導登記電郵相同的Google或Apple帳號登入。","Inicia sesión con la cuenta de Google o Apple que usa el correo con el que te registraste como guía."),
  gLoginB:T6("로그인","Sign in","ログイン","登录","登入","Iniciar sesión"),
+ gLogoutB:T6("로그아웃","Sign out","ログアウト","退出登录","登出","Cerrar sesión"),   // 11-08 — 로그인돼 있는데 가이드 계정이 아닐 때
  gNot:T6("이 계정의 이메일은 등록된 가이드 이메일과 다릅니다. 등록한 이메일의 계정으로 로그인해 주세요.","This account's email does not match a registered guide. Please sign in with the account of your registered email.","このアカウントのメールは登録ガイドのメールと異なります。登録したメールのアカウントでログインしてください。","该账号的邮箱与已登记的向导邮箱不同。请使用登记邮箱的账号登录。","該帳號的電郵與已登記的嚮導電郵不同。請使用登記電郵的帳號登入。","El correo de esta cuenta no coincide con ningún guía registrado. Inicia sesión con la cuenta de tu correo registrado."),
  gUp:T6("다가올 예약","Upcoming","今後の予約","即将到来","即將到來","Próximas"),
  gPast:T6("지난 예약","Past","過去の予約","已结束","已結束","Pasadas"),
@@ -150,7 +151,7 @@ function paintList(){ var bd=body(); if(!bd||X.view!=="list") return; var h="", 
     h+=rs.length?rs.map(function(r){ return '<div class="chit" data-chroom="'+esc(r.tk)+'">'+avHtml(r.g)+'<div class="b"><b>'+esc(r.kind==="pkg"?r.pname:gName(r.g))+'</b><div class="m">'+esc(r.date+" "+r.time+" (KST)")+(r.kind==="pkg"&&r.g?' · '+esc(gName(r.g)):'')+(r.kind==="pkg"&&!r.g?'<span class="chpend">'+esc(L(TX.wait))+'</span>':'')+(r.room.ro?' · '+esc(L(TX.ro)).split(" (")[0]:'')+'</div></div>'+(r.room.unread>0?'<span class="u">'+r.room.unread+'</span>':'')+'</div>'; }).join(""):'<div class="chnote">'+esc(L(TX.none))+'</div>'; }
   if(isG()||X.gwant){ h+='<div class="chlbl">'+esc(L(TX.gScr))+(X.gme?' · '+esc(gName(X.gme.guide)):'')+'</div>';
     if(X.gerr==="login"||X.gerr==="sess") h+='<div class="chnote">'+esc(L(TX.gLogin))+'</div><button type="button" class="chgo" data-chlogin="1">'+esc(L(TX.gLoginB))+'</button>';
-    else if(X.gerr==="notguide") h+='<div class="chnote">'+esc(L(TX.gNot))+'</div><button type="button" class="chgo g2" data-chlogin="1">'+esc(L(TX.gLoginB))+'</button>';
+    else if(X.gerr==="notguide") h+='<div class="chnote">'+esc(L(TX.gNot))+'</div><button type="button" class="chgo g2" data-chlogout="1">'+esc(L(TX.gLogoutB))+'</button>';   // 로그인돼 있으니 「로그아웃」 (11-08 사장님)
     else if(X.gerr) h+='<div class="chnote">'+esc(L(TX.err))+'</div>';
     else if(!X.gme) h+='<div class="chnote">'+esc(L(TX.load))+'</div>';
     else { var now=Date.now(), up=X.gme.items.filter(function(x){ return x.end>=now; }), past=X.gme.items.filter(function(x){ return x.end<now; });
@@ -165,7 +166,8 @@ function paintList(){ var bd=body(); if(!bd||X.view!=="list") return; var h="", 
   [].forEach.call(bd.querySelectorAll("[data-chgroom]"),function(e){ e.onclick=function(ev){ if(ev.target.closest("[data-chans]")) return; groom(e.dataset.chgroom); }; });
   [].forEach.call(bd.querySelectorAll("[data-chans]"),function(e){ e.onclick=function(ev){ ev.stopPropagation(); var a=e.dataset.chans; if(!window.confirm(L(a==="accept"?TX.accQ:TX.rejQ))) return; e.disabled=true;
     post("/guide/gme",{sess:sess(),op:"ans",oid:e.dataset.oid,a:a}).then(function(){ return gMe(); }).then(paintList).catch(function(){ e.disabled=false; }); }; });
-  [].forEach.call(bd.querySelectorAll("[data-chlogin]"),function(e){ e.onclick=function(){ loginThen(function(){ X.gwant=true; loadLists().then(paintList); }); }; }); }
+  [].forEach.call(bd.querySelectorAll("[data-chlogin]"),function(e){ e.onclick=function(){ loginThen(function(){ X.gwant=true; loadLists().then(paintList); }); }; });
+  [].forEach.call(bd.querySelectorAll("[data-chlogout]"),function(e){ e.onclick=function(){ try{ if(window.mpPG&&mpPG.logout) mpPG.logout(); }catch(x){} X.gwant=true; loadLists().then(paintList); }; }); }
 function loginThen(cb){ if(!window.mpPG) return; window.mpPG.open(); var bx=document.getElementById("pgBox"); if(!bx||!window.MutationObserver) return;
   var mo=new MutationObserver(function(){ if(!bx.hidden) return; mo.disconnect(); if(sess()) cb(); }); mo.observe(bx,{attributes:true,attributeFilter:["hidden"]}); }
 
