@@ -1,0 +1,35 @@
+/* MosaicTrip.com 홈페이지 — 긴급 화면 (home/pc_sos.js · 11-08 4b단계 · 배치도 8_긴급_배치도)
+ *  · 틀·목록·지도는 편의시설과 같음(pc_near.css) — 여기는 긴급만의 빨강 제목·탭·큰 전화 셋
+ *  · 큰 전화 색: 119 빨강 · 112 남색 · 1330 파랑 (배치도)
+ */
+#pcPage .pn-em .pn-hd h1{color:#e03131}
+#pcPage .pn-em .pn-hd h1::before{background:#e03131}
+html[data-theme="dark"] #pcPage .pn-em .pn-hd h1{color:#ff6b6b}
+#pcPage .pn-em .pn-tabs button{border-color:#e03131;color:#c92a2a}
+#pcPage .pn-em .pn-tabs button:hover{background:#fff5f5}
+#pcPage .pn-em .pn-tabs button.on{background:#e03131;color:#fff}
+html[data-theme="dark"] #pcPage .pn-em .pn-tabs button{color:#ff8787}
+html[data-theme="dark"] #pcPage .pn-em .pn-tabs button:hover{background:#3b1d1d}
+html[data-theme="dark"] #pcPage .pn-em .pn-tabs button.on{color:#fff}
+/* 큰 전화 셋 — 같은 크기 한 줄 */
+#pcPage .sos-calls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#pcPage .sos-c{display:flex;align-items:flex-start;gap:12px;border-radius:16px;padding:16px 16px 15px;color:#fff;text-decoration:none;min-height:96px;box-sizing:border-box;box-shadow:0 6px 16px rgba(17,24,39,.12);transition:transform .12s,filter .12s}
+#pcPage .sos-c:hover{transform:translateY(-2px);filter:brightness(1.05)}
+#pcPage .sos-c.c119{background:#e03131}
+#pcPage .sos-c.c112{background:#1b2a57}
+#pcPage .sos-c.c1330{background:#1971c2}
+#pcPage .sos-i{flex:0 0 auto;width:40px;height:40px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
+#pcPage .sos-i .pn-ic{width:26px;height:26px;vertical-align:0}
+#pcPage .sos-t{display:flex;flex-direction:column;min-width:0}
+#pcPage .sos-t b{font-size:30px;font-weight:900;line-height:1.1;letter-spacing:.5px}
+#pcPage .sos-t small{font-size:13.5px;font-weight:700;line-height:1.45;margin-top:4px;opacity:.95}
+@media (max-width:1180px) and (min-width:641px){
+  #pcPage .sos-c{flex-direction:column;gap:8px}
+}
+@media (max-width:640px){
+  #pcPage .sos-calls{grid-template-columns:minmax(0,1fr);gap:8px}
+  #pcPage .sos-c{min-height:0;padding:12px 14px;align-items:center}
+  #pcPage .sos-t{flex-direction:row;align-items:baseline;gap:10px;flex-wrap:wrap}
+  #pcPage .sos-t b{font-size:26px}
+  #pcPage .sos-t small{margin:0}
+}
