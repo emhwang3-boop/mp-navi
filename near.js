@@ -335,6 +335,10 @@ function tgHtml(){ var kl={ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG
 //   가이드 등록은 「입점 문의」 빌딩 → 「관광 가이드 등록」(window.GUIDEREG) · 승인은 통계청(관리자)
 var GLANG6=[["한국어","ko"],["English","en"],["日本語","ja"],["中文(简)","zhs"],["中文(繁)","zht"],["Español","es"]];
 var IG={view:"pick",lang:"",guides:null,gid:null,gobj:null,err:"",busy:false,done:false};
+// ⓘ 안내 카드 — 접힌 채로 「ⓘ 주의 사항 ▼」 한 줄, 누르면 펼침(앱 공통 접기 단추 XTG) · 연 상태는 이 화면을 보는 동안만 기억
+var IGN_T={ko:"ⓘ 주의 사항",en:"ⓘ Please note",ja:"ⓘ ご注意",zhs:"ⓘ 注意事项",zht:"ⓘ 注意事項",es:"ⓘ Ten en cuenta"}, IGN_OPEN=false;
+function igNoteBox(){ return '<div class="ignote ignf'+(IGN_OPEN?' on':'')+'"><div class="xtrow" data-ignf="1" style="cursor:pointer"><span>'+esc(LG6(IGN_T))+'</span>'+(window.XTG?XTG.html(IGN_OPEN,'',1):'')+'</div>'+(IGN_OPEN?'<div style="margin-top:6px">'+esc(igNote())+'</div>':'')+'</div>'; }
+document.addEventListener("click",function(e){ var r=e.target.closest&&e.target.closest("#nrBox [data-ignf]"); if(!r) return; e.preventDefault(); IGN_OPEN=!IGN_OPEN; var box=r.closest(".ignf"); if(box) box.outerHTML=igNoteBox(); },true);
 function igNote(){ return LG6({ko:"실제 투어 가이드(관광통역안내사)를 연결해 드립니다. 외부 여행 예약 사이트의 투어 가이드와는 별개이며, 여기서 소개해 드리는 가이드만이 머니퍼즐 투어앱과 제휴를 맺은 가이드입니다. 우리 앱에서 선정된 가이드가 외부 여행 예약 사이트의 여행 상품을 안내해 드릴 수는 없습니다. 가이드를 중복으로 선정하지 않도록 주의해 주세요.",
   en:"We connect you with a real licensed tour guide (Korea Tour Guide license). These are separate from tour guides on external travel booking sites — only the guides introduced here are partnered with the Money Puzzle tour app. A guide selected in our app cannot guide travel products booked on external travel booking sites. Please take care not to book duplicate guides.",
   ja:"実際のツアーガイド（通訳案内士）をおつなぎします。外部の旅行予約サイトのツアーガイドとは別で、ここでご紹介するガイドのみがMoney Puzzleツアーアプリと提携したガイドです。当アプリで選んだガイドが、外部の旅行予約サイトの旅行商品をご案内することはできません。ガイドを重複して選ばないようご注意ください。",
@@ -561,7 +565,7 @@ function igRender(b){
   // pick
   var FLAG6={ko:"🇰🇷",en:"🇺🇸",ja:"🇯🇵",zhs:"🇨🇳",zht:"🇹🇼",es:"🇪🇸"};   // 언어 고르기 버튼 국기 (사장님 10-24) — MPICO 안 거치는 평범한 <a> 라 그대로 보인다
   var btns=GLANG6.map(function(l){ return '<a class="iglang" href="#" data-iglang="'+l[1]+'">'+(FLAG6[l[1]]||"")+' '+esc(l[0])+' ›</a>'; }).join("");
-  b.innerHTML=head+bkBlock()+'<div class="ignote">ⓘ '+esc(igNote())+'</div>'   // bkBlock = 「내 예약 · 투어 완료」 카드 (11-05, 예약한 폰에만)
+  b.innerHTML=head+bkBlock()+igNoteBox()   // 11-08 사장님 「i 카드는 접었다 펼쳤다로, 기본은 접는다」 · bkBlock = 「내 예약 · 투어 완료」 카드 (11-05, 예약한 폰에만)
     +'<div class="iglbl">'+esc(LG6({ko:"필요한 언어를 고르세요",en:"Choose the language you need",ja:"必要な言語を選んでください",zhs:"请选择您需要的语言",zht:"請選擇您需要的語言",es:"Elige el idioma que necesitas"}))+'</div><div class="iglangs">'+btns+'</div>'
     +'<div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--line)"><a href="#" data-igedit="1" style="display:inline-flex;align-items:center;gap:7px;color:var(--sub);font-size:13.5px;font-weight:700;text-decoration:none"><img src="img/menu/mi_guideperson.png" alt="" style="width:20px;height:20px;object-fit:contain">'+esc(LG6({ko:"가이드이신가요? 내 프로필 수정 ›",en:"Are you a guide? Edit my profile ›",ja:"ガイドの方はこちら：プロフィール編集 ›",zhs:"您是向导吗？修改我的资料 ›",zht:"您是嚮導嗎？修改我的資料 ›",es:"¿Eres guía? Editar mi perfil ›"}))+'</a>'
     +'<a href="#" data-igme="1" style="display:flex;align-items:center;gap:7px;margin-top:10px;color:var(--sub);font-size:13.5px;font-weight:700;text-decoration:none"><span style="font-size:17px;width:20px;text-align:center">💬</span>'+esc(LG6({ko:"가이드 화면 — 내 예약·손님과 대화 ›",en:"Guide screen — my bookings & chats ›",ja:"ガイド画面 — 予約・お客様とのチャット ›",zhs:"向导页面 — 我的预约·与旅客聊天 ›",zht:"嚮導頁面 — 我的預約·與旅客聊天 ›",es:"Pantalla de guía — mis reservas y chats ›"}))+'</a></div>';   // 가이드 화면 (11-05, chat.js — 구글·애플 로그인 이메일 = 등록 이메일)
