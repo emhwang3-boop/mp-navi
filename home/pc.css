@@ -172,6 +172,8 @@ html.pch[data-theme="dark"] #phMapSec .ph-maphint b{color:#51cf66}
   #phHd .ph-ics{order:1;gap:12px;padding:2px 2px 0}
   #phHd .ph-acts{order:2;margin-left:auto;gap:6px}
   #phRoot .ph-tb{padding:6px 12px;font-size:13px}
+  #phHd .ph-acts{flex:1 1 100%;margin-left:0;grid-auto-columns:minmax(0,1fr)}   /* 11-09 「고객 게시판」 단추가 늘어 셋째 줄 — 화면 폭 꽉, 세 단추 같은 크기 */
+  #phRoot .ph-acts .ph-tb{padding:6px 6px;overflow:hidden;text-overflow:ellipsis}
   #phHd .ph-hd2{height:auto;grid-template-columns:repeat(7,minmax(min-content,1fr));column-gap:4px;padding:4px 6px 8px;border-bottom:1px solid var(--line);background:var(--card);z-index:3;max-width:none}
   #phHd .ph-hd2 button{flex-direction:column;gap:3px;padding:4px 1px;font-size:11.5px;border-bottom:0;letter-spacing:-.4px;line-height:1.2}
   #phHd .ph-hd2 button img{width:26px;height:26px}
