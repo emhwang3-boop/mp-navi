@@ -395,9 +395,9 @@ function cartGo(){ if(TR.plan) openReport(); else openPanel(); }   // 11-08 사�
 //   카트 맨 위·일정표 맨 위에 [플랜 고르기 ▾] [새 플랜] [플랜 삭제] · 「자유 일정」 날마다 [이 날짜로 새 플랜]
 var PL6={nm:{ko:"플랜 {n}",en:"Plan {n}",ja:"プラン{n}",zhs:"方案{n}",zht:"方案{n}",es:"Plan {n}"},
  sel:{ko:"내 플랜",en:"My plans",ja:"マイプラン",zhs:"我的方案",zht:"我的方案",es:"Mis planes"},
- nw:{ko:"새 플랜",en:"New plan",ja:"新しいプラン",zhs:"新建方案",zht:"新增方案",es:"Nuevo plan"},
+ nw:{ko:"플랜 추가",en:"Add plan",ja:"プランを追加",zhs:"添加方案",zht:"新增方案",es:"Añadir plan"},   // 11-08 사장님 「새 플랜」→「플랜 추가」
  del:{ko:"플랜 삭제",en:"Delete plan",ja:"プランを削除",zhs:"删除方案",zht:"刪除方案",es:"Eliminar plan"},
- day:{ko:"이 날짜로 새 플랜",en:"New plan from this day",ja:"この日から新しいプラン",zhs:"从这天起新建方案",zht:"從這天起新增方案",es:"Nuevo plan desde este día"},
+ day:{ko:"이 날짜로 플랜 추가",en:"Add plan from this day",ja:"この日からプランを追加",zhs:"从这天起添加方案",zht:"從這天起新增方案",es:"Añadir plan desde este día"},
  q:{ko:"「{p}」의 담은 곳과 일정표를 모두 지울까요?",en:"Delete “{p}”, including its places and schedule?",ja:"「{p}」の追加した場所と日程表をすべて削除しますか？",zhs:"要删除「{p}」的所有地点和行程表吗？",zht:"要刪除「{p}」的所有地點和行程表嗎？",es:"¿Eliminar «{p}» con todos sus lugares y su itinerario?"}};
 function plAll(){ var a=(TR.saved||[]).slice(); a.push({id:TR.pid,no:TR.pno,items:TR.items,opt:TR.opt,plan:TR.plan,cur:1}); return a.sort(function(x,y){ return x.id-y.id; }); }
 function plName(id){ var p=plAll().filter(function(x){ return x.id===id; })[0]; return gTxt(PL6.nm,{n:p&&p.no||1}); }
