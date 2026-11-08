@@ -520,7 +520,7 @@ function repaint(){ if(S.det) paintDet(); else paint(); }
 //   → 손님 메일·문자 · 고른 가이드에게 수락·거절 링크(거절하면 다른 가이드 자동 배정) · 사장님 텔레그램 · 이 폰 「내 예약」에 저장(배정 가이드 카드·별점·후기)
 //   🔴 PG 붙일 때 (11-07 사장님 「이니시스로 해」 — 토스 아님): tpg.js 의 SH_PG=true + 허브 PORTONE_TOUR_CHANNEL_KEY → 「결제하기」가 pg:1 로 주문 → KG이니시스 결제창(포트원) → 돌아오면 TPG.onRet("pkg") 아래
 function pgOn(){ return !!(window.TPG&&TPG.on); }
-function mockPay(res){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySelector(".spm"); if(o) o.remove();
+function mockPay(res,host){ var b=(window.PC_HOME&&host)||box(), p=prod(); if(!b||!p) return; var o=b.querySelector(".spm"); if(o) o.remove();   // host = PC 홈페이지 상품 화면(home/pc_pkg.js, 11-08) — 폰 앱은 늘 box()
   var unit=unitOf(p,S.n), tot=unit*S.n, gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0], gnm=gg?gName(gg):(S.gid&&S.gname)||"";
   o=document.createElement("div"); o.className="spm"; b.appendChild(o); var agd=false; if(!S.pm) S.pm="card";
   // res = 결제창에서 돌아온 결과 {ok, oid, amount} 또는 {ok:false, err}
@@ -558,7 +558,7 @@ function mockPay(res){ var b=box(), p=prod(); if(!b||!p) return; var o=b.querySe
          if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err, pe=window.TPG?TPG.errTx(e):""; draw(null,pe||(e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(p.hub&&p.days&&p.days.length?TX.edy:TX.edt):e==="notsale"?L(TX.soon):L(TX.efail))); return; }
          try{ ntap("shop","order_"+p.id); }catch(z){}
          if(j.pay!=="pg"){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:L(p.t),date:S.date,time:S.time,n:S.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null}); }catch(z){}   // 「내 예약」 (11-05)
-           S.cn=nm; S.ce=em; S.cp=ph; mockPay({ok:true,oid:j.orderId,amount:j.amount,tk:j.tdone||"",chat:!!j.chat}); return; }
+           S.cn=nm; S.ce=em; S.cp=ph; mockPay({ok:true,oid:j.orderId,amount:j.amount,tk:j.tdone||"",chat:!!j.chat},host); return; }
          // KG이니시스 결제창 (포트원, 11-07) — 돌아왔을 때 화면을 다시 그릴 주문 내용은 tpg.js 가 이 탭에만 둔다
          draw(null,"",2);
          return TPG.go(j,{kind:"pkg",oid:j.orderId,amount:j.amount,pid:p.id,pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,gname:gnm,glang:S.glang||"",cn:nm,ce:em,cp:ph,pm:pm},{name:nm,email:em,phone:ph})
@@ -623,5 +623,10 @@ window.SHOP={open:open,close:close,back:back,
   load:loadP,items:function(){ return PL(); },
   brief:function(p){ var u=minUnit(p); return {id:p.id,c:p.c,t:L(p.t),img:psrc(p),cat:(function(){ try{ return catName(p.c); }catch(e){ return ""; } })(),from:u?won(u)+"~ / "+L(TX.per):"",badge:L(p.real?TX.real:TX.ex),real:!!p.real}; },
   det:function(id){ if(!PL().some(function(x){ return x.id===id; })) return; open(); openDet(id); S.fromAi=true; try{ ntap("shop","p_"+id); }catch(z){} }};
+// PC 홈페이지(home/pc_pkg.js, 11-08) — 패키지 화면을 PC 배치로 그릴 때 이 파일의 자료·글·상세 본문·요금·결제창을 그대로 쓴다 (폰 앱은 PC_HOME 이 없어 그대로)
+//   pay(host,id) = 앱 「예약·결제」(mockPay) 를 host 안에 띄움 — 예약자·결제 수단·동의·허브 /shop/order·「내 예약」 저장 모두 앱 그대로
+if(window.PC_HOME) SHOP.pc={TX:TX,CATS:CATS,LGN:LGN,S:S,L:L,Lx:Lx,won:won,unitOf:unitOf,minUnit:minUnit,kindOf:kindOf,isExt:isExt,psrc:psrc,galUrls:galUrls,catName:catName,langTxt:langTxt,
+  detBody:detBody,noteOf:noteOf,mpNote:mpNote,dayLine:dayLine,priceHtml:priceHtml,fromPr:fromPr,gName:gName,
+  pay:function(host,id){ if(!PL().some(function(x){ return x.id===id; })) return; S.prod=id; mockPay(null,host); }};
 // 결제창에서 돌아옴 = tpg.js(?tpres=) → 위 TPG.onRet("pkg") (11-07 — 옛 토스 ?shres= 처리기는 지움)
 })();
