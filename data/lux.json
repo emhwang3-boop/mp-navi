@@ -8,7 +8,14 @@
    "en": "CHANEL",
    "cat": "fashion",
    "kq": "샤넬",
-   "logo": "chanel.svg"
+   "logo": "chanel.svg",
+   "ja": "シャネル",
+   "zhs": "香奈儿",
+   "zht": "香奈兒",
+   "alt": [
+    "CC"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "hermes",
@@ -16,7 +23,15 @@
    "en": "Hermès",
    "cat": "fashion",
    "kq": "에르메스",
-   "logo": "hermes.svg"
+   "logo": "hermes.svg",
+   "ja": "エルメス",
+   "zhs": "爱马仕",
+   "zht": "愛馬仕",
+   "alt": [
+    "Hermes",
+    "헤르메스"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "louisvuitton",
@@ -24,7 +39,17 @@
    "en": "LOUIS VUITTON",
    "cat": "fashion",
    "kq": "루이비통",
-   "logo": "louisvuitton.svg"
+   "logo": "louisvuitton.svg",
+   "ja": "ルイ・ヴィトン",
+   "zhs": "路易威登",
+   "zht": "路易威登",
+   "alt": [
+    "LV",
+    "루이뷔통",
+    "루이 비통",
+    "ルイヴィトン",
+    "ヴィトン"
+   ]
   },
   {
    "id": "dior",
@@ -32,7 +57,17 @@
    "en": "DIOR",
    "cat": "fashion",
    "kq": "디올",
-   "logo": "dior.svg"
+   "logo": "dior.svg",
+   "ja": "ディオール",
+   "zhs": "迪奥",
+   "zht": "迪奧",
+   "alt": [
+    "Christian Dior",
+    "크리스챤 디올",
+    "크리스찬 디올",
+    "クリスチャン・ディオール"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "gucci",
@@ -40,7 +75,11 @@
    "en": "GUCCI",
    "cat": "fashion",
    "kq": "구찌",
-   "logo": "gucci.svg"
+   "logo": "gucci.svg",
+   "ja": "グッチ",
+   "zhs": "古驰",
+   "zht": "古馳",
+   "cat2": "beauty"
   },
   {
    "id": "prada",
@@ -48,7 +87,11 @@
    "en": "PRADA",
    "cat": "fashion",
    "kq": "프라다",
-   "logo": "prada.svg"
+   "logo": "prada.svg",
+   "ja": "プラダ",
+   "zhs": "普拉达",
+   "zht": "普拉達",
+   "cat2": "beauty"
   },
   {
    "id": "miumiu",
@@ -56,7 +99,15 @@
    "en": "MIU MIU",
    "cat": "fashion",
    "kq": "미우미우",
-   "logo": "miumiu.svg"
+   "logo": "miumiu.svg",
+   "ja": "ミュウミュウ",
+   "zhs": "缪缪",
+   "zht": "繆繆",
+   "alt": [
+    "MiuMiu",
+    "미우 미우"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "celine",
@@ -64,7 +115,16 @@
    "en": "CELINE",
    "cat": "fashion",
    "kq": "셀린느",
-   "logo": "celine.svg"
+   "logo": "celine.svg",
+   "ja": "セリーヌ",
+   "zhs": "思琳",
+   "zht": "思琳",
+   "alt": [
+    "Céline",
+    "셀린",
+    "赛琳",
+    "賽琳"
+   ]
   },
   {
    "id": "bottegaveneta",
@@ -72,7 +132,17 @@
    "en": "BOTTEGA VENETA",
    "cat": "fashion",
    "kq": "보테가베네타",
-   "logo": "bottegaveneta.svg"
+   "logo": "bottegaveneta.svg",
+   "ja": "ボッテガ・ヴェネタ",
+   "zhs": "葆蝶家",
+   "zht": "葆蝶家",
+   "alt": [
+    "BV",
+    "Bottega",
+    "보테가 베네타",
+    "ボッテガヴェネタ",
+    "ボッテガ"
+   ]
   },
   {
    "id": "saintlaurent",
@@ -80,7 +150,19 @@
    "en": "SAINT LAURENT",
    "cat": "fashion",
    "kq": "생로랑",
-   "logo": "saintlaurent.svg"
+   "logo": "saintlaurent.svg",
+   "ja": "サンローラン",
+   "zhs": "圣罗兰",
+   "zht": "聖羅蘭",
+   "alt": [
+    "YSL",
+    "Yves Saint Laurent",
+    "Saint Laurent Paris",
+    "입생로랑",
+    "생 로랑",
+    "イヴ・サンローラン"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "balenciaga",
@@ -88,7 +170,11 @@
    "en": "BALENCIAGA",
    "cat": "fashion",
    "kq": "발렌시아가",
-   "logo": "balenciaga.svg"
+   "logo": "balenciaga.svg",
+   "ja": "バレンシアガ",
+   "zhs": "巴黎世家",
+   "zht": "巴黎世家",
+   "cat2": "beauty"
   },
   {
    "id": "fendi",
@@ -96,7 +182,10 @@
    "en": "FENDI",
    "cat": "fashion",
    "kq": "펜디",
-   "logo": "fendi.svg"
+   "logo": "fendi.svg",
+   "ja": "フェンディ",
+   "zhs": "芬迪",
+   "zht": "芬迪"
   },
   {
    "id": "burberry",
@@ -104,7 +193,15 @@
    "en": "BURBERRY",
    "cat": "fashion",
    "kq": "버버리",
-   "logo": "burberry.svg"
+   "logo": "burberry.svg",
+   "ja": "バーバリー",
+   "zhs": "博柏利",
+   "zht": "博柏利",
+   "alt": [
+    "巴宝莉",
+    "巴寶莉"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "loewe",
@@ -112,7 +209,11 @@
    "en": "LOEWE",
    "cat": "fashion",
    "kq": "로에베",
-   "logo": "loewe.svg"
+   "logo": "loewe.svg",
+   "ja": "ロエベ",
+   "zhs": "罗意威",
+   "zht": "羅意威",
+   "cat2": "beauty"
   },
   {
    "id": "valentino",
@@ -120,7 +221,16 @@
    "en": "VALENTINO",
    "cat": "fashion",
    "kq": "발렌티노",
-   "logo": "valentino.svg"
+   "logo": "valentino.svg",
+   "ja": "ヴァレンティノ",
+   "zhs": "华伦天奴",
+   "zht": "華倫天奴",
+   "alt": [
+    "Valentino Garavani",
+    "バレンティノ",
+    "발렌티노 가라바니"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "ferragamo",
@@ -128,7 +238,15 @@
    "en": "Ferragamo",
    "cat": "fashion",
    "kq": "페라가모",
-   "logo": "ferragamo.svg"
+   "logo": "ferragamo.svg",
+   "ja": "フェラガモ",
+   "zhs": "菲拉格慕",
+   "zht": "菲拉格慕",
+   "alt": [
+    "Salvatore Ferragamo",
+    "살바토레 페라가모",
+    "サルヴァトーレ フェラガモ"
+   ]
   },
   {
    "id": "goyard",
@@ -136,7 +254,13 @@
    "en": "GOYARD",
    "cat": "fashion",
    "kq": "고야드",
-   "logo": "goyard.svg"
+   "logo": "goyard.svg",
+   "ja": "ゴヤール",
+   "zhs": "戈雅",
+   "zht": "戈雅",
+   "alt": [
+    "고야르"
+   ]
   },
   {
    "id": "tods",
@@ -144,7 +268,14 @@
    "en": "TOD'S",
    "cat": "fashion",
    "kq": "토즈",
-   "logo": "tods.svg"
+   "logo": "tods.svg",
+   "ja": "トッズ",
+   "zhs": "托德斯",
+   "zht": "托德斯",
+   "alt": [
+    "Tods",
+    "토드스"
+   ]
   },
   {
    "id": "jimmychoo",
@@ -152,7 +283,15 @@
    "en": "JIMMY CHOO",
    "cat": "fashion",
    "kq": "지미추",
-   "logo": "jimmychoo.svg"
+   "logo": "jimmychoo.svg",
+   "ja": "ジミー チュウ",
+   "zhs": "周仰杰",
+   "zht": "周仰傑",
+   "alt": [
+    "지미 추",
+    "ジミーチュウ"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "berluti",
@@ -160,7 +299,13 @@
    "en": "BERLUTI",
    "cat": "fashion",
    "kq": "벨루티",
-   "logo": "berluti.svg"
+   "logo": "berluti.svg",
+   "ja": "ベルルッティ",
+   "zhs": "伯尔鲁帝",
+   "zht": "伯爾魯帝",
+   "alt": [
+    "베를루티"
+   ]
   },
   {
    "id": "brunellocucinelli",
@@ -168,7 +313,16 @@
    "en": "BRUNELLO CUCINELLI",
    "cat": "fashion",
    "kq": "브루넬로쿠치넬리",
-   "logo": "brunellocucinelli.png"
+   "logo": "brunellocucinelli.png",
+   "ja": "ブルネロ クチネリ",
+   "zhs": "BRUNELLO CUCINELLI",
+   "zht": "BRUNELLO CUCINELLI",
+   "alt": [
+    "Cucinelli",
+    "쿠치넬리",
+    "ブルネロクチネリ"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "zegna",
@@ -176,7 +330,15 @@
    "en": "ZEGNA",
    "cat": "fashion",
    "kq": "제냐",
-   "logo": "zegna.svg"
+   "logo": "zegna.svg",
+   "ja": "ゼニア",
+   "zhs": "杰尼亚",
+   "zht": "傑尼亞",
+   "alt": [
+    "Ermenegildo Zegna",
+    "에르메네질도 제냐",
+    "エルメネジルド ゼニア"
+   ]
   },
   {
    "id": "brioni",
@@ -184,7 +346,10 @@
    "en": "BRIONI",
    "cat": "fashion",
    "kq": "브리오니",
-   "logo": "brioni.svg"
+   "logo": "brioni.svg",
+   "ja": "ブリオーニ",
+   "zhs": "布里奥尼",
+   "zht": "布里奧尼"
   },
   {
    "id": "kiton",
@@ -192,7 +357,13 @@
    "en": "KITON",
    "cat": "fashion",
    "kq": "키톤",
-   "logo": "kiton.svg"
+   "logo": "kiton.svg",
+   "ja": "キートン",
+   "zhs": "KITON",
+   "zht": "KITON",
+   "alt": [
+    "키튼"
+   ]
   },
   {
    "id": "stefanoricci",
@@ -200,7 +371,14 @@
    "en": "STEFANO RICCI",
    "cat": "fashion",
    "kq": "스테파노리치",
-   "logo": "stefanoricci.png"
+   "logo": "stefanoricci.png",
+   "ja": "ステファノ・リッチ",
+   "zhs": "STEFANO RICCI",
+   "zht": "STEFANO RICCI",
+   "alt": [
+    "스테파노리치",
+    "ステファノリッチ"
+   ]
   },
   {
    "id": "canali",
@@ -208,7 +386,13 @@
    "en": "CANALI",
    "cat": "fashion",
    "kq": "까날리",
-   "logo": "canali.svg"
+   "logo": "canali.svg",
+   "ja": "カナーリ",
+   "zhs": "康纳利",
+   "zht": "康納利",
+   "alt": [
+    "카날리"
+   ]
   },
   {
    "id": "tomford",
@@ -216,7 +400,15 @@
    "en": "TOM FORD",
    "cat": "fashion",
    "kq": "톰포드",
-   "logo": "tomford.svg"
+   "logo": "tomford.svg",
+   "ja": "トム フォード",
+   "zhs": "汤姆福特",
+   "zht": "湯姆福特",
+   "alt": [
+    "톰 포드",
+    "トムフォード"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "versace",
@@ -224,7 +416,14 @@
    "en": "VERSACE",
    "cat": "fashion",
    "kq": "베르사체",
-   "logo": "versace.svg"
+   "logo": "versace.svg",
+   "ja": "ヴェルサーチェ",
+   "zhs": "范思哲",
+   "zht": "凡賽斯",
+   "alt": [
+    "ヴェルサーチ"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "dolcegabbana",
@@ -232,7 +431,19 @@
    "en": "DOLCE&GABBANA",
    "cat": "fashion",
    "kq": "돌체앤가바나",
-   "logo": "dolcegabbana.svg"
+   "logo": "dolcegabbana.svg",
+   "ja": "ドルチェ＆ガッバーナ",
+   "zhs": "杜嘉班纳",
+   "zht": "杜嘉班納",
+   "alt": [
+    "D&G",
+    "Dolce & Gabbana",
+    "Dolce Gabbana",
+    "돌체 앤 가바나",
+    "돌체가바나",
+    "ドルガバ"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "giorgioarmani",
@@ -240,7 +451,18 @@
    "en": "GIORGIO ARMANI",
    "cat": "fashion",
    "kq": "조르지오아르마니",
-   "logo": "giorgioarmani.svg"
+   "logo": "giorgioarmani.svg",
+   "ja": "ジョルジオ アルマーニ",
+   "zhs": "乔治·阿玛尼",
+   "zht": "喬治·亞曼尼",
+   "alt": [
+    "Armani",
+    "아르마니",
+    "アルマーニ",
+    "阿玛尼",
+    "阿瑪尼"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "balmain",
@@ -248,7 +470,10 @@
    "en": "BALMAIN",
    "cat": "fashion",
    "kq": "발망",
-   "logo": "balmain.svg"
+   "logo": "balmain.svg",
+   "ja": "バルマン",
+   "zhs": "巴尔曼",
+   "zht": "巴爾曼"
   },
   {
    "id": "alaia",
@@ -256,7 +481,15 @@
    "en": "ALAÏA",
    "cat": "fashion",
    "kq": "알라이아",
-   "logo": "alaia.png"
+   "logo": "alaia.png",
+   "ja": "アライア",
+   "zhs": "阿莱亚",
+   "zht": "阿萊亞",
+   "alt": [
+    "Alaia",
+    "Azzedine Alaïa",
+    "알라이야"
+   ]
   },
   {
    "id": "chloe",
@@ -264,7 +497,15 @@
    "en": "Chloé",
    "cat": "fashion",
    "kq": "끌로에",
-   "logo": "chloe.svg"
+   "logo": "chloe.svg",
+   "ja": "クロエ",
+   "zhs": "蔻依",
+   "zht": "蔻依",
+   "alt": [
+    "Chloe",
+    "클로에"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "therow",
@@ -272,7 +513,14 @@
    "en": "THE ROW",
    "cat": "fashion",
    "kq": "더로우",
-   "logo": "therow.svg"
+   "logo": "therow.svg",
+   "ja": "ザ・ロウ",
+   "zhs": "THE ROW",
+   "zht": "THE ROW",
+   "alt": [
+    "더 로우",
+    "ザロウ"
+   ]
   },
   {
    "id": "alexandermcqueen",
@@ -280,7 +528,17 @@
    "en": "ALEXANDER McQUEEN",
    "cat": "fashion",
    "kq": "알렉산더맥퀸",
-   "logo": "alexandermcqueen.svg"
+   "logo": "alexandermcqueen.svg",
+   "ja": "アレキサンダー・マックイーン",
+   "zhs": "亚历山大·麦昆",
+   "zht": "亞歷山大·麥昆",
+   "alt": [
+    "McQueen",
+    "맥퀸",
+    "マックイーン",
+    "麦昆",
+    "麥昆"
+   ]
   },
   {
    "id": "marni",
@@ -288,7 +546,10 @@
    "en": "MARNI",
    "cat": "fashion",
    "kq": "마르니",
-   "logo": "marni.svg"
+   "logo": "marni.svg",
+   "ja": "マルニ",
+   "zhs": "玛尼",
+   "zht": "瑪尼"
   },
   {
    "id": "lanvin",
@@ -296,7 +557,11 @@
    "en": "LANVIN",
    "cat": "fashion",
    "kq": "랑방",
-   "logo": "lanvin.svg"
+   "logo": "lanvin.svg",
+   "ja": "ランバン",
+   "zhs": "浪凡",
+   "zht": "浪凡",
+   "cat2": "beauty"
   },
   {
    "id": "akris",
@@ -304,7 +569,10 @@
    "en": "AKRIS",
    "cat": "fashion",
    "kq": "아크리스",
-   "logo": "akris.svg"
+   "logo": "akris.svg",
+   "ja": "アクリス",
+   "zhs": "AKRIS",
+   "zht": "AKRIS"
   },
   {
    "id": "agnona",
@@ -312,7 +580,13 @@
    "en": "AGNONA",
    "cat": "fashion",
    "kq": "아뇨나",
-   "logo": "agnona.png"
+   "logo": "agnona.png",
+   "ja": "アニオナ",
+   "zhs": "AGNONA",
+   "zht": "AGNONA",
+   "alt": [
+    "아그노나"
+   ]
   },
   {
    "id": "moncler",
@@ -320,7 +594,14 @@
    "en": "MONCLER",
    "cat": "fashion",
    "kq": "몽클레르",
-   "logo": "moncler.svg"
+   "logo": "moncler.svg",
+   "ja": "モンクレール",
+   "zhs": "盟可睐",
+   "zht": "盟可睞",
+   "alt": [
+    "몽클레어"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "etro",
@@ -328,7 +609,10 @@
    "en": "ETRO",
    "cat": "fashion",
    "kq": "에트로",
-   "logo": "etro.svg"
+   "logo": "etro.svg",
+   "ja": "エトロ",
+   "zhs": "艾特罗",
+   "zht": "艾特羅"
   },
   {
    "id": "maxmara",
@@ -336,7 +620,15 @@
    "en": "Max Mara",
    "cat": "fashion",
    "kq": "막스마라",
-   "logo": "maxmara.svg"
+   "logo": "maxmara.svg",
+   "ja": "マックスマーラ",
+   "zhs": "麦丝玛拉",
+   "zht": "麥絲瑪拉",
+   "alt": [
+    "MaxMara",
+    "막스 마라",
+    "맥스마라"
+   ]
   },
   {
    "id": "maisonmargiela",
@@ -344,7 +636,21 @@
    "en": "Maison Margiela",
    "cat": "fashion",
    "kq": "메종마르지엘라",
-   "logo": "maisonmargiela.svg"
+   "logo": "maisonmargiela.svg",
+   "ja": "メゾン マルジェラ",
+   "zhs": "梅森马吉拉",
+   "zht": "梅森馬吉拉",
+   "alt": [
+    "Margiela",
+    "Martin Margiela",
+    "MM6",
+    "마르지엘라",
+    "마틴 마르지엘라",
+    "マルジェラ",
+    "马丁·马吉拉",
+    "馬丁·馬吉拉"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "jilsander",
@@ -352,7 +658,15 @@
    "en": "JIL SANDER",
    "cat": "fashion",
    "kq": "질샌더",
-   "logo": "jilsander.svg"
+   "logo": "jilsander.svg",
+   "ja": "ジル サンダー",
+   "zhs": "吉尔·桑达",
+   "zht": "吉爾·桑達",
+   "alt": [
+    "질 샌더",
+    "ジルサンダー"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "yohjiyamamoto",
@@ -360,7 +674,14 @@
    "en": "Yohji Yamamoto",
    "cat": "fashion",
    "kq": "요지야마모토",
-   "logo": "yohjiyamamoto.png"
+   "logo": "yohjiyamamoto.png",
+   "ja": "ヨウジヤマモト",
+   "zhs": "山本耀司",
+   "zht": "山本耀司",
+   "alt": [
+    "Y-3",
+    "요지야마모토"
+   ]
   },
   {
    "id": "hugoboss",
@@ -368,7 +689,18 @@
    "en": "BOSS",
    "cat": "fashion",
    "kq": "휴고보스",
-   "logo": "hugoboss.svg"
+   "logo": "hugoboss.svg",
+   "ja": "ヒューゴ ボス",
+   "zhs": "雨果博斯",
+   "zht": "雨果博斯",
+   "alt": [
+    "Hugo Boss",
+    "휴고 보스",
+    "보스",
+    "ボス",
+    "ヒューゴボス"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "montblanc",
@@ -376,7 +708,14 @@
    "en": "MONTBLANC",
    "cat": "fashion",
    "kq": "몽블랑",
-   "logo": "montblanc.svg"
+   "logo": "montblanc.svg",
+   "ja": "モンブラン",
+   "zhs": "万宝龙",
+   "zht": "萬寶龍",
+   "alt": [
+    "Mont Blanc"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "rolex",
@@ -384,7 +723,13 @@
    "en": "ROLEX",
    "cat": "watch",
    "kq": "롤렉스",
-   "logo": "rolex.svg"
+   "logo": "rolex.svg",
+   "ja": "ロレックス",
+   "zhs": "劳力士",
+   "zht": "勞力士",
+   "alt": [
+    "로렉스"
+   ]
   },
   {
    "id": "patekphilippe",
@@ -392,7 +737,16 @@
    "en": "PATEK PHILIPPE",
    "cat": "watch",
    "kq": "파텍필립",
-   "logo": "patekphilippe.png"
+   "logo": "patekphilippe.png",
+   "ja": "パテック フィリップ",
+   "zhs": "百达翡丽",
+   "zht": "百達翡麗",
+   "alt": [
+    "Patek",
+    "PP",
+    "파텍 필립",
+    "パテックフィリップ"
+   ]
   },
   {
    "id": "audemarspiguet",
@@ -400,7 +754,15 @@
    "en": "AUDEMARS PIGUET",
    "cat": "watch",
    "kq": "오데마피게",
-   "logo": "audemarspiguet.svg"
+   "logo": "audemarspiguet.svg",
+   "ja": "オーデマ ピゲ",
+   "zhs": "爱彼",
+   "zht": "愛彼",
+   "alt": [
+    "AP",
+    "오데마 피게",
+    "オーデマピゲ"
+   ]
   },
   {
    "id": "vacheronconstantin",
@@ -408,7 +770,17 @@
    "en": "VACHERON CONSTANTIN",
    "cat": "watch",
    "kq": "바쉐론콘스탄틴",
-   "logo": "vacheronconstantin.svg"
+   "logo": "vacheronconstantin.svg",
+   "ja": "ヴァシュロン・コンスタンタン",
+   "zhs": "江诗丹顿",
+   "zht": "江詩丹頓",
+   "alt": [
+    "Vacheron",
+    "VC",
+    "바쉐론",
+    "바셰론 콘스탄틴",
+    "ヴァシュロン"
+   ]
   },
   {
    "id": "alangesohne",
@@ -416,7 +788,20 @@
    "en": "A. LANGE & SÖHNE",
    "cat": "watch",
    "kq": "랑에운트죄네",
-   "logo": "alangesohne.svg"
+   "logo": "alangesohne.svg",
+   "ja": "A.ランゲ＆ゾーネ",
+   "zhs": "朗格",
+   "zht": "朗格",
+   "alt": [
+    "A. Lange & Sohne",
+    "A Lange Sohne",
+    "Lange",
+    "랑에",
+    "랑게 운트 죄네",
+    "랑에 운트 죄네",
+    "ランゲ",
+    "ランゲ&ゾーネ"
+   ]
   },
   {
    "id": "breguet",
@@ -424,7 +809,10 @@
    "en": "Breguet",
    "cat": "watch",
    "kq": "브레게",
-   "logo": "breguet.svg"
+   "logo": "breguet.svg",
+   "ja": "ブレゲ",
+   "zhs": "宝玑",
+   "zht": "寶璣"
   },
   {
    "id": "blancpain",
@@ -432,7 +820,10 @@
    "en": "BLANCPAIN",
    "cat": "watch",
    "kq": "블랑팡",
-   "logo": "blancpain.svg"
+   "logo": "blancpain.svg",
+   "ja": "ブランパン",
+   "zhs": "宝珀",
+   "zht": "寶珀"
   },
   {
    "id": "jaegerlecoultre",
@@ -440,7 +831,16 @@
    "en": "JAEGER-LECOULTRE",
    "cat": "watch",
    "kq": "예거르쿨트르",
-   "logo": "jaegerlecoultre.png"
+   "logo": "jaegerlecoultre.png",
+   "ja": "ジャガー・ルクルト",
+   "zhs": "积家",
+   "zht": "積家",
+   "alt": [
+    "JLC",
+    "Jaeger LeCoultre",
+    "예거",
+    "ジャガールクルト"
+   ]
   },
   {
    "id": "iwc",
@@ -448,7 +848,16 @@
    "en": "IWC SCHAFFHAUSEN",
    "cat": "watch",
    "kq": "IWC",
-   "logo": "iwc.svg"
+   "logo": "iwc.svg",
+   "ja": "IWC",
+   "zhs": "万国",
+   "zht": "萬國",
+   "alt": [
+    "IWC シャフハウゼン",
+    "万国表",
+    "萬國錶",
+    "아이더블유씨"
+   ]
   },
   {
    "id": "panerai",
@@ -456,7 +865,13 @@
    "en": "PANERAI",
    "cat": "watch",
    "kq": "파네라이",
-   "logo": "panerai.svg"
+   "logo": "panerai.svg",
+   "ja": "パネライ",
+   "zhs": "沛纳海",
+   "zht": "沛納海",
+   "alt": [
+    "Officine Panerai"
+   ]
   },
   {
    "id": "omega",
@@ -464,7 +879,10 @@
    "en": "OMEGA",
    "cat": "watch",
    "kq": "오메가",
-   "logo": "omega.svg"
+   "logo": "omega.svg",
+   "ja": "オメガ",
+   "zhs": "欧米茄",
+   "zht": "歐米茄"
   },
   {
    "id": "hublot",
@@ -472,7 +890,14 @@
    "en": "HUBLOT",
    "cat": "watch",
    "kq": "위블로",
-   "logo": "hublot.svg"
+   "logo": "hublot.svg",
+   "ja": "ウブロ",
+   "zhs": "宇舶",
+   "zht": "宇舶",
+   "alt": [
+    "宇舶表",
+    "宇舶錶"
+   ]
   },
   {
    "id": "piaget",
@@ -480,7 +905,10 @@
    "en": "PIAGET",
    "cat": "watch",
    "kq": "피아제",
-   "logo": "piaget.svg"
+   "logo": "piaget.svg",
+   "ja": "ピアジェ",
+   "zhs": "伯爵",
+   "zht": "伯爵"
   },
   {
    "id": "rogerdubuis",
@@ -488,7 +916,14 @@
    "en": "ROGER DUBUIS",
    "cat": "watch",
    "kq": "로저드뷔",
-   "logo": "rogerdubuis.svg"
+   "logo": "rogerdubuis.svg",
+   "ja": "ロジェ・デュブイ",
+   "zhs": "罗杰杜彼",
+   "zht": "羅杰杜彼",
+   "alt": [
+    "로저 드뷔",
+    "ロジェデュブイ"
+   ]
   },
   {
    "id": "jacobco",
@@ -496,7 +931,18 @@
    "en": "JACOB & CO.",
    "cat": "watch",
    "kq": "제이콥앤코",
-   "logo": "jacobco.png"
+   "logo": "jacobco.png",
+   "ja": "ジェイコブ",
+   "zhs": "捷克豹",
+   "zht": "捷克豹",
+   "alt": [
+    "Jacob & Co",
+    "Jacob and Co",
+    "Jacob",
+    "제이콥",
+    "제이콥 앤 코",
+    "ジェイコブ＆コー"
+   ]
   },
   {
    "id": "hmoser",
@@ -504,7 +950,17 @@
    "en": "H. Moser & Cie.",
    "cat": "watch",
    "kq": "모저앤씨",
-   "logo": "hmoser.svg"
+   "logo": "hmoser.svg",
+   "ja": "H.モーザー",
+   "zhs": "亨利慕时",
+   "zht": "亨利慕時",
+   "alt": [
+    "H. Moser & Cie",
+    "H Moser",
+    "Moser",
+    "모저",
+    "H.モーザー＆シー"
+   ]
   },
   {
    "id": "lepee1839",
@@ -512,7 +968,15 @@
    "en": "L'Epée 1839",
    "cat": "watch",
    "kq": "레페 1839",
-   "logo": "lepee1839.png"
+   "logo": "lepee1839.png",
+   "ja": "レペ 1839",
+   "zhs": "L'EPEE 1839",
+   "zht": "L'EPEE 1839",
+   "alt": [
+    "LEpee",
+    "L'Epée",
+    "레페"
+   ]
   },
   {
    "id": "cartier",
@@ -520,7 +984,14 @@
    "en": "Cartier",
    "cat": "jewelry",
    "kq": "까르띠에",
-   "logo": "cartier.svg"
+   "logo": "cartier.svg",
+   "ja": "カルティエ",
+   "zhs": "卡地亚",
+   "zht": "卡地亞",
+   "alt": [
+    "까르티에",
+    "카르티에"
+   ]
   },
   {
    "id": "bvlgari",
@@ -528,7 +999,14 @@
    "en": "BVLGARI",
    "cat": "jewelry",
    "kq": "불가리",
-   "logo": "bvlgari.svg"
+   "logo": "bvlgari.svg",
+   "ja": "ブルガリ",
+   "zhs": "宝格丽",
+   "zht": "寶格麗",
+   "alt": [
+    "Bulgari"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "tiffany",
@@ -536,7 +1014,17 @@
    "en": "Tiffany & Co.",
    "cat": "jewelry",
    "kq": "티파니앤코",
-   "logo": "tiffany.svg"
+   "logo": "tiffany.svg",
+   "ja": "ティファニー",
+   "zhs": "蒂芙尼",
+   "zht": "蒂芙尼",
+   "alt": [
+    "Tiffany",
+    "Tiffany & Co",
+    "티파니",
+    "티파니 앤 코"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "vancleefarpels",
@@ -544,7 +1032,18 @@
    "en": "Van Cleef & Arpels",
    "cat": "jewelry",
    "kq": "반클리프아펠",
-   "logo": "vancleefarpels.svg"
+   "logo": "vancleefarpels.svg",
+   "ja": "ヴァン クリーフ＆アーペル",
+   "zhs": "梵克雅宝",
+   "zht": "梵克雅寶",
+   "alt": [
+    "Van Cleef",
+    "VCA",
+    "반클리프",
+    "반 클리프 앤 아펠",
+    "ヴァンクリーフ"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "chopard",
@@ -552,7 +1051,14 @@
    "en": "Chopard",
    "cat": "jewelry",
    "kq": "쇼파드",
-   "logo": "chopard.svg"
+   "logo": "chopard.svg",
+   "ja": "ショパール",
+   "zhs": "萧邦",
+   "zht": "蕭邦",
+   "alt": [
+    "쇼파르"
+   ],
+   "cat2": "beauty"
   },
   {
    "id": "chaumet",
@@ -560,7 +1066,13 @@
    "en": "CHAUMET",
    "cat": "jewelry",
    "kq": "쇼메",
-   "logo": "chaumet.svg"
+   "logo": "chaumet.svg",
+   "ja": "ショーメ",
+   "zhs": "尚美巴黎",
+   "zht": "尚美巴黎",
+   "alt": [
+    "尚美"
+   ]
   },
   {
    "id": "damiani",
@@ -568,7 +1080,13 @@
    "en": "DAMIANI",
    "cat": "jewelry",
    "kq": "다미아니",
-   "logo": "damiani.svg"
+   "logo": "damiani.svg",
+   "ja": "ダミアーニ",
+   "zhs": "达米亚尼",
+   "zht": "達米亞尼",
+   "alt": [
+    "德米亚尼"
+   ]
   },
   {
    "id": "pomellato",
@@ -576,7 +1094,13 @@
    "en": "POMELLATO",
    "cat": "jewelry",
    "kq": "포멜라토",
-   "logo": "pomellato.svg"
+   "logo": "pomellato.svg",
+   "ja": "ポメラート",
+   "zhs": "宝曼兰朵",
+   "zht": "寶曼蘭朵",
+   "alt": [
+    "포멜라또"
+   ]
   },
   {
    "id": "repossi",
@@ -584,7 +1108,10 @@
    "en": "REPOSSI",
    "cat": "jewelry",
    "kq": "레포시",
-   "logo": "repossi.png"
+   "logo": "repossi.png",
+   "ja": "レポシ",
+   "zhs": "REPOSSI",
+   "zht": "REPOSSI"
   },
   {
    "id": "qeelin",
@@ -592,7 +1119,419 @@
    "en": "QEELIN",
    "cat": "jewelry",
    "kq": "키린",
-   "logo": "qeelin.svg"
+   "logo": "qeelin.svg",
+   "ja": "キーリン",
+   "zhs": "麒麟",
+   "zht": "麒麟",
+   "alt": [
+    "麒麟珠宝"
+   ]
+  },
+  {
+   "id": "jomalone",
+   "ko": "조말론 런던",
+   "en": "Jo Malone London",
+   "cat": "beauty",
+   "kq": "조말론 런던",
+   "logo": "jomalone.png",
+   "ja": "ジョー マローン ロンドン",
+   "zhs": "祖·玛珑",
+   "zht": "祖·瑪瓏"
+  },
+  {
+   "id": "creed",
+   "ko": "크리드",
+   "en": "Creed",
+   "cat": "beauty",
+   "kq": "크리드",
+   "logo": "creed.svg",
+   "ja": "クリード",
+   "zhs": "克雷德",
+   "zht": "克雷德"
+  },
+  {
+   "id": "penhaligons",
+   "ko": "펜할리곤스",
+   "en": "Penhaligon's",
+   "cat": "beauty",
+   "kq": "펜할리곤스",
+   "logo": "penhaligons.svg",
+   "ja": "ペンハリガン",
+   "zhs": "潘海利根",
+   "zht": "潘海利根"
+  },
+  {
+   "id": "santamarianovella",
+   "ko": "산타마리아노벨라",
+   "en": "Officina Profumo-Farmaceutica di Santa Maria Novella",
+   "cat": "beauty",
+   "kq": "산타마리아노벨라",
+   "logo": "santamarianovella.png",
+   "ja": "サンタ・マリア・ノヴェッラ",
+   "zhs": "圣玛利亚诺维拉",
+   "zht": "聖塔瑪莉亞諾維拉"
+  },
+  {
+   "id": "memoparis",
+   "ko": "메모 파리",
+   "en": "Memo Paris",
+   "cat": "beauty",
+   "kq": "메모 파리",
+   "logo": "memoparis.png",
+   "ja": "メモ パリ",
+   "zhs": "Memo Paris",
+   "zht": "Memo Paris"
+  },
+  {
+   "id": "sisley",
+   "ko": "시슬리",
+   "en": "Sisley Paris",
+   "cat": "beauty",
+   "kq": "시슬리",
+   "logo": "sisley.svg",
+   "ja": "シスレー",
+   "zhs": "希思黎",
+   "zht": "希思黎"
+  },
+  {
+   "id": "cledepeau",
+   "ko": "끌레드뽀 보떼",
+   "en": "Clé de Peau Beauté",
+   "cat": "beauty",
+   "kq": "끌레드뽀 보떼",
+   "logo": "cledepeau.svg",
+   "ja": "クレ・ド・ポー ボーテ",
+   "zhs": "肌肤之钥",
+   "zht": "肌膚之鑰"
+  },
+  {
+   "id": "guerlain",
+   "ko": "겔랑",
+   "en": "Guerlain",
+   "cat": "beauty",
+   "kq": "겔랑",
+   "logo": "guerlain.svg",
+   "ja": "ゲラン",
+   "zhs": "娇兰",
+   "zht": "嬌蘭"
+  },
+  {
+   "id": "esteelauder",
+   "ko": "에스티로더",
+   "en": "ESTĒE LAUDER",
+   "ja": "エスティ ローダー",
+   "zhs": "雅诗兰黛",
+   "zht": "雅詩蘭黛",
+   "alt": [
+    "Estee Lauder",
+    "에스티 로더"
+   ],
+   "cat": "beauty",
+   "kq": "에스티로더",
+   "logo": "esteelauder.png",
+   "lic": "Public domain",
+   "src": "https://commons.wikimedia.org/wiki/File:Logo_Estee_Lauder.jpg"
+  },
+  {
+   "id": "sulwhasoo",
+   "ko": "설화수",
+   "en": "Sulwhasoo",
+   "ja": "雪花秀（ソルファス）",
+   "zhs": "雪花秀",
+   "zht": "雪花秀",
+   "alt": [
+    "ソルファス",
+    "Sulhwasoo"
+   ],
+   "cat": "beauty",
+   "kq": "설화수",
+   "logo": "sulwhasoo.png",
+   "lic": "CC BY 2.5",
+   "src": "https://commons.wikimedia.org/wiki/File:Sulwhasoo-logo-png.png",
+   "by": "Sulwhasoo"
+  },
+  {
+   "id": "amouage",
+   "ko": "아무아쥬",
+   "en": "AMOUAGE",
+   "ja": "アムアージュ",
+   "zhs": "爱慕",
+   "zht": "愛慕",
+   "alt": [
+    "Amouage"
+   ],
+   "cat": "beauty",
+   "kq": "아무아쥬",
+   "logo": "amouage.png",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Amouage_logo.png",
+   "by": "Mariacaminod"
+  },
+  {
+   "id": "lartisanparfumeur",
+   "ko": "라티잔 퍼퓨머",
+   "en": "L'Artisan Parfumeur",
+   "ja": "ラルチザン パフューム",
+   "zhs": "阿蒂仙之香",
+   "zht": "阿蒂仙之香",
+   "alt": [
+    "L'Artisan",
+    "라티잔"
+   ],
+   "cat": "beauty",
+   "kq": "라티잔",
+   "logo": "lartisanparfumeur.png",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:L'Artisan_Parfumeur_logo.jpg",
+   "by": "Suileabhan"
+  },
+  {
+   "id": "lancome",
+   "ko": "랑콤",
+   "en": "Lancôme",
+   "cat": "beauty",
+   "kq": "랑콤",
+   "logo": "lancome.svg",
+   "ja": "ランコム",
+   "zhs": "兰蔻",
+   "zht": "蘭蔻",
+   "alt": [
+    "Lancome",
+    "랑콤 파리",
+    "Lancôme Paris"
+   ]
+  },
+  {
+   "id": "clinique",
+   "ko": "크리니크",
+   "en": "Clinique",
+   "cat": "beauty",
+   "kq": "크리니크",
+   "logo": "clinique.svg",
+   "ja": "クリニーク",
+   "zhs": "倩碧",
+   "zht": "倩碧",
+   "alt": [
+    "Clinique Laboratories",
+    "클리니크"
+   ]
+  },
+  {
+   "id": "mac",
+   "ko": "맥",
+   "en": "M·A·C",
+   "cat": "beauty",
+   "kq": "맥 화장품",
+   "logo": "mac.png",
+   "ja": "M·A·C",
+   "zhs": "魅可",
+   "zht": "M·A·C",
+   "alt": [
+    "MAC",
+    "MAC Cosmetics",
+    "맥 코스메틱",
+    "엠에이씨",
+    "マック",
+    "メイクアップ アート コスメティックス",
+    "魅可"
+   ]
+  },
+  {
+   "id": "bobbibrown",
+   "ko": "바비브라운",
+   "en": "Bobbi Brown",
+   "cat": "beauty",
+   "kq": "바비브라운",
+   "logo": "bobbibrown.png",
+   "ja": "ボビイ ブラウン",
+   "zhs": "芭比波朗",
+   "zht": "芭比波朗",
+   "alt": [
+    "바비 브라운",
+    "보비 브라운",
+    "Bobbi Brown Cosmetics"
+   ]
+  },
+  {
+   "id": "kiehls",
+   "ko": "키엘",
+   "en": "Kiehl's",
+   "cat": "beauty",
+   "kq": "키엘",
+   "logo": "kiehls.svg",
+   "ja": "キールズ",
+   "zhs": "科颜氏",
+   "zht": "契爾氏",
+   "alt": [
+    "Kiehls",
+    "키엘스",
+    "Kiehl's Since 1851"
+   ]
+  },
+  {
+   "id": "skii",
+   "ko": "SK-II",
+   "en": "SK-II",
+   "cat": "beauty",
+   "kq": "SK-II",
+   "logo": "skii.png",
+   "ja": "SK-II",
+   "zhs": "SK-II",
+   "zht": "SK-II",
+   "alt": [
+    "SK2",
+    "SKII",
+    "에스케이투",
+    "에스케이2"
+   ]
+  },
+  {
+   "id": "shiseido",
+   "ko": "시세이도",
+   "en": "Shiseido",
+   "cat": "beauty",
+   "kq": "시세이도",
+   "logo": "shiseido.svg",
+   "ja": "資生堂",
+   "zhs": "资生堂",
+   "zht": "資生堂",
+   "alt": [
+    "SHISEIDO",
+    "しせいどう",
+    "시세이도 긴자"
+   ]
+  },
+  {
+   "id": "nars",
+   "ko": "나스",
+   "en": "NARS",
+   "cat": "beauty",
+   "kq": "나스 화장품",
+   "logo": "nars.png",
+   "ja": "NARS",
+   "zhs": "NARS",
+   "zht": "NARS",
+   "alt": [
+    "NARS Cosmetics",
+    "나스 코스메틱",
+    "ナーズ",
+    "NARS化妆品",
+    "NARS化妝品"
+   ]
+  },
+  {
+   "id": "lauramercier",
+   "ko": "로라메르시에",
+   "en": "Laura Mercier",
+   "cat": "beauty",
+   "kq": "로라메르시에",
+   "logo": "lauramercier.svg",
+   "ja": "ローラ メルシエ",
+   "zhs": "罗拉玛斯亚",
+   "zht": "蘿拉蜜思",
+   "alt": [
+    "로라 메르시에",
+    "Laura Mercier Cosmetics"
+   ]
+  },
+  {
+   "id": "clarins",
+   "ko": "클라랑스",
+   "en": "Clarins",
+   "cat": "beauty",
+   "kq": "클라랑스",
+   "logo": "clarins.svg",
+   "ja": "クラランス",
+   "zhs": "娇韵诗",
+   "zht": "克蘭詩",
+   "alt": [
+    "CLARINS",
+    "克兰诗"
+   ]
+  },
+  {
+   "id": "charlottetilbury",
+   "ko": "샬롯 틸버리",
+   "en": "Charlotte Tilbury",
+   "cat": "beauty",
+   "kq": "샬롯 틸버리",
+   "logo": "charlottetilbury.svg",
+   "ja": "Charlotte Tilbury",
+   "zhs": "Charlotte Tilbury",
+   "zht": "Charlotte Tilbury",
+   "alt": [
+    "샬롯틸버리",
+    "샬럿 틸버리",
+    "CT",
+    "シャーロット・ティルブリー",
+    "シャーロット ティルベリー"
+   ]
+  },
+  {
+   "id": "aesop",
+   "ko": "이솝",
+   "en": "Aesop",
+   "cat": "beauty",
+   "kq": "이솝 화장품",
+   "logo": "aesop.svg",
+   "ja": "イソップ",
+   "zhs": "伊索",
+   "zht": "伊索",
+   "alt": [
+    "Aēsop",
+    "이솝 코스메틱"
+   ]
+  },
+  {
+   "id": "loccitane",
+   "ko": "록시땅",
+   "en": "L'OCCITANE",
+   "cat": "beauty",
+   "kq": "록시땅",
+   "logo": "loccitane.svg",
+   "ja": "ロクシタン",
+   "zhs": "欧舒丹",
+   "zht": "歐舒丹",
+   "alt": [
+    "L'Occitane en Provence",
+    "Loccitane",
+    "록시탄",
+    "록시땅 앙 프로방스"
+   ]
+  },
+  {
+   "id": "moltonbrown",
+   "ko": "몰튼브라운",
+   "en": "Molton Brown",
+   "cat": "beauty",
+   "kq": "몰튼브라운",
+   "logo": "moltonbrown.png",
+   "ja": "モルトンブラウン",
+   "zhs": "Molton Brown",
+   "zht": "Molton Brown",
+   "alt": [
+    "몰튼 브라운",
+    "MOLTON BROWN"
+   ]
+  },
+  {
+   "id": "hera",
+   "ko": "헤라",
+   "en": "HERA",
+   "cat": "beauty",
+   "kq": "헤라 화장품",
+   "logo": "hera.png",
+   "ja": "HERA",
+   "zhs": "赫妍",
+   "zht": "赫妍",
+   "alt": [
+    "HERA Seoul",
+    "헤라 서울",
+    "ヘラ"
+   ],
+   "lic": "CC BY 2.5",
+   "by": "헤라 (HERA)",
+   "src": "https://commons.wikimedia.org/wiki/File:헤라_로고.png"
   }
  ],
  "note": "11-08 사장님 「26개 다 삭제해」 — 로고 없는 브랜드는 목록에서 뺌"
