@@ -1,6 +1,6 @@
 {
- "name": "Money Puzzle Tour for Korea",
- "short_name": "Tour for Korea",
+ "name": "Puzzle Tour for Korea",
+ "short_name": "Puzzle Tour",
  "id": "./",
  "start_url": "./?src=pwa",
  "scope": "./",
