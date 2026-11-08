@@ -127,6 +127,10 @@ $("phIn").onclick=function(){ try{ if(signed()){ if(window.mpPG&&mpPG.logout) mp
 D.addEventListener("mppg",function(){ inPaint(); });   // pg.js 가 로그인·로그아웃 때 알린다
 window.addEventListener("storage",function(e){ if(!e||!e.key||e.key==="mpv_pg_sess") inPaint(); });   // 다른 탭에서 로그인·로그아웃
 setInterval(function(){ inPaint(); },2000);   // 세션이 끝나 다른 화면이 지운 경우(허브 sess 오류)도 맞춘다 — 이 PC 저장소만 읽음
+// 「내 예약」 단추 (11-08 사장님 「로그인·내 예약」, 배치도 12) — #/bookings (home/pc_bk.js) · 로그인 안 했으면 로그인 창부터, 로그인되면 그 화면으로
+var _bkWant=false;
+$("phBk").onclick=function(){ try{ if(signed()){ _bkWant=false; if(window.PCGO) PCGO("bookings"); } else { _bkWant=true; if(window.mpPG) mpPG.open(); } }catch(e){} };
+D.addEventListener("mppg",function(){ if(_bkWant&&signed()){ _bkWant=false; try{ if(window.PCGO) PCGO("bookings"); }catch(e){} } });
 $("phLogo").onclick=function(e){ if(e.ctrlKey||e.metaKey||e.shiftKey||e.button) return; e.preventDefault(); try{ if(location.hash&&window.PCGO) PCGO(""); resetAll(); }catch(x){ window.scrollTo(0,0); } };   // 다른 화면(#/guide 등)이면 첫 화면으로 (11-08 3a)
 
 // ── 그리기 (언어를 바꾸면 다시) ──
