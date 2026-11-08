@@ -25,12 +25,21 @@ var DN6={ko:"여행 일수는 1~"+MAXD+"일로 넣어 주세요 — {n}일로 �
 function nMsg(n){ return gTxt(DN6,{n:n,d:LANG==="es"?n+(n>1?" días":" día"):n+(n>1?" days":" day")}); }
 function nInput(id,attr,n){ return '<input type="number" '+(id?'id="'+id+'" ':'')+(attr||"")+' inputmode="numeric" pattern="[0-9]*" min="1" max="'+MAXD+'" step="1" value="'+(+n||1)+'" enterkeyhint="done">'; }
 var TR=load();
+function opt0(o){ return Object.assign({n:3,start:"",from:"09:30",to:"20:00",walk:1,hotel:null,food:"any",adv:false},o||{}); }
 function load(){ var o=null; try{ o=JSON.parse(localStorage.getItem(KEY)||"null"); }catch(e){} if(!o||!Array.isArray(o.items)) o={items:[]};
-  o.opt=Object.assign({n:3,start:"",from:"09:30",to:"20:00",walk:1,hotel:null,food:"any",adv:false},o.opt||{});
+  o.opt=opt0(o.opt); pastFix(o);
+  // 11-08 내 플랜 여러 개 — 지금 플랜 번호 pid(옛 저장엔 없음 = 1) · 다른 플랜 saved[{id,items,opt,plan,u}] (모양이 틀린 것·같은 번호는 버린다)
+  o.pid=+o.pid||1; var seen={}; seen[o.pid]=1;
+  o.saved=(Array.isArray(o.saved)?o.saved:[]).filter(function(p){ if(!p||typeof p!=="object"||!Array.isArray(p.items)||!(+p.id)||seen[+p.id]) return false; p.id=+p.id; seen[p.id]=1; p.opt=opt0(p.opt); p.plan=p.plan&&Array.isArray(p.plan.days)?p.plan:null; pastFix(p); return true; });
+  plNoFix(o); return o; }
+// 11-08 사장님 「나」 — 플랜 번호는 만들 때 붙인 번호 그대로(플랜 2를 지워도 플랜 3은 플랜 3) · 번호 없는 것(옛 저장)·겹치는 것은 만든 차례대로 빈 번호 다음부터
+function plNoFix(o){ var a=[{id:o.pid,set:function(n){ o.pno=n; },no:+o.pno||0}].concat(o.saved.map(function(p){ return {id:p.id,set:function(n){ p.no=n; },no:+p.no||0}; })).sort(function(x,y){ return x.id-y.id; }), used={}, mx=0;
+  a.forEach(function(x){ if(x.no>0&&!used[x.no]){ used[x.no]=1; mx=Math.max(mx,x.no); } else x.no=0; });
+  a.forEach(function(x){ if(!x.no) x.no=++mx; x.set(x.no); }); }
+function pastFix(o){
   // 11-06 사장님 「2-가」 — 저장된 첫날이 오늘보다 앞(지난 날짜)이면 내일로 옮겨 보여 준다. 짜 둔 일정은 장소 그대로 날짜만 같이 옮기고, 요일이 바뀌니 AI 설명은 다시 받는다
   try{ var td=kstToday(0); if(o.opt.start&&o.opt.start<td){ var ns=kstToday(1), dd=Math.round((Date.parse(ns+"T00:00:00Z")-Date.parse(o.opt.start+"T00:00:00Z"))/864e5); o.opt.start=ns;
-    if(o.plan&&Array.isArray(o.plan.days)){ o.plan.days.forEach(function(d){ if(d&&d.date){ var t=Date.parse(d.date+"T00:00:00Z"); if(isFinite(t)) d.date=new Date(t+dd*864e5).toISOString().slice(0,10); } }); o.plan.ai=null; } } }catch(e){}
-  return o; }   // 11-06 더한 칸(없어도 됨): hotels{도시 id:숙소} · ap{a,d} · pax · hAll
+    if(o.plan&&Array.isArray(o.plan.days)){ o.plan.days.forEach(function(d){ if(d&&d.date){ var t=Date.parse(d.date+"T00:00:00Z"); if(isFinite(t)) d.date=new Date(t+dd*864e5).toISOString().slice(0,10); } }); o.plan.ai=null; } } }catch(e){} }   // 11-06 더한 칸(없어도 됨): hotels{도시 id:숙소} · ap{a,d} · pax · hAll
 var SAVED_H=JSON.stringify(TR.opt&&TR.opt.hotel||null);   // 11-06 사장님 「숙소를 안 잡았는데 잡혀 있다」 — 예전에 저장된 숙소는 이번 여행에서 고른 것으로 보지 않는다
 function hKey(){ var o=TR.opt||{}; return (o.start||"")+"|"+(o.n||1); }
 function hOkNow(){ var o=TR.opt||{}; return !!o.hotel&&o.hOk===hKey(); }
@@ -380,6 +389,58 @@ function refresh(){ var n=TR.items.length, mm=document.getElementById("mm"); var
   if(c){ c.hidden=false; c.className="hic"; c.innerHTML=CARTSVG("24px","display:block")+'<span class="tcn">'+n+'</span>'; c.title=T("내 여행","My trip"); }   // 11-07 사장님 — 옆 아이콘(24px)과 같은 크기 · 바탕 투명(흰 칸 없앰) · 담은 수는 옆에
   flags(); }
 function cartGo(){ if(TR.plan) openReport(); else openPanel(); }   // 11-08 사장님 「이미 짠 일정이 있으면 카트를 눌렀을 때 기존 일정을 보여준다」 — 담은 곳·조건은 일정표 위 「✏ 고치기」
+// ── 내 플랜 여러 개 (사장님 11-08 「나」 — 플랜마다 따로, 날짜가 겹쳐도 된다) ──
+//   지금 플랜 = TR.items·TR.opt·TR.plan(예전 그대로) + TR.pid · 다른 플랜 = TR.saved[{id,items,opt,plan,u:마지막으로 쓴 시각}] → save()·「내 여행」 기기끼리 맞추기가 통째로 같이 나른다
+//   이름은 만든 차례대로 「플랜 1」「플랜 2」… · 지워도 남은 플랜 번호는 그대로(11-08 사장님 「나」) · 새 플랜 = 지금 가장 큰 번호 + 1 · 날짜는 짠 일정의 첫날~끝날(없으면 조건의 첫날·여행 일수)
+//   카트 맨 위·일정표 맨 위에 [플랜 고르기 ▾] [새 플랜] [플랜 삭제] · 「자유 일정」 날마다 [이 날짜로 새 플랜]
+var PL6={nm:{ko:"플랜 {n}",en:"Plan {n}",ja:"プラン{n}",zhs:"方案{n}",zht:"方案{n}",es:"Plan {n}"},
+ sel:{ko:"내 플랜",en:"My plans",ja:"マイプラン",zhs:"我的方案",zht:"我的方案",es:"Mis planes"},
+ nw:{ko:"새 플랜",en:"New plan",ja:"新しいプラン",zhs:"新建方案",zht:"新增方案",es:"Nuevo plan"},
+ del:{ko:"플랜 삭제",en:"Delete plan",ja:"プランを削除",zhs:"删除方案",zht:"刪除方案",es:"Eliminar plan"},
+ day:{ko:"이 날짜로 새 플랜",en:"New plan from this day",ja:"この日から新しいプラン",zhs:"从这天起新建方案",zht:"從這天起新增方案",es:"Nuevo plan desde este día"},
+ q:{ko:"「{p}」의 담은 곳과 일정표를 모두 지울까요?",en:"Delete “{p}”, including its places and schedule?",ja:"「{p}」の追加した場所と日程表をすべて削除しますか？",zhs:"要删除「{p}」的所有地点和行程表吗？",zht:"要刪除「{p}」的所有地點和行程表嗎？",es:"¿Eliminar «{p}» con todos sus lugares y su itinerario?"}};
+function plAll(){ var a=(TR.saved||[]).slice(); a.push({id:TR.pid,no:TR.pno,items:TR.items,opt:TR.opt,plan:TR.plan,cur:1}); return a.sort(function(x,y){ return x.id-y.id; }); }
+function plName(id){ var p=plAll().filter(function(x){ return x.id===id; })[0]; return gTxt(PL6.nm,{n:p&&p.no||1}); }
+function plNoNext(){ return plAll().reduce(function(m,p){ return Math.max(m,+p.no||0); },0)+1; }
+function plDays(p){ return p.plan&&Array.isArray(p.plan.days)&&p.plan.days.length?p.plan.days:null; }
+function plLast(p){ var ds=plDays(p), o=p.opt||{}; if(ds) return ds[ds.length-1].date; var d=new Date((o.start||kstToday(1))+"T00:00:00Z"); d.setUTCDate(d.getUTCDate()+Math.max(1,+o.n||1)-1); return d.toISOString().slice(0,10); }
+function plMD(d){ return LANG==="es"?d.getUTCDate()+"/"+(d.getUTCMonth()+1):(d.getUTCMonth()+1)+"/"+d.getUTCDate(); }   // 스페인어는 일/월
+function plRange(p){ var ds=plDays(p), o=p.opt||{}, a=new Date((ds?ds[0].date:(o.start||kstToday(1)))+"T00:00:00Z"), b=new Date(plLast(p)+"T00:00:00Z"); if(!isFinite(a)||!isFinite(b)) return "";
+  return plMD(a)+(b>a?({ja:"〜",en:"–",es:"–"}[LANG]||"~")+plMD(b):""); }
+function plBar(){ var a=plAll(); return '<div class="trpbar" data-html2canvas-ignore><select class="trpsel" aria-label="'+esc(T5(PL6.sel))+'">'+a.map(function(p,i){ return '<option value="'+p.id+'"'+(p.cur?' selected':'')+'>'+esc(gTxt(PL6.nm,{n:p.no||i+1})+" · "+plRange(p))+'</option>'; }).join("")+'</select>'
+  +'<span class="trpbt"><button type="button" class="trbtn trpnew" data-pnew="1">'+esc(T5(PL6.nw))+'</button><button type="button" class="trbtn" data-pdel="1">'+esc(T5(PL6.del))+'</button></span></div>'; }   // 한 줄에 다 안 들어가면(영어·스페인어) 단추 둘이 같이 아랫줄 오른쪽으로
+function plId(){ var id=Date.now(), a=plAll(); while(a.some(function(p){ return p.id===id; })) id++; return id; }
+function plStash(){ TR.saved=TR.saved||[]; TR.saved.push({id:TR.pid,no:TR.pno,items:TR.items,opt:TR.opt,plan:TR.plan,u:Date.now()}); }
+function plUse(p){ TR.items=Array.isArray(p.items)?p.items:[]; TR.opt=p.opt||opt0(); TR.plan=p.plan||null; TR.pid=p.id; TR.pno=+p.no||1; SAVED_H=JSON.stringify(TR.opt.hotel||null); HLK=null; REPH=null; }   // 숙소를 고른 표시(hOk)는 플랜 것 그대로 — save() 가 다시 매기지 않게
+// 바꾼 뒤 열려 있던 화면을 그 플랜으로 — 일정표가 열려 있었는데 짠 일정이 없으면 카트로 · panel = 카트를 연다(새 플랜)
+function plShow(panel){ try{ refresh(); }catch(e){} try{ nowPaint(); }catch(e){} try{ if(document.getElementById("aipSteps")) stepsPaint(); }catch(e){}
+  var rep=!!document.getElementById("trRep");
+  if(panel||(rep&&!TR.plan)){ sheetClose("trRep"); openPanel(); return; }
+  if(rep){ openReport(); return; }
+  if(document.getElementById("trBox")) panelPaint(); }
+function plSwitch(id){ if(!id||id===TR.pid) return; var S=TR.saved||[], i=-1; S.forEach(function(p,j){ if(p.id===id) i=j; }); if(i<0) return;
+  var nx=S.splice(i,1)[0]; plStash(); plUse(nx); save(); try{ ntap("_trip","plan_sw"); }catch(z){} plShow(); }
+// 「자유 일정」 날 — 일정표 그리기(repPaint0)와 같은 기준: 장소·여러 날 머묾·공항 도착·도시 이동이 없는 날
+function plFree(pl,di){ var d=pl&&pl.days&&pl.days[di]; if(!d||d.md) return false; if((d.stops||[]).some(function(k){ return pl.pool&&pl.pool[k]; })) return false;
+  if(pl.mc){ if(di===0&&pl.ap&&pl.ap.a) return false; if(d.am!=null&&pl.tr&&pl.tr[d.am]) return false; if(d.pm!=null&&pl.tr&&pl.tr[d.pm]) return false; } return true; }
+// 새 플랜 — di = 그 자유 일정 날부터 이어지는 자유 일정 날까지 · di 없음(「새 플랜」 단추) = 맨 뒤 자유 일정 날들, 없으면 끝날 다음 날부터 3일
+//   카트는 비우고 조건은 그대로(숙소·시작/끝나는 시각·걷기·음식·인원…) · 도착 공항은 안 옮김 · 떠나는 공항은 끝날이 같을 때만 · 숙소를 고른 표시는 새 날짜로
+function plNew(di){ var o=TR.opt, pl=TR.plan, ds=plDays({plan:pl}), last=plLast({opt:o,plan:pl}), start, n;
+  if(di==null&&ds){ var j=ds.length; while(j>0&&plFree(pl,j-1)) j--; if(j>0&&j<ds.length) di=j; }
+  if(di!=null&&ds&&ds[di]){ start=ds[di].date; n=0; for(var k=di;k<ds.length&&plFree(pl,k);k++) n++; n=Math.max(1,n); }
+  else { var d=new Date(last+"T00:00:00Z"); d.setUTCDate(d.getUTCDate()+1); start=d.toISOString().slice(0,10); n=3; }
+  var no=JSON.parse(JSON.stringify(o)), e=new Date(start+"T00:00:00Z"); e.setUTCDate(e.getUTCDate()+n-1);
+  no.start=start; no.n=n; no.ap=Object.assign({},no.ap||{}); no.ap.a=null; if(e.toISOString().slice(0,10)!==last) no.ap.d=null;
+  no.hOk=(no.hotel&&hOkNow())?start+"|"+n:"";
+  var nn=plNoNext(); plStash(); plUse({id:plId(),no:nn,items:[],opt:no,plan:null}); save(); try{ ntap("_trip","plan_new"); }catch(z){} plShow(1); }
+// 플랜 삭제 — 한 번 묻고, 남은 플랜 가운데 가장 최근에 쓴 것을 연다 · 마지막 하나였으면 빈 플랜(기본 조건)
+function plDel(){ if(!confirm(gTxt(PL6.q,{p:plName(TR.pid)}))) return; var S=TR.saved||[];
+  if(S.length){ var b=0; S.forEach(function(p,j){ if((p.u||0)>(S[b].u||0)) b=j; }); plUse(S.splice(b,1)[0]); }
+  else plUse({id:plId(),no:1,items:[],opt:opt0(),plan:null});
+  save(); try{ ntap("_trip","plan_del"); }catch(z){} plShow(); }
+document.addEventListener("change",function(e){ var s=e.target.closest&&e.target.closest("#trBox .trpsel,#trRep .trpsel"); if(!s) return; plSwitch(+s.value); });
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trBox [data-pnew],#trRep [data-pnew],#trBox [data-pdel],#trRep [data-pdel],#trRep [data-pnd]"); if(!a) return; e.preventDefault(); if(typeof DG!=="undefined"&&DG) return;
+  if(a.dataset.pdel) plDel(); else if(a.dataset.pnd!=null) plNew(+a.dataset.pnd); else plNew(null); });
 // 카트 아이콘 = 구글 Material Symbols 「shopping_cart」(Apache 2.0, github.com/google/material-design-icons) 경로 그대로 (사장님 11-05) — 머리줄 카트·AI와 일정짜기 화면·안내 창이 같이 쓴다
 function CARTSVG(sz,st){ return '<svg class="cartic" viewBox="0 -960 960 960" width="'+sz+'" height="'+sz+'" fill="currentColor" aria-hidden="true" style="display:inline-block;'+(st||"")+'"><path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z"/></svg>'; }
 window.CARTSVG=CARTSVG;
@@ -409,10 +470,12 @@ function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) 
     +HOTELS.map(function(h){ return '<option value="'+esc(h.k)+'"'+(o.hotel&&o.hotel.k===h.k?" selected":"")+'>🏨 '+esc(nm(h))+'</option>'; }).join("")
     +(o.hotel&&o.hotel.type==="addr"?'<option value="__addr" selected>'+esc(hotelTxt(o.hotel))+'</option>':"")+'</select>';
   box.innerHTML='<div class="trtop"><b>'+MPICO("mi_cart",T("🛒 내 여행","🛒 My trip"),MIS)+' ('+n+')</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trBox\')">✕</button></div>'
+    +plBar()   // 11-08 내 플랜 고르기·새 플랜·플랜 삭제
     +(TR.plan?'<button type="button" class="trbtn" id="trOpenRep" style="margin:0 0 8px">'+MPICO("mi_doc",T5({ko:"📄 내 일정 보기",en:"📄 My plan",ja:"📄 私の日程を見る",zhs:"📄 查看我的行程",zht:"📄 查看我的行程",es:"📄 Ver mi plan"}),MIS)+'</button>':"")   // 11-07 사장님 — 맨 위로 옮기고 「지난 일정 보기」 → 「내 일정 보기」 (짜 둔 일정을 연다 · 다시 짜면 덮어씀)
     +(!sySess()?'<div class="trsync">'+esc(T5(SYL6.q))+'<button type="button" class="trbtn pri" id="trLogin">'+esc(T5(SYL6.b))+'</button></div>':'')
     +(n?(HLK&&has(HLK)?'<div class="trhln">'+esc(gTxt(CK6.hl,{p:nm(TR.items.filter(function(x){ return x.k===HLK; })[0])}))+'</div>':'')+'<ol class="trl" id="trList">'+li+'</ol><button type="button" class="trbtn" id="trClearAll" style="margin:6px 0">'+T("🗑 모두 비우기","🗑 Clear all")+'</button><div class="d">'+esc(T5(CK6.hint))+'</div>'
-      :'<div class="msg">'+T("아직 담은 곳이 없어요. 지도에서 그림을 누르고 「＋ 내 여행에 담기」를 누르세요.","Nothing added yet. Tap a picture on the map, then “＋ Add to my trip”.")+'</div>')
+      :'<div class="msg">'+esc(T5(PS8.empty))+'</div>')
+    +psCartBox()   // 11-08 사장님 「검색으로 완전히 새로운 장소나 액티비티」 — 카트에서도 찾아 담기
     +'<div class="trf2"><label>'+T("여행 일수","Days")+nInput("trN","",o.n)+'<span class="d trnm" id="trNm" hidden></span></label>'
     +'<label>'+T("첫날","First day")+'<input type="date" id="trStart" value="'+esc(o.start||kstToday(1))+'"></label>'
     +'<label>'+T("시작 시각","Start")+'<input type="time" id="trFrom" value="'+esc(o.from)+'"></label>'
@@ -435,7 +498,7 @@ function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) 
   g("trFood").onchange=function(){ o.food=this.value; save(); }; g("trAdv").onchange=function(){ o.adv=this.checked; save(); };
   if(g("trHotel")) g("trHotel").onchange=function(){ var v=this.value; if(!v) o.hotel=null; else if(v==="__here") o.hotel={type:"here"}; else if(v!=="__addr"){ var h=HOTELS.filter(function(x){ return x.k===v; })[0]; if(h) o.hotel={type:"place",k:h.k,ko:h.ko,en:h.en,lat:h.lat,lng:h.lng}; } save(); };
   if(g("trAddrGo")){ g("trAddrGo").onclick=addrSearch; g("trAddrQ").onkeydown=function(e){ if(e.key==="Enter"){ e.preventDefault(); addrSearch(); } }; }
-  g("trPlan").onclick=planGo; g("trPlanS").onclick=planSights; if(g("trOpenRep")) g("trOpenRep").onclick=function(){ openReport(); };
+  g("trPlan").onclick=planGo; g("trPlanS").onclick=planSights; psCartWire(g); if(g("trOpenRep")) g("trOpenRep").onclick=function(){ openReport(); };
   [].forEach.call(box.querySelectorAll(".trx"),function(b){ b.onclick=function(){ if(b.dataset.k===HLK) HLK=null; delItem(b.dataset.k); panelPaint(); }; });
   // 머무는 시간 칸 — 고른 값 그대로(um). 짜 둔 일정이 있으면 그 일정의 같은 장소도 같은 값으로 바꾸고 「다시 검사」 표시(AI 다시 안 부름)
   [].forEach.call(box.querySelectorAll(".trsl"),function(s){ s.onchange=function(){ var k=s.dataset.k, it=TR.items.filter(function(x){ return x.k===k; })[0], m=+s.value; if(!it) return;
@@ -1004,6 +1067,7 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
   if(!mp&&!GEOST&&typeof myPos==="function"){ GEOST="ask"; myPos().then(function(q){ GEOST=q?"ok":"fail"; GEO=q||null; if(q&&document.getElementById("trRep")) repPaint(); else { [].forEach.call(document.querySelectorAll("#trRep .tnost"),function(e){ e.hidden=false; }); } }); }   // 폰 안에서만 한 번 묻는다
   var hn=pl.hotel?(pl.hotel.type==="here"?T("현재 위치","Current location"):nm(pl.hotel)):"";
   var h='<div class="trtop" data-html2canvas-ignore><b>'+MPICO("mi_cart",T("🛒 내 여행 일정","🛒 My trip plan"),MIS)+'</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trRep\')">✕</button></div>'
+    +plBar()   // 11-08 내 플랜 고르기·새 플랜·플랜 삭제
     +'<div class="trbar" data-html2canvas-ignore><button type="button" class="trbtn" id="trNext">'+T("➡ 다음 갈 곳","➡ Next stop")+'</button><button type="button" class="trbtn" id="trPdf">'+MPICO("mi_device",T5(SAVE6),MIS)+'</button><button type="button" class="trbtn" id="trMail">'+MPICO("mi_doc",T5(MAIL6),MIS)+'</button><button type="button" class="trbtn" id="trShare">'+SHSVG+T("공유","Share")+'</button><button type="button" class="trbtn" id="trEdit">'+T("✏ 고치기","✏ Edit")+'</button><button type="button" class="trbtn ib" id="trInfo" aria-label="info">ⓘ</button></div>'
     +'<div id="trNextBox" data-html2canvas-ignore></div>'
     +(pl.days.some(function(d){ return d.stops.length; })?'<div class="d tdhint" data-html2canvas-ignore>'+esc(T5(DGC()?DG6.hT:DG6.hM))+'</div>':'')   // 11-08 끌어 옮기기 안내
@@ -1032,7 +1096,7 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
     h+='<div class="tday" data-d="'+di+'"><div class="tdh"><span>'+T((di+1)+"일차",'Day '+(di+1))+'</span> · '+esc(dateTxt(dt))+(cty?'<b class="tcty">'+esc(cty)+'</b>':'')+(np?'<em class="tsum">'+esc(gTxt(DG6.sum,{n:np,a:m2hm(a00),b:m2hm(b00)}))+'</em>':'')+'</div>';
     if(arr.length) h+=tdBar(di,d.date===kstToday(0));
     var tam=d.am!=null&&pl.tr?pl.tr[d.am]:null; if(tam&&tam.fl&&tam.b>=0&&pl.cities[tam.b]) h+='<div class="tmemo ti" style="margin:2px 0 6px">'+esc(gTxt(PM6.n,{c:cnm(pl.cities[tam.b])}))+'</div>';   // 11-08 사장님 「모든 날에 보이게 해줘」 — 날마다 [진행] [하루 미루기] [일정 취소] (오늘은 초록 칸 「오늘 일정」, 다른 날은 작은 단추만)
-    if(!arr.length&&!pre&&!(Q.post&&Q.post.tr)){ h+='<div class="d" style="padding:6px 0">'+esc(T5({ko:"자유 일정",en:"Free day",ja:"自由行動",zhs:"自由活动",zht:"自由活動",es:"Día libre"}))+'</div>'+(Q.post&&Q.post.rows.length?'<div class="trows">'+natPostHtml(pl,di,X,Q.post,null)+'</div>':'')+eveHtml(pl,d,di,s,X,Q.lim)+'</div>'; return; }   // 11-08 남는 날도 「일정 추가」 칸
+    if(!arr.length&&!pre&&!(Q.post&&Q.post.tr)){ h+='<div class="tfree"><span class="d">'+esc(T5({ko:"자유 일정",en:"Free day",ja:"自由行動",zhs:"自由活动",zht:"自由活動",es:"Día libre"}))+'</span><button type="button" class="trbtn" data-pnd="'+di+'" data-html2canvas-ignore>'+esc(T5(PL6.day))+'</button></div>'+(Q.post&&Q.post.rows.length?'<div class="trows">'+natPostHtml(pl,di,X,Q.post,null)+'</div>':'')+eveHtml(pl,d,di,s,X,Q.lim)+'</div>'; return; }   // 11-08 남는 날도 「일정 추가」 칸
     if(aiTx(a)) h+='<div class="tai">'+esc(aiTx(a))+'</div>';
     if(lv) h+='<div class="tlvn" data-html2canvas-ignore>'+esc(T5(LV6.pred))+'</div>';
     h+=(arr.length?'<div class="tmap" id="tmap'+di+'"></div>':'')+'<div class="trows">';
@@ -1502,7 +1566,8 @@ function insOpen(o){ var pl=TR.plan; if(!pl||!pl.days[o.di]||!o.item) return; IN
 function insPrev(pl,o,pos,stay){ return withLC(function(){ var X=dayX(pl,o.di,REPH||pl.H||null), arr=X.arr, mo=moX(o.di,X), cur=sched(X.H,arr,X.dt,X.from,mo), it=Object.assign({},o.item,{stay:stay}), tr=arr.slice(0,pos).concat([it],arr.slice(pos)), s=sched(X.H,tr,X.dt,X.from,mo), lim=dayLim(pl,pl.days[o.di],X.H,tr,X.dt,X);
   var d0=pl.days[o.di], nt=lim>((d0.gap&&d0.gap.until)||X.to||pl.to);   // 밤 장소 날은 기준 시각 없이 (11-07)
   return esc(gTxt(CK6.iPrev,{e:m2hm(s.end),c:m2hm(cur.end)}))+(s.end>lim?' <b class="insov">⚠ '+esc(nt?gTxt(hE(X.H)?CK6.overN:CK6.overN2,{e:m2hm(s.end)}):gTxt(CK6.iOver,{t:m2hm(lim)}))+'</b>':''); }); }
-function insPaint(){ var b=document.getElementById("trIns"), pl=TR.plan, o=INS; if(!b||!pl||!o||!pl.days[o.di]){ if(b) b.remove(); return; } if(o.post){ insPaintPost(b,pl,o); return; }   // 11-08 도착 후 일정 var X=dayX(pl,o.di,REPH||pl.H||null), arr=X.arr, it=o.item;
+function insPaint(){ var b=document.getElementById("trIns"), pl=TR.plan, o=INS; if(!b||!pl||!o||!pl.days[o.di]){ if(b) b.remove(); return; } if(o.post){ insPaintPost(b,pl,o); return; }   // 11-08 도착 후 일정
+  var X=dayX(pl,o.di,REPH||pl.H||null), arr=X.arr, it=o.item;
   var s0=b.querySelector("#tiPos"), s1=b.querySelector("#tiStay"), pos=s0?+s0.value:o.pos, stay=s1?+s1.value:o.stay;   // 언어를 바꿔 다시 그릴 때 고른 값 그대로
   var ud0=(s1&&/^d\d+$/.test(s1.value))?+s1.value.slice(1):0;   // 11-08 일 단위 (템플스테이 등)
   if(!(pos>=0&&pos<=arr.length)) pos=arr.length; if(!(stay>0)) stay=o.kind==="eat"?60:stayOf(it);
@@ -1657,6 +1722,48 @@ function pmFlipAll(pl,H){ if(!pl||!pl.mc||!Array.isArray(pl.tr)) return; withLC(
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-pmam]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var pl=TR.plan, di=+a.dataset.pmam; if(!pl) return;
   var tr=pl.days[di]&&pl.days[di].pm!=null?pl.tr[pl.days[di].pm]:null, cn=tr&&tr.b>=0&&pl.cities[tr.b]?cnm(pl.cities[tr.b]):"";
   if(!pmFlip(pl,di,REPH||pl.H||null)) return; try{ ntap("_trip","pm_to_am"); }catch(z){} pl.chk=0; save(); repPaint(); lgToast(gTxt(PM6.d,{c:cn})); },true);
+// ── 11-08 사장님 「검색으로 완전히 새로운 장소나 액티비티를 찾는 건 불가하네?」 「가」 — 장소 검색 (허브 /kplace — 카카오 키워드, 기준점이 있으면 가까운 순)
+//   「일정 추가」 창 맨 위: 찾은 곳 [고르기] → 넣기 전 확인 창 → 그날에만 끼워 넣음(짜 둔 일정은 그대로) · 카트: 찾은 곳 [＋ 담기] → 카트에 담음(지도에서 담기와 같음)
+var PS8={ph:{ko:"장소·액티비티 찾기 (예: 롯데월드, 한강 유람선)",en:"Search places & activities (e.g. Lotte World, Han River cruise)",ja:"場所・アクティビティを探す（例：ロッテワールド、漢江クルーズ）",zhs:"搜索地点和活动（例：乐天世界、汉江游船）",zht:"搜尋地點和活動（例：樂天世界、漢江遊船）",es:"Buscar lugares y actividades (p. ej., Lotte World, crucero por el río Han)"},
+ ing:{ko:"찾는 중…",en:"Searching…",ja:"検索中…",zhs:"搜索中…",zht:"搜尋中…",es:"Buscando…"},
+ none:{ko:"찾은 곳이 없어요",en:"No results",ja:"見つかりませんでした",zhs:"没有找到",zht:"沒有找到",es:"Sin resultados"},
+ err:{ko:"잠시 뒤 다시 해 주세요",en:"Please try again shortly",ja:"少ししてからもう一度お試しください",zhs:"请稍后再试",zht:"請稍後再試",es:"Inténtalo de nuevo en un momento"},
+ res:{ko:"검색 결과",en:"Search results",ja:"検索結果",zhs:"搜索结果",zht:"搜尋結果",es:"Resultados"},
+ near:{ko:"근처 지도 명소",en:"Sights on the map nearby",ja:"近くの地図の名所",zhs:"附近地图上的景点",zht:"附近地圖上的景點",es:"Lugares del mapa cercanos"},
+ nn:{ko:"근처에 지도 그림 명소가 없어요. 위 검색창으로 찾아 보세요.",en:"No pictured sights nearby. Try the search box above.",ja:"近くに地図のイラスト名所がありません。上の検索欄で探してみてください。",zhs:"附近没有地图上的插画景点。请用上方搜索框查找。",zht:"附近沒有地圖上的插畫景點。請用上方搜尋框查找。",es:"No hay lugares ilustrados cerca. Prueba con el buscador de arriba."},
+ add:{ko:"＋ 담기",en:"+ Add",ja:"＋ 追加",zhs:"＋ 加入",zht:"＋ 加入",es:"+ Añadir"},
+ inP:{ko:"✓ {d}에 있음",en:"✓ In {d}",ja:"✓ {d}にあり",zhs:"✓ 已在{d}",zht:"✓ 已在{d}",es:"✓ En {d}"},
+ got:{ko:"✓ 담김",en:"✓ Added",ja:"✓ 追加済み",zhs:"✓ 已加入",zht:"✓ 已加入",es:"✓ Añadido"},
+ addD:{ko:"「{p}」 담았어요",en:"Added “{p}”",ja:"「{p}」を追加しました",zhs:"已加入「{p}」",zht:"已加入「{p}」",es:"Se añadió «{p}»"},
+ empty:{ko:"아직 담은 곳이 없어요. 아래 검색창으로 찾거나, 지도에서 그림을 누르고 「＋ 내 여행에 담기」를 누르세요.",en:"Nothing added yet. Search below, or tap a picture on the map and then “＋ Add to my trip”.",ja:"まだ何も追加していません。下の検索欄で探すか、地図の絵を押して「＋ 旅行に追加」を押してください。",zhs:"还没有加入任何地点。请用下方搜索框查找，或点地图上的插画再点「＋ 加入我的旅行」。",zht:"還沒有加入任何地點。請用下方搜尋框查找，或點地圖上的插畫再點「＋ 加入我的旅行」。",es:"Aún no has añadido nada. Busca abajo, o toca un dibujo del mapa y luego «＋ Añadir a mi viaje»."}};
+function psSearch(q,A,cb){ q=String(q||"").trim(); if(!q){ cb([]); return; } var u=HUB+"/kplace?q="+encodeURIComponent(q)+(A&&isFinite(+A.lat)?"&near=1&ux="+(+A.lng).toFixed(3)+"&uy="+(+A.lat).toFixed(3):"")+kpL();
+  fetch(u).then(function(r){ return r.json(); }).then(function(j){ cb((j&&j.ok&&j.items)||[]); }).catch(function(){ cb(null); }); }
+function psItem(x){ var lat=+x.y, lng=+x.x, it={k:pinKey({ko:x.name,lat:lat,lng:lng}),ko:x.name,en:x.name_en||x.name,lat:lat,lng:lng,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",cat:x.cat||"",pin:1}; it.stay=stayOf(it); return it; }
+function psRow(x,A,btn){ var en=L()&&x.name_en, nmx=en?x.name_en:x.name, ct=String((L()&&x.cat_en)||x.cat||"").split(">").pop().trim(), dk=A&&isFinite(+x.y)?km(A,{lat:+x.y,lng:+x.x}):null;
+  return '<div class="efi"><div><b>'+esc(nmx)+'</b>'+(ct?' <i>'+esc(ct)+'</i>':'')+(dk!=null?' <i>· '+esc(dk<1?Math.round(dk*1000)+" m":dk.toFixed(1)+" km")+'</i>':'')+'</div><div class="d" style="font-size:12px">'+esc((L()&&x.addr_en)||x.addr||"")+'</div><div class="tgr" style="justify-content:flex-end">'+btn+'</div></div>'; }
+function psList(S,A,btnOf){ if(S.busy) return '<div class="d" style="margin:6px 0">'+esc(T5(PS8.ing))+'</div>'; if(S.r==null) return S.er?'<div class="d" style="margin:6px 0">'+esc(T5(PS8.err))+'</div>':'';
+  if(!S.r.length) return '<div class="d" style="margin:6px 0">'+esc(T5(PS8.none))+'</div>'; return '<div class="psh">'+esc(T5(PS8.res))+'</div>'+S.r.slice(0,10).map(function(x,i){ return psRow(x,A,btnOf(x,i)); }).join(""); }
+function psInput(id,go,v){ return '<div class="trsr psr"><input id="'+id+'" enterkeyhint="search" placeholder="'+esc(T5(PS8.ph))+'" value="'+esc(v||"")+'"><button type="button" class="tb" id="'+go+'" aria-label="search">'+MPIMG("mi_search","height:1.2em;width:auto;vertical-align:-0.2em;margin:0")+'</button></div>'; }
+// 카트
+var PSC={q:"",r:null,busy:0,er:0};
+function psCartA(){ var h=TR.opt&&TR.opt.hotel; if(h&&isFinite(+h.lat)&&h.type!=="here") return {lat:+h.lat,lng:+h.lng}; var it=TR.items.filter(function(x){ return isFinite(+x.lat); })[0]; return it?{lat:+it.lat,lng:+it.lng}:null; }
+function psCartBox(){ var A=psCartA(); return '<div class="psbox">'+psInput("psQc","psGoC",PSC.q)+'<div id="psRc">'+psList(PSC,A,function(x){ var it=psItem(x); return has(it.k)?'<span class="d">'+esc(T5(PS8.got))+'</span>':'<button type="button" class="trbtn" data-psa="'+esc(it.k)+'">'+esc(T5(PS8.add))+'</button>'; })+'</div></div>'; }
+function psCartWire(g){ var q=g("psQc"), b=g("psGoC"); if(!q||!b) return; var go=function(){ PSC.q=q.value.trim(); if(!PSC.q) return; PSC.busy=1; PSC.r=null; PSC.er=0; panelPaint(); try{ ntap("_trip","cart_search"); }catch(z){}
+    psSearch(PSC.q,psCartA(),function(L){ PSC.busy=0; PSC.r=L; PSC.er=L?0:1; if(document.getElementById("trBox")) panelPaint(); }); };
+  b.onclick=go; q.onkeydown=function(e){ if(e.key==="Enter"){ e.preventDefault(); go(); } }; }
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trBox [data-psa]"); if(!a) return; e.preventDefault(); var x=(PSC.r||[]).filter(function(y){ return psItem(y).k===a.dataset.psa; })[0]; if(!x) return;
+  var it=psItem(x); delete it.stay; addItem(it); try{ panelPaint(); }catch(z){} lgToast(gTxt(PS8.addD,{p:nm(it)})); },true);
+// 「일정 추가」 창
+function gcAnchor(pl,o){ if(o.post) return postAnchor(pl,o.di); var X=dayX(pl,o.di,REPH||pl.H||null), arr=X.arr, P0=(o.pos!=null&&o.pos>=0&&o.pos<arr.length)?o.pos:arr.length; return arr[P0-1]||arr[arr.length-1]||hE(X.H)||hS(X.H)||null; }
+function psGcBox(o,Lc){ var A=null; try{ A=gcAnchor(TR.plan,o); }catch(e){} o.ps=o.ps||{q:"",r:null,busy:0,er:0};
+  var pl=TR.plan, inD=function(k){ for(var q=0;q<pl.days.length;q++){ var d=pl.days[q]; if(d.stops.indexOf(k)>=0||(d.post||[]).indexOf(k)>=0) return q; } return -1; };   // 이미 일정에 있는 곳은 「✓ ○일차에 있음」
+  return psInput("psQg","psGoG",o.ps.q)+psList(o.ps,A,function(x,i){ var q=inD(psItem(x).k); return q>=0?'<span class="d">'+esc(gTxt(PS8.inP,{d:dLbl(q)}))+'</span>':'<button type="button" class="trbtn pri" data-gsp="'+i+'">'+esc(T5(CK6.pick))+'</button>'; })+(Lc.length?'<div class="psh">'+esc(T5(PS8.near))+'</div>':'<div class="d" style="margin:8px 0">'+esc(T5(PS8.nn))+'</div>'); }
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trGc #psGoG, #trGc [data-gsp]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var o=GCS, pl=TR.plan; if(!o||!pl||!pl.days[o.di]) return; o.ps=o.ps||{q:"",r:null,busy:0,er:0};
+  if(a.id==="psGoG"){ var q=document.getElementById("psQg"); o.ps.q=q?q.value.trim():""; if(!o.ps.q) return; o.ps.busy=1; o.ps.r=null; o.ps.er=0; gcPaint(); try{ ntap("_trip","gc_search"); }catch(z){}
+    var A=null; try{ A=gcAnchor(pl,o); }catch(z){} psSearch(o.ps.q,A,function(L){ if(GCS!==o) return; o.ps.busy=0; o.ps.r=L; o.ps.er=L?0:1; gcPaint(); }); return; }
+  var x=(o.ps.r||[])[+a.dataset.gsp]; if(!x) return; var it=psItem(x), X=dayX(pl,o.di,REPH||pl.H||null);
+  insOpen({di:o.di,kind:"place",pos:o.post?(pl.days[o.di].post||[]).length:(o.pos!=null&&o.pos>=0&&o.pos<X.arr.length)?o.pos:X.arr.length,item:it,stay:it.stay,post:o.post}); },true);
+document.addEventListener("keydown",function(e){ if(e.key!=="Enter"||!e.target||e.target.id!=="psQg") return; e.preventDefault(); var b=document.getElementById("psGoG"); if(b) b.click(); },true);
 // 넣기 — 그날 그 자리에 · 카트에도 같은 자리에(앞 장소 다음) · 다시 검사
 function insStop(pl,di,pos,it,stay){ var d=pl.days[di]; if(!d||!it||!it.k) return false; var k=it.k; if(d.stops.indexOf(k)>=0) return false;
   var arr=d.stops.filter(function(q){ return pl.pool[q]; });
@@ -1834,12 +1941,12 @@ function gcCands(pl,di,until,pos,gp,post){ if(post) return gcCandsPost(pl,di); v
     else c.fit=s.end<=until&&s.viol===0; });
   return out; }
 function gcOpen(di,until,pos,gp,post){ var pl=TR.plan; if(!pl||!pl.days[di]) return; GCS={di:di,until:until,pos:pos,gp:gp||null,post:post?1:0}; var L0=withLC(function(){ return gcCands(pl,di,until,pos,gp,post); });
-  if(!L0.length){ var d=pl.days[di]; if(d.gap&&d.gap.until){ d.gap.none=1; save(); repPaint(); } else lgToast(T5(GX.none)); return; }
+  // 11-08 근처 그림 명소가 없어도(빈 시간 카드 포함) 창은 연다 — 맨 위 검색창으로 찾게
   var old=document.getElementById("trGc"); if(old) old.remove(); var b=document.createElement("div"); b.id="trGc"; b.className="trpop"; b.onclick=function(e){ if(e.target===b) b.remove(); };
   b._rb=gcPaint; document.body.appendChild(b); gcPaint(); }
 function gcPaint(){ var b=document.getElementById("trGc"), pl=TR.plan, o=GCS; if(!b||!pl||!o||!pl.days[o.di]){ if(b) b.remove(); return; } var Lc=withLC(function(){ return gcCands(pl,o.di,o.until,o.pos,o.gp,o.post); }); o.list=Lc;
   var dt=new Date(pl.days[o.di].date+"T00:00:00Z"), mid=o.pos!=null&&o.pos>=0&&o.pos<dayX(pl,o.di,REPH||pl.H||null).arr.length;   // 장소 사이에 넣을 때는 「빈 시간 바로 앞 장소 근처」 (11-07)
-  b.innerHTML='<div class="efbox"><button type="button" class="ppx" aria-label="'+esc(T5(PP6.x))+'" data-gcx="1">✕</button><div class="talh" style="color:var(--ink);margin-right:34px">'+MPIMG("mi_moon",MIS)+esc(gTxt(CK6.gT,{d:dLbl(o.di)+" · "+dateTxt(dt)}))+'</div><div class="d" style="margin:2px 0 8px;line-height:1.5">'+esc(T5(mid?CK6.gI2:CK6.gI))+'</div>'
+  b.innerHTML='<div class="efbox"><button type="button" class="ppx" aria-label="'+esc(T5(PP6.x))+'" data-gcx="1">✕</button><div class="talh" style="color:var(--ink);margin-right:34px">'+MPIMG("mi_moon",MIS)+esc(gTxt(CK6.gT,{d:dLbl(o.di)+" · "+dateTxt(dt)}))+'</div><div class="d" style="margin:2px 0 8px;line-height:1.5">'+esc(T5(mid?CK6.gI2:CK6.gI))+'</div>'+psGcBox(o,Lc)
     +Lc.map(function(c,i){ var dd=c.d<1?Math.round(c.d*1000)+" m":c.d.toFixed(1)+" km";
       return '<div class="efi"><div><b>'+esc(nm(c.x))+'</b> <i>'+esc(kindL(c.x))+' · '+esc(gTxt(CK6.km,{d:dd}))+(isNight(c.x)?' · '+esc(T("밤 추천","Best at night")):'')+'</i></div><div class="efm">'+esc(durTxt(c.x.stay))+' · '+(o.post?(c.fit?esc(gTxt(c.ap?PO6.ap:c.hot?PO6.hot:PO6.end,{t:m2hm(c.end)})):'<b style="color:#c2410c">'+esc(gTxt(PO6.late,{t:m2hm(c.by)}))+'</b>'):c.fit?esc(o.gp?gTxt(FX6.mOk,{t:m2hm(c.at)}):gTxt(hE(dayX(pl,o.di,REPH||pl.H||null).H)?CK6.gFit:CK6.gFit2,{e:m2hm(c.end)})):'<b style="color:#c2410c">'+esc(gTxt(CK6.gNo,{t:m2hm(o.until)}))+'</b>')+'</div>'
         +'<div class="tgr"><button type="button" class="trbtn" data-gcd="'+i+'">'+esc(T5(CK6.det))+'</button><button type="button" class="trbtn pri" data-gcp="'+i+'">'+esc(T5(CK6.pick))+'</button></div></div>'; }).join("")+'</div>'; }
@@ -2144,7 +2251,8 @@ function fromShare(z){ return unzip(z).then(function(s){ var o=JSON.parse(s); if
       it.stay=stayOf(it); pool[it.k]=it; items.push(it); ks.push(it.k); }); days.push(ks); });
     if(TR.items.length&&!confirm(T("받은 일정으로 바꿀까요? (지금 담은 목록은 바뀝니다)","Replace your current trip with the shared plan?"))) return false;
     var h=Array.isArray(o.h)?{type:"addr",ko:String(o.h[0]).slice(0,80),en:String(o.h[1]).slice(0,80),lat:+o.h[2],lng:+o.h[3]}:null;
-    TR={items:items.map(function(x){ var y=Object.assign({},x); delete y.stay; return y; }),opt:{n:days.length,start:o.s,from:o.f,to:o.t,walk:+o.w||1,hotel:h}};
+    var sv0=TR.saved||[], pid0=TR.pid||1, pno0=TR.pno||1;   // 11-08 내 플랜 — 받은 일정은 지금 플랜 자리에 · 다른 플랜은 그대로
+    TR={items:items.map(function(x){ var y=Object.assign({},x); delete y.stay; return y; }),opt:{n:days.length,start:o.s,from:o.f,to:o.t,walk:+o.w||1,hotel:h},pid:pid0,pno:pno0,saved:sv0};
     TR.plan={v:1,ord:1,at:Date.now(),from:hm2m(o.f)||570,to:hm2m(o.t)||1200,hotel:h,days:days.map(function(ks,i){ return {date:dayDate(i).toISOString().slice(0,10),stops:ks}; }),pool:pool,skip:[],ai:null};   // ord = 받은 순서 그대로(숙소를 바꿔도 안 섞음, 11-07)
     TR.plan.H=h?{k:"__hotel",ko:h.ko,en:h.en,lat:h.lat,lng:h.lng,hotel:1}:null;
     if(o.x&&typeof o.x==="object"){ try{ natFromShare(TR.plan,o.x); }catch(e){ try{ console.error(e); }catch(z){} } }
@@ -2864,7 +2972,7 @@ function lgToast(t){ var o=document.createElement("div"); o.className="tlgtoast"
 document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("#trRep [data-hpick]"); if(!b) return; e.preventDefault(); var pl=TR.plan; if(!pl) return; var ci=b.dataset.hpick===""?null:+b.dataset.hpick; lodgeFor(pl,+b.dataset.hd,ci); },true);
 
 // ══ 「AI일정짜기」 화면 3단계 (사장님 11-06) — ① 항공편 ② 첫날 숙소(「여행 내내 이 숙소」) ③ AI와 일정짜기(reco.js 지금 화면 그대로) · 건너뛸 수 있고, 이미 예약했으면 「있어요 — 입력」 ══
-var ST6={rst:{ko:"처음부터 다시",en:"Start over",ja:"最初からやり直す",zhs:"从头开始",zht:"從頭開始",es:"Empezar de nuevo"},rstQ:{ko:"이 폰에 담은 장소·일정·숙소·항공 정보를 모두 지우고 처음부터 다시 시작할까요?",en:"Clear the places, plan, lodging and flight info saved on this phone and start over?",ja:"このスマホに保存した場所・旅程・宿・航空情報をすべて消して、最初からやり直しますか？",zhs:"要清除这部手机上保存的地点、行程、住宿和航班信息，从头开始吗？",zht:"要清除這支手機上儲存的地點、行程、住宿和航班資訊，從頭開始嗎？",es:"¿Borrar los lugares, el plan, el alojamiento y los vuelos guardados en este teléfono y empezar de nuevo?"},prev:{ko:"지난번 숙소: {h}",en:"Your earlier lodging: {h}",ja:"前回の宿: {h}",zhs:"上次的住宿: {h}",zht:"上次的住宿: {h}",es:"Alojamiento anterior: {h}"},useP:{ko:"이 숙소로",en:"Use this one",ja:"この宿にする",zhs:"就住这里",zht:"就住這裡",es:"Usar este"},otherP:{ko:"다른 숙소 찾기",en:"Find another",ja:"別の宿を探す",zhs:"找其他住宿",zht:"找其他住宿",es:"Buscar otro"},s1:{ko:"① 항공편 예약",en:"① Book flights",ja:"① 航空券の予約",zhs:"① 预订机票",zht:"① 預訂機票",es:"① Reserva tus vuelos"},
+var ST6={rst:{ko:"처음부터 다시",en:"Start over",ja:"最初からやり直す",zhs:"从头开始",zht:"從頭開始",es:"Empezar de nuevo"},rstQ:{ko:"이 폰에 저장한 모든 플랜(담은 장소·일정·숙소·항공 정보)을 지우고 처음부터 다시 시작할까요?",en:"Delete all plans saved on this phone (places, schedules, lodging and flight info) and start over?",ja:"このスマホに保存したすべてのプラン（場所・旅程・宿・航空情報）を消して、最初からやり直しますか？",zhs:"要删除这部手机上保存的所有方案（地点、行程、住宿和航班信息），从头开始吗？",zht:"要刪除這支手機上儲存的所有方案（地點、行程、住宿和航班資訊），從頭開始嗎？",es:"¿Borrar todos los planes guardados en este teléfono (lugares, itinerarios, alojamiento y vuelos) y empezar de nuevo?"},prev:{ko:"지난번 숙소: {h}",en:"Your earlier lodging: {h}",ja:"前回の宿: {h}",zhs:"上次的住宿: {h}",zht:"上次的住宿: {h}",es:"Alojamiento anterior: {h}"},useP:{ko:"이 숙소로",en:"Use this one",ja:"この宿にする",zhs:"就住这里",zht:"就住這裡",es:"Usar este"},otherP:{ko:"다른 숙소 찾기",en:"Find another",ja:"別の宿を探す",zhs:"找其他住宿",zht:"找其他住宿",es:"Buscar otro"},s1:{ko:"① 항공편 예약",en:"① Book flights",ja:"① 航空券の予約",zhs:"① 预订机票",zht:"① 預訂機票",es:"① Reserva tus vuelos"},
  s2:{ko:"② 첫날 숙소 예약",en:"② Book your first night",ja:"② 初日の宿の予約",zhs:"② 预订第一晚住宿",zht:"② 預訂第一晚住宿",es:"② Reserva la primera noche"},
  s3:{ko:"③ AI와 일정짜기",en:"③ Plan with AI",ja:"③ AIと旅程づくり",zhs:"③ 与AI规划行程",zht:"③ 與AI規劃行程",es:"③ Planifica con IA"},
  have:{ko:"있어요 — 입력",en:"Already booked — enter it",ja:"予約済み — 入力",zhs:"已预订——填写",zht:"已預訂——填寫",es:"Ya reservado: introducir"},
@@ -3410,6 +3518,7 @@ var css3=document.createElement("style"); css3.id="trBoardCss"; css3.textContent
 +".tdet{display:block}.tdbt{display:block;margin-top:6px;text-align:right}"
 +".tsbtn{border:1.5px solid var(--green);background:var(--card);color:#2b8a3e;border-radius:999px;padding:4px 11px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit;margin:0}"
 +".tepk{margin-top:4px}"
++".psbox{margin:4px 0 10px}.psr{margin:0 0 6px}.psr input{flex:1;min-width:0;font-size:15px;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-family:inherit}.psh{font-size:12.5px;font-weight:800;color:#2b8a3e;margin:8px 0 2px}"
 +".tdays{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;margin:2px 0 8px}.tdays .trbtn{margin:0;padding:4px 10px;font-size:12px;font-weight:700;color:var(--sub)}.teve .tgr{justify-content:flex-end}.tlq b{display:flex;align-items:center;gap:4px}"
 +".tstay{-webkit-appearance:menulist!important;appearance:auto!important;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--sub);font:inherit;font-size:12.5px;font-weight:700;padding:1px 2px;margin-left:2px;max-width:112px;cursor:pointer}.tmact{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;margin-top:6px}.trows .trw.tcx .tmact,.trows .trw.tcx .tdbt{margin-right:-30px}.tmact .trbtn{margin:0;padding:5px 11px;font-size:12.5px}"
 +".ttoday{margin:6px 0 6px;padding:8px 10px;border:1.5px solid #2f9e44;border-radius:12px;background:#ebfbee}.ttoday b{display:block;font-size:13px;color:#2b8a3e;margin-bottom:5px}.ttoday .tgr{margin-top:0}.ttoday .trbtn{margin:0;padding:6px 12px;font-size:13px}:root[data-theme=dark] .ttoday{background:#13261a}"
@@ -3423,7 +3532,11 @@ var css3=document.createElement("style"); css3.id="trBoardCss"; css3.textContent
 +".trw.tdsrc .tp{opacity:.35}.trw.tswap .tp{outline:3px solid #f2c94c;outline-offset:1px}"
 +".tdgh{position:fixed;left:0;top:0;z-index:2147483005;pointer-events:none;margin:0;opacity:.95;background:var(--card);color:var(--ink);border:2px solid #2f9e44;border-radius:12px;padding:8px 10px;box-shadow:0 12px 28px rgba(0,0,0,.28);font-size:14.5px;box-sizing:border-box}"
 +".tdgh .xtg,.tdgh .tdet,.tdgh .tmemo,.tdgh .tlvw{display:none}.tdgh .tno{margin-right:6px}.tdgh.no{border-color:#e03131;opacity:.7}"
-+".tdins{position:fixed;height:4px;border-radius:4px;background:#2f9e44;z-index:2147483004;pointer-events:none;box-shadow:0 0 0 3px rgba(47,158,68,.22)}";
++".tdins{position:fixed;height:4px;border-radius:4px;background:#2f9e44;z-index:2147483004;pointer-events:none;box-shadow:0 0 0 3px rgba(47,158,68,.22)}"
+// 11-08 내 플랜 — 플랜 고르기 줄(카트·일정표 맨 위) · 자유 일정 날 [이 날짜로 새 플랜]
++".trpbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 10px}.trpbt{display:flex;gap:6px;flex:0 0 auto;margin-left:auto}.trpbar .trpsel{flex:1 0 auto;min-width:0;max-width:100%;font-size:15px;font-weight:800;padding:8px 10px;border-radius:10px;border:1.5px solid var(--green);background:var(--card);color:var(--ink);font-family:inherit;cursor:pointer}"
++".trpbar .trbtn{margin:0;flex:0 0 auto;padding:7px 12px;font-size:13px;color:var(--sub)}.trpbar .trpnew{border-color:var(--green);color:#2b8a3e}:root[data-theme=dark] .trpbar .trpnew{color:#8ce99a}"
++".tfree{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;padding:6px 0}.tfree .d{margin:0}.tfree .trbtn{margin:0 0 0 auto;padding:5px 11px;font-size:12.5px;border-color:var(--green);color:#2b8a3e}:root[data-theme=dark] .tfree .trbtn{color:#8ce99a}";
 (document.head||document.documentElement).appendChild(css3);
 
 })();
