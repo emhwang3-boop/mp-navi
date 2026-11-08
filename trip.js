@@ -387,7 +387,7 @@ function refresh(){ var n=TR.items.length, mm=document.getElementById("mm"); var
   var tb=document.querySelector(".tbs"), c=document.getElementById("trchip");
   if(tb&&!c){ c=document.createElement("button"); c.id="trchip"; c.type="button"; c.className="tb"; c.onclick=cartGo; var rs=document.getElementById("rs"); tb.insertBefore(c,rs&&rs.parentNode===tb?rs.nextSibling:null); }   // 머리줄 = 처음으로 | 🛒 | 공유 | 🌐 | 💬 | 🔔 | 🌙 | ⋮ (사장님 11-06)
   if(c){ c.hidden=false; c.className="hic"; c.innerHTML=CARTSVG("24px","display:block")+'<span class="tcn">'+n+'</span>'; c.title=T("내 여행","My trip"); }   // 11-07 사장님 — 옆 아이콘(24px)과 같은 크기 · 바탕 투명(흰 칸 없앰) · 담은 수는 옆에
-  flags(); }
+  flags(); pcHook("refresh"); }
 function cartGo(){ if(TR.plan) openReport(); else openPanel(); }   // 11-08 사장님 「이미 짠 일정이 있으면 카트를 눌렀을 때 기존 일정을 보여준다」 — 담은 곳·조건은 일정표 위 「✏ 고치기」
 // ── 내 플랜 여러 개 (사장님 11-08 「나」 — 플랜마다 따로, 날짜가 겹쳐도 된다) ──
 //   지금 플랜 = TR.items·TR.opt·TR.plan(예전 그대로) + TR.pid · 다른 플랜 = TR.saved[{id,items,opt,plan,u:마지막으로 쓴 시각}] → save()·「내 여행」 기기끼리 맞추기가 통째로 같이 나른다
@@ -438,8 +438,8 @@ function plDel(){ if(!confirm(gTxt(PL6.q,{p:plName(TR.pid)}))) return; var S=TR.
   if(S.length){ var b=0; S.forEach(function(p,j){ if((p.u||0)>(S[b].u||0)) b=j; }); plUse(S.splice(b,1)[0]); }
   else plUse({id:plId(),no:1,items:[],opt:opt0(),plan:null});
   save(); try{ ntap("_trip","plan_del"); }catch(z){} plShow(); }
-document.addEventListener("change",function(e){ var s=e.target.closest&&e.target.closest("#trBox .trpsel,#trRep .trpsel"); if(!s) return; plSwitch(+s.value); });
-document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trBox [data-pnew],#trRep [data-pnew],#trBox [data-pdel],#trRep [data-pdel],#trRep [data-pnd]"); if(!a) return; e.preventDefault(); if(typeof DG!=="undefined"&&DG) return;
+document.addEventListener("change",function(e){ var s=e.target.closest&&e.target.closest("#trBox .trpsel,#trRep .trpsel,#pcAiBar .trpsel"); if(!s) return; plSwitch(+s.value); });
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trBox [data-pnew],#trRep [data-pnew],#trBox [data-pdel],#trRep [data-pdel],#trRep [data-pnd],#pcAiBar [data-pnew],#pcAiBar [data-pdel]"); if(!a) return; e.preventDefault(); if(typeof DG!=="undefined"&&DG) return;
   if(a.dataset.pdel) plDel(); else if(a.dataset.pnd!=null) plNew(+a.dataset.pnd); else plNew(null); });
 // 카트 아이콘 = 구글 Material Symbols 「shopping_cart」(Apache 2.0, github.com/google/material-design-icons) 경로 그대로 (사장님 11-05) — 머리줄 카트·AI와 일정짜기 화면·안내 창이 같이 쓴다
 function CARTSVG(sz,st){ return '<svg class="cartic" viewBox="0 -960 960 960" width="'+sz+'" height="'+sz+'" fill="currentColor" aria-hidden="true" style="display:inline-block;'+(st||"")+'"><path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z"/></svg>'; }
@@ -450,8 +450,11 @@ function tPop(html){ var b=document.createElement("div"); b.className="trpop"; b
   var draw=function(){ b.innerHTML='<div>'+(typeof html==="function"?html():html)+'<button type="button" class="trbtn" style="margin-top:12px" onclick="this.closest(\'.trpop\').remove()">'+T("닫기","Close")+'</button></div>'; };
   draw(); if(typeof html==="function") b._rb=draw;   // 글을 함수로 주면 언어를 바꿀 때 그 자리에서 다시 (lang.js, 10-18)
   document.body.appendChild(b); return b; }
-function sheet(id){ var o=document.getElementById(id); if(o) o.remove(); o=document.createElement("div"); o.id=id; o.className="trsheet";
-  o.innerHTML='<div class="trin"></div>'; document.body.appendChild(o); document.documentElement.classList.add("trlock"); return o.firstChild; }
+// 11-08 홈페이지(PC_HOME) — 카트(trBox)·일정표(trRep)는 덮개 대신 PC 화면 칸 안에 그린다(home/pc_ai.js 의 PCSHEET 가 자리를 준다) · 앱(PC_HOME 없음)은 예전 그대로
+function pcHook(w,x){ if(!window.PC_HOME||typeof window.PCTRIP!=="function") return; try{ window.PCTRIP(w,x); }catch(e){ try{ console.error(e); }catch(z){} } }
+function sheet(id){ var o=document.getElementById(id); if(o) o.remove(); var ph=null; if(window.PC_HOME&&typeof window.PCSHEET==="function"){ try{ ph=window.PCSHEET(id); }catch(e){ ph=null; } }
+  o=document.createElement("div"); o.id=id; o.className=ph?"pcsheet":"trsheet";
+  o.innerHTML='<div class="trin"></div>'; if(ph){ ph.appendChild(o); return o.firstChild; } document.body.appendChild(o); document.documentElement.classList.add("trlock"); return o.firstChild; }
 function sheetClose(id){ var o=document.getElementById(id); if(o) o.remove(); if(!document.querySelector(".trsheet")) document.documentElement.classList.remove("trlock"); }
 
 // ── 담은 목록 + 조건 ──
@@ -461,7 +464,7 @@ function openPanel(){ var mm=document.getElementById("mm"); if(mm) mm.hidden=tru
 function hotelsFill(){ HOTELS=[]; for(var k in PLACES){ if(k.charAt(0)==="_") continue; var p=PLACES[k]; if(/^h_/.test(k)||/호텔/.test(p.ko)) HOTELS.push({k:k,ko:p.ko,en:p.en,lat:+p.lat,lng:+p.lng}); }
   HOTELS.sort(function(a,b){ return a.ko<b.ko?-1:1; }); }
 function hotelTxt(h){ if(!h) return T("정하지 않음","Not set"); if(h.type==="here") return T("📍 현재 위치","📍 My current location"); return (h.type==="addr"?"🔎 ":"🏨 ")+nm(h); }
-function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) return; var o=TR.opt, n=TR.items.length; try{ PANELG=panelGroups(); }catch(e){ PANELG=null; }   // 도시가 둘 이상이면 도시별 숙소 (11-06)
+function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) return; pcHook("panel0",box); var o=TR.opt, n=TR.items.length; try{ PANELG=panelGroups(); }catch(e){ PANELG=null; }   // 도시가 둘 이상이면 도시별 숙소 (11-06)
   var li=TR.items.map(function(it,i){ var c=catOf(it), x=c==="hotel"?T(" · 숙소는 아래에서 고르세요"," · choose lodging below"):c==="trans"?T(" · 교통시설(일정에서 뺌)"," · transport (skipped)"):"";
     // 11-07 머무는 시간 칸(30분 단위 30분~8시간, 기본 = 지금 추정값) + 적당한지 한 줄(값은 안 바꾼다)
     var sw="", jd=""; if(!x){ var m=stayOf(it); sw='<span class="trsw"><label class="trswl">'+MPIMG("mi_clock",MIS)+esc(T5(CK6.stay))+' <select class="trsl" data-k="'+esc(it.k)+'">'+stayOpts(m,30,480,udOf(it))+'</select></label>'+(udOf(it)>=2?'<span class="trud">'+esc(udNb(udOf(it)))+(udOf(it)>=3&&udEnd(TR.plan,it.k)?' · '+esc(gTxt(UD6.end,{d:udEnd(TR.plan,it.k)})):'')+'</span>':'')+'<span class="trfxw">'+fxCart(it)+'</span></span>'; jd=stayJudge(it,m); }   // 11-07 옆에 「시작 시각」(fx)
@@ -508,7 +511,7 @@ function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) 
     save(); var li2=s.closest(".tri"), jd=stayJudge(it,m), sp=li2&&li2.querySelector(".trjd"); if(li2){ if(jd){ if(!sp){ sp=document.createElement("span"); sp.className="trjd"; li2.querySelector(".trt").appendChild(sp); } sp.textContent=jd; } else if(sp) sp.remove(); } }; });
   if(HLK){ var hle=box.querySelector(".tri.hl"); if(hle) setTimeout(function(){ try{ hle.scrollIntoView({block:"center",behavior:"smooth"}); }catch(e){} },60); }
   if(g("trClearAll")) g("trClearAll").onclick=function(){ if(!confirm(T("담은 곳과 짠 일정을 모두 지울까요?","Remove all places and your plan?"))) return; TR.items=[]; TR.plan=null; save(); refresh(); panelPaint(); };   // 모두 비우기 (사장님 10-16)
-  natPanelWire(box); dragInit(g("trList")); }
+  natPanelWire(box); dragInit(g("trList")); pcHook("panel",box); }
 // 카트 「시작 시각」 칸 (11-07) — [⏰ 시작 시각] → 시각 칸(input time)+[정하기] → 「⏰ 14:00 고정 ✕」 · ✕ = 지우기 · 그 줄만 다시 그린다
 function fxCart(it){ var f=fxOf(it); if(f!=null) return '<span class="trfx">⏰ '+esc(gTxt(FX6.on,{t:m2hm(f)}))+'<button type="button" class="trfxx" data-k="'+esc(it.k)+'" aria-label="'+esc(T5(FX6.clr))+'">✕</button></span>';
   return '<button type="button" class="trfxb" data-k="'+esc(it.k)+'">⏰ '+esc(T5(FX6.b))+'</button>'; }
@@ -1055,9 +1058,9 @@ document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.
   save(); repPaint(); });
 function repPaint(){ var sc=null, an=null; try{ sc=dgSc(); an=repAnchor(sc); }catch(e){} var r=withLC(repPaint0); try{ repRestore(sc,an); }catch(e){} return r; }
 // 11-08 사장님 「N일차에서 뭔가를 고치면 화면이 다른 일차로 이동해 있다 — N일차에 머무르게」 — 다시 그리기 전 보고 있던 날(화면 위쪽에 걸친 날)과 그 위치를 적어 두고, 다시 그린 뒤 같은 자리로
-function repAnchor(sc){ if(!sc) return null; var top=sc===document.getElementById("trRep")?0:sc.getBoundingClientRect().top, best=null;
+function repAnchor(sc){ if(!sc) return null; var top=(sc===document.getElementById("trRep")||sc===document.scrollingElement||sc===document.documentElement)?0:sc.getBoundingClientRect().top, best=null;
   [].some.call(document.querySelectorAll("#trRep .tday"),function(t){ var r=t.getBoundingClientRect(); if(r.bottom>top+70){ best={d:t.dataset.d,off:r.top-top}; return true; } return false; }); return best; }
-function repRestore(sc,an){ if(!sc||!an||!sc.scrollTop&&an.d==="0") return; var t=document.querySelector('#trRep .tday[data-d="'+an.d+'"]'); if(!t) return; var top=sc===document.getElementById("trRep")?0:sc.getBoundingClientRect().top;
+function repRestore(sc,an){ if(!sc||!an||!sc.scrollTop&&an.d==="0") return; var t=document.querySelector('#trRep .tday[data-d="'+an.d+'"]'); if(!t) return; var top=(sc===document.getElementById("trRep")||sc===document.scrollingElement||sc===document.documentElement)?0:sc.getBoundingClientRect().top;
   var fix=function(){ var r=t.getBoundingClientRect(), dv=(r.top-top)-an.off; if(Math.abs(dv)>1) sc.scrollTop+=dv; };
   fix(); [60,250,700].forEach(function(ms){ setTimeout(function(){ if(document.body.contains(t)&&!DG) fix(); },ms); });   // 위쪽 지도 그림이 늦게 그려지면 높이가 바뀌어 한 번 더 맞춘다
   var stop=function(){ an.off=null; }; sc.addEventListener("touchstart",stop,{once:true,passive:true}); sc.addEventListener("wheel",stop,{once:true,passive:true});
@@ -1179,7 +1182,7 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
   pl.days.forEach(function(d,di){ var el=g("tmap"+di); if(!el) return; var X=DS[di].X, s=sched(X.H,X.arr,X.dt,X.from,moX(di,X));
     dayMap(el,hpOf(X.H),s.rows.filter(function(r){ return r.x||r.r; }).map(function(r){ return r.x?r.x:Object.assign({eat:1},r.r); }),X.me?hS(X.H):null); });
   recsFetch();
-  if(pl.chk){ var c0=pl.chk; pl.chk=0; save(); setTimeout(function(){ if(TR.plan===pl&&document.getElementById("trRep")) chkOpen(c0===2); },120); } }   // 11-07 바뀌면 전체 다시 검사 — 고칠지는 손님이
+  if(pl.chk){ var c0=pl.chk; pl.chk=0; save(); setTimeout(function(){ if(TR.plan===pl&&document.getElementById("trRep")) chkOpen(c0===2); },120); } pcHook("rep",box); }   // 11-07 바뀌면 전체 다시 검사 — 고칠지는 손님이
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep .tlgo,#trRep .tlg>.xtg"); if(!a) return; e.preventDefault(); legTog(a.closest(".tlg")); },true);
 // 이동 줄(걷기·대중교통·택시·기차·버스·비행기)을 누르면 「교통」 창 — 출발 = 앞 장소, 도착 = 다음 장소, 누른 줄의 탈것 칸을 펼쳐 둔다 (사장님 11-07)
 //   ▼/— 와 펼친 경로 칸(.tods) 안은 예전 그대로 · 교통 창이 없으면(옛 화면) 아무것도 안 함
@@ -1231,7 +1234,8 @@ function cropOf(all,as,mw,mh){ var x0=1, y0=1, x1=0, y1=0; all.forEach(function(
   if(wv>as){ wv=as; hv=wv*3/4; } if(hv>1){ hv=1; wv=Math.min(as,hv*4/3); }
   return {L0:Math.max(0,Math.min(as-wv,cx-wv/2)),T0:Math.max(0,Math.min(1-hv,cy-hv/2)),wv:wv,hv:hv}; }
 // 선·숙소 H·식당 🍴·번호 — seq=장소 화면 자리, hp=숙소
-function mapMarks(g,W,arr,seq,hp,sp){ var R=Math.max(13,W*0.022), line=(sp?[sp]:hp?[hp]:[]).concat(seq,hp?[hp]:[]);   // sp = 오늘 출발점 「나」(11-06) — 선은 나에서 시작해 숙소(H)로
+var MKL=null, MKC={};   // 11-08 홈페이지(PC_HOME)만 — 그날 지도 그림의 번호·숙소 자리(그림 크기 기준)
+function mapMarks(g,W,arr,seq,hp,sp){ if(window.PC_HOME){ var n9=0; MKL={w:W,h:g.canvas.height,hp:hp?[hp[0],hp[1]]:null,p:seq.map(function(p,i){ return arr[i].eat?null:[p[0],p[1],++n9]; }).filter(Boolean)}; } var R=Math.max(13,W*0.022), line=(sp?[sp]:hp?[hp]:[]).concat(seq,hp?[hp]:[]);   // sp = 오늘 출발점 「나」(11-06) — 선은 나에서 시작해 숙소(H)로
   g.lineJoin="round"; g.lineCap="round"; g.strokeStyle="rgba(255,255,255,.9)"; g.lineWidth=R*0.75; g.beginPath(); line.forEach(function(p,i){ if(i) g.lineTo(p[0],p[1]); else g.moveTo(p[0],p[1]); }); g.stroke();
   g.strokeStyle="#e8590c"; g.lineWidth=R*0.35; g.setLineDash([R*0.9,R*0.6]); g.stroke(); g.setLineDash([]);
   if(hp){ g.fillStyle="#1f4fa3"; g.strokeStyle="#fff"; g.lineWidth=3; g.beginPath(); g.rect(hp[0]-R,hp[1]-R,2*R,2*R); g.fill(); g.stroke(); g.fillStyle="#fff"; g.font="900 "+Math.round(R*1.1)+"px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="middle"; g.fillText("H",hp[0],hp[1]+1); }
@@ -1242,10 +1246,10 @@ function mapMarks(g,W,arr,seq,hp,sp){ var R=Math.max(13,W*0.022), line=(sp?[sp]:
   if(sp){ g.fillStyle="#1c7ed6"; g.strokeStyle="#fff"; g.lineWidth=R*0.3; g.beginPath(); g.arc(sp[0],sp[1],R*0.95,0,7); g.fill(); g.stroke(); g.fillStyle="#fff"; g.font="900 "+Math.round(R*(LANG==="ko"||/^(ja|zhs|zht)$/.test(LANG)?1:0.72))+"px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="middle"; g.fillText(T5({ko:"나",en:"Me",ja:"私",zhs:"我",zht:"我",es:"Yo"}),sp[0],sp[1]+1); }   // 오늘 출발점 「나」 (11-06)
   var no=0; seq.forEach(function(p,i){ if(arr[i].eat) return; g.fillStyle="#fff"; g.strokeStyle="#0ea5e9"; g.lineWidth=R*0.28; g.beginPath(); g.arc(p[0],p[1],R,0,7); g.fill(); g.stroke();   // 번호 동그라미 = 지도 깃발과 같은 하늘색 (사장님 11-06) · 경로 점선은 주황 그대로
     g.fillStyle="#0284c7"; g.font="900 "+Math.round(R*1.15)+"px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="middle"; g.fillText(String(++no),p[0],p[1]+1); }); }
-function mapPut(el,key,cv){ var url=""; try{ url=cv.toDataURL("image/jpeg",0.85); }catch(e){} if(url){ var ks=Object.keys(MAPC); if(ks.length>Math.max(24,((TR.plan&&TR.plan.days&&TR.plan.days.length)||0)+6)) delete MAPC[ks[0]]; MAPC[key]=url; el.innerHTML='<img alt="" src="'+url+'">'; } else { el.innerHTML=""; el.appendChild(cv); } }   // 11-06 — 긴 일정(30·90일)은 그날 수만큼 기억(넘치면 다시 그릴 때마다 수십 장을 새로 그려 폰이 버벅였다) · 7일 이하는 예전처럼 25장
+function mapPut(el,key,cv){ if(window.PC_HOME&&MKL){ MKC[key]=MKL; MKL=null; try{ el.setAttribute("data-mk",key); }catch(e){} } var url=""; try{ url=cv.toDataURL("image/jpeg",0.85); }catch(e){} if(url){ var ks=Object.keys(MAPC); if(ks.length>Math.max(24,((TR.plan&&TR.plan.days&&TR.plan.days.length)||0)+6)) delete MAPC[ks[0]]; MAPC[key]=url; el.innerHTML='<img alt="" src="'+url+'">'; } else { el.innerHTML=""; el.appendChild(cv); } }   // 11-06 — 긴 일정(30·90일)은 그날 수만큼 기억(넘치면 다시 그릴 때마다 수십 장을 새로 그려 폰이 버벅였다) · 7일 이하는 예전처럼 25장
 function dayMap(el,H,arr,SP){ var pts=arr.slice(); if(H) pts.push(H); if(SP) pts.push(SP); var id=coverMap(pts), gf=GUF[id];
   var key=id+"|"+pts.map(function(p){ return (p.eat?"e":"")+(p.k||"")+"@"+(+p.lat).toFixed(5)+","+(+p.lng).toFixed(5); }).join(";")+"|"+(H?1:0);   // 다시 그릴 때(언어·식당 추천 등)는 그려 둔 그림 그대로
-  if(MAPC[key]){ el.innerHTML='<img alt="" src="'+MAPC[key]+'">'; return; }
+  if(MAPC[key]){ el.innerHTML='<img alt="" src="'+MAPC[key]+'">'; if(window.PC_HOME) el.setAttribute("data-mk",key); return; }
   if(gf&&CITY[gf]&&CITY[gf].geo){ MAPQ=MAPQ.then(function(){ return guData(gf).then(function(G){ if(!el.isConnected) return; if(G&&G.ch&&G.img) return guMap(el,key,gf,G,H,arr,SP); oldMap(el,key,id,H,arr,SP); }); }).catch(function(){}); return; }   // 한 장씩 차례로(조각 그림 메모리)
   oldMap(el,key,id,H,arr,SP); }
 // 첫 화면 「구별 지도」와 같은 그림으로 — 서울·부산 전역 좌표(seoulall·busan 약도 비율)
@@ -2064,7 +2068,7 @@ function shareGo(){ var box=document.getElementById("trNextBox");   // 11-07 사
   document.getElementById("trShP").onclick=function(){ gsOpen(); };
   tripUrl().then(function(u){ var g=document.getElementById("trShG"); if(!g) return; window.__trShareUrl=u;
     var pl=TR.plan, dd=pl&&pl.days&&pl.days.length?pl.days:null, desc=dd?dateTxt(new Date(dd[0].date+"T00:00:00Z"))+(dd.length>1?" – "+dateTxt(new Date(dd[dd.length-1].date+"T00:00:00Z")):""):"";
-    if(typeof window.shareInto==="function") window.shareInto(g,{url:u,txt:T5({ko:"내 여행 일정",en:"My trip plan",ja:"私の旅行日程",zhs:"我的旅行行程",zht:"我的旅行行程",es:"Mi plan de viaje"}),desc:desc||"Puzzle Tour Nations for Korea"});
+    if(typeof window.shareInto==="function") window.shareInto(g,{url:u,txt:T5({ko:"내 여행 일정",en:"My trip plan",ja:"私の旅行日程",zhs:"我的旅行行程",zht:"我的旅行行程",es:"Mi plan de viaje"}),desc:desc||"MosaicTrip.com for Korea"});
     else g.innerHTML='<div class="d" style="word-break:break-all">'+esc(u)+'</div>';
     g.addEventListener("click",function(){ try{ ntap("_trip","share"); }catch(e){} }); }); }
 
@@ -3033,6 +3037,8 @@ function stFly(ap,start,last,pax){ var arr=(ap.a&&ap.a.id)||"icn", dep=ap.d&&ap.
 function stHrHtml(){ var a=STS.hr; if(!a) return ""; if(!a.length) return '<div class="d">'+esc(T("찾은 곳이 없어요","No results"))+'</div>';
   return a.slice(0,6).map(function(x,i){ return '<div class="tra" data-sthp="'+i+'"><b>'+esc(KS(L()&&x.name_en?x.name_en:x.name))+'</b><br><span class="d">'+esc(L()&&x.addr_en?x.addr_en:x.addr)+'</span></div>'; }).join("")+'<label class="trck" style="margin:6px 0"><input type="checkbox" id="stHAll"'+(TR.opt.hAll?" checked":"")+'> '+esc(T5(LG6.all))+'</label>'; }
 document.addEventListener("keydown",function(e){ if(e.key!=="Enter"||!e.target||e.target.id!=="stHQ") return; e.preventDefault(); var b=document.querySelector('#aipSteps [data-sth]'); if(b) b.click(); });   // ② 숙소 이름 칸 — 자판 Enter·검색으로도 찾는다 (11-07)
+// 처음부터 다시 — 이 기기의 모든 플랜을 지우고 새로 (q = 확인 창 문구, 없으면 앱 문구)
+function stReset(q){ if(!confirm(q||T5(ST6.rstQ))) return false; try{ localStorage.removeItem(KEY); localStorage.removeItem("mpv_trlive"); }catch(z){} location.reload(); return true; }
 function stApSet(){ var o=TR.opt, ap=o.ap||{}, el=document.getElementById("aipSteps"); if(!el) return; ["a","d"].forEach(function(w){ var s=el.querySelector('[data-stap="'+w+'"]'), t=el.querySelector('[data-stt="'+w+'"]'); if(!s) return; var id=s.value;
     ap[w]=id?{id:id,t:(t&&hm2m(t.value)!=null)?t.value:"",k:(ap[w]&&ap[w].id===id&&ap[w].k)||(id==="cju"?"d":"i")}:null; }); o.ap=ap; save();
   var ok=!!(ap.a&&ap.a.id&&ap.d&&ap.d.id), bt=el.querySelector('.stpn .trbtn.pri[data-sto="2"]'); if(bt){ bt.disabled=!ok; var cd=bt.closest(".stp"); if(cd) cd.classList.toggle("ok",ok); } }   // 다시 그리지 않고 「정했어요」만 켜고 끈다 (11-07 — 시각 칸 입력 중 초점 유지)
@@ -3042,7 +3048,7 @@ document.addEventListener("change",function(e){ var t=e.target, el=document.getE
   else if(t.dataset.stap||t.dataset.stt) stApSet(); else if(t.dataset.stc){ STS.city=t.value; }
   stepsPaint(el); },true);
 document.addEventListener("click",function(e){ var el=document.getElementById("aipSteps"); if(!el||!e.target.closest||!el.contains(e.target)) return; var t=e.target.closest("[data-streset],[data-sthok],[data-sto],[data-stl],[data-sth],[data-sthp]"); if(!t) return; e.preventDefault();
-  if(t.dataset.streset){ if(!confirm(T5(ST6.rstQ))) return; try{ localStorage.removeItem(KEY); localStorage.removeItem("mpv_trlive"); }catch(z){} location.reload(); return; }
+  if(t.dataset.streset){ stReset(); return; }
   if(t.dataset.sthok){ TR.opt.hOk=hKey(); save(); STS.open="3"; stepsPaint(el); return; }
   if(t.dataset.sto){ var v=t.dataset.sto; STS.open=STS.open===v?"":v; if(v==="3"){ STS.open=""; try{ var q=document.getElementById("aipQ"); if(q){ q.scrollIntoView({block:"center"}); q.focus(); } }catch(z){} } stepsPaint(el); return; }
   if(t.dataset.stl){ var cid=STS.city||(el.querySelector("[data-stc]")||{}).value||"seoul", c=CITYNM.filter(function(q){ return q[0]===cid; })[0]||CITYNM[0];
@@ -3247,10 +3253,11 @@ var PP6={kind:{ko:"종류",en:"Type",ja:"種類",zhs:"类型",zht:"類型",es:"T
 var WD6={ko:"일월화수목금토",en:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],ja:"日月火水木金土",zhs:["周日","周一","周二","周三","周四","周五","周六"],zht:["週日","週一","週二","週三","週四","週五","週六"],es:["dom","lun","mar","mié","jue","vie","sáb"]};
 function wdL(i){ var w=WD6[LANG]||WD6.en; return typeof w==="string"?w.charAt(i)+(LANG==="ko"?"요일":"曜日"):w[i]; }
 function kindL(x){ var c; if(isBar(x)) c="bar"; else if(x.eat) c="food"; else c=catOf(x); var k=KIND6[c]||KIND6.street, i=LG6s.indexOf(LANG); return k[i<0?1:i]; }
-function ppPhoto(k,ko,lat,lng,el){ if(!el||!ko||!(+lat)) return; var fxT=window.CPH_FIX||{}, fx=fxT[k]||null, fq=fx?(fx.q?"&pq="+encodeURIComponent(fx.q):"")+(fx.pi!=null?"&pi="+fx.pi:""):"", ck=ko+"|"+(+lat).toFixed(4)+","+(+lng).toFixed(4)+fq, C=window._cphC||(window._cphC={});   // 장소 카드 cphLoad 와 같은 주소·같은 캐시
-  var put=function(j){ if(!el.isConnected||!j||!j.ok) return; var at=(j.attr||[]).filter(function(a){ return a&&a.n; }).map(function(a){ return /^https:\/\//.test(a.u||"")?'<a href="'+esc(a.u)+'" target="_blank" rel="noopener">'+esc(a.n)+'</a>':esc(a.n); }).join(", ");
+function ppPhoto(k,ko,lat,lng,el,done){ if(!el||!ko||!(+lat)) return;   // done(j|null) = 받은 뒤 알림(11-08 홈페이지 AI 추천 카드 · 앱 부르는 곳은 그대로)
+  var fxT=window.CPH_FIX||{}, fx=fxT[k]||null, fq=fx?(fx.q?"&pq="+encodeURIComponent(fx.q):"")+(fx.pi!=null?"&pi="+fx.pi:""):"", ck=ko+"|"+(+lat).toFixed(4)+","+(+lng).toFixed(4)+fq, C=window._cphC||(window._cphC={});   // 장소 카드 cphLoad 와 같은 주소·같은 캐시
+  var put=function(j){ if(done){ try{ done(j); }catch(e){} } if(!el.isConnected||!j||!j.ok) return; var at=(j.attr||[]).filter(function(a){ return a&&a.n; }).map(function(a){ return /^https:\/\//.test(a.u||"")?'<a href="'+esc(a.u)+'" target="_blank" rel="noopener">'+esc(a.n)+'</a>':esc(a.n); }).join(", ");
     el.innerHTML='<img alt="" src="'+HUB+esc(j.img)+'"><div class="cpa">'+(at?T("사진","Photo")+': '+at+' · ':'')+'Google</div>'; var im=el.querySelector("img"); im.onerror=function(){ el.hidden=true; }; im.onload=function(){ el.hidden=false; }; };
-  if(C[ck]) return put(C[ck]); fetch(HUB+"/gphoto?q="+encodeURIComponent(ko)+"&lat="+(+lat).toFixed(5)+"&lng="+(+lng).toFixed(5)+fq).then(function(r){ return r.json(); }).then(function(j){ C[ck]=j; put(j); }).catch(function(){}); }
+  if(C[ck]) return put(C[ck]); fetch(HUB+"/gphoto?q="+encodeURIComponent(ko)+"&lat="+(+lat).toFixed(5)+"&lng="+(+lng).toFixed(5)+fq).then(function(r){ return r.json(); }).then(function(j){ C[ck]=j; put(j); }).catch(function(){ if(done){ try{ done(null); }catch(e){} } }); }
 var PPS=null;   // 열린 팝업 {t:"place"|"eat", k, di, mk, i}
 function ppHtml(){ var pl=TR.plan, s=PPS; if(!pl||!s) return ""; var h='', ai=(pl.ai&&pl.ai.tips)||{};
   if(s.t==="eat"){ var c=s.c; if(!c) return ""; var kd=c.src==="near"?(L()?(c.cat_en||kindX(c.kind)):String(c.cat||"").split(">").slice(1).map(function(x){ return x.trim(); }).join("·")):(L()?(c.kind_x||c.kind_en||c.kind):c.kind);
@@ -3339,7 +3346,7 @@ function dgStart(row,x,y,touch){ var pl=TR.plan, td=row.closest(".tday"); if(!pl
   DG={row:row,k:k,di:di,gh:gh,ln:ln,dx:x-r.left,dy:y-r.top,x:x,y:y,tg:null,raf:0,touch:!!touch,sc:dgSc()};
   try{ if(touch&&navigator.vibrate) navigator.vibrate(20); }catch(e){}
   dgMove(x,y); DG.raf=requestAnimationFrame(dgLoop); }
-function dgSc(){ var sh=document.getElementById("trRep"); if(!sh) return null; var a=[sh.querySelector(".trin"),sh]; for(var i=0;i<a.length;i++){ var e=a[i]; if(e&&e.scrollHeight>e.clientHeight+2){ var oy=getComputedStyle(e).overflowY; if(oy==="auto"||oy==="scroll") return e; } } return sh; }   // 폰 = 시트 · PC = 가운데 칸(.trin)이 넘어간다
+function dgSc(){ var sh=document.getElementById("trRep"); if(!sh) return null; if(sh.classList.contains("pcsheet")) return document.scrollingElement||document.documentElement; var a=[sh.querySelector(".trin"),sh]; for(var i=0;i<a.length;i++){ var e=a[i]; if(e&&e.scrollHeight>e.clientHeight+2){ var oy=getComputedStyle(e).overflowY; if(oy==="auto"||oy==="scroll") return e; } } return sh; }   // 폰 = 시트 · PC = 가운데 칸(.trin)이 넘어간다
 function dgLoop(){ if(!DG) return; var sh=DG.sc, y=DG.y, h=window.innerHeight, v=0;   // 위·아래 끝에 가까우면 저절로 넘김
   if(y<90) v=-Math.ceil((90-y)/5); else if(y>h-90) v=Math.ceil((y-(h-90))/5);
   if(v&&sh){ var s0=sh.scrollTop; sh.scrollTop=s0+v; if(sh.scrollTop!==s0) dgFind(); } DG.raf=requestAnimationFrame(dgLoop); }
@@ -3489,6 +3496,7 @@ var css=document.createElement("style"); css.textContent=
 
 document.head.appendChild(css);
 window.TRIP={open:openPanel,report:openReport,close:sheetClose,state:function(){ return TR; },hasPass:hasPass,
+  panel:function(){ if(document.getElementById("trBox")) panelPaint(); },reset:stReset,mk:function(k){ return MKC[k]||null; },photo:function(k,ko,lat,lng,el,done){ return ppPhoto(k,ko,lat,lng,el,done); },   // 11-08 홈페이지 — 카트 다시 그리기·처음부터 다시·지도 번호 자리
   add:function(it){ addItem(it); return has(it&&it.k); },del:delItem,has:has,snap:snapPlace,pinKey:pinKey,   // 「AI와 일정짜기」 화면이 같은 카트에 담는다 (11-05)
   alert:function(go){ return tripAlert(go); },live:{check:liveCheck,tick:liveTick,leave:liveLeave,state:function(){ return LIVE; },trend:liveTrend,ask:askCheck,re:liveRe,drive:liveDrive,hotel:function(){ var L=liveToday(); return L?hotelArrive(L):null; }},   // 🔔 알림함 「일정 주의」 → 주의 창(물음이면 그 물음) · 시험용 읽기 (11-06)
   now:function(){ nowPaint(); return document.getElementById("trNow"); },steps:function(el){ stepsPaint(el); },lodge:openLodge,nat:{x:function(di){ var pl=TR.plan; return pl?dayX(pl,di,REPH||pl.H):null; },dr:function(){ return DR; },fetch:trFetch,groups:natGroups},   // 전국 일정 (11-06)   // 🔔 알림함 「일정 주의」 → 주의 창 · 시험용 읽기 (11-06)
