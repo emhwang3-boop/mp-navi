@@ -1,4 +1,4 @@
-/* MosaicTrip.com 홈페이지 — 「회사 소개」·「문의」 창 (11-08 4b단계 · 배치도 tour_site\wireframes\9_회사소개_팝업_배치도 · 10_문의_팝업_배치도)
+/* MosaicTrip 홈페이지 — 「회사 소개」·「문의」 창 (11-08 4b단계 · 배치도 tour_site\wireframes\9_회사소개_팝업_배치도 · 10_문의_팝업_배치도)
  *  · 따로 화면 없이 아랫줄 메뉴에서 화면 가운데 창(폭 700) — 사장님 11-08 (하나투어·노랑풍선처럼 별도 페이지 아님)
  *  · 회사 소개 = 한 줄 소개 · 세 가지 여행 방법 · 사업자 정보(앱 맨 아래 줄과 같은 내용) · [닫기] [문의하기 ›]
  *    여행업 등록번호·통신판매업 신고번호는 등록·신고 뒤 아래 NO 에 채운다 (그 전엔 앱 맨 아래 줄처럼 빈칸)
@@ -16,7 +16,7 @@ function L6(o){ return o?(typeof o==="string"?o:(o[LG()]||o.en||o.ko||"")):""; }
 function E(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function T6(ko,en,ja,zhs,zht,es){ return {ko:ko,en:en,ja:ja,zhs:zhs,zht:zht,es:es}; }
 function T2(ko,en){ try{ return window.T?window.T(ko,en):(LG()==="ko"?ko:en); }catch(e){ return LG()==="ko"?ko:en; } }
-function AGN(){ var a=window.AGN||T6("모자이크트립.com","MosaicTrip.com","MosaicTrip.com","MosaicTrip.com","MosaicTrip.com","MosaicTrip.com"); return L6(a); }
+function AGN(){ var a=window.AGN||T6("모자이크트립","MosaicTrip","MosaicTrip","MosaicTrip","MosaicTrip","MosaicTrip"); return L6(a); }
 
 // 등록·신고 번호 — 나오면 여기만 채운다 (사장님 11-08 「여행업·통신판매업 번호는 등록 후 채움」)
 var NO={travel:"",mail:""};
