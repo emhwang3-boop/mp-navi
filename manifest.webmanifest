@@ -1,6 +1,6 @@
 {
- "name": "MosaicTrip.com for Korea",
- "short_name": "MosaicTrip.com",
+ "name": "MosaicTrip for Korea",
+ "short_name": "MosaicTrip",
  "id": "./",
  "start_url": "./?src=pwa",
  "scope": "./",
