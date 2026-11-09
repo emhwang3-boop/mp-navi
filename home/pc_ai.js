@@ -134,8 +134,8 @@ function onPanel(box){ var r=$("pcAi"); if(!r||!r.contains(box)) return; S.sig=s
   var pb=$("trPlan"); if(pb) pb.textContent=L6(TX.planB);   // 앱 「🗓 일정 짜기」 = 시안 「AI와 일정 짜기」
   okPaint(); cnPaint(); cartFit(); }
 // ① ② 제목 옆 「✓ 정했어요」 — 앱 「AI와 일정짜기」 3단계와 같은 기준(도착·출발 공항을 다 골랐을 때 · 이 날짜로 숙소를 골랐을 때)
-function okPaint(){ var tp=TS(); if(!tp) return; var o=tp.opt||{}, ap=o.ap||{}, f1=!!(ap.a&&ap.a.id&&ap.d&&ap.d.id), hk=(o.start||"")+"|"+(o.n||1);
-  var f2=(!!o.hotel&&o.hOk===hk)||!!(o.hotels&&Object.keys(o.hotels).some(function(k){ return !!o.hotels[k]; }));
+function okPaint(){ var tp=TS(); if(!tp) return; var o=tp.opt||{}, ap=o.ap||{}, f1=!!(ap.a&&ap.a.id&&ap.d&&ap.d.id);
+  var f2=false; try{ f2=!!TRIP.stay.ok(); }catch(e){}   // 11-09 숙소 칸(trip.js opt.nh) — 이번 여행 첫날 밤 숙소를 골랐거나 도시별 숙소가 하나라도
   var a=$("paOk1"), b=$("paOk2"); if(a) a.hidden=!f1; if(b) b.hidden=!f2; }
 D.addEventListener("change",function(e){ if(e.target&&e.target.closest&&e.target.closest("#pcAi .pa-l")) setTimeout(okPaint,0); });
 D.addEventListener("click",function(e){ if(e.target&&e.target.closest&&e.target.closest("#pcAi .pa-l .tra")) setTimeout(okPaint,0); });
