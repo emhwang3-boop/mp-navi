@@ -57,16 +57,8 @@ var TX={
  mapIng:T6("지도를 그리는 중…","Drawing the map…","地図を描いています…","正在绘制地图…","正在繪製地圖…","Dibujando el mapa…"),
  planB:T6("AI와 일정 짜기","Plan with AI","AIと日程を作る","用AI制定行程","用AI制定行程","Planear con IA")
 };
-// 「AI에게 묻기」 아래 버튼 8개 (사장님 11-08 이름 · 영어 밤문화 = Night Life) — 누르면 그 질문을 칸에 넣고 앱과 같은 AI 추천(허브 /nreco)
-var CH=[
- {k:"ev",t:T6("이벤트","Events","イベント","活动","活動","Eventos"),q:T6("요즘 열리는 축제·공연·이벤트","Festivals, shows and events on now","今開催中のお祭り・公演・イベント","最近举办的节庆、演出和活动","最近舉辦的節慶、演出和活動","Festivales, espectáculos y eventos de estos días")},
- {k:"ex",t:T6("체험","Experiences","体験","体验","體驗","Experiencias"),q:T6("한복 입기·전통 공예 같은 한국 체험","Korean experiences like wearing hanbok or traditional crafts","韓服体験や伝統工芸などの韓国体験","穿韩服、传统手工艺等韩国体验","穿韓服、傳統手工藝等韓國體驗","Experiencias coreanas como vestir hanbok o artesanía tradicional")},
- {k:"fd",t:T6("K-Food","K-Food","K-Food","K-Food","K-Food","K-Food"),q:T6("꼭 먹어 봐야 할 한국 음식과 시장 먹거리","Must-try Korean food and market eats","絶対食べたい韓国料理と市場グルメ","必吃的韩国美食和市场小吃","必吃的韓國美食和市場小吃","Comida coreana imprescindible y puestos de mercado")},
- {k:"kp",t:T6("K-Pop","K-Pop","K-Pop","K-Pop","K-Pop","K-Pop"),q:T6("K-Pop 좋아해요 — 기획사·굿즈숍·공연장","I love K-Pop — agencies, merch shops and venues","K-POPが好き — 事務所・グッズショップ・公演会場","我喜欢K-Pop——经纪公司、周边店和演出场地","我喜歡K-Pop——經紀公司、周邊店和演出場地","Me encanta el K-Pop: agencias, tiendas de merch y salas")},
- {k:"hr",t:T6("헤어","Hair","ヘア","美发","美髮","Peluquería"),q:T6("K스타일 헤어 미용실","K-style hair salons","Kスタイルのヘアサロン","韩式发型美发店","韓式髮型美髮店","Peluquerías de estilo coreano")},
- {k:"bt",t:T6("K-Beauty","K-Beauty","K-Beauty","K-Beauty","K-Beauty","K-Beauty"),q:T6("K-뷰티 화장품 쇼핑과 퍼스널 컬러 진단","K-beauty cosmetics shopping and personal color analysis","Kビューティーのコスメショッピングとパーソナルカラー診断","韩国美妆购物和个人色彩诊断","韓國美妝購物和個人色彩診斷","Compras de cosmética coreana y análisis de color personal")},
- {k:"sk",t:T6("피부관리","Skin care","スキンケア","皮肤管理","皮膚管理","Cuidado de la piel"),q:T6("피부관리·에스테틱 받을 수 있는 곳","Places for facials and skin care","肌ケア・エステを受けられる場所","可以做皮肤护理和美容的地方","可以做皮膚護理和美容的地方","Lugares para tratamientos faciales y cuidado de la piel")},
- {k:"nl",t:T6("밤문화","Night Life","ナイトライフ","夜生活","夜生活","Vida nocturna"),q:T6("밤에 놀기 좋은 곳 — 클럽·바·야시장","Night life — clubs, bars and night markets","夜遊びにいい場所 — クラブ・バー・夜市","夜生活好去处——夜店、酒吧、夜市","夜生活好去處——夜店、酒吧、夜市","Vida nocturna: discotecas, bares y mercados nocturnos")}];
+// 「AI에게 묻기」 아래 버튼 8개 — 정의는 reco.js 의 window.AICH 하나 (11-09 사장님 「홈페이지 첫 화면·앱 AI 화면에도」 — 세 곳이 같은 버튼) · 누르면 그 질문을 칸에 넣고 앱과 같은 AI 추천(허브 /nreco)
+var CH=(window.AICH&&AICH.list)||[];
 
 var S={v:"",chip:"",day:0,lock:0,sig:"",apSig:"",apSkip:0,rt:0,raf:0,hv:null,mk:"",obs:null,obsEl:null,rsObs:null};
 var INSH=0;   // PCSHEET 가 화면을 바꾸는 중 — 그 사이엔 카트·일정표를 다시 열지 않는다(trip.js 가 바로 그 자리에 그린다)
@@ -159,9 +151,11 @@ function chipFit(){ var c=$("paChips"); if(!c) return; c.style.removeProperty("-
 function rhPaint(){ var rh=$("paRh"), rs=$("aipRes"); if(!rh||!rs) return; var on=!!rs.querySelector(".apc,.apk"), ch=CH.filter(function(x){ return x.k===S.chip; })[0];
   rh.hidden=!on; if(on) rh.innerHTML='<b>'+E(L6(TX.rh))+(ch?' · '+E(L6(ch.t)):'')+'</b><span>'+E(L6(TX.rhH))+'</span>';
   S.apSig=sigOf(TS()); phSlots(); }
-D.addEventListener("click",function(e){ var c=e.target.closest&&e.target.closest("#paChips [data-chip]"); if(!c) return; e.preventDefault();
-  var ch=CH.filter(function(x){ return x.k===c.getAttribute("data-chip"); })[0], q=$("aipQ"), f=$("aipF"); if(!ch||!q||!f) return;
-  S.chip=ch.k; q.value=L6(ch.q); aipPaint(); try{ if(f.requestSubmit) f.requestSubmit(); else f.dispatchEvent(new Event("submit",{cancelable:true})); }catch(x){} });
+function chipRun(k){ var ch=CH.filter(function(x){ return x.k===k; })[0], q=$("aipQ"), f=$("aipF"); if(!ch||!q||!f) return false;
+  S.chip=ch.k; q.value=L6(ch.q); aipPaint(); try{ if(f.requestSubmit) f.requestSubmit(); else f.dispatchEvent(new Event("submit",{cancelable:true})); }catch(x){} return true; }
+D.addEventListener("click",function(e){ var c=e.target.closest&&e.target.closest("#paChips [data-chip]"); if(!c) return; e.preventDefault(); chipRun(c.getAttribute("data-chip")); });
+// 11-09 사장님 — 첫 화면 검색창 아래 같은 버튼(home/pc.js)을 누르면 이 화면(①)으로 와서 이 버튼을 누른 것과 똑같이(같은 질문·같은 AI 추천 한 번)
+window.PCAICHIP=function(k){ var n=0; if(view()!=="cart"&&window.PCGO) PCGO("ai"); (function w(){ if(view()==="cart"&&$("paChips")&&$("aipF")&&chipRun(k)) return; if(++n<100) setTimeout(w,100); })(); };
 D.addEventListener("submit",function(e){ if(!e.target||e.target.id!=="aipF"||!S.chip) return; var ch=CH.filter(function(x){ return x.k===S.chip; })[0], q=$("aipQ");
   if(!ch||!q||q.value.trim()!==L6(ch.q).trim()){ S.chip=""; aipPaint(); } },true);   // 손님이 직접 적어 찾으면 버튼 표시는 끈다
 // ── 추천 카드 사진 (사장님 11-08 「나」 · 시안 ai_1) — 앱 장소 사진과 같은 길: trip.js ppPhoto(TRIP.photo) = 허브 /gphoto · 같은 캐시 _cphC · 「사진: 찍은 사람 · Google」 줄
