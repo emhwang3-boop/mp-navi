@@ -307,13 +307,22 @@ function cardBtn(){ var r=document.getElementById("res"), c=r&&r.querySelector("
   var it=k==="__pin"?snapPin():snapPlace(k); if(!it) return; var old=c.querySelector(".tradd"); if(old) old.remove();
   c.insertAdjacentHTML("beforeend",'<div class="trbw">'+btnHtml(it.k)+'</div>'); c.querySelector(".tradd").dataset.src=k; }
 document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest(".tradd"); if(!b) return; e.preventDefault(); e.stopPropagation();
-  var k=b.dataset.k; if(has(k)) delItem(k); else addItem(b.dataset.src==="__pin"?snapPin():snapPlace(b.dataset.src||k));
-  b.outerHTML=btnHtml(k); var nb=document.querySelector('.tradd[data-k="'+k+'"]'); if(nb) nb.dataset.src=b.dataset.src; },true);
+  var k=b.dataset.k, src=b.dataset.src||"", sr=/^sres:(\d+)$/.exec(src); if(has(k)) delItem(k); else addItem(sr?snapRes((window._sres||[])[+sr[1]]):src==="__pin"?snapPin():snapPlace(src||k));
+  b.insertAdjacentHTML("afterend",btnHtml(k)); var nb=b.nextElementSibling; b.remove(); if(nb&&src) nb.dataset.src=src; },true);   // 11-09 누른 그 단추 자리에 바꿔 넣는다(검색 목록에 같은 곳이 둘이어도)
 
 // ── 전역 함수 감싸기 ──
 function wrap(name,after){ var f=window[name]; if(typeof f!=="function"||f._tr) return; var g=function(){ var r=f.apply(this,arguments); try{ after.apply(this,[r].concat([].slice.call(arguments))); }catch(e){} return r; }; g._tr=1; window[name]=g; }
 wrap("placeShow",function(){ cardBtn(); });
 wrap("spinCard",function(){ cardBtn(); });
+// 11-09 사장님 「검색을 하거나 지도에서 그림을 선택하면 내 여행에 담기 버튼이 없는데 그걸 넣어줘」·「앱도 마찬가지로」 — 검색 결과 목록 줄마다 「＋ 내 여행에 담기」
+//   그림 있는 곳(이름 같고 50m 안 — 목록을 눌러 카드로 갈 때와 같은 기준)이면 그 명소로 · 아니면 검색 핀과 같은 자료(같은 키 → 카드에서 담아도 「담김」이 같다 · 구글 영업시간·종류도)
+function snapRes(x){ if(!x) return null; var lat=+x.y, lng=+x.x; if(!isFinite(lat)||!isFinite(lng)||(!lat&&!lng)) return null;
+  try{ if(window.spinNorm&&window.kmLL&&window.PLACES){ var nb=spinNorm(x.name); for(var k in PLACES){ if(k.charAt(0)==="_") continue; var q=PLACES[k], a=spinNorm(q.ko); if(a&&(a===nb||a.indexOf(nb)>=0||nb.indexOf(a)>=0)&&kmLL([lat,lng],[+q.lat,+q.lng])<0.05) return snapPlace(k); } } }catch(e){}
+  var p={ko:x.name,en:x.name_en||x.name,lat:lat,lng:lng}, it={k:pinKey(p),ko:p.ko,en:p.en,lat:lat,lng:lng,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",cat:x.cat||"",pin:1};
+  if(Array.isArray(x.oh)&&x.oh.length) it.oh=x.oh; if(Array.isArray(x.gt)&&x.gt.length) it.gt=x.gt; return it; }
+function sresBtns(){ var r=document.getElementById("res"); if(!r) return; [].forEach.call(r.querySelectorAll(".item.sres"),function(c){ var it=snapRes((window._sres||[])[+c.dataset.i]); if(!it) return; var old=c.querySelector(".trbw"); if(old) old.remove();
+  c.insertAdjacentHTML("beforeend",'<div class="trbw">'+btnHtml(it.k)+'</div>'); c.querySelector(".tradd").dataset.src="sres:"+c.dataset.i; }); }
+wrap("sresPaint",function(){ sresBtns(); });
 wrap("zApply",function(){ flags(); });
 wrap("setLang",function(){ refresh(); if(document.getElementById("trBox")){ var aq=document.getElementById("trAddrQ"), av=aq?aq.value:""; panelPaint(); var aq2=document.getElementById("trAddrQ"); if(aq2) aq2.value=av; addrPaint(); }
   if(document.getElementById("trRep")) repAgain(); });   // 열린 창은 그 자리에서 (lang.js, 10-18)
