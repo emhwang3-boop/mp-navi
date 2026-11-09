@@ -588,7 +588,7 @@ function igName(g){ var l=window.LANG||"en", nm=g&&g.name||""; if(l==="ko"||!g) 
   return esc(f)+' <small style="font-weight:400;color:var(--sub)">'+esc(nm)+'</small>'; }
 function igYears(y){ if(!y) return ""; var l=window.LANG||"en"; return ({ko:y+"년",en:y+" yrs",ja:"経験"+y+"年",zhs:y+"年经验",zht:y+"年經驗",es:y+" años"})[l]||(y+" yrs"); }
 window.igName=igName; window.igRegion=igRegion; window.igYears=igYears;
-function igFace(g){ return g.photo?'<img class="igav" src="'+HUB+'/guide/photo?id='+encodeURIComponent(g.id)+'" alt="" loading="lazy">':'<span class="igav igavx">🧭</span>'; }
+function igFace(g){ return g.photo?'<img class="igav" src="'+HUB+'/guide/photo?id='+encodeURIComponent(g.id)+'&v='+encodeURIComponent(g.pv||0)+'" alt="" loading="lazy">':'<span class="igav igavx">🧭</span>'; }
 function igWire(b){
   [].forEach.call(b.querySelectorAll("[data-iglang]"),function(a){ a.onclick=function(e){ e.preventDefault(); IG.lang=a.dataset.iglang; IG.view="list"; IG.guides=null; IG.err=""; paint(); igLoad(); }; });
   [].forEach.call(b.querySelectorAll("[data-igback]"),function(a){ a.onclick=function(e){ e.preventDefault(); var v=a.dataset.igback;
@@ -812,7 +812,7 @@ function igEditForm(){ var L=LG6;
     +'<label class="iglb">'+esc(L({ko:"활동 지역 *",en:"Region *",ja:"活動地域 *",zhs:"活动地区 *",zht:"活動地區 *",es:"Región *"}))+'</label><input class="igin" id="geRg" maxlength="40" value="'+esc(g.region||"")+'">'
     +'<label class="iglb">'+esc(L({ko:"자기소개 (짧게)",en:"Short self-introduction",ja:"自己紹介（短く）",zhs:"简短自我介绍",zht:"簡短自我介紹",es:"Breve presentación"}))+'</label><textarea class="igin" id="geIn" maxlength="500" style="min-height:72px">'+esc(g.intro||"")+'</textarea>'
     +'<label class="iglb">'+esc(L({ko:"전화 (선택)",en:"Phone (optional)",ja:"電話（任意）",zhs:"电话（可选）",zht:"電話（可選）",es:"Teléfono (opcional)"}))+'</label><input class="igin" id="geTel" inputmode="tel" maxlength="30" value="'+esc(g.phone||"")+'">'
-    +'<label class="iglb">'+esc(L({ko:"사진 (바꾸려면 선택)",en:"Photo (choose to replace)",ja:"写真（変更する場合）",zhs:"照片（如需更换）",zht:"照片（如需更換）",es:"Foto (elige para reemplazar)"}))+'</label><div style="display:flex;align-items:center;gap:10px;margin:4px 0">'+(g.photo?'<img src="'+HUB+'/guide/photo?id='+encodeURIComponent(IG.geId||"")+'" style="'+pvS+'" alt="" onerror="this.style.display=\'none\'">':'')+'<img id="gePv" style="'+pvS+';display:none" alt=""><input type="file" accept="image/*" id="gePh"></div>'
+    +'<label class="iglb">'+esc(L({ko:"사진 (바꾸려면 선택)",en:"Photo (choose to replace)",ja:"写真（変更する場合）",zhs:"照片（如需更换）",zht:"照片（如需更換）",es:"Foto (elige para reemplazar)"}))+'</label><div style="display:flex;align-items:center;gap:10px;margin:4px 0">'+(g.photo?'<img src="'+HUB+'/guide/photo?id='+encodeURIComponent(IG.geId||"")+'&v='+Date.now()+'" style="'+pvS+'" alt="" onerror="this.style.display=\'none\'">':'')+'<img id="gePv" style="'+pvS+';display:none" alt=""><input type="file" accept="image/*" id="gePh"></div>'
     +'<label class="iglb">'+esc(L({ko:"자격증 사본 (바꾸려면 선택)",en:"License photo (choose to replace)",ja:"資格証の写し（変更する場合）",zhs:"资格证照片（如需更换）",zht:"資格證照片（如需更換）",es:"Foto de licencia (elige para reemplazar)"}))+'</label><div style="display:flex;align-items:center;gap:10px;margin:4px 0"><img id="geLv" style="'+pvS+';display:none" alt=""><input type="file" accept="image/*" id="geLp"></div>'+gCtHtml(true,"geCp","geCv","geCm")
     +'<button type="button" class="nrsel" id="geSave" style="background:#0c8599;color:#fff;border-color:#0c8599;margin-top:12px">'+esc(L({ko:"저장",en:"Save",ja:"保存",zhs:"保存",zht:"儲存",es:"Guardar"}))+'</button>'
     +'<div class="ignt" id="geM"></div>'; }
@@ -1042,7 +1042,7 @@ window.NEAR={open:open,close:close,review:openReview,gedit:openGedit,tdone:openT
 //   pick = 가이드 고르기(앱 「요청하기」와 같음) · send = 앱 「보내기 및 결제」 검사(gbSend, 칸 id 같음) → 통과하면 앱 확인 창(gconf → 결제 → 확정)
 if(window.PC_HOME) window.NEARIG={GBK:GBK,GBT:GBT,LANGS:GLANG6,calc:gbkCalc,modeTxt:gbModeTxt,F:gbF,won:gbWon,day:gbDay,priceBox:gbPriceBox,grab:gbGrab,rateTbl:gbRateTbl,
   title:IG_CHIP6,desc:IG_DESC6,noteT:IGN_T,note:igNote,payT:PAYB6,cx:CX6,name:igName,badge:igBadge,stars:igStars,langName:igLangName,region:igRegion,years:igYears,css:css,perf:TG_PERF,tgPick:tgPick,
-  photo:function(g){ return g&&g.photo?HUB+"/guide/photo?id="+encodeURIComponent(g.id):""; },
+  photo:function(g){ return g&&g.photo?HUB+"/guide/photo?id="+encodeURIComponent(g.id)+"&v="+encodeURIComponent(g.pv||0):""; },   // &v= 사진 판 번호 (11-09 — 폰 캐시)
   pick:function(g,lang){ IG.lang=lang||""; IG.gobj=g; IG.gid=g.id; IG.view="req"; IG.busy=0; gbInit(); return IG.bk; },
   send:function(){ var o=IG; if(!o.bk||!o.gobj||o.busy) return false; gbSend(); if(o.view!=="gconf") return false;
     open("ig"); IG.lang=o.lang; IG.gobj=o.gobj; IG.gid=o.gid; IG.bk=o.bk; IG.busy=0; IG.view="gconf"; paint(); gbTop(); return true; },
