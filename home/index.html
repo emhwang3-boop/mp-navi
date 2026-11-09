@@ -722,6 +722,8 @@ function spinCard(){ var p=PLACES.__pin; if(!p) return; if(window.KL) KL.ensure(
 document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest("a")) return; var it=e.target.closest&&e.target.closest("#res .sres"); if(!it) return; var x=(window._sres||[])[+it.dataset.i]; if(x) spinShow(x); });
 // 공유 — 화면은 보여 주되 실제로는 보내지 않는다 (체험판, 사장님 기기 포함 · 2026-10-12)
 // HTS 앱 공유 창을 그대로 옮겨 왔다 — 단추는 모두 막힘 (2026-10-12)
+// 11-09 사장님 「피씨에서 안되는 건 빼고」 — PC(안드로이드·아이폰·아이패드 아님)엔 문자(sms:) 단추를 안 둔다 · 메일은 PC 에서 지메일 작성 화면(「여기선 이메일을 누르면 지메일만」)
+function shPC(){ var ua=navigator.userAgent||""; return !/Android|iPhone|iPad|iPod/i.test(ua)&&!(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1); }
 function shBuild(p0,noHd){   // p0·noHd = 다른 창 안에 같은 단추를 넣을 때 (11-07 투어 일정 「공유」)
   var p=p0||document.getElementById("shIn");
   const en=FG(), u="", t="";
@@ -731,7 +733,7 @@ function shBuild(p0,noHd){   // p0·noHd = 다른 창 안에 같은 단추를 �
   const wc='<button class="sht" data-a="wechat"><svg class="shi" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#07C160"/><text x="12" y="17" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="sans-serif">微</text></svg> '+({ko:"위챗",en:"WeChat",ja:"WeChat",zhs:"微信",zht:"微信",es:"WeChat"}[LANG]||"WeChat")+'</button>', zh=LANG==="zhs"||LANG==="zht";
   if(zh) h+=wc;
   h+=A("https://twitter.com/intent/tweet?text="+t+"&url="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z\"/></svg> X");
-  h+=A("sms:?&body="+t+"%20"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#34C759\" d=\"M12 3C6.98 3 3 6.36 3 10.5c0 2.35 1.28 4.43 3.3 5.8-.13 1.02-.5 2.2-1.3 3.2 1.7-.2 3.2-.94 4.3-1.7.85.2 1.75.3 2.7.3 5.02 0 9-3.36 9-7.6S17.02 3 12 3z\"/></svg> "+T("문자","Message"));
+  if(!shPC()) h+=A("sms:?&body="+t+"%20"+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#34C759\" d=\"M12 3C6.98 3 3 6.36 3 10.5c0 2.35 1.28 4.43 3.3 5.8-.13 1.02-.5 2.2-1.3 3.2 1.7-.2 3.2-.94 4.3-1.7.85.2 1.75.3 2.7.3 5.02 0 9-3.36 9-7.6S17.02 3 12 3z\"/></svg> "+T("문자","Message"));
   h+=A("https://t.me/share/url?url="+u+"&text="+t,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#26A5E4\" d=\"M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z\"/></svg> "+T("텔레그램","Telegram"));
   h+=A("https://social-plugins.line.me/lineit/share?url="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#00C300\" d=\"M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314\"/></svg> LINE");
   h+=A("https://www.facebook.com/sharer/sharer.php?u="+u,"<svg class=\"shi\" viewBox=\"0 0 24 24\"><path fill=\"#1877F2\" d=\"M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z\"/></svg> "+T("페이스북","Facebook"));
@@ -774,7 +776,7 @@ function shOwnerFix0(p, appName, tok, o){   // o={url,txt,desc} = 앱 대신 그
     else if(shHas(lab,"페이스북","Facebook")) href="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(url);
     else if(shHas(lab,"밴드","BAND")) href="https://band.us/plugin/share?body="+encodeURIComponent(txt+"\n"+url+itx)+"&route="+encodeURIComponent(url);
     else if(/WhatsApp/.test(lab)) href="https://api.whatsapp.com/send?text="+encodeURIComponent(txt+" "+url+itx);
-    else if(shHas(lab,"메일","Email")) href="mailto:?subject="+encodeURIComponent(txt)+"&body="+encodeURIComponent(url+itx);
+    else if(shHas(lab,"메일","Email")) href=shPC()?"https://mail.google.com/mail/?view=cm&fs=1&su="+encodeURIComponent(txt)+"&body="+encodeURIComponent(url+itx):"mailto:?subject="+encodeURIComponent(txt)+"&body="+encodeURIComponent(url+itx);   /* 11-09 PC 는 mailto 가 먹통 → 지메일 작성(새 탭) · 폰은 메일 앱 그대로 */
     if(shHas(lab,"카카오톡","KakaoTalk")&&window.Kakao){   // 카카오 SDK — PC 에서도 카카오톡 「친구에게 보내기」 (2026-10-13)
       b.classList.remove("sht");
       b.onclick=function(){ var m=p.querySelector(".shmsg"), ku=url;
@@ -2146,7 +2148,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script>
 /* 버전 (사장님 11-07 「버전으로 관리하자」 「가」 1.0.5 모양) — 올릴 때마다 배포 도구(navi_fast)가 끝자리를 하나 올린다(version.json · 아래 APPV 를 같이)
    ⋮ 메뉴 맨 아래 「버전 1.0.5」 → 누르면 서버 최신(version.json)과 비교 · 쓰는 중 새 판이 올라오면 위에 「새 버전이 있어요 [새로 받기]」(10분마다·화면으로 돌아올 때 확인) */
-var APPV="1.0.44";
+var APPV="1.0.45";
 (function(){ var L6=function(o){ return o[window.LANG]||o.en; }, W={v:{ko:"버전",en:"Version",ja:"バージョン",zhs:"版本",zht:"版本",es:"Versión"},
   ok:{ko:"최신 버전이에요",en:"You're on the latest version",ja:"最新バージョンです",zhs:"已是最新版本",zht:"已是最新版本",es:"Tienes la última versión"},
   nw:{ko:"새 버전이 있어요",en:"A new version is available",ja:"新しいバージョンがあります",zhs:"有新版本",zht:"有新版本",es:"Hay una nueva versión"},
