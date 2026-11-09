@@ -92,12 +92,11 @@ function walkMin(k){ return Math.max(1,Math.round(k*1.3/4.5*60)); }
 function nm(s){ return LANG==="ko"?String(s||""):KS(s); }   // 일·중·스페인어 화면엔 한글을 남기지 않는다(로마자)
 
 var S={from:{t:"me"},to:null,fq:"",tq:"",fc:null,tc:null,fs:0,fst:"",tst:"",st:"",R:null,rl:"",at:0,err:"",open:{},TT:{}};
-// ── 출발 후보: 현재 위치 · 숙소 (내 여행 — 이번 여행에서 고른 숙소, 도시마다 고른 숙소) ──
-function lodges(){ var o=null; try{ o=window.TRIP&&TRIP.state().opt; }catch(e){} if(!o) return [];
+// ── 출발 후보: 현재 위치 · 숙소 (11-09 사장님 「숙소는 모두 연동」 — 내 여행 숙소 칸(trip.js opt.nh)의 그 밤 숙소: 여행 중이면 오늘 밤, 도시를 옮기는 날은 전날 밤 숙소도 · 여행 전이면 첫날 밤) ──
+function lodges(){ var r=null; try{ r=window.TRIP&&TRIP.stay&&TRIP.stay.now(); }catch(e){} if(!r) return [];
   var out=[], add=function(h){ if(!h||h.type==="here"||!(+h.lat)||!(+h.lng)) return; if(out.some(function(x){ return Math.abs(x.lat-h.lat)<1e-4&&Math.abs(x.lng-h.lng)<1e-4; })) return;
     var p=h.k&&PLACES[h.k]; out.push({t:"h",ko:h.ko||"",nm:p?LN(p):(LANG==="ko"?h.ko:KS(h.en||h.ko)),lat:+h.lat,lng:+h.lng}); };
-  if(o.hotel&&o.hOk===((o.start||"")+"|"+(o.n||1))) add(o.hotel);   // trip.js hOkNow 와 같은 규칙 — 예전에 저장된 숙소는 이번 여행 숙소로 안 본다 (11-06)
-  var hs=o.hotels||{}; Object.keys(hs).forEach(function(id){ add(hs[id]); }); return out.slice(0,4); }
+  add(r.h); add(r.prev); return out; }
 function pNm(x){ var p=x&&x.k&&PLACES[x.k]; return p?LN(p):(x?x.nm:""); }   // 우리 명소면 지금 화면 언어 이름 (언어를 바꿔도 그 자리에서)
 function fromNm(){ var f=S.from; if(!f) return ""; if(f.t==="me") return F("me");
   if(f.t==="h"){ var h=lodges().filter(function(x){ return Math.abs(x.lat-f.lat)<1e-4&&Math.abs(x.lng-f.lng)<1e-4; })[0]; if(h) return h.nm; } return pNm(f); }
