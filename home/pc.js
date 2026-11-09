@@ -107,6 +107,10 @@ adopt();
 if(!$("bell")){ var _bt=0, _bi=setInterval(function(){ if($("bell")||++_bt>40){ clearInterval(_bi); adopt(); } },150); }
 var form=D.querySelector("form.sbox"), qw=form&&form.querySelector(".qw");
 if(form){ $("phHero").appendChild(form); if(qw&&!qw.querySelector(".ph-sic")) qw.insertAdjacentHTML("afterbegin",'<img class="ph-sic" src="img/menu/mi_search.png" alt="">'); }
+// 11-09 사장님 — 검색창 바로 아래 관심 버튼 8개(정의는 reco.js window.AICH 하나 · AI 화면 버튼과 같은 것) · 누르면 AI와 자유여행(#/ai)으로 가서 그 버튼을 누른 것과 같게(home/pc_ai.js PCAICHIP)
+$("phHero").insertAdjacentHTML("beforeend",'<div class="ph-chips" id="phChips"></div>');
+$("phChips").addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("[data-chip]"); if(!b) return; e.preventDefault(); try{ if(window.PCAICHIP) PCAICHIP(b.getAttribute("data-chip")); else if(window.PCGO) PCGO("ai"); }catch(x){} });
+function chipsPaint(){ var c=$("phChips"); if(!c) return; var A=window.AICH; if(!A||!A.list||!A.list.length){ c.hidden=true; return; } c.hidden=false; c.innerHTML=A.html("ph-chip",""); A.fit(c,function(){ mapH(true); }); }
 var res=$("res"); if(res) $("phRes").appendChild(res);
 var box=$("phMapBox"), vbar=$("vbar"), map=$("map");
 if(vbar) box.parentNode.insertBefore(vbar,box);
@@ -148,7 +152,7 @@ function paint(){ var lg=window.LANG||"ko";
   $("phH1").innerHTML=L6(TX.h1);
   var q=$("q"); if(q){ q.placeholder=L6(phone()?TX.qs:TX.q); q.setAttribute("aria-label",L6(TX.qa)); }
   var mh=$("phMapHint"); if(mh) mh.innerHTML='<b>'+E(L6(touch()?TX.hintT:TX.hint))+'</b> · '+E(L6(TX.hint2));
-  waysPaint(); pkgPaint(); appPaint(); footPaint();
+  chipsPaint(); waysPaint(); pkgPaint(); appPaint(); footPaint();
   setTimeout(eqGo,0); }
 function waysPaint(){ $("phWaysT").textContent=L6(TX.ways);
   var W=[["mi_guideperson",TX.w1t,"",TX.w1p,E(L6(TX.w1m)),TX.w1g],["mi_guide",TX.w2t,"",TX.w2p,E(L6(TX.w2m)),TX.w2g],["mi_calendar",TX.w3t,' <span class="ph-free">'+E(L6(TX.free))+'</span>',TX.w3p,E(L6(TX.w3m))+' <span class="ph-opt">'+E(L6(TX.opt))+'</span>',TX.w3g]];
@@ -232,7 +236,7 @@ window.addEventListener("click",function(e){ var a=e.target&&e.target.closest&&e
 // ── 처음 그리기 ──
 paint(); mapH(true);
 H.classList.add("pch-on");
-window.addEventListener("resize",function(){ mapH(); try{ var q=$("q"); if(q) q.placeholder=L6(phone()?TX.qs:TX.q); }catch(e){} arrUpd(); eqGo(); });
+window.addEventListener("resize",function(){ mapH(); try{ var cc=$("phChips"); if(cc&&window.AICH) AICH.fit(cc,function(){ mapH(true); }); }catch(e){} try{ var q=$("q"); if(q) q.placeholder=L6(phone()?TX.qs:TX.q); }catch(e){} arrUpd(); eqGo(); });
 window.addEventListener("load",function(){ adopt(); mapH(true); eqGo(); arrUpd(); qrMake(); });
 D.addEventListener("DOMContentLoaded",function(){ adopt(); try{ paint(); }catch(e){} });
 // 상품 목록은 허브(관리자 「상품 관리」)에서 한 번 더 — 앱 「AI와 일정짜기」 화면과 같은 길
