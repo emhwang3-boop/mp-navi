@@ -139,7 +139,7 @@ html.pch[data-theme="dark"] #pcAi .item a{background:var(--bg);border-color:var(
 #pcAi #trBox .trfxb,#pcAi #trBox .trfx{font-size:11.5px;white-space:nowrap}
 #pcAi #trBox .trfxb{padding:3px 8px}
 #pcAi #trBox .trfxw{min-width:0}
-#pcAi #trBox .trx{font-size:15px;padding:0 2px}
+#pcAi #trBox .trx,#pcAi #trRep .trx{font-size:15px;padding:0 2px}   /* 11-09 일정표 빼기 ✕ 도 카트 ✕ 와 같은 크기 */
 #pcAi #trBox #trClearAll{margin:4px 0 0!important;padding:5px 12px;font-size:12.5px}
 #pcAi #trBox .trin>.d{font-size:12px;line-height:1.45}
 #pcAi #trBox .psbox{margin:10px 0 0}
