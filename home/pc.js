@@ -1,4 +1,4 @@
-/* MosaicTrip.com 홈페이지 (PC 모양 · 폰에선 홈페이지를 폰에 맞춤) — 1단계: 첫 화면 + 머리 두 줄 (11-08)
+/* MosaicTrip 홈페이지 (PC 모양 · 폰에선 홈페이지를 폰에 맞춤) — 1단계: 첫 화면 + 머리 두 줄 (11-08)
  *  · home/index.html = mk_home.py 가 앱 index.html 을 그대로 베낀 것 + 이 파일. 이 파일은 그 맨 끝에서 돈다(앱 스크립트를 다 읽은 뒤)
  *  · 로직·서버·자료는 앱과 하나 (사장님 11-07) — 앱 전역(LANG·T·esc·MPICO·PLACES·HUB·SHOP·BELL·mpPG·shBuild·footBuild…)을 그대로 부른다
  *  · 앱 겉모양(머리줄·칩·안내판·고객의 소리)은 감추고(pc.css), 앱의 진짜 요소를 이 화면 자리로 옮겨 쓴다:
@@ -21,7 +21,7 @@ function phone(){ return window.matchMedia&&matchMedia("(max-width:640px)").matc
 function touch(){ return window.matchMedia&&matchMedia("(hover:none)").matches; }
 
 // ── 글 (6개 언어) ──
-var AGN=window.AGN||T6("모자이크트립.com","MosaicTrip.com","MosaicTrip.com","MosaicTrip.com","MosaicTrip.com","MosaicTrip.com");
+var AGN=window.AGN||T6("모자이크트립","MosaicTrip","MosaicTrip","MosaicTrip","MosaicTrip","MosaicTrip");
 var TX={
  bk:T6("내 예약","My bookings","予約確認","我的预约","我的預約","Mis reservas"),
  bd:T6("고객 게시판","Customer board","お客様掲示板","客户留言板","客戶留言板","Foro de clientes"),   // 11-09 사장님 — 「내 예약」 옆 (home/pc_board.js · board.js 와 같은 말)
@@ -75,7 +75,7 @@ var TX={
 };
 var NAVK=[["st","mi_stay"],["tr","mi_bus"],["gift","mi_gift"],["am","mi_amenity"],["em","mi_emergency"],["about","mi_info"],["contact","mi_phone"]];
 function navLbl(k){ return k==="tr"?L6(TX.tr):k==="st"?T2("숙소","Stay"):k==="gift"?T2("선물 고르기","Gift finder"):k==="am"?T2("편의시설","Convenience"):k==="em"?T2("긴급","Emergency"):L6(TX[k]); }
-function ttl(){ return window.LANG==="ko"?"모자이크트립.com - 대한민국":"MosaicTrip.com for Korea"; }   // 사장님 11-08 제목줄
+function ttl(){ return window.LANG==="ko"?"모자이크트립 - 대한민국":"MosaicTrip for Korea"; }   // 사장님 11-08 제목줄
 function homeUrl(){ return location.origin+"/home/"; }
 function img(n){ return '<img src="img/menu/'+n+'.png" alt="">'; }
 
