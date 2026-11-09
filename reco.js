@@ -60,8 +60,8 @@ function css(){ if($("rcCss")) return; var s=document.createElement("style"); s.
   +"#aipBox .apmsg{text-align:center;color:var(--sub);font-size:14.5px;margin:18px 4px}"
   +".aippop .appic{color:var(--ink);margin-bottom:6px}.aippop .appt{font-size:17px}"
   // 11-09 관심 버튼 8개 — 폰은 한 줄에 4개(두 줄), 넓으면 8개 · 모두 같은 크기 (홈페이지 AI 화면 버튼과 같은 모양)
-  +"#aipBox .apchips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:1fr;gap:6px;margin:4px 0 8px}"
-  +"@media (min-width:640px){#aipBox .apchips{grid-template-columns:repeat(8,minmax(0,1fr))}}"
+  +"#aipBox .apchips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;gap:6px;margin:4px 0 8px}"
+  +"@media (min-width:640px){#aipBox .apchips{grid-template-columns:repeat(9,minmax(0,1fr))}}"   // 11-09 9개 — 폰 3개씩 세 줄 · 넓으면 한 줄
   +"#aipBox .apchip{margin:0;border:1.5px solid var(--green);color:#2b8a3e;background:var(--card);border-radius:999px;padding:6px 4px;font-size:var(--chf,13.5px);font-weight:800;white-space:nowrap;cursor:pointer;text-align:center;min-width:0;overflow:hidden;line-height:1.25;font-family:inherit}"
   +"#aipBox .apchips.chwr .apchip{white-space:normal;overflow-wrap:normal;word-break:keep-all;border-radius:14px}#aipBox .apchip.on{background:var(--green);color:#fff}"
   +":root[data-theme=dark] #aipBox .apchip{color:#8ce99a}:root[data-theme=dark] #aipBox .apchip.on{color:#fff}";
@@ -265,7 +265,7 @@ var AX={
   pop:T6("카트 아이콘을 누르세요","Tap the cart icon","カートアイコンを押してください","请点击购物车图标","請點擊購物車圖示","Toca el icono del carrito"),
   ok:T6("확인","OK","OK","确定","確定","Aceptar")
 };
-// 「AI에게 묻기」 관심 버튼 8개 (사장님 11-08 이름 · 영어 밤문화 = Night Life) — 정의는 여기 하나 (11-09 home/pc_ai.js 에서 옮김)
+// 「AI에게 묻기」 관심 버튼 9개 (사장님 11-08 이름 · 영어 밤문화 = Night Life · 11-09 야시장 먹거리 더함) — 정의는 여기 하나 (11-09 home/pc_ai.js 에서 옮김)
 //   홈페이지 AI 화면(home/pc_ai.js)·홈페이지 첫 화면 검색창 아래(home/pc.js)·앱 「AI와 일정짜기」 화면 검색칸 아래(아래 chPaint, 사장님 11-09 「앱은 첫 화면이 아니라 이 화면 안」)가 같은 것을 쓴다
 //   누르면 그 질문을 검색칸에 넣고 같은 AI 추천(허브 /nreco — 직접 적어 찾는 것과 같은 한 번)
 var AICH=[
@@ -276,7 +276,8 @@ var AICH=[
  {k:"hr",t:T6("헤어","Hair","ヘア","美发","美髮","Peluquería"),q:T6("K스타일 헤어 미용실","K-style hair salons","Kスタイルのヘアサロン","韩式发型美发店","韓式髮型美髮店","Peluquerías de estilo coreano")},
  {k:"bt",t:T6("K-Beauty","K-Beauty","K-Beauty","K-Beauty","K-Beauty","K-Beauty"),q:T6("K-뷰티 화장품 쇼핑과 퍼스널 컬러 진단","K-beauty cosmetics shopping and personal color analysis","Kビューティーのコスメショッピングとパーソナルカラー診断","韩国美妆购物和个人色彩诊断","韓國美妝購物和個人色彩診斷","Compras de cosmética coreana y análisis de color personal")},
  {k:"sk",t:T6("피부관리","Skin care","スキンケア","皮肤管理","皮膚管理","Cuidado de la piel"),q:T6("피부관리·에스테틱 받을 수 있는 곳","Places for facials and skin care","肌ケア・エステを受けられる場所","可以做皮肤护理和美容的地方","可以做皮膚護理和美容的地方","Lugares para tratamientos faciales y cuidado de la piel")},
- {k:"nl",t:T6("밤문화","Night Life","ナイトライフ","夜生活","夜生活","Vida nocturna"),q:T6("밤에 놀기 좋은 곳 — 클럽·바·야시장","Night life — clubs, bars and night markets","夜遊びにいい場所 — クラブ・バー・夜市","夜生活好去处——夜店、酒吧、夜市","夜生活好去處——夜店、酒吧、夜市","Vida nocturna: discotecas, bares y mercados nocturnos")}];
+ {k:"nl",t:T6("밤문화","Night Life","ナイトライフ","夜生活","夜生活","Vida nocturna"),q:T6("밤에 놀기 좋은 곳 — 클럽·바","Night life — clubs and bars","夜遊びにいい場所 — クラブ・バー","夜生活好去处——夜店、酒吧","夜生活好去處——夜店、酒吧","Vida nocturna: discotecas y bares")},   // 11-09 야시장은 아래 단추로 따로
+ {k:"nm",t:T6("야시장 먹거리","Night Markets","夜市グルメ","夜市美食","夜市美食","Mercado nocturno"),q:T6("야시장과 길거리 먹거리","Night markets and street food","夜市と屋台グルメ","夜市和街头小吃","夜市和街頭小吃","Mercados nocturnos y comida callejera")}];   // 11-09 사장님 「야시장 먹거리 버튼을 따로」
 function chHtml(cls,on){ return AICH.map(function(x){ return '<button type="button" class="'+cls+(on===x.k?' on':'')+'" data-chip="'+x.k+'">'+esc(A6(x.t))+'</button>'; }).join(""); }
 // 같은 크기 (단추 규칙) — 글자가 넘치면 그 줄 글씨만 줄이고(13.5→11.5px), 그래도 넘치면 모두 같은 높이의 두 줄 칸(chwr — 낱말 사이에서만 줄바꿈, 낱말은 안 끊김 · 한 낱말이 넘치면 10px까지 더 줄임)
 function chFit(c,cb){ if(!c) return; c.classList.remove("chwr"); c.style.removeProperty("--chf"); requestAnimationFrame(function(){ var bs=c.children, fs=13.5, n=0, over=function(){ for(var i=0;i<bs.length;i++) if(bs[i].scrollWidth>bs[i].clientWidth+1) return true; return false; }, set=function(){ c.style.setProperty("--chf",fs+"px"); };
@@ -340,8 +341,9 @@ function apGo(q){ if(!q){ try{ $("aipQ").focus(); }catch(e){} return; }
     AP.kw=(j.kw||[]).filter(Boolean).slice(0,2); AP.nm=(j.nm||[]).filter(Boolean).slice(0,4); AP.note=j.note||""; AP.note_ko=j.note_ko||""; AP.lg=lg;
     return kGet(AP.kw,AP.nm,AP.picks.length,AP).then(function(kits){ if(AP.q!==q) return; kits.forEach(function(x){ x._l=lg; }); AP.kits=kits; AP.pk=apPk(); AP.busy=false; apPaint(); });
   }).catch(function(){ if(AP.q!==q) return; AP.busy=false; AP.st="err"; apPaint(); }); }
-function apPk(){ if(!window.SHOP||!SHOP.items) return []; var hay=[AP.q].concat(AP.kw,AP.nm);
-  AP.picks.forEach(function(p){ var P=PLACES[p.k]; if(P) hay.push(P.ko||"",P.en||""); }); hay=hay.join(" ");
+// 11-09 사장님 「밤문화 쿠킹 클라스 나오는건 고치고」 — 관심 버튼으로 찾은 것은 버튼 질문 글만 보고 상품을 고른다(AI 가 붙인 낱말·장소 이름에 「먹거리」가 섞여 밤문화에 쿠킹 클래스가 붙던 것)
+function apPk(){ if(!window.SHOP||!SHOP.items) return []; var chip=!!chOn(), hay=[AP.q].concat(chip?[]:AP.kw,chip?[]:AP.nm);
+  if(!chip) AP.picks.forEach(function(p){ var P=PLACES[p.k]; if(P) hay.push(P.ko||"",P.en||""); }); hay=hay.join(" ");
   var out=[]; try{ SHOP.items().forEach(function(p){ var re=PKW[p.id]||PKW[PCAT[p.c]]; if(re&&re.test(hay)&&out.indexOf(p.id)<0) out.push(p.id); }); }catch(e){} return out.slice(0,6); }
 function apPkList(){ if(!window.SHOP||!SHOP.items) return []; var all=[]; try{ all=SHOP.items(); }catch(e){} return AP.pk.map(function(id){ return all.filter(function(p){ return p.id===id; })[0]; }).filter(Boolean); }
 // 장소 한 줄 목록 — 우리 명소(AI 고름) → 구글 → 카카오 (옛 추천 화면과 같은 차례)
