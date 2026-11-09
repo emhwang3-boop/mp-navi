@@ -118,8 +118,9 @@ html.pch[data-theme="dark"] #pcSt .pcs-rt{color:#ffa94d}
 #pcSt .pcs-ad{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 #pcSt .pcs-tel a{color:var(--sub);text-decoration:none}
 #pcSt .pcs-tel a:hover{color:var(--ph-green-d)}
-#pcSt .pcs-bt{margin-top:auto;padding-top:8px;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;justify-content:end;align-self:flex-end;width:min(100%,196px)}   /* 같은 크기 두 단추 · 오른쪽 맞춤 */
-#pcSt .pcs-bt button{border-radius:999px;padding:7px 6px;font-size:13.5px;font-weight:800;cursor:pointer;white-space:nowrap;line-height:1.2;text-align:center;min-width:0}
+#pcSt .pcs-card{flex-wrap:wrap}   /* 11-09 단추 셋(자세히·내 숙소로 정하기·예약하기)은 사진·글 아래 카드 폭 한 줄 */
+#pcSt .pcs-bt{flex:0 0 100%;max-width:420px;margin-left:auto;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;box-sizing:border-box}   /* 같은 크기 단추 · 오른쪽 맞춤 */
+#pcSt .pcs-bt button{border-radius:999px;padding:7px 6px;font-size:13px;font-weight:800;cursor:pointer;white-space:normal;line-height:1.2;text-align:center;min-width:0;display:flex;align-items:center;justify-content:center}   /* 좁으면 낱말 단위로 두 줄(높이는 셋이 같게) */
 #pcSt .pcs-b2{border:1.5px solid var(--ph-green);background:var(--card);color:var(--ph-green-d)}
 #pcSt .pcs-b2:hover{background:var(--ph-gt)}
 #pcSt .pcs-b1{border:1.5px solid var(--ph-green);background:var(--ph-green);color:#fff}
