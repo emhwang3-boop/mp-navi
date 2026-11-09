@@ -93,7 +93,7 @@ var B={k:"seoul",lat:AREAS[0].lat,lng:AREAS[0].lng,nm:AREAS[0].p};   // 찾는 �
 var ST={q:"",qErr:"",me:"",ord:"",emq:"",emb:"",DATA:{}};
 var CUR=null;   // 지금 그린 화면 {box, cfg}
 function bName(){ return L6(B.nm); }
-function hotel(){ try{ var tr=window.TRIP&&TRIP.state&&TRIP.state(), h=tr&&tr.opt&&tr.opt.hotel; if(h&&h.type!=="here"&&isFinite(+h.lat)&&+h.lat) return {h:h,no:+tr.pno||1}; }catch(e){} return null; }
+function hotel(){ try{ var r=window.TRIP&&TRIP.stay&&TRIP.stay.now(), h=r&&r.h; if(h&&h.type!=="here"&&isFinite(+h.lat)&&+h.lat) return {h:h,no:+r.no||1}; }catch(e){} return null; }   // 11-09 내 여행 숙소 칸(trip.js opt.nh)의 그 밤 숙소 — 여행 중이면 오늘 밤, 여행 전이면 첫날 밤
 function hName(h){ return fg()?KS0(h.en||h.ko||""):(h.ko||h.en||""); }
 function setBase(b){ B=b; ST.qErr=""; ST.me=""; if(CUR&&CUR.cfg&&CUR.cfg.onBase) CUR.cfg.onBase(); }
 
