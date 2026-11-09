@@ -216,7 +216,7 @@ html,body{overflow-x:hidden}html{overscroll-behavior-y:none}   /* 당겨서 새�
 #zme{position:absolute;left:8px;right:auto;bottom:calc(26px + var(--zmeOff,0px));opacity:.8}#zme.off{display:none}   /* 지도 칸 안 오른쪽 아래 구석 — 지도 아래쪽이 화면 밖이면 보이는 부분의 구석으로 올라온다(지도 밖으론 안 나감), 지도가 화면에서 벗어나면 숨김 (사장님 10-17) */
 #nmapw:not([hidden]) ~ #zme{bottom:calc(30px + var(--zmeOff,0px))}
 #zme{display:none!important}   /* ◎ 현재 위치 단추 없앰 (사장님 10-20) — 「나」(부부 그림·구석 동그라미)를 누르면 내 자리로 + 거리재기 대기 */
-#meedge.nopos b{border-color:#9aa0a6;background-image:none!important;background:#fff}#meedge.nopos b::after{content:"";}#meedge.nopos i{display:none}
+#meedge.nopos b{border-color:#9aa0a6}/* 11-09 사장님 「흰색 원 — 부부 아이콘 있잖아」: 위치가 없어도 부부 그림, 테두리만 회색 */#meedge.nopos b::after{content:"";}#meedge.nopos i{display:none}
 #zme,#nmapw:not([hidden]) ~ #zme{top:calc(8px + var(--zmeTop,0px));bottom:auto;left:8px;right:auto;z-index:7}
 #zme{height:38px;padding:0 15px;font-size:15px;opacity:1;box-shadow:0 2px 8px rgba(0,0,0,.25)}   /* 현재 위치 단추 크게 (사장님 10-18) */   /* ◎ 현재 위치 = 모든 지도(전국·약도·자세한 지도) 왼쪽 위 구석에 늘 (사장님 10-18) — ← 와 지역 이름은 지도 위 줄(#vbar)이라 안 겹친다. 지도 위쪽이 화면 밖이면 보이는 부분의 구석으로 내려온다 */   /* 왼쪽 아래로 옮김 — 오른쪽 아래는 「나」 동그라미 자리 (사장님 10-17) */
 @keyframes meShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px) rotate(-4deg)}40%,80%{transform:translateX(5px) rotate(4deg)}}
@@ -1582,9 +1582,9 @@ function meEdge(){ var m=document.getElementById("map"); if(!m) return; var e=do
     ["touchstart","mousedown"].forEach(function(t){ e.addEventListener(t,function(ev){ ev.stopPropagation(); },{passive:true}); }); }
   if(DET){ var inb=false; try{ inb=!!(ME.pos&&_nm&&_nm.getBounds().hasLatLng(new naver.maps.LatLng(ME.pos[0],ME.pos[1]))); }catch(x){}
     if(ME.pos&&inb){ e.hidden=true; return; } var wd=m.clientWidth; e.classList.add("up"); e.classList.toggle("nopos",!ME.pos); e.hidden=false; e.style.left=(wd-34)+"px"; e.style.top="auto"; e.style.bottom="calc(34px + var(--zmeOff,0px))";
-    e.querySelector("i").style.display="none"; e.querySelector("span").textContent=T("나","Me"); if(ME.pos) e.querySelector("b").style.backgroundImage="url('img/me/me.png')"; return; }   /* 자세한 지도에서 내가 화면 밖(또는 위치 없음)이면 구석 「나」 — 누르면 내 자리로 */
+    e.querySelector("i").style.display="none"; e.querySelector("span").textContent=T("나","Me"); e.querySelector("b").style.backgroundImage="url('img/me/me.png')"; return; }   /* 11-09 사장님 「흰색 원 — 부부 아이콘 있잖아」: 위치가 없어도 그림을 채운다 */   /* 자세한 지도에서 내가 화면 밖(또는 위치 없음)이면 구석 「나」 — 누르면 내 자리로 */
   e.querySelector("i").style.display="";
-  if(!ME.pos){ var w0=m.clientWidth; e.classList.add("up","nopos"); e.hidden=false; e.style.left=(w0-34)+"px"; e.style.top="auto"; e.style.bottom="calc(34px + var(--zmeOff,0px))"; e.querySelector("span").textContent=T("나","Me"); return; }   /* 위치 없을 때도 구석 「나」 — 누르면 위치 받기 */
+  if(!ME.pos){ var w0=m.clientWidth; e.classList.add("up","nopos"); e.hidden=false; e.style.left=(w0-34)+"px"; e.style.top="auto"; e.style.bottom="calc(34px + var(--zmeOff,0px))"; e.querySelector("span").textContent=T("나","Me"); e.querySelector("b").style.backgroundImage="url('img/me/me.png')"; return; }   /* 위치 없을 때도 구석 「나」 — 누르면 위치 받기 · 11-09 그림도 채움(흰 원 X) */
   e.classList.remove("nopos");
   var w=m.clientWidth, h=MH(), as=ASP(), iw=w*as*ZM.s, ih=w*ZM.s, f=meGeoFrac(VIEW,ME.pos[0],ME.pos[1]);
   if(!f){ e.hidden=true; return; } var px=ZM.tx+f[0]*iw, py=ZM.ty+f[1]*ih;
@@ -1748,18 +1748,25 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
     toast(true); exitT=setTimeout(function(){ exitT=null; toast(false); guard(); },2000); });   // 2초 안에 또 누르면 지킴 칸이 없으니 그대로 나간다
 })();
 </script>
+<script>/* 11-09 사장님 「시연용 — 누른 자리에 노란 동그라미가 퍼지게」 「앱에도」: 주소에 ?demo=1 을 붙여 열면 켜지고(이 탭 안에서는 화면을 옮겨도 유지), ?demo=0 으로 끈다 · 앱·홈페이지 같이 */
+(function(){ try{ var q=location.search; if(/[?&]demo=1(?![0-9])/.test(q)) sessionStorage.setItem("mt_demo","1"); else if(/[?&]demo=0(?![0-9])/.test(q)) sessionStorage.removeItem("mt_demo"); if(!sessionStorage.getItem("mt_demo")) return; }catch(e){ return; }
+  var st=document.createElement("style"); st.textContent="@keyframes mtDemo{0%{transform:translate(-50%,-50%) scale(.25);opacity:1}55%{opacity:.85}100%{transform:translate(-50%,-50%) scale(2.1);opacity:0}}.mt-demo{position:fixed;left:0;top:0;width:66px;height:66px;border-radius:50%;pointer-events:none;z-index:2147483647;background:radial-gradient(circle,rgba(255,190,0,1) 0%,rgba(255,196,0,1) 30%,rgba(255,206,0,.7) 52%,rgba(255,215,0,.3) 64%,rgba(255,215,0,0) 74%);box-shadow:0 0 22px 10px rgba(255,196,0,.35);animation:mtDemo .75s ease-out forwards}";
+  (document.head||document.documentElement).appendChild(st);
+  function dot(x,y){ var d=document.createElement("div"); d.className="mt-demo"; d.style.left=x+"px"; d.style.top=y+"px"; (document.body||document.documentElement).appendChild(d); setTimeout(function(){ try{ d.remove(); }catch(e){} },800); }
+  document.addEventListener("pointerdown",function(e){ dot(e.clientX,e.clientY); },{capture:true,passive:true});
+})();</script>
 <script src="tpick.js?v=1106tp"></script>
 <script src="tpg.js?v=1107gr"></script>   <!-- 투어앱 결제 = KG이니시스·포트원 (패키지·가이드 인솔·일정 검토 공용, 11-07) — trip·near·shop 보다 먼저 -->
-<script src="trip.js?v=1109xp"></script>
+<script src="trip.js?v=1109ht"></script>
 <script src="gift.js?v=1108h4a"></script>
-<script src="near.js?v=1109pv"></script>
+<script src="near.js?v=1109ht"></script>
 <script src="shop.js?v=1109fq"></script>
 <script src="tosspay.js?v=1107p5"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
 /* 가이드 수정 링크로 열렸으면 바로 수정 폼을 연다 (2026-10-24) */try{ if(window.__mpGedit&&window.NEAR&&window.NEAR.gedit) window.NEAR.gedit(window.__mpGedit); }catch(e){}
 /* 손님 「내 예약」 링크로 열렸으면 통역·길안내 첫 화면의 그 예약 카드를 연다 (2026-11-05) */try{ if(window.__mpTdone&&window.NEAR&&window.NEAR.tdone) window.NEAR.tdone(window.__mpTdone); }catch(e){}</script>
 <script src="reco.js?v=1108h3"></script>
-<script src="transit.js?v=1108b8"></script>   <!-- 「교통」 — 출발지 → 도착지 대중교통·택시·고속/시외버스·KTX·SRT 한 화면 (허브 /ntransit, 11-07) — 첫 화면 칩 줄(#gfchips) 뒤에 -->
+<script src="transit.js?v=1109ht"></script>   <!-- 「교통」 — 출발지 → 도착지 대중교통·택시·고속/시외버스·KTX·SRT 한 화면 (허브 /ntransit, 11-07) — 첫 화면 칩 줄(#gfchips) 뒤에 -->
 <script src="gu.js?v=1105mu"></script>
 <script src="citytour.js?v=1024icons"></script>
 <script src="pass.js?v=1107p5"></script>
@@ -2086,7 +2093,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script>
 /* 버전 (사장님 11-07 「버전으로 관리하자」 「가」 1.0.5 모양) — 올릴 때마다 배포 도구(navi_fast)가 끝자리를 하나 올린다(version.json · 아래 APPV 를 같이)
    ⋮ 메뉴 맨 아래 「버전 1.0.5」 → 누르면 서버 최신(version.json)과 비교 · 쓰는 중 새 판이 올라오면 위에 「새 버전이 있어요 [새로 받기]」(10분마다·화면으로 돌아올 때 확인) */
-var APPV="1.0.35";
+var APPV="1.0.36";
 (function(){ var L6=function(o){ return o[window.LANG]||o.en; }, W={v:{ko:"버전",en:"Version",ja:"バージョン",zhs:"版本",zht:"版本",es:"Versión"},
   ok:{ko:"최신 버전이에요",en:"You're on the latest version",ja:"最新バージョンです",zhs:"已是最新版本",zht:"已是最新版本",es:"Tienes la última versión"},
   nw:{ko:"새 버전이 있어요",en:"A new version is available",ja:"新しいバージョンがあります",zhs:"有新版本",zht:"有新版本",es:"Hay una nueva versión"},
@@ -2123,17 +2130,17 @@ var APPV="1.0.35";
 <link rel="stylesheet" href="home/pc_near.css?v=1a402da5">
 <link rel="stylesheet" href="home/pc_pkg.css?v=840d437c">
 <link rel="stylesheet" href="home/pc_sos.css?v=bac4f9d4">
-<link rel="stylesheet" href="home/pc_stay.css?v=f0fcfd3a">
+<link rel="stylesheet" href="home/pc_stay.css?v=01ac3817">
 <script src="home/pc_router.js?v=c02edfc4"></script>
-<script src="home/pc_ai.js?v=49fb6494"></script>
+<script src="home/pc_ai.js?v=0e0600bb"></script>
 <script src="home/pc_bk.js?v=83bce4ac"></script>
 <script src="home/pc_board.js?v=38398898"></script>
 <script src="home/pc_gift.js?v=aca48c5a"></script>
 <script src="home/pc_guide.js?v=cf860b6b"></script>
 <script src="home/pc_info.js?v=37b9a540"></script>
-<script src="home/pc_near.js?v=196ab1c3"></script>
+<script src="home/pc_near.js?v=6472421e"></script>
 <script src="home/pc_pkg.js?v=aac5df5d"></script>
 <script src="home/pc_sos.js?v=6134ba11"></script>
-<script src="home/pc_stay.js?v=19890a84"></script>
+<script src="home/pc_stay.js?v=b8d88510"></script>
 </body>
 </html>
