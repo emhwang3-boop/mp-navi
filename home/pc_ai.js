@@ -145,8 +145,8 @@ function aipPaint(){ var g=$("aipGo"); if(g) g.innerHTML='<span>'+E(L6(TX.askB))
   var c=$("paChips"); if(c) c.innerHTML=CH.map(function(x){ return '<button type="button" class="pa-chip'+(S.chip===x.k?' on':'')+'" data-chip="'+x.k+'">'+E(L6(x.t))+'</button>'; }).join("");
   chipFit(); rhPaint(); }
 // 버튼 8개는 같은 크기 한 줄 (사장님 11-08 단추 규칙) — 글자가 넘치면 그 줄 글씨만 줄인다
-function chipFit(){ var c=$("paChips"); if(!c) return; c.style.removeProperty("--pa-cf"); requestAnimationFrame(function(){ var bs=c.children, fs=13.5, n=0, over=function(){ for(var i=0;i<bs.length;i++) if(bs[i].scrollWidth>bs[i].clientWidth+1) return true; return false; };
-  while(over()&&fs>10.5&&n++<8){ fs-=0.5; c.style.setProperty("--pa-cf",fs+"px"); } }); }
+function chipFit(){ var c=$("paChips"); if(!c) return; c.classList.remove("chwr"); c.style.removeProperty("--pa-cf"); requestAnimationFrame(function(){ var bs=c.children, fs=13.5, n=0, over=function(){ for(var i=0;i<bs.length;i++) if(bs[i].scrollWidth>bs[i].clientWidth+1) return true; return false; }, set=function(){ c.style.setProperty("--pa-cf",fs+"px"); };
+  while(over()&&fs>11.5&&n++<8){ fs-=0.5; set(); } if(over()){ c.classList.add("chwr"); n=0; while(over()&&fs>10&&n++<6){ fs-=0.5; set(); } } }); }   // 11-09 9개 — 그래도 넘치면 모두 같은 높이 두 줄(낱말 사이에서만 줄바꿈 · reco.js chFit 과 같게)
 // 추천 결과 머리 한 줄 — 「AI 추천 · K-Food · 카드를 누르면 자세히」
 function rhPaint(){ var rh=$("paRh"), rs=$("aipRes"); if(!rh||!rs) return; var on=!!rs.querySelector(".apc,.apk"), ch=CH.filter(function(x){ return x.k===S.chip; })[0];
   rh.hidden=!on; if(on) rh.innerHTML='<b>'+E(L6(TX.rh))+(ch?' · '+E(L6(ch.t)):'')+'</b><span>'+E(L6(TX.rhH))+'</span>';
