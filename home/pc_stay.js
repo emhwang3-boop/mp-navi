@@ -49,9 +49,9 @@ var CITY4=[{c:"seoul",n:T6("서울","Seoul","ソウル","首尔","首爾","Seúl
  {c:"jeju",n:T6("제주","Jeju","済州","济州","濟州","Jeju"),p:T6("제주시청","Jeju City Hall","済州市庁","济州市政府","濟州市政府","el Ayuntamiento de Jeju"),lat:33.4996,lng:126.5312}];
 function cityBase(c){ var o=CITY4.filter(function(x){ return x.c===c; })[0]||CITY4[0]; return {k:"city",c:o.c,lat:o.lat,lng:o.lng,nm:o.p}; }
 function baseName(b){ if(!b) return ""; if(b.k==="city") return L6(b.nm); if(b.k==="me") return L6(CM.my); return KSs(FL()&&b.en?b.en:b.ko); }
-// 「내 일정 숙소」 = AI와 자유여행 지금 플랜의 숙소(첫날 숙소 · 도시마다 숙소 중 앞의 것) — 앱 trip.js 자료 그대로 읽기만
-function tripHotel(){ try{ var tr=window.TRIP&&TRIP.state(), o=(tr&&tr.opt)||{}, h=o.hotel; if(!(h&&+h.lat)){ var hs=o.hotels||{}; h=null; for(var k in hs){ if(hs[k]&&+hs[k].lat){ h=hs[k]; break; } } }
-  return h&&+h.lat?{h:h,pno:tr.pno||1}:null; }catch(e){ return null; } }
+// 「내 일정 숙소」 = AI와 자유여행 지금 플랜 숙소 칸(trip.js opt.nh, 11-09 「숙소는 모두 연동」)의 그 밤 숙소 — 여행 중이면 오늘 밤, 여행 전이면 첫날 밤 · 읽기만
+function tripHotel(){ try{ var r=window.TRIP&&TRIP.stay&&TRIP.stay.now(), h=r&&r.h;
+  return h&&h.type!=="here"&&+h.lat?{h:h,pno:r.no||1}:null; }catch(e){ return null; } }
 function hName(h){ return KSs(FL()&&h.en?h.en:(h.ko||h.en||"")); }
 
 // ══ 어디 근처 고르기 (숙소·선물 같이) — 도시 넷 · 동네·역 이름 찾기(허브 /kplace 카카오, 무료) · 내 위치 · 내 일정 숙소 ══
@@ -208,8 +208,9 @@ function card(x,i){ var t=tabs()[ST.tab]||{}, en=FL()&&x.name_en, nm=KSs(en?x.na
    +'<div class="pcs-nm"><span class="pcs-no">'+(i+1)+'</span><b>'+E(nm)+'</b>'+(x.kto?'<span class="pcs-kto" title="'+E(TT("한국관광공사 관광정보에 실린 숙소","Listed by the Korea Tourism Organization"))+'">'+E(TT("관광공사","KTO"))+'</span>':'')+'</div>'
    +(en&&x.name_en!==x.name?'<div class="pcs-ko">'+E(x.name)+'</div>':'')
    +'<div class="pcs-mt">'+E(kindL(t))+' · '+E(kmD(x.dist))+(x.rating?' · <span class="pcs-rtw"><span class="pcs-rt">★ '+(+x.rating).toFixed(1)+'</span> ('+(+x.n||0)+')</span>':'')+'</div>'
-   +(ad?'<div class="pcs-ad">'+E(ad)+'</div>':'')+tel
-   +'<div class="pcs-bt"><button type="button" class="pcs-b2" data-ps="det" data-i="'+i+'">'+E(L6(TX.det))+'</button><button type="button" class="pcs-b1" data-ps="bk" data-i="'+i+'">'+E(TT("예약하기","Book"))+'</button></div></div></article>'; }
+   +(ad?'<div class="pcs-ad">'+E(ad)+'</div>':'')+tel+'</div>'
+   +'<div class="pcs-bt"><button type="button" class="pcs-b2" data-ps="det" data-i="'+i+'">'+E(L6(TX.det))+'</button><button type="button" class="pcs-b2" data-ps="my" data-i="'+i+'">'+E(myLbl())+'</button><button type="button" class="pcs-b1" data-ps="bk" data-i="'+i+'">'+E(TT("예약하기","Book"))+'</button></div></article>'; }   // 11-09 사장님 「가」 — [내 숙소로 정하기] · 단추 셋은 카드 폭 한 줄에 같은 크기(오른쪽 맞춤)
+function myLbl(){ try{ return TRIP.stay.label(); }catch(e){ return L6(T6("내 숙소로 정하기","Set as my lodging","宿泊先に設定","设为我的住处","設為我的住處","Elegir como alojamiento")); } }
 function drawMain(){ var c=$("psC"); if(!c) return; var t=tabs()[ST.tab]; if(!t){ c.innerHTML=""; return; }
   var h='<div class="pcs-ch"><h2>'+E(F(ST.far?TX.headF:TX.head,{p:baseName(WS.base),k:kindL(t),s:L6(ST.sort==="k"?TX.sKto:TX.sNear)}))+'</h2>'
    +(ST.items&&ST.items.length&&!ST.far?'<div class="pcs-src">'+E(F(TX.src,{r:rLbl()}))+'</div>':'')+'</div>';
@@ -237,6 +238,7 @@ D.addEventListener("click",function(e){ var t=e.target; if(!t.closest||!t.closes
   if(a==="det"){ try{ NS().tap(tb); }catch(z){}   // 앱 목록에서 한 곳 고를 때와 같은 집계
     pinShow({name:x.name,name_en:x.name_en||x.name,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",y:x.y,x:x.x,tel:x.tel||"",cat:x.cat||"",cat_en:x.cat_en||"",_l:ST.lang!=="ko"&&x.name_en?ST.lang:"ko",oh:x.oh,gt:x.gt}); return; }
   if(a==="bk"){ var nm=(x.name_en&&x.name_en!==x.name)?x.name_en:x.name; try{ NS().book(nm,+x.y,+x.x); }catch(z){} return; }   // 앱 카드 「예약하기」와 같은 이름(영어 이름이 있으면 그것)
+  if(a==="my"){ try{ TRIP.stay.mine({type:"addr",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x,addr:x.addr||""},function(){ drawLeft(); }); }catch(z){} return; }   // 11-09 앱 ⋮ 숙소와 같은 길(trip.js myStay — 짠 일정이 있으면 「이 밤들에 넣을까요?」, 없으면 첫날 밤)
 });
 // 숙소 카드에 마우스 → 그 번호 핀이 커진다 (배치도)
 D.addEventListener("mouseover",function(e){ var t=e.target; if(!t.closest) return; var cd=t.closest("#psC .pcs-card"), n=cd?(+cd.getAttribute("data-i")+1):0; if(n===ST.hv) return; if(!cd&&!t.closest("#psC")&&!ST.hv) return; ST.hv=n; pinOn($("psM"),n||""); });
