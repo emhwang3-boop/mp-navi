@@ -58,7 +58,13 @@ function css(){ if($("rcCss")) return; var s=document.createElement("style"); s.
   +"#aipBox .apbd{display:inline-block;font-size:11px;font-weight:900;border-radius:6px;padding:0 5px;margin-left:6px;border:1px solid var(--line);color:var(--sub)}#aipBox .apbd.on{border-color:#2f9e44;color:#2b8a3e}"
   +"#aipBox .apback{border:0;background:none;color:var(--blue);font-weight:800;font-size:15px;cursor:pointer;padding:8px 2px;font-family:inherit}#aipBox .aplk{margin-top:6px}"
   +"#aipBox .apmsg{text-align:center;color:var(--sub);font-size:14.5px;margin:18px 4px}"
-  +".aippop .appic{color:var(--ink);margin-bottom:6px}.aippop .appt{font-size:17px}";
+  +".aippop .appic{color:var(--ink);margin-bottom:6px}.aippop .appt{font-size:17px}"
+  // 11-09 관심 버튼 8개 — 폰은 한 줄에 4개(두 줄), 넓으면 8개 · 모두 같은 크기 (홈페이지 AI 화면 버튼과 같은 모양)
+  +"#aipBox .apchips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:1fr;gap:6px;margin:4px 0 8px}"
+  +"@media (min-width:640px){#aipBox .apchips{grid-template-columns:repeat(8,minmax(0,1fr))}}"
+  +"#aipBox .apchip{margin:0;border:1.5px solid var(--green);color:#2b8a3e;background:var(--card);border-radius:999px;padding:6px 4px;font-size:var(--chf,13.5px);font-weight:800;white-space:nowrap;cursor:pointer;text-align:center;min-width:0;overflow:hidden;line-height:1.25;font-family:inherit}"
+  +"#aipBox .apchips.chwr .apchip{white-space:normal;overflow-wrap:normal;word-break:keep-all;border-radius:14px}#aipBox .apchip.on{background:var(--green);color:#fff}"
+  +":root[data-theme=dark] #aipBox .apchip{color:#8ce99a}:root[data-theme=dark] #aipBox .apchip.on{color:#fff}";
   document.head.appendChild(s); }
 function L(){ return LANG!=="ko"; }   // 외국어 화면 (10-18)
 function RM(f){ f(); window._RR={f:f}; }   // #res 안내 — 언어를 바꾸면 lang.js 가 그 자리에서 다시 (10-18)
@@ -259,6 +265,27 @@ var AX={
   pop:T6("카트 아이콘을 누르세요","Tap the cart icon","カートアイコンを押してください","请点击购物车图标","請點擊購物車圖示","Toca el icono del carrito"),
   ok:T6("확인","OK","OK","确定","確定","Aceptar")
 };
+// 「AI에게 묻기」 관심 버튼 8개 (사장님 11-08 이름 · 영어 밤문화 = Night Life) — 정의는 여기 하나 (11-09 home/pc_ai.js 에서 옮김)
+//   홈페이지 AI 화면(home/pc_ai.js)·홈페이지 첫 화면 검색창 아래(home/pc.js)·앱 「AI와 일정짜기」 화면 검색칸 아래(아래 chPaint, 사장님 11-09 「앱은 첫 화면이 아니라 이 화면 안」)가 같은 것을 쓴다
+//   누르면 그 질문을 검색칸에 넣고 같은 AI 추천(허브 /nreco — 직접 적어 찾는 것과 같은 한 번)
+var AICH=[
+ {k:"ev",t:T6("이벤트","Events","イベント","活动","活動","Eventos"),q:T6("요즘 열리는 축제·공연·이벤트","Festivals, shows and events on now","今開催中のお祭り・公演・イベント","最近举办的节庆、演出和活动","最近舉辦的節慶、演出和活動","Festivales, espectáculos y eventos de estos días")},
+ {k:"ex",t:T6("체험","Experiences","体験","体验","體驗","Experiencias"),q:T6("한복 입기·전통 공예 같은 한국 체험","Korean experiences like wearing hanbok or traditional crafts","韓服体験や伝統工芸などの韓国体験","穿韩服、传统手工艺等韩国体验","穿韓服、傳統手工藝等韓國體驗","Experiencias coreanas como vestir hanbok o artesanía tradicional")},
+ {k:"fd",t:T6("K-Food","K-Food","K-Food","K-Food","K-Food","K-Food"),q:T6("꼭 먹어 봐야 할 한국 음식과 시장 먹거리","Must-try Korean food and market eats","絶対食べたい韓国料理と市場グルメ","必吃的韩国美食和市场小吃","必吃的韓國美食和市場小吃","Comida coreana imprescindible y puestos de mercado")},
+ {k:"kp",t:T6("K-Pop","K-Pop","K-Pop","K-Pop","K-Pop","K-Pop"),q:T6("K-Pop 좋아해요 — 기획사·굿즈숍·공연장","I love K-Pop — agencies, merch shops and venues","K-POPが好き — 事務所・グッズショップ・公演会場","我喜欢K-Pop——经纪公司、周边店和演出场地","我喜歡K-Pop——經紀公司、周邊店和演出場地","Me encanta el K-Pop: agencias, tiendas de merch y salas")},
+ {k:"hr",t:T6("헤어","Hair","ヘア","美发","美髮","Peluquería"),q:T6("K스타일 헤어 미용실","K-style hair salons","Kスタイルのヘアサロン","韩式发型美发店","韓式髮型美髮店","Peluquerías de estilo coreano")},
+ {k:"bt",t:T6("K-Beauty","K-Beauty","K-Beauty","K-Beauty","K-Beauty","K-Beauty"),q:T6("K-뷰티 화장품 쇼핑과 퍼스널 컬러 진단","K-beauty cosmetics shopping and personal color analysis","Kビューティーのコスメショッピングとパーソナルカラー診断","韩国美妆购物和个人色彩诊断","韓國美妝購物和個人色彩診斷","Compras de cosmética coreana y análisis de color personal")},
+ {k:"sk",t:T6("피부관리","Skin care","スキンケア","皮肤管理","皮膚管理","Cuidado de la piel"),q:T6("피부관리·에스테틱 받을 수 있는 곳","Places for facials and skin care","肌ケア・エステを受けられる場所","可以做皮肤护理和美容的地方","可以做皮膚護理和美容的地方","Lugares para tratamientos faciales y cuidado de la piel")},
+ {k:"nl",t:T6("밤문화","Night Life","ナイトライフ","夜生活","夜生活","Vida nocturna"),q:T6("밤에 놀기 좋은 곳 — 클럽·바·야시장","Night life — clubs, bars and night markets","夜遊びにいい場所 — クラブ・バー・夜市","夜生活好去处——夜店、酒吧、夜市","夜生活好去處——夜店、酒吧、夜市","Vida nocturna: discotecas, bares y mercados nocturnos")}];
+function chHtml(cls,on){ return AICH.map(function(x){ return '<button type="button" class="'+cls+(on===x.k?' on':'')+'" data-chip="'+x.k+'">'+esc(A6(x.t))+'</button>'; }).join(""); }
+// 같은 크기 (단추 규칙) — 글자가 넘치면 그 줄 글씨만 줄이고(13.5→11.5px), 그래도 넘치면 모두 같은 높이의 두 줄 칸(chwr — 낱말 사이에서만 줄바꿈, 낱말은 안 끊김 · 한 낱말이 넘치면 10px까지 더 줄임)
+function chFit(c,cb){ if(!c) return; c.classList.remove("chwr"); c.style.removeProperty("--chf"); requestAnimationFrame(function(){ var bs=c.children, fs=13.5, n=0, over=function(){ for(var i=0;i<bs.length;i++) if(bs[i].scrollWidth>bs[i].clientWidth+1) return true; return false; }, set=function(){ c.style.setProperty("--chf",fs+"px"); };
+  while(over()&&fs>11.5&&n++<8){ fs-=0.5; set(); } if(over()){ c.classList.add("chwr"); n=0; while(over()&&fs>10&&n++<6){ fs-=0.5; set(); } } if(cb) cb(); }); }
+function chOn(){ var q=(AP&&AP.q)||""; for(var i=0;i<AICH.length;i++) if(q&&A6(AICH[i].q)===q) return AICH[i].k; return ""; }   // 지금 찾은 질문이 버튼 질문이면 그 버튼을 켠 모양
+function chPaint(){ var c=$("aipChips"); if(!c) return; c.innerHTML=chHtml("apchip",chOn()); chFit(c); }
+function chGo(k){ var x=AICH.filter(function(y){ return y.k===k; })[0], q=$("aipQ"); if(!x||!q) return; q.value=A6(x.q); try{ q.blur(); }catch(e){} apGo(q.value.trim()); }   // 검색칸 「찾기」와 같은 길
+window.AICH={list:AICH,html:chHtml,fit:chFit};
+(function(){ var t=0; window.addEventListener("resize",function(){ clearTimeout(t); t=setTimeout(function(){ chFit($("aipChips")); },150); }); })();
 // 체험·입장권 상품 고르기 — 고정 상품 id 별 낱말(6개 언어 + AI 가 주는 한국어 검색어). 관리자가 더한 상품은 분류(c)로
 var PKW={
   b4:/케이팝|k-?pop|아이돌|하이브|hybe|jyp|\byg\b|sm ?타운|smtown|kwangya|광야|idol|アイドル|偶像/i,
@@ -281,13 +308,14 @@ function apOpen(){ css(); if(apBox()) return;
   b.innerHTML='<div class="apin"><div class="aptop"><b id="aipTtl"></b><span id="aipCart" class="apcart"></span><button type="button" class="apdone" data-ap="done"></button></div>'
     +'<p class="apsub apdesc" id="aipDesc"></p><div id="aipSteps"></div>'   // 맨 위 설명 + 3단계(① 항공편 ② 첫날 숙소 ③ AI와 일정짜기 — 화면은 trip.js TRIP.steps, 11-06)
     +'<form class="apq" id="aipF"><input id="aipQ" type="text" autocomplete="off" enterkeyhint="search" maxlength="200"><button type="submit" class="apgo" id="aipGo"><img src="img/menu/mi_search.png" alt=""></button></form>'
+    +(window.PC_HOME?'':'<div class="apchips" id="aipChips"></div>')   // 11-09 관심 버튼 8개 — 검색칸 바로 아래
     +'<p class="apsub" id="aipSub"></p><div id="aipRes"></div></div>';
   document.body.appendChild(b); document.documentElement.classList.add("aiplock");
   $("aipF").onsubmit=function(e){ e.preventDefault(); var q=$("aipQ"); try{ q.blur(); }catch(x){} apGo(q.value.trim()); };
   if(AP.q) $("aipQ").value=AP.q; AP.det=null; apLang();
   if(!AP.q) setTimeout(function(){ try{ $("aipQ").focus(); }catch(e){} },80); }
 function apLang(){ var b=apBox(); if(!b) return; $("aipTtl").textContent=A6(AIC6); b.querySelector(".apdone").textContent=A6(AX.done); var dd=$("aipDesc"); if(dd) dd.textContent=A6(AID6); try{ if(window.TRIP&&TRIP.steps) TRIP.steps($("aipSteps")); }catch(e){}
-  var q=$("aipQ"); q.placeholder=A6(AX.ph); q.setAttribute("aria-label",A6(AIC6)); $("aipGo").setAttribute("aria-label",A6(AX.go)); $("aipSub").textContent=A6(AX.sub); apPaint(); }
+  var q=$("aipQ"); q.placeholder=A6(AX.ph); q.setAttribute("aria-label",A6(AIC6)); $("aipGo").setAttribute("aria-label",A6(AX.go)); $("aipSub").textContent=A6(AX.sub); chPaint(); apPaint(); }
 function apClose(){ var b=apBox(); if(b) b.remove(); document.documentElement.classList.remove("aiplock"); AP.det=null; }
 function apDone(){ apClose(); apPop(); }
 function apPop(){ var p=document.createElement("div"); p.className="trpop aippop";
@@ -301,7 +329,7 @@ function apBack(){ if(!apBox()) return false; if(window.PC_HOME&&apBox().getAttr
 function apGo(q){ if(!q){ try{ $("aipQ").focus(); }catch(e){} return; }
   if(!pass()){ try{ openPricing(); }catch(e){} return; }   // 이용권 자리 — 지금은 hasPass()=true (옛 「추천받기」와 같음)
   if(AP.busy) return;
-  AP=apNew(q); AP.busy=true; apPaint();
+  AP=apNew(q); AP.busy=true; apPaint(); chPaint();
   try{ ntap("_reco","reco"); }catch(e){}
   var lg=LANG, body=JSON.stringify({q:q,lang:LANG,ex:[],exk:[]});
   var shp=(!apShopLd&&window.SHOP&&SHOP.load)?(apShopLd=1,SHOP.load()):Promise.resolve();   // 허브 상품 목록 — 이 화면에서 처음 한 번 (체험·입장권 화면이 여는 것과 같은 GET)
@@ -366,6 +394,7 @@ function apPaint(){ var r=$("aipRes"); if(!r) return; apCart();
 function apDet(i){ var b=apBox(); if(!b) return; AP.y=b.scrollTop; AP.det=i; apPaint(); b.scrollTop=0; }
 function apToList(){ var b=apBox(); AP.det=null; apPaint(); if(b) b.scrollTop=AP.y; }
 document.addEventListener("click",function(e){ var b=apBox(), t=e.target; if(!b||!t.closest||!b.contains(t)) return;
+  var ch=t.closest("#aipChips [data-chip]"); if(ch){ e.preventDefault(); chGo(ch.dataset.chip); return; }   // 11-09 관심 버튼
   var a=t.closest("[data-aa]"); if(a){ e.preventDefault(); e.stopPropagation(); apToggle(+a.dataset.aa); return; }
   var d=t.closest("[data-ap]"); if(d){ e.preventDefault(); var v=d.dataset.ap; if(v==="done") apDone(); else if(v==="back") apToList(); else if(v==="buy"){ try{ openPricing(); }catch(x){} } return; }
   if(t.closest("a")) return;   // 전화·길찾기·구글 지도 링크는 그대로
