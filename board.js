@@ -1,8 +1,8 @@
-/* MosaicTrip.com 고객 게시판 (사장님 11-09) — 앱 아래 「고객 게시판」 칸 + 화면 가운데 창 · 홈페이지 #/board 화면(home/pc_board.js)이 MTB.render 를 그대로 쓴다
+/* MosaicTrip 고객 게시판 (사장님 11-09) — 앱 아래 「고객 게시판」 칸 + 화면 가운데 창 · 홈페이지 #/board 화면(home/pc_board.js)이 MTB.render 를 그대로 쓴다
  *  · 허브 /mtb/* (칸 "mtboard" — 머니퍼즐 홈페이지 게시판 /board/* 와 글·저장소가 따로)
  *  · 글쓰기 기본 = 별명 + 내용, 비밀번호 없음, 누구나 봄 · 「비밀글」을 고르면 비밀번호 필수 → 쓴 사람(그 비밀번호)과 관리자만 봄 · 목록에는 「비밀글입니다」만
  *  · 삭제: 공개글 = 쓴 기기(이 브라우저의 난수 mpv_bdev — 허브엔 해시만) 또는 쓸 때 로그인한 계정(mpv_pg_sess, 어느 기기에서나) · 비밀글 = 비밀번호 · 관리자 = 관리자 화면
- *  · 답변 = 관리자 화면(admin 「고객 게시판」) — 글 아래 「모자이크트립.com 답변」
+ *  · 답변 = 관리자 화면(admin 「고객 게시판」) — 글 아래 「모자이크트립 답변」
  *  · 앱: 아래 칸(#mtbBox)은 화면에 보일 때만 최근 글 3개를 받는다(허브 호출 한 번) · 누르면 가운데 창(#mtbPop)
  *  · 새 글은 6개 언어(ko·en·ja·zhs·zht·es) — 투어앱 규칙서 3장 · 팝업은 가운데 · 한 줄 단추 묶음은 같은 크기
  */
@@ -19,7 +19,7 @@ function num(n){ return Number(n||0).toLocaleString("en-US"); }
 // ── 글 (6개 언어) ──
 var TX={
  t:T6("고객 게시판","Customer board","お客様掲示板","客户留言板","客戶留言板","Foro de clientes"),
- sub:T6("궁금한 점이나 바라는 점을 남겨 주세요. 모자이크트립.com이 답변해 드려요.","Leave a question or a request, and MosaicTrip.com will reply.","気になることやご要望をお書きください。MosaicTrip.comがお答えします。","欢迎留下您的问题或建议，MosaicTrip.com 会为您回复。","歡迎留下您的問題或建議，MosaicTrip.com 會為您回覆。","Deja tu pregunta o sugerencia y MosaicTrip.com te responderá."),
+ sub:T6("궁금한 점이나 바라는 점을 남겨 주세요. 모자이크트립이 답변해 드려요.","Leave a question or a request, and MosaicTrip will reply.","気になることやご要望をお書きください。MosaicTripがお答えします。","欢迎留下您的问题或建议，MosaicTrip 会为您回复。","歡迎留下您的問題或建議，MosaicTrip 會為您回覆。","Deja tu pregunta o sugerencia y MosaicTrip te responderá."),
  write:T6("글쓰기","Write a post","投稿する","写留言","寫留言","Escribir"),
  count:T6("글 {n}개","{n} posts","投稿 {n}件","共 {n} 条留言","共 {n} 則留言","{n} publicaciones"),
  count1:T6("글 1개","1 post","投稿 1件","共 1 条留言","共 1 則留言","1 publicación"),
@@ -27,7 +27,7 @@ var TX={
  ansY:T6("답변 완료","Answered","回答済み","已回复","已回覆","Respondida"),
  ansN:T6("답변 대기","Awaiting reply","回答待ち","等待回复","等待回覆","Sin respuesta"),
  mine:T6("내 글","My post","自分の投稿","我的留言","我的留言","Mía"),
- ansBy:T6("모자이크트립.com 답변","Reply from MosaicTrip.com","MosaicTrip.comからの回答","MosaicTrip.com 的回复","MosaicTrip.com 的回覆","Respuesta de MosaicTrip.com"),
+ ansBy:T6("모자이크트립 답변","Reply from MosaicTrip","MosaicTripからの回答","MosaicTrip 的回复","MosaicTrip 的回覆","Respuesta de MosaicTrip"),
  noAns:T6("아직 답변이 없어요.","No reply yet.","まだ回答はありません。","还没有回复。","還沒有回覆。","Todavía no hay respuesta."),
  list:T6("목록","Back to list","一覧へ","返回列表","返回列表","Volver"),
  del:T6("삭제","Delete","削除","删除","刪除","Eliminar"),
@@ -69,7 +69,7 @@ var TX={
  eOwner:T6("이 기기나 로그인한 계정에서 쓴 글만 삭제할 수 있어요.","You can only delete posts written on this device or with your signed-in account.","この端末、またはログイン中のアカウントで書いた投稿だけ削除できます。","只能删除在这台设备上或用已登录账号发布的留言。","只能刪除在這台裝置上或用已登入帳號發布的留言。","Solo puedes eliminar publicaciones escritas en este dispositivo o con tu cuenta."),
  infoT:T6("이용 안내","How it works","ご利用案内","使用说明","使用說明","Cómo funciona"),
  i1:T6("글은 누구나 볼 수 있어요. 「비밀글」로 쓰면 쓴 사람과 관리자만 볼 수 있어요.","Anyone can read posts. Choose “Private post” so only you and our staff can read it.","投稿は誰でも読めます。「非公開」にすると、投稿した人と管理者だけが読めます。","留言所有人都能看到。选择「私密留言」后，只有您和管理员可以查看。","留言所有人都能看到。選擇「私密留言」後，只有您和管理員可以查看。","Cualquiera puede leer las publicaciones. Elige «Publicación privada» para que solo tú y nuestro equipo la leáis."),
- i2:T6("모자이크트립.com이 글 아래에 답변을 달아 드려요.","MosaicTrip.com replies right under your post.","MosaicTrip.comが投稿の下に回答します。","MosaicTrip.com 会在留言下方回复。","MosaicTrip.com 會在留言下方回覆。","MosaicTrip.com responde justo debajo de tu publicación."),
+ i2:T6("모자이크트립이 글 아래에 답변을 달아 드려요.","MosaicTrip replies right under your post.","MosaicTripが投稿の下に回答します。","MosaicTrip 会在留言下方回复。","MosaicTrip 會在留言下方回覆。","MosaicTrip responde justo debajo de tu publicación."),
  i3:T6("삭제는 글을 쓴 기기에서 할 수 있어요. 로그인하고 쓰면 다른 기기에서도 할 수 있어요. 비밀글은 비밀번호로 삭제해요.","You can delete a post on the device you wrote it on — or on any device if you were signed in. Private posts are deleted with their password.","削除は投稿した端末からできます。ログインして投稿した場合は、ほかの端末からもできます。非公開の投稿はパスワードで削除します。","可以在发布留言的设备上删除；登录后发布的留言在其他设备上也能删除。私密留言用密码删除。","可以在發布留言的裝置上刪除；登入後發布的留言在其他裝置上也能刪除。私密留言用密碼刪除。","Puedes eliminar una publicación en el dispositivo donde la escribiste, o en cualquiera si habías iniciado sesión. Las privadas se eliminan con su contraseña."),
  i4:T6("이름·전화번호·여권번호 같은 개인정보는 적지 마세요.","Please don't include personal details such as your name, phone or passport number.","氏名・電話番号・パスポート番号などの個人情報は書かないでください。","请不要写姓名、电话号码、护照号码等个人信息。","請不要寫姓名、電話號碼、護照號碼等個人資料。","No incluyas datos personales como tu nombre, teléfono o número de pasaporte.")
 };
