@@ -1896,8 +1896,18 @@ var PS8={ph:{ko:"장소·액티비티 찾기 (예: 롯데월드, 한강 유람�
  got:{ko:"✓ 담김",en:"✓ Added",ja:"✓ 追加済み",zhs:"✓ 已加入",zht:"✓ 已加入",es:"✓ Añadido"},
  addD:{ko:"「{p}」 담았어요",en:"Added “{p}”",ja:"「{p}」を追加しました",zhs:"已加入「{p}」",zht:"已加入「{p}」",es:"Se añadió «{p}»"},
  empty:{ko:"아직 담은 곳이 없어요. 아래 검색창으로 찾거나, 지도에서 그림을 누르고 「＋ 내 여행에 담기」를 누르세요.",en:"Nothing added yet. Search below, or tap a picture on the map and then “＋ Add to my trip”.",ja:"まだ何も追加していません。下の検索欄で探すか、地図の絵を押して「＋ 旅行に追加」を押してください。",zhs:"还没有加入任何地点。请用下方搜索框查找，或点地图上的插画再点「＋ 加入我的旅行」。",zht:"還沒有加入任何地點。請用下方搜尋框查找，或點地圖上的插畫再點「＋ 加入我的旅行」。",es:"Aún no has añadido nada. Busca abajo, o toca un dibujo del mapa y luego «＋ Añadir a mi viaje»."}};
-function psSearch(q,A,cb){ q=String(q||"").trim(); if(!q){ cb([]); return; } var u=HUB+"/kplace?q="+encodeURIComponent(q)+(A&&isFinite(+A.lat)?"&near=1&ux="+(+A.lng).toFixed(3)+"&uy="+(+A.lat).toFixed(3):"")+kpL();
-  fetch(u).then(function(r){ return r.json(); }).then(function(j){ cb((j&&j.ok&&j.items)||[]); }).catch(function(){ cb(null); }); }
+// 11-09 사장님 「고쳐」 — 가까운 순(카카오 sort=distance)만 받으면 「롯데월드」에 근처 세탁소(…롯데캐슬점)·주차장이 먼저 15개를 채워 롯데월드가 안 나왔다
+//   → 관련도 순 결과 + 가까운 순 결과 중 이름에 검색어가 든 곳만 합친다(주차장·출입구 뺌). 순서 = 이름이 똑같은 곳 → 관련도 순 → 근처(가까운 순) · 「카페」처럼 종류로 찾아 관련도 순이 대부분 먼 곳이면 근처 먼저(11-08 「가까운 순」)
+function psNorm(s){ return String(s||"").replace(/[\s·()\-_.,'’&]/g,"").toLowerCase(); }
+function psSearch(q,A,cb){ q=String(q||"").trim(); if(!q){ cb([]); return; } var hasA=A&&isFinite(+A.lat), base=HUB+"/kplace?q="+encodeURIComponent(q), L=kpL();
+  var get=function(u){ return fetch(u).then(function(r){ return r.json(); }).then(function(j){ return (j&&j.ok&&j.items)||[]; }); };
+  Promise.all([get(base+L), hasA?get(base+"&near=1&ux="+(+A.lng).toFixed(3)+"&uy="+(+A.lat).toFixed(3)+L).catch(function(){ return []; }):Promise.resolve([])]).then(function(R){
+    var nq=psNorm(q), hit=function(x){ return psNorm(x.name).indexOf(nq)>=0||(!!x.name_en&&psNorm(x.name_en).indexOf(nq)>=0)||psNorm(x.cat).indexOf(nq)>=0; }, park=function(x){ return /주차장|입출구/.test(String(x.cat||"")); }, seen={}, out=[];
+    var add=function(x){ if(!x||park(x)||!isFinite(+x.y)) return; var k=psNorm(x.name)+"|"+(+x.x).toFixed(4)+"|"+(+x.y).toFixed(4); if(seen[k]) return; seen[k]=1; out.push(x); };
+    var D=function(x){ return hasA?km(A,{lat:+x.y,lng:+x.x}):0; }, acc=R[0], nr=R[1].filter(hit).sort(function(p,o){ return D(p)-D(o); }),
+      ex=acc.filter(function(x){ return psNorm(x.name)===nq||(!!x.name_en&&psNorm(x.name_en)===nq); }), ds=acc.map(D).sort(function(p,o){ return p-o; }), far=hasA&&ds.length>0&&(ds[Math.floor(ds.length/2)]>30||acc.filter(function(x){ return psNorm(x.cat).indexOf(nq)>=0; }).length*2>=acc.length);   /* 종류 검색 = 관련도 순 절반 이상이 그 분류(카페·스타벅스) 이거나 대부분 먼 곳 */
+    ex.forEach(add); if(far){ nr.forEach(add); acc.forEach(add); } else { acc.forEach(add); nr.forEach(add); }   // 이름 같은 곳 → 관련도 순 → 근처(가까운 순) · 「카페」처럼 관련도 순이 대부분 먼 곳(30km 넘음)이면 근처 먼저
+    cb(out.slice(0,15)); }).catch(function(){ cb(null); }); }
 function psItem(x){ var lat=+x.y, lng=+x.x, it={k:pinKey({ko:x.name,lat:lat,lng:lng}),ko:x.name,en:x.name_en||x.name,lat:lat,lng:lng,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",cat:x.cat||"",pin:1}; it.stay=stayOf(it); return it; }
 function psRow(x,A,btn){ var en=L()&&x.name_en, nmx=en?x.name_en:x.name, ct=String((L()&&x.cat_en)||x.cat||"").split(">").pop().trim(), dk=A&&isFinite(+x.y)?km(A,{lat:+x.y,lng:+x.x}):null;
   return '<div class="efi"><div><b>'+esc(nmx)+'</b>'+(ct?' <i>'+esc(ct)+'</i>':'')+(dk!=null?' <i>· '+esc(dk<1?Math.round(dk*1000)+" m":dk.toFixed(1)+" km")+'</i>':'')+'</div><div class="d" style="font-size:12px">'+esc((L()&&x.addr_en)||x.addr||"")+'</div><div class="tgr" style="justify-content:flex-end">'+btn+'</div></div>'; }
