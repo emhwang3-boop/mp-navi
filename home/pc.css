@@ -8,7 +8,7 @@ html.pch body{background:var(--card);line-height:1.5}
 /* 앱 겉모양 감추기 — 지도·검색칸·결과·머리 단추는 pc.js 가 이 화면 자리로 옮겼다 */
 html.pch .wrap{display:none!important}
 html.pch #mapDev{display:none!important}                 /* 지도 왼쪽 위는 「지도를 눌러 보세요」 안내 (시안) */
-html.pch .tradd{display:none!important}                  /* 지도는 둘러보기·검색만 — 「내 여행에 담기」 없음 (담기는 AI와 자유여행 화면에서) */
+/* 11-09 사장님 「검색을 하거나 지도에서 그림을 선택하면 내 여행에 담기 버튼이 없는데 그걸 넣어줘」 — 첫 화면 지도·검색 카드에도 「＋ 내 여행에 담기」(예전엔 html.pch .tradd 감춤) */
 #phRoot{color:var(--ink)}
 #phRoot button{font-family:inherit}
 #phRoot .ph-in{max-width:1400px;margin:0 auto;position:relative}
