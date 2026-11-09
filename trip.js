@@ -477,6 +477,7 @@ var FX6={
  mOth:{ko:"이 날 다른 장소 {n}곳 시간이 안 맞게 돼요",en:"{n} other place(s) that day would stop fitting the time",ja:"この日のほかの{n}か所の時間が合わなくなります",zhs:"当天另外{n}个地点的时间会对不上",zht:"當天另外{n}個地點的時間會對不上",es:"{n} lugar(es) más de ese día dejarían de encajar en el horario"},
  mNone:{ko:"옮길 수 있는 날이 없어요 — 하루를 늘리거나 이 장소를 빼 보세요",en:"There’s no day it fits — add a day or remove this place",ja:"移せる日がありません — 1日増やすか、この場所を外してください",zhs:"没有可以移过去的日子——请增加一天或移除这个地点",zht:"沒有可以移過去的日子——請增加一天或移除這個地點",es:"No hay ningún día donde encaje: añade un día o quita este lugar"},
  mD:{ko:"「{p}」 — {d}로 옮겼어요",en:"Moved “{p}” to {d}",ja:"「{p}」を{d}に移しました",zhs:"已把「{p}」移到{d}",zht:"已把「{p}」移到{d}",es:"«{p}» pasó al {d}"},
+ mS:{ko:"「{p}」 {t} 도착에 맞춰 그날 순서를 옮겼어요",en:"Reordered the day so you arrive at “{p}” at {t}",ja:"「{p}」に{t}に着くよう、その日の順番を入れ替えました",zhs:"已调整当天顺序，{t}到达「{p}」",zht:"已調整當天順序，{t}到達「{p}」",es:"Cambiamos el orden del día para llegar a «{p}» a las {t}"},   // 11-09 정하기 → 그날 안에서 자리 옮김
  sT:{ko:"머무는 시간 줄이기 — {d}",en:"Shorten stays — {d}",ja:"滞在時間を短くする — {d}",zhs:"缩短停留时间——{d}",zht:"縮短停留時間——{d}",es:"Acortar estancias: {d}"},
  sI:{ko:"앞 장소에서 머무는 시간을 줄이면 「{p}」에 더 일찍 도착해요.",en:"Spend less time at the earlier places to reach “{p}” sooner.",ja:"前の場所の滞在時間を短くすると、「{p}」に早く着きます。",zhs:"缩短前面地点的停留时间，就能更早到达「{p}」。",zht:"縮短前面地點的停留時間，就能更早到達「{p}」。",es:"Si pasas menos tiempo en los lugares anteriores, llegarás antes a «{p}»."},
  sOk:{ko:"「{p}」 — 이제 시간이 맞아요",en:"“{p}” now fits the time",ja:"「{p}」は時間が合うようになりました",zhs:"「{p}」现在时间合适了",zht:"「{p}」現在時間合適了",es:"«{p}» ya encaja en el horario"},
@@ -638,7 +639,7 @@ function fxSet(it,v){ if(v==null) delete it.fx; else it.fx=v; var pl=TR.plan, p=
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trBox .trfxb,#trBox .trfxx,#trBox .trfxok,#trBox .trfxno"); if(!a) return; e.preventDefault(); var k=a.dataset.k, w=a.closest(".trfxw"), it=TR.items.filter(function(x){ return x.k===k; })[0]; if(!w||!it) return;
   if(a.classList.contains("trfxb")){ w.innerHTML='<span class="trfxe"><input type="time" class="trfxi" value="'+esc(fxGuess(it))+'"><button type="button" class="trfxok" data-k="'+esc(k)+'">'+esc(T5(FX6.set))+'</button><button type="button" class="trfxno" data-k="'+esc(k)+'" aria-label="'+esc(T5(LV6.x))+'">✕</button></span>';
     return; }   // 시각 칸은 tpick.js 가 24시간 「시 : 분」 고르기로 바꾼다(원래 input 값은 그대로)
-  if(a.classList.contains("trfxok")){ var v=hm2m((w.querySelector(".trfxi")||{}).value); if(v==null) return; fxSet(it,v); try{ ntap("_trip","trip_fix"); }catch(z){} }
+  if(a.classList.contains("trfxok")){ var v=hm2m((w.querySelector(".trfxi")||{}).value); if(v==null) return; fxSet(it,v); try{ ntap("_trip","trip_fix"); }catch(z){} fxFitDay(k,v); }   // 11-09 짜 둔 일정이면 그날 안에서 그 시각에 닿는 자리로
   else if(a.classList.contains("trfxx")) fxSet(it,null);
   w.innerHTML=fxCart(it); });
 var ADDRQ="";   // 숙소 찾기 — 마지막 검색어 (언어를 바꿔 창을 다시 그릴 때 결과도 다시, 10-18)
@@ -1607,6 +1608,21 @@ function fxSpot(pl,di,x,H){ var src=pl.days[di], fx=fxOf(x), best=null;
       var iq=rowIss(s,r,ri,dt,dj); if(iq&&iq.t!=="early") continue; if(cnt(s,dt,dj)>b0) continue;
       var c=s.end-s0.end; if(!best||c<best.c) best={dj:dj,p:p,c:c}; } }
   return best; }
+// 11-09 사장님 「도착시간을 13:00으로 바꿨는데도 19:32 가 안 바뀐다」 → 「가」 — 짜 둔 일정에서 도착 시각을 정했는데 지금 자리로는 그 시각까지 못 닿으면
+//   그날 다른 자리에 모두 넣어 보아 그 시각까지 닿는 자리로 옮긴다(mvFind·fxSpot 과 같은 셈: 그 장소 문제 없음(문 열기 기다림은 괜찮음) · 다른 장소가 새로 안 맞게 되면 X · 그날이 가장 덜 늘어나는 자리)
+//   그날 안에 맞는 자리가 없으면 그대로 — 지금처럼 경고·검사 창 · 일찍 닿아 기다리는 것은 옮기지 않는다 · 도착 후 일정 칸(post)은 그대로
+function fxSameDay(pl,k){ var di=-1; pl.days.forEach(function(d,i){ if(di<0&&!d.md&&d.stops.indexOf(k)>=0) di=i; }); var x=pl.pool[k], fx=fxOf(x); if(di<0||!x||fx==null) return null;
+  return withLC(function(){ var X=dayX(pl,di,REPH||pl.H||null), dt=X.dt, mo=moX(di,X), cur=X.arr.indexOf(x); if(cur<0) return null;
+    var cnt=function(s){ var n=0; s.rows.forEach(function(r,ri){ if(!r.x||r.x===x) return; var q=rowIss(s,r,ri,dt,di); if(q&&q.t!=="early") n++; }); return n; };
+    var s1=sched(X.H,X.arr,dt,X.from,mo), r1=null; s1.rows.forEach(function(q){ if(q.x===x) r1=q; }); if(!r1||(r1.ar!=null?r1.ar:r1.t)<=fx) return null;   // 지금 자리에서 닿으면 그대로
+    var arr=X.arr.filter(function(y){ return y!==x; }), s0=sched(X.H,arr,dt,X.from,mo), b0=cnt(s0), best=null;
+    for(var p=0;p<=arr.length;p++){ if(p===cur) continue; var s=sched(X.H,arr.slice(0,p).concat([x],arr.slice(p)),dt,X.from,mo), r=null, ri=-1;
+      s.rows.forEach(function(q,i){ if(q.x===x){ r=q; ri=i; } }); if(!r||(r.ar!=null?r.ar:r.t)>fx) continue;
+      var iq=rowIss(s,r,ri,dt,di); if(iq&&iq.t!=="early") continue; if(cnt(s)>b0) continue;
+      var c=s.end-s0.end; if(!best||c<best.c) best={di:di,p:p,c:c,t:r.t}; }
+    return best; }); }
+function fxFitDay(k,v){ var pl=TR.plan; if(!pl||!pl.days||v==null) return false; var b=fxSameDay(pl,k), x=pl.pool[k]; if(!b||!x) return false;
+  if(!mvStop(pl,b.di,b.di,b.p,k)) return false; lgToast(gTxt(FX6.mS,{p:nm(x),t:m2hm(v)})); try{ ntap("_trip","trip_fix_mv"); }catch(z){} return true; }
 // 11-07 사장님 「가」 — 시작 시각보다 이른 도착 시각(예: 시작 09:30, N서울타워 09:00)이라 어느 날도 그 시각에 도착할 수 없으면(fxSpot 실패) 그 장소가 있는 날만 출발을 알아서 당긴다(d.fr — 검사 창 「일찍 출발하기」와 같은 칸)
 //   그날이 비행기·아침 도시 이동에 묶인 날(도착한 날 등)이면 같은 도시의 묶이지 않은 가장 이른 날로 옮겨서 당긴다(가장 덜 당기는 자리) · 05:00 보다 이르면 안 함 · 그날 다른 장소가 새로 안 맞게 되면 안 함
 //   → {dj,p(-1 = 그날 그 자리 그대로),ns:새 출발,f0:원래 출발} · 당긴 날 d.fra={k,x:도착 시각,t:출발} = 그날 맨 위 한 줄 「「…」 09:00 도착에 맞춰 08:33에 출발해요」
@@ -1774,7 +1790,7 @@ document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.
   if(a.classList.contains("tfxb")){ w.innerHTML='<span class="trfxe"><input type="time" class="trfxi" value="'+esc(fxGuess(x))+'"><button type="button" class="trfxok" data-fk="'+esc(k)+'">'+esc(T5(FX6.set))+'</button><button type="button" class="trfxno" data-fk="'+esc(k)+'" aria-label="'+esc(T5(LV6.x))+'">✕</button></span>'; return; }
   if(a.classList.contains("trfxno")){ w.outerHTML=fxRep(x); return; }
   var v=null; if(a.classList.contains("trfxok")){ v=hm2m((w.querySelector(".trfxi")||{}).value); if(v==null) return; } else if(!a.classList.contains("trfxx")) return;
-  fxSetK(k,v); try{ ntap("_trip",v==null?"trip_fix_clr":"trip_fix"); }catch(z){} pl.chk=0; save(); repPaint(); setTimeout(function(){ if(TR.plan===pl&&document.getElementById("trRep")&&chkList().length) chkOpen(true); },150); },true);
+  fxSetK(k,v); try{ ntap("_trip",v==null?"trip_fix_clr":"trip_fix"); }catch(z){} if(v!=null) fxFitDay(k,v); /* 11-09 그날 안에서 그 시각에 닿는 자리로 */ pl.chk=0; save(); repPaint(); setTimeout(function(){ if(TR.plan===pl&&document.getElementById("trRep")&&chkList().length) chkOpen(true); },150); },true);
 // ── 11-08 사장님 「장소 또는 식당에서 머무는 시간을 고칠 수 있게 — 고치면 그날 일정은 다시 계산」 · 식당 칸 「삭제」 ──
 function stSel(k,cur,hi){ return '<select class="tstay" data-sk="'+esc(k)+'" aria-label="'+esc(T5(CK6.stay))+'">'+stayOpts(cur>0?cur:60,30,hi)+'</select>'; }
 document.addEventListener("change",function(e){ var s=e.target; if(!s||!s.classList||!s.classList.contains("tstay")||!s.closest||!s.closest("#trRep")) return; var pl=TR.plan, m=+s.value; if(!pl||!(m>0)) return;
