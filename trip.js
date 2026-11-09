@@ -76,7 +76,7 @@ function T5(o){ return o[window.LANG]||o.en; }   // 다섯 말 문구 (10-20)
 function aiTx(a){ return !a?"":LANG==="ko"?a.ko:(a[LANG]||a.en); }   // AI 설명 — 허브가 그 언어 칸을 주면 그것, 아니면 영어
 function km(a,b){ var R=6371, rd=Math.PI/180, dLa=(b.lat-a.lat)*rd, dLo=(b.lng-a.lng)*rd, h=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(a.lat*rd)*Math.cos(b.lat*rd)*Math.sin(dLo/2)*Math.sin(dLo/2); return 2*R*Math.asin(Math.sqrt(h)); }
 function hm2m(s){ var m=/^(\d{1,2}):(\d{2})$/.exec(s||""); return m?(+m[1])*60+(+m[2]):null; }
-function m2hm(m){ m=Math.round(m); return ("0"+(Math.floor(m/60)%24)).slice(-2)+":"+("0"+(m%60)).slice(-2); }   // 11-05 사장님 「25시·27시는 00시·02시로」 — 자정 넘으면 24시간제로
+function m2hm(m){ m=Math.round(m); if(m<0) m=((m%1440)+1440)%1440;   /* 11-09 — 전날 밤에 연 칸(-2:00)도 22:00 으로 */ return ("0"+(Math.floor(m/60)%24)).slice(-2)+":"+("0"+(m%60)).slice(-2); }   // 11-05 사장님 「25시·27시는 00시·02시로」 — 자정 넘으면 24시간제로
 function durTxt(m){ m=Math.round(m); var h=Math.floor(m/60), r=m%60, U={ko:["시간 ","분"],en:["h ","m"],ja:["時間","分"],zhs:["小时","分钟"],zht:["小時","分鐘"],es:[" h "," min"]}[window.LANG]||["h ","m"]; return ((h?h+U[0]:"")+(r||!h?r+U[1]:"")).trim(); }
 var DOW_KO="일월화수목금토", DOW_EN=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 function kstToday(add){ return new Date(Date.now()+9*3600e3+(add||0)*864e5).toISOString().slice(0,10); }
@@ -154,7 +154,8 @@ function winOf(x,date){ var oh=x&&x.oh;
       [-10080,0,10080].forEach(function(s){ var a=S+s, b=E+s; if(b>0&&a<2880) w.push([a,b]); }); });
     w.sort(function(a,b){ return a[0]-b[0]; }); var m=[];
     w.forEach(function(r){ var l=m[m.length-1]; if(l&&r[0]<=l[1]) l[1]=Math.max(l[1],r[1]); else m.push(r.slice()); });
-    if(!m.some(function(r){ return r[1]>360&&r[0]<1440; })) return {w:[],off:1};   // 그날 아침 6시~자정에 여는 칸이 없으면 쉬는 날
+    if(!m.some(function(r){ return r[0]<1440&&r[1]>360&&(r[0]>=0||r[1]>720); })) return {w:[],off:1};   // 그날 아침 6시~자정에 여는 칸이 없으면 쉬는 날
+    // 11-09 사장님 「고쳐」(Club AURA 「마감 07:00 지남」) — 전날 밤에 열어 그날 아침에 닫는 꼬리 칸(예: 전날 22:00~07:00)은 그날 영업으로 치지 않는다. 그날 밤에 안 열면 「이 날은 쉬는 날」 · 24시간 가게처럼 낮까지 이어지는 칸은 그대로
     return {w:m.filter(function(r){ return r[0]<1680; })}; }   // 다음 날 새벽 4시 뒤에 여는 칸(= 다음 날 영업)은 그날 칸이 아니다 — 밤새 기다려 다음 날 들어가는 일정은 안 만든다
   if(isBar(x)) return {w:[[EVE,4320]],eve:1};
   return null; }
@@ -1122,16 +1123,16 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
       if(GPI[ri]!=null) h+=gapHtml(pl,di,GP[GPI[ri]],GPI[ri]);   // 앞 일정 ↔ (이동) 다음 일정 사이
       if(r.rest){ var rk=(r.p&&r.p.k)||"__hotel", rn=ptNm(r.p);   // 숙소에서 쉬기 (11-07) — 숙소까지 · 쉬기 줄 · 다음 일정까지는 다음 줄의 구간
         if(r.leg&&prevK) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(rk)+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),rn)+legGo(r.leg)+'<div class="tods"></div></div>';
-        h+='<div class="trw h"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_stay",MIS)+esc(gTxt(CK6.rsRow,{a:m2hm(r.t),b:m2hm(r.e)}))+' · <b>'+esc(r.p&&r.p.tmp?gTxt(NX6.hTmp,{p:rn}):rn)+'</b><span class="tlvw" data-html2canvas-ignore> <button type="button" class="tebtn" data-rsx="'+esc(r.k)+'" data-d="'+di+'">'+esc(T5(CK6.rm))+'</button></span></span></div>';
+        h+='<div class="trw h"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_stay",MIS)+txBtn('data-rsx="'+esc(r.k)+'" data-d="'+di+'" data-ra="'+m2hm(r.t)+'" data-rb="'+m2hm(r.e)+'"',CK6.rm)+esc(gTxt(CK6.rsRow,{a:m2hm(r.t),b:m2hm(r.e)}))+' · <b>'+esc(r.p&&r.p.tmp?gTxt(NX6.hTmp,{p:rn}):rn)+'</b></span></div>';   // 11-09 사장님 — 「빼기」도 오른쪽 ✕
         prevK=rk; return; }
       if(r.x&&r.x.eat){ pj++; if(r.leg&&prevK&&lgOk) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.x.k)+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),eatName(r.x))+legGo(r.leg)+'<div class="tods"></div></div>';   // 11-07 손님이 넣은 식당
         var gw=(r.ar!=null&&!lv)?r.t-r.ar:0, gwh=gw>=60?'<span class="tmemo ti">'+esc(gTxt(CK6.gapM,{t:m2hm(r.t),g:durTxt(gw)}))+'</span>':'';
-        var acts='<span class="tmact" data-html2canvas-ignore>'+((gw>=60&&GPI[ri]==null)?'<button type="button" class="trbtn" data-ev="add" data-d="'+di+'" data-pos="'+(pj-1)+'">'+esc(T5(CK6.eveAdd))+'</button>':'')+'<button type="button" class="trbtn" data-ux="'+esc(r.x.k)+'">'+esc(T5(DG6.del))+'</button></span>';   // 11-08 사장님 — 「일정 추가」 옆에 「삭제」(식사가 겹칠 때) · 펼치지 않아도 보임   // 2시간 넘게 비면 위 「일정 추가」 칸이 맡는다 (11-07)   // 넣은 식당이 식사 시각을 기다리면 그 빈 시간에 넣을 곳 (11-07)
-        h+='<div class="trw l teu tcx'+(EXP["u:"+r.x.k]?' open':'')+'" data-uk="'+esc(r.x.k)+'" data-xk="u:'+esc(r.x.k)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+esc(T5(CK6[r.t<900?"lunch":"dinner"]||CK6.meal))+' '+stSel(r.x.k,r.x.stay,180)+gwh+'<span class="teat on">'+eatLine(r.x)+acts+'<span class="teact">'+eatLinks(r.x)+rsvLink(r.x)+' <button type="button" class="tsbtn" data-pp="eat">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(!!EXP["u:"+r.x.k],'',true):'')+'</span></div>';
+        var acts=(gw>=60&&GPI[ri]==null)?'<span class="tmact" data-html2canvas-ignore><button type="button" class="trbtn" data-ev="add" data-d="'+di+'" data-pos="'+(pj-1)+'">'+esc(T5(CK6.eveAdd))+'</button></span>':'';   // 11-09 사장님 — 「삭제」는 카드 머리줄 오른쪽 ✕(txBtn)로   // 11-08 사장님 — 「일정 추가」 옆에 「삭제」(식사가 겹칠 때) · 펼치지 않아도 보임   // 2시간 넘게 비면 위 「일정 추가」 칸이 맡는다 (11-07)   // 넣은 식당이 식사 시각을 기다리면 그 빈 시간에 넣을 곳 (11-07)
+        h+='<div class="trw l teu tcx'+(EXP["u:"+r.x.k]?' open':'')+'" data-uk="'+esc(r.x.k)+'" data-xk="u:'+esc(r.x.k)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+txBtn('data-ux="'+esc(r.x.k)+'"',DG6.del)+esc(T5(CK6[r.t<900?"lunch":"dinner"]||CK6.meal))+' '+stSel(r.x.k,r.x.stay,180)+gwh+'<span class="teat on">'+eatLine(r.x)+acts+'<span class="teact">'+eatLinks(r.x)+rsvLink(r.x)+' <button type="button" class="tsbtn" data-pp="eat">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(!!EXP["u:"+r.x.k],'',true):'')+'</span></div>';
         prevK=r.x.k; return; }
       if(r.meal){ var mk=di+":"+r.meal, ml=r.meal==="lunch"?T("점심 (1시간)","Lunch (1 h)"):T("저녁 (1시간)","Dinner (1 h)");
         if(r.r){ if(r.leg&&lgOk&&prevK) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="rs:'+mk+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),eatName(r.r))+'<div class="tods"></div></div>';
-          h+='<div class="trw l tcx'+(EXP["m:"+mk]?' open':'')+'" data-xk="m:'+mk+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+esc(T5(CK6[r.meal]||CK6.meal))+' <select class="tstay" data-smk="'+mk+'" aria-label="'+esc(T5(CK6.stay))+'">'+stayOpts(r.r.stay>=30?r.r.stay:60,30,180)+'</select><span class="teat on">'+eatLine(r.r)+'<span class="tmact" data-html2canvas-ignore><button type="button" class="trbtn" data-mdel="'+mk+'">'+esc(T5(DG6.del))+'</button></span><span class="teact">'+eatLinks(r.r)+' <button type="button" class="tebtn" data-x="'+mk+'">'+T("바꾸기","Change")+'</button> <button type="button" class="tsbtn" data-pp="eat">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(!!EXP["m:"+mk],'',true):'')+'</span></div>'; prevK="rs:"+mk; }
+          h+='<div class="trw l tcx'+(EXP["m:"+mk]?' open':'')+'" data-xk="m:'+mk+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+txBtn('data-mdel="'+mk+'"',DG6.del)+esc(T5(CK6[r.meal]||CK6.meal))+' <select class="tstay" data-smk="'+mk+'" aria-label="'+esc(T5(CK6.stay))+'">'+stayOpts(r.r.stay>=30?r.r.stay:60,30,180)+'</select><span class="teat on">'+eatLine(r.r)+'<span class="teact">'+eatLinks(r.r)+' <button type="button" class="tebtn" data-x="'+mk+'">'+T("바꾸기","Change")+'</button> <button type="button" class="tsbtn" data-pp="eat">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(!!EXP["m:"+mk],'',true):'')+'</span></div>'; prevK="rs:"+mk; }
         else { if(r.to&&r.leg&&prevK&&lgOk) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+esc(r.to)+'" data-d="'+di+'">'+legTxt(r.leg,lgNm(prevK,di),lgNm(r.to,di,1))+legGo(r.leg)+'<div class="tods"></div></div>';   // 다음 장소 근처로 먼저 가서 먹는 칸 — 이동이 식사 앞
           h+='<div class="trw l"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+ml+'<span class="teat" id="te_'+mk.replace(":","_")+'" data-k="'+mk+'" data-j="'+pj+'">'+eatPickRow(mk,r.anchor,pj)+'</span></span></div>'; }
         return; }
@@ -1145,7 +1146,7 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
       if(isNight(r.x)) det.push(T("밤 추천","Best at night"));
       var fm=pl.fxm&&pl.fxm[r.x.k], fmt=(fm&&fm.t===di&&!r.act)?gTxt(fm.a?FX6.mvA:FX6.mvN,{f:m2hm(fm.x),s:dLbl(fm.f),d:dLbl(fm.t)}):"";   // 11-07 짤 때 정한 시각에 맞춰 옮긴 곳
       var xk="p:"+r.x.k, op=!!EXP[xk];
-      h+='<div class="trw tpk tcx'+(op?' open':'')+'" data-k="'+esc(r.x.k)+'" data-xk="'+esc(xk)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp"><b class="tno">'+n+'</b><b class="tpn">'+esc(nm(r.x))+'</b> <i>'+stSel(r.x.k,r.x.stay,480)+(r.ext?' · '+T(m2hm(r.t+(r.st||r.x.stay))+"까지","until "+m2hm(r.t+(r.st||r.x.stay))):'')+'</i>'
+      h+='<div class="trw tpk tcx'+(op?' open':'')+'" data-k="'+esc(r.x.k)+'" data-xk="'+esc(xk)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp"><b class="tno">'+n+'</b>'+txBtn('data-ux="'+esc(r.x.k)+'"',DG6.del)+'<b class="tpn">'+esc(nm(r.x))+'</b> <i>'+stSel(r.x.k,r.x.stay,480)+(r.ext?' · '+T(m2hm(r.t+(r.st||r.x.stay))+"까지","until "+m2hm(r.t+(r.st||r.x.stay))):'')+'</i>'
         +(warn.length?'<span class="tmemo">'+esc(warn.join(" · "))+'</span>':"")+(memo.length?'<span class="tmemo ti">'+esc(memo.join(" · "))+'</span>':"")
         +'<span class="tdet">'+(det.length?'<span class="tmemo ti">'+esc(det.join(" · "))+'</span>':"")+(fmt?'<span class="tmemo ti">↪ '+esc(fmt)+'</span>':"")+(aiTx(tip)?'<span class="ttip">'+MPIMG("mi_tip",MIS)+esc(aiTx(tip))+'</span>':"")
         +'<span class="tdbt" data-html2canvas-ignore>'+fxRep(r.x)+'<button type="button" class="tsbtn" data-pp="'+esc(r.x.k)+'">'+esc(T5(DG6.det))+'</button></span></span>'
@@ -1663,7 +1664,9 @@ document.addEventListener("change",function(e){ var s=e.target; if(!s||!s.classL
   if(s.dataset.sk) stSet(s.dataset.sk,m); else if(s.dataset.smk&&pl.meals&&pl.meals[s.dataset.smk]) pl.meals[s.dataset.smk].stay=m; else return;
   try{ ntap("_trip","trip_stay_edit"); }catch(z){} pl.chk=0; save(); repPaint(); setTimeout(function(){ if(TR.plan===pl&&document.getElementById("trRep")&&chkList().length) chkOpen(true); },150); },true);
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-mdel]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var pl=TR.plan, mk=a.dataset.mdel; if(!pl||!mk) return;
-  pl.mskip=pl.mskip||{}; pl.mskip[mk]=1; if(pl.meals) delete pl.meals[mk]; try{ ntap("_trip","trip_meal_del"); }catch(z){} save(); repPaint(); lgToast(T5(DG6.skipD)); },true);   // 고른 식당 「삭제」 = 그 끼니 건너뛰기(다시 짜면 다시 생김)
+  var c0=pl.meals&&pl.meals[mk];   // 11-09 사장님 — 빼기 전에 한 번 묻는다
+  xAsk(function(){ var c=(pl.meals&&pl.meals[mk])||c0; return gTxt(XD6.qm,{p:c?eatName(c):"",j:eul(c?eatName(c):"")}); },function(){ if(TR.plan!==pl) return;
+    pl.mskip=pl.mskip||{}; pl.mskip[mk]=1; if(pl.meals) delete pl.meals[mk]; try{ ntap("_trip","trip_meal_del"); }catch(z){} save(); repPaint(); lgToast(T5(DG6.skipD)); }); },true);   // 고른 식당 「삭제」 = 그 끼니 건너뛰기(다시 짜면 다시 생김)
 // ── 11-08 점심을 묻는 칸 — 그날 일정이 13시 앞뒤로 걸쳐 있는데 점심(점심 칸·11~15시 식당)이 없으면 12시 자리에 [식당 찾기] [점심 안 먹어요]
 //   「삭제」로 점심을 지운 날(mskip)에도 묻는다 · [점심 안 먹어요]를 누른 날(mno)만 안 묻는다
 var LQ6={q:{ko:"점심 자리가 없어요. 점심은 어떻게 할까요?",en:"There's no lunch on this day. What would you like to do?",ja:"この日は昼食がありません。昼食はどうしますか？",zhs:"这天没有安排午餐。午餐怎么安排？",zht:"這天沒有安排午餐。午餐怎麼安排？",es:"Este día no tiene almuerzo. ¿Qué quieres hacer?"},
@@ -1719,9 +1722,9 @@ function insPaintPost(b,pl,o){ var d=pl.days[o.di], it=o.item, ps=(d.post||[]).m
     if(r){ t=esc(T5(PO6.ins))+' · '+esc(gTxt(r.ap?PO6.ap:r.hot?PO6.hot:PO6.end,{t:m2hm(r.end)})); if(r.miss&&r.by!=null) t+=' <b class="insov">⚠ '+esc(gTxt(PO6.late,{t:m2hm(r.by)}))+'</b>'; }
     b.querySelector("#tiPrev").innerHTML=t; };
   b.querySelector("#tiPos").onchange=upd; b.querySelector("#tiStay").onchange=upd; upd(); }
-function pxHtml(pl,di,r,n){ var x=r.px, k=x.k, del='<span class="tmact" data-html2canvas-ignore><button type="button" class="trbtn" data-ux="'+esc(k)+'">'+esc(T5(DG6.del))+'</button></span>';
-  if(x.eat){ var op=!!EXP["u:"+k]; return '<div class="trw l teu tcx'+(op?' open':'')+'" data-uk="'+esc(k)+'" data-xk="u:'+esc(k)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+esc(T5(CK6[r.t<900?"lunch":"dinner"]||CK6.meal))+' '+stSel(k,x.stay,180)+'<span class="teat on">'+eatLine(x)+del+'<span class="teact">'+eatLinks(x)+rsvLink(x)+' <button type="button" class="tsbtn" data-pp="eat">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(op,'',true):'')+'</span></div>'; }
-  var xk="p:"+k, op2=!!EXP[xk]; return '<div class="trw tpk tcx'+(op2?' open':'')+'" data-k="'+esc(k)+'" data-xk="'+esc(xk)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp"><b class="tno">'+n+'</b><b class="tpn">'+esc(nm(x))+'</b> <i>'+stSel(k,x.stay,480)+'</i>'+del+'<span class="tdet"><span class="tdbt" data-html2canvas-ignore>'+fxRep(x)+'<button type="button" class="tsbtn" data-pp="'+esc(k)+'">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(op2,'',true):'')+'</span></div>'; }
+function pxHtml(pl,di,r,n){ var x=r.px, k=x.k, del=txBtn('data-ux="'+esc(k)+'"',DG6.del);   // 11-09 사장님 — 「삭제」 = 카드 머리줄 오른쪽 ✕
+  if(x.eat){ var op=!!EXP["u:"+k]; return '<div class="trw l teu tcx'+(op?' open':'')+'" data-uk="'+esc(k)+'" data-xk="u:'+esc(k)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp">'+MPIMG("mi_food",MIS)+del+esc(T5(CK6[r.t<900?"lunch":"dinner"]||CK6.meal))+' '+stSel(k,x.stay,180)+'<span class="teat on">'+eatLine(x)+'<span class="teact">'+eatLinks(x)+rsvLink(x)+' <button type="button" class="tsbtn" data-pp="eat">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(op,'',true):'')+'</span></div>'; }
+  var xk="p:"+k, op2=!!EXP[xk]; return '<div class="trw tpk tcx'+(op2?' open':'')+'" data-k="'+esc(k)+'" data-xk="'+esc(xk)+'"><span class="tt">'+m2hm(r.t)+'</span><span class="tp"><b class="tno">'+n+'</b>'+del+'<b class="tpn">'+esc(nm(x))+'</b> <i>'+stSel(k,x.stay,480)+'</i><span class="tdet"><span class="tdbt" data-html2canvas-ignore>'+fxRep(x)+'<button type="button" class="tsbtn" data-pp="'+esc(k)+'">'+esc(T5(DG6.det))+'</button></span></span>'+(window.XTG?XTG.html(op2,'',true):'')+'</span></div>'; }
 // ── 11-08 사장님 「이런 날은 새벽에 기차를 탈 게 아니라 다음날 아침에 도시간 이동을 미루는게 현명하다」 ──
 //   저녁 도시 이동(pm)인데 그날 일정이 막차(역 도착 마감 X.lim)보다 늦게 끝나면 → 그날 밤은 지금 도시 숙소, 다음 날 아침 이동(am)
 //   짤 때 저절로(pmFlipAll) · 짠 뒤 늦어지면 ⚠ 줄의 [이동을 다음 날 아침으로] · 공항으로 가는 날·다음 날이 없거나 이미 아침 이동이 있는 날은 안 바꿈
@@ -1854,8 +1857,22 @@ function rsvLink(c){ var a=String(c.addr||"").split(/\s+/), q=FG()?(c.ko||"")+" 
   var u=FG()?"https://www.google.com/maps/search/?api=1"+hlG()+"&query="+encodeURIComponent(q):"https://map.naver.com/p/search/"+encodeURIComponent(q);
   return '<a href="'+esc(u)+'" target="_blank" rel="noopener" class="trsv">'+MPIMG("mi_calendar",MIS)+esc(T5(CK6.rsv))+'</a>'; }
 function mealLbl(x){ return T5(CK6[x.meal]||CK6.meal)+" ("+durTxt(x.stay||60)+")"; }
+// ── 11-09 사장님 — 일정표에서 빼기는 모두 같은 ✕ (카트 ✕ 와 같은 모양 · 카드 머리줄 오른쪽 끝, ▼/ㅡ 옆) · 누르면 가운데 창으로 한 번 묻는다 ──
+//   장소 카드(번호 동그라미)·넣은 식당 = 일정과 카트에서 빼기(dropPlace) · 고른 식당 = 그 끼니 건너뛰기 · 숙소에서 쉬기 = 그 쉬기만 빼기
+var XD6={q:{ko:"「{p}」{j} 일정과 카트에서 뺄까요?",en:"Remove “{p}” from your plan and trip?",ja:"「{p}」を日程とカートから外しますか？",zhs:"要把「{p}」从行程和购物车中移除吗？",zht:"要把「{p}」從行程和購物車中移除嗎？",es:"¿Quitar «{p}» del plan y del viaje?"},
+ qm:{ko:"「{p}」{j} 일정에서 뺄까요? 이 끼니는 건너뛰어요.",en:"Remove “{p}” from your plan? This meal will be skipped.",ja:"「{p}」を日程から外しますか？この食事は省きます。",zhs:"要把「{p}」从行程中移除吗？这顿饭将跳过。",zht:"要把「{p}」從行程中移除嗎？這頓飯將跳過。",es:"¿Quitar «{p}» del plan? Se omitirá esta comida."},
+ qr:{ko:"{a}–{b} 숙소에서 쉬기를 일정에서 뺄까요?",en:"Remove the rest at your lodging ({a}–{b}) from your plan?",ja:"{a}–{b}の宿での休憩を日程から外しますか？",zhs:"要从行程中移除{a}–{b}回住处休息吗？",zht:"要從行程中移除{a}–{b}回住處休息嗎？",es:"¿Quitar del plan el descanso en el alojamiento ({a}–{b})?"}};
+function txBtn(attr,lb){ var t=esc(T5(lb)); return '<button type="button" class="trx txd" '+attr+' aria-label="'+t+'" title="'+t+'" data-html2canvas-ignore>✕</button>'; }   // 글씨(「삭제」「빼기」)는 읽어 주기·마우스 올림 글로만
+function xAsk(msg,go){ var o=document.getElementById("trXq"); if(o) o.remove(); var b=document.createElement("div"); b.id="trXq"; b.className="trpop"; b.onclick=function(e){ if(e.target===b) b.remove(); };
+  var draw=function(){ b.innerHTML='<div class="txq"><div class="tals">'+esc(typeof msg==="function"?msg():msg)+'</div><div class="talb"><button type="button" data-xq="y">'+esc(T5(CK6.rm))+'</button><button type="button" data-xq="n" class="insno">'+esc(T5(CK6.bKeep))+'</button></div></div>';
+    b.querySelector('[data-xq="y"]').onclick=function(e){ e.stopPropagation(); b.remove(); go(); }; b.querySelector('[data-xq="n"]').onclick=function(e){ e.stopPropagation(); b.remove(); }; };
+  draw(); b._rb=draw; document.body.appendChild(b); return b; }
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-ux]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var pl=TR.plan, k=a.dataset.ux; if(!pl||!pl.pool[k]) return;
-  var nx=eatName(pl.pool[k]); dropPlace(k); lgToast(gTxt(CK6.dropD,{p:nx})); repPaint(); },true);
+  var x0=pl.pool[k], nmx=function(){ var x=pl.pool[k]||x0; return x.eat?eatName(x):nm(x); };
+  xAsk(function(){ var p=nmx(); return gTxt(XD6.q,{p:p,j:eul(p)}); },function(){ if(TR.plan!==pl||!pl.pool[k]) return; var nx=nmx();
+    if(!x0.eat) pl.days.forEach(function(d){ if(d.stops.indexOf(k)>=0||(d.post&&d.post.indexOf(k)>=0)) d.aiX=1; });   // 장소를 빼면 그날 AI 설명은 옛 일정 얘기라 감춘다(끌어 옮기기와 같게)
+    if(!x0.eat) try{ ntap("_trip","trip_place_del"); }catch(z){} dropPlace(k); pl.chk=0; save(); lgToast(gTxt(CK6.dropD,{p:nx})); repPaint();
+    setTimeout(function(){ if(TR.plan===pl&&document.getElementById("trRep")&&chkList().length) chkOpen(true); },150); }); },true);   // 다시 검사는 머무는 시간 고치기와 같게 — 문제가 있을 때만 검사 창(「문제 없어요」 알림이 「뺐어요」 알림을 덮지 않게)
 // ── 「일정 추가」 칸 (11-07 사장님) — 모든 날 맨 끝 + 장소 사이 빈 시간(GAPMIN 넘게 그냥 기다리는 곳) · 같은 모양·같은 단추 넷 ──
 //   [일정 추가] = 그 자리 앞 장소 근처 지도 명소(6km 안, 가까운 순 8곳) 후보 → 고르면 넣기 전 확인 (빈 시간 칸은 다음 일정 시각까지 들어가는지) · [식당 찾기] = 직접 식당 찾기 — 그 시간이 대부분 15시 전이면 점심, 아니면 저녁
 //   [숙소로 갈게요] = 그날 끝 칸은 예전 「일찍 감」 · 빈 시간 칸은 그 뒤 장소를 다른 날로 옮길지 먼저 묻고(가운데 창) 날마다 시간이 맞는 자리로(mvFind — 맞는 날이 없으면 그대로, 검사 창이 알림)
@@ -1912,8 +1929,9 @@ document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.
 // 숙소에서 쉬기 — 그날 d.rs 에 {k:다음 장소, m:그 줄이 식사 칸이면 끼니} · 숙소가 없으면(전국 일정은 서울역·도시 중심 기준이 있다) 한 줄 알림 · 다시 검사
 function rsSet(pl,di,G){ var d=pl.days[di]; if(!d) return; if(!rsPt(pl,di,dayX(pl,di,REPH||pl.H||null))){ lgToast(T5(CK6.rsNoH)); return; }
   d.rs=(d.rs||[]).filter(function(z){ return z.k!==G.k; }); d.rs.push({k:G.k,m:G.m||""}); pl.chk=2; save(); repPaint(); }
-document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-rsx]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var pl=TR.plan, d=pl&&pl.days[+a.dataset.d]; if(!d||!d.rs) return;
-  d.rs=d.rs.filter(function(z){ return z.k!==a.dataset.rsx; }); if(!d.rs.length) delete d.rs; pl.chk=2; save(); repPaint(); },true);   // 쉬기 줄 「빼기」
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-rsx]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var pl=TR.plan, d=pl&&pl.days[+a.dataset.d], rk=a.dataset.rsx; if(!d||!d.rs) return;
+  var ra=a.dataset.ra||"", rb=a.dataset.rb||""; xAsk(function(){ return gTxt(XD6.qr,{a:ra,b:rb}); },function(){ if(TR.plan!==pl||!d.rs) return;   // 11-09 사장님 — 빼기 전에 한 번 묻는다
+    d.rs=d.rs.filter(function(z){ return z.k!==rk; }); if(!d.rs.length) delete d.rs; pl.chk=2; save(); repPaint(); }); },true);   // 쉬기 줄 「빼기」
 // 숙소로 갈게요 (빈 시간 칸) — 그 뒤 장소를 다른 날로 옮길지 가운데 창으로 먼저 묻는다
 var GOS=null;
 function goOpen(di,G){ var pl=TR.plan; if(!pl||!pl.days[di]) return; var X=dayX(pl,di,REPH||pl.H||null), L=X.arr.slice(G.j); if(!L.length){ pl.days[di].gap="early"; save(); repPaint(); return; }
@@ -3550,12 +3568,15 @@ var css3=document.createElement("style"); css3.id="trBoardCss"; css3.textContent
 +".tgap{border-color:#f2c94c;background:#fffbea}:root[data-theme=dark] .tgap{background:#2a2410;border-color:#8a6d1a}"
 +".trw.tdsrc .tp{opacity:.35}.trw.tswap .tp{outline:3px solid #f2c94c;outline-offset:1px}"
 +".tdgh{position:fixed;left:0;top:0;z-index:2147483005;pointer-events:none;margin:0;opacity:.95;background:var(--card);color:var(--ink);border:2px solid #2f9e44;border-radius:12px;padding:8px 10px;box-shadow:0 12px 28px rgba(0,0,0,.28);font-size:14.5px;box-sizing:border-box}"
-+".tdgh .xtg,.tdgh .tdet,.tdgh .tmemo,.tdgh .tlvw{display:none}.tdgh .tno{margin-right:6px}.tdgh.no{border-color:#e03131;opacity:.7}"
++".tdgh .xtg,.tdgh .tdet,.tdgh .tmemo,.tdgh .tlvw,.tdgh .txd{display:none}.tdgh .tno{margin-right:6px}.tdgh.no{border-color:#e03131;opacity:.7}"
 +".tdins{position:fixed;height:4px;border-radius:4px;background:#2f9e44;z-index:2147483004;pointer-events:none;box-shadow:0 0 0 3px rgba(47,158,68,.22)}"
 // 11-08 내 플랜 — 플랜 고르기 줄(카트·일정표 맨 위) · 자유 일정 날 [이 날짜로 새 플랜]
 +".trpbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 10px}.trpbt{display:flex;gap:6px;flex:0 0 auto;margin-left:auto}.trpbar .trpsel{flex:1 0 auto;min-width:0;max-width:100%;font-size:15px;font-weight:800;padding:8px 10px;border-radius:10px;border:1.5px solid var(--green);background:var(--card);color:var(--ink);font-family:inherit;cursor:pointer}"
 +".trpbar .trbtn{margin:0;flex:0 0 auto;padding:7px 12px;font-size:13px;color:var(--sub)}.trpbar .trpnew{border-color:var(--green);color:#2b8a3e}:root[data-theme=dark] .trpbar .trpnew{color:#8ce99a}"
-+".tfree{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;padding:6px 0}.tfree .d{margin:0}.tfree .trbtn{margin:0 0 0 auto;padding:5px 11px;font-size:12.5px;border-color:var(--green);color:#2b8a3e}:root[data-theme=dark] .tfree .trbtn{color:#8ce99a}";
++".tfree{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;padding:6px 0}.tfree .d{margin:0}.tfree .trbtn{margin:0 0 0 auto;padding:5px 11px;font-size:12.5px;border-color:var(--green);color:#2b8a3e}:root[data-theme=dark] .tfree .trbtn{color:#8ce99a}"
+// 11-09 사장님 — 일정표 빼기 ✕ (카트 .trx 그대로) · 카드 머리줄 오른쪽 끝(▼/ㅡ 바로 왼쪽), 첫 줄만 비켜 가게 float · 묻는 창
++".trows .trw .tp>.txd{float:right;height:26px;line-height:26px;margin:1px -2px 0 6px;padding:0 4px}.trows .trw:not(.tcx) .tp>.txd{margin-right:39px}"   // 카드가 아닌 줄(숙소에서 쉬기)도 카드 ✕ 와 같은 세로줄에
++".txq{width:100%;max-width:380px}.txq .tals{font-size:15.5px;font-weight:800;color:var(--ink);line-height:1.5;margin:4px 0 0}";
 (document.head||document.documentElement).appendChild(css3);
 
 })();
