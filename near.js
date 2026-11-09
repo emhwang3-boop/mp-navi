@@ -103,6 +103,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".nrit .h{display:flex;align-items:baseline;gap:6px}.nrit .h b{flex:1;font-size:15.5px}.nrit .h i{font-style:normal;color:#1a73e8;font-weight:900;font-size:14px;white-space:nowrap}"
   +".nrit .ko{color:var(--sub);font-size:12.5px;margin-top:1px}.nrit .d{color:var(--sub);font-size:12.5px;margin-top:2px;line-height:1.45}"
   +".nrit .row{display:flex;align-items:center;gap:8px;margin-top:6px}.nrit .row .go{margin-left:auto;color:#1a73e8;font-weight:800;font-size:13px;white-space:nowrap}"
+  +".nrit .nrmyr{justify-content:flex-end}.nrmy{border:1.5px solid var(--green,#2f9e44);background:var(--card);color:#2b8a3e;border-radius:999px;padding:6px 13px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit}:root[data-theme=dark] .nrmy{color:#8ce99a}"   // 11-09 숙소 카드 [내 숙소로 정하기] — 오른쪽 맞춤(카드 단추 규칙)
   +".nrtel{color:var(--ink);font-weight:800;font-size:14px;text-decoration:none}"
   +".nrcall{display:inline-block;background:#e03131;color:#fff!important;border-radius:10px;padding:8px 16px;font-size:16px;font-weight:900;text-decoration:none}"
   +".nrcall.am{background:#1971c2}"
@@ -249,7 +250,8 @@ function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=KS(en?x.name_en:x.name), ad
     tel=em?'<a class="nrcall" href="tel:'+esc(telIntl(x.tel))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>':'<a class="nrcall am" href="tel:'+esc(telIntl(x.tel))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>'; }   // 편의점·마트도 같은 흰 전화기 단추 (파랑)
   return '<div class="nrit" data-nr="pick" data-i="'+i+'"><div class="h"><span class="nrrank">'+(i+1)+'</span><b>'+esc(nm)+(x.kto?'<span class="nrkto" title="'+T("한국관광공사 관광정보에 실린 숙소","Listed by the Korea Tourism Organization")+'">'+T("관광공사","KTO")+'</span>':'')+(x.dt?'<span class="nrdt">'+MPICO("mi_ticket",T("🎟 당일 투어","🎟 Day tour"),MIS)+'</span>':'')+'</b><i>'+km(x.dist)+'</i></div>'
     +(en&&x.name_en!==x.name?'<div class="ko">'+esc(x.name)+'</div>':'')+(x.rating?'<div class="d"><b style="color:#e8590c">★ '+x.rating.toFixed(1)+'</b> ('+x.n+')</div>':'')+'<div class="d">'+esc(ad||"")+(ct?' · '+esc(ct):'')+'</div>'
-    +'<div class="row">'+tel+'<span class="go">'+T("지도에 핀","Pin on map")+' ›</span></div></div>'; }
+    +'<div class="row">'+tel+'<span class="go">'+T("지도에 핀","Pin on map")+' ›</span></div>'
+    +(S.k==="st"&&window.TRIP&&TRIP.stay?'<div class="row nrmyr"><button type="button" class="nrmy" data-nr="mine" data-i="'+i+'">'+MPIMG("mi_stay",MIS)+esc(TRIP.stay.label())+'</button></div>':'')+'</div>'; }   // 11-09 사장님 「가」 — 숙소 카드마다 [내 숙소로 정하기] (내 여행 숙소 칸 · trip.js myStay)
 // 「📱 내일 투어를 바로 예약」 띠 (사장님 10-22) — 기준 위치(내 위치·지도 가운데)에서 가까운 도시의 당일 투어 검색. 제휴 코드 없음 · 새 창
 //  Klook 언어 = 주소 앞 /ko/·/ja/·/zh-CN/·/zh-TW/·/es/·/en-US/ · GetYourGuide = /ja-jp/·/zh-cn/·/es-es/ (한국어·번체는 그런 주소가 없어 브라우저 언어로)
 var TB_CITY=[["Seoul",37.5665,126.978,40],["Incheon",37.456,126.705,20],["Busan",35.1796,129.0756,35],["Jeju",33.38,126.55,70],["Gyeongju",35.856,129.225,25],["Jeonju",35.82,127.148,20],["Gangneung",37.752,128.876,25],["Sokcho",38.207,128.592,20],["Daegu",35.871,128.601,25],["Yeosu",34.76,127.662,25]];
@@ -929,6 +931,7 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   if(g==="tg"||g==="am"||g==="fd"||g==="fx"||g==="eb"||g==="em"||g==="st"||g==="ig") return open(g);
   if(g==="x") return close();
   if(g==="tab"){ S.tab=+t.dataset.i; load(); return; }
+  if(g==="mine"){ var xm=S.items&&S.items[+t.dataset.i]; if(xm&&window.TRIP&&TRIP.stay) TRIP.stay.mine({type:"addr",ko:xm.name,en:xm.name_en||xm.name,lat:+xm.y,lng:+xm.x,addr:xm.addr||""}); return; }   // 11-09 내 숙소로 정하기 — 짠 일정이 있으면 「이 밤들에 넣을까요?」(가운데 창), 없으면 첫날 밤
   if(g==="ord"){ S.ord=t.dataset.o==="r"?"r":"d"; var kt=KINDS[S.k].tabs[S.tab]; if(S.raw){ S.items=sortIt(S.raw.slice(),kt).slice(0,10); S.byL={}; S.byL[LANG]=S.items; } paint(); return; }
   if(g==="me"){ S.items=null; S.err=""; paint(); myPos().then(function(p){ if(p){ try{ meSet(p); }catch(z){} } load(); }); return; }
   if(g==="tgx"){ TGX[t.dataset.g]=!TGX[t.dataset.g]; paint(); return; }   // 체험·입장권 우리 메뉴 펼침/접기 (10-25) · 11-07 ▸/▾ → 공통 ▼/— 단추(XTG, 줄 아무 데나 눌러도 그대로)
