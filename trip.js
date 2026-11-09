@@ -816,7 +816,7 @@ function legT(a,b,t,lv){ var lg=leg(a,b);
   if(t>=NIGHT_TX&&lg.mode==="transit") return txLeg(a,b,"night",t);
   if(lg.mode==="taxi"&&lg.est&&(t>=1320||t%1440<240)) return Object.assign({},lg,{fare:taxiFare(lg.km,t)});
   return lg; }
-function simDay(H,arr,date,from,mo,MP,lv,to){ var t=from, p=hS(H), rows=[], viol=0, wait=0, miss=0, idle=0, cut=0, tv=0, wd=0, pre=null, n=arr.length, gt=[];   // tv=이동 분 · wd=낮 장소(밤 장소 빼고) 문 열기를 나와서 기다린 분 · gt[j]=자리 j 에 닿는 시각
+function simDay(H,arr,date,from,mo,MP,lv,to){ var t=from, p=hS(H), rows=[], viol=0, wait=0, miss=0, idle=0, cut=0, tv=0, wd=0, fl=0, pre=null, n=arr.length, gt=[];   // tv=이동 분 · wd=낮 장소(밤 장소 빼고) 문 열기를 나와서 기다린 분 · gt[j]=자리 j 에 닿는 시각
   // 숙소에서 쉬기 (11-07 사장님) — mo.rs=[{k:다음 장소,m:그 앞 식사 칸 끼니(없으면 ""),p:숙소 점}] · 그 자리에서 숙소로 가서 쉬고, 다음 일정을 기다리던 시간만큼 숙소에서 쉬다 나선다(기다림 → 쉬기, 빈 시간으로 안 셈) · 오늘 실제 기록 날은 안 함
   var RS=(!lv&&mo&&mo.rs&&mo.rs.length)?mo.rs:null, rsd={}, RST=null;
   var rest=function(j,K){ if(!RS||j>=n||!p) return; var x=arr[j], q=null; RS.forEach(function(z){ if(!q&&z.p&&z.k===x.k&&!rsd[z.k]&&(K==null||(z.m||"")===K)) q=z; }); if(!q) return; rsd[q.k]=1;
@@ -842,7 +842,7 @@ function simDay(H,arr,date,from,mo,MP,lv,to){ var t=from, p=hS(H), rows=[], viol
     else {
       if(lv){ if(t<lv.now) t=lv.now; st=Math.max(5,Math.round(x.stay*lv.r)); }
       if(x.eat&&ML[x.meal]&&t<ML[x.meal].lo){ wait+=ML[x.meal].lo-t; t=ML[x.meal].lo; }   // 손님이 넣은 점심·저녁 식당 — 점심 11:30·저녁 17:30 전에 닿으면 그 시각에 먹는다 (11-07)
-      var fx=fxOf(x); if(fx!=null){ if(t<fx){ wait+=fx-t; t=fx; } note.push({o:FX6.nt,v:{t:m2hm(fx)}}); }   // 손님이 정한 시작 시각 (11-07) — 일찍 닿으면 그 시각까지 기다린다 · 늦게 닿으면 검사 창(fix)
+      var fx=fxOf(x); if(fx!=null){ if(ar0>fx) fl+=ar0-fx; if(t<fx){ wait+=fx-t; t=fx; } note.push({o:FX6.nt,v:{t:m2hm(fx)}}); }   // 손님이 정한 시작 시각 (11-07) — 일찍 닿으면 그 시각까지 기다린다 · 늦게 닿으면 검사 창(fix)
       if(f&&f.ev&&f.evd.indexOf(dw)>=0){ var ev=null; f.ev.forEach(function(e){ if(ev==null&&t<=e-10+5) ev=e; }); if(ev!=null&&ev-10>t&&ev-10-t<=90){ wait+=ev-10-t; t=ev-10; } if(ev!=null) note.push([f.evn[0]+" "+m2hm(ev),f.evn[1]+" "+m2hm(ev)]); else miss++; }
       var wn=PERFK[x.k]?null:winOf(x,date);   // 영업시간 (11-06) — 문 열기 전이면 기다렸다 들어가고, 마감 뒤면 표시
       if(wn){ if(wn.off){ viol++; note.push({o:LV6.off}); }
@@ -854,7 +854,7 @@ function simDay(H,arr,date,from,mo,MP,lv,to){ var t=from, p=hS(H), rows=[], viol
     rows.push({x:x,leg:lg,t:t,ar:ar0,note:note,st:st,act:act,ext:act===1?1:0}); t+=st; p=x; });
   meals(n);
   var HE=hE(H), back=(HE&&n)?legT(p,HE,t,lv):null; if(back){ t+=back.min; tv+=back.min; }
-  return {rows:rows,back:back,end:t,viol:viol,wait:wait,miss:miss,idle:idle,cut:cut,tv:tv,wd:wd,gt:gt}; }
+  return {rows:rows,back:back,end:t,viol:viol,wait:wait,miss:miss,idle:idle,cut:cut,tv:tv,wd:wd,fl:fl,gt:gt}; }   // fl = 손님이 정한 도착 시각보다 늦게 도착한 분 합 (11-09)
 function addM(MP,j,K){ var o={}; for(var q in MP) o[q]=MP[q].slice(); (o[j]=o[j]||[]).push(K); return o; }
 // mo={to,lunch,dinner}(고른 식당) — 없으면 하루 끝 = 지금 조건
 function sched(H,arr,date,from,mo,lv){ var to=(mo&&mo.to)||TO0();
@@ -866,7 +866,7 @@ function sched(H,arr,date,from,mo,lv){ var to=(mo&&mo.to)||TO0();
     for(var j=(K==="dinner"&&lg>=0)?lg:0;j<=n;j++){ if(K==="dinner"&&jn>=0&&j>jn) break;   // 저녁은 밤 장소 앞까지만
       if(cur.gt[j]>ML[K].ha) break;   // 그 자리에 닿는 시각이 이미 늦으면 뒤 자리도 다 늦다 (식사를 넣으면 늦어지기만 한다) — 장소가 많은 날 계산을 줄인다
       var M2=addM(MP,j,K), s=simDay(H,arr,date,from,mb,M2,null,to), mr=null; s.rows.forEach(function(r){ if(r.meal===K) mr=r; }); if(!mr) continue;
-      var di=s.idle-cur.idle; if(s.viol>cur.viol||(j<n&&di>45)) continue;
+      var di=s.idle-cur.idle; if(s.viol>cur.viol||s.fl>cur.fl||(j<n&&di>45)) continue;   // 11-09 사장님 — 정한 도착 시각을 더 늦추는 식사 자리는 안 쓴다(저녁이 탑골공원 앞에 들어가 13:30 → 19:32) · 다른 자리가 없으면 그 끼니는 건너뜀
       var c=mDev(K,mr.t)+(s.end-cur.end-60)+1.5*di+(K==="dinner"&&j===jn?-20:0)+0.01*Math.abs(mr.t-ML[K].c);
       if(!best||c<best.c-1e-6) best={c:c,j:j,s:s,M:M2}; }
     if(best){ MP=best.M; cur=best.s; if(K==="lunch") lg=best.j; } });
