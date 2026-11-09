@@ -25,12 +25,12 @@ var DN6={ko:"여행 일수는 1~"+MAXD+"일로 넣어 주세요 — {n}일로 �
 function nMsg(n){ return gTxt(DN6,{n:n,d:LANG==="es"?n+(n>1?" días":" día"):n+(n>1?" days":" day")}); }
 function nInput(id,attr,n){ return '<input type="number" '+(id?'id="'+id+'" ':'')+(attr||"")+' inputmode="numeric" pattern="[0-9]*" min="1" max="'+MAXD+'" step="1" value="'+(+n||1)+'" enterkeyhint="done">'; }
 var TR=load();
-function opt0(o){ return Object.assign({n:3,start:"",from:"09:30",to:"20:00",walk:1,hotel:null,food:"any",adv:false},o||{}); }
+function opt0(o){ return nhFix(Object.assign({n:3,start:"",from:"09:30",to:"20:00",walk:1,food:"any",adv:false},o||{})); }   // 11-09 숙소는 opt.nh 한 곳 (nhFix — 옛 opt.hotel·hotels·hAll 은 옮기고 지움)
 function load(){ var o=null; try{ o=JSON.parse(localStorage.getItem(KEY)||"null"); }catch(e){} if(!o||!Array.isArray(o.items)) o={items:[]};
-  o.opt=opt0(o.opt); pastFix(o);
+  o.opt=opt0(nhMigP(o.opt,o.plan)); pastFix(o);   // 11-09 옛 저장 숙소 → 숙소 칸(짠 일정이 있으면 그 일정 도시별 숙소 그대로)
   // 11-08 내 플랜 여러 개 — 지금 플랜 번호 pid(옛 저장엔 없음 = 1) · 다른 플랜 saved[{id,items,opt,plan,u}] (모양이 틀린 것·같은 번호는 버린다)
   o.pid=+o.pid||1; var seen={}; seen[o.pid]=1;
-  o.saved=(Array.isArray(o.saved)?o.saved:[]).filter(function(p){ if(!p||typeof p!=="object"||!Array.isArray(p.items)||!(+p.id)||seen[+p.id]) return false; p.id=+p.id; seen[p.id]=1; p.opt=opt0(p.opt); p.plan=p.plan&&Array.isArray(p.plan.days)?p.plan:null; pastFix(p); return true; });
+  o.saved=(Array.isArray(o.saved)?o.saved:[]).filter(function(p){ if(!p||typeof p!=="object"||!Array.isArray(p.items)||!(+p.id)||seen[+p.id]) return false; p.id=+p.id; seen[p.id]=1; p.plan=p.plan&&Array.isArray(p.plan.days)?p.plan:null; p.opt=opt0(nhMigP(p.opt,p.plan)); pastFix(p); return true; });
   plNoFix(o); return o; }
 // 11-08 사장님 「나」 — 플랜 번호는 만들 때 붙인 번호 그대로(플랜 2를 지워도 플랜 3은 플랜 3) · 번호 없는 것(옛 저장)·겹치는 것은 만든 차례대로 빈 번호 다음부터
 function plNoFix(o){ var a=[{id:o.pid,set:function(n){ o.pno=n; },no:+o.pno||0}].concat(o.saved.map(function(p){ return {id:p.id,set:function(n){ p.no=n; },no:+p.no||0}; })).sort(function(x,y){ return x.id-y.id; }), used={}, mx=0;
@@ -40,10 +40,118 @@ function pastFix(o){
   // 11-06 사장님 「2-가」 — 저장된 첫날이 오늘보다 앞(지난 날짜)이면 내일로 옮겨 보여 준다. 짜 둔 일정은 장소 그대로 날짜만 같이 옮기고, 요일이 바뀌니 AI 설명은 다시 받는다
   try{ var td=kstToday(0); if(o.opt.start&&o.opt.start<td){ var ns=kstToday(1), dd=Math.round((Date.parse(ns+"T00:00:00Z")-Date.parse(o.opt.start+"T00:00:00Z"))/864e5); o.opt.start=ns;
     if(o.plan&&Array.isArray(o.plan.days)){ o.plan.days.forEach(function(d){ if(d&&d.date){ var t=Date.parse(d.date+"T00:00:00Z"); if(isFinite(t)) d.date=new Date(t+dd*864e5).toISOString().slice(0,10); } }); o.plan.ai=null; } } }catch(e){} }   // 11-06 더한 칸(없어도 됨): hotels{도시 id:숙소} · ap{a,d} · pax · hAll
-var SAVED_H=JSON.stringify(TR.opt&&TR.opt.hotel||null);   // 11-06 사장님 「숙소를 안 잡았는데 잡혀 있다」 — 예전에 저장된 숙소는 이번 여행에서 고른 것으로 보지 않는다
+var SAVED_H=nhJ(TR.opt);   // 11-06 사장님 「숙소를 안 잡았는데 잡혀 있다」 — 예전에 저장된 숙소는 이번 여행에서 고른 것으로 보지 않는다 (11-09 숙소 칸 = opt.nh)
 function hKey(){ var o=TR.opt||{}; return (o.start||"")+"|"+(o.n||1); }
-function hOkNow(){ var o=TR.opt||{}; return !!o.hotel&&o.hOk===hKey(); }
-function save(){ try{ var hj=JSON.stringify(TR.opt&&TR.opt.hotel||null); if(hj!==SAVED_H){ if(TR.opt) TR.opt.hOk=TR.opt.hotel?hKey():""; SAVED_H=hj; } var j=JSON.stringify(TR); localStorage.setItem(KEY,j); if(j!==SYLAST) syMark(); }catch(e){} }
+function hOkNow(){ var o=TR.opt||{}; return !!nhFirst()&&o.hOk===hKey(); }
+function save(){ try{ var hj=nhJ(TR.opt); if(hj!==SAVED_H){ if(TR.opt) TR.opt.hOk=nhAny()?hKey():""; SAVED_H=hj; } var j=JSON.stringify(TR); localStorage.setItem(KEY,j); if(j!==SYLAST) syMark(); }catch(e){} }
+// ══ 숙소는 한 곳에 (사장님 11-09 「숙소는 모두 연동」 「가」) ══
+//  TR.opt.nh = {n:[밤마다 숙소], c:{도시 id: 숙소}} — 플랜마다 따로(플랜의 opt) · AI와 자유여행 ②·카트 숙소 칸·일정표 「숙소 찾기」·⋮ 숙소·홈페이지가 모두 이것만 읽고 쓴다
+//   · n[i] = (i+1)일차 밤 숙소 {type,k,ko,en,lat,lng,addr} · 빈칸 = 아직 안 정함 · type "here" = 현재 위치(한 도시 일정의 카트 숙소 칸)
+//   · c = 짠 일정이 없을 때 카트 「도시별 숙소」에서 고른 둘째 도시부터의 숙소 — 일정을 짜면 그 도시 첫 밤들에 들어간다
+//   · 읽기(nhList) — 그 밤에 고른 숙소(그 밤 도시 것) → 같은 도시에 이어 묵는 앞 밤 숙소 → 전에 묵은 도시로 돌아온 밤이면 그 도시 처음 숙소(바꿀 수 있음) → 그 도시로 고른 숙소(c · 일정을 다시 짜 다른 도시 밤 칸에 남은 그 도시 숙소)
+//   · 쓰기(nhPut) — 한 밤을 고르면 그 도시에 이어 묵는 밤 전부(nhBlock) · 다른 도시는 따로 · 짠 일정이 있으면 바뀐 날을 다시 계산(nhApply — 예전 숙소 바꾸기와 같은 길, AI 다시 안 부름)
+//   · 옛 저장(opt.hotel 첫날 숙소 · opt.hotels 도시별 · opt.hAll 「여행 내내 이 숙소」)은 열 때 한 번 옮기고 지운다(nhFix)
+var NHV=0;
+function nhOk(h){ return !!h&&typeof h==="object"&&(h.type==="here"||(isFinite(+h.lat)&&isFinite(+h.lng)&&+h.lat!==0&&+h.lng!==0)); }
+function nhClean(h){ if(!nhOk(h)) return null; if(h.type==="here") return {type:"here"}; var o={type:h.type==="place"?"place":"addr",ko:String(h.ko||h.en||"").slice(0,80),en:String(h.en||h.ko||"").slice(0,80),lat:+h.lat,lng:+h.lng}; if(h.k) o.k=String(h.k).slice(0,60); if(h.addr) o.addr=String(h.addr).slice(0,160); if(h.cid) o.cid=String(h.cid).slice(0,40); return o; }   // cid = 고른 밤의 도시 id(전국 일정) — 일정을 다시 짜 밤이 옮겨져도 그 도시 숙소로
+// 옛 저장(짠 일정이 있는 플랜) — 그 일정이 보여 주던 숙소 그대로: 도시마다 처음 묵는 밤에 그 도시 숙소(나머지 밤은 이어 묵기·돌아온 밤 규칙으로 같게) · 일정에 없는 도시 숙소는 c
+function nhMigP(o,pl){ if(!o||typeof o!=="object"||o.nh||!(o.hotel||o.hotels||o.hAll)||!pl||!Array.isArray(pl.days)||!pl.days.length) return o;
+  var n=[], c={}, seen={}, hs=(o.hotels&&typeof o.hotels==="object")?o.hotels:{};
+  if(pl.mc&&Array.isArray(pl.cities)) pl.days.forEach(function(d,i){ var nc=d&&(d.nc!=null?d.nc:d.c), q=(nc!=null&&nc>=0)?pl.cities[nc]:null; if(!q||seen[q.id]) return; seen[q.id]=1; var h=nhClean(q.h); if(h){ if(h.type!=="here") h.cid=String(q.id).slice(0,40); n[i]=h; } });
+  else { var h0=nhClean(pl.hotel&&pl.hotel.type!=="here"?pl.hotel:o.hotel); if(h0) n[0]=h0; }
+  Object.keys(hs).forEach(function(id){ var h=nhClean(hs[id]); if(h&&h.type!=="here"&&!seen[id]) c[String(id).slice(0,40)]=h; });
+  o.nh={n:n,c:c}; return o; }
+function nhSig(h){ return !h?"":h.type==="here"?"here":String(h.ko||"")+"|"+(+h.lat).toFixed(4)+"|"+(+h.lng).toFixed(4); }
+function nhJ(o){ try{ return JSON.stringify(o&&o.nh||null); }catch(e){ return ""; } }
+function nhFix(o){ if(!o||typeof o!=="object") return o; var s=o.nh, h0, hs;
+  if(!s||typeof s!=="object"||Array.isArray(s)){ s={n:[],c:{}}; h0=nhClean(o.hotel); if(h0) s.n[0]=h0; hs=o.hotels;
+    if(hs&&typeof hs==="object") Object.keys(hs).forEach(function(id){ var h=nhClean(hs[id]); if(h&&h.type!=="here") s.c[String(id).slice(0,40)]=h; }); }
+  var n=Array.isArray(s.n)?s.n.slice(0,MAXD):[], c={}; for(var i=0;i<n.length;i++) n[i]=nhClean(n[i]); while(n.length&&!n[n.length-1]) n.pop();
+  if(s.c&&typeof s.c==="object") Object.keys(s.c).forEach(function(id){ var h=nhClean(s.c[id]); if(h&&h.type!=="here") c[String(id).slice(0,40)]=h; });
+  o.nh={n:n,c:c}; delete o.hotel; delete o.hotels; delete o.hAll; return o; }
+function nhS(o){ o=o||TR.opt; var s=o.nh; if(!s||typeof s!=="object"||Array.isArray(s)) s=o.nh={n:[],c:{}}; if(!Array.isArray(s.n)) s.n=[]; if(!s.c||typeof s.c!=="object") s.c={}; return s; }
+function nhAny(){ var s=nhS(); return s.n.some(nhOk)||Object.keys(s.c).some(function(id){ return nhOk(s.c[id]); }); }
+// 밤 i 의 도시 — 전국 일정 = 그날 밤 도시 번호(pl.cities) · 한 도시 일정 = 0 · 밤이 없으면(출국하는 날) -1
+function nhCity(pl,i){ var d=pl&&pl.days&&pl.days[i]; if(!d) return -1; if(!pl.mc) return 0; var nc=d.nc!=null?d.nc:d.c; return (nc!=null&&nc>=0)?nc:-1; }
+// 이 숙소가 어느 도시 것인지 — 40km 안 가장 가까운 도시(옛 natHotels 와 같은 기준) · 한 도시 일정은 0 · 현재 위치는 null
+function nhFitCi(pl,h){ if(!pl||!pl.mc) return 0; if(!h||h.type==="here") return null; var b=-1, bd=1e9, p={lat:+h.lat,lng:+h.lng}; (pl.cities||[]).forEach(function(c,ci){ var d=km(c,p); if(d<bd){ bd=d; b=ci; } }); return bd<=40?b:-1; }
+// 밤 칸에 고른 숙소가 어느 도시 밤 것인지 — 고를 때 적어 둔 도시(cid)가 이 일정에 있으면 그 도시, 없으면 40km 안 가장 가까운 도시
+function nhOwn(pl,h){ if(!pl||!pl.mc) return 0; if(!h||h.type==="here") return null; if(h.cid){ var cs=pl.cities||[]; for(var i=0;i<cs.length;i++) if(cs[i].id===h.cid) return i; } return nhFitCi(pl,h); }
+function nhCid(pl,i){ var c=nhCity(pl,i); return (pl&&pl.mc&&c>=0&&pl.cities&&pl.cities[c])?String(pl.cities[c].id).slice(0,40):""; }
+// 카트 「도시별 숙소」(c) 가운데 이 장소들 가까이(40km 안) 것
+function nhCGuess(pts){ var s=nhS(), ks=Object.keys(s.c); if(!ks.length) return null; var P=(pts||[]).filter(function(x){ return x&&isFinite(+x.lat)&&+x.lat; }); if(!P.length) return null;
+  var la=0, lo=0; P.forEach(function(x){ la+=+x.lat; lo+=+x.lng; }); var cen={lat:la/P.length,lng:lo/P.length}, b=null, bd=40;
+  ks.forEach(function(id){ var h=s.c[id]; if(!nhOk(h)) return; var d=km(cen,{lat:+h.lat,lng:+h.lng}); if(d<=bd){ bd=d; b=h; } }); return b; }
+// 밤마다 실제로 쓰는 숙소 [숙소|null] · .src[i] = x 고름 · b 같은 도시 앞 밤 · r 전에 묵은 도시로 돌아온 밤(처음 숙소) · h 그 도시로 고른 숙소 · .hint[도시] = 그 도시 숙소(밤이 없는 도시도)
+function nhList(pl){ var s=nhS(), n=s.n, N=pl.days.length, out=new Array(N), src=new Array(N), first={}, hint={}, i, h, c;
+  if(pl.mc){ (pl.cities||[]).forEach(function(q,ci){ var x=s.c[q.id]; if(nhOk(x)&&hint[ci]==null) hint[ci]=x; });
+    Object.keys(s.c).forEach(function(id){ var x=s.c[id], ci=nhFitCi(pl,x); if(ci!=null&&ci>=0&&hint[ci]==null) hint[ci]=x; });
+    for(i=0;i<n.length;i++){ h=n[i]; if(!nhOk(h)||h.type==="here") continue; var f=nhOwn(pl,h); if(f>=0&&f!==nhCity(pl,i)&&hint[f]==null) hint[f]=h; } }
+  else { var pts=[]; for(var k in (pl.pool||{})) pts.push(pl.pool[k]); var cg=nhCGuess(pts); if(cg) hint[0]=cg; }
+  for(i=0;i<N;i++){ c=nhCity(pl,i); src[i]=""; if(c<0){ out[i]=null; continue; } h=n[i];
+    if(nhOk(h)&&(!pl.mc||h.type==="here"||nhOwn(pl,h)===c)){ out[i]=h; src[i]="x"; }
+    else if(i>0&&nhCity(pl,i-1)===c&&out[i-1]){ out[i]=out[i-1]; src[i]="b"; }
+    else if(first[c]){ out[i]=first[c]; src[i]="r"; }
+    else if(hint[c]){ out[i]=hint[c]; src[i]="h"; }
+    else out[i]=null;
+    if(out[i]&&!first[c]) first[c]=out[i]; }
+  out.src=src; out.hint=hint; return out; }
+var NHC={pl:null,s:null,v:-1,sig:"",L:null};
+function nhListC(pl){ if(!pl||!pl.days) return []; var s=nhS(), sig=(pl.mc?"m":"o")+pl.days.length+":", i, d;
+  for(i=0;i<pl.days.length;i++){ d=pl.days[i]; sig+=(d.nc!=null?d.nc:d.c)+","; } sig+=(pl.cities||[]).length;
+  if(NHC.pl===pl&&NHC.s===s&&NHC.v===NHV&&NHC.sig===sig) return NHC.L; var L=nhList(pl); NHC={pl:pl,s:s,v:NHV,sig:sig,L:L}; return L; }
+// 밤 i 를 고르면 같이 바뀌는 밤 — 그 도시에 이어 묵는 밤 전부 (짠 일정이 없으면 첫날 밤만)
+function nhBlock(pl,i){ if(!pl||!pl.days||!pl.days.length) return [0]; var N=pl.days.length; i=Math.max(0,Math.min(N-1,i||0)); var c=nhCity(pl,i); if(c<0) return [];
+  var a=i, b=i, r=[]; while(a>0&&nhCity(pl,a-1)===c) a--; while(b+1<N&&nhCity(pl,b+1)===c) b++; for(var q=a;q<=b;q++) r.push(q); return r; }
+// 밤들에 숙소 넣기 (h=null 은 빼기) — 그 도시로 고른 c 는 지운다(밤 값이 우선) · 덮이는 칸에 다른 도시 숙소가 있었으면(일정을 다시 짜 밤이 옮겨진 것) 그 도시 c 로 남긴다
+function nhPut(pl,idx,h){ var s=nhS(), v=nhClean(h), mc=!!(pl&&pl.mc&&pl.days);
+  (idx||[]).forEach(function(i){ if(!(i>=0&&i<MAXD)) return; var old=s.n[i];
+    if(mc&&nhOk(old)&&old.type!=="here"){ var f=nhOwn(pl,old); if(f>=0&&f!==nhCity(pl,i)&&pl.cities[f]&&!nhOk(s.c[pl.cities[f].id])){ var o2=nhClean(old); delete o2.cid; s.c[pl.cities[f].id]=o2; } }
+    while(s.n.length<i) s.n.push(null); var w=v; if(w&&mc&&w.type!=="here"){ w=nhClean(v); var cd=nhCid(pl,i); if(cd) w.cid=cd; else delete w.cid; } else if(w){ w=nhClean(v); delete w.cid; } s.n[i]=w;
+    if(mc){ var ci=nhCity(pl,i); if(ci>=0&&pl.cities[ci]) delete s.c[pl.cities[ci].id]; } });
+  if(v&&v.type!=="here") Object.keys(s.c).forEach(function(id){ var x=s.c[id]; if(nhOk(x)&&km({lat:+x.lat,lng:+x.lng},{lat:v.lat,lng:v.lng})<=40&&(!mc||nhFitCi(pl,x)===nhFitCi(pl,v))) delete s.c[id]; });
+  while(s.n.length&&!s.n[s.n.length-1]) s.n.pop(); NHV++; }
+// 첫날 밤 숙소 — 짠 일정이 있으면 그 일정의 첫날 밤, 없으면 n[0](없으면 첫 장소 도시로 고른 c)
+function nhFirst(){ var pl=TR.plan; if(pl&&pl.days&&pl.days.length) return nhListC(pl)[0]||null; var s=nhS(); if(nhOk(s.n[0])) return s.n[0];
+  var it=(TR.items||[]).filter(function(x){ var c=catOf(x); return c!=="hotel"&&c!=="trans"&&isFinite(+x.lat); })[0]; return it?nhCGuess([it]):null; }
+// 첫날 밤 숙소 고르기 (AI와 자유여행 ②·카트 숙소 칸) — 짠 일정이 있으면 첫날 밤이 든 도시의 이어 묵는 밤 전부 + 그 날들 다시 계산 · 없으면 첫날 밤
+function nhChoose0(h,skip){ var pl=(TR.plan&&TR.plan.days&&TR.plan.days.length)?TR.plan:null, idx=pl?nhBlock(pl,0):[0]; if(!idx.length) idx=[0]; nhPut(pl,idx,h); if(pl) nhApply(pl,skip); else { save(); nhUI(skip); } return idx; }
+// 짠 일정 쪽을 숙소 칸에 맞춘다 — 도시마다 대표 숙소(cities[].h, 공유·역 고르기용) · 첫날 밤 숙소(pl.hotel·pl.H·REPH)
+function nhSync(pl){ if(!pl||!pl.days) return; var L=nhListC(pl);
+  if(pl.mc) (pl.cities||[]).forEach(function(c,ci){ var h=null; for(var i=0;i<L.length;i++){ if(L[i]&&nhCity(pl,i)===ci){ h=L[i]; break; } } if(!h) h=L.hint[ci]||null; if(nhSig(h)!==nhSig(c.h)) c.h=h; });
+  var h0=L[0]||null; if(nhSig(h0)===nhSig(pl.hotel)) return;
+  pl.hotel=h0?(h0.type==="here"?{type:"here"}:h0):null; pl.H=h0&&h0.type!=="here"?{k:"__hotel",ko:h0.ko,en:h0.en,lat:+h0.lat,lng:+h0.lng,addr:h0.addr||"",hotel:1}:null;
+  if(TR.plan===pl){ if(h0&&h0.type==="here"){ if(!(REPH&&REPH.here)) REPH=null; } else REPH=pl.H; } }
+// 열린 화면 다시 (skip="cart" = 카트 칸에서 바꾼 것 — 카트는 그대로)
+function nhUI(skip){ try{ if(skip!=="cart"&&document.getElementById("trBox")) panelPaint(); }catch(e){} try{ if(document.getElementById("aipSteps")) stepsPaint(); }catch(e){} try{ nowPaint(); }catch(e){} }
+// 숙소가 바뀐 뒤 짠 일정 — 예전 숙소 바꾸기(natSetHotel)와 같은 길: 전국 일정은 역 고르기·열차 시간(natRefit), 한 도시는 실제 시간으로 그날 시각만 · 「다시 검사」 · AI 다시 안 부름
+function nhApply(pl,skip){ if(!pl||TR.plan!==pl){ save(); nhUI(skip); return; } nhSync(pl); save();
+  var after=function(){ drFetch(pl,function(){ save(); if(document.getElementById("trRep")) repPaint(); }); if(document.getElementById("trRep")) repPaint(); nhUI(skip); };
+  if(pl.mc) natRefit(pl,after); else { reorderWithReal(pl,pl.H); if(pl.ord) pl.chk=2; save(); after(); } }
+// 밤 i 숙소 점 — 그 도시 대표 숙소와 같으면 예전 점(__ht 도시 · 한 도시는 __hotel) · 다르면 __hn(처음 그 숙소가 이어진 밤)
+var NPC={};
+function nhPt(h,key){ var sg=nhSig(h), c=NPC[key]; if(c&&c.sig===sg) return c.p; var p={k:key,ko:h.ko,en:h.en||h.ko,lat:+h.lat,lng:+h.lng,addr:h.addr||"",hotel:1}; NPC[key]={sig:sg,p:p}; return p; }
+function nhKey(L,di){ var sg=nhSig(L[di]), i0=di; while(i0>0&&L[i0-1]&&nhSig(L[i0-1])===sg) i0--; return "__hn"+i0; }
+function nightPt(pl,di){ if(!pl||!pl.days||di==null||di<0||di>=pl.days.length) return null; var L=nhListC(pl), h=L[di]; if(!h) return null;
+  if(h.type==="here"){ var Hh=REPH||pl.H; return (Hh&&Hh.here)?Hh:((NATH&&NATH.here)?NATH:null); }
+  var sg=nhSig(h);
+  if(pl.mc){ var ci=nhCity(pl,di), c=pl.cities&&pl.cities[ci]; if(c&&c.h&&nhSig(c.h)===sg) return hotelPt(pl,ci); }
+  else { var H0=REPH||pl.H; if(H0&&!H0.here&&nhSig(pl.hotel)===sg) return H0; }
+  return nhPt(h,nhKey(L,di)); }
+// 전국 일정 — 그 밤이 그 도시면 그 밤 숙소, 아니면 그 도시 대표 숙소 (도시 이동 칸)
+function nhAt(pl,di,ci){ if(di!=null&&di>=0&&nhCity(pl,di)===ci) return nightPt(pl,di); return ci>=0?hotelPt(pl,ci):null; }
+function trDi(pl,tr){ if(tr.di!=null) return tr.di; var q=-1; (pl.days||[]).some(function(d,i){ if((d.am!=null&&pl.tr&&pl.tr[d.am]===tr)||(d.pm!=null&&pl.tr&&pl.tr[d.pm]===tr)){ q=i; return true; } return false; }); return q; }
+// 한 도시 일정의 그날 출발·도착 숙소 — 밤마다 숙소가 같으면 예전 그대로(H0) · 다르면 전날 밤 숙소 → 그날 밤 숙소
+function nhDayH(pl,di,H0){ var L=nhListC(pl); if(!L.length) return H0; var s0=nhSig(pl.hotel), i, diff=false; for(i=0;i<L.length;i++) if(nhSig(L[i])!==s0){ diff=true; break; } if(!diff) return H0;
+  var pt=function(q){ var h=L[q]; if(!h) return null; if(nhSig(h)===s0) return H0; if(h.type==="here") return null; return nhPt(h,nhKey(L,q)); };
+  return hPair(pt(di>0?di-1:di),pt(di)); }
+// 지금 쓸 숙소 (교통 창 출발 「숙소」·홈페이지 「내 일정 숙소 근처」) — 여행 중 = 오늘 밤(+ 전날 밤이 다르면 그것도) · 여행 전 = 첫날 밤(안 정했으면 처음 정한 밤) · 출국하는 날 = 전날 밤
+function nhNow(){ var pl=TR.plan, no=+TR.pno||1, td=kstToday(0);
+  if(pl&&pl.days&&pl.days.length){ var L=nhListC(pl), N=pl.days.length, di=-1, i; for(i=0;i<N;i++) if(pl.days[i].date===td){ di=i; break; }
+    if(di<0){ if(td<pl.days[0].date){ di=0; if(!L[0]) for(i=0;i<N;i++) if(L[i]){ di=i; break; } } else di=N-1; }
+    var h=L[di]||null, pv=di>0?(L[di-1]||null):null; if(!h&&pv&&nhCity(pl,di)<0){ h=pv; pv=null; }
+    return {h:h,prev:(pv&&nhSig(pv)!==nhSig(h))?pv:null,di:di,no:no,date:pl.days[di].date}; }
+  return {h:hOkNow()?nhFirst():null,prev:null,di:0,no:no,date:""}; }   // 짠 일정이 없으면 이번 여행에서 고른 첫날 밤 숙소만(예전에 저장된 숙소는 안 봄 — 11-06 규칙 그대로)
 // ── 「내 여행」 기기끼리 맞추기 (사장님 11-07 「당연히 만들어야지」) — 로그인(구글·애플) 손님만 · 허브 POST /ntsync · 「1-나」 두 기기가 다르면 최근에 바꾼 쪽 통째로 ──
 //   mpv_trip_sync = {at: 이 기기에서 마지막으로 바꾼 시각, sv: 서버와 맞춘 시각} · 바꾸면 2.5초 뒤 올린다 · 앱을 열 때·화면으로 돌아올 때·로그인한 직후 서버 것을 받아 더 새것이면 그것으로 바꾼다
 //   mpv_trlive(오늘 실제 기록)는 그 기기 것이라 안 맞춘다 · 로그인 전에 쓰던 기기는 바꾼 시각을 모르니(at 0) 서버에 있는 것이 이긴다
@@ -54,7 +162,7 @@ function sySess(){ try{ return localStorage.getItem("mpv_pg_sess")||""; }catch(e
 function syMark(){ if(SYIN) return; var m=syMeta(); m.at=Date.now(); sySet(m); if(!sySess()) return; clearTimeout(SYT); SYT=setTimeout(function(){ SYT=0; sync("put"); },2500); }
 function syPost(b){ return fetch(HUB+"/ntsync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}).then(function(r){ return r.json(); }); }
 function syTake(d,at){ var o=null; try{ o=JSON.parse(d); }catch(e){} if(!o||!Array.isArray(o.items)) return;
-  SYIN=1; try{ localStorage.setItem(KEY,d); TR=load(); SAVED_H=JSON.stringify(TR.opt&&TR.opt.hotel||null); SYLAST=JSON.stringify(TR); }catch(e){} SYIN=0; sySet({at:at,sv:at});
+  SYIN=1; try{ localStorage.setItem(KEY,d); TR=load(); SAVED_H=nhJ(TR.opt); SYLAST=JSON.stringify(TR); }catch(e){} SYIN=0; sySet({at:at,sv:at});
   try{ refresh(); if(document.getElementById("trBox")) panelPaint(); if(document.getElementById("trRep")){ if(TR.plan) repPaint(); else sheetClose("trRep"); } if(document.getElementById("aipSteps")) stepsPaint(); }catch(e){} }
 function sync(why){ var s=sySess(); if(!s) return; if(SYBUSY){ if(why==="put") setTimeout(function(){ sync("put"); },3000); return; } SYBUSY=1; var m=syMeta(), fin=function(){ SYBUSY=0; };
   var put=function(){ var d=""; try{ d=localStorage.getItem(KEY)||""; }catch(e){} if(!d||!m.at){ fin(); return; }
@@ -412,7 +520,7 @@ function plBar(){ var a=plAll(); return '<div class="trpbar" data-html2canvas-ig
   +'<span class="trpbt"><button type="button" class="trbtn trpnew" data-pnew="1">'+esc(T5(PL6.nw))+'</button><button type="button" class="trbtn" data-pdel="1">'+esc(T5(PL6.del))+'</button></span></div>'; }   // 한 줄에 다 안 들어가면(영어·스페인어) 단추 둘이 같이 아랫줄 오른쪽으로
 function plId(){ var id=Date.now(), a=plAll(); while(a.some(function(p){ return p.id===id; })) id++; return id; }
 function plStash(){ TR.saved=TR.saved||[]; TR.saved.push({id:TR.pid,no:TR.pno,items:TR.items,opt:TR.opt,plan:TR.plan,u:Date.now()}); }
-function plUse(p){ TR.items=Array.isArray(p.items)?p.items:[]; TR.opt=p.opt||opt0(); TR.plan=p.plan||null; TR.pid=p.id; TR.pno=+p.no||1; SAVED_H=JSON.stringify(TR.opt.hotel||null); HLK=null; REPH=null; }   // 숙소를 고른 표시(hOk)는 플랜 것 그대로 — save() 가 다시 매기지 않게
+function plUse(p){ TR.items=Array.isArray(p.items)?p.items:[]; TR.opt=p.opt||opt0(); TR.plan=p.plan||null; TR.pid=p.id; TR.pno=+p.no||1; nhFix(TR.opt); SAVED_H=nhJ(TR.opt); HLK=null; REPH=null; }   // 숙소를 고른 표시(hOk)는 플랜 것 그대로 — save() 가 다시 매기지 않게
 // 바꾼 뒤 열려 있던 화면을 그 플랜으로 — 일정표가 열려 있었는데 짠 일정이 없으면 카트로 · panel = 카트를 연다(새 플랜)
 function plShow(panel){ try{ refresh(); }catch(e){} try{ nowPaint(); }catch(e){} try{ if(document.getElementById("aipSteps")) stepsPaint(); }catch(e){}
   var rep=!!document.getElementById("trRep");
@@ -432,7 +540,11 @@ function plNew(di){ var o=TR.opt, pl=TR.plan, ds=plDays({plan:pl}), last=plLast(
   else { var d=new Date(last+"T00:00:00Z"); d.setUTCDate(d.getUTCDate()+1); start=d.toISOString().slice(0,10); n=3; }
   var no=JSON.parse(JSON.stringify(o)), e=new Date(start+"T00:00:00Z"); e.setUTCDate(e.getUTCDate()+n-1);
   no.start=start; no.n=n; no.ap=Object.assign({},no.ap||{}); no.ap.a=null; if(e.toISOString().slice(0,10)!==last) no.ap.d=null;
-  no.hOk=(no.hotel&&hOkNow())?start+"|"+n:"";
+  // 11-09 숙소 칸(밤마다) — 그 날짜 밤들의 숙소를 새 플랜 1일차 밤부터 · 끝날 다음 날부터면 마지막 밤 숙소 · 짠 일정이 없으면 그대로
+  var L=pl&&pl.days&&pl.days.length?nhListC(pl):null;
+  if(L&&di!=null&&ds&&ds[di]) no.nh={n:L.slice(di,di+n).map(function(h){ return nhClean(h); }),c:{}};
+  else if(L){ var lh=null; for(var q=L.length-1;q>=0&&!lh;q--) lh=L[q]; no.nh={n:lh?[nhClean(lh)]:[],c:{}}; }
+  nhFix(no); no.hOk=(no.nh.n[0]&&hOkNow())?start+"|"+n:"";
   var nn=plNoNext(); plStash(); plUse({id:plId(),no:nn,items:[],opt:no,plan:null}); save(); try{ ntap("_trip","plan_new"); }catch(z){} plShow(1); }
 // 플랜 삭제 — 한 번 묻고, 남은 플랜 가운데 가장 최근에 쓴 것을 연다 · 마지막 하나였으면 빈 플랜(기본 조건)
 function plDel(){ if(!confirm(gTxt(PL6.q,{p:plName(TR.pid)}))) return; var S=TR.saved||[];
@@ -470,9 +582,10 @@ function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) 
     // 11-07 머무는 시간 칸(30분 단위 30분~8시간, 기본 = 지금 추정값) + 적당한지 한 줄(값은 안 바꾼다)
     var sw="", jd=""; if(!x){ var m=stayOf(it); sw='<span class="trsw"><label class="trswl">'+MPIMG("mi_clock",MIS)+esc(T5(CK6.stay))+' <select class="trsl" data-k="'+esc(it.k)+'">'+stayOpts(m,30,480,udOf(it))+'</select></label>'+(udOf(it)>=2?'<span class="trud">'+esc(udNb(udOf(it)))+(udOf(it)>=3&&udEnd(TR.plan,it.k)?' · '+esc(gTxt(UD6.end,{d:udEnd(TR.plan,it.k)})):'')+'</span>':'')+'<span class="trfxw">'+fxCart(it)+'</span></span>'; jd=stayJudge(it,m); }   // 11-07 옆에 「시작 시각」(fx)
     return '<li class="tri'+(HLK&&it.k===HLK?' hl':'')+'" data-k="'+esc(it.k)+'"><span class="trh" title="drag">☰</span><b class="trn">'+(i+1)+'</b><span class="trt">'+(it.eat?MPIMG("mi_food",MIS):'')+esc(nm(it))+(x?'<i>'+esc(x)+'</i>':'')+sw+(jd?'<span class="trjd">'+esc(jd)+'</span>':'')+'</span><button type="button" class="trx" data-k="'+esc(it.k)+'" aria-label="remove">✕</button></li>'; }).join("");
-  var hsel='<select id="trHotel"><option value="">'+T("— 숙소 고르기 —","— Choose lodging —")+'</option><option value="__here"'+(o.hotel&&o.hotel.type==="here"?" selected":"")+'>'+T("📍 현재 위치","📍 My current location")+'</option>'
-    +HOTELS.map(function(h){ return '<option value="'+esc(h.k)+'"'+(o.hotel&&o.hotel.k===h.k?" selected":"")+'>🏨 '+esc(nm(h))+'</option>'; }).join("")
-    +(o.hotel&&o.hotel.type==="addr"?'<option value="__addr" selected>'+esc(hotelTxt(o.hotel))+'</option>':"")+'</select>';
+  var h1=nhFirst(), h1k=h1&&h1.k&&HOTELS.some(function(x){ return x.k===h1.k; });   // 11-09 첫날 밤 숙소 = 숙소 칸(opt.nh) — AI와 자유여행 ②·일정표·⋮ 숙소에서 고른 것과 같은 값
+  var hsel='<select id="trHotel"><option value="">'+T("— 숙소 고르기 —","— Choose lodging —")+'</option><option value="__here"'+(h1&&h1.type==="here"?" selected":"")+'>'+T("📍 현재 위치","📍 My current location")+'</option>'
+    +HOTELS.map(function(h){ return '<option value="'+esc(h.k)+'"'+(h1&&h1.k===h.k?" selected":"")+'>🏨 '+esc(nm(h))+'</option>'; }).join("")
+    +(h1&&h1.type!=="here"&&!h1k?'<option value="__addr" selected>'+esc(hotelTxt(Object.assign({},h1,{type:"addr"})))+'</option>':"")+'</select>';
   box.innerHTML='<div class="trtop"><b>'+MPICO("mi_cart",T("🛒 내 여행","🛒 My trip"),MIS)+' ('+n+')</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trBox\')">✕</button></div>'
     +plBar()   // 11-08 내 플랜 고르기·새 플랜·플랜 삭제
     +(TR.plan?'<button type="button" class="trbtn" id="trOpenRep" style="margin:0 0 8px">'+MPICO("mi_doc",T5({ko:"📄 내 일정 보기",en:"📄 My plan",ja:"📄 私の日程を見る",zhs:"📄 查看我的行程",zht:"📄 查看我的行程",es:"📄 Ver mi plan"}),MIS)+'</button>':"")   // 11-07 사장님 — 맨 위로 옮기고 「지난 일정 보기」 → 「내 일정 보기」 (짜 둔 일정을 연다 · 다시 짜면 덮어씀)
@@ -500,7 +613,7 @@ function panelPaint(){ var box=document.querySelector("#trBox .trin"); if(!box) 
   g("trTo").onchange=function(){ if(hm2m(this.value)!=null) o.to=this.value; save(); };
   g("trWalk").onchange=function(){ o.walk=+this.value; save(); };
   g("trFood").onchange=function(){ o.food=this.value; save(); }; g("trAdv").onchange=function(){ o.adv=this.checked; save(); };
-  if(g("trHotel")) g("trHotel").onchange=function(){ var v=this.value; if(!v) o.hotel=null; else if(v==="__here") o.hotel={type:"here"}; else if(v!=="__addr"){ var h=HOTELS.filter(function(x){ return x.k===v; })[0]; if(h) o.hotel={type:"place",k:h.k,ko:h.ko,en:h.en,lat:h.lat,lng:h.lng}; } save(); };
+  if(g("trHotel")) g("trHotel").onchange=function(){ var v=this.value, h=null; if(!v){ nhClear0(); return; } if(v==="__here") h={type:"here"}; else if(v!=="__addr"){ var x=HOTELS.filter(function(q){ return q.k===v; })[0]; if(x) h={type:"place",k:x.k,ko:x.ko,en:x.en,lat:x.lat,lng:x.lng}; } if(h) nhToast(nhChoose0(h,"cart"),h); };   // 11-09 숙소 칸 — 첫날 밤이 든 도시에 이어 묵는 밤 전부
   if(g("trAddrGo")){ g("trAddrGo").onclick=addrSearch; g("trAddrQ").onkeydown=function(e){ if(e.key==="Enter"){ e.preventDefault(); addrSearch(); } }; }
   g("trPlan").onclick=planGo; g("trPlanS").onclick=planSights; psCartWire(g); if(g("trOpenRep")) g("trOpenRep").onclick=function(){ openReport(); };
   [].forEach.call(box.querySelectorAll(".trx"),function(b){ b.onclick=function(){ if(b.dataset.k===HLK) HLK=null; delItem(b.dataset.k); panelPaint(); }; });
@@ -532,7 +645,7 @@ var ADDRQ="";   // 숙소 찾기 — 마지막 검색어 (언어를 바꿔 창�
 function addrPaint(){ var out=document.getElementById("trAddrR"); if(!out||!ADDRQ) return; var q0=document.getElementById("trAddrQ"); if(q0&&!q0.value) q0.value=ADDRQ;
   if(window.KL&&ADDR.length) KL.ensure(ADDR,"item",ADDRQ,function(){ if(document.getElementById("trBox")) addrPaint(); });
     out.innerHTML=ADDR.length?ADDR.map(function(x,i){ return '<div class="tra" data-i="'+i+'"><b>'+esc(KS(L()&&x.name_en?x.name_en:x.name))+'</b><br><span class="d">'+esc(L()&&x.addr_en?x.addr_en:x.addr)+'</span></div>'; }).join(""):'<div class="d">'+T("찾은 곳이 없어요","No results")+'</div>';
-    [].forEach.call(out.querySelectorAll(".tra"),function(e){ e.onclick=function(){ var x=ADDR[+e.dataset.i]; var h={type:"addr",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x,addr:x.addr||""}; if(!natAssignHotel(h)) TR.opt.hotel=h; save(); ADDRQ=""; ADDR=[]; panelPaint(); }; }); }   // 도시가 여럿이면 가까운 도시 숙소로 (11-06)
+    [].forEach.call(out.querySelectorAll(".tra"),function(e){ e.onclick=function(){ var x=ADDR[+e.dataset.i]; var h={type:"addr",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x,addr:x.addr||""}; ADDRQ=""; ADDR=[]; if(!natAssignHotel(h)) nhToast(nhChoose0(h,"cart"),h); panelPaint(); }; }); }   // 11-09 숙소 칸(opt.nh) · 도시가 여럿이면 가까운 도시 숙소로 (11-06)
 // 숙소 이름·주소로 찾기 — 카카오 「숙박」 분류가 하나라도 있으면 그것만(「웨스틴조선」을 찾으면 호텔 안 식당까지 나왔다, 11-07 사장님 「먹통이다 자유롭게 숙소를 찾게」) · 없으면(주소로 찾은 경우 등) 그대로
 function lodgeOnly(a){ var h=(a||[]).filter(function(x){ return /숙박/.test(x.cat||""); }); return h.length?h:(a||[]); }
 function addrSearch(){ var q=document.getElementById("trAddrQ").value.trim(), out=document.getElementById("trAddrR"); if(!q) return; out.innerHTML='<div class="d">'+T("찾는 중…","Searching…")+'</div>'; var lg=LANG;
@@ -788,7 +901,7 @@ function compute0(H,Dn){ if(!OLD()){ var nat=null; try{ nat=natPlan(H,Dn); }catc
     var D2=MD.length?Math.max(P.length?1:0,D-MD.reduce(function(a,x){ return a+udOf(x); },0)):D;
     var dts=[]; for(var q0=0;q0<D2;q0++) dts.push(dayDate(q0));
     var sq=D2?seqSplit(H,P,D2,cap):[], pool0={}; P.forEach(function(x){ pool0[x.k]=x; });
-    var pl0={v:1,at:Date.now(),from:from,to:to,hotel:o.hotel&&o.hotel.type!=="here"?o.hotel:(o.hotel?{type:"here"}:null),
+    var pl0={v:1,at:Date.now(),from:from,to:to,hotel:nhNewH(),
       days:sq.map(function(g,di){ return {date:dts[di].toISOString().slice(0,10),stops:g.map(function(x){ return x.k; })}; }),pool:pool0,skip:skip.map(function(x){ return x.k; }),ai:null,ord:1};
     mdPlace(pl0,MD);   // 11-08
     fxFix(pl0,H);   // 11-07 정한 시작 시각에 못 닿는 곳 → 다른 날로
@@ -807,7 +920,7 @@ function compute0(H,Dn){ if(!OLD()){ var nat=null; try{ nat=natPlan(H,Dn); }catc
   var days=gs.map(function(g,di){ var ord=orderDay(H,g,dates[di],from,to), s=sched(H,ord,dates[di],from,{to:to});
     return {date:dates[di].toISOString().slice(0,10),stops:ord.map(function(x){ return x.k; }),end:s.end}; });
   var pool={}; P.forEach(function(x){ pool[x.k]=x; });
-  return {v:1,at:Date.now(),from:from,to:to,hotel:o.hotel&&o.hotel.type!=="here"?o.hotel:(o.hotel?{type:"here"}:null),days:days,pool:pool,skip:skip.map(function(x){ return x.k; }),ai:null}; }
+  return {v:1,at:Date.now(),from:from,to:to,hotel:nhNewH(),days:days,pool:pool,skip:skip.map(function(x){ return x.k; }),ai:null}; }
 // 11-08 사장님 「식당은 식당으로 구분하고 관광지로 구분하지 않게」 — 다시 짤 때 카트의 식당(「식당 찾기」로 넣은 것, eat)은 날짜 나누기에서 빼고:
 //   그 식당과 가까운 관광지가 있는 날(40km 안, 가까운 날부터)의 원래 끼니(점심·저녁) 자리에 고른 식당으로 넣는다(pl.meals — 그 끼니 「후보 3곳」 칸은 안 생김, 이름표는 그 자리 시각)
 //   그날 그 끼니 자리가 없으면(일찍 끝나는 날 등) 다음으로 가까운 날 · 같은 식당이 두 번이거나 그날 그 끼니에 이미 식당이 있으면 남는 하나는 삭제(pl.drop — 짠 뒤 카트에서도 뺌, 사장님 「남는 한개의 식당은 삭제한다」)
@@ -882,7 +995,9 @@ function shrinkDays(H,pl){ var cur=pl.days.length; if(cur<2) return 0; var key=p
   if(st>0) for(var D=Math.max(1,Math.ceil(st/cap));D<cur&&Ds.length<SGW;D++) Ds.push(D);
   if(!Ds.length){ SHR={key:key,n:0}; return 0; }
   return daySearch(SHR,key,Ds,function(D){ if(base==null) base=planScore(H,pl).v; var q=planScore(H,compute(H,D)); return q.ok&&q.v<=base; },0); }
-function hotelPos(cb){ var h=TR.opt.hotel; if(!h) return cb(null); if(h.type!=="here") return cb({k:"__hotel",ko:h.ko,en:h.en,lat:+h.lat,lng:+h.lng,hotel:1});
+// 새로 짤 일정의 첫날 밤 숙소 (11-09 숙소 칸 opt.nh) — 1일차 밤에 고른 숙소, 없으면 첫 장소 도시로 고른 숙소(카트 도시별)
+function nhNewH(){ var s=nhS(), h=nhOk(s.n[0])?s.n[0]:null; if(!h){ var it=(TR.items||[]).filter(function(x){ var c=catOf(x); return c!=="hotel"&&c!=="trans"&&isFinite(+x.lat); })[0]; h=it?nhCGuess([it]):null; } return h?(h.type==="here"?{type:"here"}:h):null; }
+function hotelPos(cb){ var h=nhNewH(); if(!h) return cb(null); if(h.type!=="here") return cb({k:"__hotel",ko:h.ko,en:h.en,lat:+h.lat,lng:+h.lng,addr:h.addr||"",hotel:1});
   var use=function(p){ cb(p?{k:"__hotel",ko:"현재 위치",en:"Current location",lat:p[0],lng:p[1],hotel:1,here:1}:null); };
   if(window.ME&&ME.pos) use(ME.pos); else myPos().then(use); }
 
@@ -891,7 +1006,7 @@ function planGo(){ if(!hasPass()){ openPricing(); return; } if(!TR.items.length)
   var b=document.getElementById("trPlan"); if(b){ b.disabled=true; b.textContent=T("짜는 중…","Planning…"); }
   hotelPos(function(H){ setTimeout(function(){ var pl;
     try{ pl=compute(H); }catch(e){ try{ console.error(e); }catch(x){} if(b){ b.disabled=false; b.innerHTML=MPICO("mi_calendar",T("🗓 일정 짜기","🗓 Plan my trip"),MIS); } return; }
-    pl.H=H&&!H.here?H:null; if(pl.ord) pl.chk=DAYUP?2:1; DAYUP=0;
+    pl.H=H&&!H.here?H:null; nhSync(pl); if(pl.ord) pl.chk=DAYUP?2:1; DAYUP=0;   // 11-09 도시마다 대표 숙소·첫날 밤 숙소를 숙소 칸(opt.nh)에 맞춤
     var eDrop=[], eMiss=[]; if(pl.drop){ TR.items=TR.items.filter(function(x){ if(pl.drop.indexOf(x.k)<0) return true; eDrop.push(nm(x)); return false; }); delete pl.drop; }   // 11-08 겹치는 식당은 카트에서도 뺀다
     if(pl.emiss){ TR.items.forEach(function(x){ if(pl.emiss.indexOf(x.k)>=0) eMiss.push(nm(x)); }); delete pl.emiss; }
     TR.plan=pl; save(); if(eDrop.length||eMiss.length){ refresh(); setTimeout(function(){ if(eDrop.length) lgToast(gTxt(EA6.drop,{n:eDrop.length,p:eDrop.join(", ")})); if(eMiss.length) setTimeout(function(){ lgToast(gTxt(EA6.miss,{p:eMiss.join(", ")})); },eDrop.length?3600:0); },1200); }   // 11-07 짠 직후 검사 창 한 번 · 검사 창 「하루 늘리기」로 다시 짰으면 「다시 검사」 문구로
@@ -979,7 +1094,7 @@ function aiFetchParts(pl,hn,all,only){ var N=pl.days.length, at=pl.at, lang=LANG
 var REPH=null, REPME=null, GEO=null, GEOST="";   // REPME = 그날 1번째 구간 출발점 = 「지금 내 위치」(숙소 아님 — 그날 숙소에서 안 잘 수도, 사장님 10-20) · GEO 는 이 화면 메모리에만(저장·전송 없음)
 // 일·중 화면인데 AI 설명에 그 언어 칸이 없으면(다른 언어로 짠 일정) 그 언어로 한 번 더 받는다 — 허브는 같은 본문을 캐시 (10-18)
 function aiLangMiss(ai){ if(!ai||!ai.days||!/^(ja|zhs|zht|es)$/.test(LANG)) return false; var d=ai.days.filter(Boolean)[0]; return !!d&&!d[LANG]; }
-function openReport(H){ if(!TR.plan) return; drLoad(TR.plan); var pl0=TR.plan; if(pl0.mc&&Array.isArray(pl0.tr)&&pl0.tr.some(function(t){ return !t.st; })) trFetch(pl0,function(){ if(TR.plan!==pl0) return; save(); if(document.getElementById("trRep")) repPaint(); });   // 공유로 받은 전국 일정 — 열차·버스 시간표를 받는다(순서는 받은 그대로)
+function openReport(H){ if(!TR.plan) return; drLoad(TR.plan); var pl0=TR.plan; nhSync(pl0); if(pl0.mc&&Array.isArray(pl0.tr)&&pl0.tr.some(function(t){ return !t.st; })) trFetch(pl0,function(){ if(TR.plan!==pl0) return; save(); if(document.getElementById("trRep")) repPaint(); });   // 공유로 받은 전국 일정 — 열차·버스 시간표를 받는다(순서는 받은 그대로)
   sheetClose("trBox"); sheet("trRep"); GEOST=""; GEO=null; /* 열 때마다 위치를 한 번 새로 */ var aiGo=function(){ var pa=TR.plan&&TR.plan.ai; if(TR.plan&&(!pa||aiLangMiss(pa))&&hasPass()) aiFetch();
     else if(pa&&((pa.pend&&pa.pend.length)||(pa.retry&&pa.retry.length))&&hasPass()&&!(AIQ.run&&AIQ.at===TR.plan.at)){ var p0=TR.plan, hn0=p0.mc?"":(p0.hotel&&p0.hotel.type!=="here"?p0.hotel.ko:""); aiFetchParts(p0,hn0,withLC(function(){ return aiDays(p0); }),(pa.pend||[]).concat(pa.retry||[])); } };   // 7일씩 나눠 부르다 앱을 닫았으면 남은 묶음만 (11-06)
   if(H!==undefined){ REPH=H; repPaint(); aiGo(); } else planHotel(function(h){ REPH=h; repPaint(); aiGo(); }); }
@@ -990,7 +1105,7 @@ function lgNm(k,di,b){ var pl=TR.plan; if(!pl||!k) return ""; if(k==="__me") ret
   var m=/^rs:(\d+):(lunch|dinner)$/.exec(k); if(m){ var c=mealsOf(+m[1])[m[2]]; return c?eatName(c):""; }
   var X=LGC[di]||(LGC[di]=dayX(pl,di,REPH||pl.H||null)), S=hS(X.H), E=hE(X.H);
   if(k==="__hotel") return ptNm(b?E:S)||ptNm(E||S); if(E&&E.k===k&&b) return ptNm(E); if(S&&S.k===k) return ptNm(S); if(E&&E.k===k) return ptNm(E);
-  if(/^__(ht|lt)\d+$/.test(k)){ var np=natPt(pl,k); if(np) return ptNm(np); }   // 숙소에서 쉬기 구간 (11-07)
+  if(/^__(ht|lt|hn)\d+$/.test(k)){ var np=natPt(pl,k); if(np) return ptNm(np); }   // 숙소에서 쉬기 구간 (11-07)
   return (window.PLACES&&PLACES[k])?nm(PLACES[k]):""; }
 // 11-08 사장님 「일목요연」 — 이동은 카드 사이 회색 작은 한 줄: 탈것 아이콘 + 시간 · 거리 (줄 전체를 누르면 교통 창 · 끝의 › 는 CSS) · 장소 이름·「약」·✓ 는 뺀다
 function lgDur(m){ if(window.LANG!=="en") return durTxt(m); m=Math.round(m); var h=Math.floor(m/60), r=m%60; return ((h?h+" h ":"")+(r||!h?r+" min":"")).trim(); }   // 영어는 「37m」이 미터와 헷갈려 「37 min」
@@ -1154,7 +1269,8 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
       prevK=r.x.k; });
     if(lqi===s.rows.length) h+=lunchAskHtml(di);
     if(Q.post) h+=natPostHtml(pl,di,X,Q.post,prevK);
-    else if(s.back) h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="__hotel" data-d="'+di+'">'+legTxt(s.back,lgNm(prevK,di),lgNm("__hotel",di,1))+legGo(s.back)+'<div class="tods"></div></div><div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+MPICO("mi_stay",T("숙소 도착","Back to lodging"),MIS)+'</span></div>';
+    else if(s.back){ var eP=hE(X.H), eK=(eP&&/^__hn\d+$/.test(eP.k||""))?eP.k:"__hotel";   // 11-09 밤마다 숙소가 다른 날 — 그 밤 숙소(__hn)로 길·이름
+      h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+eK+'" data-d="'+di+'">'+legTxt(s.back,lgNm(prevK,di),lgNm(eK,di,1))+legGo(s.back)+'<div class="tods"></div></div><div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+MPICO("mi_stay",T("숙소 도착","Back to lodging"),MIS)+(eK!=="__hotel"?' · <b>'+esc(ptNm(eP))+'</b>':'')+'</span></div>'; }
     else h+='<div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+T("일정 끝","End of day")+'</span></div>';
     if(!Q.post&&pl.days.length>1&&di<pl.days.length-1) h+=nightHtml(pl,di,null);   // 밤마다 숙소 칸 (11-06) — 숙소 하나 일정은 마지막 날 빼고
     if(d.gap&&!(X.pmTr||X.apD)) h+=gapAsk(pl,d,di,s,shr!==0);   // 「숙소로 일찍 갈게요」를 고른 날 등 — 그 표시와 되돌리기 (11-07 「일찍 끝나요」 물음은 아래 「일정 추가」 칸이 맡는다)
@@ -1764,7 +1880,7 @@ function psList(S,A,btnOf){ if(S.busy) return '<div class="d" style="margin:6px 
 function psInput(id,go,v){ return '<div class="trsr psr"><input id="'+id+'" enterkeyhint="search" placeholder="'+esc(T5(PS8.ph))+'" value="'+esc(v||"")+'"><button type="button" class="tb" id="'+go+'" aria-label="search">'+MPIMG("mi_search","height:1.2em;width:auto;vertical-align:-0.2em;margin:0")+'</button></div>'; }
 // 카트
 var PSC={q:"",r:null,busy:0,er:0};
-function psCartA(){ var h=TR.opt&&TR.opt.hotel; if(h&&isFinite(+h.lat)&&h.type!=="here") return {lat:+h.lat,lng:+h.lng}; var it=TR.items.filter(function(x){ return isFinite(+x.lat); })[0]; return it?{lat:+it.lat,lng:+it.lng}:null; }
+function psCartA(){ var h=nhFirst(); if(h&&isFinite(+h.lat)&&h.type!=="here") return {lat:+h.lat,lng:+h.lng}; var it=TR.items.filter(function(x){ return isFinite(+x.lat); })[0]; return it?{lat:+it.lat,lng:+it.lng}:null; }
 function psCartBox(){ var A=psCartA(); return '<div class="psbox">'+psInput("psQc","psGoC",PSC.q)+'<div id="psRc">'+psList(PSC,A,function(x){ var it=psItem(x); return has(it.k)?'<span class="d">'+esc(T5(PS8.got))+'</span>':'<button type="button" class="trbtn" data-psa="'+esc(it.k)+'">'+esc(T5(PS8.add))+'</button>'; })+'</div></div>'; }
 function psCartWire(g){ var q=g("psQc"), b=g("psGoC"); if(!q||!b) return; var go=function(){ PSC.q=q.value.trim(); if(!PSC.q) return; PSC.busy=1; PSC.r=null; PSC.er=0; panelPaint(); try{ ntap("_trip","cart_search"); }catch(z){}
     psSearch(PSC.q,psCartA(),function(L){ PSC.busy=0; PSC.r=L; PSC.er=L?0:1; if(document.getElementById("trBox")) panelPaint(); }); };
@@ -2072,7 +2188,7 @@ function pinFrom(a,it){ if(!Array.isArray(a)||!a.length) return; if(a[0]===1||a[
   if(oh.length) it.oh=oh.slice(0,28); }
 function shareData(){ var pl=TR.plan, r=function(n){ return Math.round(n*1e5)/1e5; };
   return {v:1,s:pl.days[0]&&pl.days[0].date,f:m2hm(pl.from),t:m2hm(pl.to),w:TR.opt.walk,h:pl.hotel&&pl.hotel.type!=="here"?[pl.hotel.ko,pl.hotel.en,r(pl.hotel.lat),r(pl.hotel.lng)]:null,
-    d:pl.days.map(function(d){ return d.stops.filter(function(k){ return pl.pool[k]; }).map(function(k){ var x=pl.pool[k]; if(!x.pin) return k; var a=[x.ko,x.en,r(x.lat),r(x.lng)], q=pinInfo(x); if(x.eat){ a.push(q||0); a.push({e:x.meal||"",m:x.stay||60}); } else if(q) a.push(q); return a; }); }),x:natShare(pl,r),
+    d:pl.days.map(function(d){ return d.stops.filter(function(k){ return pl.pool[k]; }).map(function(k){ var x=pl.pool[k]; if(!x.pin) return k; var a=[x.ko,x.en,r(x.lat),r(x.lng)], q=pinInfo(x); if(x.eat){ a.push(q||0); a.push({e:x.meal||"",m:x.stay||60}); } else if(q) a.push(q); return a; }); }),x:natShare(pl,r),nh:nhShare(r),
     u:(function(){ var u={}, n=0; for(var k in pl.pool){ var x=pl.pool[k]; if(x&&!x.eat&&+x.um>0){ u[k]=+x.um; n++; } } return n?u:undefined; })(),
     z:(function(){ var z={}, n=0; for(var k in pl.pool){ var f=fxOf(pl.pool[k]); if(f!=null){ z[k]=f; n++; } } return n?z:undefined; })(),
     r:(function(){ var o=[]; pl.days.forEach(function(d,di){ (d.rs||[]).forEach(function(q){ var j=d.stops.filter(function(k){ return pl.pool[k]; }).indexOf(q.k); if(j>=0) o.push([di,j,q.m||""]); }); }); return o.length?o:undefined; })()}; }   // r = 숙소에서 쉬기(11-07) — 그날 j번째 장소 앞 · 식당 키는 받는 쪽에서 바뀌니 자리 번호로   // z = 손님이 정한 시작 시각(분, 11-07) — 옛 앱은 모르는 칸이라 버린다   // 11-07 손님이 고른 머무는 시간(u)·손님이 넣은 식당([5] = {e:끼니, m:분}) — 옛 앱은 모르는 칸이라 버린다   // x = 전국 일정(도시별 숙소·공항·도시 이동 아침/저녁) — 옛 앱은 모르는 칸이라 버린다 (11-06)
@@ -2285,10 +2401,11 @@ function fromShare(z){ return unzip(z).then(function(s){ var o=JSON.parse(s); if
     if(TR.items.length&&!confirm(T("받은 일정으로 바꿀까요? (지금 담은 목록은 바뀝니다)","Replace your current trip with the shared plan?"))) return false;
     var h=Array.isArray(o.h)?{type:"addr",ko:String(o.h[0]).slice(0,80),en:String(o.h[1]).slice(0,80),lat:+o.h[2],lng:+o.h[3]}:null;
     var sv0=TR.saved||[], pid0=TR.pid||1, pno0=TR.pno||1;   // 11-08 내 플랜 — 받은 일정은 지금 플랜 자리에 · 다른 플랜은 그대로
-    TR={items:items.map(function(x){ var y=Object.assign({},x); delete y.stay; return y; }),opt:{n:days.length,start:o.s,from:o.f,to:o.t,walk:+o.w||1,hotel:h},pid:pid0,pno:pno0,saved:sv0};
+    TR={items:items.map(function(x){ var y=Object.assign({},x); delete y.stay; return y; }),opt:{n:days.length,start:o.s,from:o.f,to:o.t,walk:+o.w||1,nh:{n:h?[nhClean(h)]:[],c:{}}},pid:pid0,pno:pno0,saved:sv0};
     TR.plan={v:1,ord:1,at:Date.now(),from:hm2m(o.f)||570,to:hm2m(o.t)||1200,hotel:h,days:days.map(function(ks,i){ return {date:dayDate(i).toISOString().slice(0,10),stops:ks}; }),pool:pool,skip:[],ai:null};   // ord = 받은 순서 그대로(숙소를 바꿔도 안 섞음, 11-07)
     TR.plan.H=h?{k:"__hotel",ko:h.ko,en:h.en,lat:h.lat,lng:h.lng,hotel:1}:null;
     if(o.x&&typeof o.x==="object"){ try{ natFromShare(TR.plan,o.x); }catch(e){ try{ console.error(e); }catch(z){} } }
+    nhFromShare(o.nh); nhSync(TR.plan);   // 11-09 밤마다 숙소(새 링크만 · 옛 링크는 첫날·도시별 숙소 그대로)
     if(Array.isArray(o.r)) o.r.slice(0,200).forEach(function(q){ if(!Array.isArray(q)) return; var d=TR.plan.days[+q[0]], k=days[+q[0]]&&days[+q[0]][+q[1]]; if(!d||!k||d.stops.indexOf(k)<0) return; (d.rs=d.rs||[]).push({k:k,m:/^(lunch|dinner)$/.test(q[2])?q[2]:""}); });   // 숙소에서 쉬기 (11-07)   // 전국 일정 (11-06) — 날마다 장소는 받은 그대로, 도시·이동·숙소 틀만 다시
     save(); refresh(); }); }); }
 
@@ -2501,7 +2618,7 @@ document.addEventListener("visibilitychange",function(){ if(!document.hidden){ t
 //  ③ 날 배분 — 도시마다 머문 시간+이동(그 도시 장소 양), 모든 나누기 × 도시 이동을 아침/저녁에 하는 경우를 다 따져 넘침이 가장 적은 것 (저녁 이동은 23시까지 숙소 도착 · 날짜가 도시보다 적으면 가까운 도시끼리 한 날로)
 //  ④ 도시 이동 칸 — 열차 = 허브 /train(TAGO 그날 시간표·어른 운임, 역에 닿는 시각 + 15분 뒤 첫 열차) · 역이 없거나 열차가 없으면 /nxcity(ODsay 도시 간 결과) · 섬 = 「항공 — 예약 필요」(시각·요금은 안 지어냄)
 //     시간표를 못 받으면 「예상 ○시간 ○분 · 시간표 확인」 · 아침 이동 = 숙소 →(택시)→ 역 → 열차 → 역 →(택시)→ 다음 도시 숙소에 짐 두고 시작 · 저녁 이동 = 마지막 장소 → 역 → 열차 →(택시)→ 숙소
-//  ⑤ 숙소 — 도시마다 하나(TR.opt.hotels[도시 id], 예전 숙소 하나 TR.opt.hotel 은 가까운 도시로) · 「여행 내내 이 숙소」(TR.opt.hAll) = 모든 밤 그 숙소
+//  ⑤ 숙소 — 11-09 밤마다(TR.opt.nh, 맨 위 「숙소는 한 곳에」) · 같은 도시에 이어 묵는 밤은 한 숙소 · 돌아온 도시는 처음 숙소를 미리 · 「여행 내내 이 숙소」는 없앰
 //  ⑥ 공항 — 도착: 국제선 입국 뒤 1시간 30분(국내선 45분)부터 그날 시작 · 출발: 국제선 3시간·국내선 1시간 30분 전 공항 도착에 맞춰 그날 끝
 var LATE=23*60, NAT_LINK=30, NATH=null;
 var CITYNM=[["seoul","서울","Seoul","ソウル","首尔","首爾","Seúl",37.5665,126.978],["incheon","인천","Incheon","仁川","仁川","仁川","Incheon",37.4563,126.7052],["suwon","수원","Suwon","水原","水原","水原","Suwon",37.2636,127.0286],
@@ -2608,7 +2725,7 @@ function tmpLodge(pl,ci){ var c=pl&&pl.cities&&pl.cities[ci]; if(!c) return null
   var id=String(c.id||"").split(/[-+]/)[0], q=CITYNM.filter(function(z){ return z[0]===id; })[0], o=q?nmOf(q):c, p=id==="seoul"?Object.assign({},SEOUL_ST):F6x(NX6.cen,function(l){ return {c:o[l]||o.en||o.ko}; });
   if(id!=="seoul"){ p.lat=q?q[7]:+c.lat; p.lng=q?q[8]:+c.lng; }
   p.k="__lt"+ci; p.tmp=1; p.ci=ci; TLC[ci]={key:key,p:p}; return p; }
-function natPt(pl,k){ if(!pl) return null; var m=/^__ht(\d+)$/.exec(k); if(m) return hotelPt(pl,+m[1]); m=/^__lt(\d+)$/.exec(k); if(m) return tmpLodge(pl,+m[1]); m=/^__ap_(\w+)$/.exec(k); if(m) return apPt(m[1]);
+function natPt(pl,k){ if(!pl) return null; if(/^__hn\d+$/.test(k)) return NPC[k]?NPC[k].p:null; var m=/^__ht(\d+)$/.exec(k); if(m) return hotelPt(pl,+m[1]);   // __hn = 그 밤 숙소(도시 대표 숙소와 다른 것, 11-09) m=/^__lt(\d+)$/.exec(k); if(m) return tmpLodge(pl,+m[1]); m=/^__ap_(\w+)$/.exec(k); if(m) return apPt(m[1]);
   var f=null; (pl.tr||[]).forEach(function(t){ if(t.sa&&t.sa.k===k) f=t.sa; if(t.sb&&t.sb.k===k) f=t.sb; }); if(f) return f;
   m=/^__ct_(.+)$/.exec(k); if(m&&pl.cities) pl.cities.forEach(function(c){ if(c.id===m[1]) f=cityPt(c); }); return f; }
 function bagLeg(a,b,t){ var d=km(a,b); if(d<=0.5) return {mode:"walk",km:d,min:Math.max(3,Math.round(d*1.3/4.5*60))}; return txLeg(a,b,"bag",t); }
@@ -2630,12 +2747,12 @@ function natCity(g,gi){ var b=null, bd=1e9, i;
     if(g.lat>=bb[0]&&g.lat<=bb[2]&&g.lng>=bb[1]&&g.lng<=bb[3]){ var ar=(bb[2]-bb[0])*(bb[3]-bb[1]); if(ar<ba){ ba=ar; best=id; } } }
   if(best){ var q2=CITY[best]; return {id:best,ko:q2.ko,en:q2.en||q2.ko,ja:q2.ja||q2.en,zhs:q2.zhs||q2.en,zht:q2.zht||q2.en,es:q2.es||q2.en}; }
   return {id:"area"+(gi+1),ko:"지역 "+(gi+1),en:"Area "+(gi+1),ja:"地域"+(gi+1),zhs:"地区"+(gi+1),zht:"地區"+(gi+1),es:"Zona "+(gi+1)}; }
-// 도시마다 숙소 — TR.opt.hotels[id](정한 것 · null = 「정하지 않음」으로 고른 것) → 예전 숙소 하나는 40km 안 가장 가까운 도시로 · 「여행 내내」면 모든 도시에
-function natHotels(G,H){ var o=TR.opt, hs=o.hotels||{}, one=o.hotel, oneG=null, bd=1e9;
-  if(one&&one.type!=="here"&&isFinite(+one.lat)) G.forEach(function(g){ var d=km(g,{lat:+one.lat,lng:+one.lng}); if(d<bd){ bd=d; oneG=g; } });
-  else if(one&&one.type==="here"&&H&&H.here) G.forEach(function(g){ var d=km(g,H); if(d<bd){ bd=d; oneG=g; } });
-  if(bd>40) oneG=null;
-  G.forEach(function(g){ if(o.hAll&&one) g.h=one.type==="here"?{type:"here"}:one; else if(Object.prototype.hasOwnProperty.call(hs,g.id)) g.h=hs[g.id]||null; else if(g===oneG) g.h=one.type==="here"?{type:"here"}:one; else g.h=null; }); }
+// 도시마다 숙소(짜기 전 어림 · 카트 「도시별 숙소」) — 11-09 숙소 칸(opt.nh): 밤 칸에 고른 숙소(밤 차례대로)를 40km 안 가장 가까운 도시로 → 없으면 그 도시로 고른 c · 1일차 밤이 현재 위치면 가까운 도시
+function natHotels(G,H){ var s=nhS(), fit=function(h){ if(!nhOk(h)||h.type==="here") return null; if(h.cid){ var gc=G.filter(function(g){ return g.id===h.cid; })[0]; if(gc) return gc; } var b=null, bd=1e9; G.forEach(function(g){ var d=km(g,{lat:+h.lat,lng:+h.lng}); if(d<bd){ bd=d; b=g; } }); return bd<=40?b:null; };
+  G.forEach(function(g){ g.h=null; });
+  if(s.n[0]&&s.n[0].type==="here"&&H&&H.here){ var hb=null, hd=1e9; G.forEach(function(g){ var d=km(g,H); if(d<hd){ hd=d; hb=g; } }); if(hb&&hd<=40) hb.h={type:"here"}; }
+  s.n.forEach(function(h){ var g=fit(h); if(g&&!g.h) g.h=h; });
+  G.forEach(function(g){ if(!g.h&&nhOk(s.c[g.id])) g.h=s.c[g.id]; }); }
 function gAnchor(g){ return (g.h&&g.h.type!=="here"&&isFinite(+g.h.lat))?{lat:+g.h.lat,lng:+g.h.lng,c:g}:{lat:g.lat,lng:g.lng,c:g}; }
 // 도시 사이 이동 한 칸 — 섬을 건너면 항공 · 두 쪽 다 KTX·SRT 역(45km 안)이 있고 다르면 열차 · 아니면 버스(ODsay)
 function natTr(pa,pb,a,b){ var kind, sa, sb, ca=pa.c?cityPt({id:pa.c.id,ko:pa.c.nm.ko,en:pa.c.nm.en,ja:pa.c.nm.ja,zhs:pa.c.nm.zhs,zht:pa.c.nm.zht,es:pa.c.nm.es,lat:pa.c.lat,lng:pa.c.lng}):pa, cb=pb.c?cityPt({id:pb.c.id,ko:pb.c.nm.ko,en:pb.c.nm.en,ja:pb.c.nm.ja,zhs:pb.c.nm.zhs,zht:pb.c.nm.zht,es:pb.c.nm.es,lat:pb.c.lat,lng:pb.c.lng}):pb;
@@ -2690,7 +2807,7 @@ function natPlan(H,Dn){ var o=TR.opt, D=Math.max(1,Dn||o.n), from=hm2m(o.from)||
   var MD=OLD()?[]:P.filter(function(x){ return udOf(x); }); if(MD.length) P=P.filter(function(x){ return !udOf(x); });   // 11-08 일 단위로 머무는 곳 (mdPlace)
   if(!P.length) return null;
   var ap=apOpt(), G=natGroups(P); if(G.length<2&&!ap.a&&!ap.d) return null;   // 도시 하나·공항 없음 = 예전 길
-  if(o.hAll&&o.hotel&&G.length>1){ if(!ap.a&&!ap.d) return null; while(G.length>1){ var g0=G.shift(), g1=G.shift(); G.unshift({pts:g0.pts.concat(g1.pts),first:Math.min(g0.first,g1.first),lat:(g0.lat+g1.lat)/2,lng:(g0.lng+g1.lng)/2,isle:g0.isle,id:g0.id+"+"+g1.id,nm:(function(){ var q={id:g0.id+"+"+g1.id}; LG6s.forEach(function(l){ q[l]=g0.nm[l]+"·"+g1.nm[l]; }); return q; })()}); } }   // 「여행 내내 이 숙소」 = 한 숙소에서 오가는 일정
+  // 11-09 사장님 — 「여행 내내 이 숙소」(한 숙소에서 오가는 일정)는 없앰: 숙소는 밤마다(opt.nh) · 같은 도시에 이어 묵는 밤은 한 번에 · 다른 도시는 따로
   NATH=H&&H.here?H:null; natHotels(G,H);
   if(!OLD()){ var plS=natPlanSeq(H,MD.length?Math.max(1,D-MD.reduce(function(a,x){ return a+udOf(x); },0)):D,P,G,ap,from,to,cap,skip); if(plS){ pmFlipAll(plS,H); mdPlace(plS,MD); eatAssign(plS,H,PE); } return plS; }   // 11-07 손님 순서 그대로 (아래 옛 길은 비교·시험용 스위치에서만)
   var A=ap.a?apPt(ap.a.id):null, Dp=ap.d?apPt(ap.d.id):null, ord=natOrder(G,A,Dp);
@@ -2703,7 +2820,7 @@ function natPlan(H,Dn){ var o=TR.opt, D=Math.max(1,Dn||o.n), from=hm2m(o.from)||
   if(Dp){ var by=ap.d.t!=null?ap.d.t-(ap.d.k==="d"?90:180):to; redN=Math.max(0,to-by)+(apOut?trDoor(apOut):Math.round(25+km(Dp,ord[k-1])*1.1)); }
   var L=ord.map(function(g){ var hp=g.h&&g.h.type!=="here"&&isFinite(+g.h.lat)?{lat:+g.h.lat,lng:+g.h.lng}:null; return dayLoad(hp,g.pts); });
   var al=natAlloc(L,T,D,cap-60,red0,redN,to);
-  var pl={v:1,mc:1,at:Date.now(),from:from,to:to,hotel:o.hotel&&o.hotel.type!=="here"?o.hotel:(o.hotel?{type:"here"}:null),days:[],pool:{},skip:skip.map(function(x){ return x.k; }),ai:null,tr:[],
+  var pl={v:1,mc:1,at:Date.now(),from:from,to:to,hotel:nhNewH(),days:[],pool:{},skip:skip.map(function(x){ return x.k; }),ai:null,tr:[],
     cities:ord.map(function(g){ return {id:g.id,ko:g.nm.ko,en:g.nm.en,ja:g.nm.ja,zhs:g.nm.zhs,zht:g.nm.zht,es:g.nm.es,lat:Math.round(g.lat*1e5)/1e5,lng:Math.round(g.lng*1e5)/1e5,isle:g.isle,h:g.h||null}; }),ap:(ap.a||ap.d)?{a:ap.a,d:ap.d}:null};
   P.forEach(function(x){ pl.pool[x.k]=x; });
   var di=0; ord.forEach(function(g,ci){ for(var j=0;j<al.n[ci];j++){ pl.days.push({date:dayDate(di).toISOString().slice(0,10),stops:[],c:ci,nc:ci}); di++; } });
@@ -2745,14 +2862,14 @@ function natPlanSeq(H,D,P,G,ap,from,to,cap,skip){ var o=TR.opt;   // 「여행 �
   var MN=ord.map(function(g){ var hp=g.h&&g.h.type!=="here"&&isFinite(+g.h.lat)?{lat:+g.h.lat,lng:+g.h.lng}:null, m=Math.min(D,g.pts.length); return m>1?seqSplit(hp,g.pts,m,cap).filter(function(x){ return x.length; }).length:1; });   // 11-08 구간마다 꽉 채워 필요한 날 수
   if(MN.reduce(function(a,b){ return a+b; },0)>D) MN=null;   // 날짜가 모자라면 예전처럼(넘침 점수만)
   var al=natAlloc(L,T,D,cap-60,red0,redN,to,MN);
-  var pl={v:1,mc:1,ord:1,at:Date.now(),from:from,to:to,hotel:o.hotel&&o.hotel.type!=="here"?o.hotel:(o.hotel?{type:"here"}:null),days:[],pool:{},skip:skip.map(function(x){ return x.k; }),ai:null,tr:[],cities:cities,ap:(ap.a||ap.d)?{a:ap.a,d:ap.d}:null};
+  var pl={v:1,mc:1,ord:1,at:Date.now(),from:from,to:to,hotel:nhNewH(),days:[],pool:{},skip:skip.map(function(x){ return x.k; }),ai:null,tr:[],cities:cities,ap:(ap.a||ap.d)?{a:ap.a,d:ap.d}:null};
   if(zig.length) pl.zig={r:ord.map(function(sg){ return sg.nm; }),z:zig};
   P.forEach(function(x){ pl.pool[x.k]=x; });
   var di=0, segD=[]; ord.forEach(function(sg,si){ segD.push([]); for(var j=0;j<al.n[si];j++){ pl.days.push({date:dayDate(di).toISOString().slice(0,10),stops:[],c:sg.ci,nc:sg.ci}); segD[si].push(di); di++; } });
   TRS.forEach(function(tr,bi){ tr.w=al.f[bi]; if(tr.w==="pm"){ tr.di=segD[bi][segD[bi].length-1]; pl.days[tr.di].pm=pl.tr.length; pl.days[tr.di].nc=ord[bi+1].ci; } else { tr.di=segD[bi+1][0]; pl.days[tr.di].am=pl.tr.length; } pl.tr.push(tr); });
   if(apIn&&pl.days[0].am==null){ apIn.w="am"; apIn.di=0; pl.days[0].am=pl.tr.length; pl.tr.push(apIn); }
   if(Dp){ var ld=pl.days.length-1; pl.days[ld].nc=-1; if(apOut&&pl.days[ld].pm==null){ apOut.w="pm"; apOut.di=ld; pl.days[ld].pm=pl.tr.length; pl.tr.push(apOut); } }
-  ord.forEach(function(sg,si){ var ds=segD[si]; if(!ds.length) return; var hp=hotelPt(pl,sg.ci);
+  ord.forEach(function(sg,si){ var ds=segD[si]; if(!ds.length) return; var hp=null; ds.some(function(q){ if(nhCity(pl,q)===sg.ci){ hp=nightPt(pl,q); return true; } return false; }); if(!hp) hp=hotelPt(pl,sg.ci);   // 11-09 그 구간 밤 숙소(돌아온 도시는 그때 숙소)
     var av=ds.map(function(q){ var X=dayX(pl,q,H); return Math.max(30,(X.lim!=null?Math.min(X.lim,to):to)-X.from); });
     var r0=(ds[0]===0&&ds.length>1&&dayX(pl,0,H).rest)?1:0, ds2=ds.slice(r0), av2=av.slice(r0);   // 11-07 밤에 도착한 날(숙소 들른 뒤 20시 넘음)은 장소 없이 쉬기 — 그 도시 다음 날들로
     var gs=ds2.length===1?[sg.pts.slice()]:seqSplit(hp,sg.pts,ds2.length,av2);
@@ -2768,15 +2885,15 @@ function mePt(){ var mp=(window.ME&&ME.pos)||GEO; if(!mp) return null; if(MEC&&M
 function meFor(d,arr){ if(!d||d.date!==kstToday(0)||OLD()) return null; var me=mePt(); if(!me||!arr.length) return null; var near=arr.some(function(x){ return km(me,x)<=80; }); return near?me:null; }
 function dayX(pl,di,H0){ var d=pl.days[di], dt=new Date(d.date+"T00:00:00Z"), arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean);
   var F0=(d.fr!=null&&d.fr>=300)?d.fr:pl.from;   // 그날만 일찍 출발 (11-07 사장님 「늦는 시간만큼 일찍 출발하기」 — 검사 창 단추) · 없으면 조건의 시작 시각
-  if(!pl.mc){ var me0=meFor(d,arr); return {H:me0?hPair(me0,hE(H0)):H0,from:F0,to:pl.to,dt:dt,arr:arr,me:me0?1:0}; }
+  if(!pl.mc){ var me0=meFor(d,arr), HD=nhDayH(pl,di,H0); return {H:me0?hPair(me0,hE(HD)):HD,from:F0,to:pl.to,dt:dt,arr:arr,me:me0?1:0}; }   // 11-09 밤마다 숙소가 다르면 전날 밤 숙소 → 그날 밤 숙소 (같으면 예전 그대로)
   var X={mc:1,dt:dt,arr:arr,from:F0,to:pl.to,lim:null,pre:[],city:d.c}, t=F0, S=null;
   if(di===0&&pl.ap&&pl.ap.a){ var A=apPt(pl.ap.a.id), ta=pl.ap.a.t; S=A; if(ta!=null) t=ta+(pl.ap.a.k==="d"?45:90); X.pre.push({ap:"a",p:A,t:t,ft:ta}); }   // 11-07 사장님 「가」 — 아침에 내려도 시작 시각까지 공항에서 기다리지 않고 입국(국내 45분·국제 90분) 뒤 바로 숙소로
-  else { var pc=di>0?pl.days[di-1].nc:d.c; S=(pc!=null&&pc>=0)?hotelPt(pl,pc):null; var me1=meFor(d,arr.length?arr:(d.am!=null&&pl.tr[d.am]?[pl.tr[d.am].sa]:[])); if(me1){ S=me1; X.me=1; } }
+  else { var pc=di>0?pl.days[di-1].nc:d.c; S=(pc!=null&&pc>=0)?(di>0?nightPt(pl,di-1):nhAt(pl,0,pc)):null; var me1=meFor(d,arr.length?arr:(d.am!=null&&pl.tr[d.am]?[pl.tr[d.am].sa]:[])); if(me1){ S=me1; X.me=1; } }
   if(d.am!=null&&pl.tr[d.am]){ var st0=(!X.pre.length&&S)?{start:1,p:S,t:t}:null; var r=trRun(pl,pl.tr[d.am],S,t); if(st0){ if(r.rows.ts!=null) st0.t=r.rows.ts; X.pre.push(st0); } X.pre=X.pre.concat(r.rows); S=r.S; t=r.t; }
   // 11-07 사장님 「공항에서 바로 구경 가는 사람 없다」 — 도착한 날은 공항(먼 도시면 도시 이동) 뒤 첫날 숙소에 먼저 들러 짐 맡기기·체크인(30분), 장소는 그 뒤 숙소에서
   //   숙소를 안 정했으면 tmpLodge(서울역·도시 중심) 기준 · 숙소 들른 뒤가 20시 넘으면 X.rest = 그날은 쉬기(장소 없음 — natPlanSeq 가 다음 날로) · 그날 저녁 도시 이동·당일 출국이면 예전 그대로
   var nc0=d.nc!=null?d.nc:d.c;
-  if(di===0&&pl.ap&&pl.ap.a&&d.pm==null&&nc0!=null&&nc0>=0&&!OLD()){ var lq=X.pre[X.pre.length-1], HB0=hotelPt(pl,nc0), LP=HB0||tmpLodge(pl,nc0), ck=null;
+  if(di===0&&pl.ap&&pl.ap.a&&d.pm==null&&nc0!=null&&nc0>=0&&!OLD()){ var lq=X.pre[X.pre.length-1], HB0=nightPt(pl,0), LP=HB0||tmpLodge(pl,nc0), ck=null;
     if(lq&&lq.drop&&lq.p===LP){ ck=lq; t+=ARR_CHK-15; }   // 아침 도시 이동이 이미 숙소까지 (짐 두기 15분 → 체크인 30분)
     else if(LP){ var L0=km(S,LP)>0.05?(lq&&lq.tr?bagLeg(S,LP,t):legT(S,LP,t)):null; if(L0){ X.pre.push({leg:L0,a:S,b:LP}); t+=L0.min; } ck={p:LP,t:t}; X.pre.push(ck); t+=ARR_CHK; }
     if(ck){ delete ck.drop; ck.chk=1; ck.tmp=HB0?0:1; S=LP; X.rest=t>ARR_REST?1:0; ck.rest=X.rest&&!arr.length?1:0; X.chk=ck; } }
@@ -2785,11 +2902,11 @@ function dayX(pl,di,H0){ var d=pl.days[di], dt=new Date(d.date+"T00:00:00Z"), ar
   var E=null;
   if(d.pm!=null&&pl.tr[d.pm]){ var tp=pl.tr[d.pm]; E=tp.sa; X.pmTr=tp; X.lim=pmLim(pl,tp); }
   else if(di===pl.days.length-1&&pl.ap&&pl.ap.d){ E=apPt(pl.ap.d.id); var td=pl.ap.d.t; X.lim=td!=null?td-(pl.ap.d.k==="d"?90:180):null; X.apD={p:E,ft:td,by:X.lim,k:pl.ap.d.k}; }
-  else { var nc=d.nc!=null?d.nc:d.c; E=nc>=0?hotelPt(pl,nc):null; }
+  else { var nc=d.nc!=null?d.nc:d.c; E=nc>=0?nightPt(pl,di):null; }   // 11-09 그날 밤 숙소(돌아온 도시는 그때 숙소)
   X.H=hPair(S,E); return X; }
 // 저녁 이동이 있는 날 늦어도 되는 역 도착 — 열차 시간표가 있으면 막차 15분 전, 없으면 23시에 숙소 도착이 되게(공항으로 가면 비행기 시각에 맞춰)
 function pmLim(pl,tr){ var L=tr.list; if(tr.kind==="rail"&&Array.isArray(L)&&L.length) return hm4(L[L.length-1][0])-15;
-  var HB=tr.b>=0?hotelPt(pl,tr.b):null, tail=(tr.kind==="air"?60+flyMin(tr.d)+20:15+(tr.bus&&tr.bus.min>0?tr.bus.min+10:tr.est))+(HB?bagLeg(tr.sb,HB).min:0);
+  var HB=tr.b>=0?nhAt(pl,trDi(pl,tr),tr.b):null, tail=(tr.kind==="air"?60+flyMin(tr.d)+20:15+(tr.bus&&tr.bus.min>0?tr.bus.min+10:tr.est))+(HB?bagLeg(tr.sb,HB).min:0);
   if(tr.b===-2){ var q=pl.ap&&pl.ap.d; return q&&q.t!=null?q.t-(q.k==="d"?90:180)-tail:null; }
   return LATE-tail; }
 // 그 시각(ready) 뒤 탈 것 — 열차 시간표면 첫 열차, 없으면 어림(dp=ready)
@@ -2804,7 +2921,7 @@ function trRun(pl,tr,S,t){ var rows=[], sa=tr.sa, sb=tr.sb, L1=(S&&km(S,sa)>0.05
   var tA=t+(L1?L1.min:0), opt=trPick(tr,tA+bf);
   if(opt.src==="tago"&&!opt.est&&opt.dp-(tA+bf)>45){ var o0=trPick(tr,tA+bf-60); if(!o0.est&&o0.dp<opt.dp){ opt=o0; t=o0.dp-bf-(L1?L1.min:0); tA=t+(L1?L1.min:0); rows.ts=t; } }   // 다음 열차까지 45분 넘게 기다리면 한 시간 안에서 일찍 나서 앞 열차를 탄다
   if(L1) rows.push({leg:L1,a:S,b:sa}); rows.push({tr:tr,opt:opt,ta:tA});
-  var tB=opt.ar+(tr.kind==="air"?20:0), HB=tr.b>=0?hotelPt(pl,tr.b):null;
+  var tB=opt.ar+(tr.kind==="air"?20:0), HB=tr.b>=0?nhAt(pl,trDi(pl,tr),tr.b):null;   // 11-09 그날 밤 숙소
   if(HB){ var L2=km(sb,HB)>0.05?bagLeg(sb,HB,tB):null; if(L2) rows.push({leg:L2,a:sb,b:HB}); var td=tB+(L2?L2.min:0); rows.push({drop:1,p:HB,t:td}); return {rows:rows,S:HB,t:td+15,opt:opt}; }
   return {rows:rows,S:sb,t:tB,opt:opt}; }
 // 그날 끝 줄 — 숙소·공항 도착 · 저녁 이동(역 → 열차 → 숙소) · 숙소를 안 정했으면 「숙소 찾기」
@@ -2824,11 +2941,11 @@ function natPost(pl,di,X,s){ var d=pl.days[di], rows=[], S=hS(X.H), E=hE(X.H), t
       if(AP){ var L3=legT(pp,AP,tp); rows.push({leg:L3,a:pp,b:AP}); tp+=L3.min; rows.push({apD:1,p:AP,t:tp,ft:q.t,by:by,k:q.k}); if(by!=null&&tp>by) o.miss=1; }
       o.end=tp; return o; }
     if(PS.length){ rows.push({arr:1,p:tr.sb,t:tB}); walkPost(); }
-    var HB=hotelPt(pl,tr.b); if(HB){ var L2=PS.length?legT(pp,HB,tp):bagLeg(tr.sb,HB,tB); rows.push({leg:L2,a:pp,b:HB}); rows.push({hotel:1,p:HB,t:tp+L2.min}); o.end=tp+L2.min; } else { rows.push({end:1,t:tp}); o.end=tp; }
+    var HB=nhAt(pl,di,tr.b); if(HB){ var L2=PS.length?legT(pp,HB,tp):bagLeg(tr.sb,HB,tB); rows.push({leg:L2,a:pp,b:HB}); rows.push({hotel:1,p:HB,t:tp+L2.min}); o.end=tp+L2.min; } else { rows.push({end:1,t:tp}); o.end=tp; }
     rows.push({tip:1}); rows.push({night:1,ci:tr.b,di:di}); return o; }
   if(X.apD){ rows.push({apD:1,p:E,t:t,ft:X.apD.ft,by:X.apD.by,k:X.apD.k}); return o; }
   if(X.arr.length||(X.pre&&X.pre.length&&!X.chk)){ if(E&&(E.hotel||E.k==="__hotel")) rows.push({hotel:1,p:E,t:t}); else rows.push({end:1,t:t}); }   // 장소 없는 날(자유 일정)은 끝 줄 없이 밤 숙소 칸만 · 도착한 날 장소가 없으면 숙소 들르기·쉬기 줄이 끝 (11-07)
-  var nc=d.nc!=null?d.nc:d.c; if(nc>=0&&(di<pl.days.length-1||hotelPt(pl,nc))) rows.push({night:1,ci:nc,di:di});
+  var nc=d.nc!=null?d.nc:d.c; if(nc>=0&&(di<pl.days.length-1||nightPt(pl,di))) rows.push({night:1,ci:nc,di:di});
   return o; }
 function rowH(t,ic,txt,cls){ return '<div class="trw h'+(cls?" "+cls:"")+'"><span class="tt">'+(t!=null?m2hm(t):"")+'</span><span class="tp">'+(ic?MPIMG(ic,MIS):"")+txt+'</span></div>'; }
 function legRow(r,di,aK){ var a=(r.a&&r.a.k)||aK, b=(r.b&&r.b.k)||"__hotel"; return '<div class="tlg" data-a="'+esc(a||"")+'" data-b="'+esc(b)+'" data-d="'+di+'">'+legTxt(r.leg,r.a?ptNm(r.a):lgNm(aK,di),r.b?ptNm(r.b):lgNm("__hotel",di,1))+legGo(r.leg)+'<div class="tods"></div></div>'; }
@@ -2844,7 +2961,7 @@ function natPostHtml(pl,di,X,post,prevK){ var h='', pk=prevK, pn=X.arr.filter(fu
     if(r.arr){ h+=rowH(r.t,"mi_train",esc(gTxt(NX6.apD,{a:ptNm(r.p)}))); return; }
     if(r.leg) h+=legRow(r,di,prevK);
     else if(r.tr) h+=trCard(pl,r.tr,r.opt)+(r.opt.miss?'<div class="tmemo">⚠ '+esc(gTxt(NX6.miss,{t:m2hm(r.opt.last?r.opt.last.dp:r.opt.dp)}))+'</div>':'');
-    else if(r.hotel) h+=rowH(r.t,"mi_stay",esc(T("숙소 도착","Back to lodging"))+' · <b>'+esc(ptNm(r.p))+'</b>');
+    else if(r.hotel) h+=rowH(r.t,"mi_stay",esc(T("숙소 도착","Back to lodging"))+' · <b>'+esc(ptNm(r.p))+'</b>')+nhBackHtml(pl,di);   // 11-09 전에 묵은 도시로 돌아온 밤 — 처음 숙소를 넣어 두고 [숙소 바꾸기]
     else if(r.end) h+=rowH(r.t,null,esc(T("일정 끝","End of day")));
     else if(r.apD){ h+=rowH(r.t,"mi_plane",esc(gTxt(NX6.apD,{a:ptNm(r.p)})))+'<div class="d txs2">'+esc(r.ft!=null?gTxt(r.k==="d"?NX6.apDd:NX6.apDi,{f:m2hm(r.ft),b:m2hm(r.by)}):T5(NX6.apD0))+'</div>'; if(r.by!=null&&r.t>r.by) h+='<div class="tmemo">⚠ '+esc(gTxt(NX6.wAp,{t:m2hm(r.by)}))+'</div>'; }
     else if(r.tip) h+='<div class="d txs2">'+esc(T5(NX6.bagTip))+'</div>';
@@ -2852,7 +2969,7 @@ function natPostHtml(pl,di,X,post,prevK){ var h='', pk=prevK, pn=X.arr.filter(fu
 // 밤마다 숙소 칸 (사장님 11-06 「○일 밤 · ○○ · 숙소」) — 정했으면 그 숙소 + 택시 단추(외국어 K.Ride · 한국어 카카오 T, 첫 화면과 같은 단추), 안 정했으면 「숙소 찾기」
 function nightCity(pl,di){ if(pl.mc){ var d=pl.days[di], nc=d.nc!=null?d.nc:d.c; return nc>=0?pl.cities[nc]:null; } var arr=pl.days[di].stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), H=REPH||pl.H, p=H&&!H.here?H:arr[arr.length-1]; if(!p) return null;
   var b=null, bd=1e9; CITYNM.forEach(function(c){ var q=km(p,{lat:c[7],lng:c[8]}); if(q<bd){ bd=q; b=c; } }); return b&&bd<=40?(function(){ var o=nmOf(b); o.lat=b[7]; o.lng=b[8]; return o; })():null; }
-function nightHotel(pl,di,ci){ if(pl.mc) return ci!=null&&ci>=0?hotelPt(pl,ci):null; var H=REPH||pl.H; return H&&!H.here?H:null; }
+function nightHotel(pl,di,ci){ var p=nightPt(pl,di); if(pl.mc) return p; return p&&!p.here?p:null; }   // 11-09 그 밤 숙소(숙소 칸 opt.nh)
 function taxiBtn(h){ try{ return (typeof FG==="function"&&FG())?(window.krideL?krideL(h.ko,h.addr||"",0,(window.txEn?txEn(h):"")):""):(window.kakaoTL?kakaoTL(h.ko,h.addr||""):""); }catch(e){ return ""; } }
 function nightHtml(pl,di,ci){ var c=pl.mc?(ci!=null&&ci>=0?pl.cities[ci]:null):nightCity(pl,di), hp=nightHotel(pl,di,ci); if(pl.mc&&!c) return ""; if(hp) return "";   // 11-08 사장님 「삭제한다」 — 숙소를 정한 밤 칸은 「숙소 도착」 줄과 겹쳐 없앰 (안 정했으면 「숙소 찾기」 칸만 남김)
   var cn=c?cnm(c):"", hn=hp?ptNm(hp):T5(NX6.nightX);
@@ -2879,7 +2996,7 @@ function flyLinks(a,b,date,pax,ret){ var A=APT[a], B=b==="sel"?{c:"SEL"}:APT[b];
 function aiExtra(pl,di,X,s,o){ var np=o.s.length, mv=[], ap=[], add=function(r,p){ if(!r.tr) return; var op=r.opt||{}, tr=r.tr; mv.push({p:p,k:tr.kind,f:tr.sa.ko,fe:tr.sa.en,to:tr.sb.ko,te:tr.sb.en,dt:op.est?"":m2hm(op.dp),at:op.est?"":m2hm(op.ar),g:op.est?"":String(op.g||"").slice(0,20),m:Math.max(0,Math.round(op.ar-op.dp))}); };
   (X.pre||[]).forEach(function(r){ if(r.ap==="a") ap.push({p:0,k:"A",n:r.p.ko,ne:r.p.en,t:m2hm(r.t),ft:r.ft!=null?m2hm(r.ft):""}); add(r,0); });
   natPost(pl,di,X,s).rows.forEach(function(r){ if(r.apD) ap.push({p:np,k:"D",n:r.p.ko,ne:r.p.en,t:m2hm(r.t),ft:r.ft!=null?m2hm(r.ft):""}); add(r,np); });
-  var d=pl.days[di], nc=d.nc!=null?d.nc:d.c, hp=nc>=0?hotelPt(pl,nc):null;
+  var d=pl.days[di], nc=d.nc!=null?d.nc:d.c, hp=nc>=0?nightPt(pl,di):null;
   if(mv.length) o.mv=mv.slice(0,3); if(ap.length) o.ap=ap.slice(0,2); if(hp&&!hp.here) o.ht=String(hp.ko).slice(0,60); }
 // ── 받아 오기: 열차(TAGO /train) · 버스(ODsay /nxcity) · 택시 요금(네이버 /ndrive) ──
 function trainGet(a,b,ymd){ var TC=window._trC||(window._trC={}), ck=a+"|"+b+"|"+ymd;   // index.html KTX 시간표와 같은 캐시(같은 구간·같은 날은 한 번)
@@ -2914,21 +3031,26 @@ function drFetch(pl,cb){ if(!pl||OLD()||typeof fetch!=="function"){ if(cb) cb(0)
 function drLoad(pl){ if(pl&&pl.dr) for(var k in pl.dr){ var v=pl.dr[k]; if(!DR[k]&&Array.isArray(v)&&v[0]>0) DR[k]={min:v[0],fare:v[1]||null}; } }
 // 숙소를 바꾸면 — 역 고르기·그날 순서만 이 기기에서 다시(AI 다시 안 부름 · 순서가 바뀐 날은 그날 설명만 감춤)
 function natRefit(pl,cb){ if(!pl||!pl.mc){ if(cb) cb(); return; } (pl.tr||[]).forEach(function(tr,i){ if(tr.a<0||tr.b===-2) return;
-    var pa=hotelPt(pl,tr.a)||cityPt(pl.cities[tr.a]), pb=hotelPt(pl,tr.b)||cityPt(pl.cities[tr.b]), nt=natTr(pa,pb,tr.a,tr.b);
+    var pa=(tr.di>0?nhAt(pl,tr.di-1,tr.a):hotelPt(pl,tr.a))||cityPt(pl.cities[tr.a]), pb=nhAt(pl,tr.di,tr.b)||cityPt(pl.cities[tr.b]), nt=natTr(pa,pb,tr.a,tr.b);   // 11-09 떠나는 밤·도착한 밤 숙소
     if(nt.kind!==tr.kind||(nt.kind==="rail"&&(nt.sa.code!==tr.sa.code||nt.sb.code!==tr.sb.code))){ nt.w=tr.w; nt.di=tr.di; pl.tr[i]=nt; } });
   var re=function(){ if(pl.ord){ pl.chk=2; save(); if(cb) cb(); return; }   // 11-07 손님 순서 그대로 — 숙소가 바뀌면 순서는 두고 다시 검사만
     pl.days.forEach(function(d,di){ var X=dayX(pl,di,REPH), b4=d.stops.join(","); if(!X.arr.length) return; var od=orderDay(X.H,X.arr,X.dt,X.from,X.to); d.stops=od.map(function(x){ return x.k; }); if(d.stops.join(",")!==b4) d.aiX=1; }); save(); if(cb) cb(); };
   trFetch(pl,re); }
-function natSetHotel(pl,ci,h,di){ if(!pl) return; TR.opt.hotels=TR.opt.hotels||{};
-  if(pl.mc&&pl.cities[ci]){ pl.cities[ci].h=h; TR.opt.hotels[pl.cities[ci].id]=h; }
-  else { TR.opt.hotel=h; pl.hotel=h; pl.H={k:"__hotel",ko:h.ko,en:h.en,lat:+h.lat,lng:+h.lng,addr:h.addr||"",hotel:1}; REPH=pl.H; }
-  save(); var after=function(){ drFetch(pl,function(){ save(); if(document.getElementById("trRep")) repPaint(); }); if(document.getElementById("trRep")) repPaint(); try{ nowPaint(); }catch(e){} };
-  if(pl.mc) natRefit(pl,after); else { reorderWithReal(pl,pl.H); if(pl.ord) pl.chk=2; save(); after(); } }
+// 일정표에서 숙소 고르기(「숙소 찾기」·오늘 밤 숙소 물음·돌아온 밤 「숙소 바꾸기」) — 11-09 숙소 칸(opt.nh): 그 밤(di)이 든 도시의 이어 묵는 밤 전부 · di 가 없으면 그 도시 첫 밤들 → 바뀐 날 다시 계산 · 넣은 밤 번호들을 돌려준다
+function natSetHotel(pl,ci,h,di){ if(!pl) return []; var idx;
+  if(di!=null&&di>=0) idx=nhBlock(pl,di);
+  else if(pl.mc&&ci!=null&&ci>=0){ idx=[]; for(var i=0;i<pl.days.length;i++) if(nhCity(pl,i)===ci){ idx=nhBlock(pl,i); break; } }
+  else idx=nhBlock(pl,0);
+  if(!idx.length&&pl.mc&&pl.cities[ci]){ nhS().c[pl.cities[ci].id]=nhClean(h); NHV++; } else nhPut(pl,idx,h);
+  nhApply(pl); return idx; }
+// 공유 링크 nh 칸 (11-09) — 밤마다 고른 숙소 [이름·영어 이름·위도·경도] (안 고른 밤·현재 위치는 0) · 옛 앱은 모르는 칸이라 버린다
+function nhShare(r){ var s=nhS(); if(!s.n.some(function(h){ return nhOk(h)&&h.type!=="here"; })) return undefined; return s.n.map(function(h){ return nhOk(h)&&h.type!=="here"?[h.ko,h.en,r(+h.lat),r(+h.lng)]:0; }); }
+function nhFromShare(a){ if(!Array.isArray(a)) return; var s=nhS(); s.n=a.slice(0,MAXD).map(function(q){ return Array.isArray(q)?nhClean({type:"addr",ko:String(q[0]).slice(0,80),en:String(q[1]).slice(0,80),lat:+q[2],lng:+q[3]}):null; }); while(s.n.length&&!s.n[s.n.length-1]) s.n.pop(); NHV++; }
 // 공유 링크 x 칸 — 도시별 숙소 · 공항 · 날마다 도시 이동(아침 a·저녁 p)
 function natShare(pl,r){ if(!pl||!pl.mc) return undefined; return {c:pl.cities.map(function(c){ var h=c.h&&c.h.type!=="here"?c.h:null; return [c.id,h?[h.ko,h.en,r(+h.lat),r(+h.lng)]:0]; }),
   ap:pl.ap?[pl.ap.a?[pl.ap.a.id,pl.ap.a.t,pl.ap.a.k]:0,pl.ap.d?[pl.ap.d.id,pl.ap.d.t,pl.ap.d.k]:0]:0,m:pl.days.map(function(d){ return (d.am!=null?"a":"")+(d.pm!=null?"p":""); }),n:TR.opt.pax||undefined}; }
-function natFromShare(pl,x){ var o=TR.opt; o.hotels={};
-  (Array.isArray(x.c)?x.c:[]).forEach(function(q){ if(!Array.isArray(q)||typeof q[0]!=="string") return; var h=q[1]; o.hotels[q[0].slice(0,40)]=Array.isArray(h)?{type:"addr",ko:String(h[0]).slice(0,80),en:String(h[1]).slice(0,80),lat:+h[2],lng:+h[3]}:null; });
+function natFromShare(pl,x){ var o=TR.opt, s=nhS(o); s.c={};   // 11-09 도시별 숙소 → 숙소 칸(opt.nh.c — 그 도시 첫 밤들에)
+  (Array.isArray(x.c)?x.c:[]).forEach(function(q){ if(!Array.isArray(q)||typeof q[0]!=="string") return; var h=q[1], hh=Array.isArray(h)?nhClean({type:"addr",ko:String(h[0]).slice(0,80),en:String(h[1]).slice(0,80),lat:+h[2],lng:+h[3]}):null; if(hh) s.c[q[0].slice(0,40)]=hh; }); NHV++;
   if(Array.isArray(x.ap)){ var c=function(q){ return Array.isArray(q)&&APT[q[0]]?{id:q[0],t:(q[1]!=null&&isFinite(+q[1]))?m2hm(+q[1]):"",k:q[2]==="d"?"d":"i"}:null; }; o.ap={a:c(x.ap[0]),d:c(x.ap[1])}; }
   if(+x.n>=1&&+x.n<=9) o.pax=+x.n;
   natRebuild(pl,Array.isArray(x.m)?x.m:[]); }
@@ -2984,7 +3106,7 @@ function openLodge(o){ LGS=Object.assign({items:null,all:false},o||{}); var b=sh
 function lgPaint(){ var box=document.querySelector("#trLg .trin"); if(!box) return; var pax=(TR.opt&&TR.opt.pax)||1, its=LGS.items;
   var h='<div class="trtop"><b>'+MPIMG("mi_stay",MIS)+esc(T5(LG6.ttl))+(LGS.city?' · '+esc(LGS.city):'')+'</b><button type="button" class="xbtn" style="position:static" onclick="TRIP.close(\'trLg\')">✕</button></div>'
     +'<div class="d">'+esc(T5(LG6.sub))+(LGS.date?' · '+esc(gTxt(LG6.nights,{d:dateTxt(new Date(LGS.date+"T00:00:00Z")),n:LGS.n||1,p:pax})):'')+'</div>'
-    +(LGS.allOpt?'<label class="trck" style="margin:8px 0"><input type="checkbox" id="trLgAll"'+(LGS.all?" checked":"")+'> '+esc(T5(LG6.all))+'</label>':'')
+    +(LGS.blk?'<div class="d nhblk">'+esc(T5(NH6.blk))+'</div>':'')   // 11-09 사장님 — 「여행 내내 이 숙소」 대신: 같은 도시에 이어 묵는 밤은 한 번에
     +'<div class="tlgnote">'+esc(gTxt(NX6.book,{s:T5(NX6.sites)}))+'</div>';
   if(!its) h+='<div class="msg">'+esc(T5(LG6.busy))+'</div>';
   else if(!its.length) h+='<div class="msg">'+esc(T5(LG6.none))+'</div>';
@@ -2993,15 +3115,61 @@ function lgPaint(){ var box=document.querySelector("#trLg .trin"); if(!box) retu
       return '<div class="tlgi"><b>'+esc(KS(L()&&x.name_en?x.name_en:x.name))+'</b>'+(x.rating?' <span class="tlgr">★'+x.rating.toFixed(1)+(x.n?' ('+x.n+')':'')+'</span>':'')
         +'<div class="d">'+esc((L()?(x.cat_en||""):String(x.cat||"").split(">").pop().trim()))+(x.dist!=null?' · '+(x.dist<1000?x.dist+" m":(x.dist/1000).toFixed(1)+" km"):'')+'</div>'
         +'<div class="tlgb"><button type="button" class="trbtn" data-lgu="'+i+'">'+esc(T5(LG6.use))+'</button><span class="tlgk">'+esc(T5(LG6.bk))+': '+lgLinks(x,LGS.date,LGS.n||1,pax)+'</span></div></div>'; }).join(""); });
-  box.innerHTML=h; var al=document.getElementById("trLgAll"); if(al) al.onchange=function(){ LGS.all=this.checked; }; }
+  box.innerHTML=h; }
 document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("#trLg [data-lgu]"); if(b){ e.preventDefault(); var x=LGS.items&&LGS.items[+b.dataset.lgu]; if(!x) return;
-    var h={type:"addr",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x,addr:x.addr||""}; try{ ntap("_trip","lodge_pick"); }catch(z){} sheetClose("trLg"); if(LGS.cb) LGS.cb(h,!!LGS.all); return; }
+    var h={type:"addr",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x,addr:x.addr||""}; try{ ntap("_trip","lodge_pick"); }catch(z){} sheetClose("trLg"); if(LGS.cb) LGS.cb(h); return; }
   var a=e.target.closest&&e.target.closest("#trLg a[data-bk], #trRep a[data-bk], #trNow a[data-bk], #aipSteps a[data-bk]"); if(a){ try{ ntap("_trip","bk_"+a.dataset.bk); }catch(z){} } },true);
 // 보고서 「숙소 찾기」 — 그날 밤 도시(전국 일정) 또는 그날 마지막 장소 근처 · 고르면 그날 밤(도시) 숙소로
 function lodgeFor(pl,di,ci,near){ var c=pl.mc&&ci!=null&&ci>=0?pl.cities[ci]:nightCity(pl,di), arr=pl.days[di].stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), p=near||(c?{lat:+c.lat,lng:+c.lng}:arr[arr.length-1]);
   if(!p) return; var n=1; if(pl.mc){ for(var q=di+1;q<pl.days.length;q++){ var dq=pl.days[q]; if((dq.nc!=null?dq.nc:dq.c)===ci) n++; else break; } } else n=Math.max(1,pl.days.length-1-di);
-  openLodge({lat:+p.lat,lng:+p.lng,date:pl.days[di].date,n:n,ci:ci,di:di,city:c?cnm(c):"",cityKo:c?c.ko:"",cityEn:c?c.en:"",allOpt:false,cb:function(h){ natSetHotel(TR.plan,ci,h,di); try{ lgToast(gTxt(LG6.done,{h:h.ko})); }catch(e){} }}); }
+  openLodge({lat:+p.lat,lng:+p.lng,date:pl.days[di].date,n:n,ci:ci,di:di,city:c?cnm(c):"",cityKo:c?c.ko:"",cityEn:c?c.en:"",blk:nhBlock(pl,di).length>1,cb:function(h){ var idx=natSetHotel(TR.plan,ci,h,di); nhToast(idx,h); }}); }   // 11-09 그 도시에 이어 묵는 밤 전부 · 알림에 넣은 밤
 function lgToast(t){ var o=document.createElement("div"); o.className="tlgtoast"; o.textContent=t; document.body.appendChild(o); setTimeout(function(){ try{ o.remove(); }catch(e){} },3500); }
+// ══ 숙소 칸 글·창 (사장님 11-09 「숙소는 모두 연동」 「가」) — 새 글은 6개 언어 ══
+var NH6={blk:{ko:"같은 도시에서 이어 묵는 밤은 모두 이 숙소로 넣어요",en:"All consecutive nights in the same city get this lodging",ja:"同じ都市で続けて泊まる夜は、すべてこの宿にします",zhs:"在同一城市连续住的几晚都会设为这家",zht:"在同一城市連續住的幾晚都會設為這家",es:"Todas las noches seguidas en la misma ciudad usarán este alojamiento"},
+ n1:{ko:"{a}일차 밤",en:"night {a}",ja:"{a}日目の夜",zhs:"第{a}晚",zht:"第{a}晚",es:"noche {a}"},
+ n2:{ko:"{a}~{b}일차 밤",en:"nights {a}–{b}",ja:"{a}〜{b}日目の夜",zhs:"第{a}~{b}晚",zht:"第{a}~{b}晚",es:"noches {a}–{b}"},
+ nl:{ko:"{n}일차 밤",en:"Night {n}",ja:"{n}日目の夜",zhs:"第{n}晚",zht:"第{n}晚",es:"Noche {n}"},
+ done:{ko:"✓ {h} — {r}에 넣었어요",en:"✓ {h} — set for {r}",ja:"✓ {h}を{r}に入れました",zhs:"✓ 已把{h}设为{r}的住宿",zht:"✓ 已把{h}設為{r}的住宿",es:"✓ {h}: listo para {r}"},
+ first:{ko:"✓ {h} — 첫날 밤 숙소로 정했어요",en:"✓ {h} is now your first night's lodging",ja:"✓ {h}を初日の夜の宿にしました",zhs:"✓ 已把{h}设为第一晚的住宿",zht:"✓ 已把{h}設為第一晚的住宿",es:"✓ {h} es ahora tu alojamiento de la primera noche"},
+ my:{ko:"내 숙소로 정하기",en:"Set as my lodging",ja:"宿泊先に設定",zhs:"设为我的住处",zht:"設為我的住處",es:"Elegir como alojamiento"},
+ q:{ko:"이 밤들에 넣을까요?",en:"Use it for these nights?",ja:"この夜に入れますか？",zhs:"要设为这几晚的住宿吗？",zht:"要設為這幾晚的住宿嗎？",es:"¿Lo usamos para estas noches?"},
+ qn:{ko:"일정에 이 숙소 근처에서 묵는 밤이 없어요. 넣을 밤을 골라 주세요.",en:"Your plan has no nights near this place. Choose the nights to use it for.",ja:"日程にこの宿の近くで泊まる夜がありません。入れる夜を選んでください。",zhs:"行程中没有在这家附近住的晚上。请选择要设定的晚上。",zht:"行程中沒有在這家附近住的晚上。請選擇要設定的晚上。",es:"Tu plan no tiene noches cerca de este lugar. Elige las noches."},
+ cur:{ko:"지금: {h}",en:"Now: {h}",ja:"現在：{h}",zhs:"目前：{h}",zht:"目前：{h}",es:"Ahora: {h}"},
+ put:{ko:"넣기",en:"Set",ja:"入れる",zhs:"设定",zht:"設定",es:"Guardar"},
+ chg:{ko:"숙소 바꾸기",en:"Change lodging",ja:"宿を変える",zhs:"更换住处",zht:"更換住處",es:"Cambiar alojamiento"},
+ back:{ko:"전에 묵은 숙소로 넣어 두었어요",en:"We put in the place you stayed before",ja:"前に泊まった宿を入れておきました",zhs:"已先填入之前住过的住处",zht:"已先填入之前住過的住處",es:"Pusimos el alojamiento donde te quedaste antes"}};
+function nhRange(idx){ var a=(idx||[]).slice().sort(function(x,y){ return x-y; }), out=[], i=0, j; while(i<a.length){ j=i; while(j+1<a.length&&a[j+1]===a[j]+1) j++; out.push(j>i?gTxt(NH6.n2,{a:a[i]+1,b:a[j]+1}):gTxt(NH6.n1,{a:a[i]+1})); i=j+1; } return out.join(", "); }
+function nhHN(h){ return !h?"":h.type==="here"?hotelTxt(h):(L()&&h.en?KS(h.en):h.ko); }
+function nhToast(idx,h){ try{ if(!h||!idx||!idx.length) return; var pl=TR.plan&&TR.plan.days&&TR.plan.days.length?TR.plan:null; lgToast(pl?gTxt(NH6.done,{h:nhHN(h),r:nhRange(idx)}):gTxt(NH6.first,{h:nhHN(h)})); }catch(e){} }
+// 전에 묵은 도시로 돌아온 밤(처음 숙소를 미리 넣은 밤) — 그 도시에 이어 묵는 첫 밤의 「숙소 도착」 줄 아래 [숙소 바꾸기] (사장님 「바꿀 수 있게」)
+function nhBackHtml(pl,di){ var L=nhListC(pl); if(!L.src||L.src[di]!=="r") return ""; var ci=nhCity(pl,di);
+  return '<div class="tmact nhback" data-html2canvas-ignore><span class="d">'+esc(T5(NH6.back))+'</span><button type="button" class="trbtn" data-hpick="'+(pl.mc?ci:"")+'" data-hd="'+di+'">'+MPIMG("mi_stay",MIS)+esc(T5(NH6.chg))+'</button></div>'; }
+// 카트 숙소 칸 「— 숙소 고르기 —」 = 첫날 밤 숙소 빼기 (그 도시에 이어 묵는 밤 · 한 도시 일정은 그 숙소가 든 밤 모두)
+function nhClear0(){ var pl=(TR.plan&&TR.plan.days&&TR.plan.days.length)?TR.plan:null, cur=nhFirst(), s=nhS(), idx=pl?nhBlock(pl,0):[0], sg=nhSig(cur); if(!idx.length) idx=[0];
+  nhPut(pl,idx,null);
+  if(cur){ Object.keys(s.c).forEach(function(id){ if(nhSig(s.c[id])===sg) delete s.c[id]; }); if(!pl||!pl.mc) s.n=s.n.map(function(x){ return nhSig(x)===sg?null:x; }); while(s.n.length&&!s.n[s.n.length-1]) s.n.pop(); NHV++; }
+  if(pl) nhApply(pl,"cart"); else { save(); nhUI("cart"); } }
+// ⋮ 숙소·홈페이지 숙소 화면 「내 숙소로 정하기」 (11-09 사장님 「가」) — 짠 일정이 있으면 그 숙소 도시의 밤들을 가운데 창에(그 도시에 이어 묵는 밤을 골라 둔 채) 「이 밤들에 넣을까요?」 · 없으면 첫날 밤 숙소로
+//   골라 둘 밤 = 그 도시 밤 가운데 오늘(여행 중)이나 그 뒤 첫 밤이 든 묶음 · 지난 여행이면 첫 묶음 · 그 도시 밤이 없으면 모든 밤을 보여 주고 고르게
+function myStay(h0,done){ var h=nhClean(h0); if(!h||h.type==="here") return null; var pl=(TR.plan&&TR.plan.days&&TR.plan.days.length)?TR.plan:null;
+  try{ ntap("_trip","stay_mine"); }catch(z){}
+  if(!pl){ nhPut(null,[0],h); save(); nhUI(); nhToast([0],h); if(done) try{ done([0]); }catch(z){} return null; }
+  var N=pl.days.length, ci=nhFitCi(pl,h), ns=[], pre={}, i, c;
+  for(i=0;i<N;i++){ c=nhCity(pl,i); if(c>=0&&(!pl.mc||c===ci)) ns.push(i); }
+  var none=!ns.length; if(none) for(i=0;i<N;i++) if(nhCity(pl,i)>=0) ns.push(i);
+  if(!none&&ns.length){ var td=kstToday(0), pk=-1; ns.forEach(function(q){ if(pk<0&&pl.days[q].date>=td) pk=q; }); if(pk<0) pk=ns[0]; nhBlock(pl,pk).forEach(function(q){ pre[q]=1; }); }
+  var o=document.getElementById("trNhq"); if(o) o.remove(); var b=document.createElement("div"); b.id="trNhq"; b.className="trpop"; b.onclick=function(e){ if(e.target===b) b.remove(); };
+  var draw=function(){ var Lc=nhListC(pl), chk={}; [].forEach.call(b.querySelectorAll("[data-nhi]"),function(x){ chk[x.getAttribute("data-nhi")]=x.checked; });
+    var row=function(q){ var d=pl.days[q], cc=pl.mc?pl.cities[nhCity(pl,q)]:null, cur=Lc[q], on=chk[q]!=null?chk[q]:!!pre[q];
+      return '<label class="nhck"><input type="checkbox" data-nhi="'+q+'"'+(on?' checked':'')+'><span><b>'+esc(gTxt(NH6.nl,{n:q+1}))+'</b> · '+esc(dateTxt(new Date(d.date+"T00:00:00Z")))+(cc?' · '+esc(cnm(cc)):'')+'<small>'+esc(gTxt(NH6.cur,{h:cur?nhHN(cur):T5(NX6.nightX)}))+'</small></span></label>'; };
+    b.innerHTML='<div class="txq nhq"><div class="tals">'+esc(T5(NH6.q))+'</div><div class="nhhn">'+MPIMG("mi_stay",MIS)+'<b>'+esc(nhHN(h))+'</b></div>'+(none?'<div class="d nhqn">'+esc(T5(NH6.qn))+'</div>':'')
+      +'<div class="nhl">'+ns.map(row).join("")+'</div><div class="talb"><button type="button" data-nq="y">'+esc(T5(NH6.put))+'</button><button type="button" data-nq="n" class="insno">'+esc(T5(CK6.bKeep))+'</button></div></div>';
+    var y=b.querySelector('[data-nq="y"]'), sync=function(){ y.disabled=!b.querySelector("[data-nhi]:checked"); };
+    [].forEach.call(b.querySelectorAll("[data-nhi]"),function(x){ x.onchange=sync; }); sync();
+    y.onclick=function(e){ e.stopPropagation(); var idx=[].map.call(b.querySelectorAll("[data-nhi]:checked"),function(x){ return +x.getAttribute("data-nhi"); }); if(!idx.length) return; b.remove(); if(TR.plan!==pl) return;
+      nhPut(pl,idx,h); nhApply(pl); nhToast(idx,h); if(done) try{ done(idx); }catch(z){} };
+    b.querySelector('[data-nq="n"]').onclick=function(e){ e.stopPropagation(); b.remove(); }; };
+  b._rb=draw; draw(); document.body.appendChild(b); return b; }
 document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("#trRep [data-hpick]"); if(!b) return; e.preventDefault(); var pl=TR.plan; if(!pl) return; var ci=b.dataset.hpick===""?null:+b.dataset.hpick; lodgeFor(pl,+b.dataset.hd,ci); },true);
 
 // ══ 「AI일정짜기」 화면 3단계 (사장님 11-06) — ① 항공편 ② 첫날 숙소(「여행 내내 이 숙소」) ③ AI와 일정짜기(reco.js 지금 화면 그대로) · 건너뛸 수 있고, 이미 예약했으면 「있어요 — 입력」 ══
@@ -3027,7 +3195,8 @@ var ST6={rst:{ko:"처음부터 다시",en:"Start over",ja:"最初からやり直
 var STS={open:"",hq:"",hr:null,nm:""};   // nm = 여행 일수 칸을 맞췄다는 한 줄 (11-06)
 function stepsPaint(el){ el=el||document.getElementById("aipSteps"); if(!el) return; var o=TR.opt, ap=o.ap||{}, pax=o.pax||1, start=o.start||kstToday(1), last=dayDate(Math.max(0,(o.n||1)-1)).toISOString().slice(0,10);
   var apSel=function(w){ var q=ap[w]||{}; return '<select data-stap="'+w+'"><option value="">'+esc(T5(w==="d"?AP6.noneD:AP6.none))+'</option>'+Object.keys(APT).filter(function(id){ return APT[id].ui; }).map(function(id){ return '<option value="'+id+'"'+(q.id===id?' selected':'')+'>'+esc(apNm(id))+'</option>'; }).join("")+'</select>'; };
-  var f1=!!(ap.a&&ap.a.id&&ap.d&&ap.d.id), f2=hOkNow(), old=!!o.hotel&&!f2, hNm=function(x){ return x&&x.type==='here'?hotelTxt(x):nm(x); }, h='';
+  var f1=!!(ap.a&&ap.a.id&&ap.d&&ap.d.id), f2=hOkNow(), h1=nhFirst(), old=!!h1&&!f2, hNm=function(x){ return x&&x.type==='here'?hotelTxt(x):nm(x); }, h='', nr="";   // 11-09 첫날 밤 숙소 = 숙소 칸(opt.nh)
+  if(f2&&h1&&TR.plan&&TR.plan.days){ var L1=nhListC(TR.plan), ix1=[]; L1.forEach(function(x,i){ if(nhSig(x)===nhSig(h1)) ix1.push(i); }); nr=nhRange(ix1); }   // 짠 일정이 있으면 그 숙소에 묵는 밤도 같이
   h+='<div class="stp'+(f1?' ok':'')+'"><div class="stph" data-sto="1"><b>'+esc(T5(ST6.s1))+'</b></div>';   // 11-07 사장님 — 「정했어요」는 제목 옆 표시가 아니라 아래 단추로
   if(STS.open==="1"){ h+='<div class="stpb"><div class="stpr"><label>'+esc(T5(ST6.day1))+'<input type="date" data-sts="start" value="'+esc(start)+'"></label><label>'+esc(T5(ST6.days))+nInput("",'data-sts="n"',o.n)+'</label><label>'+esc(T5(ST6.pax))+'<select data-sts="pax">'+[1,2,3,4,5,6,7,8,9].map(function(d){ return '<option'+(pax===d?" selected":"")+'>'+d+'</option>'; }).join("")+'</select></label></div>'+(STS.nm?'<div class="d trnm">'+esc(STS.nm)+'</div>':'')
     +'<div class="stpr"><label class="w">'+esc(T5(AP6.arr))+apSel("a")+'</label><label>'+esc(T5(AP6.tA))+'<input type="time" data-stt="a" value="'+esc((ap.a&&ap.a.t)||"")+'"></label></div>'
@@ -3035,11 +3204,11 @@ function stepsPaint(el){ el=el||document.getElementById("aipSteps"); if(!el) ret
     +stFly(ap,start,last,pax)
     +'<div class="d">'+esc(T5(ST6.times))+'</div><div class="tlgnote">'+esc(gTxt(NX6.book,{s:T5(NX6.sites)}))+'</div>'
     +'<div class="stpn"><button type="button" class="trbtn pri" data-sto="2"'+(f1?'':' disabled')+'>'+esc(T5(ST6.okB))+'</button><button type="button" class="trbtn" data-sto="2">'+esc(T5(ST6.skip))+' ›</button></div></div>'; }
-  h+='</div><div class="stp'+(f2?' ok':'')+'"><div class="stph" data-sto="2"><b>'+esc(T5(ST6.s2))+(f2?'<span class="stsub">'+esc(hNm(o.hotel))+(o.hAll?' · '+esc(T5(LG6.all)):'')+'</span>':'')+'</b></div>'+(old&&STS.open!=="2"?'<div class="stpb"><div class="d" style="margin:0 0 6px">'+esc(gTxt(ST6.prev,{h:hNm(o.hotel)}))+'</div><div class="stpn"><button type="button" class="trbtn" data-sthok="1">'+esc(T5(ST6.useP))+'</button> <button type="button" class="trbtn" data-sto="2">'+esc(T5(ST6.otherP))+'</button></div></div>':'');
+  h+='</div><div class="stp'+(f2?' ok':'')+'"><div class="stph" data-sto="2"><b>'+esc(T5(ST6.s2))+(f2?'<span class="stsub">'+esc(hNm(h1))+(nr?' · '+esc(nr):'')+'</span>':'')+'</b></div>'+(old&&STS.open!=="2"?'<div class="stpb"><div class="d" style="margin:0 0 6px">'+esc(gTxt(ST6.prev,{h:hNm(h1)}))+'</div><div class="stpn"><button type="button" class="trbtn" data-sthok="1">'+esc(T5(ST6.useP))+'</button> <button type="button" class="trbtn" data-sto="2">'+esc(T5(ST6.otherP))+'</button></div></div>':'');
   if(STS.open==="2"){ var cid=STS.city||(ap.a&&ap.a.id==="pus"?"busan":ap.a&&ap.a.id==="cju"?"jeju":"seoul");
     h+='<div class="stpb"><div class="stpr"><label class="w">'+esc(T5(ST6.city))+'<select data-stc="1">'+CITYNM.map(function(c){ return '<option value="'+c[0]+'"'+(c[0]===cid?' selected':'')+'>'+esc(LANG==="ko"?c[1]:({en:c[2],ja:c[3],zhs:c[4],zht:c[5],es:c[6]}[LANG]||c[2]))+'</option>'; }).join("")+'</select></label></div>'
       +'<div class="stpn"><button type="button" class="trbtn big" data-stl="1">'+MPIMG("mi_stay",MIS)+esc(T5(LG6.ttl))+'</button></div>'
-      +'<div class="stpr"><input id="stHQ" enterkeyhint="search" placeholder="'+esc(T5(ST6.hname))+'" value="'+esc(STS.hq||"")+'"><button type="button" class="tb" data-sth="1">'+MPIMG("mi_search","height:1.2em;width:auto;vertical-align:-0.2em;margin:0")+'</button></div><div id="stHR">'+stHrHtml()+'</div>'
+      +'<div class="stpr"><input id="stHQ" enterkeyhint="search" placeholder="'+esc(T5(ST6.hname))+'" value="'+esc(STS.hq||"")+'"><button type="button" class="tb" data-sth="1">'+MPIMG("mi_search","height:1.2em;width:auto;vertical-align:-0.2em;margin:0")+'</button></div><div id="stHR">'+stHrHtml()+'</div><div class="d nhblk">'+esc(T5(NH6.blk))+'</div>'   // 11-09 「여행 내내 이 숙소」 대신 한 줄
       +'<div class="stpn"><button type="button" class="trbtn pri" data-sto="3"'+(f2?'':' disabled')+'>'+esc(T5(ST6.okB))+'</button><button type="button" class="trbtn" data-sto="3">'+esc(T5(ST6.skip))+' ›</button></div></div>'; }
   h+='</div><div class="stp"><div class="stph" data-sto="3"><b>'+esc(T5(ST6.s3))+'</b></div></div>';
   h+='<div style="text-align:right;margin:6px 4px 0"><a href="#" data-streset="1" class="d" style="text-decoration:underline">'+esc(T5(ST6.rst))+'</a></div>';   // 11-06 사장님 「테스터 리셋, 다시 해보게」 — 이 폰의 여행 기록을 처음 상태로
@@ -3053,7 +3222,7 @@ function stFly(ap,start,last,pax){ var arr=(ap.a&&ap.a.id)||"icn", dep=ap.d&&ap.
   if(dep===arr||(SEL_AP[dep]&&SEL_AP[arr])) return row(ST6.rt,flyLinks(null,dep===arr?arr:"sel",start,pax,last));
   return row(ST6.ow,flyLinks(null,arr,start,pax))+row(ST6.owo,flyLinks(dep,null,last,pax)); }
 function stHrHtml(){ var a=STS.hr; if(!a) return ""; if(!a.length) return '<div class="d">'+esc(T("찾은 곳이 없어요","No results"))+'</div>';
-  return a.slice(0,6).map(function(x,i){ return '<div class="tra" data-sthp="'+i+'"><b>'+esc(KS(L()&&x.name_en?x.name_en:x.name))+'</b><br><span class="d">'+esc(L()&&x.addr_en?x.addr_en:x.addr)+'</span></div>'; }).join("")+'<label class="trck" style="margin:6px 0"><input type="checkbox" id="stHAll"'+(TR.opt.hAll?" checked":"")+'> '+esc(T5(LG6.all))+'</label>'; }
+  return a.slice(0,6).map(function(x,i){ return '<div class="tra" data-sthp="'+i+'"><b>'+esc(KS(L()&&x.name_en?x.name_en:x.name))+'</b><br><span class="d">'+esc(L()&&x.addr_en?x.addr_en:x.addr)+'</span></div>'; }).join(""); }
 document.addEventListener("keydown",function(e){ if(e.key!=="Enter"||!e.target||e.target.id!=="stHQ") return; e.preventDefault(); var b=document.querySelector('#aipSteps [data-sth]'); if(b) b.click(); });   // ② 숙소 이름 칸 — 자판 Enter·검색으로도 찾는다 (11-07)
 // 처음부터 다시 — 이 기기의 모든 플랜을 지우고 새로 (q = 확인 창 문구, 없으면 앱 문구)
 function stReset(q){ if(!confirm(q||T5(ST6.rstQ))) return false; try{ localStorage.removeItem(KEY); localStorage.removeItem("mpv_trlive"); }catch(z){} location.reload(); return true; }
@@ -3070,10 +3239,10 @@ document.addEventListener("click",function(e){ var el=document.getElementById("a
   if(t.dataset.sthok){ TR.opt.hOk=hKey(); save(); STS.open="3"; stepsPaint(el); return; }
   if(t.dataset.sto){ var v=t.dataset.sto; STS.open=STS.open===v?"":v; if(v==="3"){ STS.open=""; try{ var q=document.getElementById("aipQ"); if(q){ q.scrollIntoView({block:"center"}); q.focus(); } }catch(z){} } stepsPaint(el); return; }
   if(t.dataset.stl){ var cid=STS.city||(el.querySelector("[data-stc]")||{}).value||"seoul", c=CITYNM.filter(function(q){ return q[0]===cid; })[0]||CITYNM[0];
-    openLodge({lat:c[7],lng:c[8],date:TR.opt.start||kstToday(1),n:Math.max(1,(TR.opt.n||1)-1),city:LANG==="ko"?c[1]:({en:c[2],ja:c[3],zhs:c[4],zht:c[5],es:c[6]}[LANG]||c[2]),cityKo:c[1],cityEn:c[2],allOpt:true,all:!!TR.opt.hAll,cb:function(h,all){ TR.opt.hotel=h; TR.opt.hAll=all?1:0; if(!all){ TR.opt.hotels=TR.opt.hotels||{}; } TR.plan=null; save(); STS.open="3"; stepsPaint(); }}); return; }
+    openLodge({lat:c[7],lng:c[8],date:TR.opt.start||kstToday(1),n:Math.max(1,(TR.opt.n||1)-1),city:LANG==="ko"?c[1]:({en:c[2],ja:c[3],zhs:c[4],zht:c[5],es:c[6]}[LANG]||c[2]),cityKo:c[1],cityEn:c[2],blk:true,cb:function(h){ STS.open="3"; nhToast(nhChoose0(h),h); stepsPaint(); }}); return; }   // 11-09 숙소 칸(opt.nh) — 짠 일정은 지우지 않고 그 날들만 다시 계산
   if(t.dataset.sth){ var q2=(document.getElementById("stHQ")||{}).value||""; q2=q2.trim(); if(!q2) return; STS.hq=q2; STS.hr=null; var box=document.getElementById("stHR"); if(box) box.innerHTML='<div class="d">'+esc(T5(LG6.busy))+'</div>';
     fetch(HUB+"/kplace?q="+encodeURIComponent(q2)+kpL()).then(function(r){ return r.json(); }).then(function(j){ STS.hr=lodgeOnly((j&&j.ok&&j.items)||[]).slice(0,8); var b2=document.getElementById("stHR"); if(b2) b2.innerHTML=stHrHtml(); }).catch(function(){ STS.hr=[]; var b3=document.getElementById("stHR"); if(b3) b3.innerHTML=stHrHtml(); }); return; }
-  if(t.dataset.sthp){ var x=STS.hr&&STS.hr[+t.dataset.sthp]; if(!x) return; var all=!!(document.getElementById("stHAll")||{}).checked; TR.opt.hotel={type:"addr",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x,addr:x.addr||""}; TR.opt.hAll=all?1:0; TR.plan=null; save(); STS.hr=null; STS.hq=""; STS.open="3"; stepsPaint(el); } },true);
+  if(t.dataset.sthp){ var x=STS.hr&&STS.hr[+t.dataset.sthp]; if(!x) return; var hx={type:"addr",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x,addr:x.addr||""}; STS.hr=null; STS.hq=""; STS.open="3"; nhToast(nhChoose0(hx),hx); stepsPaint(el); } },true);
 
 // ══ 첫 화면 「지금 여기」 카드 · 더 머무를 때 묻기 · 숙소 도착 물음 · 오늘 밤 숙소 물음 (사장님 11-06) ══
 //  · 카드 = 오늘 일정이 있고 그날 시간 안(첫 장소 1시간 전 ~ 끝 1시간 뒤)일 때 첫 화면 아래 — 지도 높이를 카드만큼 줄여 지도·칩을 안 가린다 · ✕ = 그 상태 그대로면 다시 안 띄움
@@ -3136,7 +3305,7 @@ function yAsk(){ var hq=LIVE.hq||{}, yd=kstToday(-1), q=hq[yd], pl=TR.plan; if(!
   bell({k:"trip",ti:F6x(NOW6.htQy,function(l){ return {l:nmsL(ks,l)}; }),bd:NOW6.htBy,go:{k:"trip",q:"hotel"}}); try{ nowPaint(); }catch(e){} return {asked:1,ks:ks}; }
 // 오늘 밤 숙소 물음 — 그날 밤 숙소가 없고(전국 일정은 그 도시 숙소, 예전 일정은 숙소 하나) 마지막 장소 도착 · 또는 하루 끝 1시간 전
 function lodgeAsk(){ var L=liveToday(); if(!L||!L.arr.length) return null; var pl=L.pl, date=L.d.date; LIVE.lq=LIVE.lq||{}; if(LIVE.lq[date]) return null;
-  if(pl.mc){ var nc=L.d.nc!=null?L.d.nc:L.d.c; if(nc<0||hotelPt(pl,nc)) return null; } else { var H=liveH(); if(H||(pl.hotel&&pl.hotel.type==="here")) return null; if(L.di===pl.days.length-1&&pl.days.length>1) return null; }
+  if(pl.mc){ var nc=L.d.nc!=null?L.d.nc:L.d.c; if(nc<0||nhListC(pl)[L.di]) return null; } else { if(nhListC(pl)[L.di]) return null; if(L.di===pl.days.length-1&&pl.days.length>1) return null; }   // 11-09 그 밤 숙소(숙소 칸 opt.nh)
   var rec=liveRecs(date)||{}, last=L.arr[L.arr.length-1], ql=rec[last.k], X=liveX(L), lim=dayLim(pl,L.d,X.H,L.arr,X.dt,X), now=kminOn(Date.now(),date);
   if(!((ql&&ql.a!=null)||now>=lim-60)) return null;
   LIVE.lq[date]={at:Date.now()}; LIVE.pq={t:"lodge",d:date,at:Date.now()}; liveSave();
@@ -3237,7 +3406,7 @@ var AP6={arr:{ko:"도착 공항",en:"Arrival airport",ja:"到着空港",zhs:"到
  pax:{ko:"인원",en:"Travelers",ja:"人数",zhs:"人数",zht:"人數",es:"Viajeros"}};
 var PANELG=null;
 function panelGroups(){ var P=TR.items.filter(function(it){ var c=catOf(it); return c!=="hotel"&&c!=="trans"; }); if(P.length<2) return null; var G=natGroups(P); if(G.length<2) return null; natHotels(G,null); return G; }
-function natHotelRows(G){ return '<div class="wide trch"><span class="trchh">'+esc(T5(AP6.ch))+'</span>'+G.map(function(g,i){ var cur=g.h;
+function natHotelRows(G){ return '<div class="wide trch"><span class="trchh">'+esc(T5(AP6.ch))+'</span>'+G.map(function(g,i){ var cur=nhForGroup(g);   // 11-09 숙소 칸(opt.nh) — 짠 일정이 있으면 그 도시 첫 밤 숙소
     var opts='<option value="">'+esc(T5(AP6.nh))+'</option>'+HOTELS.filter(function(h){ return km(h,g)<=40; }).map(function(h){ return '<option value="'+esc(h.k)+'"'+(cur&&cur.k===h.k?' selected':'')+'>🏨 '+esc(nm(h))+'</option>'; }).join("")+(cur&&!cur.k&&cur.type!=="here"?'<option value="__cur" selected>🔎 '+esc(L()&&cur.en?cur.en:cur.ko)+'</option>':'');
     return '<div class="trchr"><span class="trchn">'+esc(cnm(g.nm))+'</span><select data-chs="'+i+'">'+opts+'</select><button type="button" class="tb" data-chf="'+i+'" title="'+esc(T5(NX6.hPick))+'">'+MPIMG("mi_stay","height:1.2em;width:auto;vertical-align:-0.2em;margin:0")+'</button></div>'; }).join("")+'</div>'; }   // 11-07 사장님 — 아래 안내 문장(AP6.hint) 삭제
 function natApRows(){ var ap=TR.opt.ap||{}, ids=Object.keys(APT).filter(function(id){ return APT[id].ui; }), pax=TR.opt.pax||1;
@@ -3249,12 +3418,26 @@ function natPanelWire(box){ var g=function(id){ return document.getElementById(i
     if(chg==="id"&&k) k.value=s.value==="cju"?"d":"i"; o.ap[w]={id:s.value,t:(t&&hm2m(t.value)!=null)?t.value:"",k:k&&k.value==="d"?"d":"i"}; save(); };
   ["a","d"].forEach(function(w){ if(g("trAp"+w)) g("trAp"+w).onchange=function(){ apSave(w,"id"); }; if(g("trApT"+w)) g("trApT"+w).onchange=function(){ apSave(w); }; if(g("trApK"+w)) g("trApK"+w).onchange=function(){ apSave(w); }; });
   if(g("trPax")) g("trPax").onchange=function(){ o.pax=+this.value; save(); };
-  [].forEach.call(box.querySelectorAll("[data-chs]"),function(s){ s.onchange=function(){ var G=PANELG, gg=G&&G[+s.dataset.chs]; if(!gg) return; o.hotels=o.hotels||{}; var v=s.value; if(v==="__cur") return;
-    var h=HOTELS.filter(function(x){ return x.k===v; })[0]; o.hotels[gg.id]=h?{type:"place",k:h.k,ko:h.ko,en:h.en,lat:h.lat,lng:h.lng}:null; save(); }; });
+  [].forEach.call(box.querySelectorAll("[data-chs]"),function(s){ s.onchange=function(){ var G=PANELG, gg=G&&G[+s.dataset.chs]; if(!gg) return; var v=s.value; if(v==="__cur") return;
+    var x=HOTELS.filter(function(q){ return q.k===v; })[0], h=x?{type:"place",k:x.k,ko:x.ko,en:x.en,lat:x.lat,lng:x.lng}:null, idx=nhSetGroup(gg,h); if(h) nhToast(idx,h); }; });   // 11-09 숙소 칸(opt.nh) — 그 도시 첫 밤들(이어 묵는 밤 전부)
   [].forEach.call(box.querySelectorAll("[data-chf]"),function(b){ b.onclick=function(){ var gg=PANELG&&PANELG[+b.dataset.chf]; if(!gg) return;
-    openLodge({lat:gg.lat,lng:gg.lng,date:o.start||kstToday(1),n:1,city:cnm(gg.nm),cityKo:gg.nm.ko,cityEn:gg.nm.en,cb:function(h){ o.hotels=o.hotels||{}; o.hotels[gg.id]=h; save(); if(document.getElementById("trBox")) panelPaint(); }}); }; }); }
-// 숙소 이름·주소 찾기로 고른 곳 — 도시가 여럿이면 가까운 도시 숙소로
-function natAssignHotel(h){ var G=PANELG; if(!G||G.length<2) return false; var b=null, bd=1e9; G.forEach(function(g){ var d=km(g,h); if(d<bd){ bd=d; b=g; } }); if(!b||bd>40) return false; TR.opt.hotels=TR.opt.hotels||{}; TR.opt.hotels[b.id]=h; return true; }
+    openLodge({lat:gg.lat,lng:gg.lng,date:o.start||kstToday(1),n:1,city:cnm(gg.nm),cityKo:gg.nm.ko,cityEn:gg.nm.en,blk:true,cb:function(h){ var idx=nhSetGroup(gg,h); nhToast(idx,h); if(document.getElementById("trBox")) panelPaint(); }}); }; }); }
+// 숙소 이름·주소 찾기로 고른 곳 — 도시가 여럿이면 가까운 도시 숙소로 (11-09 숙소 칸 opt.nh)
+function natAssignHotel(h){ var G=PANELG; if(!G||G.length<2) return false; var b=nhGrpFit(h); if(!b) return false; nhToast(nhSetGroup(b,h),h); return true; }
+// 카트 「도시별 숙소」 줄 (11-09) — 짠 일정이 있으면 그 도시 밤 · 없으면 그 도시 숙소 칸(첫 도시 = 1일차 밤 n[0], 다음 도시부터 c)
+function nhGrpFit(h){ var G=PANELG; if(!G||!nhOk(h)||h.type==="here") return null; if(h.cid){ var gc=G.filter(function(g){ return g.id===h.cid; })[0]; if(gc) return gc; } var b=null, bd=1e9; G.forEach(function(g){ var d=km(g,{lat:+h.lat,lng:+h.lng}); if(d<bd){ bd=d; b=g; } }); return bd<=40?b:null; }
+function nhPlanCi(g){ var pl=TR.plan; if(!pl||!pl.mc||!pl.cities||!pl.days) return -1; for(var i=0;i<pl.cities.length;i++) if(pl.cities[i].id===g.id) return i; return -1; }
+function nhForGroup(g){ var ci=nhPlanCi(g), s=nhS(), i, h;
+  if(ci>=0){ var pl=TR.plan, L=nhListC(pl); for(i=0;i<L.length;i++) if(L[i]&&nhCity(pl,i)===ci) return L[i]; return L.hint[ci]||null; }
+  for(i=0;i<s.n.length;i++){ h=s.n[i]; if(nhOk(h)&&h.type!=="here"&&nhGrpFit(h)===g) return h; } return nhOk(s.c[g.id])?s.c[g.id]:null; }
+function nhSetGroup(g,h){ var ci=nhPlanCi(g), s=nhS(), pl=TR.plan, i, idx=[];
+  if(ci>=0){ if(h){ for(i=0;i<pl.days.length;i++) if(nhCity(pl,i)===ci){ idx=nhBlock(pl,i); break; } if(idx.length) nhPut(pl,idx,h); else { s.c[g.id]=nhClean(h); NHV++; } }
+    else { for(i=0;i<pl.days.length;i++) if(nhCity(pl,i)===ci) idx.push(i); nhPut(pl,idx,null); delete s.c[g.id]; s.n=s.n.map(function(x){ return nhOk(x)&&x.type!=="here"&&nhOwn(pl,x)===ci?null:x; }); while(s.n.length&&!s.n[s.n.length-1]) s.n.pop(); NHV++; }   // 「정하지 않음」 = 그 도시 밤 모두 비움
+    nhApply(pl,"cart"); return idx; }
+  var o0=s.n[0], g0=nhGrpFit(o0); if(h&&PANELG&&PANELG[0]===g&&g0&&g0!==g&&!nhOk(s.c[g0.id])) s.c[g0.id]=o0;   // 1일차 밤 칸에 있던 다른 도시 숙소는 그 도시 것으로
+  s.n=s.n.map(function(x){ return nhGrpFit(x)===g?null:x; }); delete s.c[g.id];
+  if(h){ if(PANELG&&PANELG[0]===g){ s.n[0]=nhClean(h); idx=[0]; } else s.c[g.id]=nhClean(h); }
+  while(s.n.length&&!s.n[s.n.length-1]) s.n.pop(); NHV++; save(); nhUI("cart"); return idx; }
 
 // ══ 일정 화면에서 장소·식당 이름을 누르면 「무엇 하는 곳인지」 팝업 (사장님 11-06) ══
 //  · 지금 장소 카드(placeShow·spinCard)와 같은 조각을 그대로: 사진(cph — 같은 /gphoto 주소·같은 캐시 _cphC) · 이름 · 💡 tipTag · 설명(LD = dko/den…) · 주소 · 전화(telLine) · linksTo(길찾기·택시 K.Ride/카카오 T·자세히 보기)
@@ -3517,7 +3700,10 @@ window.TRIP={open:openPanel,report:openReport,close:sheetClose,state:function(){
   panel:function(){ if(document.getElementById("trBox")) panelPaint(); },reset:stReset,mk:function(k){ return MKC[k]||null; },photo:function(k,ko,lat,lng,el,done){ return ppPhoto(k,ko,lat,lng,el,done); },   // 11-08 홈페이지 — 카트 다시 그리기·처음부터 다시·지도 번호 자리
   add:function(it){ addItem(it); return has(it&&it.k); },del:delItem,has:has,snap:snapPlace,pinKey:pinKey,   // 「AI와 일정짜기」 화면이 같은 카트에 담는다 (11-05)
   alert:function(go){ return tripAlert(go); },live:{check:liveCheck,tick:liveTick,leave:liveLeave,state:function(){ return LIVE; },trend:liveTrend,ask:askCheck,re:liveRe,drive:liveDrive,hotel:function(){ var L=liveToday(); return L?hotelArrive(L):null; }},   // 🔔 알림함 「일정 주의」 → 주의 창(물음이면 그 물음) · 시험용 읽기 (11-06)
-  now:function(){ nowPaint(); return document.getElementById("trNow"); },steps:function(el){ stepsPaint(el); },lodge:openLodge,nat:{x:function(di){ var pl=TR.plan; return pl?dayX(pl,di,REPH||pl.H):null; },dr:function(){ return DR; },fetch:trFetch,groups:natGroups},   // 전국 일정 (11-06)   // 🔔 알림함 「일정 주의」 → 주의 창 · 시험용 읽기 (11-06)
+  now:function(){ nowPaint(); return document.getElementById("trNow"); },steps:function(el){ stepsPaint(el); },lodge:openLodge,
+  // 11-09 숙소 칸(opt.nh) — 교통 창·⋮ 숙소·홈페이지(숙소·편의시설·긴급·AI와 자유여행)가 같이 쓴다
+  stay:{first:function(){ return nhFirst(); },now:function(){ return nhNow(); },ok:function(){ var s=nhS(); return hOkNow()||Object.keys(s.c).some(function(id){ return nhOk(s.c[id]); }); },
+    mine:function(h,cb){ return myStay(h,cb); },list:function(){ var pl=TR.plan; return pl&&pl.days?nhListC(pl).slice():[nhFirst()]; },label:function(){ return T5(NH6.my); }},nat:{x:function(di){ var pl=TR.plan; return pl?dayX(pl,di,REPH||pl.H):null; },dr:function(){ return DR; },fetch:trFetch,groups:natGroups},   // 전국 일정 (11-06)   // 🔔 알림함 「일정 주의」 → 주의 창 · 시험용 읽기 (11-06)
   debug:function(){ var pl=TR.plan; if(!pl) return null; var H=REPH||pl.H||null, tot=0, tr=0, rl=0;   // 읽기 전용 — 날짜별 묶음·이동시간·실제구간 수 (시험·비교용)
     var days=pl.days.map(function(d){ var arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean), p=H, tv=0, legs=0, real=0;
       arr.forEach(function(x){ if(p){ var lg=leg(p,x); if(lg.mode!=="walk"){ legs++; if(lg.real) real++; } tv+=lg.min; } p=x; });
@@ -3576,7 +3762,12 @@ var css3=document.createElement("style"); css3.id="trBoardCss"; css3.textContent
 +".tfree{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;padding:6px 0}.tfree .d{margin:0}.tfree .trbtn{margin:0 0 0 auto;padding:5px 11px;font-size:12.5px;border-color:var(--green);color:#2b8a3e}:root[data-theme=dark] .tfree .trbtn{color:#8ce99a}"
 // 11-09 사장님 — 일정표 빼기 ✕ (카트 .trx 그대로) · 카드 머리줄 오른쪽 끝(▼/ㅡ 바로 왼쪽), 첫 줄만 비켜 가게 float · 묻는 창
 +".trows .trw .tp>.txd{float:right;height:26px;line-height:26px;margin:1px -2px 0 6px;padding:0 4px}.trows .trw:not(.tcx) .tp>.txd{margin-right:39px}"   // 카드가 아닌 줄(숙소에서 쉬기)도 카드 ✕ 와 같은 세로줄에
-+".txq{width:100%;max-width:380px}.txq .tals{font-size:15.5px;font-weight:800;color:var(--ink);line-height:1.5;margin:4px 0 0}";
++".txq{width:100%;max-width:380px}.txq .tals{font-size:15.5px;font-weight:800;color:var(--ink);line-height:1.5;margin:4px 0 0}"
+// 11-09 숙소 칸 — 「이 밤들에 넣을까요?」 창 · 돌아온 밤 [숙소 바꾸기] · 같은 도시 이어 묵는 밤 한 줄
++"#trNhq{z-index:1060}.nhq{text-align:left;max-width:420px}.nhq .tals{text-align:center}.nhhn{display:flex;align-items:center;justify-content:center;gap:4px;margin:6px 0 2px;font-size:14.5px;color:#2b8a3e}.nhqn{margin:6px 0 0;text-align:center}"
++".nhl{margin:10px 0 0;border-top:1px solid var(--line)}.nhck{display:flex;align-items:flex-start;gap:9px;padding:9px 2px;border-bottom:1px solid var(--line);font-size:14px;line-height:1.4;cursor:pointer}.nhck input{width:19px;height:19px;flex:0 0 auto;margin:1px 0 0;accent-color:#2f9e44}.nhck small{display:block;color:var(--sub);font-size:12.5px;font-weight:600;margin-top:1px}"
++".talb button:disabled{opacity:.45;cursor:default}.nhblk{margin:6px 2px 0;font-size:12.5px;line-height:1.5}"
++".trows>.nhback{margin-left:74px;align-items:center}.nhback .d{margin:0 auto 0 0;font-size:12.5px}.nhback .trbtn{margin:0;padding:5px 11px;font-size:12.5px;border-color:var(--green);color:#2b8a3e}:root[data-theme=dark] .nhback .trbtn{color:#8ce99a}";
 (document.head||document.documentElement).appendChild(css3);
 
 })();
