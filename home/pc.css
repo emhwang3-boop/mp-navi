@@ -40,7 +40,7 @@ html.pch .tradd{display:none!important}                  /* 지도는 둘러보�
 #phHd .ph-hd2 button:hover{color:var(--ph-green-d);border-bottom-color:var(--ph-yel)}
 
 /* ── 한 줄 소개 + 검색 (120) — 바탕 없음 · 오른쪽 위에서 수묵화 무궁화 가지 ── */
-#phHero{height:120px;position:relative;display:flex;flex-direction:column;align-items:center;padding:12px 24px 0;max-width:1400px;margin:0 auto;box-sizing:border-box}
+#phHero{height:auto;position:relative;display:flex;flex-direction:column;align-items:center;padding:12px 24px 6px;max-width:1400px;margin:0 auto;box-sizing:border-box}   /* 11-09 검색창 아래 버튼 8개 — 높이는 내용대로(전엔 120px) */
 #phHero .ph-branch{position:absolute;right:0;top:-48px;width:372px;height:auto;pointer-events:none;z-index:1;user-select:none;display:block}
 html.pch[data-theme="dark"] #phHero .ph-branch{content:url(img/mugunghwa_branch_dark.webp)}   /* 11-08 사장님 「다크모드에서 무궁화 가지는 옅은 회색」 — 가지·잎 옅은 회색, 꽃 분홍 */
 #phHero h1{position:relative;z-index:2;margin:0;font-size:27px;line-height:36px;font-weight:800;letter-spacing:-.6px;text-align:center}
@@ -55,6 +55,12 @@ html.pch #phHero form.sbox .qw:focus-within{border-color:var(--ph-green-d);box-s
 html.pch #phHero form.sbox .qw .ph-sic{width:22px;height:22px;flex:0 0 auto;display:block}
 html.pch #phHero form.sbox input#q{flex:1 1 auto;min-width:0;width:auto!important;height:100%;border:0!important;outline:0!important;background:transparent!important;padding:0 34px 0 0!important;margin:0;font-size:16px!important;color:var(--ink);box-shadow:none!important;border-radius:0!important;font-family:inherit;text-overflow:ellipsis}
 html.pch #phHero form.sbox input#q::placeholder{color:#8a93a3;font-size:16px}
+/* 11-09 관심 버튼 8개 — 검색칸 바로 아래 · 같은 크기 한 줄 8개(폰은 4개씩 두 줄) · AI 화면 버튼(pc_ai.css .pa-chip)과 같은 모양 */
+#phHero .ph-chips{position:relative;z-index:2;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-auto-rows:1fr;gap:6px;width:760px;max-width:100%;margin:10px 0 0;box-sizing:border-box}   /* 검색칸(600)보다 조금 넓게 — 영어·스페인어 이름도 한 줄에 */
+#phHero .ph-chips[hidden]{display:none}
+#phHero .ph-chip{margin:0;border:1.5px solid var(--ph-green);color:var(--ph-green-d);background:var(--card);border-radius:999px;padding:6px 4px;font-size:var(--chf,13.5px);font-weight:800;white-space:nowrap;cursor:pointer;text-align:center;min-width:0;overflow:hidden;line-height:1.25;font-family:inherit}
+#phHero .ph-chips.chwr .ph-chip{white-space:normal;overflow-wrap:normal;word-break:keep-all;border-radius:14px}
+#phHero .ph-chip:hover{background:var(--ph-gt)}
 html.pch #phHero form.sbox #qx{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:26px!important;height:26px!important;line-height:26px!important;font-size:12px!important;padding:0;border:0}
 
 /* 검색 결과·장소 카드(앱 #res) — 지도 바로 위 */
@@ -184,6 +190,7 @@ html.pch[data-theme="dark"] #phMapSec .ph-maphint b{color:#51cf66}
   #phHero h1 .mbr{display:inline}
   html.pch #phHero form.sbox{margin-top:14px}
   html.pch #phHero form.sbox .qw{width:100%!important;height:50px;padding:0 16px}
+  #phHero .ph-chips{width:100%;grid-template-columns:repeat(4,minmax(0,1fr))}
   html.pch #phHero form.sbox input#q,html.pch #phHero form.sbox input#q::placeholder{font-size:15px!important}
   #phRes{padding:0 12px}
   #phMapSec{padding:2px 12px 0}
