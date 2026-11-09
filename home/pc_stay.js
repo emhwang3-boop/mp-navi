@@ -80,7 +80,7 @@ function Where(o){ var w={id:o.id,base:cityBase("seoul"),q:"",res:null,msg:"",bu
       if(!a.length){ w.msg=TT("찾은 곳이 없어요","No results"); w.res=null; o.redraw(); return; }
       // 11-09 사장님 「내 위치 뒤에 다른 동네를 쳐도 리스트가 안 바뀌고 내 위치가 켜져 있다」 — 찾으면 첫 결과로 바로 바꾼다(편의시설 화면과 같게) · 여러 곳이면 아래에 다른 후보를 남겨 바꿀 수 있게
       w.q=q; w.set({k:"q",lat:+a[0].y,lng:+a[0].x,ko:q,en:q});   // 제목은 손님이 친 말 그대로(「마곡 근처 호텔」) — 첫 결과 자리를 기준으로
-      if(a.length>1){ w.res=a.slice(1); o.redraw(); } })
+      })   // 11-09 사장님 「동네 명소가 검색창 밑에 보인다 — 안 보이게」: 다른 후보 목록은 띄우지 않는다
     .catch(function(){ if(my!==w.seq) return; w.busy=0; w.msg=TT("잠시 뒤 다시 해 주세요.","Please try again shortly."); o.redraw(); }); };
   WREG[w.id]=w; return w; }
 D.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("[data-wh][data-w]"); if(!t||t.disabled) return; var w=WREG[t.getAttribute("data-w")]; if(!w) return; e.preventDefault(); w.act(t); });
