@@ -1064,16 +1064,18 @@ function planHotel(cb){ var pl=TR.plan; if(!pl||!pl.hotel) return cb(null); if(p
 //   ai.pend = 지금 받는 중인 묶음 · ai.retry = 답을 못 받은 묶음(연결이 끊기거나 앱을 닫아 끊긴 것 — 다음에 일정을 열 때 그 묶음만 이어서)
 //   허브가 실패로 답한 묶음(하루 한도 등)은 다시 안 부른다(그 날 설명만 없음) · 나눠 부르는 것 말고 호출을 늘리지 않는다
 var AIW=7, AIP=3, AIQ={at:0,run:0};
+function AIFL(){ return /^(ja|zhs|zht|es)$/.test(LANG); }   /* 11-10 일·중·스 화면이면 AI 요약에 카드에 보이는 이름도 넘겨 같은 이름을 쓰게 (허브 ntrip l·hl·htl·fl·tl·nl) */
+function aiHl(pl){ if(!AIFL()) return ""; var h=hS(REPH||pl.H||null); return h?ptNm(h):(pl.hotel?ptNm(pl.hotel):""); }
 function aiDays(pl){ var H0=REPH||pl.H||null;
   return pl.days.map(function(d,di){ if(d.md) return {w:DOW_EN[new Date(d.date+"T00:00:00Z").getUTCDay()],s:[]}; var X=dayX(pl,di,H0), dt=X.dt, s=sched(X.H,X.arr,dt,X.from,moX(di,X)), np=0, st=[], e=[];
-    s.rows.forEach(function(r){ if(r.rest) return; if(r.meal||(r.x&&r.x.eat)){ e.push({a:np,k:(r.meal||r.x.meal)==="dinner"?"D":"L",t:m2hm(r.t)}); return; } np++; st.push({k:r.x.k,ko:r.x.ko,en:r.x.en,t:m2hm(r.t),m:r.x.stay}); });
+    s.rows.forEach(function(r){ if(r.rest) return; if(r.meal||(r.x&&r.x.eat)){ e.push({a:np,k:(r.meal||r.x.meal)==="dinner"?"D":"L",t:m2hm(r.t)}); return; } np++; st.push({k:r.x.k,ko:r.x.ko,en:r.x.en,t:m2hm(r.t),m:r.x.stay,l:AIFL()?nm(r.x):undefined}); });
     var o={w:DOW_EN[dt.getUTCDay()],s:st}; if(e.length) o.e=e; if(pl.mc) aiExtra(pl,di,X,s,o); return o; }); }
 function aiFetch(){ var pl=TR.plan; if(!pl) return; var hn=pl.mc?"":(pl.hotel&&pl.hotel.type!=="here"?pl.hotel.ko:"");
   // 보고서와 같은 시간표(식사 칸·밤 장소·문 여는 시각 반영)를 그대로 보낸다 (11-06) — 식사는 e:[{a:그 앞 장소 수, k:L 점심·D 저녁, t:시각}] (옛 허브는 모르는 칸이라 버린다)
   //   전국 일정(11-06) — 그날 도시 사이 이동 mv·공항 ap·그날 밤 숙소 ht 도 시간표 그대로 (aiExtra) · 숙소 하나 일정은 예전 본문 그대로(허브 캐시 그대로)
   var all=withLC(function(){ return aiDays(pl); }), N=pl.days.length;
   if(N>AIW) return aiFetchParts(pl,hn,all);
-  var body={h:hn,d:all.filter(function(d){ return d.s.length; }),lang:LANG};   // lang: 허브가 그 언어 설명을 줄 수 있게 (10-18 — 지금 허브는 ko/en)
+  var body={h:hn,d:all.filter(function(d){ return d.s.length; }),lang:LANG}; if(hn&&AIFL()) body.hl=aiHl(pl);   // lang: 허브가 그 언어 설명을 줄 수 있게 (10-18 — 지금 허브는 ko/en)
   var at=pl.at; var ap=document.getElementById("trAiS"); if(ap) ap.hidden=false;
   fetch(HUB+"/ntrip",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){ return r.json(); }).then(function(j){
     window.__trAiRes=j&&(j.ok?"ok":String(j.err)); if(!TR.plan||TR.plan.at!==at) return; if(j&&j.ok){ var k=0, days=pl.days.map(function(d){ return d.stops.length?(j.days||[])[k++]||null:null; }); TR.plan.ai={days:days,tips:j.tips||{}}; save(); } else if(!(TR.plan.ai&&TR.plan.ai.days)) TR.plan.ai={fail:1};
@@ -1091,7 +1093,7 @@ function aiFetchParts(pl,hn,all,only){ var N=pl.days.length, at=pl.at, lang=LANG
       if(!got&&!prev&&!ai.days.some(Boolean)&&!ai.retry) pl.ai={fail:1}; save(); if(document.getElementById("trRep")) repPaint(); },
     next=function(){ if(!mine()){ tok.run=0; return; } while(live<AIP&&q.length){ one(q.shift()); } end(); },
     done=function(p,net){ var i=ai.pend?ai.pend.indexOf(p.c):-1; if(i>=0) ai.pend.splice(i,1); if(net&&ai.retry) ai.retry.push(p.c); live--; },
-    one=function(p){ live++; var body={h:hn,d:p.ds.map(function(x){ return x.o; }),t:N,lang:lang};
+    one=function(p){ live++; var body={h:hn,d:p.ds.map(function(x){ return x.o; }),t:N,lang:lang}; if(hn&&AIFL()) body.hl=aiHl(pl);
       fetch(HUB+"/ntrip",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){ return r.json(); }).then(function(j){
         window.__trAiRes=j&&(j.ok?"ok":String(j.err)); if(!mine()){ live--; tok.run=0; return; }
         if(j&&j.ok){ got++; var k=0, jd=j.days||[]; for(var di=p.a0;di<p.a1;di++) if(p.ds.some(function(x){ return x.di===di; })) ai.days[di]=jd[k++]||null; else if(!pl.days[di].stops.length) ai.days[di]=null;
@@ -3048,11 +3050,11 @@ function flyLinks(a,b,date,pax,ret){ var A=APT[a], B=b==="sel"?{c:"SEL"}:APT[b];
   var sk=(A&&B&&ymd.length===6)?"https://www.skyscanner.co.kr/transport/flights/"+A.c.toLowerCase()+"/"+B.c.toLowerCase()+"/"+ymd+"/?adultsv2="+pax:null, px=" for "+pax+" adult"+(pax>1?"s":"");
   var gq=(ret&&date&&B&&!A)?"Flights to "+B.c+" from "+date+" to "+ret+px:"One way flights"+(B?" to "+B.c:"")+(A?" from "+A.c:"")+(date?" on "+date:"")+px, gf="https://www.google.com/travel/flights?q="+encodeURIComponent(gq)+"&hl="+({ko:"ko",ja:"ja",zhs:"zh-CN",zht:"zh-TW",es:"es"}[LANG]||"en");
   return (sk?'<a href="'+sk+'" target="_blank" rel="noopener" data-bk="sky">'+esc(T("스카이스캐너","Skyscanner"))+'</a>':'')+'<a href="'+gf+'" target="_blank" rel="noopener" data-bk="gfl">'+esc(T("구글 항공권","Google Flights"))+'</a>'; }
-function aiExtra(pl,di,X,s,o){ var np=o.s.length, mv=[], ap=[], add=function(r,p){ if(!r.tr) return; var op=r.opt||{}, tr=r.tr; mv.push({p:p,k:tr.kind,f:tr.sa.ko,fe:tr.sa.en,to:tr.sb.ko,te:tr.sb.en,dt:op.est?"":m2hm(op.dp),at:op.est?"":m2hm(op.ar),g:op.est?"":String(op.g||"").slice(0,20),m:Math.max(0,Math.round(op.ar-op.dp))}); };
-  (X.pre||[]).forEach(function(r){ if(r.ap==="a") ap.push({p:0,k:"A",n:r.p.ko,ne:r.p.en,t:m2hm(r.t),ft:r.ft!=null?m2hm(r.ft):""}); add(r,0); });
-  natPost(pl,di,X,s).rows.forEach(function(r){ if(r.apD) ap.push({p:np,k:"D",n:r.p.ko,ne:r.p.en,t:m2hm(r.t),ft:r.ft!=null?m2hm(r.ft):""}); add(r,np); });
+function aiExtra(pl,di,X,s,o){ var np=o.s.length, mv=[], ap=[], add=function(r,p){ if(!r.tr) return; var op=r.opt||{}, tr=r.tr; mv.push({p:p,k:tr.kind,f:tr.sa.ko,fe:tr.sa.en,to:tr.sb.ko,te:tr.sb.en,fl:AIFL()?ptNm(tr.sa):undefined,tl:AIFL()?ptNm(tr.sb):undefined,dt:op.est?"":m2hm(op.dp),at:op.est?"":m2hm(op.ar),g:op.est?"":String(op.g||"").slice(0,20),m:Math.max(0,Math.round(op.ar-op.dp))}); };
+  (X.pre||[]).forEach(function(r){ if(r.ap==="a") ap.push({p:0,k:"A",n:r.p.ko,ne:r.p.en,nl:AIFL()?ptNm(r.p):undefined,t:m2hm(r.t),ft:r.ft!=null?m2hm(r.ft):""}); add(r,0); });
+  natPost(pl,di,X,s).rows.forEach(function(r){ if(r.apD) ap.push({p:np,k:"D",n:r.p.ko,ne:r.p.en,nl:AIFL()?ptNm(r.p):undefined,t:m2hm(r.t),ft:r.ft!=null?m2hm(r.ft):""}); add(r,np); });
   var d=pl.days[di], nc=d.nc!=null?d.nc:d.c, hp=nc>=0?nightPt(pl,di):null;
-  if(mv.length) o.mv=mv.slice(0,3); if(ap.length) o.ap=ap.slice(0,2); if(hp&&!hp.here) o.ht=String(hp.ko).slice(0,60); }
+  if(mv.length) o.mv=mv.slice(0,3); if(ap.length) o.ap=ap.slice(0,2); if(hp&&!hp.here){ o.ht=String(hp.ko).slice(0,60); if(AIFL()) o.htl=ptNm(hp); } }
 // ── 받아 오기: 열차(TAGO /train) · 버스(ODsay /nxcity) · 택시 요금(네이버 /ndrive) ──
 function trainGet(a,b,ymd){ var TC=window._trC||(window._trC={}), ck=a+"|"+b+"|"+ymd;   // index.html KTX 시간표와 같은 캐시(같은 구간·같은 날은 한 번)
   return (TC[ck]||(TC[ck]=fetch(HUB+"/train?dep="+a+"&arr="+b+"&date="+ymd).then(function(r){ return r.json(); }).catch(function(){ delete TC[ck]; return null; }))).then(function(j){
