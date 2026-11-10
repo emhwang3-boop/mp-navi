@@ -32,7 +32,7 @@ function go(j,ctx,cu){ var g=j&&j.pg; if(!(g&&g.storeId&&g.channelKey&&g.payment
   cu=cu||{}; var nm=String(cu.name||"").trim(), em=String(cu.email||"").trim(), ph=phN(cu.phone);
   if(pc()&&!(nm&&em&&/^\d{8,15}$/.test(ph))) return Promise.resolve(L6(TX.need));
   var base=location.origin+location.pathname, c={}; if(nm) c.fullName=nm.slice(0,100); if(em) c.email=em; if(ph) c.phoneNumber=ph;
-  var req={storeId:g.storeId,channelKey:g.channelKey,paymentId:g.paymentId,orderName:String(g.orderName||"Money Puzzle Tour").slice(0,100),totalAmount:g.totalAmount,currency:"KRW",payMethod:"CARD",customer:c,redirectUrl:base+"?tpres=1",forceRedirect:true,locale:loc()};
+  var req={storeId:g.storeId,channelKey:g.channelKey,paymentId:g.paymentId,orderName:String(g.orderName||"MosaicTrip").slice(0,100),totalAmount:g.totalAmount,currency:"KRW",payMethod:"CARD",customer:c,redirectUrl:base+"?tpres=1",forceRedirect:true,locale:loc()};
   ss({oid:g.paymentId,ck:j.ck||"",amount:g.totalAmount,ctx:ctx||{},at:Date.now()});   // 돌아왔을 때 화면을 다시 그리려고 이 탭에만 (확정은 허브가 포트원에서 읽은 값으로)
   try{ ntap("tpg","open_"+((ctx&&ctx.kind)||"")); }catch(e){}
   return psdk().then(function(){ low(1); return window.PortOne.requestPayment(req); }).then(function(r){ low(0);
