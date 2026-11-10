@@ -697,7 +697,7 @@ function bkSave(a){ try{ localStorage.setItem(BKK,JSON.stringify(a.slice(0,12)))
 function bkGet(oid){ return bkMine().filter(function(x){ return x.oid===oid; })[0]||null; }   // 11-08 — 로그인 계정 목록까지
 function bkPut(x){ var a=bkAll(), o=a.filter(function(y){ return y.oid===x.oid; })[0]||{}; if(!/^[0-9a-f]{32}$/.test(x.tk||o.tk||"")) return; bkSave([Object.assign(o,x)].concat(a.filter(function(y){ return y.oid!==x.oid; }))); }
 function bkDrop(oid){ bkSave(bkAll().filter(function(y){ return y.oid!==oid; })); }
-function bkFrom(j,tk){ return {oid:j.oid,tk:tk,kind:j.kind||"gbk",glang:j.glang||"",cust:j.cust||"",pname:j.pname||"",date:j.date,time:j.time,end:+j.end||0,k:j.k||{},n:j.n,amount:j.amount,status:j.status,done:j.done?1:0,rv:j.review||"",rvd:!!j.reviewed,rvFrom:j.rvFrom||"",room:j.room||null,g:j.g||null}; }
+function bkFrom(j,tk){ return {oid:j.oid,tk:tk,kind:j.kind||"gbk",glang:j.glang||"",cust:j.cust||"",pname:j.pname||"",date:j.date,time:j.time,end:+j.end||0,k:j.k||{},n:j.n,amount:j.amount,status:j.status,done:j.done?1:0,rv:j.review||"",rvd:!!j.reviewed,rvFrom:j.rvFrom||"",room:j.room||null,g:j.g||null,menu:j.menu||null}; }
 function bkShown(){ return bkMine().filter(function(x){ return !(x.status==="cancelled"||x.status==="refunded"||(x.rvd&&(x.done||x.kind==="pkg"))||(x.kind==="grv"&&x.grv&&(x.grv.end||(x.grv.sent&&(x.end||0)<Date.now())))); }); }   // 완료(투어 완료 + 후기까지 끝남)·취소 예약은 바로 숨김 (사장님 11-05 「2-가」) · 일정 검토는 검토를 받고 여행이 끝나면 숨김 (11-08)
 // ── 「내 예약」 로그인 계정 목록 (사장님 11-08 「로그인·내 예약」 통과) — 로그인돼 있으면 허브 POST /guide/mybk 가 계정에 묶인 예약(다른 폰·PC 에서 한 것 포함)을 준다 ──
 //   · 이 기기 예약(mpv_gbk_v1)의 토큰을 같이 보내 계정에 묶는다 — 로그인할 때(mppg)·이 화면을 열 때 · 처음 열 때 한 번
@@ -744,7 +744,7 @@ function bkCard(x){ var L=LG6, g=x.g||null, cx=x.status==="cancelled"||x.status=
   if(cx) foot='<div class="ignt">'+esc(L(BKT.cx))+'</div>';
   else if(pk){ var gc=g?'<div class="igcard" style="cursor:default;margin:10px 0 0">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b> '+igBadge(g)+'<div class="igm">'+(g.langs||[]).map(igLangName).map(esc).join(" · ")+'</div></div></div>':'<div class="ignt">'+esc(L(BKT.wait))+'</div>';
     var rv=""; if(g){ if(x.rvd) rv='<div class="gbdone" style="margin:8px 0 0">✓ '+esc(L(BKT.rvd))+'</div>'; else if(x.rv){ var early=x.rvFrom&&bkToday()<x.rvFrom; rv='<button type="button" class="gbgo g2" style="margin-top:8px" data-bkrv="'+esc(x.oid)+'"'+(early?' disabled':'')+'>★ '+esc(L(BKT.rv))+'</button>'+(early?'<div class="ignt">'+esc(gbF(BKT.rvAt,{d:x.rvFrom}))+'</div>':''); } }
-    foot=gc+rv+chatBtn; }
+    foot=gc+(window.SMN?SMN.vchHtml(x):'')+rv+chatBtn; }   // 모바일 바우처 · 모델 바꾸기 · 투어 완료 (11-10, smenu.js — 가게 메뉴가 있는 패키지만)
   else foot=chatBtn;
   var head=pk?'<b>'+esc(x.pname||"")+'</b><div class="igm">'+when+' · '+esc(gbF(GBT.pN,{n:x.n||1}))+'</div>'
     :'<div style="display:flex;gap:11px;align-items:flex-start">'+igFace(g||{})+'<div class="igb"><b>'+igName(g||{})+'</b><div class="igm">'+when+' · '+esc(gbModeTxt({mode:(x.k&&x.k.mode)||"half",h:x.k&&x.k.h,d:x.k&&x.k.d}))+' · '+esc(gbF(GBT.pN,{n:x.n||1}))+'</div></div></div>';
@@ -767,6 +767,7 @@ function openTdone(token){ var tk=String(token||"").replace(/[^a-f0-9]/gi,"").to
   fetch(HUB+"/guide/booking/check?token="+encodeURIComponent(tk),{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
     if(j&&j.ok){ BKS[j.oid]=1; bkPut(bkFrom(j,tk)); IG.bkHi=j.oid; IG.bkMsg=""; } else IG.bkMsg="bad";
     if(S.k==="ig"&&IG.view==="pick") paint(); }).catch(function(){ IG.bkMsg="net"; if(S.k==="ig"&&IG.view==="pick") paint(); }); }
+document.addEventListener("smnvch",function(){ try{ if(S.k==="ig"&&IG.view==="pick") paint(); }catch(e){} });   // 바우처가 바뀌면 「내 예약」 다시 (11-10, smenu.js)
 window.NEARBK={all:bkAll,put:bkPut,get:bkGet,from:bkFrom,when:bkWhen,sess:bkSess,mine:bkMine,srv:bkSrv,plan:bkPlan,TX:BKT};   // chat.js 가 같이 쓴다 · mine·srv·plan = 로그인 계정 목록 (11-08, chat.js·홈페이지 pc_bk.js)
 function openReview(token){ open("ig"); IG.view="review"; IG.rvToken=String(token||""); IG.rvGuide=null; IG.rvErr=""; IG.rvDone=false; IG.rvStars=0; IG.rvText=""; IG.rvName=""; IG.busy=false; paint(); igRvCheck(); }
 function igLoad(){ var lang=IG.lang; fetch(HUB+"/guide/guides?lang="+encodeURIComponent(lang)).then(function(r){ return r.json(); }).then(function(j){ if(IG.lang!==lang||IG.view!=="list") return;
