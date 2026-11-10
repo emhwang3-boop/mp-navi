@@ -81,7 +81,7 @@ var TOURS6={ko:"패키지여행",en:"Group Tour",ja:"パッケージツアー",z
 // 「투어 가이드」 칩 글자 (사장님 10-24) — 맨 앞 칩. 누르면 통역·길안내(ig) 가이드 매칭 판이 열린다
 var IG_CHIP6={ko:"가이드인솔 자유여행",en:"Travel with Guide",ja:"ガイド同行の自由旅行",zhs:"向导陪同自由行",zht:"嚮導陪同自由行",es:"Viaje con guía"};   // 11-06 사장님 — 옛 「투어 가이드」 · 칩은 두 줄(IG_CHIP2)
 var IG_CHIP2={ko:["가이드인솔","자유여행"],en:["Travel","with Guide"],ja:["ガイド同行の","自由旅行"],zhs:["向导陪同","自由行"],zht:["嚮導陪同","自由行"],es:["Viaje","con guía"]};   // 줄바꿈 자리 고정 (사장님 11-06)
-var IG_DESC6={ko:"내가 가고 싶은 곳을 내 일정대로 다니고, 현지 가이드가 함께 다니며 안내와 통역을 해 드려요. 반일·하루·여러 날 중에 고르고, 가고 싶은 곳을 적어 보내면 가이드와 대화방에서 함께 정해요.",en:"Go where you want, on your own schedule — a local guide comes along to show you around and interpret. Choose half a day, a full day or several days, send the places you’d like to see, and plan it together with your guide in the chat.",ja:"行きたい場所を自分の日程で回り、現地ガイドが同行して案内と通訳をします。半日・1日・数日から選び、行きたい場所を送れば、ガイドとチャットで一緒に決められます。",zhs:"按自己的行程去想去的地方，当地向导全程陪同讲解和翻译。可选半天、一天或多天，把想去的地方发过去，就能在聊天室里和向导一起商定。",zht:"按自己的行程去想去的地方，當地嚮導全程陪同導覽和翻譯。可選半天、一天或多天，把想去的地方傳過去，就能在聊天室裡和嚮導一起商定。",es:"Ve a donde quieras, a tu ritmo: un guía local te acompaña, te orienta y te hace de intérprete. Elige medio día, un día o varios, envía los lugares que quieres ver y decidid juntos el plan en el chat."};   // 첫 화면 맨 위 설명 (사장님 11-06 확인 초안)
+var IG_DESC6={ko:"내가 가고 싶은 곳을 내 일정대로 다니고, 현지 가이드가 함께 다니며 안내와 통역을 해 드려요. 반일·하루·여러 날 중에 고르고, 가고 싶은 곳을 적어 보내면 가이드와 대화방에서 함께 정해요.",en:"Go where you want, on your own schedule — a local guide comes along to show you around and interpret. Choose half a day, a full day or several days, send the places you’d like to see, and plan it together with your guide in the chat.",ja:"行きたい場所を自分の日程で回り、現地ガイドが同行して案内と通訳をします。半日・1日・数日から選び、行きたい場所を送れば、ガイドとチャットで一緒に決められます。",zhs:"按自己的行程去想去的地方，当地向导全程陪同讲解和翻译。可选半天、一天或多天，把想去的地方发过去，就能在聊天室里和向导一起商定。",zht:"按自己的行程去想去的地方，當地嚮導全程陪同導覽和翻譯。可選半天、一天或多天，把想去的地方傳過去，就能在聊天室裡和嚮導一起商定。",es:"Ve a donde quieras, a tu ritmo: un guía local te acompaña, te orienta y te hace de intérprete. Elige medio día, un día o varios, envía los lugares que quieres ver y decidan juntos el plan en el chat."};   // 첫 화면 맨 위 설명 (사장님 11-06 확인 초안)
 // 빨간·파란 단추 안 전화기 — 흰 선 그림(글자색 그대로, 사장님 10-16: 이모지는 분홍빛이라)
 var PH='<svg class="nrph" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function km(m){ return m<1000?Math.round(m)+" m":(m/1000).toFixed(1)+" km"; }
@@ -245,7 +245,7 @@ function close(){ var o=document.getElementById("nrBox"); if(o) o.remove(); docu
 function sos(){ return '<div class="nrsos"><a class="s119" href="tel:119">'+PH+T("응급 119","Emergency 119")+'<small>'+T("구급·화재","Ambulance · Fire")+'</small></a>'
   +'<a class="s112" href="tel:112">'+PH+T("경찰 112","Police 112")+'<small>'+T("도난·분실·사건","Theft · Loss · Crime")+'</small></a>'   // 11-08 사장님 「경찰도 칸을 만들어」
   +'<a class="s1330" href="tel:+82-2-1330">'+PH+'1330<small>'+T("관광통역안내 (24시간)","Travel helpline · English 24h")+'</small></a></div>'; }
-function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=KS(en?x.name_en:x.name), ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.cat_en||""):String(x.cat||"").split(">").pop().trim();
+function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=KS(en?x.name_en:x.name), ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.gid?T(x.cat||"",x.cat_en||""):(x.cat_en||"")):String(x.cat||"").split(">").pop().trim();   /* 11-10 구글에서 더한 숙소는 분류가 영어(Hotel)로만 있어 화면 언어로 */
   var tel=""; if(x.tel){ var shown=L()?(/^0/.test(x.tel)?"+82 "+x.tel.slice(1):"+82 "+x.tel):x.tel;
     tel=em?'<a class="nrcall" href="tel:'+esc(telIntl(x.tel))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>':'<a class="nrcall am" href="tel:'+esc(telIntl(x.tel))+'">'+PH+T("전화","Call")+'</a> <span class="d">'+esc(shown)+'</span>'; }   // 편의점·마트도 같은 흰 전화기 단추 (파랑)
   return '<div class="nrit" data-nr="pick" data-i="'+i+'"><div class="h"><span class="nrrank">'+(i+1)+'</span><b>'+esc(nm)+(x.kto?'<span class="nrkto" title="'+T("한국관광공사 관광정보에 실린 숙소","Listed by the Korea Tourism Organization")+'">'+T("관광공사","KTO")+'</span>':'')+(x.dt?'<span class="nrdt">'+MPICO("mi_ticket",T("🎟 당일 투어","🎟 Day tour"),MIS)+'</span>':'')+'</b><i>'+km(x.dist)+'</i></div>'
@@ -342,12 +342,12 @@ var IG={view:"pick",lang:"",guides:null,gid:null,gobj:null,err:"",busy:false,don
 var IGN_T={ko:"ⓘ 주의 사항",en:"ⓘ Please note",ja:"ⓘ ご注意",zhs:"ⓘ 注意事项",zht:"ⓘ 注意事項",es:"ⓘ Ten en cuenta"}, IGN_OPEN=false;
 function igNoteBox(){ return '<div class="ignote ignf'+(IGN_OPEN?' on':'')+'"><div class="xtrow" data-ignf="1" style="cursor:pointer"><span>'+esc(LG6(IGN_T))+'</span>'+(window.XTG?XTG.html(IGN_OPEN,'',1):'')+'</div>'+(IGN_OPEN?'<div style="margin-top:6px">'+esc(igNote())+'</div>':'')+'</div>'; }
 document.addEventListener("click",function(e){ var r=e.target.closest&&e.target.closest("#nrBox [data-ignf]"); if(!r) return; e.preventDefault(); IGN_OPEN=!IGN_OPEN; var box=r.closest(".ignf"); if(box) box.outerHTML=igNoteBox(); },true);
-function igNote(){ return LG6({ko:"실제 투어 가이드(관광통역안내사)를 연결해 드립니다. 외부 여행 예약 사이트의 투어 가이드와는 별개이며, 여기서 소개해 드리는 가이드만이 머니퍼즐 투어앱과 제휴를 맺은 가이드입니다. 우리 앱에서 선정된 가이드가 외부 여행 예약 사이트의 여행 상품을 안내해 드릴 수는 없습니다. 가이드를 중복으로 선정하지 않도록 주의해 주세요.",
-  en:"We connect you with a real licensed tour guide (Korea Tour Guide license). These are separate from tour guides on external travel booking sites — only the guides introduced here are partnered with the Money Puzzle tour app. A guide selected in our app cannot guide travel products booked on external travel booking sites. Please take care not to book duplicate guides.",
-  ja:"実際のツアーガイド（通訳案内士）をおつなぎします。外部の旅行予約サイトのツアーガイドとは別で、ここでご紹介するガイドのみがMoney Puzzleツアーアプリと提携したガイドです。当アプリで選んだガイドが、外部の旅行予約サイトの旅行商品をご案内することはできません。ガイドを重複して選ばないようご注意ください。",
-  zhs:"为您联系真人旅游向导（持证导游）。与外部旅游预订网站的旅游向导不同，只有在这里为您介绍的向导，才是与 Money Puzzle 旅游App 合作的向导。在本App选定的向导，无法为外部旅游预订网站的旅游产品提供导览。请注意不要重复选定向导。",
-  zht:"為您聯繫真人旅遊嚮導（持證導遊）。與外部旅遊預訂網站的旅遊嚮導不同，只有在這裡為您介紹的嚮導，才是與 Money Puzzle 旅遊App 合作的嚮導。在本App選定的嚮導，無法為外部旅遊預訂網站的旅遊產品提供導覽。請注意不要重複選定嚮導。",
-  es:"Te ponemos en contacto con un guía turístico con licencia real. Son distintos de los guías turísticos de sitios externos de reservas de viaje: solo los guías que presentamos aquí están asociados con la app Money Puzzle Tour. Un guía seleccionado en nuestra app no puede acompañar los productos de viaje comprados en sitios externos de reservas de viaje. Tenga cuidado de no seleccionar guías por duplicado."}); }
+function igNote(){ return LG6({ko:"실제 투어 가이드(관광통역안내사)를 연결해 드립니다. 외부 여행 예약 사이트의 투어 가이드와는 별개이며, 여기서 소개해 드리는 가이드만이 모자이크트립과 제휴를 맺은 가이드입니다. 우리 앱에서 선정된 가이드가 외부 여행 예약 사이트의 여행 상품을 안내해 드릴 수는 없습니다. 가이드를 중복으로 선정하지 않도록 주의해 주세요.",
+  en:"We connect you with a real licensed tour guide (Korea Tour Guide license). These are separate from tour guides on external travel booking sites — only the guides introduced here are partnered with MosaicTrip. A guide selected in our app cannot guide travel products booked on external travel booking sites. Please take care not to book duplicate guides.",
+  ja:"実際のツアーガイド（通訳案内士）をおつなぎします。外部の旅行予約サイトのツアーガイドとは別で、ここでご紹介するガイドのみがMosaicTripと提携したガイドです。当アプリで選んだガイドが、外部の旅行予約サイトの旅行商品をご案内することはできません。ガイドを重複して選ばないようご注意ください。",
+  zhs:"为您联系真人旅游向导（持证导游）。与外部旅游预订网站的旅游向导不同，只有在这里为您介绍的向导，才是与 MosaicTrip 合作的向导。在本App选定的向导，无法为外部旅游预订网站的旅游产品提供导览。请注意不要重复选定向导。",
+  zht:"為您聯繫真人旅遊嚮導（持證導遊）。與外部旅遊預訂網站的旅遊嚮導不同，只有在這裡為您介紹的嚮導，才是與 MosaicTrip 合作的嚮導。在本App選定的嚮導，無法為外部旅遊預訂網站的旅遊產品提供導覽。請注意不要重複選定嚮導。",
+  es:"Te ponemos en contacto con un guía turístico con licencia real. Son distintos de los guías turísticos de sitios externos de reservas de viaje: solo los guías que presentamos aquí están asociados con MosaicTrip. Un guía seleccionado en nuestra app no puede acompañar los productos de viaje comprados en sitios externos de reservas de viaje. Ten cuidado de no seleccionar guías por duplicado."}); }
 function igDates(){ var out=[]; for(var i=1;i<=2;i++){ var d=new Date(Date.now()+9*3600e3+i*864e5), s=d.toISOString().slice(0,10);
     out.push([s, (i===1?LG6({ko:"내일",en:"Tomorrow",ja:"明日",zhs:"明天",zht:"明天",es:"Mañana"}):LG6({ko:"모레",en:"Day after tomorrow",ja:"明後日",zhs:"后天",zht:"後天",es:"Pasado mañana"}))+" ("+s+")"]); } return out; }
 function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) return GLANG6[i][0]; return c; }
@@ -399,7 +399,7 @@ var GBT={
  memo:T6("가고 싶은 곳·원하는 관광 내용 (최대 500자)","Where you want to go · what you would like to do (up to 500 characters)","行きたい場所・ご希望の観光内容（500字まで）","想去的地方·希望的游览内容（最多500字）","想去的地方·希望的遊覽內容（最多500字）","Adónde quieres ir · qué te gustaría hacer (máx. 500 caracteres)"),
  memoPh:T6("예) 오전엔 경복궁·북촌 한옥마을, 점심은 광장시장, 오후엔 N서울타워","e.g. Gyeongbokgung and Bukchon Hanok Village in the morning, lunch at Gwangjang Market, N Seoul Tower in the afternoon","例）午前は景福宮・北村韓屋村、昼は広蔵市場、午後はNソウルタワー","例：上午景福宫·北村韩屋村，午饭在广藏市场，下午N首尔塔","例：上午景福宮·北村韓屋村，午飯在廣藏市場，下午N首爾塔","p. ej.: por la mañana Gyeongbokgung y Bukchon, almuerzo en el mercado de Gwangjang, por la tarde la N Seoul Tower"),
  memoL:T6("메모","Notes","メモ","备注","備註","Notas"),
- cu:T6("예약자 정보","Your details","ご予約者情報","预约人信息","預約人資訊","Tus datos"),
+ cu:T6("예약자 정보","Your details","ご予約者情報","预订人信息","預訂人資訊","Tus datos"),
  cn:T6("이름 (필수)","Name (required)","お名前（必須）","姓名（必填）","姓名（必填）","Nombre (obligatorio)"),
  ce:T6("이메일 (필수)","Email (required)","メール（必須）","邮箱（必填）","電子郵件（必填）","Correo electrónico (obligatorio)"),
  cp:T6("휴대폰 (필수)","Mobile phone (required)","携帯電話（必須）","手机（必填）","手機（必填）","Móvil (obligatorio)"),
@@ -410,7 +410,7 @@ var GBT={
  rfL:T6("환불 규정 보기","View refund policy","返金規定を見る","查看退款规定","查看退款規定","Ver la política de reembolso"),
  cfT:T6("예약 내용 확인","Check your booking","予約内容の確認","确认预约内容","確認預約內容","Revisa tu reserva"),
  cfS:T6("아래 내용이 맞으면 결제로 넘어가세요.","If everything is correct, go on to payment.","内容がよろしければお支払いへお進みください。","确认无误后请前往付款。","確認無誤後請前往付款。","Si todo es correcto, continúa al pago."),
- who:T6("예약자","Booked by","ご予約者","预约人","預約人","Reserva a nombre de"),
+ who:T6("예약자","Booked by","ご予約者","预订人","預訂人","Reserva a nombre de"),
  cfGo:T6("확인, 결제로","Confirm & go to payment","確認して支払いへ","确认并去付款","確認並前往付款","Confirmar e ir al pago"),
  edit:T6("고치기","Edit","修正する","修改","修改","Editar"),
  pt:T6("결제","Payment","お支払い","付款","付款","Pago"),
@@ -589,7 +589,7 @@ function igName(g){ var l=window.LANG||"en", nm=g&&g.name||""; if(l==="ko"||!g) 
   var f=l==="ja"?(g.name_ja||g.name_en):(l==="zhs"||l==="zht")?(g.name_zh||g.name_en):g.name_en; if(!f||f===nm) return esc(nm);
   return esc(f)+' <small style="font-weight:400;color:var(--sub)">'+esc(nm)+'</small>'; }
 function igYears(y){ if(!y) return ""; var l=window.LANG||"en"; return ({ko:y+"년",en:y+" yrs",ja:"経験"+y+"年",zhs:y+"年经验",zht:y+"年經驗",es:y+" años"})[l]||(y+" yrs"); }
-window.igName=igName; window.igRegion=igRegion; window.igYears=igYears;
+window.igName=igName; window.igRegion=igRegion; window.igYears=igYears; window.igLangName=igLangName;
 function igFace(g){ return g.photo?'<img class="igav" src="'+HUB+'/guide/photo?id='+encodeURIComponent(g.id)+'&v='+encodeURIComponent(g.pv||0)+'" alt="" loading="lazy">':'<span class="igav igavx">🧭</span>'; }
 function igWire(b){
   [].forEach.call(b.querySelectorAll("[data-iglang]"),function(a){ a.onclick=function(e){ e.preventDefault(); IG.lang=a.dataset.iglang; IG.view="list"; IG.guides=null; IG.err=""; paint(); igLoad(); }; });
