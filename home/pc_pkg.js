@@ -54,7 +54,7 @@ function card(p){ var x=X(), T=x.TX, img=x.psrc(p), meta=[x.catName(p.c),x.Lx(p.
   return '<button type="button" class="pk-c" data-p="'+E(p.id)+'"><div class="pk-cph">'+(img?'<img src="'+E(img)+'" alt="" loading="lazy">':'')
    +'<span class="pk-st'+(p.real?' on':'')+'">'+E(x.L(p.real?T.real:T.ex))+'</span></div>'
    +'<div class="pk-cb"><div class="pk-l1">'+E(meta)+'</div><div class="pk-l2">'+E(x.L(p.t))+'</div><div class="pk-l3">'+E(inf)+'</div>'
-   +'<div class="pk-l4">'+priceLine(p)+'<span class="pk-rv">'+(window.rvMini?rvMini("shop:"+p.id):'')+'</span></div></div></button>'; }
+   +'<div class="pk-l4">'+priceLine(p)+'<span class="pk-rv">'+(window.rvMini?rvMini("shop:"+p.id):'')+'</span></div>'+(x.Lx(p.px)?'<div class="shpx">'+E(x.Lx(p.px))+'</div>':'')+'</div></button>'; }   // shpx = 가격 아래 「별도」 줄 (11-10)
 function list(box){ var x=X(), PA=items(), L0=PA.filter(function(p){ return PK.cat==="all"||p.c===PK.cat; });
   var cats='<div class="pk-cats"><div class="pk-catg">'+x.CATS.map(function(c){ var n=c[0]==="all"?PA.length:PA.filter(function(p){ return p.c===c[0]; }).length;
       return '<button type="button" data-cat="'+c[0]+'" class="'+(PK.cat===c[0]?"on":"")+'">'+E(x.L(c[1]))+' '+n+'</button>'; }).join("")+'</div></div>';
@@ -85,7 +85,7 @@ function boxHtml(p){ var x=X(), S=x.S, T=x.TX, L=x.L, K=x.kindOf(p);
    +'<div class="pk-row"><label class="pk-lb" for="pkTm">'+E(L(T.tm))+'</label>'+(tsel?'<select class="pg-in" id="pkTm">'+p.times.map(function(t){ return '<option'+(t===S.time?' selected':'')+'>'+E(t)+'</option>'; }).join("")+'</select>':'<input class="pg-in" type="time" id="pkTm" step="1800" value="'+E(S.time)+'">')+'</div>'
    +'<div class="pk-row"><span class="pk-lb">'+E(L(T.ppl))+'</span><div class="pk-stp"><button type="button" data-pkn="-1" aria-label="-">−</button><b>'+S.n+'</b><button type="button" data-pkn="1" aria-label="+">+</button></div></div>'
    +(K==="tour"?guideRow(p):'')
-   +'<div class="pk-tot"><span>'+E(L(T.tot))+'</span><b>'+x.won(x.unitOf(p,S.n)*S.n)+'</b></div>'
+   +(window.SMN?SMN.pickHtml(p,x.unitOf(p,S.n)*S.n):'')+'<div class="pk-tot"><span>'+E(L(T.tot))+'</span><b>'+x.won(x.unitOf(p,S.n)*S.n+(window.SMN?SMN.appSum(p):0))+'</b></div>'   // 가게 메뉴 고르기·합계 (11-10)
    +'<button type="button" class="pg-pay" data-pk="pay">'+E(L(T.pay))+'</button>'
    +'<div class="pg-rf"><a href="refund.html?lang='+E(window.LANG||"en")+'" target="_blank" rel="noopener">'+E(L(T.rfL))+' ›</a></div>'
    +ignBox(p);
@@ -180,6 +180,7 @@ D.addEventListener("click",function(e){ var t=e.target; if(!t.closest) return; v
 });
 D.addEventListener("change",function(e){ var t=e.target; if(!t||!t.closest||!t.closest("#pcPk")) return; var x=X(); if(!x) return;
   if(t.id==="pkDt") x.S.date=t.value; if(t.id==="pkTm") x.S.time=t.value; });
+D.addEventListener("smnchg",function(){ try{ boxUpd(); }catch(e){} });   // 가게 메뉴 고르기 (11-10, smenu.js)
 // 언어를 바꾸면 이 화면도 그 자리에서 다시
 var _sl=window.setLang; if(typeof _sl==="function") window.setLang=function(){ var r=_sl.apply(this,arguments); try{ redraw(); }catch(e){} return r; };
 })();
