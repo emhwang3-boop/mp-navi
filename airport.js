@@ -181,9 +181,10 @@ var _gb=window.guBack; window.guBack=function(){ if(document.getElementById("apB
 var APB={ko:"✈ 공항 이용 안내 (입국·출국 절차)",en:"✈ Airport guide (arrival & departure steps)",ja:"✈ 空港利用ガイド（入国・出国の手順）",zhs:"✈ 机场使用指南（入境·出境流程）",zht:"✈ 機場使用指南（入境·出境流程）",es:"✈ Guía del aeropuerto (llegada y salida)"};
 function apBtn(k){ var r=document.getElementById("res"), it=r&&r.querySelector(".item"); if(!it||it.querySelector(".apgo")) return;
   var b=document.createElement("button"); b.type="button"; b.className="apgo"; b.textContent=APB[window.LANG]||APB.en;
-  b.style.cssText="display:block;width:100%;margin:8px 0 6px;padding:11px 12px;border:0;border-radius:12px;background:#1e3a8a;color:#fff;font-size:15px;font-weight:800;cursor:pointer;text-align:center";
+  b.style.cssText="display:block;width:100%;margin:0;padding:11px 12px;border:0;border-radius:12px;background:#1e3a8a;color:#fff;font-size:15px;font-weight:800;cursor:pointer;text-align:center";
   b.onclick=function(e){ e.stopPropagation(); open(k); };
-  var t=it.querySelector(".t"); if(t&&t.parentNode===it) it.insertBefore(b,t.nextSibling); else it.appendChild(b); }
+  var w=document.createElement("div"); w.className="apgw"; w.style.cssText="overflow:hidden;margin:8px 0 6px"; w.appendChild(b);   // 11-11 사장님 「사진 왼쪽에 빈공간이 많다」 — PC 에선 오른쪽 사진 옆 남은 폭에 들어가 설명·주소가 사진 옆으로 올라온다(폰은 그대로 꽉 찬 폭)
+  var t=it.querySelector(".t"); if(t&&t.parentNode===it) it.insertBefore(w,t.nextSibling); else it.appendChild(w); }
 var _ps=window.placeShow; if(_ps) window.placeShow=function(k){ var r=_ps.apply(this,arguments); if(k==="icn"||k==="gimpo"){ try{ apBtn(k); }catch(e){} } return r; };
 var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ var b=document.getElementById("apBox"); if(b){ var y=b.scrollTop; paint(); b.scrollTop=y; } }catch(e){} return r; };   // 언어 바꾸면 열린 공항 화면도 바로
 window.apOpen=open;
