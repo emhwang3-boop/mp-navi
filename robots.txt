@@ -1,3 +1,4 @@
+#DaumWebMasterTool:e93ffcbf3c7b65077a693892e357e9609d75a98219ca9510a92d14b8ef7035fb:Zle7beqbjbws6dh5S5OBww==
 User-agent: *
 Disallow: /admin/
 
