@@ -83,7 +83,8 @@ var SYS={booked:T6("예약을 받았습니다.","Your booking has been received.
  gconf:T6("가이드 {g} 님이 확정되었습니다.","Guide {g} is confirmed.","ガイド {g} さんが確定しました。","向导 {g} 已确认。","嚮導 {g} 已確認。","El guía {g} está confirmado."),
  done:T6("투어 완료로 표시되었습니다.","The tour was marked as done.","ツアー完了になりました。","导览已标记为完成。","導覽已標記為完成。","El tour se marcó como completado."),
  rvthx:T6("후기를 남겨 주셔서 감사합니다.","Thank you for the review.","レビューありがとうございました。","感谢您的评价。","感謝您的評價。","Gracias por la reseña."),
- cancel:T6("예약이 취소되었습니다.","This booking was cancelled.","ご予約はキャンセルされました。","预约已取消。","預約已取消。","La reserva fue cancelada.")};
+ cancel:T6("예약이 취소되었습니다.","This booking was cancelled.","ご予約はキャンセルされました。","预约已取消。","預約已取消。","La reserva fue cancelada."),
+ vch:T6("바우처가 바뀌었습니다.","The voucher has been changed.","バウチャーが変更されました。","凭证已更改。","憑證已變更。","El bono ha cambiado.")};   // 모델 바꾸기 (11-10)
 function sysTx(m){ var o=SYS[m.k]; if(!o) return ""; var g=(m.v&&m.v.g)||{}, l=window.LANG||"en", nm=l==="ko"?g.ko:l==="ja"?(g.ja||g.en):(l==="zhs"||l==="zht")?(g.zh||g.en):g.en; return F(o,{g:nm||g.ko||""}); }
 // 말풍선 목록 — 「내 예약」과 같은 규칙으로 숨김: 취소·환불 · 후기까지 끝난 것(자유 가이드는 투어 완료+후기, 패키지는 후기)
 function shown(r){ return !(r.status==="cancelled"||r.status==="refunded"||(r.reviewed&&(r.done||r.kind==="pkg"))); }
@@ -186,7 +187,7 @@ function sumRows(sm,side){ var r=function(a,b){ return '<div class="r"><span>'+e
   return '<div class="chsum"><div style="font-weight:800;font-size:13.5px;margin-bottom:3px">'+esc(L(TX.sum))+'</div>'
     +(pk?r(T6("상품","Product","商品","商品","商品","Producto"),esc(side==="g"?(sm.pnameKo||sm.pname):sm.pname))+(side==="c"?r(TX.gd,X.room&&X.room.g?esc(gName(X.room.g)):'<span class="chpend" style="margin:0">'+esc(L(TX.wait))+'</span>'):''):r(TX.gd,esc(side==="g"?(X.gme&&X.gme.guide?X.gme.guide.name:""):gName(X.room&&X.room.g))+(sm.k?' · '+esc(mdTx(sm.k)):'')))
     +(side==="c"&&sm.cust?r(TX.bkr,esc(sm.cust)):'')+r(TX.dt,esc(sm.date+" "+sm.time+" (KST)"))+(sm.end?r(TX.endL,esc(window.NEARBK?NEARBK.when(sm.end):hm(sm.end))):'')+r(TX.ppl,esc(String(sm.n)))+r(TX.amt,esc(won(sm.amount)))+r(TX.oid,esc(sm.oid))
-    +(side==="g"?r(TX.cust,esc(sm.cust||""))+r(TX.lang,esc(LGN[sm.lang]||sm.lang||""))+(sm.memo?r(TX.memo,esc(sm.memo)):''):'')+'</div>'; }
+    +(side==="g"?r(TX.cust,esc(sm.cust||""))+r(TX.lang,esc(LGN[sm.lang]||sm.lang||""))+(sm.memo?r(TX.memo,esc(sm.memo)):''):'')+(window.SMN&&sm.menu?SMN.sumHtml(sm,side):'')+'</div>'; }   // 바우처 · 가이드 「모델 바꾸기」 (11-10)
 function room(tk){ var r=(X.rooms||[]).filter(function(x){ return x.tk===tk; })[0]||null; openRoom({side:"c",tk:tk,g:r&&r.g}); }
 function groom(oid){ openRoom({side:"g",oid:oid}); }
 function openRoom(o){ if(!o.emb) embOff(); stopPoll(); X.view="room"; X.room=o; X.msgs=[]; X.last=0; X.stars=0; X.rvText=""; X.rvName=""; X.ver++; var v=X.ver, b=shell();
