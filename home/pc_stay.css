@@ -61,6 +61,8 @@ html.pch[data-theme="dark"] .pcs-in::placeholder{color:#6b7584}
 /* ── 그림 지도 (숙소 오른쪽 · 명품 매장) — 앱 약도 그림을 잘라 번호 핀 ── */
 .pcm{position:relative;overflow:hidden;border-radius:12px;background:var(--ph-sea);width:100%}
 .pcm-i{position:absolute;max-width:none!important;height:auto;display:block;user-select:none;pointer-events:none}
+.pcm-t{position:absolute;display:block;max-width:none!important;max-height:none!important;margin:0;user-select:none;pointer-events:none;-webkit-user-drag:none}   /* 11-11 구 지도 조각 그림·명소 그림 (pc_near .pn-mc img 와 같게) */
+.pcm-t.c{object-fit:contain}
 .pcm-p{position:absolute;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:var(--ph-green);color:#fff;border:2px solid #fff;font-weight:800;font-size:13px;line-height:22px;text-align:center;padding:0;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.35);z-index:1;transition:transform .12s,background .12s}
 .pcm-p:hover,.pcm-p.on{transform:translate(-50%,-50%) scale(1.45);background:var(--ph-yel);color:#3a2c00;z-index:3}
 .pcm-no{border:1px dashed var(--line);border-radius:12px;padding:40px 16px;text-align:center;color:var(--sub);font-weight:700;font-size:14px}
