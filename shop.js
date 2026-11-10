@@ -493,7 +493,10 @@ function won(x){ return "₩"+Number(x).toLocaleString("ko-KR"); }
 function cxRow(pay){ return '<div class="scx"><button type="button" class="scxb" data-s="cx">'+esc(L(TX.cx))+'</button>'+pay+'</div>'; }
 (function(){ var s=document.createElement("style"); s.textContent="#shopBox .scx{display:flex;gap:8px;align-items:stretch}#shopBox .scx>.spay{flex:1 1 auto;min-width:0;margin:0;box-sizing:border-box}"
   +"#shopBox .scxb{flex:0 0 auto;min-width:84px;border:1.5px solid #adb5bd;background:#fff;color:#495057;border-radius:12px;padding:0 14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit}"
-  +"#shopBox .sbar .scx{flex:0 0 auto;flex-direction:row;min-width:0}#shopBox .sbar .scxb{min-width:0}"; document.head.appendChild(s); })();
+  +"#shopBox .sbar .scx{flex:0 0 auto;flex-direction:row;min-width:0}#shopBox .sbar .scxb{min-width:0}"
+  // 11-10 사장님 「고쳐」 — 스페인어 폰에서 합계가 「₩600,00 / 0」으로 숫자 중간에서 끊겼다 → 합계 숫자는 한 줄(줄 바꿈 금지), 모자라면 단추 쪽이 줄고 단추 글자가 줄 바꿈
+  +"#shopBox .sbar.sbtot>div:first-child{min-width:auto}#shopBox .sbar.sbtot b,#shopBox .sbar.sbtot small{white-space:nowrap}#shopBox .sbar.sbtot .scx{flex:0 1 auto}"
+  +"@media (max-width:359px){#shopBox .sbar.sbtot .spay{padding:10px;font-size:14px}#shopBox .sbar.sbtot .scxb{padding:0 10px;font-size:14px}}"; document.head.appendChild(s); })();   // 더 좁은 폰(320)은 단추 글자를 줄여 낱말이 안 끊기게
 function box(){ return document.getElementById("shopBox"); }
 function catName(c){ return L(CATS.filter(function(x){ return x[0]===c; })[0][1]); }
 function prod(){ return PL().filter(function(p){ return p.id===S.prod; })[0]; }
@@ -550,7 +553,7 @@ function paintDet(){ var b=box(), p=prod(); if(!b||!p) return; var y=b.scrollTop
   if(p.real==="perf") h+='<div class="sbar"><div><b style="font-size:15px">'+esc(L(p.t))+'</b></div><button type="button" class="spay" data-s="perf">'+esc(L(TX.perf))+' ›</button></div>';
   else if(p.hub&&p.link) h+='<div class="sbar"><div><b style="font-size:15px">'+esc(L(p.t))+'</b></div>'+cxRow('<a class="spay" href="'+esc(p.link)+'" target="_blank" rel="noopener" style="text-decoration:none">'+esc(L(TX.tk))+' ›</a>')+'</div>';
   else if(p.hub&&!p.real) h+='<div class="sbar"><div><b style="font-size:15px">'+esc(L(p.t))+'</b><small>'+esc(L(TX.ex))+'</small></div></div>';
-  else h+='<div class="sbar"><div><small>'+esc(L(TX.tot))+' · '+esc(L(TX.ppl))+' '+S.n+'</small><b>'+won(unitOf(p,S.n)*S.n+(window.SMN?SMN.appSum(p):0))+'</b></div>'+cxRow('<button type="button" class="spay" data-s="go">'+esc(L(TX.pay))+' ›</button>')+'</div>';
+  else h+='<div class="sbar sbtot"><div><small>'+esc(L(TX.tot))+' · '+esc(L(TX.ppl))+' '+S.n+'</small><b>'+won(unitOf(p,S.n)*S.n+(window.SMN?SMN.appSum(p):0))+'</b></div>'+cxRow('<button type="button" class="spay" data-s="go">'+esc(L(TX.pay))+' ›</button>')+'</div>';
   b.innerHTML=h; b.scrollTop=y; galWire();
   try{ if(window.rvMiniLoad) rvMiniLoad([rk]); }catch(e){}
   if(window.rvPaint){ var hs=b.querySelector("[data-rvhost]"); if(keep&&hs) hs.appendChild(keep); try{ rvPaint(rk); }catch(e){} }
