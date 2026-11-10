@@ -46,7 +46,7 @@ var TX={
  rLbs:T6("위치기반서비스사업 신고","Location-Based Service Reg. No.","位置情報サービス事業申告","位置服务业务申报号","位置服務業務申報號","N.º de servicio de localización"),
  rAddr:T6("주소","Address","住所","地址","地址","Dirección"),
  rCs:T6("고객센터 · 이메일","Support · Email","カスタマーセンター・メール","客服 · 邮箱","客服 · 電郵","Atención · Correo"),
- co:T6("주식회사 부만 (Booman Inc.) · 서비스 이름 {b}","Booman Inc. · Service name: {b}","株式会社 부만（Booman Inc.）・サービス名 {b}","Booman Inc.（株式会社 부만）· 服务名称 {b}","Booman Inc.（株式會社 부만）· 服務名稱 {b}","Booman Inc. · Nombre del servicio: {b}"),   // 회사 이름 = 앱 맨 아래 줄과 같은 표기
+ co:T6("주식회사 부만 (Booman Inc.) · 서비스 이름 {b}","Booman Inc. · Service name: {b}","株式会社 富滿（Booman Inc.）・サービス名 {b}","Booman Inc.（株式会社 富滿）· 服务名称 {b}","Booman Inc.（株式會社 富滿）· 服務名稱 {b}","Booman Inc. · Nombre del servicio: {b}"),   // 회사 이름 = 앱 맨 아래 줄과 같은 표기
  ceo:T6("전현진","Jeon Hyeonjin","全賢珍（Jeon Hyeonjin）","Jeon Hyeonjin","Jeon Hyeonjin","Jeon Hyeonjin"),
  lbs:T6("제1866호","No. 1866","第1866号","第1866号","第1866號","N.º 1866"),
  // 문의
