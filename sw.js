@@ -6,8 +6,8 @@
  *  · fetch(캐시) 처리기는 일부러 없다 — 화면·파일 받기에 끼어들지 않는다
  */
 var L=(new URL(self.location.href)).searchParams.get("l")||"en";
-var TX={ko:["머니퍼즐 투어","가이드에게서 새 메시지가 왔습니다"],en:["Money Puzzle Tour","New message from your guide"],ja:["マネーパズル ツアー","ガイドから新しいメッセージが届きました"],
- zhs:["Money Puzzle 旅游","您收到了向导的新消息"],zht:["Money Puzzle 旅遊","您收到了嚮導的新訊息"],es:["Money Puzzle Tour","Nuevo mensaje de tu guía"]};
+var TX={ko:["모자이크트립","가이드에게서 새 메시지가 왔습니다"],en:["MosaicTrip","New message from your guide"],ja:["MosaicTrip","ガイドから新しいメッセージが届きました"],
+ zhs:["MosaicTrip","您收到了向导的新消息"],zht:["MosaicTrip","您收到了嚮導的新訊息"],es:["MosaicTrip","Nuevo mensaje de tu guía"]};
 var CT={ko:"가이드 대화방 새 소식",en:"New in your guide chat",ja:"ガイドチャットに新着",zhs:"向导聊天有新消息",zht:"嚮導聊天有新訊息",es:"Novedades en el chat con tu guía"};
 function six(f){ var o={}; ["ko","en","ja","zhs","zht","es"].forEach(function(l){ o[l]=f(l); }); return o; }
 function cfg(){ return caches.open("mpbell").then(function(c){ return c.match("/__mpbell/cfg"); }).then(function(r){ return r?r.json():{}; }).catch(function(){ return {}; }); }
