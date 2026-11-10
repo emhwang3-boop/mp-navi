@@ -379,7 +379,7 @@ html.mpc-lock #treasIsle{visibility:hidden}
   <div style="background:var(--card);width:100%;max-width:520px;border-radius:18px;padding:16px 14px 24px;max-height:85vh;overflow:auto" id="shIn"></div>
 </div>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
-<script src="geoconsent.js?v=1027lbs"></script>
+<script src="geoconsent.js?v=1110gc"></script>
 <script src="i18n.js?v=1110fx"></script>
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev";
@@ -598,7 +598,7 @@ function gRate(q,ps,it){ it=it||[];
     var add=g.filter(function(p){ return !p._u&&p.rating&&(!ps||kmLL(ps,[+p.lat,+p.lng])<=40); }).map(function(p){ return {gid:p.id,name:p.name,addr:p.addr,name_en:p.name_en||undefined,addr_en:p.addr_en||undefined,x:p.lng,y:p.lat,rating:+p.rating,n:+p.n||0,cat:"",_l:LANG,dist:ps?Math.round(kmLL(ps,[+p.lat,+p.lng])*1000):null,oh:p.oh,gt:p.gt}; });   // oh·gt = 구글 영업시간·종류 (11-06)
     it=it.concat(add); if(LANG==="ko"||!add.length) return it;
     return fetch(HUB+"/gplace?all=1&lang="+encodeURIComponent(LANG)+"&q="+encodeURIComponent(q)+(ps?"&lat="+ps[0].toFixed(5)+"&lng="+ps[1].toFixed(5):"")).then(function(r){ return r.json(); }).then(function(j2){ var m={};   // 외국어 화면: 더한 곳 이름을 그 언어로
-      ((j2&&j2.ok&&j2.items)||[]).forEach(function(p){ m[p.id]=p; }); add.forEach(function(x){ var p=m[x.gid]; if(p){ if(!(/^zh/.test(LANG)&&x.name_en&&!/[㐀-鿿]/.test(p.name))) x.name_en=p.name; x.addr_en=p.addr; } }); return it; /* 11-10 사장님 「고쳐」 — 중국어: 구글에 중국어 이름이 없으면 영어 이름이 와서 허브가 옮긴 중국어 이름을 덮었다 → 한자 없는 구글 이름은 안 덮음 */ }).catch(function(){ return it; });
+      ((j2&&j2.ok&&j2.items)||[]).forEach(function(p){ m[p.id]=p; }); var cj=/^zh/.test(LANG)?/[㐀-鿿]/:LANG==="ja"?/[぀-ヿ㐀-鿿]/:null; add.forEach(function(x){ var p=m[x.gid]; if(p){ if(!(cj&&x.name_en&&!cj.test(p.name))) x.name_en=p.name; x.addr_en=p.addr; } }); return it; /* 11-10 사장님 「고쳐」 — 중국어: 구글에 중국어 이름이 없으면 영어 이름이 와서 허브가 옮긴 중국어 이름을 덮었다 → 한자 없는 구글 이름은 안 덮음 · 11-10 일본어도 같게(가나·한자 없는 구글 이름은 안 덮음) */ }).catch(function(){ return it; });
   }).catch(function(){ return it; }); }
 function rateSort(it,q){ var nq=q?spinNorm(q):"";
   return it.sort(function(a,c){ var ea=nq&&spinNorm(a.name)===nq?1:0, ec=nq&&spinNorm(c.name)===nq?1:0; if(ea!==ec) return ec-ea;
@@ -1798,8 +1798,8 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 <script src="tpg.js?v=1110fx"></script>   <!-- 투어앱 결제 = KG이니시스·포트원 (패키지·가이드 인솔·일정 검토 공용, 11-07) — trip·near·shop 보다 먼저 -->
 <script src="trip.js?v=1110fx"></script>
 <script src="gift.js?v=1110fx"></script>
-<script src="near.js?v=1110mn"></script>
-<script src="shop.js?v=1110mn"></script>
+<script src="near.js?v=1110f5"></script>
+<script src="shop.js?v=1110f5"></script>
 <script src="smenu.js?v=1110mn"></script>   <!-- 가게 메뉴·바우처·모델 바꾸기 (11-10) — shop.js·near.js·chat.js·홈페이지가 window.SMN 으로 -->
 <script src="tosspay.js?v=1107p5"></script>
 <script>/* 후기 링크로 열렸으면 바로 후기 폼을 연다 (2026-10-24) */try{ if(window.__mpReview&&window.NEAR&&window.NEAR.review) window.NEAR.review(window.__mpReview); }catch(e){}
@@ -2157,7 +2157,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script>
 /* 버전 (사장님 11-07 「버전으로 관리하자」 「가」 1.0.5 모양) — 올릴 때마다 배포 도구(navi_fast)가 끝자리를 하나 올린다(version.json · 아래 APPV 를 같이)
    ⋮ 메뉴 맨 아래 「버전 1.0.5」 → 누르면 서버 최신(version.json)과 비교 · 쓰는 중 새 판이 올라오면 위에 「새 버전이 있어요 [새로 받기]」(10분마다·화면으로 돌아올 때 확인) */
-var APPV="1.0.51";
+var APPV="1.0.52";
 (function(){ var L6=function(o){ return o[window.LANG]||o.en; }, W={v:{ko:"버전",en:"Version",ja:"バージョン",zhs:"版本",zht:"版本",es:"Versión"},
   ok:{ko:"최신 버전이에요",en:"You're on the latest version",ja:"最新バージョンです",zhs:"已是最新版本",zht:"已是最新版本",es:"Tienes la última versión"},
   nw:{ko:"새 버전이 있어요",en:"A new version is available",ja:"新しいバージョンがあります",zhs:"有新版本",zht:"有新版本",es:"Hay una nueva versión"},
