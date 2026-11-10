@@ -84,7 +84,8 @@ html.pch .pcc .nrbook,html.pch .pcc .item a.nrbook{background:var(--ph-green)!im
 #pcSt .pcs-l .pcs-pn{padding:16px 14px}
 #pcSt .pcs-l .pcs-chips{gap:5px}
 #pcSt .pcs-l .pcs-chips button{font-size:12.5px;padding:6px 1px;letter-spacing:-.3px}
-#pcSt .pcs-l .pcs-kch button{font-size:11.5px;letter-spacing:-.5px;white-space:nowrap;padding:6px 0}   /* 「게스트하우스」·「한옥스테이」가 한 칸에 끊기지 않고 들어가게 (규칙서 4장 keep-all) */
+#pcSt .pcs-l .pcs-kch button{font-size:11.5px;letter-spacing:-.5px;white-space:nowrap;padding:6px 0}
+html[lang=es] #pcSt .pcs-l .pcs-kch button{white-space:normal;word-break:keep-all;line-height:1.15;padding:4px 2px}   /* 11-10 사장님 「세 줄로 만들어도 돼」 — 스페인어는 길어 칸 밖으로 잘렸다 → 줄 바꿈 */   /* 「게스트하우스」·「한옥스테이」가 한 칸에 끊기지 않고 들어가게 (규칙서 4장 keep-all) */
 #pcSt .pcs-ch{margin:2px 2px 12px}
 #pcSt .pcs-ch h2{margin:0;font-size:20px;font-weight:900;letter-spacing:-.3px;line-height:1.35}
 #pcSt .pcs-src{font-size:13px;color:var(--sub);margin-top:2px}
