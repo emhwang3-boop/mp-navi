@@ -31,7 +31,7 @@ function hrTx(r){ if(!r) return ""; return L(TX.wd)+" "+r.wd+(r.sat?" · "+L(TX.
 function telA(t){ var n=String(t.n||""); return '<a href="tel:'+esc(n.replace(/[^\d+]/g,""))+'">'+esc(n)+'</a>'+(t.l?' <small>('+esc(L(t.l))+')</small>':''); }
 function linesHtml(h){ return (h.ln||[]).map(function(x){ var p=x.p||{};
   return '<div class="hspl"><div class="hspt">'+esc(L(x.t))+'</div><div>📍 '+esc(lg()==="ko"?(p.ko||p.en):(p.en||p.ko))+'</div>'
-   +'<div>📞 '+(x.tel||[]).map(telA).join(" · ")+'</div>'+(x.em?'<div>✉ <a href="mailto:'+esc(x.em)+'">'+esc(x.em)+'</a></div>':'')+(x.hr?'<div>🕘 '+esc(hrTx(x.hr))+'</div>':'')+'</div>'; }).join("")
+   +((x.tel&&x.tel.length)?'<div>📞 '+x.tel.map(telA).join(" · ")+'</div>':'')+(x.em?'<div>✉ <a href="mailto:'+esc(x.em)+'">'+esc(x.em)+'</a></div>':'')+(x.hr?'<div>🕘 '+esc(hrTx(x.hr))+'</div>':'')+'</div>'; }).join("")
   +(h.url?'<a class="hspu" href="'+esc(h.url)+'" target="_blank" rel="noopener">'+esc(L(TX.lk))+' ↗</a>':''); }
 // 결제 칸 — 상품 상세(앱 sideHtml)·홈페이지(pc_pkg boxHtml)
 function pickHtml(p){ if(!need(p)) return ""; if(!D){ load(); return '<div class="hsp"><div class="hsph">'+esc(L(TX.h))+'</div><p class="hspd">…</p></div>'; }
