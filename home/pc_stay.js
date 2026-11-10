@@ -118,29 +118,53 @@ function placeOpen(k){ cardOpen(function(){ mapsReady().then(function(){ if(!CAR
 // ══ 그 동네 그림 지도 — 앱 약도 그림을 잘라 번호 핀만 얹는다 (pts=[{lat,lng,n}] · o.h = 바라는 높이 px, 없으면 4:3) ══
 function geoOf(id){ return id==="kr"?window.NAVI_ROOT:id; }
 function mDepth(id){ var d=0, p=id; while(CITY[p]&&d<20){ p=CITY[p].parent; d++; } return d; }
-function mCands(){ var a=[]; for(var id in (window.CITY||{})){ var c=CITY[id]; if(c&&c.img&&c.bb&&c.geo) a.push({id:id,img:c.img,as:c.aspect||1,bb:c.bb,d:mDepth(id)}); }
+// 11-11 사장님 「일부 명품 브랜드에서 구지도를 가지고 온다」 — 앱(trip.js GUF)·주변 화면(pc_near.js)과 같게: 옛 약도 넷(서울 도심·인사동·경복궁·명동)은 빼고 서울 전체·부산은 새 구 지도 그림으로
+var GUF={seoulall:"seoulall",seoul:"seoulall",insadong:"seoulall",gyeongbok:"seoulall",myeongdong:"seoulall",busan:"busan"}, GUD={}, GUG={}, GUW=null, GUOK=0;
+function guData(f){ if(window.GU&&GU.all&&GU.all[f]) return Promise.resolve(GU.all[f]); if(GUD[f]) return GUD[f];
+  var reg=(window.GU&&GU.reg)||{seoulall:"data/gu_seoul.json",busan:"data/gu_busan.json"}; if(!reg[f]) return Promise.resolve(null);
+  var sc=D.querySelector('script[src*="gu.js"]'), v=((sc&&sc.getAttribute("src")||"").match(/[?&]v=([^&]+)/)||[])[1]||"";
+  return GUD[f]=fetch(reg[f]+"?v="+v).then(function(r){ return r.ok?r.json():null; }).catch(function(){ return null; }); }
+function guWait(){ return GUW||(GUW=Promise.all(["seoulall","busan"].map(function(f){ return guData(f).then(function(G){ GUG[f]=(G&&G.ch&&G.img)?G:null; }); })).then(function(){ GUOK=1; })); }
+// 구 지도 조각 그림·명소 그림 (pc_near.js mapGu 와 같은 자리·같은 단계: 좁게 보면 촘촘한 조각, 넓게 보면 구마다 대표 그림 하나)
+function guTiles(G,cr,as,lay){ var ch=G.ch, G2=ch.G2, Cc=ch.C, x0=cr.L0/as, x1=(cr.L0+cr.wv)/as, y0=cr.T0, y1=cr.T0+cr.hv, px=(x1-x0)*G2, lv=px<=2700?0:px<=10800?1:2, h="";
+  var inC=function(b){ return b[2]>x0&&b[0]<x1&&b[3]>y0&&b[1]<y1; };
+  if(lv<2){ var sz=lv?Cc*4:Cc, ov=sz/G2*0.003, set={}, dir=(ch.dir||"img/gu/c")+(lv?"1":""); ((lv?ch.l1:ch.l0)||[]).forEach(function(q){ set[q[0]+"_"+q[1]]=1; });
+    for(var x=Math.floor(x0*G2/sz);x<=Math.floor(x1*G2/sz);x++) for(var y=Math.floor(y0*G2/sz);y<=Math.floor(y1*G2/sz);y++) if(set[x+"_"+y]) h+='<img class="pcm-t" alt="" src="'+E(dir+"/"+x+"_"+y+".jpg?v="+ch.v)+'" style="'+lay([x*sz/G2,y*sz/G2,(x+1)*sz/G2+ov,(y+1)*sz/G2+ov])+'">';
+    (G.gus||[]).forEach(function(og){ var ho=og.ho||[]; for(var k in (og.ic||{})){ var q=G.P&&G.P[k], b2=og.ic[k]; if(!q||ho.indexOf(k)>=0||/^__kara_/.test((G.act&&G.act[k])||"")||!inC(b2)) continue;
+      h+='<img class="pcm-t" alt="" src="'+E(q.i)+'" style="'+lay(b2)+(+b2[4]?';transform:rotate('+(+b2[4])+'deg)':'')+'">'; } }); }   // 노래방 그림은 숨김 — gu.js 와 같게
+  else (G.gus||[]).forEach(function(og){ var q=og.rep&&G.P&&G.P[og.rep]; if(q&&inC(q.b)) h+='<img class="pcm-t c" alt="" src="'+E(q.i)+'" style="'+lay(q.b)+'">'; });
+  return h; }
+function mCands(){ var a=[]; for(var id in (window.CITY||{})){ var c=CITY[id]; if(!(c&&c.img&&c.bb&&c.geo)) continue; var gf=GUF[id];
+    if(gf&&gf!==id&&GUG[gf]) continue;   // 옛 약도 — 앱도 구 지도로 넘긴다
+    var G=gf===id?GUG[id]:null; a.push({id:id,img:G?G.img:c.img,as:c.aspect||1,bb:c.bb,d:mDepth(id),G:G}); }
   try{ if(window.ROOT_IMG&&window.NAVI_ROOT) a.push({id:"kr",img:ROOT_IMG,as:1,bb:[32.9,124.2,38.9,132],d:0}); }catch(e){} return a; }
 function inBB(b,p){ return p.lat>=b[0]&&p.lat<=b[2]&&p.lng>=b[1]&&p.lng<=b[3]; }
 function cropA(F,as,A,minW){ var x0=1e9, y0=1e9, x1=-1e9, y1=-1e9; F.forEach(function(f){ var X=f[0]*as; x0=Math.min(x0,X); x1=Math.max(x1,X); y0=Math.min(y0,f[1]); y1=Math.max(y1,f[1]); });
   var cx=(x0+x1)/2, cy=(y0+y1)/2, wv=Math.max((x1-x0)*1.3,(y1-y0)*1.3*A,minW), hv=wv/A;
   if(wv>as){ wv=as; hv=wv/A; } if(hv>1){ hv=1; wv=Math.min(as,hv*A); }
   return {L0:Math.max(0,Math.min(as-wv,cx-wv/2)),T0:Math.max(0,Math.min(1-hv,cy-hv/2)),wv:wv,hv:hv}; }
-function lmap(el,pts,o){ o=o||{}; if(!el) return; pts=(pts||[]).filter(function(p){ return +p.lat&&+p.lng; });
+function lmap(el,pts,o){ o=o||{}; if(!el) return; var my=el._lm=(el._lm||0)+1;
+  if(!GUOK){ guWait().then(function(){ if(el._lm===my) lmap(el,pts,o); }); return; }   // 11-11 구 지도 자료부터 — 옛 약도가 잠깐이라도 안 보이게
+  pts=(pts||[]).filter(function(p){ return +p.lat&&+p.lng; });
   if(!pts.length||!window.meGeoFrac){ el.innerHTML=o.none?'<div class="pcm-no">'+E(o.none)+'</div>':""; return; }
   var W=el.clientWidth||340, A=o.h?Math.max(0.45,Math.min(2.2,W/o.h)):(o.asp||4/3), C=mCands(), best=null;
   // 숙소가 모두 들어가는 가장 자세한 약도 — 너무 넓게 잘려 흐려지면(그림 폭 360px 밑) 많이 들어가는 자세한 약도로 · 밖에 있는 번호는 지도에서만 뺀다
   C.forEach(function(c){ var inn=pts.filter(function(p){ return inBB(c.bb,p); }); if(!inn.length) return;
     var F=inn.map(function(p){ return meGeoFrac(geoOf(c.id),+p.lat,+p.lng); }); if(F.some(function(f){ return !f; })) return;
-    var f0=F[0], f1=meGeoFrac(geoOf(c.id),+inn[0].lat+0.009,+inn[0].lng), dkm=f1?Math.abs(f1[1]-f0[1]):0.01, mw=Math.max(dkm*2.2,0.004), px=cropA(F,c.as,A,mw).wv*2048;   // 약도 그림은 모두 높이 2048
+    var f0=F[0], f1=meGeoFrac(geoOf(c.id),+inn[0].lat+0.009,+inn[0].lng), dkm=f1?Math.abs(f1[1]-f0[1]):0.01, mw=Math.max(dkm*2.2,0.004), px;   // 약도 그림은 모두 높이 2048
+    if(c.G) mw=Math.max(mw,0.035);   // 11-11 구 지도 — 주변 화면과 같은 가장 좁은 폭
+    px=cropA(F,c.as,A,mw).wv*(c.G?c.G.ch.G2:2048);   // 구 지도는 조각 그림이 있어 훨씬 촘촘하다
     var sc=[px>=360?1:0,inn.length===pts.length?1:0,inn.length,c.d,-(c.bb[2]-c.bb[0])*(c.bb[3]-c.bb[1])];   // 자세히 보이는 약도 먼저 → 다 들어가는 것 → 많이 들어가는 것 → 더 자세한 약도
-    if(!best||cmp(sc,best.sc)>0) best={c:c,inn:inn,F:F,cr:cropA(F,c.as,A,Math.max(mw,360/2048)),sc:sc}; });   // 그래도 너무 좁게 자르면 흐려지니 그림 폭 360px 보다 좁게는 안 자른다
+    if(!best||cmp(sc,best.sc)>0) best={c:c,inn:inn,F:F,cr:cropA(F,c.as,A,c.G?mw:Math.max(mw,360/2048)),sc:sc}; });   // 그래도 너무 좁게 자르면 흐려지니 그림 폭 360px 보다 좁게는 안 자른다
   function cmp(a,b){ for(var i=0;i<a.length;i++){ if(a[i]!==b[i]) return a[i]>b[i]?1:-1; } return 0; }
   if(!best){ el.innerHTML=o.none?'<div class="pcm-no">'+E(o.none)+'</div>':""; return; }
   var c=best.c, cr=best.cr, as=c.as;
   var pins=best.inn.map(function(p,i){ var f=best.F[i], X=(f[0]*as-cr.L0)/cr.wv*100, Y=(f[1]-cr.T0)/cr.hv*100; if(X<0||X>100||Y<0||Y>100) return "";
     return '<button type="button" class="pcm-p" data-n="'+p.n+'" style="left:'+X.toFixed(2)+'%;top:'+Y.toFixed(2)+'%" aria-label="'+p.n+'">'+p.n+'</button>'; }).join("");
-  el.innerHTML='<div class="pcm" style="aspect-ratio:'+(cr.wv/cr.hv).toFixed(4)+'"><img class="pcm-i" alt="" src="'+E(c.img)+'" style="width:'+(as/cr.wv*100).toFixed(3)+'%;left:'+(-cr.L0/cr.wv*100).toFixed(3)+'%;top:'+(-cr.T0/cr.hv*100).toFixed(3)+'%">'+pins+'</div>'; }
-function pinOn(root,n){ if(!root) return; [].forEach.call(root.querySelectorAll(".pcm-p"),function(b){ b.classList.toggle("on",String(n)===b.getAttribute("data-n")); }); }
+  var lay=function(b){ return 'left:'+((b[0]*as-cr.L0)/cr.wv*100).toFixed(3)+'%;top:'+((b[1]-cr.T0)/cr.hv*100).toFixed(3)+'%;width:'+((b[2]-b[0])*as/cr.wv*100).toFixed(3)+'%;height:'+((b[3]-b[1])/cr.hv*100).toFixed(3)+'%'; };
+  el.innerHTML='<div class="pcm" style="aspect-ratio:'+(cr.wv/cr.hv).toFixed(4)+'"><img class="pcm-i" alt="" src="'+E(c.img)+'" style="width:'+(as/cr.wv*100).toFixed(3)+'%;left:'+(-cr.L0/cr.wv*100).toFixed(3)+'%;top:'+(-cr.T0/cr.hv*100).toFixed(3)+'%">'+(c.G?guTiles(c.G,cr,as,lay):"")+pins+'</div>';
+  if(el._pon) pinOn(el,el._pon); }
+function pinOn(root,n){ if(!root) return; root._pon=n; [].forEach.call(root.querySelectorAll(".pcm-p"),function(b){ b.classList.toggle("on",String(n)===b.getAttribute("data-n")); }); }
 
 // ══ 카드 사진 — 앱 장소 사진(TRIP.photo = trip.js ppPhoto · /gphoto · 같은 캐시)과 같은 길 · 화면에 들어온 칸만 · 한 곳에 한 번 ══
 var PHS={p:{},bad:{},io:null};
