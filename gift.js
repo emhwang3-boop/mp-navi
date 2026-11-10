@@ -192,7 +192,7 @@ var LX=null, LXP=null, LXS={};
 function luxLoad(){ return LXP||(LXP=fetch("data/lux.json?v="+(window.NAVI_V||"")).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }).then(function(j){ LX=j; return j; },function(e){ LXP=null; throw e; })); }
 var LX6={t:["명품 고르기","Luxury Brands","高級ブランド","奢侈品牌","精品品牌","Marcas de lujo"],
  d:["백화점·면세점에 매장이 있는 명품 브랜드예요. 로고를 누르면 가까운 매장을 알려 드려요.","Luxury brands with boutiques in Korean department stores and duty-free shops. Tap a logo to see the nearest ones.","百貨店・免税店に店舗がある高級ブランドです。ロゴを押すと近くの店舗をご案内します。","在韩国百货店和免税店设有门店的奢侈品牌。点击标志即可查看附近门店。","在韓國百貨公司和免稅店設有門市的精品品牌。點選標誌即可查看附近門市。","Marcas de lujo con tiendas en grandes almacenes y tiendas libres de impuestos de Corea. Toca un logotipo para ver las más cercanas."],
- back:["‹ 선물 고르기","‹ Gift finder","‹ ギフト選び","‹ 选礼物","‹ 選禮物","‹ Buscador de regalos"],
+ back:["‹ 선물 고르기","‹ Gift finder","‹ お土産選び","‹ 礼物推荐","‹ 伴手禮推薦","‹ Buscador de regalos"],
  all:["‹ 브랜드 목록","‹ All brands","‹ ブランド一覧","‹ 品牌列表","‹ 品牌列表","‹ Todas las marcas"],
  c_all:["전체","All","すべて","全部","全部","Todas"],
  c_fashion:["패션·가방","Fashion & bags","ファッション・バッグ","时装·箱包","時裝·包款","Moda y bolsos"],
