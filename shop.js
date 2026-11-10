@@ -183,7 +183,7 @@ var P=[
   t:T6("인사동 전통 도장 만들기","Traditional name seal making in Insadong","仁寺洞 伝統はんこ作り","仁寺洞传统印章制作","仁寺洞傳統印章製作","Sello tradicional con tu nombre en Insadong"),
   f:[T6("1시간","1 h","1時間","1小时","1小時","1 h"),T6("한글·한자·영문 이름 중 선택","Name in Hangul, Hanja or English","ハングル・漢字・英字の名前から選択","可选韩文、汉字或英文名字","可選韓文、漢字或英文名字","Nombre en hangul, hanja o inglés"),SEAL_X],
   d:T6("인사동 도장 가게에서 장인이 내 이름을 새긴 도장을 그 자리에서 만들어 드립니다. 다 되면 바로 가져갑니다. 상품 가격은 패키지 여행비이며, 도장값·재료비는 가게에 따로 냅니다.","At a seal shop in Insadong, a master craftsman carves your name into a seal on the spot. You take it with you as soon as it’s done. The price is the package tour fee; the seal and materials are paid to the shop separately.","仁寺洞のはんこ店で、職人があなたの名前を彫ったはんこをその場で作ります。できあがったらすぐに持ち帰れます。商品価格はパッケージツアー代金で、はんこ代・材料費はお店に別途お支払いください。","在仁寺洞的印章店，匠人当场为您制作刻有您名字的印章，做好后即可带走。商品价格为跟团游费用，印章费和材料费请另行支付给店家。","在仁寺洞的印章店，匠人當場為您製作刻有您名字的印章，做好後即可帶走。商品價格為跟團遊費用，印章費和材料費請另行支付給店家。","En una tienda de sellos de Insadong, un maestro artesano graba tu nombre en un sello en el momento. Te lo llevas en cuanto está listo. El precio es la tarifa del tour; el sello y los materiales se pagan aparte en la tienda.")},
- {id:"hchk",c:"well",img:"checkup",real:"pkg",price:300000,   // 11-10 — 1인 300,000원 = 패키지 여행비 (건강검진비는 검진 센터에 따로) · 병원 이름은 계약 전이라 안 씀
+ {id:"hchk",c:"well",img:"checkup",real:"pkg",price:500000,   // 11-10 사장님 — 1인 500,000원 = 패키지 여행비, 1명부터(최소 인원 없음), 가이드는 동행·통역·안내 보조만 · (옛 300,000원) (건강검진비는 검진 센터에 따로) · 병원 이름은 계약 전이라 안 씀
   t:T6("외국인 종합 건강검진","Full health check-up for international visitors","外国人向け総合健康診断","外国人综合体检","外國人綜合健檢","Chequeo médico completo para extranjeros"),
   f:[T6("반나절(약 3~4시간)","Half day (about 3–4 h)","半日（約3〜4時間）","半天（约3~4小时）","半天（約3~4小時）","Medio día (unas 3–4 h)"),T6("결과지 영문, 이메일로 받기","Results in English, by email","結果は英文、メールで受け取り","英文报告，通过邮件接收","英文報告，透過郵件接收","Resultados en inglés, por correo"),HCHK_X],
   d:T6("이름난 대형 건강검진 센터에서 혈액·소변 검사, 흉부 X선, 복부 초음파, 위내시경 같은 기본 종합검진을 받습니다. 외국인 전담 코디네이터가 안내하고, 전날 밤부터 금식합니다. 상품 가격은 패키지 여행비이며, 건강검진비는 검진 센터에 따로 냅니다.","At a well-known large health screening center, you get a basic full check-up: blood and urine tests, chest X-ray, abdominal ultrasound and gastroscopy. A coordinator for international visitors guides you, and you fast from the night before. The price is the package tour fee; the check-up fee is paid to the center separately.","有名な大型健診センターで、血液・尿検査、胸部X線、腹部超音波、胃内視鏡などの基本的な総合健診を受けます。外国人専任のコーディネーターが案内し、前日の夜から絶食します。商品価格はパッケージツアー代金で、健診費用は健診センターに別途お支払いください。","在知名的大型体检中心，接受血液·尿液检查、胸部X光、腹部超声、胃镜等基本综合体检。由外国人专属协调员为您引导，前一天晚上开始禁食。商品价格为跟团游费用，体检费请另行支付给体检中心。","在知名的大型健檢中心，接受血液·尿液檢查、胸部X光、腹部超音波、胃鏡等基本綜合健檢。由外國人專屬協調員為您引導，前一天晚上開始禁食。商品價格為跟團遊費用，健檢費請另行支付給健檢中心。","En un conocido gran centro de chequeos médicos te haces un chequeo completo básico: análisis de sangre y orina, radiografía de tórax, ecografía abdominal y gastroscopia. Un coordinador para extranjeros te guía, y ayunas desde la noche anterior. El precio es la tarifa del tour; el chequeo se paga aparte en el centro.")}
@@ -313,9 +313,10 @@ var PX={
    T6("검사 (혈액·소변·X선·초음파·위내시경 등)","Tests (blood, urine, X-ray, ultrasound, gastroscopy, etc.)","検査（血液・尿・X線・超音波・胃内視鏡など）","检查（血液·尿液·X光·超声·胃镜等）","檢查（血液·尿液·X光·超音波·胃鏡等）","Pruebas (sangre, orina, rayos X, ecografía, gastroscopia, etc.)"),
    T6("건강검진비 결제 (검진 센터에 직접)","Pay the check-up fee (directly to the center)","健診費用の支払い（センターに直接）","支付体检费（直接付给体检中心）","支付健檢費（直接付給健檢中心）","Pagas el chequeo (directamente en el centro)"),
    T6("결과지 받기 (보통 1~2주 뒤 이메일)","Get your results (usually by email 1–2 weeks later)","結果の受け取り（通常1〜2週間後にメール）","接收体检报告（通常1~2周后通过邮件）","接收健檢報告（通常1~2週後透過郵件）","Recibes los resultados (normalmente por correo en 1–2 semanas)")],
-  inc:[INC_GI,T6("검진 센터 예약 대행","Check-up center booking made for you","健診センターの予約代行","代为预约体检中心","代為預約健檢中心","Reservamos el centro por ti")],
+  inc:[T6("가이드 동행·통역·안내 보조","Guide: accompanying, interpreting and help on site","ガイドの同行・通訳・案内補助","向导陪同、翻译和引导协助","嚮導陪同、翻譯和引導協助","Guía: acompañamiento, interpretación y ayuda en el lugar")],   /* 11-10 — 예약 대행 뺌(손님이 병원 국제진료센터에 직접 예약) */
   exc:[T6("건강검진비 (검진 센터에 직접 냄)","Check-up fee (paid directly to the center)","健診費用（センターに直接お支払い）","体检费（直接付给体检中心）","健檢費（直接付給健檢中心）","Chequeo médico (se paga directamente en el centro)"),T6("추가 검사비","Extra tests","追加検査費","追加检查费","追加檢查費","Pruebas adicionales"),EXC_OWN],tip:MEET_TBD,
-  note:[T6("검진 전날 밤부터 금식합니다. 정확한 시간은 예약이 확정되면 알려 드립니다.","Fast from the night before the check-up. We’ll tell you the exact time once your booking is confirmed.","健診の前日の夜から絶食です。正確な時間は予約確定後にお知らせします。","体检前一天晚上开始禁食，具体时间将在预约确认后告知您。","健檢前一天晚上開始禁食，具體時間將在預約確認後告知您。","Ayunas desde la noche anterior al chequeo. Te diremos la hora exacta cuando se confirme la reserva."),
+  note:[T6("검진 예약은 고르신 병원의 국제진료센터에 직접 해 주세요. 전화번호와 예약 방법은 저희가 안내해 드립니다.","Please book the check-up directly with the international center of the hospital you choose. We’ll give you the phone number and how to book.","健診の予約は、お選びの病院の国際診療センターに直接お申し込みください。電話番号と予約方法はご案内します。","请直接向您选择的医院国际诊疗中心预约体检，我们会告知电话号码和预约方法。","請直接向您選擇的醫院國際診療中心預約健檢，我們會告知電話號碼和預約方法。","Reserva el chequeo directamente con el centro internacional del hospital que elijas. Te daremos el teléfono y cómo reservar."),
+   T6("검진 전날 밤부터 금식합니다. 정확한 시간은 예약이 확정되면 알려 드립니다.","Fast from the night before the check-up. We’ll tell you the exact time once your booking is confirmed.","健診の前日の夜から絶食です。正確な時間は予約確定後にお知らせします。","体检前一天晚上开始禁食，具体时间将在预约确认后告知您。","健檢前一天晚上開始禁食，具體時間將在預約確認後告知您。","Ayunas desde la noche anterior al chequeo. Te diremos la hora exacta cuando se confirme la reserva."),
    T6("복용 중인 약이 있으면 예약할 때 미리 알려 주세요.","If you take any medication, tell us when you book.","服用中の薬があれば、予約時にお知らせください。","如有正在服用的药物，请在预约时告知。","如有正在服用的藥物，請在預約時告知。","Si tomas algún medicamento, avísanos al reservar."),
    T6("여권을 꼭 지참해 주세요. 검진 센터에서 신분을 확인합니다.","Bring your passport. The center checks your ID.","パスポートを必ずお持ちください。健診センターで本人確認があります。","请务必携带护照，体检中心会核对身份。","請務必攜帶護照，健檢中心會核對身分。","Trae tu pasaporte. El centro comprueba tu identidad."),
    T6("결과는 보통 1~2주 뒤 이메일로 받습니다.","Results usually arrive by email 1–2 weeks later.","結果は通常1〜2週間後にメールで届きます。","结果通常在1~2周后通过电子邮件发送。","結果通常在1~2週後透過電子郵件寄送。","Los resultados suelen llegar por correo en 1–2 semanas."),NOTE_ACC],
@@ -538,8 +539,8 @@ function sideHtml(){ var h='', p0=prod(), tour=!p0||kindOf(p0)==="tour";   // �
        +'<div class="srow"><label for="shopTm">'+esc(L(TX.tm))+'</label>'+(tsel?'<select id="shopTm">'+p.times.map(function(x){ return '<option'+(x===S.time?' selected':'')+'>'+esc(x)+'</option>'; }).join("")+'</select>':'<input type="time" id="shopTm" step="1800" value="'+esc(S.time)+'">')+'</div>'   // 시간 (사장님 10-27 「결제화면에 날짜와 시간까지」)
        +'<div class="srow"><label>'+esc(L(TX.ppl))+'</label><div class="sstp"><button type="button" data-n="-1" aria-label="-">−</button><b>'+S.n+'</b><button type="button" data-n="1" aria-label="+">+</button></div></div>'
        +(tour?'<div class="srow"><label>'+esc(L(TX.gd))+'</label><b>'+(gg?esc(gName(gg)):esc(L(TX.none)))+'</b></div>':'')
-       +(window.SMN?SMN.pickHtml(p,unit*S.n):'')+'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(unit*S.n+(window.SMN?SMN.appSum(p):0))+'</span></div>'+(window.SMN&&SMN.appSum(p)?'':pxHtml(p))
-       +cxRow('<button type="button" class="spay" data-s="mock">'+esc(L(TX.pay))+' ›</button>')+'<p class="snote">'+esc(L(noteOf(p)))+'</p>'+mpNote(p); } }   // 시험 결제창 (사장님 10-27 「결제화면도 띄워줘, 어차피 결제는 안 돼」)
+       +(window.SMN?SMN.pickHtml(p,unit*S.n):'')+(window.HSP?HSP.pickHtml(p):'')+'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(unit*S.n+(window.SMN?SMN.appSum(p):0))+'</span></div>'+(window.SMN&&SMN.appSum(p)?'':pxHtml(p))
+       +cxRow('<button type="button" class="spay" data-s="mock"'+(window.HSP&&!HSP.ok(p)?' disabled':'')+'>'+esc(L(TX.pay))+' ›</button>')+'<p class="snote">'+esc(L(noteOf(p)))+'</p>'+mpNote(p); } }   // 시험 결제창 (사장님 10-27 「결제화면도 띄워줘, 어차피 결제는 안 돼」)
   return h+'</section>'; }
 function priceHtml(p){ return (p.hub?hubPr(p,true):p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':'')+pxHtml(p); }
 // 상품 상세 화면 — 왼쪽 상세 · 오른쪽(폰은 아래) 결제 칸 + 폰 맨 아래 띠 (10-29)
@@ -582,7 +583,7 @@ function mockPay(res,host){ var b=(window.PC_HOME&&host)||box(), p=prod(); if(!b
     o.innerHTML='<div><h3>'+esc(L(done?TX.pdT:TX.pt))+'</h3>'
     +'<b>'+esc(L(TX.ord))+'</b><div class="spick">'+(psrc(p)?'<img src="'+esc(psrc(p))+'" alt="">':'')+'<b>'+esc(L(p.t))+'</b></div>'
     +'<div class="sl"><span>'+esc(L(TX.dtm))+'</span><span>'+esc((S.date||"-")+" "+(S.time||""))+'</span></div><div class="sl"><span>'+esc(L(TX.ppl))+'</span><span>'+S.n+'</span></div>'+(kindOf(p)==="tour"?'<div class="sl"><span>'+esc(L(TX.gd))+'</span><span>'+(gnm?esc(gnm):esc(L(TX.none)))+'</span></div>':'')
-    +(window.SMN?SMN.payRows(p,unit*S.n):'')+'<div class="stot"><span>'+esc(L(done?TX.amt:TX.tot))+'</span><span>'+won(done?res.amount:tot)+'</span></div>'+(window.SMN&&SMN.appSum(p)?'':pxHtml(p))
+    +(window.HSP?HSP.payRow(p):'')+(window.SMN?SMN.payRows(p,unit*S.n):'')+'<div class="stot"><span>'+esc(L(done?TX.amt:TX.tot))+'</span><span>'+won(done?res.amount:tot)+'</span></div>'+(window.SMN&&SMN.appSum(p)?'':pxHtml(p))
     +(done?'<div class="sl"><span>'+esc(L(TX.oid))+'</span><b>'+esc(res.oid)+'</b></div><div class="sdone">'+esc(L(res.chat?TX.sent:TX.sentX))+'</div>'+(res.chat&&window.BELL&&BELL.promptHtml?BELL.promptHtml():'')+(res.chat&&res.tk?'<button type="button" class="spay" id="spmChat">'+esc(L(TX.chatGo))+'</button>':'')
      :'<b>'+esc(L(TX.cu))+'</b>'
      +'<label class="scl">'+esc(L(TX.cn))+'<input type="text" id="spmN" maxlength="40" autocomplete="name" value="'+esc(S.cn)+'"></label>'
@@ -605,17 +606,18 @@ function mockPay(res,host){ var b=(window.PC_HOME&&host)||box(), p=prod(); if(!b
       if(!/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/.test(em)){ draw(null,L(TX.eem)); return; }
       if(!S.date||S.date<today||!/^\d{2}:\d{2}$/.test(S.time||"")){ draw(null,L(TX.edt)); return; }
       if(p.hub&&!p.free&&p.days.length&&p.days.indexOf(new Date(S.date+"T00:00:00Z").getUTCDay())<0){ draw(null,L(TX.edy)); return; }   // 진행 요일 (10-29)
+      if(window.HSP&&!HSP.ok(p)){ draw(null,HSP.tx("need")); return; }   // 건강검진 병원 고르기 (11-10)
       if(S.pm==="paypal"){ draw(null,L(TX.ppn)); return; }   // 토스 해외간편결제(PayPal)는 USD·별도 계약이라 시험 키에서 COMMON_ERROR (10-29 확인) — 주문 만들지 않고 안내만
       draw(null,"",1); var pm="card";
-      fetch(HUBU+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:p.id,menu:(window.SMN?SMN.body(p):undefined),mexp:(window.SMN&&SMN.of(p.id)?SMN.appSum(p):undefined),pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,glang:S.glang||"",lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,pg:pgOn()?1:0,sess:(function(){ try{ return localStorage.getItem("mpv_pg_sess")||undefined; }catch(z){ return undefined; } })()})})
+      fetch(HUBU+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:p.id,hosp:(window.HSP?HSP.body(p):undefined),menu:(window.SMN?SMN.body(p):undefined),mexp:(window.SMN&&SMN.of(p.id)?SMN.appSum(p):undefined),pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,glang:S.glang||"",lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,pg:pgOn()?1:0,sess:(function(){ try{ return localStorage.getItem("mpv_pg_sess")||undefined; }catch(z){ return undefined; } })()})})
        .then(function(r){ return r.json(); }).then(function(j){
-         if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err, pe=window.TPG?TPG.errTx(e):""; draw(null,pe||(e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(p.hub&&p.days&&p.days.length?TX.edy:TX.edt):e==="notsale"?L(TX.soon):(e==="menu"&&window.SMN)?SMN.tx("eMenu"):L(TX.efail))); if(e==="menu") loadP().then(function(){ try{ var bx=box(), k=bx&&bx.querySelector(".spm"); if(bx&&S.det&&!host){ paintDet(); if(k) bx.appendChild(k); } }catch(z){} }); return; }
+         if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err, pe=window.TPG?TPG.errTx(e):""; draw(null,pe||(e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(p.hub&&p.days&&p.days.length?TX.edy:TX.edt):e==="notsale"?L(TX.soon):(e==="hosp"&&window.HSP)?HSP.tx("need"):(e==="menu"&&window.SMN)?SMN.tx("eMenu"):L(TX.efail))); if(e==="menu") loadP().then(function(){ try{ var bx=box(), k=bx&&bx.querySelector(".spm"); if(bx&&S.det&&!host){ paintDet(); if(k) bx.appendChild(k); } }catch(z){} }); return; }
          try{ ntap("shop","order_"+p.id); }catch(z){}
-         if(j.pay!=="pg"){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:L(p.t),date:S.date,time:S.time,n:S.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null}); }catch(z){}   // 「내 예약」 (11-05)
+         if(j.pay!=="pg"){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:L(p.t),date:S.date,time:S.time,n:S.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null,hosp:(window.HSP&&HSP.body(p))||""}); }catch(z){}   // 「내 예약」 (11-05)
            S.cn=nm; S.ce=em; S.cp=ph; mockPay({ok:true,oid:j.orderId,amount:j.amount,tk:j.tdone||"",chat:!!j.chat},host); return; }
          // KG이니시스 결제창 (포트원, 11-07) — 돌아왔을 때 화면을 다시 그릴 주문 내용은 tpg.js 가 이 탭에만 둔다
          draw(null,"",2);
-         return TPG.go(j,{kind:"pkg",oid:j.orderId,amount:j.amount,pid:p.id,mn:(window.SMN?SMN.body(p):[]),pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,gname:gnm,glang:S.glang||"",cn:nm,ce:em,cp:ph,pm:pm},{name:nm,email:em,phone:ph})
+         return TPG.go(j,{kind:"pkg",oid:j.orderId,amount:j.amount,pid:p.id,mn:(window.SMN?SMN.body(p):[]),hs:(window.HSP&&HSP.body(p))||"",pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,gname:gnm,glang:S.glang||"",cn:nm,ce:em,cp:ph,pm:pm},{name:nm,email:em,phone:ph})
            .then(function(m){ if(m) draw(null,m); }); })
        .catch(function(){ draw(null,L(TX.efail)); }); };
     var sx=o.querySelector("#spmX"); if(sx) sx.onclick=function(){ o.remove(); };
@@ -628,8 +630,8 @@ function mockPay(res,host){ var b=(window.PC_HOME&&host)||box(), p=prod(); if(!b
 if(window.TPG) TPG.onRet("pkg",function(v,r){ loadP().then(function(){ shopRet2(v,r); }); });
 function shopRet2(v,r){ if(!PL().some(function(x){ return x.id===v.pid; })) return;
   var ok=!!(r&&r.ok), j=(r&&r.j)||{};
-  S.date=v.date; S.time=v.time; S.n=v.n; S.gid=v.gid; try{ if(window.SMN) SMN.setPicks(v.pid,v.mn); }catch(z){} S.gname=v.gname; S.cn=v.cn||""; S.ce=v.ce||""; S.cp=v.cp||""; S.pm=v.pm;
-  if(ok){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:v.pname||"",date:v.date,time:v.time,n:v.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null}); }catch(z){} }
+  S.date=v.date; S.time=v.time; S.n=v.n; S.gid=v.gid; try{ if(window.SMN) SMN.setPicks(v.pid,v.mn); }catch(z){} try{ if(window.HSP) HSP.set(v.pid,v.hs); }catch(z){} S.gname=v.gname; S.cn=v.cn||""; S.ce=v.ce||""; S.cp=v.cp||""; S.pm=v.pm;
+  if(ok){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:v.pname||"",date:v.date,time:v.time,n:v.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null,hosp:v.hs||""}); }catch(z){} }
   var msg=(window.TPG&&TPG.resTx(r))||(L(TX.pfT)+(r&&r.msg?" ("+r.msg+")":"")), res=ok?{ok:true,oid:j.orderId||v.oid,amount:j.amount||v.amount,tk:j.tdone||"",chat:!!j.chat}:{ok:false,err:msg};
   open(); openDet(v.pid); mockPay(res);
   if(v.glang){ S.glang=v.glang; S.guides=null;   // 가이드 목록은 다시 받아 오되, 다 그린 뒤 결제창을 다시 얹는다
@@ -673,6 +675,7 @@ var _gb=window.guBack; window.guBack=function(){ if(box()){ if(back()) return tr
 function back(){ var b=box(); if(!b) return false; var o=b.querySelector(".spm"); if(o){ o.remove(); return true; } if(S.det){ toList(); return true; } return false; }
 window.addEventListener("resize",function(){ try{ barTog(); }catch(e){} });
 document.addEventListener("smnchg",function(){ try{ var b=box(); if(b&&!b.querySelector(".spm")) repaint(); }catch(e){} });   // 가게 메뉴 고르기 (11-10, smenu.js)
+document.addEventListener("hspchg",function(){ try{ var b=box(); if(b&&!b.querySelector(".spm")) repaint(); }catch(e){} });   // 건강검진 병원 고르기 (11-10, hosp.js)
 window.SHOP={open:open,close:close,back:back,
   // 「AI와 일정짜기」 화면 (11-05) — 상품 목록(허브에서 받은 것 있으면 그것)·카드 요약·상세 화면 바로 열기
   load:loadP,items:function(){ return PL(); },
