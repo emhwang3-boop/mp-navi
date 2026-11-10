@@ -85,8 +85,8 @@ function boxHtml(p){ var x=X(), S=x.S, T=x.TX, L=x.L, K=x.kindOf(p);
    +'<div class="pk-row"><label class="pk-lb" for="pkTm">'+E(L(T.tm))+'</label>'+(tsel?'<select class="pg-in" id="pkTm">'+p.times.map(function(t){ return '<option'+(t===S.time?' selected':'')+'>'+E(t)+'</option>'; }).join("")+'</select>':'<input class="pg-in" type="time" id="pkTm" step="1800" value="'+E(S.time)+'">')+'</div>'
    +'<div class="pk-row"><span class="pk-lb">'+E(L(T.ppl))+'</span><div class="pk-stp"><button type="button" data-pkn="-1" aria-label="-">−</button><b>'+S.n+'</b><button type="button" data-pkn="1" aria-label="+">+</button></div></div>'
    +(K==="tour"?guideRow(p):'')
-   +(window.SMN?SMN.pickHtml(p,x.unitOf(p,S.n)*S.n):'')+'<div class="pk-tot"><span>'+E(L(T.tot))+'</span><b>'+x.won(x.unitOf(p,S.n)*S.n+(window.SMN?SMN.appSum(p):0))+'</b></div>'   // 가게 메뉴 고르기·합계 (11-10)
-   +'<button type="button" class="pg-pay" data-pk="pay">'+E(L(T.pay))+'</button>'
+   +(window.SMN?SMN.pickHtml(p,x.unitOf(p,S.n)*S.n):'')+(window.HSP?HSP.pickHtml(p):'')+'<div class="pk-tot"><span>'+E(L(T.tot))+'</span><b>'+x.won(x.unitOf(p,S.n)*S.n+(window.SMN?SMN.appSum(p):0))+'</b></div>'   // 가게 메뉴 고르기·합계 (11-10)
+   +'<button type="button" class="pg-pay" data-pk="pay"'+(window.HSP&&!HSP.ok(p)?' disabled':'')+'>'+E(L(T.pay))+'</button>'
    +'<div class="pg-rf"><a href="refund.html?lang='+E(window.LANG||"en")+'" target="_blank" rel="noopener">'+E(L(T.rfL))+' ›</a></div>'
    +ignBox(p);
   return h; }
@@ -181,6 +181,7 @@ D.addEventListener("click",function(e){ var t=e.target; if(!t.closest) return; v
 D.addEventListener("change",function(e){ var t=e.target; if(!t||!t.closest||!t.closest("#pcPk")) return; var x=X(); if(!x) return;
   if(t.id==="pkDt") x.S.date=t.value; if(t.id==="pkTm") x.S.time=t.value; });
 D.addEventListener("smnchg",function(){ try{ boxUpd(); }catch(e){} });   // 가게 메뉴 고르기 (11-10, smenu.js)
+D.addEventListener("hspchg",function(){ try{ boxUpd(); }catch(e){} });   // 건강검진 병원 고르기 (11-10, hosp.js)
 // 언어를 바꾸면 이 화면도 그 자리에서 다시
 var _sl=window.setLang; if(typeof _sl==="function") window.setLang=function(){ var r=_sl.apply(this,arguments); try{ redraw(); }catch(e){} return r; };
 })();
