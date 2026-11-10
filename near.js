@@ -198,16 +198,17 @@ function fetchKind(t,p){ if(t.g){ var gk="g|"+(t.gt||"")+"|"+p[0].toFixed(3)+","
 function stayRate(t,p,a){ var cnt={}, gu=""; a.forEach(function(x){ var w=String(x.addr||"").split(/\s+/)[1]||""; if(/[구군시]$/.test(w)) cnt[w]=(cnt[w]||0)+1; });
   Object.keys(cnt).forEach(function(k){ if(!gu||cnt[k]>cnt[gu]) gu=k; });
   var b=a.map(function(x){ var o=Object.assign({},x); o.dist=Math.round(kmLL(p,[+x.y,+x.x])*1000); return o; });
-  return fetch(HUB+"/gplace?all=1&lang=ko&q="+encodeURIComponent((gu?gu+" ":"")+t.ko)+"&lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)).then(function(r){ return r.json(); }).then(function(j){ var g=(j&&j.ok&&j.items)||[], used={};
+  var cj=/^zh/.test(LANG)?/[㐀-鿿]/:LANG==="ja"?/[぀-ヿ㐀-鿿]/:null;   // 11-10 중국어·일본어: 구글이 그 언어 이름 없이 영어로 주면 덮지 않고 허브가 옮긴 이름(tl)을 쓴다 (index.html gRate 와 같은 기준)
+  return fetch(HUB+"/gplace?all=1&lang=ko&q="+encodeURIComponent((gu?gu+" ":"")+t.ko)+(cj?"&tl="+encodeURIComponent(LANG):"")+"&lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)).then(function(r){ return r.json(); }).then(function(j){ var g=(j&&j.ok&&j.items)||[], used={};
     b.forEach(function(x){ var nb=spinNorm(x.name), best=-1, bd=1e9; if(!nb) return;
       g.forEach(function(q,i){ var n=spinNorm(q.name); if(!n) return; var d=kmLL([+x.y,+x.x],[+q.lat,+q.lng]); if(d>0.2||d>=bd) return;
         if(n.indexOf(nb)>=0||nb.indexOf(n)>=0||(nb.length>=3&&n.slice(0,3)===nb.slice(0,3))){ bd=d; best=i; } });
       if(best>=0){ used[best]=1; if(g[best].rating){ x.rating=+g[best].rating; x.n=+g[best].n||0; } } });
     g.forEach(function(q,i){ if(used[i]||!q.rating) return; var d=kmLL(p,[+q.lat,+q.lng]); if(d>10) return;
-      b.push({gid:q.id,name:q.name,addr:q.addr,x:q.lng,y:q.lat,rating:+q.rating,n:+q.n||0,kind:t.kind,cat:t.ko,cat_en:t.en,dist:Math.round(d*1000)}); });
+      b.push({gid:q.id,name:q.name,addr:q.addr,name_en:q.name_en||undefined,addr_en:q.addr_en||undefined,x:q.lng,y:q.lat,rating:+q.rating,n:+q.n||0,kind:t.kind,cat:t.ko,cat_en:t.en,dist:Math.round(d*1000)}); });
     if(LANG==="ko"||!b.some(function(x){ return x.gid; })) return b;   // 외국어 화면: 구글에서 더한 곳은 그 언어 이름으로 한 번 더 받는다
     return fetch(HUB+"/gplace?all=1&lang="+encodeURIComponent(LANG)+"&q="+encodeURIComponent((gu?gu+" ":"")+t.ko)+"&lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)).then(function(r){ return r.json(); }).then(function(j2){ var m={};
-      ((j2&&j2.ok&&j2.items)||[]).forEach(function(q){ m[q.id]=q; }); b.forEach(function(x){ var q=x.gid&&m[x.gid]; if(q){ x.name_en=q.name; x.addr_en=q.addr; } }); return b; }).catch(function(){ return b; });
+      ((j2&&j2.ok&&j2.items)||[]).forEach(function(q){ m[q.id]=q; }); b.forEach(function(x){ var q=x.gid&&m[x.gid]; if(q){ if(!(cj&&x.name_en&&!cj.test(q.name))) x.name_en=q.name; x.addr_en=q.addr; } }); return b; }).catch(function(){ return b; });
   }).catch(function(){ return b; }); }
 // 한옥스테이가 10km 안에 없으면 — 멀어도 구글 별점 높은 한옥스테이 (허브 /gplace, 별점 4.0·리뷰 20개 이상만, 사장님 10-23) · 40km 안 먼저, 그 안에서 별점 높은 순. 못 받으면 빈 목록 그대로
 function hanokFar(p,a0){ return fetch(HUB+"/gplace?q="+encodeURIComponent("한옥스테이")+"&lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)+"&lang="+encodeURIComponent(LANG)).then(function(x){ return x.json(); }).then(function(j){
