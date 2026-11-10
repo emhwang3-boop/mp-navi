@@ -59,6 +59,8 @@ button.twbad{background:var(--bad)}
 .msec{border-top:1px solid var(--line);margin-top:16px;padding-top:14px}
 .mgrp{font-size:18px;font-weight:800;margin:26px 4px 10px}
 </style>
+<script>/* 11-10 — 홈페이지(?from=home)에서 들어왔으면 나갈 때 홈페이지로 */try{ if(/[?&]from=home(&|$)/.test(location.search)) sessionStorage.setItem('mpAdmFrom','home'); }catch(e){}
+function goMap(){ var h=''; try{ h=sessionStorage.getItem('mpAdmFrom')||''; }catch(e){} location.href=(h==='home')?'../home/':'../'; }</script>
 </head>
 <body>
 <div class="wrap">
@@ -72,13 +74,13 @@ button.twbad{background:var(--bad)}
       <input type="password" id="tok" placeholder="관리 비밀번호" autocomplete="off" style="flex:1;min-width:200px">
       <button onclick="login()">들어가기</button>
       <button class="g" onclick="logout()">이 기기에서 지우기</button>
-      <button class="g" onclick="location.href='../'">← 지도로 나가기</button>
+      <button class="g" onclick="goMap()">← 지도로 나가기</button>
     </div>
     <div class="msg" id="gmsg">비밀번호는 이 기기 브라우저에만 저장됩니다. 5번 틀리면 15분 동안 잠깁니다.</div>
   </div>
 
   <div id="app" hidden>
-    <div class="row" style="justify-content:flex-end;margin-bottom:6px"><button class="g" onclick="location.href='../'">← 지도로 나가기</button><button class="g" onclick="show('pw')" title="비밀번호 변경">⚙ 비밀번호 변경</button><button class="g" onclick="TOK='';try{localStorage.removeItem('mpadm_tok')}catch(e){}location.href='../'" title="이 기기에서 비밀번호를 지우고 지도로">🔒 잠그고 나가기</button></div>
+    <div class="row" style="justify-content:flex-end;margin-bottom:6px"><button class="g" onclick="goMap()">← 지도로 나가기</button><button class="g" onclick="show('pw')" title="비밀번호 변경">⚙ 비밀번호 변경</button><button class="g" onclick="TOK='';try{localStorage.removeItem('mpadm_tok')}catch(e){}goMap()" title="이 기기에서 비밀번호를 지우고 지도로">🔒 잠그고 나가기</button></div>
     <div class="menu" id="menu"></div>
     <div id="pane"></div>
   </div>
