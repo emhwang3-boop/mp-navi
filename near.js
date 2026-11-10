@@ -152,7 +152,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +".gbrow{display:flex;gap:8px}.gbrow>div{flex:1;min-width:0}"
   +".gbpr{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:12px 0 0}.gbl{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;margin:4px 0}.gbl>span:first-child{color:var(--sub);flex:0 0 auto}.gbl>span:last-child{text-align:right;min-width:0;word-break:break-word}"
   +".gbt{display:flex;justify-content:space-between;border-top:1px dashed var(--line);margin-top:7px;padding-top:8px;font-size:18px;font-weight:900}"
-  +".gbrate{font-size:12.5px;color:var(--sub);line-height:1.5;margin:6px 2px 0}.gbtbl{width:100%;border-collapse:collapse;margin:6px 0 0;font-size:12.5px;color:var(--sub);line-height:1.45}.gbtbl td{padding:3px 2px;vertical-align:top}.gbtbl tr+tr td{border-top:1px dashed var(--line)}.gbtbl td.r{text-align:right;white-space:nowrap;font-weight:800;color:var(--ink);padding-left:12px}.gbtbl td span{white-space:nowrap}"   // 요금 안내 표 (11-08 밤)
+  +".gbrate{font-size:12.5px;color:var(--sub);line-height:1.5;margin:6px 2px 0}.gbtbl{width:100%;border-collapse:collapse;margin:6px 0 0;font-size:12.5px;color:var(--sub);line-height:1.45}.gbtbl td{padding:3px 2px;vertical-align:top}.gbtbl tr+tr td{border-top:1px dashed var(--line)}.gbtbl td.r{text-align:right;white-space:nowrap;font-weight:800;color:var(--ink);padding-left:12px}.gbtbl td span{white-space:nowrap}.gbtbl tr.gbh td{font-weight:700;color:var(--sub);font-size:11.5px;white-space:nowrap}.gbtbl tr.gbh+tr td{border-top:1px solid var(--line)}"   // 요금 안내 표 (11-08 밤)
   +".gbx{font-size:12.5px;color:#c2410c;font-weight:700;line-height:1.5;margin:6px 2px 0}"
   +".nrcx{display:flex;gap:8px;margin-top:7px;align-items:stretch}.nrcx>.nrsel{flex:1 1 auto;width:auto;margin:0}.nrcxb{border:1.5px solid #adb5bd;background:var(--card);color:var(--ink);border-radius:12px;padding:0 14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;flex:0 0 auto;min-width:84px}"   /* 결제 단추 옆 취소 (11-05) */
   +".gbcx{display:flex;gap:8px;margin-top:14px;align-items:stretch}.gbcx>.gbgo{flex:1 1 auto;width:auto;margin:0}.gbcxb{border:1.5px solid #adb5bd;background:var(--card);color:var(--ink);border-radius:12px;padding:0 14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;flex:0 0 auto;min-width:84px}"
@@ -392,6 +392,7 @@ var GBT={
   "每小時 {hr}（1～4人同價）· 半天4小時 {half} · 一天8小時 {full} · 從第{big}人起每人每小時加 {bh}",
   "{hr} por hora (igual de 1 a 4 personas) · Medio día 4 h {half} · Día completo 8 h {full} · Desde la {big}.ª persona: {bh} más por persona y hora"),
  excl:T6("가이드 교통비·입장료·식사비는 손님 부담입니다 (현장에서 직접 내 주세요).","The guide's transport, admission tickets and meals are paid by you (on the spot).","ガイドの交通費・入場料・食事代はお客様のご負担です（現地でお支払いください）。","向导的交通费、门票和餐费由游客承担（请在现场支付）。","嚮導的交通費、門票和餐費由旅客負擔（請在現場支付）。","El transporte, las entradas y las comidas del guía corren por tu cuenta (se pagan en el momento)."),
+ rh0:T6("인원","People","人数","人数","人數","Personas"), rh1:T6("반일 4시간","Half day 4 h","半日4時間","半天4小时","半天4小時","Medio día 4 h"), rh2:T6("하루 8시간","Full day 8 h","1日8時間","一天8小时","一天8小時","Día completo 8 h"),   // 11-10 인원별 총액표 머리
  rt1:T6("1~{b}명 / 반일 4시간","1–{b} people / Half day, 4 h","1～{b}名 / 半日4時間","1～{b}人 / 半天4小时","1～{b}人 / 半天4小時","1–{b} personas / Medio día, 4 h"),   // 요금 안내 표 (11-08 밤 사장님) — 왼쪽 이름 · 오른쪽 금액(GBK)
  rt2:T6("1~{b}명 / 하루 8시간","1–{b} people / Full day, 8 h","1～{b}名 / 1日8時間","1～{b}人 / 一天8小时","1～{b}人 / 一天8小時","1–{b} personas / Día completo, 8 h"),
  rt3:T6("{big}번째 사람부터 1명 추가마다 / 한 시간","Each extra person from the {big}th / per hour","{big}人目から1名追加ごと / 1時間","从第{big}人起每加1人 / 每小时","從第{big}人起每加1人 / 每小時","Cada persona extra desde la {big}.ª / por hora"),
@@ -442,8 +443,11 @@ var GBT={
 function gbF(o,m){ var s=LG6(o); for(var k in m) s=s.split("{"+k+"}").join(m[k]); return s; }
 function gbWon(x){ return "₩"+Number(x||0).toLocaleString("ko-KR"); }
 // 요금 안내 표 (11-08 밤 사장님) — 앱 가이드 예약 칸·홈페이지 #/guide 「요금 안내」가 같이 씀 · 기본 요금엔 「한 시간」 줄 없음
-function gbRateTbl(){ var r=function(t,v){ var i=t.lastIndexOf(" / "); return '<tr><td>'+(i>0?esc(t.slice(0,i))+' <span>'+esc(t.slice(i+1))+'</span>':esc(t))+'</td><td class="r">'+gbWon(v)+'</td></tr>'; };   // 「/ 한 시간」은 한 덩어리로 (좁은 칸에서 「한」·「시간」이 갈라지지 않게)
-  return '<table class="gbtbl">'+r(gbF(GBT.rt1,{b:GBK.big-1}),GBK.half)+r(gbF(GBT.rt2,{b:GBK.big-1}),GBK.full)+r(gbF(GBT.rt3,{big:GBK.big}),GBK.bigHr)+'</table>'; }
+function gbRateTbl(){   /* 11-10 사장님 「가」 — 인원별 총액표(요금 계산은 그대로: 기본 + {big}번째부터 1명마다 시간당 bigHr) */
+  var P=GBK, hd=function(t){ return '<td class="r">'+esc(LG6(t))+'</td>'; }, h='<tr class="gbh"><td>'+esc(LG6(GBT.rh0))+'</td>'+hd(GBT.rh1)+hd(GBT.rh2)+'</tr>';
+  var row=function(lab,n){ var x=Math.max(0,n-(P.big-1)); return '<tr><td>'+esc(lab)+'</td><td class="r">'+gbWon(P.half+x*P.bigHr*4)+'</td><td class="r">'+gbWon(P.full+x*P.bigHr*8)+'</td></tr>'; };
+  var b=row(gbF(GBT.pN,{n:'1~'+(P.big-1)}),P.big-1); for(var n=P.big;n<=P.nMax;n++) b+=row(gbF(GBT.pN,{n:n}),n);
+  return '<table class="gbtbl">'+h+b+'</table>'; }
 function gbDay(add){ return new Date(Date.now()+9*3600e3+add*864e5).toISOString().slice(0,10); }
 function gbInit(){ var o=IG.bk||{}; IG.bk={mode:o.mode||"half",h:Math.max(GBK.hMin,o.h||GBK.hMin),d:o.d||2,date:(o.date&&o.date>=gbDay(1))?o.date:gbDay(3),time:o.time||"09:00",n:o.n||2,memo:o.memo||"",cn:o.cn||"",ce:o.ce||"",cp:o.cp||"",pm:"card",err:""}; }
 function gbPpl(n){ return n===1?({ko:"1명",en:"1 person",ja:"1名",zhs:"1人",zht:"1人",es:"1 persona"}[LANG]||"1 person"):gbF(T6("{n}명","{n} people","{n}名","{n}人","{n}人","{n} personas"),{n:n}); }   // 추가 인원 (11-05)
