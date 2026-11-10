@@ -226,7 +226,7 @@ function mapLinks(mode){ var a=S.a, b=[+S.to.lat,+S.to.lng], L=function(h,t){ re
   if(mode==="car") return L(nv,MPIMG("mi_map",MIS)+E(LANG==="ko"?"nvMap":"nvCar"));
   if(mode==="walk") return L(nv,MPIMG("mi_map",MIS)+E(LANG==="ko"?"nvMap":"nvWalk"));   // 걷기도 네이버 (구글은 한국 걷기 길 없음)   // 구글은 한국 자동차 길을 안 준다
   if(LANG==="ko") return L(nv,MPIMG("mi_map",MIS)+E("nvMap"));
-  return L("https://www.google.com/maps/dir/?api=1"+hlG()+"&origin="+a[0]+","+a[1]+"&destination="+b[0]+","+b[1]+"&travelmode=transit",MPIMG("mi_map",MIS)+E("gMap")); }
+  var gid=S.to&&S.to.gid; return L("https://www.google.com/maps/dir/?api=1"+hlG()+"&origin="+a[0]+","+a[1]+"&destination="+b[0]+","+b[1]+((gid&&/^ChI/.test(gid))?"&destination_place_id="+encodeURIComponent(gid):"")+"&travelmode=transit",MPIMG("mi_map",MIS)+E("gMap")); }
 function stepRow(ic,t,s){ return '<div class="tkst"><span class="i">'+ic+'</span><span class="t">'+t+(s?'<div class="s">'+s+'</div>':'')+'</span></div>'; }
 function tSteps(p){ var sp=p.sp, A=fromNm(), Z=pNm(S.to);
   return sp.map(function(s,i){
