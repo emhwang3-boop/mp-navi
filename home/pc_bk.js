@@ -131,7 +131,7 @@ function card(x){ var B=BK(), st=stTx(x), ttl="", meta="", btn=[], badge=L6(TX[x
   if(x.kind==="grv"&&!cx(x)){ btn.push('<button type="button" class="bk-b" data-bk="plan" data-o="'+E(x.oid)+'">'+E(L6(B.TX.plan))+'</button>'); if(x.grv&&x.grv.sent) btn.push('<button type="button" class="bk-b" data-bk="plan" data-rev="1" data-o="'+E(x.oid)+'">'+E(L6(B.TX.planRev))+'</button>'); }
   btn.push('<button type="button" class="bk-b" data-bk="det" data-o="'+E(x.oid)+'">'+E(L6(TX.det))+'</button>');
   return '<article class="bk-c'+(V.sel===x.oid?" on":"")+(cx(x)?" cx":"")+'" data-o="'+E(x.oid)+'"><div class="bk-ct"><span class="bk-k k-'+E(x.kind)+'">'+E(badge)+'</span><span class="bk-s s-'+st[1]+'">'+E(L6(st[0]))+'</span></div>'
-    +'<h3>'+E(ttl)+'</h3><div class="bk-m">'+E(meta)+'</div><div class="bk-bs">'+btn.join("")+'</div></article>'; }
+    +'<h3>'+E(ttl)+'</h3><div class="bk-m">'+E(meta)+'</div>'+(x.kind==="pkg"&&window.SMN?SMN.vchHtml(x):'')+'<div class="bk-bs">'+btn.join("")+'</div></article>'; }   // 모바일 바우처 (11-10, smenu.js)
 
 // ── 그리기 ──
 var ROOT=null;
