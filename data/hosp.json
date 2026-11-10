@@ -1,0 +1,61 @@
+{
+ "_": "건강검진 패키지(hchk) 「병원 고르기」 목록 (사장님 11-10) — 공식 홈페이지로 확인한 것만 · 순서는 한국어 가나다순 그대로(특정 병원을 밀지 않게) · 병원을 더하면 허브 worker.js 의 HOSP_IDS 에도 id 를 더한다",
+ "pids": ["hchk"],
+ "items": [
+  {"id": "kuanam",
+   "n": {"ko": "고려대학교 안암병원", "en": "Korea University Anam Hospital", "ja": "高麗大学安岩病院", "zhs": "高丽大学安岩医院", "zht": "高麗大學安岩醫院", "es": "Korea University Anam Hospital"},
+   "url": "https://anam.kumc.or.kr/en/international-healthcare-center/about-healthcare.do",
+   "ln": [
+    {"t": {"ko": "국제진료센터 (외국인 검진 문의)", "en": "International Healthcare Center (check-up inquiries)", "ja": "国際診療センター（健診のお問い合わせ）", "zhs": "国际医疗中心（体检咨询）", "zht": "國際醫療中心（體檢諮詢）", "es": "Centro de Atención Internacional (consultas sobre chequeos)"},
+     "p": {"ko": "서울 성북구 고려대로 73", "en": "73 Goryeodae-ro, Seongbuk-gu, Seoul"},
+     "tel": [{"n": "+82-2-920-5677"}], "em": "kumcihc@kumc.or.kr"}
+   ]},
+  {"id": "smc",
+   "n": {"ko": "삼성서울병원", "en": "Samsung Medical Center", "ja": "サムスンソウル病院", "zhs": "三星首尔医院", "zht": "三星首爾醫院", "es": "Samsung Medical Center"},
+   "url": "https://www.samsunghospital.com/en/health-promotion-center/appointments.do",
+   "ln": [
+    {"t": {"ko": "건강의학센터 (외국인 검진 문의)", "en": "Health Promotion Center (check-up inquiries)", "ja": "健康医学センター（健診のお問い合わせ）", "zhs": "健康医学中心（体检咨询）", "zht": "健康醫學中心（體檢諮詢）", "es": "Centro de Promoción de la Salud (consultas sobre chequeos)"},
+     "p": {"ko": "서울 강남구", "en": "Gangnam-gu, Seoul"},
+     "tel": [{"n": "+82-2-3410-0200"}], "em": "ihs.smc@samsung.com"}
+   ]},
+  {"id": "snuhgn",
+   "n": {"ko": "서울대학교병원", "en": "Seoul National University Hospital", "ja": "ソウル大学校病院", "zhs": "首尔大学医院", "zht": "首爾大學醫院", "es": "Seoul National University Hospital"},
+   "url": "https://en-healthcare.snuh.org/en/web/main/contents/EN-03-03-01",
+   "ln": [
+    {"t": {"ko": "국제진료센터 (통역·안내)", "en": "International Healthcare Center (interpreting & help)", "ja": "国際診療センター（通訳・案内）", "zhs": "国际医疗中心（翻译·咨询）", "zht": "國際醫療中心（翻譯·諮詢）", "es": "Centro de Atención Internacional (interpretación y ayuda)"},
+     "p": {"ko": "서울 종로구 대학로 101", "en": "101 Daehak-ro, Jongno-gu, Seoul"},
+     "tel": [{"n": "+82-2-2072-0505"}, {"n": "+82-2-2072-2890"}], "em": "ihs@snuh.org", "hr": {"wd": "09:00~17:30", "sat": "09:00~13:00"}},
+    {"t": {"ko": "검진 예약 (강남센터)", "en": "Check-up booking (Gangnam Center)", "ja": "健診予約（江南センター）", "zhs": "体检预约（江南中心）", "zht": "體檢預約（江南中心）", "es": "Reserva de chequeo (Gangnam Center)"},
+     "p": {"ko": "서울 강남구 테헤란로 152 강남파이낸스센터 38~40층", "en": "38–40F, Gangnam Finance Center, 152 Teheran-ro, Gangnam-gu, Seoul"},
+     "tel": [{"n": "+82-2-2112-5503", "l": {"ko": "영어", "en": "English", "ja": "英語", "zhs": "英语", "zht": "英語", "es": "inglés"}}]}
+   ]},
+  {"id": "cmc",
+   "n": {"ko": "서울성모병원", "en": "Seoul St. Mary's Hospital", "ja": "ソウル聖母病院", "zhs": "首尔圣母医院", "zht": "首爾聖母醫院", "es": "Seoul St. Mary's Hospital"},
+   "url": "https://www.cmcseoul.or.kr",
+   "ln": [
+    {"t": {"ko": "가톨릭대학교 서울성모병원 국제진료센터 (신체검진·건강검진 안내)", "en": "International Healthcare Center (physical exams & health check-ups)", "ja": "国際診療センター（身体検査・健康診断のご案内）", "zhs": "国际医疗中心（体格检查·健康体检咨询）", "zht": "國際醫療中心（體格檢查·健康檢查諮詢）", "es": "Centro de Atención Internacional (exámenes físicos y chequeos)"},
+     "p": {"ko": "서울 서초구 반포대로 222 · 본관 4층", "en": "Main Building 4F, 222 Banpo-daero, Seocho-gu, Seoul"},
+     "tel": [{"n": "+82-2-2258-5745"}, {"n": "+82-2-2258-5746"}], "em": "ihcc@catholic.ac.kr", "hr": {"wd": "08:30~17:00", "off": 1}}
+   ]},
+  {"id": "amc",
+   "n": {"ko": "서울아산병원", "en": "Asan Medical Center", "ja": "ソウル峨山病院", "zhs": "首尔峨山医院", "zht": "首爾峨山醫院", "es": "Asan Medical Center"},
+   "url": "https://eng.amc.seoul.kr/gb/lang/specialities/centers.do?hpCd=D053",
+   "ln": [
+    {"t": {"ko": "건강증진센터 (검진 예약)", "en": "Health Screening & Promotion Center (check-up booking)", "ja": "健康増進センター（健診予約）", "zhs": "健康促进中心（体检预约）", "zht": "健康促進中心（體檢預約）", "es": "Centro de Chequeos y Promoción de la Salud (reserva de chequeo)"},
+     "p": {"ko": "서울 송파구 · 신관 4층", "en": "New Building 4F, Songpa-gu, Seoul"},
+     "tel": [{"n": "+82-2-3010-5005"}], "em": "hpc_admin@amc.seoul.kr", "hr": {"wd": "08:00~18:00", "sat": "08:00~12:00"}}
+   ]},
+  {"id": "sev",
+   "n": {"ko": "세브란스병원", "en": "Severance Hospital", "ja": "セブランス病院", "zhs": "Severance Hospital", "zht": "Severance Hospital", "es": "Severance Hospital"},
+   "url": "https://sev.severance.healthcare/sev-en/appointment/status-treatment-checkup.do",
+   "ln": [
+    {"t": {"ko": "국제진료센터 (통역·안내)", "en": "International Health Care Center (interpreting & help)", "ja": "国際診療センター（通訳・案内）", "zhs": "国际医疗中心（翻译·咨询）", "zht": "國際醫療中心（翻譯·諮詢）", "es": "Centro de Atención Internacional (interpretación y ayuda)"},
+     "p": {"ko": "서울 서대문구 연세로 50-1 (신촌)", "en": "50-1 Yonsei-ro, Seodaemun-gu, Seoul (Sinchon)"},
+     "tel": [{"n": "+82-2-2228-5800"}], "em": "ihcc@yuhs.ac", "hr": {"wd": "08:30~17:30", "sat": "08:30~12:30"}},
+    {"t": {"ko": "검진 예약 (서울역 앞 세브란스 헬스체크업)", "en": "Check-up booking (Severance Check-up, opposite Seoul Station)", "ja": "健診予約（ソウル駅前 Severance Check-up）", "zhs": "体检预约（首尔站前 Severance Check-up）", "zht": "體檢預約（首爾站前 Severance Check-up）", "es": "Reserva de chequeo (Severance Check-up, frente a la estación de Seúl)"},
+     "p": {"ko": "서울 중구 통일로 10 · 연세세브란스빌딩 4층", "en": "4F, Yonsei Severance Bldg., 10 Tongil-ro, Jung-gu, Seoul"},
+     "tel": [{"n": "+82-2-2228-1004", "l": {"ko": "해외에서 · 연결번호 4번", "en": "from abroad · press 4", "ja": "海外から・音声案内で4番", "zhs": "从海外拨打·按4号键", "zht": "從海外撥打·按4號鍵", "es": "desde el extranjero · marca 4"}},
+             {"n": "1588-7757", "l": {"ko": "국내", "en": "within Korea", "ja": "韓国国内から", "zhs": "韩国境内", "zht": "韓國境內", "es": "desde Corea"}}]}
+   ]}
+ ]
+}
