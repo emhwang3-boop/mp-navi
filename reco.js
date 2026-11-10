@@ -296,7 +296,9 @@ var PKW={
   hb:/한복|궁궐|고궁|경복궁|hanbok|palace|gyeongbok|韓服|韩服|宮殿|宫殿|王宮|王宫|景福|palacio/i,
   ck:/음식|요리|먹거리|먹고|맛집|한식|한정식|김치|김밥|비빔밥|쿠킹|\bfood|cuisine|\bcook|\bdish|kimchi|kimbap|gimbap|bibimbap|\beat\b|グルメ|料理|食べ|キムチ|キンパ|美食|韩国菜|韓國菜|吃|泡菜|饮食|飲食|comida|cocina|gastronom/i,
   dmz:/dmz|비무장|판문점|땅굴|북한|demilitari|north korea|panmunjom|非武装|非武裝|板門店|板门店|北朝鮮|朝鲜|北韓|norcorea|corea del norte/i,
-  jj:/찜질|사우나|스파|온천|목욕|웰니스|마사지|jjim|sauna|\bspa\b|bathhouse|wellness|massage|チムジル|サウナ|スパ|温泉|汗蒸|桑拿|水疗|水療|溫泉|masaje|balneario/i
+  jj:/찜질|사우나|스파|온천|목욕|웰니스|마사지|jjim|sauna|\bspa\b|bathhouse|wellness|massage|チムジル|サウナ|スパ|温泉|汗蒸|桑拿|水疗|水療|溫泉|masaje|balneario/i,
+  seal:/도장|인장|낙관|공예|인사동|\bseals?\b|stamp|engrav|\bcrafts?\b|insadong|はんこ|印鑑|判子|篆刻|工芸|印章|工艺|工藝|手工艺|手工藝|\bsellos?\b|artesan/i,   // 11-10 인사동 전통 도장 만들기
+  hchk:/검진|의료 ?관광|내시경|health ?check|check-?ups?|medical|screening|健康診断|健診|人間ドック|体检|體檢|健检|健檢|医疗|醫療|chequeo|revisi[oó]n m[eé]dica/i   // 11-10 외국인 종합 건강검진 (없으면 웰니스 분류라 찜질방 낱말로 고르게 됨)
 };
 var PCAT={kpop:"b4",show:"perf",beauty:"bty",hair:"hr",food:"ck",well:"jj"};
 function apNew(q){ return {q:q,ex:[],exk:[],exn:[],kseen:{},kpos:[],picks:[],kits:[],kw:[],nm:[],pk:[],note:"",note_ko:"",lg:LANG,busy:false,st:"",det:null,y:0}; }
@@ -377,7 +379,7 @@ function apCard(o,i){ var sub=apSub(o);
     +apMeta(o,false)+'<div class="apbt">'+apAdd(i,o)+'<span class="apmore">'+esc(A6(AX.more))+'</span></div></div>'; }
 function apPkCard(p){ var s=SHOP.brief(p);
   return '<div class="item apk" data-ak="'+esc(s.id)+'">'+(s.img?'<img src="'+esc(s.img)+'" alt="" loading="lazy">':'')+'<div class="apkb"><div class="apkc">'+esc(s.cat)+'<span class="apbd'+(s.real?' on':'')+'">'+esc(s.badge)+'</span></div>'
-    +'<b>'+esc(s.t)+'</b>'+(s.from?'<div class="apkp">'+esc(s.from)+'</div>':'')+'<span class="apmore">'+esc(A6(AX.more))+'</span></div></div>'; }
+    +'<b>'+esc(s.t)+'</b>'+(s.from?'<div class="apkp">'+esc(s.from)+'</div>':'')+(s.px?'<div class="shpx">'+esc(s.px)+'</div>':'')+'<span class="apmore">'+esc(A6(AX.more))+'</span></div></div>'; }
 function apDetHtml(i){ var o=apList()[i]; if(!o) return ''; var sub=apSub(o), bk='<button type="button" class="apback" data-ap="back">'+esc(A6(AX.back))+'</button>';
   return bk+'<div class="item apdet"><div class="t apn">'+apIcon(o,i)+'<span>'+esc(apName(o))+'</span></div>'+(sub?'<div class="d" style="margin:1px 0 0">'+esc(sub)+'</div>':'')+apMeta(o,true)+'<div class="apbt">'+apAdd(i,o)+'</div></div>'+bk; }
 function apPaint(){ var r=$("aipRes"); if(!r) return; apCart();
