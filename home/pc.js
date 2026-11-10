@@ -139,7 +139,7 @@ D.addEventListener("mppg",function(){ if(_bkWant&&signed()){ _bkWant=false; try{
 // 「고객 게시판」 단추 (11-09 사장님 — 「내 예약」 옆) — #/board (home/pc_board.js) · 로그인 없이 누구나
 $("phBd").onclick=function(){ try{ if(window.PCGO) PCGO("board"); }catch(e){} };
 // 11-09 사장님 「가로하지」 — 관리자 단추: 사장님 기기(mp_owner, ?me=EM2410 로 연 기기)에서만 보이고, 누르면 관리자 화면(/admin/)을 새 탭으로
-$("phAd").onclick=function(){ try{ window.open(location.origin+"/admin/","_blank","noopener"); }catch(e){} };
+$("phAd").onclick=function(){ try{ window.open(location.origin+"/admin/?from=home","_blank","noopener"); }catch(e){} };
 try{ if(localStorage.getItem("mp_owner")) $("phAd").hidden=false; }catch(e){}
 $("phLogo").onclick=function(e){ if(e.ctrlKey||e.metaKey||e.shiftKey||e.button) return; e.preventDefault(); try{ if(location.hash&&window.PCGO) PCGO(""); resetAll(); }catch(x){ window.scrollTo(0,0); } };   // 다른 화면(#/guide 등)이면 첫 화면으로 (11-08 3a)
 
