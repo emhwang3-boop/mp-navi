@@ -9,6 +9,7 @@
 :root{--bg:#f4f6fa;--card:#fff;--ink:#111827;--sub:#5b6474;--line:#e6e9ef;--green:#2f9e44;--blue:#3d5af1}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;-webkit-text-size-adjust:100%;line-height:1.7}
+html,body{word-break:keep-all;overflow-wrap:break-word}   /* 11-10 앱과 같게 — 낱말 중간에서 줄을 안 바꾼다(칸보다 긴 낱말만 넘김) */
 html:lang(ja) body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Hiragino Sans','Yu Gothic UI','Noto Sans JP',sans-serif}
 html:lang(zh-Hans) body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif}
 html:lang(zh-Hant) body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif}
@@ -44,14 +45,14 @@ var LBL={ko:"한국어",en:"English",ja:"日本語",zhs:"简体",zht:"繁體",es
 var OP={
  ko:{t:"사업자 정보",cn:"주식회사 부만 (Booman Inc.)",rn:"사업자등록번호",rv:"297-81-03712",lbs:"위치기반서비스사업 신고",lbv:"제1866호 (2026-10-27, 방송미디어통신위원회)",ceo:"대표",cev:"전현진",po:"개인정보 보호책임자",pov:"황의만",cs:"고객센터",csv:"010-4221-7066",em:"이메일",ad:"주소",adv:"경기도 남양주시 진접읍 해밀예당1로 220, 707호 씨64호(엠타워)"},
  en:{t:"Operator information",cn:"Booman Inc.",rn:"Business Reg. No.",rv:"297-81-03712",lbs:"Location-Based Service Business Report",lbv:"No. 1866 (2026-10-27, Broadcasting, Media and Communications Commission)",ceo:"CEO",cev:"Jeon Hyeonjin",po:"Privacy Officer",pov:"Hwang Euiman",cs:"Support",csv:"+82-10-4221-7066",em:"Email",ad:"Address",adv:"220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Rm 707 C64 (M Tower), Korea"},
- ja:{t:"事業者情報",cn:"株式会社 富滿 (Booman Inc.)",rn:"事業者登録番号",rv:"297-81-03712",lbs:"位置情報サービス事業 届出",lbv:"第1866号（2026-10-27、放送メディア通信委員会）",ceo:"代表",cev:"全賢珍 (Jeon Hyeonjin)",po:"個人情報保護責任者",pov:"黄義晩 (Hwang Euiman)",cs:"カスタマーセンター",csv:"+82-10-4221-7066",em:"メール",ad:"住所",adv:"220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Rm 707 C64 (M Tower), Korea"},
+ ja:{t:"事業者情報",cn:"株式会社 富滿（Booman Inc.）",rn:"事業者登録番号",rv:"297-81-03712",lbs:"位置情報サービス事業 届出",lbv:"第1866号（2026-10-27、放送メディア通信委員会）",ceo:"代表",cev:"全賢珍（Jeon Hyeonjin）",po:"個人情報保護責任者",pov:"黄義晩（Hwang Euiman）",cs:"カスタマーセンター",csv:"+82-10-4221-7066",em:"メール",ad:"住所",adv:"220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Rm 707 C64 (M Tower), Korea"},
  zhs:{t:"经营者信息",cn:"Booman Inc.（株式会社 富滿）",rn:"营业执照号",rv:"297-81-03712",lbs:"位置服务业务申报",lbv:"第1866号（2026-10-27，广播媒体通信委员会）",ceo:"代表",cev:"Jeon Hyeonjin",po:"个人信息保护负责人",pov:"Hwang Euiman",cs:"客服",csv:"+82-10-4221-7066",em:"邮箱",ad:"地址",adv:"220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Rm 707 C64 (M Tower), Korea"},
  zht:{t:"經營者資訊",cn:"Booman Inc.（株式會社 富滿）",rn:"營業執照號",rv:"297-81-03712",lbs:"位置服務業務申報",lbv:"第1866號（2026-10-27，廣播媒體通訊委員會）",ceo:"代表",cev:"Jeon Hyeonjin",po:"個人資料保護負責人",pov:"Hwang Euiman",cs:"客服",csv:"+82-10-4221-7066",em:"電郵",ad:"地址",adv:"220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Rm 707 C64 (M Tower), Korea"},
  es:{t:"Información del operador",cn:"Booman Inc.",rn:"N.º de registro mercantil",rv:"297-81-03712",lbs:"Declaración de servicio basado en ubicación",lbv:"N.º 1866 (2026-10-27, Comisión de Radiodifusión, Medios y Comunicaciones)",ceo:"Representante",cev:"Jeon Hyeonjin",po:"Responsable de privacidad",pov:"Hwang Euiman",cs:"Atención",csv:"+82-10-4221-7066",em:"Correo",ad:"Dirección",adv:"220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Rm 707 C64 (M Tower), Korea"}
 };
 var BACK={ko:"앱으로 돌아가기",en:"Back to the app",ja:"アプリに戻る",zhs:"返回应用",zht:"返回應用",es:"Volver a la app"};
 /* 본문에서 개인정보처리방침을 가리키는 말 → privacy.html 링크 */
-var PRIV={ko:"개인정보처리방침",en:"Privacy Policy",ja:"プライバシーポリシー",zhs:"隐私政策",zht:"隱私權政策",es:"Política de Privacidad"};
+var PRIV={ko:"개인정보처리방침",en:"Privacy Policy",ja:"個人情報処理方針",zhs:"隐私政策",zht:"隱私政策",es:"Política de Privacidad"};
 
 var D={};
 D.ko={title:"위치기반서비스 이용약관", eff:"시행일: 2027년 1월 1일", app:"모자이크트립",
@@ -78,7 +79,7 @@ D.ko={title:"위치기반서비스 이용약관", eff:"시행일: 2027년 1월 1
    "② 회사는 개인위치정보를 서비스 제공 목적 외로 이용하지 않으며, 이용자의 동의 없이 제3자에게 제공하지 않습니다.",
    "③ 회사는 위치정보법 제16조 제2항에 따라 위치정보 수집·이용·제공사실 확인자료를 위치정보시스템에 자동으로 기록·보존하며, 이 자료는 6개월간 보관한 뒤 파기합니다. 확인자료에는 위치 좌표를 기록하지 않습니다."]},
  {h:"제8조 (이용자의 권리)", b:[
-   "① 이용자는 언제든지 위치 이용 동의의 전부 또는 일부를 철회할 수 있습니다. 철회는 서비스 화면의 설정 또는 단말기의 위치 권한 해제로 할 수 있습니다.",
+   "① 이용자는 언제든지 위치 이용 동의의 전부 또는 일부를 철회할 수 있습니다. 철회는 단말기(휴대폰·브라우저)의 위치 권한 해제 또는 제11조의 위치정보관리책임자에게 전화·전자우편으로 요청해 할 수 있습니다.",
    "② 이용자는 언제든지 개인위치정보의 이용 또는 제공의 일시 중지를 요구할 수 있으며, 회사는 이를 거절하지 않습니다.",
    "③ 이용자는 본인에 대한 위치정보 수집·이용·제공사실 확인자료의 열람 또는 고지를 요구할 수 있고, 오류가 있으면 정정을 요구할 수 있습니다.",
    "④ 이용자가 동의를 철회하면 회사는 해당 확인자료를 지체 없이 파기합니다."]},
@@ -101,7 +102,7 @@ D.ko={title:"위치기반서비스 이용약관", eff:"시행일: 2027년 1월 1
     "위치기반서비스사업 신고: 제1866호 (2026-10-27, 방송미디어통신위원회)",
     "주소: 경기도 남양주시 진접읍 해밀예당1로 220, 707호 씨64호(엠타워)",
     "전화: 010-4221-7066 / 전자우편: admin@moneypuzzle.co.kr"]]},
- {h:"부칙", b:["이 약관은       년     월     일부터 시행합니다."]},
+ {h:"부칙", b:["이 약관은 2027년 1월 1일부터 시행합니다."]},
  {h:"언어", b:["이 약관은 한국어로 작성되었으며, 다른 언어 번역본과 내용이 다를 때는 한국어판이 우선합니다."]}
  ]};
 
@@ -129,7 +130,7 @@ D.en={title:"Location-Based Service Terms", eff:"Effective date: January 1, 2027
    "(2) The Company does not use personal location information for any purpose other than providing the Service, and does not provide it to third parties without your consent.",
    "(3) In accordance with Article 16(2) of the Location Information Act, the Company automatically records and retains, in its location information system, confirmation records of the collection, use and provision of location information. These records are kept for 6 months and then destroyed. Location coordinates are not recorded in these records."]},
  {h:"Article 8 (User rights)", b:[
-   "(1) You may withdraw all or part of your location-use consent at any time, through the settings on the Service screen or by turning off location permission on your device.",
+   "(1) You may withdraw all or part of your location-use consent at any time, by turning off location permission on your device (phone or browser), or by asking the Location Information Manager in Article 11 by phone or email.",
    "(2) You may at any time request a temporary suspension of the use or provision of your personal location information, and the Company will not refuse.",
    "(3) You may request access to, or notice of, the confirmation records of the collection, use and provision of your location information, and request correction of any errors.",
    "(4) When you withdraw your consent, the Company destroys the relevant confirmation records without delay."]},
@@ -152,7 +153,7 @@ D.en={title:"Location-Based Service Terms", eff:"Effective date: January 1, 2027
     "Location-Based Service Business Report: No. 1866 (2026-10-27, Broadcasting, Media and Communications Commission)",
     "Address: Rm 707 C64 (M Tower), 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea",
     "Tel.: +82-10-4221-7066 / Email: admin@moneypuzzle.co.kr"]]},
- {h:"Addendum", b:["These Terms take effect on ____-__-__."]},
+ {h:"Addendum", b:["These Terms take effect on January 1, 2027."]},
  {h:"Language", b:["These Terms are written in Korean. If a translation in another language differs from the Korean version, the Korean version prevails."]}
  ]};
 
@@ -164,7 +165,7 @@ D.ja={title:"位置情報サービス利用規約", eff:"施行日：2027年1月
    "② 当社は関係法令に違反しない範囲で本規約を変更することができ、変更後の規約は施行日の7日前（利用者に不利な変更の場合は30日前）から本サービスの画面でお知らせします。",
    "③ 利用者は変更後の規約に同意しない場合、本サービスの利用を中止し、位置情報の利用同意を撤回することができます。"]},
  {h:"第3条（関係法令の適用）", b:[
-   "本規約に定めのない事項は、「位置情報の保護及び利用等に関する法律」（以下「位置情報法」）、「個人情報保護法」、「電気通信事業法」等の関係法令および当社のプライバシーポリシーに従います。"]},
+   "本規約に定めのない事項は、「位置情報の保護及び利用等に関する法律」（以下「位置情報法」）、「個人情報保護法」、「電気通信事業法」等の関係法令および当社の個人情報処理方針に従います。"]},
  {h:"第4条（サービスの内容）", b:[
    "① 当社は、利用者の端末の現在地を利用して次のサービスを提供します。",
    ["1. 現在地周辺の観光地・飲食店・宿泊施設・便利施設のおすすめ（近い順・評価順）",
@@ -180,7 +181,7 @@ D.ja={title:"位置情報サービス利用規約", eff:"施行日：2027年1月
    "② 当社は、個人位置情報をサービス提供の目的以外に利用せず、利用者の同意なく第三者に提供しません。",
    "③ 当社は、位置情報法第16条第2項に基づき、位置情報の収集・利用・提供事実の確認資料を位置情報システムに自動で記録・保存し、この資料は6か月間保管した後に破棄します。確認資料には位置座標を記録しません。"]},
  {h:"第8条（利用者の権利）", b:[
-   "① 利用者はいつでも位置情報利用同意の全部または一部を撤回することができます。撤回は、本サービス画面の設定または端末の位置情報の権限の解除により行うことができます。",
+   "① 利用者はいつでも位置情報利用同意の全部または一部を撤回することができます。撤回は、端末（スマートフォン・ブラウザ）の位置情報の権限の解除、または第11条の位置情報管理責任者への電話・メールによる依頼により行うことができます。",
    "② 利用者はいつでも個人位置情報の利用または提供の一時停止を求めることができ、当社はこれを拒否しません。",
    "③ 利用者は、本人に関する位置情報の収集・利用・提供事実の確認資料の閲覧または告知を求めることができ、誤りがある場合は訂正を求めることができます。",
    "④ 利用者が同意を撤回した場合、当社は当該確認資料を遅滞なく破棄します。"]},
@@ -190,7 +191,7 @@ D.ja={title:"位置情報サービス利用規約", eff:"施行日：2027年1月
    "8歳以下の児童、被成年後見人、重度障害者の保護義務者が、その生命または身体の保護のために個人位置情報の利用または提供に同意した場合は本人の同意があったものとみなし、保護義務者は本規約に基づく利用者の権利を行使することができます。"]},
  {h:"第11条（位置情報管理責任者）", b:[
    "当社は、個人位置情報を保護し関連する苦情を処理するため、次のとおり位置情報管理責任者を指定します。",
-   ["位置情報管理責任者：黄義晩 (Hwang Euiman)（電話 +82-10-4221-7066、メール admin@moneypuzzle.co.kr）"]]},
+   ["位置情報管理責任者：黄義晩（Hwang Euiman）（電話 +82-10-4221-7066、メール admin@moneypuzzle.co.kr）"]]},
  {h:"第12条（損害賠償および免責）", b:[
    "① 当社が位置情報法に違反したことにより利用者に損害が生じた場合、利用者は当社に損害賠償を請求することができ、当社は故意または過失がないことを証明できない限り責任を負います。",
    "② 天災、位置情報事業者の障害、利用者の責めに帰すべき事由など、当社の故意または過失なく生じた損害については責任を負いません。"]},
@@ -199,41 +200,41 @@ D.ja={title:"位置情報サービス利用規約", eff:"施行日：2027年1月
    "② 当社または利用者は、「個人情報保護法」に基づき個人情報紛争調停委員会に調停を申請することができます。",
    "③ 本規約に関する訴訟は、民事訴訟法に基づく管轄裁判所に提起します。"]},
  {h:"第14条（当社の連絡先）", b:[
-   ["商号：株式会社 富滿 (Booman Inc.) ／ 代表者：全賢珍 (Jeon Hyeonjin) ／ 事業者登録番号：297-81-03712",
+   ["商号：株式会社 富滿（Booman Inc.）／ 代表者：全賢珍（Jeon Hyeonjin）／ 事業者登録番号：297-81-03712",
     "位置情報サービス事業 届出：第1866号（2026-10-27、放送メディア通信委員会）",
     "住所：Rm 707 C64 (M Tower), 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea",
     "電話：+82-10-4221-7066 ／ メール：admin@moneypuzzle.co.kr"]]},
- {h:"附則", b:["本規約は    年  月  日から施行します。"]},
+ {h:"附則", b:["本規約は2027年1月1日から施行します。"]},
  {h:"言語", b:["本規約は韓国語で作成されています。他の言語の翻訳と内容が異なる場合は、韓国語版が優先します。"]}
  ]};
 
 D.zhs={title:"位置服务使用条款", eff:"施行日期：2027年1月1日", app:"MosaicTrip",
  sec:[
- {h:"第1条（目的）", b:["本条款旨在规定用户使用 Booman Inc.（株式会社 富滿，以下称\"本公司\"）提供的位置服务\"MosaicTrip\"（https://navi.moneypuzzle.co.kr，以下称\"本服务\"）时，本公司与用户的权利、义务及责任事项。"]},
+ {h:"第1条（目的）", b:["本条款旨在规定用户使用 Booman Inc.（株式会社 富滿，以下称“本公司”）提供的位置服务“MosaicTrip”（https://navi.moneypuzzle.co.kr，以下称“本服务”）时，本公司与用户的权利、义务及责任事项。"]},
  {h:"第2条（条款的效力及变更）", b:[
    "① 本条款通过在本服务页面公示或以其他方式通知用户而生效。",
    "② 本公司可在不违反相关法律的范围内变更本条款，变更后的条款将自施行日前7日（对用户不利的变更为30日前）起在本服务页面公告。",
    "③ 用户如不同意变更后的条款，可停止使用本服务并撤回位置信息使用同意。"]},
  {h:"第3条（相关法律的适用）", b:[
-   "本条款未规定的事项，依照《位置信息保护及利用等相关法律》（以下称\"位置信息法\"）、《个人信息保护法》、《电信事业法》等相关法律及本公司的隐私政策处理。"]},
+   "本条款未规定的事项，依照《位置信息保护及利用等相关法律》（以下称“位置信息法”）、《个人信息保护法》、《电信事业法》等相关法律及本公司的隐私政策处理。"]},
  {h:"第4条（服务内容）", b:[
    "① 本公司利用用户终端设备的当前位置提供以下服务：",
-   ["1. 推荐当前位置周边的景点·餐厅·住宿·便利设施（按距离·按评分）",
+   ["1. 推荐当前位置周边的景点、餐厅、住宿、便利设施（按距离、按评分）",
     "2. 从当前位置到目的地的路线指引",
     "3. 以当前位置为基准的旅行行程推荐"],
    "② 位置测定通过用户终端设备及位置信息经营者（Google Geolocation Services、Apple Core Location）进行，本公司仅为提供服务实时使用所测定的位置，不将其保存在服务器或数据库中。"]},
  {h:"第5条（服务使用费用）", b:[
    "本服务免费。但数据流量费用依照用户所签约移动运营商的资费套餐。"]},
- {h:"第6条（服务的变更·中止）", b:[
-   "因设备检修·更换、天灾、位置信息经营者的情况等原因，本公司可暂时中止本服务的全部或部分，届时将在本服务页面事先公告。如有不得已情形，可事后通知。"]},
+ {h:"第6条（服务的变更、中止）", b:[
+   "因设备检修、更换、天灾、位置信息经营者的情况等原因，本公司可暂时中止本服务的全部或部分，届时将在本服务页面事先公告。如有不得已情形，可事后通知。"]},
  {h:"第7条（个人位置信息的使用及同意）", b:[
    "① 仅在用户同意本服务页面的位置使用同意并在终端设备上允许位置权限时，本公司才使用个人位置信息。",
    "② 本公司不将个人位置信息用于提供服务以外的目的，未经用户同意不向第三方提供。",
-   "③ 本公司依照位置信息法第16条第2款，在位置信息系统中自动记录并保存位置信息收集·使用·提供事实确认资料，该资料保存6个月后销毁。确认资料中不记录位置坐标。"]},
+   "③ 本公司依照位置信息法第16条第2款，在位置信息系统中自动记录并保存位置信息收集、使用、提供事实确认资料，该资料保存6个月后销毁。确认资料中不记录位置坐标。"]},
  {h:"第8条（用户的权利）", b:[
-   "① 用户可随时撤回全部或部分位置使用同意。撤回可通过本服务页面的设置或解除终端设备的位置权限进行。",
+   "① 用户可随时撤回全部或部分位置使用同意。撤回可通过解除终端设备（手机、浏览器）的位置权限，或通过电话、邮箱向第11条的位置信息管理负责人提出。",
    "② 用户可随时要求暂停个人位置信息的使用或提供，本公司不予拒绝。",
-   "③ 用户可要求查阅或告知与本人相关的位置信息收集·使用·提供事实确认资料，如有错误可要求更正。",
+   "③ 用户可要求查阅或告知与本人相关的位置信息收集、使用、提供事实确认资料，如有错误可要求更正。",
    "④ 用户撤回同意时，本公司将立即销毁相关确认资料。"]},
  {h:"第9条（未满14岁的用户）", b:[
    "本公司如需使用未满14岁用户的个人位置信息，将取得其法定代理人的同意。本服务主要面向外国游客等成年人，一经确认用户未满14岁，未经法定代理人同意不使用其个人位置信息。"]},
@@ -254,7 +255,7 @@ D.zhs={title:"位置服务使用条款", eff:"施行日期：2027年1月1日", a
     "位置服务业务申报：第1866号（2026-10-27，广播媒体通信委员会）",
     "地址：Rm 707 C64 (M Tower), 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea",
     "电话：+82-10-4221-7066 ／ 邮箱：admin@moneypuzzle.co.kr"]]},
- {h:"附则", b:["本条款自    年  月  日起施行。"]},
+ {h:"附则", b:["本条款自2027年1月1日起施行。"]},
  {h:"语言", b:["本条款以韩语撰写。如其他语言译本与韩语版内容不一致，以韩语版为准。"]}
  ]};
 
@@ -266,25 +267,25 @@ D.zht={title:"位置服務使用條款", eff:"施行日期：2027年1月1日", a
    "② 本公司得於不違反相關法令的範圍內變更本條款，變更後的條款將自施行日前7日（對使用者不利者為30日前）起於本服務畫面公告。",
    "③ 使用者如不同意變更後的條款，得停止使用本服務並撤回位置資訊使用同意。"]},
  {h:"第3條（相關法令的適用）", b:[
-   "本條款未規定的事項，依《位置資訊保護及利用等相關法律》（以下稱「位置資訊法」）、《個人資料保護法》、《電信事業法》等相關法令及本公司的隱私權政策辦理。"]},
+   "本條款未規定的事項，依《位置資訊保護及利用等相關法律》（以下稱「位置資訊法」）、《個人資料保護法》、《電信事業法》等相關法令及本公司的隱私政策辦理。"]},
  {h:"第4條（服務內容）", b:[
    "① 本公司利用使用者裝置的目前位置提供以下服務：",
-   ["1. 推薦目前位置周邊的景點·餐廳·住宿·便利設施（依距離·依評分）",
+   ["1. 推薦目前位置周邊的景點、餐廳、住宿、便利設施（依距離、依評分）",
     "2. 從目前位置到目的地的路線指引",
     "3. 以目前位置為基準的旅遊行程推薦"],
    "② 位置測定係透過使用者裝置及位置資訊業者（Google Geolocation Services、Apple Core Location）進行，本公司僅為提供服務即時使用所測定的位置，不將其儲存於伺服器或資料庫。"]},
  {h:"第5條（服務使用費用）", b:[
    "本服務免費。但行動數據費用依使用者所申辦電信業者的資費方案計算。"]},
- {h:"第6條（服務的變更·中止）", b:[
-   "因設備檢修·更換、天災、位置資訊業者的情況等原因，本公司得暫時中止本服務的全部或一部，屆時將於本服務畫面事先公告。如有不得已情形，得事後通知。"]},
+ {h:"第6條（服務的變更、中止）", b:[
+   "因設備檢修、更換、天災、位置資訊業者的情況等原因，本公司得暫時中止本服務的全部或一部，屆時將於本服務畫面事先公告。如有不得已情形，得事後通知。"]},
  {h:"第7條（個人位置資訊的利用及同意）", b:[
    "① 僅於使用者同意本服務畫面的位置使用同意並於裝置上允許位置權限時，本公司始利用個人位置資訊。",
    "② 本公司不將個人位置資訊用於提供服務以外的目的，未經使用者同意不提供予第三人。",
-   "③ 本公司依位置資訊法第16條第2項，於位置資訊系統自動記錄並保存位置資訊蒐集·利用·提供事實確認資料，該資料保存6個月後銷毀。確認資料中不記錄位置座標。"]},
+   "③ 本公司依位置資訊法第16條第2項，於位置資訊系統自動記錄並保存位置資訊蒐集、利用、提供事實確認資料，該資料保存6個月後銷毀。確認資料中不記錄位置座標。"]},
  {h:"第8條（使用者的權利）", b:[
-   "① 使用者得隨時撤回全部或一部的位置使用同意。撤回得透過本服務畫面的設定或解除裝置的位置權限為之。",
+   "① 使用者得隨時撤回全部或一部的位置使用同意。撤回得透過解除裝置（手機、瀏覽器）的位置權限，或以電話、電郵向第11條的位置資訊管理負責人提出為之。",
    "② 使用者得隨時要求暫停個人位置資訊的利用或提供，本公司不予拒絕。",
-   "③ 使用者得要求查閱或告知與本人相關的位置資訊蒐集·利用·提供事實確認資料，如有錯誤得要求更正。",
+   "③ 使用者得要求查閱或告知與本人相關的位置資訊蒐集、利用、提供事實確認資料，如有錯誤得要求更正。",
    "④ 使用者撤回同意時，本公司將立即銷毀相關確認資料。"]},
  {h:"第9條（未滿14歲的使用者）", b:[
    "本公司如需利用未滿14歲使用者的個人位置資訊，將取得其法定代理人的同意。本服務主要以外國旅客等成年人為對象，一經確認使用者未滿14歲，未經法定代理人同意不利用其個人位置資訊。"]},
@@ -305,7 +306,7 @@ D.zht={title:"位置服務使用條款", eff:"施行日期：2027年1月1日", a
     "位置服務業務申報：第1866號（2026-10-27，廣播媒體通訊委員會）",
     "地址：Rm 707 C64 (M Tower), 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea",
     "電話：+82-10-4221-7066 ／ 電郵：admin@moneypuzzle.co.kr"]]},
- {h:"附則", b:["本條款自    年  月  日起施行。"]},
+ {h:"附則", b:["本條款自2027年1月1日起施行。"]},
  {h:"語言", b:["本條款以韓語撰寫。如其他語言譯本與韓語版內容不一致，以韓語版為準。"]}
  ]};
 
@@ -315,28 +316,28 @@ D.es={title:"Términos del servicio basado en ubicación", eff:"Fecha de entrada
  {h:"Artículo 2 (Efecto y modificación de los Términos)", b:[
    "(1) Estos Términos surten efecto al publicarse en la pantalla del Servicio o notificarse a los usuarios por otros medios.",
    "(2) La Empresa puede modificar estos Términos en la medida en que no infrinja la legislación aplicable, y anunciará los Términos modificados en la pantalla del Servicio desde 7 días antes de su entrada en vigor (30 días antes si el cambio es desfavorable para los usuarios).",
-   "(3) Si no está de acuerdo con los Términos modificados, puede dejar de usar el Servicio y retirar su consentimiento al uso de la información de ubicación."]},
+   "(3) Si no estás de acuerdo con los Términos modificados, puedes dejar de usar el Servicio y retirar tu consentimiento al uso de la información de ubicación."]},
  {h:"Artículo 3 (Legislación aplicable)", b:[
    "Lo no previsto en estos Términos se rige por la legislación aplicable, como la Ley sobre la Protección y el Uso de la Información de Ubicación (\"Ley de Información de Ubicación\"), la Ley de Protección de Datos Personales y la Ley de Telecomunicaciones, y por la Política de Privacidad de la Empresa."]},
  {h:"Artículo 4 (El Servicio)", b:[
-   "(1) A partir de la ubicación actual de su dispositivo, la Empresa presta los siguientes servicios:",
-   ["1. Recomendaciones de atracciones, restaurantes, alojamientos y servicios cercanos a su ubicación actual (por cercanía o por valoración)",
-    "2. Indicaciones desde su ubicación actual hasta el destino",
-    "3. Recomendaciones de itinerarios de viaje a partir de su ubicación actual"],
-   "(2) La ubicación se determina mediante su dispositivo y proveedores de información de ubicación (Google Geolocation Services, Apple Core Location). La Empresa utiliza la ubicación determinada solo en tiempo real para prestar el Servicio y no la almacena en ningún servidor ni base de datos."]},
+   "(1) A partir de la ubicación actual de tu dispositivo, la Empresa presta los siguientes servicios:",
+   ["1. Recomendaciones de atracciones, restaurantes, alojamientos y servicios cercanos a tu ubicación actual (por cercanía o por valoración)",
+    "2. Indicaciones desde tu ubicación actual hasta el destino",
+    "3. Recomendaciones de itinerarios de viaje a partir de tu ubicación actual"],
+   "(2) La ubicación se determina mediante tu dispositivo y proveedores de información de ubicación (Google Geolocation Services, Apple Core Location). La Empresa utiliza la ubicación determinada solo en tiempo real para prestar el Servicio y no la almacena en ningún servidor ni base de datos."]},
  {h:"Artículo 5 (Tarifas)", b:[
-   "El Servicio es gratuito. No obstante, los cargos por datos están sujetos a la tarifa de su operador móvil."]},
+   "El Servicio es gratuito. No obstante, los cargos por datos están sujetos a la tarifa de tu operador móvil."]},
  {h:"Artículo 6 (Modificación o suspensión del Servicio)", b:[
    "La Empresa puede suspender temporalmente todo o parte del Servicio por inspección o sustitución de equipos, fuerza mayor, circunstancias de los proveedores de información de ubicación u otras razones similares, y lo avisará previamente en la pantalla del Servicio. Cuando sea inevitable, el aviso podrá darse con posterioridad."]},
  {h:"Artículo 7 (Uso de la información de ubicación personal y consentimiento)", b:[
-   "(1) La Empresa utiliza la información de ubicación personal solo cuando usted ha aceptado el consentimiento de uso de ubicación en la pantalla del Servicio y ha concedido el permiso de ubicación en su dispositivo.",
-   "(2) La Empresa no utiliza la información de ubicación personal para fines distintos de la prestación del Servicio ni la facilita a terceros sin su consentimiento.",
+   "(1) La Empresa utiliza la información de ubicación personal solo cuando has aceptado el consentimiento de uso de ubicación en la pantalla del Servicio y has concedido el permiso de ubicación en tu dispositivo.",
+   "(2) La Empresa no utiliza la información de ubicación personal para fines distintos de la prestación del Servicio ni la facilita a terceros sin tu consentimiento.",
    "(3) Conforme al artículo 16, apartado 2, de la Ley de Información de Ubicación, la Empresa registra y conserva automáticamente en su sistema de información de ubicación los registros de confirmación de la recogida, el uso y la cesión de información de ubicación. Estos registros se conservan durante 6 meses y después se destruyen. En ellos no se registran coordenadas de ubicación."]},
  {h:"Artículo 8 (Derechos del usuario)", b:[
-   "(1) Puede retirar en cualquier momento todo o parte de su consentimiento de uso de ubicación, desde los ajustes de la pantalla del Servicio o desactivando el permiso de ubicación de su dispositivo.",
-   "(2) Puede solicitar en cualquier momento la suspensión temporal del uso o la cesión de su información de ubicación personal, y la Empresa no lo rechazará.",
-   "(3) Puede solicitar el acceso a los registros de confirmación de la recogida, el uso y la cesión de su información de ubicación, o que se le notifiquen, y pedir la corrección de cualquier error.",
-   "(4) Cuando retire su consentimiento, la Empresa destruirá sin demora los registros de confirmación correspondientes."]},
+   "(1) Puedes retirar en cualquier momento todo o parte de tu consentimiento de uso de ubicación, desactivando el permiso de ubicación de tu dispositivo (teléfono o navegador) o pidiéndolo por teléfono o correo al responsable de la información de ubicación del Artículo 11.",
+   "(2) Puedes solicitar en cualquier momento la suspensión temporal del uso o la cesión de tu información de ubicación personal, y la Empresa no lo rechazará.",
+   "(3) Puedes solicitar el acceso a los registros de confirmación de la recogida, el uso y la cesión de tu información de ubicación, o que se te notifiquen, y pedir la corrección de cualquier error.",
+   "(4) Cuando retires tu consentimiento, la Empresa destruirá sin demora los registros de confirmación correspondientes."]},
  {h:"Artículo 9 (Usuarios menores de 14 años)", b:[
    "Para utilizar la información de ubicación personal de un usuario menor de 14 años, la Empresa obtiene el consentimiento de su representante legal. El Servicio se dirige principalmente a adultos, como turistas extranjeros, y si se confirma que un usuario es menor de 14 años, la Empresa no utiliza su información de ubicación personal sin el consentimiento del representante legal."]},
  {h:"Artículo 10 (Tutores de niños de 8 años o menos, etc.)", b:[
@@ -345,7 +346,7 @@ D.es={title:"Términos del servicio basado en ubicación", eff:"Fecha de entrada
    "Para proteger la información de ubicación personal y atender las reclamaciones relacionadas, la Empresa designa al siguiente responsable de la información de ubicación:",
    ["Responsable de la información de ubicación: Hwang Euiman (Tel. +82-10-4221-7066, correo admin@moneypuzzle.co.kr)"]]},
  {h:"Artículo 12 (Indemnización y exención)", b:[
-   "(1) Si usted sufre daños porque la Empresa ha infringido la Ley de Información de Ubicación, puede reclamar una indemnización a la Empresa, que responderá salvo que demuestre que no hubo dolo ni negligencia.",
+   "(1) Si sufres daños porque la Empresa ha infringido la Ley de Información de Ubicación, puedes reclamar una indemnización a la Empresa, que responderá salvo que demuestre que no hubo dolo ni negligencia.",
    "(2) La Empresa no responde por daños producidos sin dolo ni negligencia por su parte, como fuerza mayor, fallos de los proveedores de información de ubicación o causas imputables al usuario."]},
  {h:"Artículo 13 (Resolución de conflictos)", b:[
    "(1) Si un conflicto relativo a la información de ubicación no se resuelve por acuerdo entre las partes, la Empresa podrá solicitar una mediación a la Comisión de Radiodifusión, Medios y Comunicaciones conforme al artículo 28 de la Ley de Información de Ubicación.",
@@ -356,7 +357,7 @@ D.es={title:"Términos del servicio basado en ubicación", eff:"Fecha de entrada
     "Declaración de servicio basado en ubicación: N.º 1866 (2026-10-27, Comisión de Radiodifusión, Medios y Comunicaciones)",
     "Dirección: Rm 707 C64 (M Tower), 220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Korea",
     "Tel.: +82-10-4221-7066 / Correo: admin@moneypuzzle.co.kr"]]},
- {h:"Disposición adicional", b:["Estos Términos entran en vigor el ____-__-__."]},
+ {h:"Disposición adicional", b:["Estos Términos entran en vigor el 1 de enero de 2027."]},
  {h:"Idioma", b:["Estos Términos se han redactado en coreano. Si una traducción a otro idioma difiere de la versión en coreano, prevalecerá la versión en coreano."]}
  ]};
 
