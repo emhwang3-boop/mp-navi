@@ -172,7 +172,7 @@ function pkgCard(p){ var b={}; try{ b=SHOP.brief(p)||{}; }catch(e){}
   else try{ var X=SHOP.pc; if(X&&X.isExt(p)) pr='<small>'+E(X.L(X.TX.pxt))+'</small>'; }catch(e){}   // 공연 관람 등 바깥 예매처 — 「가격은 예매처에서」 (앱 카드·패키지 목록과 같은 말)
   var mt=[Lx(p.dur),langOf(p)].filter(Boolean).join(" · "), area=Lx(p.area), rv=window.rvMini?rvMini("shop:"+p.id):"";
   return '<button type="button" class="ph-pc" data-p="'+E(p.id)+'"><div class="ph-ph">'+(b.img?'<img src="'+E(b.img)+'" alt="" loading="lazy">':'')+(b.badge?'<span class="ph-st'+(b.real?' on':'')+'">'+E(b.badge)+'</span>':'')+(area?'<span class="ph-area">'+E(area)+'</span>':'')+'</div>'
-   +'<div class="ph-bd"><div class="ph-nm">'+E(b.t||Lx(p.t))+'</div>'+(mt?'<div class="ph-mt">'+E(mt)+'</div>':'')+'<div class="ph-pr">'+pr+'<span class="ph-rv">'+rv+'</span></div></div></button>'; }
+   +'<div class="ph-bd"><div class="ph-nm">'+E(b.t||Lx(p.t))+'</div>'+(mt?'<div class="ph-mt">'+E(mt)+'</div>':'')+'<div class="ph-pr">'+pr+'<span class="ph-rv">'+rv+'</span></div>'+(b.px?'<div class="shpx">'+E(b.px)+'</div>':'')+'</div></button>'; }   // shpx = 가격 아래 「별도」 줄 (11-10)
 function pkgPaint(){ $("phPkgT").textContent=L6(TX.pkg); $("phPkgAll").textContent=L6(TX.all); $("phPv").setAttribute("aria-label",L6(TX.prev)); $("phNx").setAttribute("aria-label",L6(TX.next));
   var it=pkgList(), tk=$("phTk"); $("phPkg").hidden=!it.length; if(!it.length) return;
   var sl=tk.scrollLeft; tk.innerHTML=it.map(pkgCard).join(""); tk.scrollLeft=sl;
