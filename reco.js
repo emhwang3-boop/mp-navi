@@ -245,7 +245,7 @@ var zs=new ResizeObserver(function(){ if(R.on) try{ ringDraw(); }catch(e){} }); 
 function A6(o){ return o[LANG]||o.en; }
 function T6(ko,en,ja,zhs,zht,es){ return {ko:ko,en:en,ja:ja,zhs:zhs,zht:zht,es:es}; }
 var AX={
-  sub:T6("해 보고 싶은 것·먹고 싶은 것을 적어 보세요. AI가 장소와 체험 상품을 찾아 드려요.","Tell us what you’d like to do or eat. AI finds places and experiences for you.","やってみたいこと・食べたいものを書いてください。AIが場所と体験商品を探します。","写下你想做的事、想吃的东西，AI 会帮你找到地点和体验商品。","寫下你想做的事、想吃的東西，AI 會幫你找到地點和體驗商品。","Escribe lo que te gustaría hacer o comer. La IA te busca lugares y experiencias."),
+  sub:T6("해 보고 싶은 것·먹고 싶은 것을 적어 보세요. AI가 장소와 체험 상품을 찾아 드려요.","Tell us what you’d like to do or eat. AI finds places and experiences for you.","やってみたいこと・食べたいものを書いてください。AIが場所と体験商品を探します。","写下您想做的事、想吃的东西，AI 会帮您找到地点和体验商品。","寫下您想做的事、想吃的東西，AI 會幫您找到地點和體驗商品。","Escribe lo que te gustaría hacer o comer. La IA te busca lugares y experiencias."),
   ph:T6("예: K스타일 헤어, 한국 전통 음식","e.g. K-style hair, traditional Korean food","例：Kスタイルのヘア、韓国の伝統料理","例：韩式发型、韩国传统美食","例：韓式髮型、韓國傳統美食","p. ej.: peinado estilo K, comida tradicional coreana"),
   go:T6("찾기","Search","検索","搜索","搜尋","Buscar"),
   done:T6("완료","Done","完了","完成","完成","Listo"),
@@ -259,7 +259,7 @@ var AX={
   pkg:T6("패키지여행","Group Tour","パッケージツアー","跟团游","跟團遊","Tour en grupo"),   // 11-06 칩 이름과 같게
   more:T6("자세히 ›","Details ›","詳しく ›","详情 ›","詳情 ›","Detalles ›"),
   back:T6("← 목록으로","← Back to list","← 一覧に戻る","← 返回列表","← 返回列表","← Volver a la lista"),
-  from:T6("나에게서","From you","現在地から","距你","距你","Desde ti"),
+  from:T6("나에게서","From you","現在地から","距您","距您","Desde ti"),
   gmap:T6("구글 지도에서 보기","View on Google Maps","Googleマップで見る","在谷歌地图中查看","在Google地圖中查看","Ver en Google Maps"),
   cart:T6("내 여행 카트","My trip cart","旅のカート","我的行程购物车","我的行程購物車","Carrito de mi viaje"),
   pop:T6("카트 아이콘을 누르세요","Tap the cart icon","カートアイコンを押してください","请点击购物车图标","請點擊購物車圖示","Toca el icono del carrito"),
