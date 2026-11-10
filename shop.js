@@ -48,7 +48,7 @@ var TX={
  test:T6("UNDER TESTING — 시험 화면이라 실제로 결제되지 않았어요.","UNDER TESTING — this is a test screen; no payment was made.","UNDER TESTING — テスト画面のため、実際の決済は行われていません。","UNDER TESTING — 测试页面，未实际扣款。","UNDER TESTING — 測試頁面，未實際扣款。","UNDER TESTING — pantalla de prueba; no se realizó ningún cobro."),
  back:T6("돌아가기","Back","戻る","返回","返回","Volver"),
  perf:T6("공연장 5곳의 공연 일정 보기","See shows at 5 theaters","劇場5か所の公演日程を見る","查看5家剧场的演出日程","查看5家劇場的演出日程","Ver funciones en 5 teatros"),
- cu:T6("예약자 정보","Your details","ご予約者情報","预约人信息","預約人資訊","Tus datos"),
+ cu:T6("예약자 정보","Your details","ご予約者情報","预订人信息","預訂人資訊","Tus datos"),
  cn:T6("이름 (필수)","Name (required)","お名前（必須）","姓名（必填）","姓名（必填）","Nombre (obligatorio)"),
  ce:T6("이메일 (필수)","Email (required)","メール（必須）","邮箱（必填）","電子郵件（必填）","Correo electrónico (obligatorio)"),
  cp:T6("전화 (필수)","Phone (required)","電話（必須）","电话（必填）","電話（必填）","Teléfono (obligatorio)"),
@@ -117,7 +117,7 @@ var TX={
  meet:T6("만나는 곳","Meeting point","集合場所","集合地点","集合地點","Punto de encuentro"),
  gmap:T6("구글 지도","Google Maps","Googleマップ","谷歌地图","Google地圖","Google Maps"),
  kmap:T6("카카오맵","KakaoMap","カカオマップ","Kakao地图","Kakao地圖","KakaoMap"),
- nmap:T6("네이버 지도","Naver Map","NAVER地図","Naver地图","Naver地圖","Naver Map"),
+ nmap:T6("네이버 지도","Naver Map","NAVERマップ","NAVER地图","NAVER地圖","Naver Map"),
  stn:T6("가까운 역","Nearest station","最寄り駅","最近的车站","最近的車站","Estación más cercana"),
  ext:T6("{n}번 출구","Exit {n}","{n}番出口","{n}号出口","{n}號出口","Salida {n}"),
  wk:T6("도보 {n}분","{n} min walk","徒歩{n}分","步行{n}分钟","步行{n}分鐘","{n} min a pie"),
@@ -159,11 +159,11 @@ var P=[
  {id:"hr",c:"hair",img:"hair",price:65000,
   t:T6("서울 트렌드 헤어 스타일링","Seoul trend hair styling","ソウルトレンド ヘアスタイリング","首尔潮流发型设计","首爾潮流髮型設計","Peinado de tendencia en Seúl"),
   f:[T6("1.5시간","1.5 h","1.5時間","1.5小时","1.5小時","1,5 h"),T6("현지 업체 직원이 외국어로 진행","Local staff host in foreign languages","現地スタッフが外国語で進行","当地商家员工用外语进行","當地商家員工用外語進行","Personal local en otros idiomas"),T6("강남·홍대","Gangnam·Hongdae","江南・弘大","江南·弘大","江南·弘大","Gangnam·Hongdae")],
-  d:T6("K-드라마 스타일 컷·드라이·펌 상담. 원하는 사진만 보여 주면 현지 업체 직원이 외국어로 상담해 드려요. 통역이 꼭 필요하면 여행가이드 예약으로 따로 붙일 수 있어요.","K-drama style cut, blow-dry or perm. Just show a photo — local staff will help you in a foreign language. If you really need an interpreter, you can add one separately by booking a travel guide.","K-ドラマ風カット・ブロー・パーマの相談。写真を見せるだけで現地スタッフが外国語でご相談に応じます。通訳が必要な場合は、旅行ガイド予約で別途お付けできます。","韩剧风剪发·吹发·烫发咨询。只要给出照片，当地商家员工会用外语为你咨询。如确需翻译，可另行预约旅行向导。","韓劇風剪髮·吹髮·燙髮諮詢。只要給出照片，當地商家員工會用外語為你諮詢。如確需翻譯，可另行預約旅行嚮導。","Corte, secado o permanente estilo K-drama. Enseña una foto y el personal local te atiende en otro idioma. Si necesitas intérprete, puedes reservar un guía de viaje aparte.")},
+  d:T6("K-드라마 스타일 컷·드라이·펌 상담. 원하는 사진만 보여 주면 현지 업체 직원이 외국어로 상담해 드려요. 통역이 꼭 필요하면 여행가이드 예약으로 따로 붙일 수 있어요.","K-drama style cut, blow-dry or perm. Just show a photo — local staff will help you in a foreign language. If you really need an interpreter, you can add one separately by booking a travel guide.","K-ドラマ風カット・ブロー・パーマの相談。写真を見せるだけで現地スタッフが外国語でご相談に応じます。通訳が必要な場合は、旅行ガイド予約で別途お付けできます。","韩剧风剪发·吹发·烫发咨询。只要给出照片，当地商家员工会用外语为您咨询。如确需翻译，可另行预约旅行向导。","韓劇風剪髮·吹髮·燙髮諮詢。只要給出照片，當地商家員工會用外語為您諮詢。如確需翻譯，可另行預約旅行嚮導。","Corte, secado o permanente estilo K-drama. Enseña una foto y el personal local te atiende en otro idioma. Si necesitas intérprete, puedes reservar un guía de viaje aparte.")},
  {id:"hb",c:"tour",img:"hanbok",price:45000,mp:4,
   t:T6("경복궁 한복 체험 + 궁궐 해설","Hanbok at Gyeongbokgung + palace guide","景福宮 韓服体験＋宮殿解説","景福宫韩服体验 + 宫殿讲解","景福宮韓服體驗 + 宮殿解說","Hanbok en Gyeongbokgung + guía del palacio"),
   f:[T6("3시간","3 h","3時間","3小时","3小時","3 h"),T6("한복 대여 포함","Hanbok rental","韓服レンタル込み","含韩服租赁","含韓服租借","Alquiler de hanbok"),T6("궁 입장 무료","Free palace entry","入場無料","免费入宫","免費入宮","Entrada gratis")],
-  d:T6("한복을 입으면 궁 입장이 무료. 가이드가 궁궐의 이야기와 사진 명당을 안내합니다.","Wearing hanbok gets you in free. Your guide shares the palace’s stories and best photo spots.","韓服を着ると入場無料。ガイドが宮殿の物語と写真スポットを案内します。","穿韩服免费入宫。向导讲解宫殿故事并带你去拍照胜地。","穿韓服免費入宮。嚮導講解宮殿故事並帶你去拍照勝地。","Con hanbok entras gratis. Tu guía cuenta la historia del palacio y los mejores rincones para fotos.")},
+  d:T6("한복을 입으면 궁 입장이 무료. 가이드가 궁궐의 이야기와 사진 명당을 안내합니다.","Wearing hanbok gets you in free. Your guide shares the palace’s stories and best photo spots.","韓服を着ると入場無料。ガイドが宮殿の物語と写真スポットを案内します。","穿韩服免费入宫。向导讲解宫殿故事并带您去拍照胜地。","穿韓服免費入宮。嚮導講解宮殿故事並帶您去拍照勝地。","Con hanbok entras gratis. Tu guía cuenta la historia del palacio y los mejores rincones para fotos.")},
  {id:"ck",c:"food",img:"cook",price:55000,
   t:T6("김밥·김치 쿠킹 클래스","Kimbap & kimchi cooking class","キンパ・キムチ 料理教室","紫菜包饭·泡菜烹饪课","紫菜包飯·泡菜烹飪課","Clase de cocina: kimbap y kimchi"),
   f:[T6("2.5시간","2.5 h","2.5時間","2.5小时","2.5小時","2,5 h"),T6("재료 포함","Ingredients incl.","材料込み","含食材","含食材","Ingredientes incl."),T6("레시피 카드","Recipe card","レシピカード","食谱卡","食譜卡","Tarjeta de receta")],
@@ -224,7 +224,7 @@ var PX={
   dur:T6("3시간","3 h","3時間","3小时","3小時","3 h"),langs:ALL6,conf:"24h",
   hl:[T6("한복을 입고 궁에 무료로 들어갑니다","Wear hanbok and enter the palace for free","韓服を着て無料で宮殿に入ります","穿韩服免费入宫","穿韓服免費入宮","Con hanbok entras gratis al palacio"),
    T6("가이드가 궁궐의 이야기를 들려 드립니다","Your guide tells the palace’s stories","ガイドが宮殿の物語をお話しします","向导讲述宫殿故事","嚮導講述宮殿故事","Tu guía cuenta la historia del palacio"),
-   T6("사진 명당을 안내받습니다","Get shown the best photo spots","写真スポットを案内します","带你去拍照胜地","帶你去拍照勝地","Te llevamos a los mejores rincones para fotos")],
+   T6("사진 명당을 안내받습니다","Get shown the best photo spots","写真スポットを案内します","带您去拍照胜地","帶您去拍照勝地","Te llevamos a los mejores rincones para fotos")],
   steps:[T6("한복 고르고 입기","Choose and put on hanbok","韓服を選んで着る","挑选并穿上韩服","挑選並穿上韓服","Elige y ponte el hanbok"),T6("경복궁 입장","Enter Gyeongbokgung","景福宮に入場","进入景福宫","進入景福宮","Entrada a Gyeongbokgung"),T6("가이드 해설로 궁 둘러보기","Palace tour with the guide","ガイド解説で宮殿見学","在向导讲解下参观宫殿","在嚮導講解下參觀宮殿","Recorrido con el guía"),T6("사진 명당에서 사진","Photos at the best spots","写真スポットで撮影","在拍照胜地拍照","在拍照勝地拍照","Fotos en los mejores rincones"),T6("한복 반납","Return the hanbok","韓服を返却","归还韩服","歸還韓服","Devuelves el hanbok")],
   inc:[T6("한복 대여","Hanbok rental","韓服レンタル","韩服租赁","韓服租借","Alquiler de hanbok"),T6("가이드 해설","Guide commentary","ガイド解説","向导讲解","嚮導講解","Explicaciones del guía"),T6("궁 입장 (한복을 입으면 무료)","Palace entry (free in hanbok)","宮殿入場（韓服着用で無料）","入宫（穿韩服免费）","入宮（穿韓服免費）","Entrada al palacio (gratis con hanbok)")],
   exc:[EXC_OWN],tip:MEET_TBD,
@@ -471,7 +471,7 @@ function sideHtml(){ var h='', p0=prod(), tour=!p0||kindOf(p0)==="tour";   // �
   // 가이드
   if(tour){ h+='<section class="shbx"><h2><span class="sstep">1</span>'+esc(L(TX.g1))+'</h2><p class="snote">'+esc(L(TX.gl))+'</p><div class="sgl">'+GLANGS.map(function(l){ return '<button type="button" data-gl="'+l[0]+'" class="'+(S.glang===l[0]?"on":"")+'">'+esc(l[1])+'</button>'; }).join("")+'</div>';
   if(S.glang){ if(S.guides===null) h+='<p class="snote">'+esc(L(TX.gld))+'</p>'; else if(!S.guides.length) h+='<p class="snote">'+esc(L(TX.gn))+'</p>';
-    else h+=S.guides.map(function(g){ return '<button type="button" class="sg'+(S.gid===g.id?" on":"")+'" data-g="'+esc(g.id)+'">'+(g.photo?'<img src="'+esc(g.photo)+'" alt="">':'<span class="sav">'+esc(gName(g).slice(0,1))+'</span>')+'<span><b>'+esc(gName(g))+'</b><small>'+esc((g.langs||[]).join(" · "))+(g.years?' · '+esc(g.years):'')+(g.region?' · '+esc(g.region):'')+'</small></span></button>'; }).join(""); }
+    else h+=S.guides.map(function(g){ return '<button type="button" class="sg'+(S.gid===g.id?" on":"")+'" data-g="'+esc(g.id)+'">'+(g.photo?'<img src="'+esc(g.photo)+'" alt="">':'<span class="sav">'+esc(gName(g).slice(0,1))+'</span>')+'<span><b>'+esc(gName(g))+'</b><small>'+esc((g.langs||[]).map(function(c){ return window.igLangName?igLangName(c):c; }).join(" · "))+(g.years?' · '+esc(window.igYears?igYears(g.years):g.years):'')+(g.region?' · '+esc(window.igRegion?igRegion(g.region):g.region):'')+'</small></span></button>'; }).join(""); }
   h+='</section>'; }
   // 예약·결제
   var p=prod(); h+='<section class="shbx" id="shopCo"><h2><span class="sstep">'+(tour?2:1)+'</span>'+esc(L(TX.g2))+'</h2>';
