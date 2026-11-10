@@ -658,9 +658,17 @@ function addrPaint(){ var out=document.getElementById("trAddrR"); if(!out||!ADDR
     [].forEach.call(out.querySelectorAll(".tra"),function(e){ e.onclick=function(){ var x=ADDR[+e.dataset.i]; var h={type:"addr",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x,addr:x.addr||""}; ADDRQ=""; ADDR=[]; if(!natAssignHotel(h)) nhToast(nhChoose0(h,"cart"),h); panelPaint(); }; }); }   // 11-09 숙소 칸(opt.nh) · 도시가 여럿이면 가까운 도시 숙소로 (11-06)
 // 숙소 이름·주소로 찾기 — 카카오 「숙박」 분류가 하나라도 있으면 그것만(「웨스틴조선」을 찾으면 호텔 안 식당까지 나왔다, 11-07 사장님 「먹통이다 자유롭게 숙소를 찾게」) · 없으면(주소로 찾은 경우 등) 그대로
 function lodgeOnly(a){ var h=(a||[]).filter(function(x){ return /숙박/.test(x.cat||""); }); return h.length?h:(a||[]); }
+// 11-10 사장님 정리: 「📍 현재 위치」를 골라 두고 찾으면 내 위치에서 가까운 숙소 순(이름이 똑같은 곳은 맨 위) · 안 골랐으면 지금처럼 이름·동네로 찾기
+function lodgeQ(q,cb){ var sel=document.getElementById("trHotel"), here=!!(sel&&sel.value==="__here"), u=HUB+"/kplace?q="+encodeURIComponent(q), get=function(x){ return fetch(x).then(function(r){ return r.json(); }).then(function(j){ return lodgeOnly((j&&j.ok&&j.items)||[]); }).catch(function(){ return []; }); };
+  if(!here){ get(u+kpL()).then(function(a){ cb(a.slice(0,8)); }); return; }
+  var go=function(P){ if(!P){ get(u+kpL()).then(function(a){ cb(a.slice(0,8)); }); return; } var A={lat:+P[0],lng:+P[1]}, nq=psNorm(q);
+    Promise.all([get(u+kpL()),get(u+"&near=1&ux="+A.lng.toFixed(3)+"&uy="+A.lat.toFixed(3)+kpL())]).then(function(R){ var D=function(x){ return km(A,{lat:+x.y,lng:+x.x}); }, seen={}, out=[];
+      var ex=R[0].filter(function(x){ return psNorm(x.name)===nq||(!!x.name_en&&psNorm(x.name_en)===nq); }), nr=R[1].slice().sort(function(a,b){ return D(a)-D(b); });
+      ex.concat(nr).forEach(function(x){ if(!x||!isFinite(+x.y)) return; var k=psNorm(x.name)+"|"+(+x.x).toFixed(4)+"|"+(+x.y).toFixed(4); if(seen[k]) return; seen[k]=1; out.push(x); });
+      if(!out.length) out=R[0]; cb(out.slice(0,8)); }); };
+  var mp=window.ME&&ME.pos; if(mp) go(mp); else if(window.myPos) myPos().then(function(P){ if(P&&window.meSet) try{ meSet(P); }catch(e){} go(P); }); else go(null); }
 function addrSearch(){ var q=document.getElementById("trAddrQ").value.trim(), out=document.getElementById("trAddrR"); if(!q) return; out.innerHTML='<div class="d">'+T("찾는 중…","Searching…")+'</div>'; var lg=LANG;
-  fetch(HUB+"/kplace?q="+encodeURIComponent(q)+kpL()).then(function(r){ return r.json(); }).then(function(j){ ADDR=lodgeOnly((j&&j.ok&&j.items)||[]).slice(0,8); ADDR.forEach(function(x){ x._l=lg; }); ADDRQ=q; addrPaint(); })
-    .catch(function(){ out.innerHTML='<div class="d">'+T("잠시 뒤 다시 해 주세요","Please try again")+'</div>'; }); }
+  lodgeQ(q,function(a){ ADDR=a; ADDR.forEach(function(x){ x._l=lg; }); ADDRQ=q; addrPaint(); }); }   /* lodgeQ 는 못 받으면 빈 목록(「찾은 곳이 없어요」) */
 function dragInit(ol){ if(!ol) return; var cur=null;
   ol.addEventListener("pointerdown",function(e){ var h=e.target.closest(".trh"); if(!h) return; e.preventDefault(); cur=h.closest(".tri"); cur.classList.add("drag"); try{ h.setPointerCapture(e.pointerId); }catch(x){} });
   ol.addEventListener("pointermove",function(e){ if(!cur) return; e.preventDefault(); var els=[].slice.call(ol.children);
