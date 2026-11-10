@@ -1416,7 +1416,7 @@ function nextStop(){ var pl=TR.plan, box=document.getElementById("trNextBox"); i
     s.rows.forEach(function(r){ if(!pick&&r.x&&!r.lunch&&r.act!==2&&r.t+(r.st||r.x.stay)>nm0) pick=r.x; }); });
   if(!pick){ for(var i=0;i<pl.days.length&&!pick;i++){ var d=pl.days[i]; if(d.date>=today&&d.stops.length) pick=pl.pool[d.stops[0]]; } }
   if(!pick) for(i=0;i<pl.days.length&&!pick;i++) if(pl.days[i].stops.length) pick=pl.pool[pl.days[i].stops[0]];
-  if(!pick) return; box.dataset.p="next"; box.innerHTML='<div class="item"><div class="t xtrow"><span>➡ '+esc(nm(pick))+'</span>'+nbX()+'</div><div class="d">'+esc(L()?(pick.addr_en||pick.addr||""):(pick.addr||""))+'</div>'+linksTo(pick.ko,pick.lat,pick.lng,null,pick.addr,0,null,(window.txEn?txEn(pick):""))+'</div>'; }
+  if(!pick) return; box.dataset.p="next"; box.innerHTML='<div class="item"><div class="t xtrow"><span>➡ '+esc(nm(pick))+'</span>'+nbX()+'</div><div class="d">'+esc(L()?(pick.addr_en||pick.addr||""):(pick.addr||""))+'</div>'+linksTo(pick.ko,pick.lat,pick.lng,null,pick.addr,0,null,(window.txEn?txEn(pick):""),pick.gid)+'</div>'; }
 // 「다음 갈 곳」·「공유」 칸 접기 (사장님 11-07) — 칸 맨 윗줄 오른쪽 공통 — 단추 · 같은 툴바 단추를 다시 눌러도 접힌다
 //   접기 = 칸 비우기(repAgain 은 빈 칸을 「닫힘」으로 본다) · box.dataset.p = 지금 열린 칸(next·share) · GS.view="off" = 가이드 목록 받는 중이던 것이 다시 그리지 않게
 function nbX(){ return window.XTG?XTG.html(true,'data-nbx="1"'):""; }
@@ -1468,7 +1468,7 @@ function eatLine(c){ var kd=c.src==="near"?(L()?(c.cat_en||kindX(c.kind)):String
     +(c.srcs&&c.srcs.length?'<span class="tesrc">'+MPIMG("mi_doc",MIS)+(c.url&&/^https:\/\//.test(c.url)?'<a href="'+esc(c.url)+'" target="_blank" rel="noopener">':'')+esc(c.srcs.map(function(q){ return LP(q); }).join(" · "))+(c.url?'</a>':'')+'</span>':'')
     +(c.note?'<span class="tmemo">'+esc(c.note)+'</span>':'')+(c.src==="ad"&&LD(c)?'<span class="ttip">'+esc(LD(c))+'</span>':''); }
 function eatLinks(c){ var t=String(c.tel||"").replace(/\s/g,""), tl=t?'<a class="tel" href="tel:'+esc(telIntl(t))+'">'+MPIMG("mi_phone",MIS)+esc(L()?telIntl(t).replace("-"," "):t)+'</a>':"";
-  return tl+linksTo(c.ko,c.lat,c.lng,c.ko,c.addr,0,null,(window.txEn?txEn(c):"")); }
+  return tl+linksTo(c.ko,c.lat,c.lng,c.ko,c.addr,0,null,(window.txEn?txEn(c):""),c.gid); }
 var EATC={};
 function eatList(mk,anchor){ var pl=TR.plan, rc=pl.recs&&pl.recs[mk];
   if(!rc||(anchor&&rc.ak!==anchor.k)) return '<span class="d">'+T("근처 식당 찾는 중…","Finding places to eat nearby…")+'</span>';
@@ -3428,7 +3428,7 @@ function nowAct(v,b){ var N=null; try{ N=nowState(); }catch(e){} var pq=LIVE.pq,
   if(v==="stop"){ NOWS.stop=NOWS.stop?0:1; if(pq&&pq.t==="stay"){ delete LIVE.pq; liveSave(); } nowPaint(); return; }
   if(v==="go"){ var t=N&&(N.going?N.going.x:N.nxt&&N.nxt.x); if(!t) return; try{ ntap("_trip","now_route"); }catch(z){}
     if(window.PLACES&&PLACES[t.k]&&!/^pin_/.test(t.k)&&typeof placeShow==="function"){ try{ placeShow(t.k); var rs=document.getElementById("res"); if(rs) rs.scrollIntoView({block:"start",behavior:"smooth"}); }catch(z){} return; }
-    var g=document.getElementById("trNowGo"); if(g) g.innerHTML='<div class="tnl"><b>➡ '+esc(nm(t))+'</b><br>'+(typeof linksTo==="function"?linksTo(t.ko,t.lat,t.lng,null,t.addr,0,null,(window.txEn?txEn(t):"")):"")+'</div>'; nowFit((document.getElementById("trNow")||{}).offsetHeight||0); return; }
+    var g=document.getElementById("trNowGo"); if(g) g.innerHTML='<div class="tnl"><b>➡ '+esc(nm(t))+'</b><br>'+(typeof linksTo==="function"?linksTo(t.ko,t.lat,t.lng,null,t.addr,0,null,(window.txEn?txEn(t):""),t.gid):"")+'</div>'; nowFit((document.getElementById("trNow")||{}).offsetHeight||0); return; }
   if(v==="tm"||v==="cx"){ if(!N) return; var ks=remainKeys(N); r=v==="tm"?liveMoveSet(N.L.di,ks):liveCancelSet(N.L.di,ks); NOWS.stop=0; nowMsgSet(resMsg(r,v)); liveSave(); liveChanged("stop"); return; }
   if(!pq) { nowPaint(); return; }
   if(v==="more"&&pq.t==="stay"){ rec=liveRecs(pq.d,1); if(rec[pq.k]) rec[pq.k].u=Date.now()+STAYQ; delete LIVE.pq; liveSave(); try{ ntap("_trip","stay_more"); }catch(z){} liveChanged("more"); return; }
@@ -3525,7 +3525,7 @@ function ppHtml(){ var pl=TR.plan, s=PPS; if(!pl||!s) return ""; var h='', ai=(p
       +(c.srcs&&c.srcs.length?'<div class="d">'+MPIMG("mi_doc",MIS)+esc(c.srcs.map(function(q){ return LP(q); }).join(" · "))+'</div>':'')
       +(c.rating?'<div class="d">'+esc(T5(PP6.rt))+' ★'+(+c.rating).toFixed(1)+(c.n?' ('+c.n+')':'')+'</div>':'')
       +(Array.isArray(c.oh)&&c.oh.length&&pl.days[s.di]?(function(){ var dt=new Date(pl.days[s.di].date+"T00:00:00Z"); return '<div class="pph"><b>'+esc(gTxt(PP6.hrs,{d:dateTxt(dt)}))+'</b> '+esc(efHrs(c,dt))+'</div>'; })():'')   // 구글 평점·영업시간 (11-07)
-      +'<div class="d">'+esc(L()?(c.addr_en||c.addr||""):(c.addr||""))+'</div>'+telLine(c.tel)+linksTo(c.ko,c.lat,c.lng,c.ko,c.addr,0,null,(window.txEn?txEn(c):""))+'<div class="ppr">'+rsvLink(c)+'</div></div>';   // 예약은 아웃링크 (11-07)
+      +'<div class="d">'+esc(L()?(c.addr_en||c.addr||""):(c.addr||""))+'</div>'+telLine(c.tel)+linksTo(c.ko,c.lat,c.lng,c.ko,c.addr,0,null,(window.txEn?txEn(c):""),c.gid)+'<div class="ppr">'+rsvLink(c)+'</div></div>';   // 예약은 아웃링크 (11-07)
     return h; }
   var x=s.x||pl.pool[s.k]; if(!x) return ""; var p=(!x.pin&&window.PLACES&&PLACES[s.k])||x, d=pl.days[s.di], dt=d?new Date(d.date+"T00:00:00Z"):null, nmx=nm(x);
   h='<div class="item"><div class="cph" hidden></div><div class="t">'+(x.pin?MPICO("mi_pin",nmx,MIS):esc(nmx))+'</div>'+(x.pin&&L()&&x.en!==x.ko?'<div class="d">'+esc(x.ko)+'</div>':'')+(!x.pin?tipTag(p):'')
