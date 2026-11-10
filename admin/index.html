@@ -60,7 +60,7 @@ button.twbad{background:var(--bad)}
 .mgrp{font-size:18px;font-weight:800;margin:26px 4px 10px}
 </style>
 <script>/* 11-10 — 홈페이지(?from=home)에서 들어왔으면 나갈 때 홈페이지로 */try{ if(/[?&]from=home(&|$)/.test(location.search)) sessionStorage.setItem('mpAdmFrom','home'); }catch(e){}
-function goMap(){ var h=''; try{ h=sessionStorage.getItem('mpAdmFrom')||''; }catch(e){} location.href=(h==='home')?'../home/':'../'; }</script>
+function goMap(){ var h=''; try{ h=sessionStorage.getItem('mpAdmFrom')||''; }catch(e){} if(h==='home'){ try{ window.close(); }catch(e){} setTimeout(function(){ location.href='../home/'; },300); return; } location.href='../'; }   /* 11-10 사장님 — 홈페이지 「관리자」는 새 탭이라 나가면 그 탭을 닫아 원래 홈페이지 탭만 남게(못 닫으면 홈페이지로) */</script>
 </head>
 <body>
 <div class="wrap">
