@@ -58,6 +58,8 @@ var TX={
  sDone:T6("투어 완료","Tour done","ツアー完了","导览已完成","導覽已完成","Tour completado"),
  sCx:T6("취소됨","Cancelled","キャンセル済み","已取消","已取消","Cancelada"),
  sRf:T6("환불됨","Refunded","返金済み","已退款","已退款","Reembolsada"),
+ sDrv:T6("기사 확정","Driver confirmed","ドライバー確定","司机已确认","司機已確認","Conductor confirmado"),   // 차량 대절 (11-11)
+ sDrvW:T6("기사 배정 대기","Waiting for a driver","ドライバー手配待ち","等待安排司机","等待安排司機","Esperando conductor"),
  sRvw:T6("검토 중","Under review","チェック中","检查中","檢查中","En revisión"),
  sRvd:T6("검토 끝 · 메일 보냄","Reviewed · emailed","チェック完了・メール送信済み","检查完成 · 已发邮件","檢查完成 · 已寄郵件","Revisada · enviada por correo"),
  paid:T6("결제 {a}","Paid {a}","お支払い {a}","已付 {a}","已付 {a}","Pagado {a}"),
@@ -118,8 +120,9 @@ function canChat(x){ return !!(x.tk&&x.room&&!cx(x)); }
 // ── 카드 ──
 function stTx(x){ if(x.status==="refunded") return [TX.sRf,"x"]; if(x.status==="cancelled") return [TX.sCx,"x"];
   if(x.kind==="grv") return x.grv&&x.grv.sent?[TX.sRvd,"ok"]:[TX.sRvw,"w"];
+  if(x.chr) return x.chr.drv?[TX.sDrv,"ok"]:[TX.sDrvW,"w"];   // 차량 대절 — 사장님이 기사를 넣으면 확정 (11-11)
   if(x.done) return [TX.sDone,"ok"]; if(x.kind==="pkg"&&!x.g) return [TX.sWait,"w"]; return [TX.sConf,"ok"]; }
-function card(x){ var B=BK(), st=stTx(x), ttl="", meta="", btn=[], badge=L6(TX[x.kind]||TX.pkg);
+function card(x){ var B=BK(), st=stTx(x), ttl="", meta="", btn=[], badge=x.chr&&window.CHR?CHR.tx("t"):L6(TX[x.kind]||TX.pkg);   // 차량 대절 이름표 (11-11)
   if(x.kind==="gbk"){ ttl=[modeTx(x.k),gName(x.g),x.glang?lgName(x.glang):""].filter(Boolean).join(" · ");
     meta=fDate(x.date,1)+" "+(x.time||"")+" (KST) · "+pplTx(x.n)+" · "+F6(TX.paid,{a:won(x.amount)}); }
   else if(x.kind==="grv"){ var g=x.grv||{}, n=g.days||1; ttl=L6(B.TX.grvT)+" · "+(n===1?L6(TX.day1):F6(TX.days,{n:n}));
@@ -131,7 +134,7 @@ function card(x){ var B=BK(), st=stTx(x), ttl="", meta="", btn=[], badge=L6(TX[x
   if(x.kind==="grv"&&!cx(x)){ btn.push('<button type="button" class="bk-b" data-bk="plan" data-o="'+E(x.oid)+'">'+E(L6(B.TX.plan))+'</button>'); if(x.grv&&x.grv.sent) btn.push('<button type="button" class="bk-b" data-bk="plan" data-rev="1" data-o="'+E(x.oid)+'">'+E(L6(B.TX.planRev))+'</button>'); }
   btn.push('<button type="button" class="bk-b" data-bk="det" data-o="'+E(x.oid)+'">'+E(L6(TX.det))+'</button>');
   return '<article class="bk-c'+(V.sel===x.oid?" on":"")+(cx(x)?" cx":"")+'" data-o="'+E(x.oid)+'"><div class="bk-ct"><span class="bk-k k-'+E(x.kind)+'">'+E(badge)+'</span><span class="bk-s s-'+st[1]+'">'+E(L6(st[0]))+'</span></div>'
-    +'<h3>'+E(ttl)+'</h3><div class="bk-m">'+E(meta)+'</div>'+(x.kind==="pkg"&&window.SMN?SMN.vchHtml(x):'')+'<div class="bk-bs">'+btn.join("")+'</div></article>'; }   // 모바일 바우처 (11-10, smenu.js)
+    +'<h3>'+E(ttl)+'</h3><div class="bk-m">'+E(meta)+'</div>'+(x.chr&&window.CHR?CHR.vchHtml(x):'')+(x.kind==="pkg"&&window.SMN?SMN.vchHtml(x):'')+'<div class="bk-bs">'+btn.join("")+'</div></article>'; }   // 모바일 바우처 (11-10, smenu.js)
 
 // ── 그리기 ──
 var ROOT=null;
@@ -169,7 +172,8 @@ function roomPaint(x){ var r=D.getElementById("bkRoom"); if(!r) return; var C=wi
 
 // ── 예약 내용 (화면 가운데 창) ──
 function detOpen(x){ var B=BK(), rows=[], r=function(a,b){ rows.push('<div class="bk-dr"><span>'+E(L6(a))+'</span><b>'+E(b)+'</b></div>'); }, st=stTx(x);
-  r(TX.rKind,L6(TX[x.kind]||TX.pkg));
+  r(TX.rKind,x.chr&&window.CHR?CHR.tx("t"):L6(TX[x.kind]||TX.pkg));
+  if(x.chr&&x.chr.drv&&window.CHR){ r(CHR.T.drv,x.chr.drv.nm||""); r(CHR.T.tel,x.chr.drv.tel||""); r(CHR.T.car,x.chr.drv.car||""); }   // 차량 대절 기사 (11-11)
   if(x.kind==="gbk"){ r(TX.rGuide,[gName(x.g),modeTx(x.k)].filter(Boolean).join(" · ")); }
   else if(x.kind==="grv"){ r(TX.rProd,L6(B.TX.grvT)); r(TX.rTrip,F6(B.TX.grvD,{d:fDate(x.date),n:(x.grv&&x.grv.days)||1})); if(x.grv&&x.grv.due&&!x.grv.sent&&!cx(x)) r(TX.rDue,B.when(x.grv.due)+" (KST)"); }
   else { r(TX.rProd,x.pname||""); if(x.g) r(TX.rGuide,gName(x.g)); }
