@@ -110,6 +110,7 @@ var TX={
  // 교통 창 광고 띠 · 일정표 단추
  adT:T6("차량 대절 · 하루 30만 원부터 · 원하는 곳 어디든","Private Car Charter · from ₩300,000 a day · anywhere you want","貸切チャーター・1日30万ウォンから・行きたい所どこへでも","包车 · 每天30万韩元起 · 想去哪里都行","包車 · 每天30萬韓元起 · 想去哪裡都行","Coche privado con conductor · desde ₩300.000 al día · a donde quieras"),
  adGo:T6("자세히","Details","詳しく","详情","詳情","Ver más"),
+ adMy:T6("내 차량 대절 예약 {n}건","My car charter bookings ({n})","貸切チャーターの予約（{n}件）","我的包车预约（{n}）","我的包車預約（{n}）","Mis reservas de coche privado ({n})"),   // 11-11 사장님 「가로 하자」 — 교통 화면에서 바로 내 예약
  bkd:T6("차량 대절 예약됨","Car charter booked","貸切チャーター予約済み","已预约包车","已預約包車","Coche reservado"),
  pf:T6("일정표의 {d} 장소 {n}곳을 목적지로 넣었어요. 빼거나 순서를 바꿀 수 있어요.","We added {n} places from your plan for {d} as destinations. You can remove them or change the order.","日程表の{d}の場所{n}か所を目的地に入れました。外したり順番を変えたりできます。","已将行程表中{d}的{n}个地点设为目的地，可删除或调整顺序。","已將行程表中{d}的{n}個地點設為目的地，可刪除或調整順序。","Añadimos como destinos {n} lugares de tu plan del {d}. Puedes quitarlos o cambiar el orden.")
 };
@@ -279,7 +280,16 @@ function vchHtml(x){ var c=x&&x.chr; if(!c) return ""; var p=c.pick||{}, d=c.drv
     +'<div class="chr-vx">'+esc(L(TX.ex))+': '+esc(TX.exl.map(function(q){ return L(q); }).join(" · "))+'</div></div>'; }
 
 // ── 교통 창 광고 띠 (transit.js — 검색칸 바로 아래) ──
-function adHtml(){ return '<button type="button" class="chr-ad" data-chrad="1">'+ico("height:30px;width:30px;margin:0")+'<span>'+esc(L(TX.adT))+'</span><b>'+esc(L(TX.adGo))+' ›</b></button>'; }
+function adBtn(){ return '<button type="button" class="chr-ad" data-chrad="1">'+ico("height:30px;width:30px;margin:0")+'<span>'+esc(L(TX.adT))+'</span><b>'+esc(L(TX.adGo))+' ›</b></button>'; }
+// 11-11 사장님 「가로 하자」 — 광고 띠 바로 아래 「내 차량 대절 예약 N건 ›」: 이 기기 + 로그인 계정 「내 예약」(near.js NEARBK.mine) 가운데 오늘 이후·취소 안 된 차량 대절만, 있을 때만
+function myCnt(){ var a=[], td=new Date(Date.now()+9*3600000).toISOString().slice(0,10); try{ a=window.NEARBK&&NEARBK.mine?NEARBK.mine():[]; }catch(e){ a=[]; }
+  return a.filter(function(x){ return x&&(x.chr||x.pid==="chr")&&x.status!=="cancelled"&&x.status!=="refunded"&&String(x.date||"")>=td; }).length; }
+function myBtn(){ var n=myCnt(); return n?'<button type="button" class="chr-my" data-chrmy="1"><span>'+esc(F(TX.adMy,{n:n}))+'</span><b>›</b></button>':''; }
+function adHtml(){ try{ if(window.NEARBK&&NEARBK.srv) NEARBK.srv(); }catch(e){} return '<div class="chr-adw">'+adBtn()+myBtn()+'</div>'; }   // 계정 목록은 near.js 가 30초에 한 번까지만 다시 받는다
+document.addEventListener("mpbk",function(){ [].forEach.call(document.querySelectorAll(".chr-adw"),function(w){ w.innerHTML=adBtn()+myBtn(); }); });   // 다른 기기 예약이 계정 목록으로 들어오면
+document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("[data-chrmy]"); if(!a) return; e.preventDefault(); e.stopPropagation(); try{ ntap("shop","chr_my"); }catch(z){} try{ if(window.TRANSIT&&TRANSIT.close) TRANSIT.close(); }catch(z){}
+  if(window.PC_HOME){ var b=document.getElementById("phBk"); if(b){ b.click(); return; } if(typeof window.PCGO==="function"){ PCGO("bookings"); return; } }   // 홈페이지 = 머리줄 [내 예약]과 같은 길(로그인 안 했으면 로그인 창부터)
+  try{ if(window.NEAR&&NEAR.open) NEAR.open("ig"); }catch(z){} },true);   // 앱 = 「투어 가이드」 첫 화면 맨 위 「내 예약」
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("[data-chrad]"); if(!a) return; e.preventDefault(); e.stopPropagation(); try{ ntap("shop","chr_ad"); }catch(z){} try{ if(window.TRANSIT&&TRANSIT.close) TRANSIT.close(); }catch(z){} open(); },true);
 
 var st=document.createElement("style");
@@ -318,6 +328,8 @@ st.textContent=""
  +".chr-vo{margin:0 0 4px;padding-left:22px}.chr-vx{margin-top:6px;font-size:12px;color:var(--sub,#5b6474)}"
  +".chr-ad{display:flex;align-items:center;gap:10px;width:100%;margin:8px 0 2px;border:1.5px solid #f0c419;background:#fff9db;color:#1d2433;border-radius:14px;padding:8px 12px;font:inherit;text-align:left;cursor:pointer;box-sizing:border-box}"
  +".chr-ad span{flex:1;min-width:0;font-size:13.5px;font-weight:800;line-height:1.4}.chr-ad b{flex:0 0 auto;color:#2b8a3e;font-size:13.5px;font-weight:900;white-space:nowrap}"
+ +".chr-my{display:flex;align-items:center;gap:8px;width:100%;margin:6px 0 2px;border:1.5px solid #b2dfbc;background:#ebfbee;color:#2b8a3e;border-radius:12px;padding:9px 12px;font:inherit;font-size:13.5px;font-weight:800;text-align:left;cursor:pointer;box-sizing:border-box}.chr-my span{flex:1;min-width:0}.chr-my b{flex:0 0 auto;font-weight:900}"
+ +"html[data-theme=\"dark\"] .chr-my{background:#16301d;border-color:#2f6b3c;color:#8ce99a}"
  +"html[data-theme=\"dark\"] .chr-ad{background:#3a3210;border-color:#8a7414;color:#f8f1d2}html[data-theme=\"dark\"] .chr-ad b{color:#8ce99a}"
  +"html[data-theme=\"dark\"] .chr-wt{background:#3a3210;color:#ffe066}html[data-theme=\"dark\"] .chr-zt>div.on{background:#5c4d0f;color:#fff}html[data-theme=\"dark\"] .chr-ok,html[data-theme=\"dark\"] .chr-z{color:#8ce99a}html[data-theme=\"dark\"] .chr-vr a{color:#74c0fc}"
  +"html[data-theme=\"dark\"] #shopBox .chr-zt>div.on{background:#fff3bf;color:#1d2433}html[data-theme=\"dark\"] #shopBox .chr-ok,html[data-theme=\"dark\"] #shopBox .chr-z{color:#2b8a3e}html[data-theme=\"dark\"] #shopBox .chr-wt{background:#fff3bf;color:#8a5a00}";
