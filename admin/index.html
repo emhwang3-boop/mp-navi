@@ -783,6 +783,12 @@ function misLoad(){ var P=$("pane"); var r=misMonth(0); MIS.from=r.from; MIS.to=
     +'<div class="msg">앱 「체험·입장권」 상품 결제창에서 들어온 주문입니다. 결제 연결 전이라 「결제하기」를 누르면 바로 <b>결제 완료</b>가 되고, 고른 가이드에게 메일·문자(수락/거절 링크)가 갑니다. '
     +'가이드를 「고르지 않음」으로 산 가이드 투어 상품은 결제 순간 자동 배정합니다. 가이드가 수락하면 「확정」, 거절하면 다른 가이드로 다시 배정하고, 붙일 가이드가 없으면 주문을 취소하고 손님에게 알립니다. 가이드 칸을 바꾸면(결제 완료 건) 새 가이드에게 알림이 갑니다.</div>'
     +'<div id="soSum"></div><div class="tw"><table id="soTab"></table></div></div>'
+    // 차량 대절 (11-11 사장님 「그대로 해」) — pid chr · 결제 뒤 기사 이름·전화·차 번호를 넣어 「확정」 → 손님 확정 메일(손님 언어) · 내 예약 바우처
+    +'<div class="card" id="soCardC"><div class="row"><b style="flex:1">차량 대절</b><button onclick="soFetch()">새로고침</button><button class="g" onclick="xlsSo(\'c\')">엑셀 받기</button></div>'
+    +'<div class="msg">앱·홈페이지 「차량 대절」(기사 딸린 승합차 하루 10시간) 결제 주문입니다. 결제 연결 전이라 「결제하기」를 누르면 바로 <b>결제 완료</b>가 됩니다. '
+    +'가격은 목적지 가운데 가장 먼 곳의 구간(① 서울 30만 · ② 경기·인천 35만 · ③ 강원·충청 45만 · ④ 동해안·전라·경상 70만)으로 허브가 계산했습니다. '
+    +'<b>기사 이름·전화·차 번호</b>를 넣고 「확정」을 누르면 상태가 확정으로 바뀌고 손님에게 확정 메일(손님 언어 — 기사·차·목적지 순서·따로 내는 것·취소 규정)이 갑니다. 확정 뒤 기사 정보를 바꿔 저장하면 「기사 정보가 바뀌었습니다」 메일이 다시 갑니다.</div>'
+    +'<div id="soSumC"></div><div class="tw"><table id="soTabC"></table></div></div>'
     // 셋째 카드 (11-07) — 가이드 일정 검토 (pid grv = 카트 맨 위 「가이드에게 일정 검토 받기 (선택 · 10만 원)」)
     +'<div class="card" id="soCardR"><div class="row"><b style="flex:1">가이드 일정 검토</b><button onclick="soFetch()">새로고침</button><button class="g" onclick="xlsSo(\'r\')">엑셀 받기</button></div>'
     +'<div class="msg">카트(내 여행 일정) 맨 위 「가이드에게 일정 검토 받기 (선택 · 10만 원)」에서 손님이 결제한 주문입니다. 결제 연결 전이라 「결제하기」를 누르면 바로 <b>결제 완료</b>가 되고, 손님이 고른 언어를 하는 가이드에게 자동 배정됩니다(메일·문자로 검토 화면 링크). '
@@ -797,7 +803,7 @@ function soFetch(){ var SS=[$("soSum"),$("soSumG"),$("soSumR")]; SS.forEach(func
   api("/shop/admin/orders").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); SO.items=j.items||[]; soDraw(); })
   .catch(function(e){ SS.forEach(function(S){ if(S) S.innerHTML='<div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div>'; }); }); }
 // 카드 나누기 (11-07) — g = 가이드 인솔 자유여행(pid gbk) · r = 가이드 일정 검토(pid grv) · p = 패키지 투어(그 밖 상품)
-function soOf(k){ return SO.items.filter(function(x){ return k==="g"?x.pid==="gbk":k==="r"?x.pid==="grv":(x.pid!=="gbk"&&x.pid!=="grv"); }); }
+function soOf(k){ return SO.items.filter(function(x){ return k==="g"?x.pid==="gbk":k==="r"?x.pid==="grv":k==="c"?x.pid==="chr":(x.pid!=="gbk"&&x.pid!=="grv"&&x.pid!=="chr"); }); }   // c = 차량 대절 (11-11)
 // 가이드 배정 이력 (사장님 11-05 「그거 필요해」) — 주문 hist 에서 손님 지정·관리자 지정·자동 배정·거절·수락·취소만 순서대로
 function soHist(x){ var nm=function(id){ var g=(MIS.guides||[]).filter(function(g){ return g.id===id; })[0]; return g?g.name:(id===x.gid&&x.gname)||id; }, out=[];
   (x.hist||[]).forEach(function(h){ var s=String(h.s||""), by=String(h.by||""), t=String(h.at||"").slice(5,16), m, txt="";
@@ -811,7 +817,37 @@ function soHist(x){ var nm=function(id){ var g=(MIS.guides||[]).filter(function(
     if(txt) out.push(esc(txt)+' <span class="sub">'+esc(t)+'</span>'); });
   return out.join(" → "); }
 function soGans(x){ return x.gAns&&x.gAns.gid===x.gid?(x.gAns.a==="accept"?"수락":"거절")+" "+x.gAns.at:""; }
-function soDraw(){ soDraw1("g","soSumG","soTabG"); soDraw1("p","soSum","soTab"); soDrawR(); }
+function soDraw(){ soDraw1("g","soSumG","soTabG"); soDraw1("p","soSum","soTab"); soDrawR(); soDrawC(); }
+// ── 차량 대절 카드 (11-11) — 목적지(순서·시·도)·픽업·기사 언어·인원·짐·요청 · 기사 이름·전화·차 번호 → 「확정」(허브 /shop/admin/chr) ──
+var CHZ=["","① 서울 시내","② 경기·인천","③ 강원·충청","④ 동해안·전라·경상"], CHDL={ko:"한국어",en:"영어",ja:"일본어",zh:"중국어"}, SOSC={pending:"결제 전",paid:"기사 배정 필요",confirmed:"확정",cancelled:"취소",refunded:"환불"};
+function chPk(c){ var p=(c&&c.pick)||{}; return p.t==="icn"?"인천국제공항":p.t==="gmp"?"김포국제공항":esc(p.ko||p.nm||"")+(p.addr?'<br><span class="sub">'+esc(p.addr)+'</span>':''); }
+function chDs(c){ return '<ol style="margin:0;padding-left:18px">'+((c&&c.dests)||[]).map(function(d){ return '<li>'+esc(d.ko||d.nm||"")+' <span class="sub">'+esc([d.r1,d.r2].filter(Boolean).join(" "))+(d.z?" · "+CHZ[d.z].slice(0,1):"")+'</span></li>'; }).join("")+'</ol>'; }
+function soDrawC(){ var t=$("soTabC"); if(!t) return; var it=soOf("c"), cnt=function(f){ return it.filter(f).length; }, pd=it.filter(function(x){ return x.status==="paid"||x.status==="confirmed"; }), amt=pd.reduce(function(a,x){ return a+(x.amount||0); },0);
+  $("soSumC").innerHTML='<div class="tiles">'+tile(it.length+"건","전체 주문")+tile(cnt(function(x){ return x.status==="paid"; })+"건","기사 배정 필요")+tile(cnt(function(x){ return x.status==="confirmed"; })+"건","확정")+tile(won(amt),"결제 금액 합계 (결제 완료·확정)")+'</div>';
+  var sopt=function(x){ var ks=["pending","paid","confirmed","cancelled","refunded"]; if(ks.indexOf(x.status)<0) ks.unshift(x.status); return ks.map(function(k){ return '<option value="'+k+'"'+(k===x.status?' selected':'')+'>'+esc(SOSC[k]||SOS[k]||k)+'</option>'; }).join(""); };
+  var h='<tr><th class="l">주문</th><th class="l">이용 · 손님</th><th class="l">픽업 · 목적지 (순서)</th><th class="l">구간 · 금액 · 요청</th><th class="l">기사 · 차 (넣고 확정)</th><th class="l">상태</th><th></th></tr>';   // 7칸 — 기사 넣는 칸이 옆으로 밀리지 않게
+  it.forEach(function(x){ var c=x.chr||{}, d=c.drv||{}, o=esc(x.oid), can=x.status==="paid"||x.status==="confirmed";
+    h+='<tr><td class="l" style="min-width:120px">'+o+'<br><span class="sub">'+esc(x.at)+(x.pay==="none"?' · 결제 없음(PG 전)':x.pay==="pg"?' · 카드'+(x.pgTest?"(시험 채널)":""):'')+'</span></td>'
+      +'<td class="l" style="min-width:170px"><b>'+esc(x.date||"")+'</b> '+esc(x.time||"")+' <span class="sub">· 10시간</span><br>'+(x.n||0)+'명 · 큰 짐 '+(c.lug||0)+'개 · 기사 언어 <b>'+esc(CHDL[c.dl]||c.dl||"")+'</b>'
+      +'<br>'+esc(x.name||"")+' <span class="sub">('+esc(gLangNm(x.lang))+')</span><br><span class="sub">'+esc(x.email||"")+(x.phone?' · '+esc(x.phone):'')+'</span></td>'
+      +'<td class="l" style="min-width:230px;line-height:1.5"><span class="sub">픽업</span> '+chPk(c)+chDs(c)+'</td>'
+      +'<td class="l" style="min-width:140px">'+esc(CHZ[c.z]||"-")+'<br><b>'+won(x.amount)+'</b>'+(c.memo?'<br><span class="sub">요청:</span> '+esc(c.memo):'')+'</td>'
+      +'<td class="l" style="min-width:190px"><div style="display:flex;flex-direction:column;gap:4px"><input id="chN_'+o+'" placeholder="기사 이름" value="'+esc(d.nm||"")+'"'+(can?'':' disabled')+'><input id="chT_'+o+'" placeholder="기사 전화" value="'+esc(d.tel||"")+'"'+(can?'':' disabled')+'><input id="chC_'+o+'" placeholder="차 번호" value="'+esc(d.car||"")+'"'+(can?'':' disabled')+'>'
+      +(can?'<button data-oid="'+o+'" onclick="chSave(this.dataset.oid)">'+(d.nm?"바꿔서 저장 (메일 다시)":"확정 (손님 메일)")+'</button>':'')+(d.at?'<span class="sub">'+esc(d.at)+' 확정</span>':'')+'</div></td>'
+      +'<td class="l"><select data-oid="'+o+'" onchange="soSet(this.dataset.oid,{status:this.value})">'+sopt(x)+'</select></td>'
+      +'<td><button class="g" data-oid="'+o+'" onclick="soDel(this.dataset.oid)" title="이 주문 지우기">✕</button></td></tr>'; });
+  if(!it.length) h+='<tr><td class="l" colspan="7">주문이 없습니다.</td></tr>';
+  t.innerHTML=h; }
+function chSave(oid){ var g=function(p){ var e=$(p+oid); return e?e.value.trim():""; }, drv={nm:g("chN_"),tel:g("chT_"),car:g("chC_")};
+  if(!drv.nm||!drv.tel||!drv.car){ alert("기사 이름·전화·차 번호를 모두 넣어 주세요."); return; }
+  var x=SO.items.filter(function(y){ return y.oid===oid; })[0]; if(!x) return;
+  if(!confirm((x.chr&&x.chr.drv?"기사 정보를 바꿔 저장할까요? 손님에게 「기사 정보가 바뀌었습니다」 메일이 갑니다.":"이 기사로 확정할까요? 손님에게 확정 메일이 갑니다.")+"\n\n"+drv.nm+" · "+drv.tel+" · "+drv.car)) return;
+  api("/shop/admin/chr",{method:"POST",body:JSON.stringify({oid:oid,drv:drv})}).then(function(j){ if(!j.ok){ alert("저장하지 못했습니다 ("+(j.err||"")+")"); return; }
+    SO.items=SO.items.map(function(y){ return y.oid===oid?j.order:y; }); soDraw(); alert(j.mailed?"확정했습니다. 손님에게 메일을 보냈습니다.":"저장했습니다. (메일은 보내지 않았습니다 — 바뀐 것이 없거나 보내지 못함)"); }).catch(function(){ alert("저장하지 못했습니다."); }); }
+// 차량 대절 엑셀 (11-11)
+function xlsSoC(){ var TT="차량 대절", rows=[[CO],[TT],["만든 날",kday(0)],[],["주문일시","주문번호","이용 날짜","시작 시각","손님 이름","이메일","전화","화면 언어","인원","큰 짐","픽업","목적지(순서)","기사 언어","구간","금액(원)","요청 사항","기사","기사 전화","차 번호","상태","결제"]].concat(soOf("c").map(function(x){ var c=x.chr||{}, d=c.drv||{}, p=c.pick||{};
+    return [x.at,x.oid,x.date,x.time,x.name||"",x.email||"",x.phone||"",gLangNm(x.lang),x.n||0,c.lug||0,p.t==="icn"?"인천국제공항":p.t==="gmp"?"김포국제공항":(p.ko||p.nm||""),(c.dests||[]).map(function(q,i){ return (i+1)+". "+(q.ko||q.nm||"")+" ["+[q.r1,q.r2].filter(Boolean).join(" ")+"]"; }).join(" → "),CHDL[c.dl]||c.dl||"",CHZ[c.z]||"",x.amount||0,c.memo||"",d.nm||"",d.tel||"",d.car||"",SOSC[x.status]||x.status,x.pay==="pg"?"카드":x.pay==="none"?"결제 없음(PG 전)":""]; }));
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[16,22,11,6,12,24,14,10,6,6,24,60,8,14,10,30,10,14,12,16,14]),TT); save(wb,"모자이크트립_차량대절_"+kday(0)+".xlsx"); }
 // 가이드 일정 검토 카드 (11-07) — 상태 이름은 이 상품에 맞게 · 마감(남은 시간) · 검토 결과(의견·고친 일정·손님 메일) · 손님 일정 링크 · 가이드 바꾸기(새 가이드에게 링크)
 var SOSR={pending:"결제 전",paid:"검토 대기",confirmed:"검토 보냄",cancelled:"취소",refunded:"환불"};
 function soLeft(x){ var g=x.grv||{}, d=g.due||0; if(!d) return '<span class="sub">-</span>'; var t=new Date(d+9*36e5).toISOString().slice(5,16).replace("T"," ");
@@ -863,7 +899,7 @@ function soSet(oid,ch){ var x=SO.items.filter(function(y){ return y.oid===oid; }
     SO.items=SO.items.map(function(y){ return y.oid===oid?j.order:y; }); soDraw(); }).catch(function(){ alert("바꾸지 못했습니다."); soDraw(); }); }
 function soDel(oid){ if(!confirm("이 주문을 지울까요? ("+oid+")")) return; api("/shop/admin/order/del",{method:"POST",body:JSON.stringify({oid:oid})}).then(function(j){ if(j&&j.ok) soFetch(); else alert("지우지 못했습니다."); }).catch(function(){ alert("지우지 못했습니다."); }); }
 function soClearTest(){ if(!confirm("시험 주문을 모두 지울까요?")) return; api("/shop/admin/order/cleartest",{method:"POST",body:JSON.stringify({})}).then(function(j){ if(j&&j.ok){ alert((j.removed||0)+"건을 지웠습니다."); soFetch(); } else alert("지우지 못했습니다."); }).catch(function(){ alert("지우지 못했습니다."); }); }
-function xlsSo(k){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀습니다."); return; } if(k==="r"){ xlsSoR(); return; } k=k==="g"?"g":"p"; var TT=k==="g"?"가이드 인솔 자유여행":"패키지 투어";
+function xlsSo(k){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀습니다."); return; } if(k==="r"){ xlsSoR(); return; } if(k==="c"){ xlsSoC(); return; } k=k==="g"?"g":"p"; var TT=k==="g"?"가이드 인솔 자유여행":"패키지 투어";
   var rows=[[CO],[TT],["만든 날",kday(0)],[],["주문일시","주문번호","투어 날짜","시간","상품","인원","1인 금액(원)","합계(원)","손님 이름","이메일","전화","손님 언어","가이드 언어","가이드","가이드 답","상태","시험","결제 시각"]].concat(soOf(k).map(function(x){
     return [x.at,x.oid,x.date,x.time,x.pnameKo||x.pid,x.n,x.unit||0,x.amount||0,x.name||"",x.email||"",x.phone||"",gLangNm(x.lang),x.glang?gLangNm(x.glang):"",x.gname||"",soGans(x),SOS[x.status]||x.status,x.test?"시험":"",x.paidAt||""]; }));
   var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[16,22,11,6,30,6,11,11,12,24,14,10,10,10,18,12,6,16]),TT); save(wb,"머니퍼즐_"+(k==="g"?"자유여행":"패키지투어")+"_"+kday(0)+".xlsx"); }
