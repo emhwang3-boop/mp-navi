@@ -89,6 +89,8 @@ html.pch[data-theme="dark"] #phMapSec .ph-maphint b{color:#51cf66}
 
 /* 세 가지 여행 방법 — 카드 단추는 같은 크기·오른쪽 맞춤 (사장님 11-08) */
 #phRoot .ph-ways{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+#phRoot #phWays{margin-top:30px}   /* 11-11 사장님 「지도 위에 올려줘」 — 검색칸 바로 밑 */
+#phMapSec{margin-top:36px}
 #phRoot .ph-way{position:relative;border:1px solid var(--line);border-radius:18px;padding:26px 26px 22px;background:var(--card);min-height:200px;display:flex;flex-direction:column;transition:box-shadow .15s,border-color .15s}
 #phRoot .ph-way:hover{border-color:#cfe9d5;box-shadow:0 8px 24px rgba(17,24,39,.08)}
 #phRoot .ph-way .ph-ic{width:56px;height:56px;border-radius:16px;background:var(--ph-gt);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
@@ -199,6 +201,8 @@ html.pch[data-theme="dark"] #phMapSec .ph-maphint b{color:#51cf66}
   #phRoot .ph-sec{margin-top:36px;padding:0 14px}
   #phRoot .ph-sh h2{font-size:20px}
   #phRoot .ph-ways{grid-template-columns:1fr;gap:12px}
+  #phRoot #phWays{margin-top:22px}
+  #phMapSec{margin-top:26px}
   #phRoot .ph-way{min-height:0;padding:18px 18px 16px}
   #phRoot .ph-way .ph-ic{width:48px;height:48px;border-radius:14px;margin-bottom:10px}#phRoot .ph-way .ph-ic img{width:30px;height:30px}
   #phRoot .ph-way h3{font-size:18px}
