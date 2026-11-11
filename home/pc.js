@@ -3,7 +3,7 @@
  *  · 로직·서버·자료는 앱과 하나 (사장님 11-07) — 앱 전역(LANG·T·esc·MPICO·PLACES·HUB·SHOP·BELL·mpPG·shBuild·footBuild…)을 그대로 부른다
  *  · 앱 겉모양(머리줄·칩·안내판·고객의 소리)은 감추고(pc.css), 앱의 진짜 요소를 이 화면 자리로 옮겨 쓴다:
  *      머리 단추 홈(#rs)·공유(#sh)·언어(#hlg)·알림(#bell)·라이트/다크(#th) → 윗줄 · 검색칸(.sbox) → 소개 아래 · 결과(#res)·약도 줄(#vbar)·지도(#map)·관심 별(#favbar) → 지도 칸
- *  · 차례: 머리 두 줄 → 한 줄 소개+검색 → 전국 지도(첫 화면 채움) → 세 가지 여행 방법 → 대표 패키지 상품 ◀▶ → 앱 받기 → 맨 아래
+ *  · 차례: 머리 두 줄 → 한 줄 소개+검색 → 세 가지 여행 방법(11-11 사장님 「지도 위에 올려줘」) → 전국 지도(높이 = 소개 밑 첫 화면 나머지) → 대표 패키지 상품 ◀▶ → 앱 받기 → 맨 아래
  *  · 다음 단계(지금은 자리만): 아랫줄 메뉴 6개 · 세 여행 방법 화면 · 내 예약 · 「전체 보기」 · 구글 플레이(아직 공개 전)
  *  · 새 글은 6개 언어(ko·en·ja·zhs·zht·es) — 투어앱 규칙서 3장
  */
@@ -88,9 +88,9 @@ root.innerHTML=
  + '</div></div><nav class="ph-hd2" id="phNav">'+NAVK.map(function(x){ return '<button type="button" data-ph="'+x[0]+'">'+img(x[1])+'<span></span></button>'; }).join("")+'</nav></header>'
  +'<main id="phMain">'
  + '<section id="phHero"><img class="ph-branch" src="home/img/mugunghwa_branch.webp" alt="" aria-hidden="true"><h1 id="phH1"></h1></section>'
+ + '<section class="ph-sec" id="phWays"><div class="ph-sh"><h2 id="phWaysT"></h2></div><div class="ph-ways" id="phWaysL"></div></section>'
  + '<div id="phRes"></div>'
  + '<section id="phMapSec"><div class="ph-mapbox" id="phMapBox"></div></section>'
- + '<section class="ph-sec" id="phWays"><div class="ph-sh"><h2 id="phWaysT"></h2></div><div class="ph-ways" id="phWaysL"></div></section>'
  + '<section class="ph-sec" id="phPkg"><div class="ph-sh"><h2 id="phPkgT"></h2><button type="button" class="ph-more" id="phPkgAll"></button></div>'
  +   '<div class="ph-car"><button type="button" class="ph-arr" id="phPv">◀</button><div class="ph-track" id="phTk"></div><button type="button" class="ph-arr" id="phNx">▶</button></div></section>'
  + '<div class="ph-appw"><section class="ph-appb" id="phApp"><img class="ph-ai" src="icon-192.png" alt=""><div class="ph-tx"><h2 id="phAppT"></h2><p id="phAppP"></p></div>'
@@ -219,7 +219,7 @@ var _mk="";
 function mapH(force){ var m=$("map"); if(!m) return; var k=window.innerWidth+"x"+window.innerHeight+(phone()?"p":"");
   if(!force&&k===_mk) return; _mk=k;
   if(phone()) H.style.removeProperty("--phMH");
-  else { var top=$("phRes").getBoundingClientRect().top+window.scrollY+8; H.style.setProperty("--phMH",Math.round(Math.max(440,Math.min(1200,window.innerHeight-top-12)))+"px"); }
+  else { var top=$("phHero").getBoundingClientRect().bottom+window.scrollY+8;   /* 11-11 여행 방법이 지도 위로 와도 지도 크기는 전과 같게 */ H.style.setProperty("--phMH",Math.round(Math.max(440,Math.min(1200,window.innerHeight-top-12)))+"px"); }
   try{ zResize(true); }catch(e){} }
 
 // ── 언어 바꾸기 — 앱 setLang 뒤에 이 화면도 ──
