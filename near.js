@@ -522,7 +522,7 @@ function gbSend(){ gbGrab(); var k=IG.bk, L=LG6, err="";
 function gbTop(){ var o=document.getElementById("nrBox"); if(o){ o.scrollTop=0; var i=o.querySelector(".nrin"); if(i) i.scrollTop=0; } }   // 넓은 화면은 .nrin 이 스크롤 (11-06)
 // 결제창 「결제하기」 — 허브 /shop/order(실전 주문) → PG 전이면 바로 확정 화면 · PG 뒤(tpg.js SH_PG)면 받은 결제 값으로 KG이니시스 결제창(포트원, 11-07 — shop.js 와 같은 길)
 function gbGv(g){ return {id:g.id,name:g.name,name_en:g.name_en,name_ja:g.name_ja,name_zh:g.name_zh,langs:g.langs,years:g.years,region:g.region,photo:g.photo}; }
-function gbDoneSet(k,g,j){ IG.busy=0; if(j.tdone) bkPut({oid:j.orderId,tk:j.tdone,kind:"gbk",date:k.date,time:k.time,end:+j.end||0,k:{mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0},n:k.n,amount:j.amount,status:j.status||"confirmed",g:gbGv(g),room:{n:0,unread:0}});
+function gbDoneSet(k,g,j){ IG.busy=0; if(j.tdone) bkPut({oid:j.orderId,tk:j.tdone,qv:j.qv||"",kind:"gbk",date:k.date,time:k.time,end:+j.end||0,k:{mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0},n:k.n,amount:j.amount,status:j.status||"confirmed",g:gbGv(g),room:{n:0,unread:0}});
   IG.gbRes={oid:j.orderId,amount:j.amount,end:+j.end||0,tk:j.tdone||""}; IG.view="gdone"; paint(); gbTop(); try{ window.CHAT&&CHAT.dot(); }catch(z){} }
 function gbPay(){ var k=IG.bk, g=IG.gobj, L=LG6; if(!k||!g||IG.busy) return;
   if(k.pm==="paypal"){ k.err=L(GBT.ppn); paint(); return; }
@@ -677,6 +677,7 @@ var BKT={
  rvAt:T6("투어 날({d})부터 별점·후기를 쓸 수 있습니다.","You can rate and review from the tour day ({d}).","ツアー当日（{d}）から評価・レビューできます。","导览当天（{d}）起可评分·写评价。","導覽當天（{d}）起可評分·寫評價。","Podrás valorar y reseñar desde el día del tour ({d})."),
  rvEarly:T6("투어 날({d})부터 쓸 수 있습니다.","You can write it from the tour day ({d}).","ツアー当日（{d}）から書けます。","导览当天（{d}）起可写。","導覽當天（{d}）起可寫。","Podrás escribirla desde el día del tour ({d})."),
  rvd:T6("후기를 남겨 주셔서 감사합니다.","Thank you for your review.","レビューありがとうございました。","感谢您的评价。","感謝您的評價。","Gracias por tu reseña."),
+ gbkT:T6("가이드 인솔","Travel with Guide","ガイド同行","向导陪同","嚮導陪同","Viaje con guía"),   // 바우처 QR 큰 화면 제목 (11-11)
  bkr:T6("예약자","Booked by","予約者","预订人","預訂人","Reservado por"),   // 11-05 사장님 「내 폰에서도 보이게」
  other:T6("기타 언어","Other languages","その他の言語","其他语言","其他語言","Otros idiomas"),
  cx:T6("취소된 예약입니다.","This booking was cancelled.","キャンセルされた予約です。","该预约已取消。","該預約已取消。","Esta reserva fue cancelada."),
@@ -702,7 +703,7 @@ function bkSave(a){ try{ localStorage.setItem(BKK,JSON.stringify(a.slice(0,12)))
 function bkGet(oid){ return bkMine().filter(function(x){ return x.oid===oid; })[0]||null; }   // 11-08 — 로그인 계정 목록까지
 function bkPut(x){ var a=bkAll(), o=a.filter(function(y){ return y.oid===x.oid; })[0]||{}; if(!/^[0-9a-f]{32}$/.test(x.tk||o.tk||"")) return; bkSave([Object.assign(o,x)].concat(a.filter(function(y){ return y.oid!==x.oid; }))); }
 function bkDrop(oid){ bkSave(bkAll().filter(function(y){ return y.oid!==oid; })); }
-function bkFrom(j,tk){ var o=bkFrom0(j,tk); if(j&&j.hosp) o.hosp=j.hosp; if(j&&j.chr) o.chr=j.chr; return o; }   // 차량 대절 목적지·픽업·기사 (11-11, charter.js 바우처) — 허브가 안 주면 이 폰에 둔 값 그대로   // 건강검진 고른 병원 id (11-10, hosp.js 바우처) — 허브가 안 주면 이 폰에 둔 값 그대로
+function bkFrom(j,tk){ var o=bkFrom0(j,tk); if(j&&j.hosp) o.hosp=j.hosp; if(j&&j.chr) o.chr=j.chr; if(j&&j.qv) o.qv=j.qv; return o; }   /* qv = 바우처 QR 주소(허브 /shop/q, 확인 전용 서명 · 11-11 「2나」) */   // 차량 대절 목적지·픽업·기사 (11-11, charter.js 바우처) — 허브가 안 주면 이 폰에 둔 값 그대로   // 건강검진 고른 병원 id (11-10, hosp.js 바우처) — 허브가 안 주면 이 폰에 둔 값 그대로
 function bkFrom0(j,tk){ return {oid:j.oid,tk:tk,kind:j.kind||"gbk",glang:j.glang||"",cust:j.cust||"",pname:j.pname||"",date:j.date,time:j.time,end:+j.end||0,k:j.k||{},n:j.n,amount:j.amount,status:j.status,done:j.done?1:0,rv:j.review||"",rvd:!!j.reviewed,rvFrom:j.rvFrom||"",room:j.room||null,g:j.g||null,menu:j.menu||null}; }
 function bkShown(){ return bkMine().filter(function(x){ return !(x.status==="cancelled"||x.status==="refunded"||(x.rvd&&(x.done||x.kind==="pkg"))||(x.kind==="grv"&&x.grv&&(x.grv.end||(x.grv.sent&&(x.end||0)<Date.now())))); }); }   // 완료(투어 완료 + 후기까지 끝남)·취소 예약은 바로 숨김 (사장님 11-05 「2-가」) · 일정 검토는 검토를 받고 여행이 끝나면 숨김 (11-08)
 // ── 「내 예약」 로그인 계정 목록 (사장님 11-08 「로그인·내 예약」 통과) — 로그인돼 있으면 허브 POST /guide/mybk 가 계정에 묶인 예약(다른 폰·PC 에서 한 것 포함)을 준다 ──
@@ -753,6 +754,7 @@ function bkCard(x){ var L=LG6, g=x.g||null, cx=x.status==="cancelled"||x.status=
     var rv=""; if(g){ if(x.rvd) rv='<div class="gbdone" style="margin:8px 0 0">✓ '+esc(L(BKT.rvd))+'</div>'; else if(x.rv){ var early=x.rvFrom&&bkToday()<x.rvFrom; rv='<button type="button" class="gbgo g2" style="margin-top:8px" data-bkrv="'+esc(x.oid)+'"'+(early?' disabled':'')+'>★ '+esc(L(BKT.rv))+'</button>'+(early?'<div class="ignt">'+esc(gbF(BKT.rvAt,{d:x.rvFrom}))+'</div>':''); } }
     foot=gc+(window.HSP?HSP.vchHtml(x):'')+(window.SMN?SMN.vchHtml(x):'')+rv+chatBtn; }   // 모바일 바우처 · 모델 바꾸기 · 투어 완료 (11-10, smenu.js — 가게 메뉴가 있는 패키지만)
   else foot=chatBtn;
+  if(!cx&&window.VQR) foot=VQR.html(Object.assign({},x,{pname:x.pname||(x.kind==="gbk"?L(BKT.gbkT):"")}))+foot;   // 바우처 QR — 예약마다 하나, 가이드·가게·기사가 폰 카메라로 찍으면 예약 확인 화면 (11-11 「2나」, vqr.js)
   var head=pk?'<b>'+esc(x.pname||"")+'</b><div class="igm">'+when+' · '+esc(gbF(GBT.pN,{n:x.n||1}))+'</div>'
     :'<div style="display:flex;gap:11px;align-items:flex-start">'+igFace(g||{})+'<div class="igb"><b>'+igName(g||{})+'</b><div class="igm">'+when+' · '+esc(gbModeTxt({mode:(x.k&&x.k.mode)||"half",h:x.k&&x.k.h,d:x.k&&x.k.d}))+' · '+esc(gbF(GBT.pN,{n:x.n||1}))+'</div></div></div>';
   return '<div class="igcard" style="cursor:default;display:block'+hi+'">'+head+(x.cust?'<div class="igm">'+esc(L(BKT.bkr))+' '+esc(x.cust)+'</div>':'')+'<div class="igm">'+esc(L(GBT.oid))+' '+esc(x.oid)+'</div>'+foot+'</div>'; }
