@@ -1251,8 +1251,8 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
     h+=(arr.length?'<div class="tmap" id="tmap'+di+'"></div>':'')+'<div class="trows">';
     var n=0, prevK=null, f0=s.rows[0], g0=f0&&(f0.x||f0.r||f0.next);   // 첫 칸이 식사(첫 장소 앞 — 밤 장소만 있는 날 저녁 등)면 그 식당·그 장소로
     var Sx=hS(X.H), today=d.date===kstToday(0);   // 출발점 (11-06 「가」) — 오늘이고 위치가 있으면 「지금 내 위치 출발」, 아니면 전날 밤 숙소 출발
-    if(pre){ h+=natPreHtml(pl,di,X); var S0=hS(X.H); prevK=S0?S0.k:null; }   // 전국 일정 — 공항 도착·아침 도시 이동이 있는 날은 그 줄부터(지금 내 위치 줄 대신)
-    else if(!X.me&&Sx&&f0&&!OLD()){ var l1=f0.leg; h+=rowH(Math.max(0,f0.t-(l1?l1.min:0)),"mi_stay",esc(gTxt(NX6.st0,{h:ptNm(Sx)}))); prevK=Sx.k; pre=[1];
+    if(pre){ if(X.chr) h+=rowH(X.chr.t,"mi_charter",esc(chrPkTx(X.chr,hS(X.H))),"tchrp"); h+=natPreHtml(pl,di,X); var S0=hS(X.H); prevK=S0?S0.k:null; }   // 차량 대절 픽업 줄은 맨 위 (11-11)   // 전국 일정 — 공항 도착·아침 도시 이동이 있는 날은 그 줄부터(지금 내 위치 줄 대신)
+    else if(!X.me&&Sx&&f0&&!OLD()){ var l1=f0.leg; h+=X.chr?rowH(X.chr.t,"mi_charter",esc(chrPkTx(X.chr,Sx)),"tchrp"):rowH(Math.max(0,f0.t-(l1?l1.min:0)),"mi_stay",esc(gTxt(NX6.st0,{h:ptNm(Sx)}))); prevK=Sx.k; pre=[1];
       if(today&&!REPME) h+='<div class="d tnost" data-html2canvas-ignore'+(GEOST==="fail"?"":" hidden")+'>'+T5({ko:"위치를 켜면 1번째 장소까지 가는 길이 보입니다",en:"Turn on location to see the way to your first stop",ja:"位置情報をオンにすると1番目の場所までの行き方が表示されます",zhs:"开启定位后，会显示前往第1个地点的路线",zht:"開啟定位後，會顯示前往第1個地點的路線",es:"Activa la ubicación para ver cómo llegar a tu primera parada"})+'</div>'; }
     else if(g0&&(X.me||OLD()||(today&&!REPME))){   // 1번째 장소까지 — 늘 「지금 내 위치」에서(숙소는 날짜 나누기·순서·귀가에만). 모양은 장소 사이 구간과 같게, 실제 경로(ODsay)는 누를 때만, PDF 엔 안 찍음 (10-20)
       if(REPME){ var lg0=leg(REPME,g0), b0=f0.x?f0.x.k:f0.r?"rs:"+di+":"+f0.meal:g0.k;
@@ -1263,7 +1263,8 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
     var pj=0;   // 이 줄 앞 장소 수(식사 칸에서 「직접 식당 찾기」로 넣을 자리 기본값)
     var GP=[], GPI={}; if(!lv&&!OLD()){ try{ GP=gapsOf(s); if(edOn(pl,d)) GP=gapsEd(s,GP,(pl.mc&&X.pre&&X.pre.length)?(X.chk?Math.min(X.from,X.chk.t+ARR_CHK):X.from):null,X.from); GP.forEach(function(g,gi){ GPI[g.ri]=gi; try{ g.rec=gapRec(pl,di,X,s,g); }catch(e){ g.rec=[]; } }); }catch(e){ GP=[]; GPI={}; } } GPC[di]=GP;   // 11-07 장소 사이 빈 시간 — 그 자리에 「일정 추가」 칸 (오늘 실제 기록 날은 실시간 조정이 맡는다)
     var lqi=-1; if(!OLD()&&lunchAskOn(pl,d,di,X,s)){ lqi=s.rows.length; for(var q9=0;q9<s.rows.length;q9++){ if(s.rows[q9].t>=720){ lqi=q9; break; } } }   // 11-08 사장님 「점심시간이 비는데 점심을 물어보지 않는다 — 물어봐줘」
-    s.rows.forEach(function(r,ri){ var lgOk=ri>0||!!pre;
+    var CE=X.chr||null, ceD=false, dEnd=Q.post?Q.post.end:s.end;   // 차량 대절 10시간 끝 줄 (11-11)
+    s.rows.forEach(function(r,ri){ var lgOk=ri>0||!!pre; if(CE&&!ceD&&r.t>=CE.end){ h+=chrEndHtml(CE,dEnd); ceD=true; }
       if(ri===lqi) h+=lunchAskHtml(di);
       if(GPI[ri]!=null) h+=gapHtml(pl,di,GP[GPI[ri]],GPI[ri]);   // 앞 일정 ↔ (이동) 다음 일정 사이
       if(r.rest){ var rk=(r.p&&r.p.k)||"__hotel", rn=ptNm(r.p);   // 숙소에서 쉬기 (11-07) — 숙소까지 · 쉬기 줄 · 다음 일정까지는 다음 줄의 구간
@@ -1298,10 +1299,12 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
         +(hk===r.x.k?'<span class="tlvw" data-html2canvas-ignore><button type="button" class="tlvb" data-lvleave="'+esc(r.x.k)+'">'+esc(T5(LV6.leave))+'</button></span>':'')+(window.XTG?XTG.html(op,'',true):'')+'</span></div>';
       prevK=r.x.k; });
     if(lqi===s.rows.length) h+=lunchAskHtml(di);
+    if(CE&&!ceD&&dEnd>=CE.end){ h+=chrEndHtml(CE,dEnd); ceD=true; }   // 숙소로 돌아가는 길에 10시간이 끝남
     if(Q.post) h+=natPostHtml(pl,di,X,Q.post,prevK);
     else if(s.back){ var eP=hE(X.H), eK=(eP&&/^__hn\d+$/.test(eP.k||""))?eP.k:"__hotel";   // 11-09 밤마다 숙소가 다른 날 — 그 밤 숙소(__hn)로 길·이름
       h+='<div class="tlg" data-a="'+esc(prevK)+'" data-b="'+eK+'" data-d="'+di+'">'+legTxt(s.back,lgNm(prevK,di),lgNm(eK,di,1))+legGo(s.back)+'<div class="tods"></div></div><div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+MPICO("mi_stay",T("숙소 도착","Back to lodging"),MIS)+(eK!=="__hotel"?' · <b>'+esc(ptNm(eP))+'</b>':'')+'</span></div>'; }
     else h+='<div class="trw h"><span class="tt">'+m2hm(s.end)+'</span><span class="tp">'+T("일정 끝","End of day")+'</span></div>';
+    if(CE&&!ceD){ h+=chrEndHtml(CE,dEnd); ceD=true; }   // 일정이 10시간 안에 끝나는 날 — 시간선 그 시각 자리(맨 끝)
     if(!Q.post&&pl.days.length>1&&di<pl.days.length-1) h+=nightHtml(pl,di,null);   // 밤마다 숙소 칸 (11-06) — 숙소 하나 일정은 마지막 날 빼고
     if(d.gap&&!(X.pmTr||X.apD)) h+=gapAsk(pl,d,di,s,shr!==0);   // 「숙소로 일찍 갈게요」를 고른 날 등 — 그 표시와 되돌리기 (11-07 「일찍 끝나요」 물음은 아래 「일정 추가」 칸이 맡는다)
     var lim=Q.lim;   // 밤 장소가 있는 날은 그 장소 시각까지 (11-06) · 전국 일정은 막차·공항 도착 시각도
@@ -1351,7 +1354,7 @@ function pickPlace(row){ var pl=TR.plan, k=row&&row.dataset.k, it=k&&pl&&pl.pool
   try{ if(window.ITP&&document.getElementById("itB")) ITP.refresh(); }catch(x){} }
 document.addEventListener("click",function(e){ var r=e.target.closest&&e.target.closest("#trRep .trw.tpk"); if(!r||(e.target.closest&&e.target.closest("a,button"))) return; pickPlace(r); },true);
 // 그 구간만 ODsay — 기존 odsBox 를 잠깐 빌린 키로 부른다(하루 한도 아낌, 같은 구간은 sessionStorage 캐시)
-function ptK(k){ var pl=TR.plan; if(k==="__hotel") return REPH; if(k==="__me") return REPME; if(/^rs:/.test(k)) return pl.meals&&pl.meals[k.slice(3)]; if(/^__/.test(k)) return natPt(pl,k); return pl.pool[k]; }   // __ht·__st·__tm·__ap·__ct = 전국 일정 숙소·역·터미널·공항·도시 (11-06)
+function ptK(k){ var pl=TR.plan; if(k==="__hotel") return REPH; if(/^__cp\d+$/.test(k)) return CHPK[k]||null; if(k==="__me") return REPME; if(/^rs:/.test(k)) return pl.meals&&pl.meals[k.slice(3)]; if(/^__/.test(k)) return natPt(pl,k); return pl.pool[k]; }   // __ht·__st·__tm·__ap·__ct = 전국 일정 숙소·역·터미널·공항·도시 (11-06)
 function legRoute(row){ var pl=TR.plan, A=row.dataset.a, B=row.dataset.b, pa=ptK(A), pb=ptK(B); if(!pa||!pb) return;
   var box=row.querySelector(".tods"), old=document.getElementById("ods"), ka="__t_"+(/^__/.test(A)?"h"+(+pa.lat).toFixed(3)+"_"+(+pa.lng).toFixed(3):A), kb="__t_"+(/^__/.test(B)?"h"+(+pb.lat).toFixed(3)+"_"+(+pb.lng).toFixed(3):B);
   if(old) old.id="ods_tmp"; box.id="ods"; PLACES[ka]={ko:pa.ko,en:pa.en,lat:+pa.lat,lng:+pa.lng}; PLACES[kb]={ko:pb.ko,en:pb.en,lat:+pb.lat,lng:+pb.lng};
@@ -1825,6 +1828,14 @@ function chrApply(pl){ var M=chrMap(); if(!M.n||!pl||!pl.days||!pl.pool) return 
     d.stops=rest.slice(0,c).concat(keys,rest.slice(c));
     if(JSON.stringify(pl.days.map(function(q){ return [q.stops,q.post||[]]; }))!==old){ d.aiX=1; ch=1; } });
   if(ch) pl.chk=2; if(any) try{ save(); }catch(e){} return ch; }
+var CHT6={pk:{ko:"차량 대절 픽업 · {p}",en:"Car charter pickup · {p}",ja:"貸切チャーターお迎え・{p}",zhs:"包车接您 · {p}",zht:"包車接您 · {p}",es:"Recogida del coche · {p}"},
+ end:{ko:"차량 대절 10시간 끝",en:"10-hour car charter ends",ja:"貸切チャーター10時間終了",zhs:"包车10小时结束",zht:"包車10小時結束",es:"Terminan las 10 horas del coche"},
+ over:{ko:"일정이 {t}에 끝나요. 10시간을 넘어 1시간에 3만 원이 더 들어요.",en:"Your day ends at {t}. That's over 10 hours, so it costs ₩30,000 more per hour.",ja:"この日の予定は{t}に終わります。10時間を超えるため、1時間ごとに3万ウォンかかります。",zhs:"当天行程{t}结束。超过10小时，每小时需另付3万韩元。",zht:"當天行程{t}結束。超過10小時，每小時需另付3萬韓元。",es:"Tu día termina a las {t}. Pasa de 10 horas, así que cuesta ₩30.000 más por hora."}};
+function chrPkTx(C,S){ var p=C&&C.pick, n=""; try{ n=p&&window.CHR&&CHR.pkTx?CHR.pkTx(p):""; }catch(e){} return gTxt(CHT6.pk,{p:n||ptNm(S)||""}); }
+function chrEndHtml(C,dEnd){ var ov=dEnd>C.end; return '<div class="trw h tchre'+(ov?' over':'')+'"><span class="tt">'+m2hm(C.end)+'</span><span class="tp">'+MPIMG("mi_charter",MIS)+esc(T5(CHT6.end))+(ov?'<span class="tchro">'+esc(gTxt(CHT6.over,{t:m2hm(dEnd)}))+'</span>':'')+'</span></div>'; }
+(function(){ var s=document.createElement("style"); s.textContent=".tchrp .tp{font-weight:800}.tchre .tp{color:var(--sub,#5b6474)}.tchre.over .tp{color:#7a5900;font-weight:800}"
+  +".tchro{display:block;margin-top:4px;padding:5px 9px;border-radius:9px;background:#fff3bf;border:1px solid #f0c419;color:#7a5900;font-size:12.5px;font-weight:700;line-height:1.5}"
+  +"html[data-theme=dark] .tchre.over .tp{color:#ffe066}html[data-theme=dark] .tchro{background:#3a3210;border-color:#8a7414;color:#ffe066}"; (document.head||document.documentElement).appendChild(s); })();   // 10시간 넘김 = 노랑(주의) — 빨강은 경고에만 (규칙서 4장)
 function chrSeeBk(){ try{ ntap("_trip","trip_chr_bk"); }catch(e){} if(window.PC_HOME&&typeof window.PCGO==="function"){ PCGO("bookings"); return; } try{ if(window.NEAR&&NEAR.open) NEAR.open("ig"); }catch(e){} }
 document.addEventListener("chrbk",function(){ CHRC=null; if(document.getElementById("trRep")&&TR.plan) repPaint(); });   // 차량 대절 결제 끝 — 그날을 다시 (11-11)
 document.addEventListener("mpbk",function(){ var a=CHRC&&JSON.stringify(CHRC.m); CHRC=null; if(JSON.stringify(chrMap().m)!==a&&document.getElementById("trRep")&&TR.plan) repPaint(); });   // 로그인 계정 「내 예약」이 바뀌면 (다른 기기에서 예약)
@@ -2992,7 +3003,18 @@ function natPlanSeq(H,D,P,G,ap,from,to,cap,skip){ var o=TR.opt;   // 「여행 �
 var MEC=null, ARR_CHK=30, ARR_REST=20*60;   // 도착한 날 숙소 들르기(분) · 숙소 들른 뒤 이 시각이 넘으면 그날은 쉬기 (11-07)
 function mePt(){ var mp=(window.ME&&ME.pos)||GEO; if(!mp) return null; if(MEC&&MEC.lat===+mp[0]&&MEC.lng===+mp[1]) return MEC; return MEC={k:"__me",ko:"현재 위치",en:"Current location",lat:+mp[0],lng:+mp[1],me:1}; }
 function meFor(d,arr){ if(!d||d.date!==kstToday(0)||OLD()) return null; var me=mePt(); if(!me||!arr.length) return null; var near=arr.some(function(x){ return km(me,x)<=80; }); return near?me:null; }
-function dayX(pl,di,H0){ var d=pl.days[di], dt=new Date(d.date+"T00:00:00Z"), arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean);
+// 차량 대절 예약한 날 (11-11 사장님 「가」) — 그날 출발 = 예약한 픽업 시각 · 출발 자리 = 예약한 픽업 장소(숙소 또는 인천·김포공항) · X.chr = {t 픽업, end 픽업+10시간, pick}
+//   공항 도착·도시 이동이 있는 날(X.pre)은 그 시각 그대로 두고 줄(픽업·10시간 끝)만 · 예약이 바뀌거나 취소되면 chrMap 이 바로 따라간다
+function dayX(pl,di,H0){ var X=dayX0(pl,di,H0); try{ chrX(pl,di,X); }catch(e){} return X; }
+var CHAP={icn:{ko:"인천국제공항",en:"Incheon International Airport",lat:37.4602,lng:126.4407},gmp:{ko:"김포국제공항",en:"Gimpo International Airport",lat:37.5583,lng:126.7906}};
+function chrX(pl,di,X){ var d=pl.days[di]; if(!d||d.md||!X) return; var B=chrOn(d.date); if(!B) return; var t=hm2m(B.time||""); if(t==null) return;
+  X.chr={t:t,end:t+600,pick:B.pick||null,oid:B.oid}; if(X.pre&&X.pre.length) return;
+  X.from=t; X.me=0; var p=B.pick, S=hS(X.H), E=hE(X.H), P=null;
+  if(p&&CHAP[p.t]) P={type:"addr",ko:CHAP[p.t].ko,en:CHAP[p.t].en,lat:CHAP[p.t].lat,lng:CHAP[p.t].lng,ap:1};
+  else if(p&&isFinite(+p.lat)&&isFinite(+p.lng)&&+p.lat) P={type:"addr",ko:p.ko||p.nm||"",en:p.en||p.nm||p.ko||"",lat:+p.lat,lng:+p.lng};
+  if(P&&!(S&&isFinite(+S.lat)&&km(S,P)<0.15)){ P.k="__cp"+di; CHPK[P.k]=P; X.H=hPair(P,E||null); } }
+var CHPK={};   /* 픽업 자리 열쇠 __cp<날> — 이동 줄·교통 창(ptK)이 찾는다 */   // 숙소와 같은 곳이면 숙소 그대로(이름·길 그대로)
+function dayX0(pl,di,H0){ var d=pl.days[di], dt=new Date(d.date+"T00:00:00Z"), arr=d.stops.map(function(k){ return pl.pool[k]; }).filter(Boolean);
   var F0=(d.fr!=null&&d.fr>=300)?d.fr:pl.from;   // 그날만 일찍 출발 (11-07 사장님 「늦는 시간만큼 일찍 출발하기」 — 검사 창 단추) · 없으면 조건의 시작 시각
   if(!pl.mc){ var me0=meFor(d,arr), HD=nhDayH(pl,di,H0); return {H:me0?hPair(me0,hE(HD)):HD,from:F0,to:pl.to,dt:dt,arr:arr,me:me0?1:0}; }   // 11-09 밤마다 숙소가 다르면 전날 밤 숙소 → 그날 밤 숙소 (같으면 예전 그대로)
   var X={mc:1,dt:dt,arr:arr,from:F0,to:pl.to,lim:null,pre:[],city:d.c}, t=F0, S=null;
