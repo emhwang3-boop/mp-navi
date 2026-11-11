@@ -44,13 +44,13 @@ function tcard(){ var x=X(), T=x.TX;
   return '<section class="pg-tc'+(PK.tc?' on':'')+'"><div class="pg-tch" data-pk="tc"><h1>'+E(x.L(T.t))+'</h1>'+XT(PK.tc,'data-pk="tc"')+'</div>'
    +(PK.tc?'<div class="pg-tcb"><p>'+E(x.L(T.s))+'</p></div>':'')+'</section>'; }
 function priceLine(p){ var x=X(), u=x.minUnit(p); if(!u) return x.isExt(p)?'<small>'+E(x.L(x.TX.pxt))+'</small>':'';
-  var n=Number(u).toLocaleString("ko-KR"), per=E(x.L(x.TX.per)), v=E(F(TX.won,n));
+  var n=Number(u).toLocaleString("ko-KR"), per=E(x.L(x.perOf?x.perOf(p):x.TX.per)), v=E(F(TX.won,n));   // 차량 대절은 「차 1대」 (11-11)
   return window.LANG==="ko"?'<small>'+per+'</small><b>'+v+'</b>':'<b>'+v+'</b><small>'+per+'</small>'; }
-function kindTxt(p){ var x=X(), k=x.kindOf(p), T=x.TX; return x.L(k==="tour"?T.kT:k==="class"?T.kC:T.kK); }
+function kindTxt(p){ var x=X(), k=x.kindOf(p), T=x.TX; if(x.kLab) return x.L(x.kLab(p)); return x.L(k==="tour"?T.kT:k==="class"?T.kC:T.kK); }   // 차량 대절 = 「기사 딸린 차」 (11-11)
 
 // ── 화면 ① 상품 목록 ──
 function card(p){ var x=X(), T=x.TX, img=x.psrc(p), meta=[x.catName(p.c),x.Lx(p.area)].filter(Boolean).join(" · "),
-    inf=[x.Lx(p.dur),x.langTxt(p,3),kindTxt(p),x.isExt(p)?"":x.L(T.fc)].filter(Boolean).join(" · ");
+    inf=[x.Lx(p.dur),x.langTxt(p,3),kindTxt(p),x.isExt(p)?"":x.L(x.fcOf?x.fcOf(p):T.fc)].filter(Boolean).join(" · ");
   return '<button type="button" class="pk-c" data-p="'+E(p.id)+'"><div class="pk-cph">'+(img?'<img src="'+E(img)+'" alt="" loading="lazy">':'')
    +'<span class="pk-st'+(p.real?' on':'')+'">'+E(x.L(p.real?T.real:T.ex))+'</span></div>'
    +'<div class="pk-cb"><div class="pk-l1">'+E(meta)+'</div><div class="pk-l2">'+E(x.L(p.t))+'</div><div class="pk-l3">'+E(inf)+'</div>'
@@ -78,6 +78,13 @@ function boxHtml(p){ var x=X(), S=x.S, T=x.TX, L=x.L, K=x.kindOf(p);
     return h+'<div class="pk-pfh">'+E(L(T.perf))+'</div><p class="pk-nt">'+E(L6(TX.perfP))+'</p><div class="pk-pf">'+pf.map(function(v){ return '<button type="button" data-pkperf="'+E(v[0])+'"><span>'+E(L6(v[1]))+'</span><i>›</i></button>'; }).join("")+'</div><p class="pk-nt">'+E(L(T.tkn))+'</p>'; }
   if(p.hub&&p.link) return h+'<a class="pg-pay" href="'+E(p.link)+'" target="_blank" rel="noopener">'+E(L(T.tk))+' ›</a><p class="pk-nt">'+E(L(T.tkn))+'</p>';   // 바깥 예매처
   if(p.hub&&!p.real) return h+'<p class="pk-nt">'+E(L(T.soon))+'</p>';   // 관리자 상품 「준비 중」 — 주문 안 받음 (앱과 같음)
+  if(x.isChr&&x.isChr(p)){   // 차량 대절 (11-11, charter.js) — 날짜(3일 뒤부터)·시작 시각·인원(1~7) + 큰 짐·픽업·목적지(끌어 순서)·기사 언어·요청 사항·구간 가격 · 합계 = 구간 가격
+    return h+'<div class="pk-row"><label class="pk-lb" for="pkDt">'+E(L(T.date))+'</label><input class="pg-in" type="date" id="pkDt" min="'+E(CHR.minDate())+'" value="'+E(S.date)+'"></div>'
+     +'<div class="pk-row"><label class="pk-lb" for="pkTm">'+E(CHR.tx("tm"))+'<br><small>'+E(CHR.tx("tmn"))+'</small></label><input class="pg-in" type="time" id="pkTm" step="1800" value="'+E(S.time)+'"></div>'
+     +'<div class="pk-row"><span class="pk-lb">'+E(L(T.ppl))+'</span><div class="pk-stp"><button type="button" data-pkn="-1" aria-label="-">−</button><b>'+S.n+'</b><button type="button" data-pkn="1" aria-label="+">+</button></div></div>'
+     +CHR.pickHtml(p)+'<div class="pk-tot"><span>'+E(L(T.tot))+'</span><b>'+x.totTx(p)+'</b></div>'+x.pxHtml(p)
+     +'<button type="button" class="pg-pay" data-pk="pay"'+(CHR.ok()?'':' disabled')+'>'+E(L(T.pay))+'</button>'
+     +'<div class="pg-rf"><a href="refund.html?lang='+E(window.LANG||"en")+'" target="_blank" rel="noopener">'+E(L(T.rfL))+' ›</a></div>'+ignBox(p); }
   if(K==="tour"&&p.mp) h+='<div class="pk-mp">'+E(F(T.mp,p.mp))+'</div>';
   var dl=x.dayLine(p); if(dl||(p.hub&&p.max<20)) h+='<div class="pk-ft">'+dl+(p.hub&&p.max<20?'<span>'+E(F(T.mx,p.max))+'</span>':'')+'</div>';
   var tsel=p.hub&&!p.free&&p.times&&p.times.length;
@@ -166,7 +173,7 @@ D.addEventListener("click",function(e){ var t=e.target; if(!t.closest) return; v
   if(k==="pay"){ var p=prod(CUR&&CUR.args[0]); if(p) x.pay(root,p.id); return; }
   if(c.hasAttribute("data-cat")){ PK.cat=c.getAttribute("data-cat"); redraw(); return; }
   if(c.hasAttribute("data-p")){ try{ ntap("shop","p_"+c.getAttribute("data-p")); }catch(z){} PCGO("package/"+encodeURIComponent(c.getAttribute("data-p"))); return; }
-  if(c.hasAttribute("data-pkn")){ var pm=prod(CUR.args[0]); S.n=Math.max(1,Math.min(pm&&pm.hub?pm.max:20,S.n+(+c.getAttribute("data-pkn")))); boxUpd(); return; }
+  if(c.hasAttribute("data-pkn")){ var pm=prod(CUR.args[0]); S.n=Math.max(1,Math.min(x.nMax?x.nMax(pm):(pm&&pm.hub?pm.max:20),S.n+(+c.getAttribute("data-pkn")))); boxUpd(); return; }
   if(c.hasAttribute("data-pkgl")){ var l=c.getAttribute("data-pkgl"); S.glang=l; S.gid=null; S.guides=null; boxUpd();   // 가이드 목록 — 앱과 같은 허브 주소
     fetch(hub()+"/guide/guides?lang="+encodeURIComponent(l),{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ if(S.glang!==l) return; S.guides=(j&&j.ok&&j.items)||[]; boxUpd(); }).catch(function(){ if(S.glang===l){ S.guides=[]; boxUpd(); } }); return; }
   if(c.hasAttribute("data-pkg")){ S.gid=c.getAttribute("data-pkg"); boxUpd(); return; }
@@ -182,6 +189,7 @@ D.addEventListener("change",function(e){ var t=e.target; if(!t||!t.closest||!t.c
   if(t.id==="pkDt") x.S.date=t.value; if(t.id==="pkTm") x.S.time=t.value; });
 D.addEventListener("smnchg",function(){ try{ boxUpd(); }catch(e){} });   // 가게 메뉴 고르기 (11-10, smenu.js)
 D.addEventListener("hspchg",function(){ try{ boxUpd(); }catch(e){} });   // 건강검진 병원 고르기 (11-10, hosp.js)
+D.addEventListener("chrchg",function(){ try{ boxUpd(); }catch(e){} });   // 차량 대절 칸 (11-11, charter.js)
 // 언어를 바꾸면 이 화면도 그 자리에서 다시
 var _sl=window.setLang; if(typeof _sl==="function") window.setLang=function(){ var r=_sl.apply(this,arguments); try{ redraw(); }catch(e){} return r; };
 })();
