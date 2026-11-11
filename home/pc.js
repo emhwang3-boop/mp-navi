@@ -169,7 +169,8 @@ function langOf(p){ var a=(p.langs||[]).filter(function(x){ return /^(ko|en|ja|z
   var N={ko:"한국어",en:"English",ja:"日本語",zhs:"中文(简)",zht:"中文(繁)",es:"Español"}; return a.map(function(x){ return N[x]; }).join(" · "); }
 function pkgCard(p){ var b={}; try{ b=SHOP.brief(p)||{}; }catch(e){}
   var m=/₩\s?([\d,]+)/.exec(b.from||""), pr="";
-  if(m) pr=window.LANG==="ko"?'<small>'+E(L6(TX.per))+'</small><b>'+E(L6(TX.won).replace("{n}",m[1]))+'</b>':'<b>'+E(L6(TX.won).replace("{n}",m[1]))+'</b><small>'+E(L6(TX.per))+'</small>';
+  var per=(p.id==="chr"&&b.per)?b.per:L6(TX.per);   // 차량 대절은 「차 1대」 (11-11)
+  if(m) pr=window.LANG==="ko"?'<small>'+E(per)+'</small><b>'+E(L6(TX.won).replace("{n}",m[1]))+'</b>':'<b>'+E(L6(TX.won).replace("{n}",m[1]))+'</b><small>'+E(per)+'</small>';
   else try{ var X=SHOP.pc; if(X&&X.isExt(p)) pr='<small>'+E(X.L(X.TX.pxt))+'</small>'; }catch(e){}   // 공연 관람 등 바깥 예매처 — 「가격은 예매처에서」 (앱 카드·패키지 목록과 같은 말)
   var mt=[Lx(p.dur),langOf(p)].filter(Boolean).join(" · "), area=Lx(p.area), rv=window.rvMini?rvMini("shop:"+p.id):"";
   return '<button type="button" class="ph-pc" data-p="'+E(p.id)+'"><div class="ph-ph">'+(b.img?'<img src="'+E(b.img)+'" alt="" loading="lazy">':'')+(b.badge?'<span class="ph-st'+(b.real?' on':'')+'">'+E(b.badge)+'</span>':'')+(area?'<span class="ph-area">'+E(area)+'</span>':'')+'</div>'
