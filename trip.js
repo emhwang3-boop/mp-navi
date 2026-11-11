@@ -692,7 +692,14 @@ var RT={};
 function rkPt(p){ return (+p.lat).toFixed(4)+","+(+p.lng).toFixed(4); }
 function rtKey(a,b){ return LC?lcGet(LC.r,a,b,rtKey0):rtKey0(a,b); }
 function rtKey0(a,b){ var x=rkPt(a), y=rkPt(b); return (x<y?x+"|"+y:y+"|"+x)+"|t"; }
-function leg(a,b){ return (LC&&a&&b)?lcGet(LC.g,a,b,leg0):leg0(a,b); }
+// ── 차량 대절 (11-11 사장님 「그대로 해」) — 예약한 날(charter.js CHR.days = 이 기기 + 로그인 계정 「내 예약」)은 그날 이동 줄이 모두 「차량 대절 · 25분」(mi_charter)
+//   시간 = 택시와 같은 계산(네이버 길찾기 저장분 DR 이 있으면 그것, 없으면 어림 taxiMin) — 새 호출 없음 · simDay 가 그날 날짜로 CHRD 를 켠다
+var CHRD=null, CHRC=null;
+function chrMap(){ if(CHRC&&Date.now()-CHRC.t<1500) return CHRC; var m={}, n=0; try{ (window.CHR&&CHR.days?CHR.days():[]).forEach(function(b){ if(b&&b.date&&!m[b.date]){ m[b.date]=b; n++; } }); }catch(e){} CHRC={t:Date.now(),m:m,n:n}; return CHRC; }
+function chrOn(date){ var M=chrMap(); if(!M.n||!date) return null; var k=typeof date==="string"?date:(date.toISOString?date.toISOString().slice(0,10):""); return M.m[k]||null; }
+function chrLeg(a,b){ var d=km(a,b), dr=DR[rtKey(a,b)]; return {mode:"chr",km:d,min:(dr&&dr.min>0)?dr.min:chrMin(d)}; }
+function chrMin(d){ return d<=20?taxiMin(d):Math.round(taxiMin(20)+(d-20)*1.3/75*60); }   /* 시내(직선 20km 안)는 택시 어림 그대로 · 그 밖은 고속도로(도로 = 직선 × 1.3, 시속 약 75km) — 택시 어림(시속 25km)을 먼 곳에 쓰면 남이섬이 4시간이 된다 */
+function leg(a,b){ if(CHRD&&a&&b) return chrLeg(a,b); return (LC&&a&&b)?lcGet(LC.g,a,b,leg0):leg0(a,b); }
 function kmC(a,b){ return LC?lcGet(LC.k,a,b,km):km(a,b); }
 function leg0(a,b){ var d=km(a,b), w=walkKm();
   if(d<=w) return {mode:"walk",km:d,min:Math.max(3,Math.round(d*1.3/4.5*60))};   // 가까운 곳은 늘 걷기(실제 시간 있어도)
@@ -827,13 +834,15 @@ function mealAt(K,ready,la,o,end,to,live){ var M=ML[K], a=Math.max(ready,M.la); 
   return best; }
 // 하루 한 번 계산 — MP={자리:[식사]} (자리 j = j번째 장소 앞, 장소 수 = 마지막 장소 뒤)
 // 그 시각에 떠나는 구간 — 밤 22:30 뒤 대중교통 구간은 택시로 · 오늘 실제 기록에 네이버 실시간 시간(lv.dr)이 있으면 그것 (11-06)
-function legT(a,b,t,lv){ var lg=leg(a,b);
+function legT(a,b,t,lv){ if(CHRD) return leg(a,b);   // 차량 대절 날 (11-11)
+  var lg=leg(a,b);
   if(lv&&lv.dr){ var q=lv.dr[(a.k||"")+">"+(b.k||"")]; if(q&&q.min>0) return {mode:"taxi",km:lg.km,min:q.min,fare:q.fare||null,why:lg.why||"live",real:1,live:1}; }
   if(OLD()||t==null) return lg;
   if(t>=NIGHT_TX&&lg.mode==="transit") return txLeg(a,b,"night",t);
   if(lg.mode==="taxi"&&lg.est&&(t>=1320||t%1440<240)) return Object.assign({},lg,{fare:taxiFare(lg.km,t)});
   return lg; }
-function simDay(H,arr,date,from,mo,MP,lv,to){ var t=from, p=hS(H), rows=[], viol=0, wait=0, miss=0, idle=0, cut=0, tv=0, wd=0, fl=0, pre=null, n=arr.length, gt=[];   // tv=이동 분 · wd=낮 장소(밤 장소 빼고) 문 열기를 나와서 기다린 분 · gt[j]=자리 j 에 닿는 시각
+function simDay(H,arr,date,from,mo,MP,lv,to){ var o=CHRD; CHRD=chrOn(date); try{ return simDay0(H,arr,date,from,mo,MP,lv,to); } finally{ CHRD=o; } }   // 차량 대절 날이면 그날 구간은 모두 차량 대절 (11-11)
+function simDay0(H,arr,date,from,mo,MP,lv,to){ var t=from, p=hS(H), rows=[], viol=0, wait=0, miss=0, idle=0, cut=0, tv=0, wd=0, fl=0, pre=null, n=arr.length, gt=[];   // tv=이동 분 · wd=낮 장소(밤 장소 빼고) 문 열기를 나와서 기다린 분 · gt[j]=자리 j 에 닿는 시각
   // 숙소에서 쉬기 (11-07 사장님) — mo.rs=[{k:다음 장소,m:그 앞 식사 칸 끼니(없으면 ""),p:숙소 점}] · 그 자리에서 숙소로 가서 쉬고, 다음 일정을 기다리던 시간만큼 숙소에서 쉬다 나선다(기다림 → 쉬기, 빈 시간으로 안 셈) · 오늘 실제 기록 날은 안 함
   var RS=(!lv&&mo&&mo.rs&&mo.rs.length)?mo.rs:null, rsd={}, RST=null;
   var rest=function(j,K){ if(!RS||j>=n||!p) return; var x=arr[j], q=null; RS.forEach(function(z){ if(!q&&z.p&&z.k===x.k&&!rsd[z.k]&&(K==null||(z.m||"")===K)) q=z; }); if(!q) return; rsd[q.k]=1;
@@ -1049,7 +1058,7 @@ function realTimesFetch(pl,H,cb){ var pairs=[], keys=[], seen={};
     var kk=rtKey(a,b); if(seen[kk]) return; seen[kk]=1;
     if(typeof RT[kk]==="number") return; var sv=null; try{ sv=sessionStorage.getItem("nt:"+kk); }catch(e){} if(sv!=null&&sv!==""){ RT[kk]=+sv; return; }
     keys.push(kk); pairs.push([+a.lat,+a.lng,+b.lat,+b.lng]); };
-  pl.days.forEach(function(d,di){ var X=dayX(pl,di,H), arr=X.arr, S=hS(X.H), E=hE(X.H), set=(S?[S]:[]).concat(E&&E!==S?[E]:[],arr);
+  pl.days.forEach(function(d,di){ if(chrOn(d.date)) return; var X=dayX(pl,di,H), arr=X.arr, S=hS(X.H), E=hE(X.H), set=(S?[S]:[]).concat(E&&E!==S?[E]:[],arr);   // 차량 대절 날은 안 묻는다 (11-11)
     (X.pre||[]).forEach(function(r){ if(r.leg&&r.leg.mode==="transit"&&r.a&&r.b) add(r.a,r.b); });   // 도착한 날 공항 → 숙소 (11-07 — 예전엔 공항 → 첫 장소로 물었다)
     for(var i=0;i<set.length;i++) for(var j=i+1;j<set.length;j++) add(set[i],set[j]); });
   if(!pairs.length){ cb(); return; }
@@ -1130,6 +1139,7 @@ function lgNm(k,di,b){ var pl=TR.plan; if(!pl||!k) return ""; if(k==="__me") ret
 // 11-08 사장님 「일목요연」 — 이동은 카드 사이 회색 작은 한 줄: 탈것 아이콘 + 시간 · 거리 (줄 전체를 누르면 교통 창 · 끝의 › 는 CSS) · 장소 이름·「약」·✓ 는 뺀다
 function lgDur(m){ if(window.LANG!=="en") return durTxt(m); m=Math.round(m); var h=Math.floor(m/60), r=m%60; return ((h?h+" h ":"")+(r||!h?r+" min":"")).trim(); }   // 영어는 「37m」이 미터와 헷갈려 「37 min」
 function legTxt(lg,an,bn){ if(!lg) return ""; var d=lg.km<1?Math.round(lg.km*1000)+" m":lg.km.toFixed(1)+" km";
+  if(lg.mode==="chr") return MPIMG("mi_charter",MIS)+esc(window.CHR?CHR.tx("t"):"차량 대절")+" · "+lgDur(lg.min);   // 차량 대절 날 (11-11 사장님 「차량 대절 · 25분」)
   if(lg.mode==="walk") return MPIMG("mi_walk",MIS)+lgDur(lg.min)+" · "+d;
   if(lg.mode==="transit") return MPIMG("mi_subway",MIS)+lgDur(lg.min)+" · "+d;
   if(lg.mode==="taxi"){ var fr=lg.fare?gTxt(lg.est?TX6.fe:TX6.fr,{f:won(lg.fare)}):"";
@@ -1201,7 +1211,7 @@ function repRestore(sc,an){ if(!sc||!an||!sc.scrollTop&&an.d==="0") return; var 
   fix(); [60,250,700].forEach(function(ms){ setTimeout(function(){ if(document.body.contains(t)&&!DG) fix(); },ms); });   // 위쪽 지도 그림이 늦게 그려지면 높이가 바뀌어 한 번 더 맞춘다
   var stop=function(){ an.off=null; }; sc.addEventListener("touchstart",stop,{once:true,passive:true}); sc.addEventListener("wheel",stop,{once:true,passive:true});
   var f0=fix; fix=function(){ if(an.off!=null) f0(); }; }   // 구간 기억 안에서 (11-06 — 90일 일정)
-function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan; if(!box||!pl) return; LGC={}; GPC={}; var H=REPH, ai=pl.ai||{}, tips=ai.tips||{};
+function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan; if(!box||!pl) return; try{ chrApply(pl); }catch(e){} /* 차량 대절 예약한 날 (11-11) */ LGC={}; GPC={}; var H=REPH, ai=pl.ai||{}, tips=ai.tips||{};
   var mp=(window.ME&&ME.pos)||GEO; REPME=mp?{k:"__me",ko:"현재 위치",en:"Current location",lat:+mp[0],lng:+mp[1],me:1}:null;
   if(!mp&&!GEOST&&typeof myPos==="function"){ GEOST="ask"; myPos().then(function(q){ GEOST=q?"ok":"fail"; GEO=q||null; if(q&&document.getElementById("trRep")) repPaint(); else { [].forEach.call(document.querySelectorAll("#trRep .tnost"),function(e){ e.hidden=false; }); } }); }   // 폰 안에서만 한 번 묻는다
   var hn=pl.hotel?(pl.hotel.type==="here"?T("현재 위치","Current location"):nm(pl.hotel)):"";
@@ -1327,7 +1337,7 @@ document.addEventListener("click",function(e){ var r=e.target.closest&&e.target.
   if(e.target.closest(".xtg,.tods")||(e.target.closest("a,button")&&!e.target.closest(".tlgt"))) return;
   e.preventDefault(); e.stopPropagation(); legTransit(r); },true);
 function legTransit(row){ var A=row.dataset.a, B=row.dataset.b, di=+row.dataset.d||0, pa=A==="__me"?null:ptK(A), pb=ptK(B); if(!pb||!(+pb.lat)) return;
-  var im=row.querySelector("img"), ic=im?String(im.getAttribute("src")||""):"", w=/mi_walk/.test(ic)?"w":/mi_taxi/.test(ic)?"x":/mi_subway/.test(ic)?"t0":/mi_plane/.test(ic)?"a0":/mi_train/.test(ic)?"ic":"";
+  var im=row.querySelector("img"), ic=im?String(im.getAttribute("src")||""):"", w=/mi_walk/.test(ic)?"w":/mi_taxi|mi_charter/.test(ic)?"x":/mi_subway/.test(ic)?"t0":/mi_plane/.test(ic)?"a0":/mi_train/.test(ic)?"ic":"";
   var pt=function(k,p,b){ return {k:(window.PLACES&&PLACES[k]&&!/^__/.test(k))?k:"",nm:lgNm(k,di,b)||p.ko||"",ko:p.ko||lgNm(k,di,b)||"",lat:+p.lat,lng:+p.lng,sub:p.addr||""}; };
   try{ ntap("_trip_leg_transit","trip"); }catch(x){}
   TRANSIT.go({from:pa&&+pa.lat?pt(A,pa,0):null,to:pt(B,pb,1),open:w}); }
@@ -1783,8 +1793,41 @@ var TD6={t:{ko:"오늘 일정",en:"Today's plan",ja:"今日の予定",zhs:"今�
  cxDd:{ko:"{d} 일정을 취소했어요",en:"Cancelled the plan for {d}",ja:"{d}の予定を取り消しました",zhs:"已取消{d}的行程",zht:"已取消{d}的行程",es:"Cancelamos el plan del {d}"},
  cxD:{ko:"오늘 일정을 취소했어요",en:"Cancelled today's plan",ja:"今日の予定を取り消しました",zhs:"已取消今天的行程",zht:"已取消今天的行程",es:"Cancelamos el plan de hoy"}};
 function dL6(di){ var n=di+1; return T5({ko:n+"일차",en:"Day "+n,ja:n+"日目",zhs:"第"+n+"天",zht:"第"+n+"天",es:"Día "+n}); }
-function tdBar(di,today,ed){ var bt='<button type="button" class="trbtn'+(ed?' ted':'')+'" data-td="ed" data-d="'+di+'">'+esc(T5(ed?TD6.edX:TD6.ed))+'</button><button type="button" class="trbtn" data-td="push" data-d="'+di+'">'+esc(T5(TD6.push))+'</button><button type="button" class="trbtn" data-td="cx" data-d="'+di+'">'+esc(T5(today?TD6.cx:TD6.cxd))+'</button>';
+function tdBar(di,today,ed){ var pl0=TR.plan, d0=pl0&&pl0.days[di], B0=d0?chrOn(d0.date):null, cb=window.CHR?'<button type="button" class="trbtn tchr'+(B0?' on':'')+'" data-td="chr" data-d="'+di+'">'+MPIMG("mi_charter",MIS)+esc(B0?CHR.tx("bkd"):CHR.tx("t"))+'</button>':'';   // 11-11 사장님 — 날마다 [차량 대절]
+  var bt='<button type="button" class="trbtn'+(ed?' ted':'')+'" data-td="ed" data-d="'+di+'">'+esc(T5(ed?TD6.edX:TD6.ed))+'</button><button type="button" class="trbtn" data-td="push" data-d="'+di+'">'+esc(T5(TD6.push))+'</button><button type="button" class="trbtn" data-td="cx" data-d="'+di+'">'+esc(T5(today?TD6.cx:TD6.cxd))+'</button>'+cb;
   return today?'<div class="ttoday" data-html2canvas-ignore><b>'+esc(T5(TD6.t))+'</b><div class="tgr">'+bt+'</div></div>':'<div class="tdays" data-html2canvas-ignore>'+bt+'</div>'; }
+// ── 차량 대절 (11-11) — [차량 대절] 미리 채우기 · 예약한 날 목적지를 예약 순서대로 그날 일정에 · 내 예약 열기 ──
+function chrPref(pl,di){ var d=pl.days[di], X=dayX(pl,di,REPH||pl.H||null), s=withLC(function(){ return sched(X.H,X.arr,X.dt,X.from,moX(di,X)); }), out=[], seen={};
+  var put=function(x,eat){ if(!x||!isFinite(+x.lat)||!isFinite(+x.lng)||catOf(x)==="hotel") return; var k=(+x.lat).toFixed(4)+","+(+x.lng).toFixed(4); if(seen[k]) return; seen[k]=1;
+    out.push({k:(x.k&&pl.pool[x.k])?x.k:"",ko:x.ko||"",en:x.en||"",nm:eat?eatName(x):nm(x),lat:+x.lat,lng:+x.lng,addr:x.addr||""}); };
+  s.rows.forEach(function(r){ if(r.x) put(r.x,!!r.x.eat); else if(r.meal&&r.r) put(r.r,1); });   // 일정표 순서 그대로 — 장소 + 고른 식당
+  var P0=hS(X.H), pick=null;
+  if(P0&&isFinite(+P0.lat)&&!P0.here&&P0.type!=="here"){ if(P0.ap||/공항|airport/i.test(String(P0.ko||"")+" "+String(P0.en||""))) pick={t:km(P0,{lat:37.4602,lng:126.4407})<km(P0,{lat:37.5583,lng:126.7906})?"icn":"gmp"};
+    else pick={t:"place",ko:P0.ko||nm(P0),en:P0.en||"",nm:ptNm(P0)||nm(P0),lat:+P0.lat,lng:+P0.lng,addr:P0.addr||""}; }   // 그날 아침 나서는 숙소 — 서울이 아니면 charter.js 가 비운다
+  return {date:d.date,time:X.from!=null?m2hm(Math.round(X.from/30)*30):"",dests:out,pick:pick,lbl:dL6(di)+" · "+dateTxt(X.dt)}; }
+function chrFind(pl,x){ if(x.k&&pl.pool[x.k]) return x.k; var best=null, bd=1e9, nz=function(v){ return String(v||"").replace(/\s/g,""); };
+  for(var k in pl.pool){ var p=pl.pool[k]; if(!p||!isFinite(+p.lat)) continue; var dd=km(p,x); if(dd<bd){ bd=dd; best=k; } }
+  if(best&&(bd<0.05||(bd<0.3&&nz(pl.pool[best].ko)===nz(x.ko)))) return best;
+  var ms=pl.meals||{}; for(var mk in ms){ var m=ms[mk]; if(m&&isFinite(+m.lat)&&km(m,x)<0.3) return "@meal"; }   // 일정에 고른 식당 — 그 자리 그대로
+  return null; }
+// 예약한 날 — 목적지를 예약 순서대로 그날에(없는 곳은 끼워 넣고, 다른 날에 있던 곳은 그날로 옮김) · 예약마다 한 번(pl.chrA) — 그 뒤 손님이 끌어 바꾸면 그대로 둔다
+function chrApply(pl){ var M=chrMap(); if(!M.n||!pl||!pl.days||!pl.pool) return 0; var ch=0, any=0; pl.chrA=pl.chrA||{};
+  pl.days.forEach(function(d){ var B=M.m[d.date]; if(!B||d.md||!B.dests||!B.dests.length) return;
+    var sig=B.oid+":"+B.dests.map(function(x){ return (+x.lat).toFixed(4)+","+(+x.lng).toFixed(4); }).join(";"); if(pl.chrA[d.date]===sig) return;
+    var keys=[]; B.dests.forEach(function(x){ var k=chrFind(pl,x); if(k==="@meal") return;
+      if(!k){ var it={k:pinKey({ko:x.ko||x.nm||"",lat:+x.lat,lng:+x.lng}),ko:x.ko||x.nm||"",en:x.en||x.nm||x.ko||"",lat:+x.lat,lng:+x.lng,addr:x.addr||"",pin:1}; it.stay=stayOf(it); it.ins=1; it.chr=1; pl.pool[it.k]=it; k=it.k; }
+      if(keys.indexOf(k)<0) keys.push(k); });
+    pl.chrA[d.date]=sig; any=1; if(!keys.length) return;
+    var S0=d.stops, f=-1; for(var i=0;i<S0.length;i++){ if(keys.indexOf(S0[i])>=0){ f=i; break; } } var c=f<0?-1:S0.slice(0,f).filter(function(k){ return keys.indexOf(k)<0; }).length;
+    var old=JSON.stringify(pl.days.map(function(q){ return [q.stops,q.post||[]]; }));
+    pl.days.forEach(function(d2){ d2.stops=d2.stops.filter(function(k){ return keys.indexOf(k)<0; }); if(d2.post) d2.post=d2.post.filter(function(k){ return keys.indexOf(k)<0; }); });
+    var rest=d.stops; if(c<0){ c=rest.length; for(var j=0;j<rest.length;j++){ var px=pl.pool[rest[j]]; if(px&&isNight(px)){ c=j; break; } } }   // 그날에 없던 곳은 밤 장소 앞(없으면 끝)에
+    d.stops=rest.slice(0,c).concat(keys,rest.slice(c));
+    if(JSON.stringify(pl.days.map(function(q){ return [q.stops,q.post||[]]; }))!==old){ d.aiX=1; ch=1; } });
+  if(ch) pl.chk=2; if(any) try{ save(); }catch(e){} return ch; }
+function chrSeeBk(){ try{ ntap("_trip","trip_chr_bk"); }catch(e){} if(window.PC_HOME&&typeof window.PCGO==="function"){ PCGO("bookings"); return; } try{ if(window.NEAR&&NEAR.open) NEAR.open("ig"); }catch(e){} }
+document.addEventListener("chrbk",function(){ CHRC=null; if(document.getElementById("trRep")&&TR.plan) repPaint(); });   // 차량 대절 결제 끝 — 그날을 다시 (11-11)
+document.addEventListener("mpbk",function(){ var a=CHRC&&JSON.stringify(CHRC.m); CHRC=null; if(JSON.stringify(chrMap().m)!==a&&document.getElementById("trRep")&&TR.plan) repPaint(); });   // 로그인 계정 「내 예약」이 바뀌면 (다른 기기에서 예약)
 function tdPush(pl,di){ var f=mdFreeN(pl,di); if(!f&&pl.ap&&pl.ap.d) return -1;
   var d0=pl.days[di], c=pl.mc?((di>0&&pl.days[di-1].nc!=null&&pl.days[di-1].nc>=0)?pl.days[di-1].nc:d0.c):null, nd={date:"",stops:[]}; if(c!=null){ nd.c=c; nd.nc=c; }
   mdShiftAll(pl,di,1,null); pl.days.splice(di,0,nd); if(pl.ai&&Array.isArray(pl.ai.days)) pl.ai.days.splice(di,0,null);
@@ -1796,6 +1839,7 @@ function tdCancel(pl,di){ var d=pl.days[di]; if(!d) return; d.stops=[]; d.post=[
 document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.closest("#trRep [data-td]"); if(!a) return; e.preventDefault(); e.stopPropagation(); var pl=TR.plan, di=+a.dataset.d, d=pl&&pl.days[di]; if(!d) return; var v=a.dataset.td;
   try{ ntap("_trip","today_"+v); }catch(z){}
   var td=d.date===kstToday(0), dl=dL6(di);   // 오늘이면 「오늘」, 다른 날이면 「2일차」 (11-08 모든 날에)
+  if(v==="chr"){ if(chrOn(d.date)){ chrSeeBk(); return; } if(window.CHR&&CHR.book) CHR.book(chrPref(pl,di)); return; }   // 11-11 차량 대절 — 그날 날짜·장소(일정표 순서)·숙소(서울이면) 미리 채운 예약 창 · 예약한 날은 내 예약
   if(v==="ed"){ if(EDM.pl!==pl) EDM={pl:pl,on:{}}; var eo=!EDM.on[d.date]; if(eo) EDM.on[d.date]=1; else delete EDM.on[d.date]; repPaint(); if(eo&&!(GPC[di]||[]).length) lgToast(T5(TD6.edNo)); return; }   // 11-09 일정 수정 ↔ 수정 끝 (그날만, 저장 안 함)
   if(v==="push"){ if(!mdFreeN(pl,di)&&pl.ap&&pl.ap.d){ lgToast(T5(TD6.pushNo)); return; } if(!confirm(td?T5(TD6.pushQ):gTxt(TD6.pushQd,{d:dl}))) return; var r=tdPush(pl,di); if(r<0){ lgToast(T5(TD6.pushNo)); return; } repPaint(); lgToast(r?T5(TD6.pushX):(td?T5(TD6.pushD):gTxt(TD6.pushDd,{d:dl}))); return; }
   if(v==="cx"){ var n=d.stops.filter(function(k){ var x=pl.pool[k]; return x&&!x.eat; }).length; if(!confirm(td?gTxt(TD6.cxQ,{n:n}):gTxt(TD6.cxQd,{d:dl,n:n}))) return; tdCancel(pl,di); repPaint(); lgToast(td?T5(TD6.cxD):gTxt(TD6.cxDd,{d:dl})); } },true);
