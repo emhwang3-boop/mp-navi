@@ -209,7 +209,7 @@ function payRows(p){ if(!is(p)) return ""; var r=function(a,b){ return '<div cla
     +(m.z?r(TX.rZ,esc(ZNO[m.z]+" "+L(ZN[m.z]))):"")+(CS.memo?r(TX.memo,esc(CS.memo)):"")+'<div class="shpx chr-px">'+esc(L(TX.exS))+'</div>'; }
 // 허브 주문 본문 · 「내 예약」에 둘 칸
 function body(){ return {pick:pkBody(CS.pick),dests:CS.dests.map(dBody),dl:dl(),lug:CS.lug,memo:CS.memo}; }
-function pub(){ var p=CS.pick||{}; return {pick:{t:p.t,ko:p.t==="place"?p.ko:(AP[p.t]||{}).ko||"",en:p.t==="place"?p.en:(AP[p.t]||{}).en||"",nm:pkName(p)},dests:CS.dests.map(function(d){ return {ko:d.ko,en:d.en,nm:d.nm,lat:d.lat,lng:d.lng,z:zOf(d),k:d.k||""}; }),dl:dl(),lug:CS.lug,z:zMax().z,memo:CS.memo,drv:null}; }
+function pub(){ var p=CS.pick||{}; return {pick:{t:p.t,ko:p.t==="place"?p.ko:(AP[p.t]||{}).ko||"",en:p.t==="place"?p.en:(AP[p.t]||{}).en||"",nm:pkName(p),lat:p.t==="place"?+p.lat:(AP[p.t]||{}).lat,lng:p.t==="place"?+p.lng:(AP[p.t]||{}).lng},dests:CS.dests.map(function(d){ return {ko:d.ko,en:d.en,nm:d.nm,lat:d.lat,lng:d.lng,z:zOf(d),k:d.k||""}; }),dl:dl(),lug:CS.lug,z:zMax().z,memo:CS.memo,drv:null}; }
 // 주문이 거절됐을 때 글 (허브 err)
 function errTx(e,j){ if(e==="lead") return F(TX.eLead,{d:minDate()}); if(e==="pick"||e==="pickzone") return L(e==="pick"?TX.ePick:TX.ePkZ); if(e==="dests") return L(TX.dsE);
   if(e==="jeju"||e==="zone"||e==="dest"){ if(j&&typeof j.i==="number"&&CS.dests[j.i]) CS.dests[j.i].z=e==="jeju"?0:-1; return L(TX.eBad); }
@@ -266,7 +266,7 @@ function book(pref){ pref=pref||{}; var ds=(pref.dests||[]).filter(function(d){ 
 // ── 예약한 날 (일정표 trip.js) — 이 기기 「내 예약」 + 로그인 계정 목록(near.js NEARBK.mine) 가운데 취소 안 된 차량 대절 ──
 function days(){ var a=[]; try{ a=window.NEARBK&&NEARBK.mine?NEARBK.mine():[]; }catch(e){ a=[]; }
   return a.filter(function(x){ return x&&x.chr&&x.date&&x.status!=="cancelled"&&x.status!=="refunded"&&Array.isArray(x.chr.dests); })
-    .map(function(x){ return {oid:x.oid,date:x.date,time:x.time||"",dests:x.chr.dests.filter(function(d){ return d&&isFinite(+d.lat)&&isFinite(+d.lng); })}; }); }
+    .map(function(x){ return {oid:x.oid,date:x.date,time:x.time||"",pick:x.chr.pick||null,dests:x.chr.dests.filter(function(d){ return d&&isFinite(+d.lat)&&isFinite(+d.lng); })}; }); }   // pick = 픽업 장소(일정표 출발 자리, 11-11 「가」)
 
 // ── 내 예약 바우처 (near.js 앱 · home/pc_bk.js 홈페이지) ──
 function vchHtml(x){ var c=x&&x.chr; if(!c) return ""; var p=c.pick||{}, d=c.drv, r=function(a,b){ return '<div class="chr-vr"><span>'+esc(L(a))+'</span><b>'+b+'</b></div>'; };
@@ -325,6 +325,7 @@ st.textContent=""
 
 window.CHR={PID:PID,PRICE:PRICE,NMAX:NMAX,is:is,ok:ok,why:why,amount:amount,minDate:minDate,pickHtml:pickHtml,payRows:payRows,body:body,pub:pub,errTx:errTx,
   vchHtml:vchHtml,adHtml:adHtml,open:open,book:book,days:days,quote:quote,zone:zone,
+  pkTx:function(p){ if(!p) return ""; if(p.t==="icn"||p.t==="gmp") return L(AP[p.t].n); return lg()==="ko"?(p.ko||p.nm||p.en||""):(p.nm||p.en||p.ko||""); },   // 예약한 픽업 장소 이름(일정표 픽업 줄, 11-11)
   st:function(){ return CS; }, tx:function(k){ return TX[k]?L(TX[k]):""; }, T:TX, dlTxt:function(){ return DLS.map(function(k){ return L(DLN[k]); }).join(" · "); },
   done:function(){ try{ document.dispatchEvent(new Event("chrbk")); }catch(e){} }};   // 결제 끝 — 일정표가 그날을 다시 그린다
 })();
