@@ -155,8 +155,9 @@ function paint(){ var lg=window.LANG||"ko";
   chipsPaint(); waysPaint(); pkgPaint(); appPaint(); footPaint();
   setTimeout(eqGo,0); }
 function waysPaint(){ $("phWaysT").textContent=L6(TX.ways);
-  var W=[["mi_guideperson",TX.w1t,"",TX.w1p,E(L6(TX.w1m)),TX.w1g],["mi_guide",TX.w2t,"",TX.w2p,E(L6(TX.w2m)),TX.w2g],["mi_calendar",TX.w3t,' <span class="ph-free">'+E(L6(TX.free))+'</span>',TX.w3p,E(L6(TX.w3m))+' <span class="ph-opt">'+E(L6(TX.opt))+'</span>',TX.w3g]];
+  var W=[["mi_guideperson",TX.w1t,"",TX.w1p,E(L6(TX.w1m)),TX.w1g],["mi_guide",TX.w2t,"",TX.w2p,E(L6(TX.w2m)),TX.w2g],["mi_backpack",TX.w3t,' <span class="ph-free">'+E(L6(TX.free))+'</span>',TX.w3p,E(L6(TX.w3m))+' <span class="ph-opt">'+E(L6(TX.opt))+'</span>',TX.w3g]];
   $("phWaysL").innerHTML=W.map(function(w,i){ return '<div class="ph-way" data-w="'+i+'"><div class="ph-ic">'+img(w[0])+'</div><h3>'+E(L6(w[1]))+w[2]+'</h3><p>'+E(L6(w[3]))+'</p><div class="ph-meta">'+w[4]+'</div><div class="ph-gorow"><button type="button" class="ph-go">'+E(L6(w[5]))+'</button></div></div>'; }).join(""); }
+// 11-11 사장님 「달력 말고 모포 밧줄 등등이 달린 배낭」 — AI와 자유여행 카드 아이콘 mi_backpack (mi_calendar 는 날짜 칸에 그대로)
 // 카드 단추 같은 크기 (사장님 11-08 「카드 단추는 같은 크기·오른쪽 맞춤」)
 function eqGo(){ var bs=[].slice.call(D.querySelectorAll("#phWaysL .ph-go")); bs.forEach(function(b){ b.style.minWidth=""; }); var w=0; bs.forEach(function(b){ w=Math.max(w,b.offsetWidth); }); if(w) bs.forEach(function(b){ b.style.minWidth=Math.ceil(w)+"px"; }); }
 
