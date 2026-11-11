@@ -702,7 +702,7 @@ function bkSave(a){ try{ localStorage.setItem(BKK,JSON.stringify(a.slice(0,12)))
 function bkGet(oid){ return bkMine().filter(function(x){ return x.oid===oid; })[0]||null; }   // 11-08 — 로그인 계정 목록까지
 function bkPut(x){ var a=bkAll(), o=a.filter(function(y){ return y.oid===x.oid; })[0]||{}; if(!/^[0-9a-f]{32}$/.test(x.tk||o.tk||"")) return; bkSave([Object.assign(o,x)].concat(a.filter(function(y){ return y.oid!==x.oid; }))); }
 function bkDrop(oid){ bkSave(bkAll().filter(function(y){ return y.oid!==oid; })); }
-function bkFrom(j,tk){ var o=bkFrom0(j,tk); if(j&&j.hosp) o.hosp=j.hosp; return o; }   // 건강검진 고른 병원 id (11-10, hosp.js 바우처) — 허브가 안 주면 이 폰에 둔 값 그대로
+function bkFrom(j,tk){ var o=bkFrom0(j,tk); if(j&&j.hosp) o.hosp=j.hosp; if(j&&j.chr) o.chr=j.chr; return o; }   // 차량 대절 목적지·픽업·기사 (11-11, charter.js 바우처) — 허브가 안 주면 이 폰에 둔 값 그대로   // 건강검진 고른 병원 id (11-10, hosp.js 바우처) — 허브가 안 주면 이 폰에 둔 값 그대로
 function bkFrom0(j,tk){ return {oid:j.oid,tk:tk,kind:j.kind||"gbk",glang:j.glang||"",cust:j.cust||"",pname:j.pname||"",date:j.date,time:j.time,end:+j.end||0,k:j.k||{},n:j.n,amount:j.amount,status:j.status,done:j.done?1:0,rv:j.review||"",rvd:!!j.reviewed,rvFrom:j.rvFrom||"",room:j.room||null,g:j.g||null,menu:j.menu||null}; }
 function bkShown(){ return bkMine().filter(function(x){ return !(x.status==="cancelled"||x.status==="refunded"||(x.rvd&&(x.done||x.kind==="pkg"))||(x.kind==="grv"&&x.grv&&(x.grv.end||(x.grv.sent&&(x.end||0)<Date.now())))); }); }   // 완료(투어 완료 + 후기까지 끝남)·취소 예약은 바로 숨김 (사장님 11-05 「2-가」) · 일정 검토는 검토를 받고 여행이 끝나면 숨김 (11-08)
 // ── 「내 예약」 로그인 계정 목록 (사장님 11-08 「로그인·내 예약」 통과) — 로그인돼 있으면 허브 POST /guide/mybk 가 계정에 묶인 예약(다른 폰·PC 에서 한 것 포함)을 준다 ──
@@ -748,6 +748,7 @@ function bkCard(x){ var L=LG6, g=x.g||null, cx=x.status==="cancelled"||x.status=
   var chatBtn=rm&&!cx?'<button type="button" class="gbgo'+(rm.ro?' g2':'')+'" style="margin-top:10px" data-bkchat="'+esc(x.oid)+'">💬 '+esc(L(rm.ro?BKT.chatRo:BKT.chat))+badge+'</button>':'';
   var when=esc((x.date||"")+" "+(x.time||"")+" (KST)");
   if(cx) foot='<div class="ignt">'+esc(L(BKT.cx))+'</div>';
+  else if(pk&&x.chr&&window.CHR) foot=CHR.vchHtml(x);   // 차량 대절 (11-11) — 기사·차(사장님이 확정한 뒤) · 픽업 · 목적지 순서 · 기사 언어 · 따로 내는 것
   else if(pk){ var gc=g?'<div class="igcard" style="cursor:default;margin:10px 0 0">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b> '+igBadge(g)+'<div class="igm">'+(g.langs||[]).map(igLangName).map(esc).join(" · ")+'</div></div></div>':'<div class="ignt">'+esc(L(BKT.wait))+'</div>';
     var rv=""; if(g){ if(x.rvd) rv='<div class="gbdone" style="margin:8px 0 0">✓ '+esc(L(BKT.rvd))+'</div>'; else if(x.rv){ var early=x.rvFrom&&bkToday()<x.rvFrom; rv='<button type="button" class="gbgo g2" style="margin-top:8px" data-bkrv="'+esc(x.oid)+'"'+(early?' disabled':'')+'>★ '+esc(L(BKT.rv))+'</button>'+(early?'<div class="ignt">'+esc(gbF(BKT.rvAt,{d:x.rvFrom}))+'</div>':''); } }
     foot=gc+(window.HSP?HSP.vchHtml(x):'')+(window.SMN?SMN.vchHtml(x):'')+rv+chatBtn; }   // 모바일 바우처 · 모델 바꾸기 · 투어 완료 (11-10, smenu.js — 가게 메뉴가 있는 패키지만)
