@@ -187,7 +187,7 @@ function sumRows(sm,side){ var r=function(a,b){ return '<div class="r"><span>'+e
   return '<div class="chsum"><div style="font-weight:800;font-size:13.5px;margin-bottom:3px">'+esc(L(TX.sum))+'</div>'
     +(pk?r(T6("상품","Product","商品","商品","商品","Producto"),esc(side==="g"?(sm.pnameKo||sm.pname):sm.pname))+(side==="c"?r(TX.gd,X.room&&X.room.g?esc(gName(X.room.g)):'<span class="chpend" style="margin:0">'+esc(L(TX.wait))+'</span>'):''):r(TX.gd,esc(side==="g"?(X.gme&&X.gme.guide?X.gme.guide.name:""):gName(X.room&&X.room.g))+(sm.k?' · '+esc(mdTx(sm.k)):'')))
     +(side==="c"&&sm.cust?r(TX.bkr,esc(sm.cust)):'')+r(TX.dt,esc(sm.date+" "+sm.time+" (KST)"))+(sm.end?r(TX.endL,esc(window.NEARBK?NEARBK.when(sm.end):hm(sm.end))):'')+r(TX.ppl,esc(String(sm.n)))+r(TX.amt,esc(won(sm.amount)))+r(TX.oid,esc(sm.oid))
-    +(side==="g"?r(TX.cust,esc(sm.cust||""))+r(TX.lang,esc(LGN[sm.lang]||sm.lang||""))+(sm.memo?r(TX.memo,esc(sm.memo)):''):'')+(window.SMN&&sm.menu?SMN.sumHtml(sm,side):'')+'</div>'; }   // 바우처 · 가이드 「모델 바꾸기」 (11-10)
+    +(side==="g"?r(TX.cust,esc(sm.cust||""))+r(TX.lang,esc(LGN[sm.lang]||sm.lang||""))+(sm.memo?r(TX.memo,esc(sm.memo)):''):'')+(window.SMN&&sm.menu?SMN.sumHtml(sm,side):'')+(side==="c"&&window.VQR&&!(X.room&&X.room.emb)?VQR.html(sm):'')+'</div>'; }   /* 바우처 QR — 손님 쪽만 (11-11 「2나」, vqr.js) */   // 바우처 · 가이드 「모델 바꾸기」 (11-10)
 function room(tk){ var r=(X.rooms||[]).filter(function(x){ return x.tk===tk; })[0]||null; openRoom({side:"c",tk:tk,g:r&&r.g}); }
 function groom(oid){ openRoom({side:"g",oid:oid}); }
 function openRoom(o){ if(!o.emb) embOff(); stopPoll(); X.view="room"; X.room=o; X.msgs=[]; X.last=0; X.stars=0; X.rvText=""; X.rvName=""; X.ver++; var v=X.ver, b=shell();
