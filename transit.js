@@ -177,7 +177,7 @@ function paint(){ var b=document.querySelector("#tkBox .tkin"); if(!b) return; v
     +(f.t==="p"?'<button type="button" class="tkf on" data-tk="fs">'+MPIMG("mi_pin",MIS)+esc(fromNm())+'</button>':'')
     +'<button type="button" class="tkf'+(S.fs?' on':'')+'" data-tk="fs">'+MPIMG("mi_search",MIS)+E("other")+'</button></div>';
   if(S.fs) h+='<div class="tkq"><input id="tkFq" type="search" enterkeyhint="search" autocomplete="off" placeholder="'+esc(F("fph"))+'" value="'+esc(S.fq)+'"><button type="button" data-tk="fgo">'+E("find")+'</button></div>'+cands("f");
-  h+='<div class="tklb">'+E("to")+'</div><div class="tkq"><input id="tkTq" type="search" enterkeyhint="search" autocomplete="off" placeholder="'+esc(F("tph"))+'" value="'+esc(S.tq)+'"><button type="button" data-tk="tgo">'+E("find")+'</button></div>'+cands("t");
+  h+='<div class="tklb">'+E("to")+'</div><div class="tkq"><input id="tkTq" type="search" enterkeyhint="search" autocomplete="off" placeholder="'+esc(F("tph"))+'" value="'+esc(S.tq)+'"><button type="button" data-tk="tgo">'+E("find")+'</button></div>'+(window.CHR?CHR.adHtml():"")+cands("t");   // 11-11 사장님 — 검색칸 바로 아래 차량 대절 광고 띠 (charter.js · [자세히] = 상품 화면)
   if(S.to&&!S.tc) h+='<div class="tksel">'+MPIMG("mi_pin",MIS)+esc(pNm(S.to))+'</div>';
   if(!S.to&&!S.tc&&S.tst!=="ld") h+='<div class="tkmsg">'+E("pick")+'</div>';
   if(S.st==="ld") h+='<div class="tkmsg">'+E("route")+'</div>';
