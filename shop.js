@@ -186,7 +186,11 @@ var P=[
  {id:"hchk",c:"well",img:"checkup",real:"pkg",price:300000,   // 11-10 사장님 「건강검진은 30만원으로」 — 1인 300,000원 = 패키지 여행비(그 전 500,000원), 1명부터(최소 인원 없음), 가이드는 동행·통역·안내 보조만 · (옛 300,000원) (건강검진비는 검진 센터에 따로) · 병원 이름은 계약 전이라 안 씀
   t:T6("외국인 종합 건강검진","Full health check-up for international visitors","外国人向け総合健康診断","外国人综合体检","外國人綜合健檢","Chequeo médico completo para extranjeros"),
   f:[T6("반나절(약 3~4시간)","Half day (about 3–4 h)","半日（約3〜4時間）","半天（约3~4小时）","半天（約3~4小時）","Medio día (unas 3–4 h)"),T6("결과지 영문, 이메일로 받기","Results in English, by email","結果は英文、メールで受け取り","英文报告，通过邮件接收","英文報告，透過郵件接收","Resultados en inglés, por correo"),HCHK_X],
-  d:T6("이름난 대형 건강검진 센터에서 혈액·소변 검사, 흉부 X선, 복부 초음파, 위내시경 같은 기본 종합검진을 받습니다. 외국인 전담 코디네이터가 안내하고, 전날 밤부터 금식합니다. 상품 가격은 패키지 여행비이며, 건강검진비는 검진 센터에 따로 냅니다.","At a well-known large health screening center, you get a basic full check-up: blood and urine tests, chest X-ray, abdominal ultrasound and gastroscopy. A coordinator for international visitors guides you, and you fast from the night before. The price is the package tour fee; the check-up fee is paid to the center separately.","有名な大型健診センターで、血液・尿検査、胸部X線、腹部超音波、胃内視鏡などの基本的な総合健診を受けます。外国人専任のコーディネーターが案内し、前日の夜から絶食します。商品価格はパッケージツアー代金で、健診費用は健診センターに別途お支払いください。","在知名的大型体检中心，接受血液·尿液检查、胸部X光、腹部超声、胃镜等基本综合体检。由外国人专属协调员为您引导，前一天晚上开始禁食。商品价格为跟团游费用，体检费请另行支付给体检中心。","在知名的大型健檢中心，接受血液·尿液檢查、胸部X光、腹部超音波、胃鏡等基本綜合健檢。由外國人專屬協調員為您引導，前一天晚上開始禁食。商品價格為跟團遊費用，健檢費請另行支付給健檢中心。","En un conocido gran centro de chequeos médicos te haces un chequeo completo básico: análisis de sangre y orina, radiografía de tórax, ecografía abdominal y gastroscopia. Un coordinador para extranjeros te guía, y ayunas desde la noche anterior. El precio es la tarifa del tour; el chequeo se paga aparte en el centro.")}
+  d:T6("이름난 대형 건강검진 센터에서 혈액·소변 검사, 흉부 X선, 복부 초음파, 위내시경 같은 기본 종합검진을 받습니다. 외국인 전담 코디네이터가 안내하고, 전날 밤부터 금식합니다. 상품 가격은 패키지 여행비이며, 건강검진비는 검진 센터에 따로 냅니다.","At a well-known large health screening center, you get a basic full check-up: blood and urine tests, chest X-ray, abdominal ultrasound and gastroscopy. A coordinator for international visitors guides you, and you fast from the night before. The price is the package tour fee; the check-up fee is paid to the center separately.","有名な大型健診センターで、血液・尿検査、胸部X線、腹部超音波、胃内視鏡などの基本的な総合健診を受けます。外国人専任のコーディネーターが案内し、前日の夜から絶食します。商品価格はパッケージツアー代金で、健診費用は健診センターに別途お支払いください。","在知名的大型体检中心，接受血液·尿液检查、胸部X光、腹部超声、胃镜等基本综合体检。由外国人专属协调员为您引导，前一天晚上开始禁食。商品价格为跟团游费用，体检费请另行支付给体检中心。","在知名的大型健檢中心，接受血液·尿液檢查、胸部X光、腹部超音波、胃鏡等基本綜合健檢。由外國人專屬協調員為您引導，前一天晚上開始禁食。商品價格為跟團遊費用，健檢費請另行支付給健檢中心。","En un conocido gran centro de chequeos médicos te haces un chequeo completo básico: análisis de sangre y orina, radiografía de tórax, ecografía abdominal y gastroscopia. Un coordinador para extranjeros te guía, y ayunas desde la noche anterior. El precio es la tarifa del tour; el chequeo se paga aparte en el centro.")},
+ {id:"chr",c:"tour",img:"charter",real:"pkg",price:300000,   // 11-11 사장님 「그대로 해」 — 차량 대절(기사 딸린 승합차 하루 대절) · 가격은 구간(목적지 가운데 가장 먼 곳, charter.js) · 예약 칸은 charter.js(CHR) · 허브 chr_hub.js
+  t:T6("차량 대절","Private Car Charter","貸切チャーター","包车","包車","Coche privado con conductor"),
+  f:[T6("하루 10시간","10 hours a day","1日10時間","每天10小时","每天10小時","10 horas al día"),T6("최대 7명 · 승합차","Up to 7 people · minivan","最大7名・ワゴン車","最多7人·商务车","最多7人·商務車","Hasta 7 personas · monovolumen"),T6("기름값·통행료 포함","Fuel & tolls included","燃料代・高速料金込み","含油费·过路费","含油費·過路費","Combustible y peajes incluidos")],
+  d:T6("기사가 딸린 차로 하루 동안 원하는 곳 어디든 갑니다. 목적지는 손님이 정합니다.","A car with a driver takes you anywhere you want for a whole day. You choose the destinations.","ドライバー付きの車で、1日お好きな場所へどこへでも行けます。目的地はお客様が決めます。","配司机的专车一整天带您去任何想去的地方，目的地由您决定。","配司機的專車一整天帶您去任何想去的地方，目的地由您決定。","Un coche con conductor te lleva a donde quieras durante todo un día. Tú eliges los destinos.")}
 ];
 // 고정 상품 상세 칸 (사장님 10-30 「그대로 해봐」 체험·입장권 화면 개편) — 실제 업체가 없는 예시 상품은 주소·연락처를 비워 두고 「예약 확정 후 안내」로 보인다
 //   🔴 이 표를 고치면 worker.js SHOP_FX2 도 같이 (같은 내용 JSON)
@@ -303,6 +307,27 @@ var PX={
   exc:[T6("세트 밖의 재료로 바꾸거나 더 사는 것 (가게에 직접 냄)","Upgrading the material or buying extra items (paid directly to the shop)","セット以外の材料への変更や追加購入（お店に直接お支払い）","更换套装以外的材料或另购物品（直接付给店家）","更換套裝以外的材料或另購物品（直接付給店家）","Cambiar a otro material o comprar algo más (se paga directamente en la tienda)"),EXC_OWN],tip:MEET_TBD,
   note:[T6("새길 이름을 한글·한자·영문 중 무엇으로 할지 미리 정해 오세요.","Decide beforehand whether you want your name in Hangul, Hanja or English.","名前をハングル・漢字・英字のどれで彫るか、あらかじめ決めておいてください。","请事先决定名字要用韩文、汉字还是英文刻。","請事先決定名字要用韓文、漢字還是英文刻。","Decide antes si quieres tu nombre en hangul, hanja o inglés."),NOTE_ACC],
   faq:[{q:T6("도장값이 따로 드나요?","Do I pay extra for the seal?","はんこ代は別にかかりますか？","印章需要另外付费吗？","印章需要另外付費嗎？","¿Pago aparte el sello?"),a:T6("아니요. 7만 원에 도장·인주·고급 나무 케이스·비단 도장 주머니 세트가 모두 들어 있습니다. 다른 재료로 바꾸거나 더 사는 것만 가게에 따로 냅니다.","No. The ₩70,000 price includes the full set: seal, ink pad, fine wooden case and silk seal pouch. You only pay the shop separately if you upgrade the material or buy extra items.","いいえ。7万ウォンに、はんこ・朱肉・上質な木箱・絹のはんこ袋のセットがすべて含まれます。材料の変更や追加購入だけ、お店に別途お支払いください。","不需要。7万韩元已包含印章、印泥、精致木盒和丝绸印章袋全套。只有更换材料或另购物品时才需另付给店家。","不需要。7萬韓元已包含印章、印泥、精緻木盒和絲綢印章袋全套。只有更換材料或另購物品時才需另付給店家。","No. Los ₩70.000 incluyen todo el set: sello, tampón, estuche de madera fino y bolsita de seda. Solo pagas aparte en la tienda si cambias de material o compras algo más.")},FAQ_GD]},
+ chr:{kind:"car",area:T6("서울·공항 출발","From Seoul or the airport","ソウル・空港発","首尔·机场出发","首爾·機場出發","Desde Seúl o el aeropuerto"),   // 11-11 차량 대절 (charter.js 글과 같게)
+  dur:T6("하루 10시간","10 hours","10時間","10小时","10小時","10 horas"),langs:[],px:T6("기사 식사·주차비·입장료 별도","Driver's meals, parking & admission extra","ドライバーの食事・駐車料金・入場料は別途","司机餐费·停车费·门票另付","司機餐費·停車費·門票另付","Comidas del conductor, aparcamiento y entradas aparte"),
+  hl:[T6("기사가 운전하는 승합차로 하루 동안 원하는 곳을 차례로 돌아요","A driver takes you to the places you choose, one after another, all day","ドライバーが運転するワゴン車で、1日お好きな場所を順番に回ります","司机驾驶商务车，一整天按顺序带您去想去的地方","司機駕駛商務車，一整天按順序帶您去想去的地方","Un conductor te lleva en monovolumen a los lugares que elijas, uno tras otro, todo el día"),
+   T6("목적지는 손님이 정하고, 끌어서 순서를 바꿀 수 있어요","You choose the destinations and can drag them to change the order","目的地はお客様が決め、ドラッグで順番を変えられます","目的地由您决定，可拖动调整顺序","目的地由您決定，可拖動調整順序","Tú eliges los destinos y puedes arrastrarlos para cambiar el orden"),
+   T6("서울 숙소나 인천·김포공항에서 태우고 내려 드려요","We pick you up and drop you off at your hotel in Seoul or at Incheon or Gimpo Airport","ソウルのホテルか仁川・金浦空港でお迎え・お送りします","在首尔的住处或仁川·金浦机场接送您","在首爾的住處或仁川·金浦機場接送您","Te recogemos y te dejamos en tu hotel de Seúl o en los aeropuertos de Incheon y Gimpo"),
+   T6("기름값과 고속도로 통행료가 가격에 들어 있어요","Fuel and highway tolls are included in the price","燃料代と高速道路料金は料金に含まれます","价格已包含油费和高速公路费","價格已包含油費和高速公路費","El combustible y los peajes están incluidos en el precio"),
+   T6("기사 언어는 한국어·영어·일본어·중국어 중에서 골라요 (추가 요금 없음)","Choose your driver's language: Korean, English, Japanese or Chinese (no extra charge)","ドライバーの言語は韓国語・英語・日本語・中国語から選べます（追加料金なし）","司机语言可选韩语、英语、日语或中文（不另收费）","司機語言可選韓語、英語、日語或中文（不另收費）","Elige el idioma del conductor: coreano, inglés, japonés o chino (sin coste extra)")],
+  steps:[T6("숙소(서울)나 공항에서 기사 만나기","Meet your driver at your hotel (Seoul) or the airport","ホテル（ソウル）か空港でドライバーと合流","在住处（首尔）或机场与司机会合","在住處（首爾）或機場與司機會合","Te encuentras con el conductor en tu hotel (Seúl) o en el aeropuerto"),
+   T6("정한 순서대로 목적지 돌기","Visit your destinations in the order you set","決めた順番で目的地を回る","按您定好的顺序前往各目的地","按您定好的順序前往各目的地","Visitas los destinos en el orden que elegiste"),
+   T6("숙소나 공항에서 내리기 (픽업부터 10시간)","Drop-off at your hotel or the airport (10 hours from pickup)","ホテルか空港でお送り（お迎えから10時間）","送您回住处或机场（从接您起10小时）","送您回住處或機場（從接您起10小時）","Te dejamos en tu hotel o en el aeropuerto (10 horas desde la recogida)")],
+  inc:[T6("카니발급 승합차 1대","1 minivan (Kia Carnival class)","カーニバル級ワゴン車1台","1辆嘉华级商务车","1輛嘉華級商務車","1 monovolumen (tipo Kia Carnival)"),T6("기사 (운전만)","Driver (driving only)","ドライバー（運転のみ）","司机（仅驾驶）","司機（僅駕駛）","Conductor (solo conduce)"),
+   T6("기름값·고속도로 통행료","Fuel and highway tolls","燃料代・高速道路料金","油费·高速公路费","油費·高速公路費","Combustible y peajes"),T6("숙소(서울)·공항 픽업과 내려 주기","Pickup and drop-off at your hotel (Seoul) or the airport","ホテル（ソウル）・空港のお迎えとお送り","住处（首尔）·机场接送","住處（首爾）·機場接送","Recogida y regreso en tu hotel (Seúl) o el aeropuerto")],
+  exc:(window.CHR&&CHR.T.exl)||[],
+  note:[T6("기사는 운전만 하고 관광지 안에는 같이 들어가지 않아요. 안내가 필요하면 「가이드 인솔」을 따로 예약해 주세요.","Your driver only drives and does not go inside the attractions with you. If you need a guide, book “Travel with Guide” separately.","ドライバーは運転のみで、観光地の中には同行しません。案内が必要なら「ガイド同行」を別途ご予約ください。","司机只负责驾驶，不陪同进入景点。如需讲解，请另外预约「向导陪同」。","司機只負責駕駛，不陪同進入景點。如需講解，請另外預約「嚮導陪同」。","El conductor solo conduce y no entra contigo en los lugares. Si necesitas guía, reserva «Viaje con guía» aparte."),
+   T6("제주는 섬이라 갈 수 없어요.","Jeju is an island, so the car can't go there.","済州は島のため行けません。","济州是岛屿，无法前往。","濟州是島嶼，無法前往。","Jeju es una isla, así que el coche no puede ir."),
+   T6("이용 3일 전까지 예약할 수 있어요. 여러 날 이용하려면 날마다 하나씩 예약해 주세요.","Book at least 3 days ahead. For several days, book each day separately.","ご利用の3日前まで予約できます。複数日ご利用の場合は、1日ずつご予約ください。","需在使用日前3天预约。如需多天使用，请每天分别预约。","需在使用日前3天預約。如需多天使用，請每天分別預約。","Reserva con al menos 3 días de antelación. Para varios días, reserva cada día por separado."),
+   T6("큰 짐이 많거나 아이 카시트가 필요하면 요청 사항에 적어 주세요.","If you have a lot of luggage or need a child seat, write it in the requests.","大きな荷物が多い場合やチャイルドシートが必要な場合は、ご要望欄にご記入ください。","如行李较多或需要儿童安全座椅，请在备注中填写。","如行李較多或需要兒童安全座椅，請在備註中填寫。","Si llevas mucho equipaje o necesitas silla infantil, escríbelo en las peticiones.")],
+  faq:[{q:T6("가격은 어떻게 정해지나요?","How is the price set?","料金はどう決まりますか？","价格怎么定？","價格怎麼定？","¿Cómo se fija el precio?"),a:T6("목적지 가운데 가장 먼 곳의 구간으로 정해져요. ① 서울 시내 30만 원 · ② 경기·인천 35만 원 · ③ 강원·충청(대전·세종 포함) 45만 원 · ④ 동해안·전라·경상(부산·대구·울산·광주 포함) 70만 원. 목적지를 넣으면 예약 칸에 바로 보여요.","It’s set by the farthest destination: ① Seoul (city) ₩300,000 · ② Gyeonggi · Incheon ₩350,000 · ③ Gangwon · Chungcheong (incl. Daejeon, Sejong) ₩450,000 · ④ East coast · Jeolla · Gyeongsang (incl. Busan, Daegu, Ulsan, Gwangju) ₩700,000. Add destinations and the price shows up right away.","目的地のうち最も遠い場所のエリアで決まります。①ソウル市内30万ウォン・②京畿・仁川35万ウォン・③江原・忠清（大田・世宗を含む）45万ウォン・④東海岸・全羅・慶尚（釜山・大邱・蔚山・光州を含む）70万ウォン。目的地を入れるとすぐに表示されます。","按目的地中最远的地点所在区域计价：①首尔市内30万韩元 · ②京畿·仁川35万韩元 · ③江原·忠清（含大田·世宗）45万韩元 · ④东海岸·全罗·庆尚（含釜山·大邱·蔚山·光州）70万韩元。添加目的地后马上显示价格。","按目的地中最遠的地點所在區域計價：①首爾市內30萬韓元 · ②京畿·仁川35萬韓元 · ③江原·忠清（含大田·世宗）45萬韓元 · ④東海岸·全羅·慶尚（含釜山·大邱·蔚山·光州）70萬韓元。加入目的地後馬上顯示價格。","Se fija por el destino más lejano: ① Seúl (ciudad) ₩300.000 · ② Gyeonggi · Incheon ₩350.000 · ③ Gangwon · Chungcheong (incl. Daejeon y Sejong) ₩450.000 · ④ Costa este · Jeolla · Gyeongsang (incl. Busan, Daegu, Ulsan y Gwangju) ₩700.000. Al añadir destinos, el precio aparece al momento.")},
+   {q:T6("기사가 관광지 안까지 같이 가나요?","Does the driver come inside the attractions?","ドライバーは観光地の中まで同行しますか？","司机会陪同进入景点吗？","司機會陪同進入景點嗎？","¿El conductor entra en los lugares conmigo?"),a:T6("아니요. 기사는 운전만 하고 차에서 기다려요. 안내가 필요하면 「가이드 인솔」을 따로 예약해 주세요.","No. Your driver only drives and waits with the car. If you need a guide, book “Travel with Guide” separately.","いいえ。ドライバーは運転のみで、車でお待ちします。案内が必要なら「ガイド同行」を別途ご予約ください。","不会。司机只负责驾驶，在车上等候。如需讲解，请另外预约「向导陪同」。","不會。司機只負責駕駛，在車上等候。如需講解，請另外預約「嚮導陪同」。","No. El conductor solo conduce y te espera en el coche. Si necesitas guía, reserva «Viaje con guía» aparte.")},
+   {q:T6("10시간이 넘으면 어떻게 되나요?","What if it goes over 10 hours?","10時間を超えたらどうなりますか？","超过10小时怎么办？","超過10小時怎麼辦？","¿Y si pasa de 10 horas?"),a:T6("1시간에 3만 원이고, 밤 10시부터 아침 7시까지는 1시간에 5만 원이에요. 현장에서 기사에게 내 주세요.","It’s ₩30,000 per hour, and ₩50,000 per hour from 10 p.m. to 7 a.m. Please pay the driver on site.","1時間3万ウォンで、夜10時から朝7時までは1時間5万ウォンです。現地でドライバーにお支払いください。","每小时3万韩元，晚上10点到早上7点每小时5万韩元，请在现场付给司机。","每小時3萬韓元，晚上10點到早上7點每小時5萬韓元，請在現場付給司機。","Son ₩30.000 por hora, y ₩50.000 por hora de 22:00 a 7:00. Págalo al conductor en el momento.")},
+   {q:T6("여러 날 이용할 수 있나요?","Can I use it for several days?","複数日利用できますか？","可以连续多天使用吗？","可以連續多天使用嗎？","¿Puedo usarlo varios días?"),a:T6("네. 날마다 하나씩 예약해 주세요.","Yes. Please book each day separately.","はい。1日ずつご予約ください。","可以，请每天分别预约。","可以，請每天分別預約。","Sí. Reserva cada día por separado.")}]},
  hchk:{kind:"tour",area:T6("서울","Seoul","ソウル","首尔","首爾","Seúl"),
   dur:T6("반나절(약 3~4시간)","Half day (about 3–4 h)","半日（約3〜4時間）","半天（约3~4小时）","半天（約3~4小時）","Medio día (unas 3–4 h)"),langs:ALL6,conf:"24h",px:HCHK_X,
   hl:[T6("혈액·소변 검사, 흉부 X선, 복부 초음파, 위내시경 같은 기본 검사를 한 번에 받습니다","Get the basic tests in one visit: blood and urine tests, chest X-ray, abdominal ultrasound and gastroscopy","血液・尿検査、胸部X線、腹部超音波、胃内視鏡などの基本検査を一度に受けます","一次完成血液·尿液检查、胸部X光、腹部超声、胃镜等基本检查","一次完成血液·尿液檢查、胸部X光、腹部超音波、胃鏡等基本檢查","Haz en una sola visita las pruebas básicas: sangre y orina, radiografía de tórax, ecografía abdominal y gastroscopia"),
@@ -336,20 +361,28 @@ function loadP(){ return fetch(HUBU+"/shop/products?l="+encodeURIComponent(windo
 function psrc(p,gi){ if(!p.hub) return "img/shop/"+p.img+".webp"; return p.imgs.length?HUBU+"/shop/img/"+p.imgs[Math.min(gi||0,p.imgs.length-1)]:(p.img0||""); }
 function unitOf(p,n){ if(!p.hub) return p.real==="b4"?b4Price(n):p.price; var u=p.price; (p.disc||[]).forEach(function(d){ if(n>=d.n) u=d.p; }); return u; }
 function fmt(o,n){ return L(o).replace("{n}",n); }
+// 차량 대절 (11-11, charter.js) — 값은 「차 1대」 · 합계 = 구간 가격(인원과 상관없음) · 예약 칸·주문 본문은 CHR
+function isChr(p){ return !!(p&&p.id==="chr"&&window.CHR); }
+function perOf(p){ return isChr(p)?CHR.T.per:TX.per; }
+function totOf(p){ return isChr(p)?CHR.amount():unitOf(p,S.n)*S.n+(window.SMN?SMN.appSum(p):0); }
+function totTx(p){ var t=totOf(p); return isChr(p)&&!t?won(CHR.PRICE[1])+"~":won(t); }   // 목적지를 넣기 전엔 「₩300,000~」
+function nMax(p){ return isChr(p)?CHR.NMAX:(p&&p.hub?p.max:20); }
 function fchips(p){ return p.f.map(function(x){ return '<span>'+esc(L(x))+'</span>'; }).join("")+(p.mp?'<span>'+esc(fmt(TX.mp,p.mp))+'</span>':''); }   // 특징 칩 + 최소 출발 인원 (10-30)
 function mpNote(p){ return p&&p.mp?'<p class="snote">'+esc(fmt(TX.mpn,p.mp))+'</p>':''; }
-function hubPr(p,sm){ if(!p.price) return ""; return '<div class="spr">'+won(p.price)+(sm?' <small>/ '+esc(L(TX.per))+'</small>':' / '+esc(L(TX.per)))+(p.disc||[]).map(function(d){ return ' · '+esc(fmt(TX.dp,d.n))+' '+won(d.p); }).join("")+'</div>'; }
+function hubPr(p,sm){ if(!p.price) return ""; return '<div class="spr">'+won(p.price)+(sm?' <small>/ '+esc(L(perOf(p)))+'</small>':' / '+esc(L(perOf(p))))+(p.disc||[]).map(function(d){ return ' · '+esc(fmt(TX.dp,d.n))+' '+won(d.p); }).join("")+'</div>'; }
 function noteOf(p){ return p.hub&&!p.real?TX.soon:(p.real?TX.payn:TX.soon2); }
 function dayLine(p){ return p.hub&&!p.free&&p.days.length?'<span>'+esc(L(TX.dys))+': '+p.days.map(function(d){ return esc(L(TX.wd[d])); }).join("·")+'</span>':''; }
 // ── 화면 개편 도우미 (10-30) ──
 function Lx(o){ return o&&typeof o==="object"?(o[window.LANG]||o.en||o.ko||""):(o||""); }
 function kindOf(p){ return p.kind||(p.real==="perf"?"ticket":"tour"); }
 function isExt(p){ return p.real==="perf"||(p.hub&&!!p.link); }   // 외부 예매처 — 우리 환불 규정·바우처 아님
-function kBadge(p){ var k=kindOf(p); return '<span class="skb skb-'+k+'">'+esc(L(k==="tour"?TX.kT:k==="class"?TX.kC:TX.kK))+'</span>'; }
-function fcBadge(p){ return isExt(p)?'':'<span class="sfc">'+esc(L(TX.fc))+'</span>'; }
+function kLab(p){ var k=kindOf(p); return k==="car"&&window.CHR?CHR.T.kind:k==="tour"?TX.kT:k==="class"?TX.kC:TX.kK; }   // 차량 대절 = 「기사 딸린 차」 (11-11)
+function fcOf(p){ return isChr(p)?CHR.T.cfc:TX.fc; }   // 무료 취소 — 차량 대절은 2일 전 17시까지 (11-11)
+function kBadge(p){ var k=kindOf(p); return '<span class="skb skb-'+k+'">'+esc(L(kLab(p)))+'</span>'; }
+function fcBadge(p){ return isExt(p)?'':'<span class="sfc">'+esc(L(fcOf(p)))+'</span>'; }
 function langTxt(p,max){ var a=(p.langs||[]).filter(function(l){ return LGN[l]; }).map(function(l){ return LGN[l]; }); if(!a.length) return ""; return max&&a.length>max?a.slice(0,max).join(" · ")+" +"+(a.length-max):a.join(" · "); }
 function minUnit(p){ if(!p.hub&&p.real==="b4") return 79000; var u=p.price||0; (p.disc||[]).forEach(function(d){ if(d.p&&d.p<u) u=d.p; }); return u; }
-function fromPr(p){ var u=minUnit(p); if(u) return '<div class="spr">'+won(u)+'~ <small>/ '+esc(L(TX.per))+'</small></div>'; return isExt(p)?'<div class="spr"><small>'+esc(L(TX.pxt))+'</small></div>':''; }
+function fromPr(p){ var u=minUnit(p); if(u) return '<div class="spr">'+won(u)+'~ <small>/ '+esc(L(perOf(p)))+'</small></div>'; return isExt(p)?'<div class="spr"><small>'+esc(L(TX.pxt))+'</small></div>':''; }
 // 가격 아래 「별도」 줄 (11-10 도장·건강검진) — 목록 카드·상세 가격·결제 칸·결제창 · 홈페이지 카드(pc.js·pc_pkg.js)·AI 추천 카드(reco.js)도 같은 class
 function pxHtml(p){ var t=Lx(p&&p.px); return t?'<div class="shpx">'+esc(t)+'</div>':''; }
 (function(){ var s=document.createElement("style"); s.textContent=".shpx{margin-top:3px;font-size:12.5px;font-weight:700;line-height:1.4;opacity:.85}#shopBox .shpx{color:#495057;opacity:1}"; document.head.appendChild(s); })();
@@ -371,8 +404,9 @@ function detBody(p){ var K=kindOf(p), X=isExt(p), h='', urls=galUrls(p), gi=Math
   var key=[];
   if(Lx(p.dur)) key.push([TX.dur,Lx(p.dur)]);
   if(langTxt(p)) key.push([TX.lng,langTxt(p)]);
-  if(K==="tour") key.push([null,L(TX.kT)]); else if(K==="class") key.push([null,L(TX.gdN)]); else key.push([null,L(TX.kK)]);
-  if(!X){ key.push([null,L(TX.vch)]); if(p.conf) key.push([null,L(p.conf==="now"?TX.cfNow:TX.cf24)]); key.push([null,L(TX.fc),"g"]); }
+  if(K==="car"&&window.CHR){ key.push([CHR.T.dl,CHR.dlTxt()]); key.push([null,fmt(CHR.T.cap,CHR.NMAX)]); }   // 차량 대절 (11-11) — 기사 언어 · 차 1대 최대 7명
+  else if(K==="tour") key.push([null,L(TX.kT)]); else if(K==="class") key.push([null,L(TX.gdN)]); else key.push([null,L(TX.kK)]);
+  if(!X){ key.push([null,L(TX.vch)]); if(p.conf) key.push([null,L(p.conf==="now"?TX.cfNow:TX.cf24)]); key.push([null,L(fcOf(p)),"g"]); }
   h+='<div class="smeta">'+esc([catName(p.c),Lx(p.area)].filter(Boolean).join(" · "))+'</div><h1 class="sdh">'+esc(L(p.t))+'</h1>'+(window.rvMini?rvMini("shop:"+p.id):'')
    +'<div class="skey">'+key.map(function(k){ return '<span'+(k[2]?' class="g"':'')+'>'+(k[0]?'<small>'+esc(L(k[0]))+'</small> ':'')+esc(k[1])+'</span>'; }).join("")+'</div>'
    +priceHtml(p)+(K==="tour"&&p.mp?'<p class="snote"><b>'+esc(fmt(TX.mp,p.mp))+'</b></p>':'')+(p.hub&&(dayLine(p)||p.max<20)?'<div class="sft">'+dayLine(p)+(p.max<20?'<span>'+esc(fmt(TX.mx,p.max))+'</span>':'')+'</div>':'')
@@ -386,8 +420,9 @@ function detBody(p){ var K=kindOf(p), X=isExt(p), h='', urls=galUrls(p), gi=Math
   // ⑤ 포함 / 불포함
   if((p.inc||[]).length||(p.exc||[]).length) h+='<section class="shbx"><div class="sie"><div><h2>'+esc(L(TX.inc))+'</h2>'+liList(p.inc,"sin1")+'</div><div><h2>'+esc(L(TX.exc))+'</h2>'+liList(p.exc,"sex1")+'</div></div></section>';
   if(window.SMN) h+=SMN.detHtml(p);   // 가게 메뉴 — 값 안내 (11-10, smenu.js) · 메뉴가 없으면 아무것도 안 그림
-  // ⑥ 찾아가는 방법 (투어는 만나는 곳) — 체험은 크게
-  if(p.addrKo||Lx(p.tip)||Lx(p.stn)||p.entImg){ var w='';
+  // ⑥ 찾아가는 방법 (투어는 만나는 곳) — 체험은 크게 · 차량 대절은 픽업 장소 안내 (11-11)
+  if(K==="car"&&window.CHR) h+='<section class="shbx"><h2>'+esc(L(CHR.T.meet))+'</h2><p class="sline">'+esc(L(CHR.T.meetD))+'</p></section>';
+  else if(p.addrKo||Lx(p.tip)||Lx(p.stn)||p.entImg){ var w='';
     if(p.addrKo){ w+='<div class="sadr">'+(Lx(p.meetN)||p.bizKo?'<b>'+esc(Lx(p.meetN)||p.bizKo)+'</b>':'')+'<span>'+esc(p.addrKo)+'</span>'+(p.addrEn?'<span class="sub">'+esc(p.addrEn)+'</span>':'')+'</div>'+mapBtns(p); }
     else w+='<div class="sadr"><b>'+esc(L(TX.tbd))+'</b>'+(Lx(p.area)?'<span>'+esc(Lx(p.area))+'</span>':'')+'</div>';
     if(Lx(p.stn)) w+='<p class="sline"><small>'+esc(L(TX.stn))+'</small> <b>'+esc(Lx(p.stn))+'</b>'+(p.exit?' · '+esc(fmt(TX.ext,p.exit)):'')+(p.walk?' · '+esc(fmt(TX.wk,p.walk)):'')+'</p>';
@@ -396,13 +431,15 @@ function detBody(p){ var K=kindOf(p), X=isExt(p), h='', urls=galUrls(p), gi=Math
     if(p.addrKo) w+='<div class="staxi"><small>'+esc(L(TX.tx))+'</small>'+(p.bizKo?'<b class="tb" lang="ko">'+esc(p.bizKo)+'</b>':'')+'<b class="ta" lang="ko">'+esc(p.addrKo)+'</b><p>'+esc(L(TX.txn))+'</p><button type="button" data-s="cpy" data-v="'+esc((p.bizKo?p.bizKo+" ":"")+p.addrKo)+'">'+esc(L(TX.cpy))+'</button></div>';
     h+='<section class="shbx'+(K==="class"?' sbig':'')+'"><h2>'+esc(L(K==="tour"?TX.meet:TX.way))+'</h2>'+w+'</section>'; }
   // ⑦ 당일 이렇게
-  var dl=X?[L(TX.dP1)]:[L(TX.d1),L(TX.d2),p.tel?fmt(TX.d3,p.tel):L(TX.d3n)];
+  var dl=X?[L(TX.dP1)]:(K==="car"&&window.CHR)?[L(CHR.T.d1),L(CHR.T.d2),L(CHR.T.d3)]:[L(TX.d1),L(TX.d2),p.tel?fmt(TX.d3,p.tel):L(TX.d3n)];   // 차량 대절 당일 (11-11)
   h+='<section class="shbx"><h2>'+esc(L(TX.day))+'</h2><ol class="sstps sday">'+dl.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ol></section>';
   // ⑧ 알아 두세요 — 최소 출발 인원은 투어만
   var nt=(p.note||[]).map(Lx).filter(Boolean); if(K==="tour"&&p.mp) nt.push(fmt(TX.mp,p.mp)+" — "+fmt(TX.mpn,p.mp));
   if(nt.length) h+='<section class="shbx"><h2>'+esc(L(TX.know))+'</h2><ul>'+nt.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul></section>';
   // ⑨ 취소·환불 — 가이드 사정 문구는 투어만
-  if(!X) h+='<section class="shbx"><h2>'+esc(L(TX.dRf))+'</h2><ul>'+["rf1","rf2","rf3","rf4"].map(function(k){ return '<li>'+esc(L(TX[k]))+'</li>'; }).join("")+'</ul><p>'+esc(L(K==="tour"?TX.rf5:TX.rf5c))+'</p><p>'+esc(L(TX.rf6))+'</p>'
+  if(!X&&K==="car"&&window.CHR) h+='<section class="shbx"><h2>'+esc(L(TX.dRf))+'</h2><ul><li>'+esc(L(CHR.T.rf1))+'</li><li>'+esc(L(CHR.T.rf2))+'</li></ul><p>'+esc(L(CHR.T.rf3))+'</p><p>'+esc(L(TX.rf6))+'</p>'   // 차량 대절 = 2일 전 17시까지 전액 환불, 그 뒤 환불 없음 (11-11)
+     +'<a class="srfl" href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(L(TX.rfL))+' ›</a></section>';
+  else if(!X) h+='<section class="shbx"><h2>'+esc(L(TX.dRf))+'</h2><ul>'+["rf1","rf2","rf3","rf4"].map(function(k){ return '<li>'+esc(L(TX[k]))+'</li>'; }).join("")+'</ul><p>'+esc(L(K==="tour"?TX.rf5:TX.rf5c))+'</p><p>'+esc(L(TX.rf6))+'</p>'
      +'<a class="srfl" href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(L(TX.rfL))+' ›</a></section>';
   // ⑩ 후기 (기존 별점 띠)
   h+=(window.rvSlot?'<div class="rvhost" data-rvhost="1">'+rvSlot("shop:"+p.id)+'</div>':'');
@@ -467,7 +504,7 @@ css.textContent+="#shopBox .sdth{display:flex;gap:6px;overflow-x:auto}#shopBox .
  +"#shopBox .rvhost{--ink:#1d2433;--sub:#667085;--line:#e4e0d6;--card:#fff}#shopBox .rvhost .rvs{background:#fff9db;border-color:#ffe066}#shopBox .rvhost .rvs.on{border-color:#f59f00}#shopBox select#shopTm{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid #d0cbbf;background:#fff}";
 // 화면 개편 (10-30) — 앞면 카드 · 뒷면 상세 칸
 css.textContent+="#shopBox .smeta{font-size:12px;color:#667085;font-weight:700}#shopBox .sinf{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;color:#344054}#shopBox .sinf span+span:before{content:'·';margin-right:10px;color:#98a2b3}"
- +"#shopBox .sbdg{display:flex;flex-wrap:wrap;gap:5px}#shopBox .skb,#shopBox .sfc{font-size:11.5px;font-weight:800;border-radius:6px;padding:2px 7px}#shopBox .skb-tour{background:#e7f0fb;color:#1f5fa8}#shopBox .skb-class{background:#f3ecfd;color:#6941c6}#shopBox .skb-ticket{background:#fff1e6;color:#c4320a}#shopBox .sfc{background:#e8f6ee;color:#1f7a5a}"
+ +"#shopBox .sbdg{display:flex;flex-wrap:wrap;gap:5px}#shopBox .skb,#shopBox .sfc{font-size:11.5px;font-weight:800;border-radius:6px;padding:2px 7px}#shopBox .skb-tour{background:#e7f0fb;color:#1f5fa8}#shopBox .skb-class{background:#f3ecfd;color:#6941c6}#shopBox .skb-ticket{background:#fff1e6;color:#c4320a}#shopBox .skb-car{background:#fff3bf;color:#7a5900}#shopBox .sfc{background:#e8f6ee;color:#1f7a5a}"
  +"#shopBox .sgal{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}#shopBox .sgal::-webkit-scrollbar{display:none}#shopBox .sgal img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start;display:block}"
  +"#shopBox .sgn{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px}"
  +"#shopBox .skey{display:flex;flex-wrap:wrap;gap:6px}#shopBox .skey span{font-size:13px;font-weight:700;background:#fff;border:1px solid #e4e0d6;border-radius:8px;padding:5px 9px;color:#1d2433}#shopBox .skey span small{color:#667085;font-weight:600;font-size:12px}#shopBox .skey span.g{background:#e8f6ee;border-color:#b7e1c8;color:#1f7a5a}"
@@ -518,7 +555,7 @@ function paint(){ var b=box(); if(!b) return; var y=b.scrollTop;
   b.innerHTML=h; b.scrollTop=y; try{ if(window.rvMiniLoad) rvMiniLoad(L0.map(function(p){ return "shop:"+p.id; })); }catch(e){} }   // 카드 맨 아래 별점 작은 띠 (10-29)
 // 선택한 상품 칸 — 목록 화면과 상세 화면 왼쪽 기둥이 같이 쓴다 (사장님 10-29 「두 번째 화면을 첫 번째와 같게」)
 function selHtml(){ var p0=prod();   // 선택한 상품
-  return '<section class="shbx" id="shopSel"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel">'+(psrc(p0)?'<img src="'+esc(psrc(p0))+'" alt="">':'')+'<b>'+esc(L(p0.t))+'</b><div class="sft">'+fchips(p0)+'</div>'+(p0.rt?rtBtn():'')+(p0.hub?hubPr(p0):p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+' / '+esc(L(TX.per))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>'; }
+  return '<section class="shbx" id="shopSel"><h2>'+esc(L(TX.sel))+'</h2>'+(p0?'<div class="ssel">'+(psrc(p0)?'<img src="'+esc(psrc(p0))+'" alt="">':'')+'<b>'+esc(L(p0.t))+'</b><div class="sft">'+fchips(p0)+'</div>'+(p0.rt?rtBtn():'')+(p0.hub?hubPr(p0):p0.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p0.price?'<div class="spr">'+won(p0.price)+(isChr(p0)?'~':'')+' / '+esc(L(perOf(p0)))+'</div>':'')+'</div>':'<p class="snote">'+esc(L(TX.seln))+'</p>')+'</section>'; }
 // 가이드 고르기 + 예약·결제 칸 — 목록 화면 왼쪽 기둥과 상세 화면 결제 칸이 같이 쓴다 (10-29)
 function sideHtml(){ var h='', p0=prod(), tour=!p0||kindOf(p0)==="tour";   // 가이드 고르기는 가이드 투어만 (10-30)
   // 가이드
@@ -533,6 +570,12 @@ function sideHtml(){ var h='', p0=prod(), tour=!p0||kindOf(p0)==="tour";   // �
     if(p.real==="perf") h+='<button type="button" class="spay" data-s="perf">'+esc(L(TX.perf))+' ›</button>';
     else if(p.hub&&p.link) h+=cxRow('<a class="spay" href="'+esc(p.link)+'" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">'+esc(L(TX.tk))+' ›</a>')+'<p class="snote">'+esc(L(TX.tkn))+'</p>';   // 외부 예매처 (10-29)
     else if(p.hub&&!p.real) h+='<p class="snote">'+esc(L(TX.soon))+'</p>';   // 관리자 상품 「준비 중」 — 주문 안 받음
+    else if(isChr(p)){   // 차량 대절 (11-11) — 날짜(3일 뒤부터)·시작 시각·인원(1~7) + charter.js 칸(큰 짐·픽업·목적지·기사 언어·요청 사항·구간 가격) · 합계 = 구간 가격
+      h+='<div class="srow"><label for="shopDt">'+esc(L(TX.date))+'</label><input type="date" id="shopDt" min="'+esc(CHR.minDate())+'" value="'+esc(S.date)+'"></div>'
+       +'<div class="srow"><label for="shopTm">'+esc(CHR.tx("tm"))+'<br><small>'+esc(CHR.tx("tmn"))+'</small></label><input type="time" id="shopTm" step="1800" value="'+esc(S.time)+'"></div>'
+       +'<div class="srow"><label>'+esc(L(TX.ppl))+'</label><div class="sstp"><button type="button" data-n="-1" aria-label="-">−</button><b>'+S.n+'</b><button type="button" data-n="1" aria-label="+">+</button></div></div>'
+       +CHR.pickHtml(p)+'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+totTx(p)+'</span></div>'+pxHtml(p)
+       +cxRow('<button type="button" class="spay" data-s="mock"'+(CHR.ok()?'':' disabled')+'>'+esc(L(TX.pay))+' ›</button>')+'<p class="snote">'+esc(L(noteOf(p)))+'</p>'; }
     else { var unit=unitOf(p,S.n), tsel=p.hub&&!p.free&&p.times.length;
       h+='<div class="srow"><label for="shopDt">'+esc(L(TX.date))+'</label><input type="date" id="shopDt" value="'+esc(S.date)+'"></div>'
        +(dayLine(p)?'<p class="snote">'+dayLine(p)+'</p>':'')
@@ -542,7 +585,7 @@ function sideHtml(){ var h='', p0=prod(), tour=!p0||kindOf(p0)==="tour";   // �
        +(window.SMN?SMN.pickHtml(p,unit*S.n):'')+(window.HSP?HSP.pickHtml(p):'')+'<div class="stot"><span>'+esc(L(TX.tot))+'</span><span>'+won(unit*S.n+(window.SMN?SMN.appSum(p):0))+'</span></div>'+(window.SMN&&SMN.appSum(p)?'':pxHtml(p))
        +cxRow('<button type="button" class="spay" data-s="mock"'+(window.HSP&&!HSP.ok(p)?' disabled':'')+'>'+esc(L(TX.pay))+' ›</button>')+'<p class="snote">'+esc(L(noteOf(p)))+'</p>'+mpNote(p); } }   // 시험 결제창 (사장님 10-27 「결제화면도 띄워줘, 어차피 결제는 안 돼」)
   return h+'</section>'; }
-function priceHtml(p){ return (p.hub?hubPr(p,true):p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+' <small>/ '+esc(L(TX.per))+'</small></div>':'')+pxHtml(p); }
+function priceHtml(p){ return (p.hub?hubPr(p,true):p.real==="b4"?'<div class="spr">'+esc(L(TX.b4p))+'</div>':p.price?'<div class="spr">'+won(p.price)+(isChr(p)?'~':'')+' <small>/ '+esc(L(perOf(p)))+'</small></div>':'')+pxHtml(p); }   // 차량 대절 = 「₩300,000~ / 차 1대」 (11-11)
 // 상품 상세 화면 — 왼쪽 상세 · 오른쪽(폰은 아래) 결제 칸 + 폰 맨 아래 띠 (10-29)
 function paintDet(){ var b=box(), p=prod(); if(!b||!p) return; var y=b.scrollTop, rk="shop:"+p.id, keep=b.querySelector('.rvp[data-rvk="'+rk+'"]');   // 펼친 후기 칸은 다시 그려도 그대로 (10-29)
   var h=''
@@ -554,7 +597,7 @@ function paintDet(){ var b=box(), p=prod(); if(!b||!p) return; var y=b.scrollTop
   if(p.real==="perf") h+='<div class="sbar"><div><b style="font-size:15px">'+esc(L(p.t))+'</b></div><button type="button" class="spay" data-s="perf">'+esc(L(TX.perf))+' ›</button></div>';
   else if(p.hub&&p.link) h+='<div class="sbar"><div><b style="font-size:15px">'+esc(L(p.t))+'</b></div>'+cxRow('<a class="spay" href="'+esc(p.link)+'" target="_blank" rel="noopener" style="text-decoration:none">'+esc(L(TX.tk))+' ›</a>')+'</div>';
   else if(p.hub&&!p.real) h+='<div class="sbar"><div><b style="font-size:15px">'+esc(L(p.t))+'</b><small>'+esc(L(TX.ex))+'</small></div></div>';
-  else h+='<div class="sbar sbtot"><div><small>'+esc(L(TX.tot))+' · '+esc(L(TX.ppl))+' '+S.n+'</small><b>'+won(unitOf(p,S.n)*S.n+(window.SMN?SMN.appSum(p):0))+'</b></div>'+cxRow('<button type="button" class="spay" data-s="go">'+esc(L(TX.pay))+' ›</button>')+'</div>';
+  else h+='<div class="sbar sbtot"><div><small>'+esc(L(TX.tot))+' · '+esc(L(TX.ppl))+' '+S.n+'</small><b>'+totTx(p)+'</b></div>'+cxRow('<button type="button" class="spay" data-s="go">'+esc(L(TX.pay))+' ›</button>')+'</div>';
   b.innerHTML=h; b.scrollTop=y; galWire();
   try{ if(window.rvMiniLoad) rvMiniLoad([rk]); }catch(e){}
   if(window.rvPaint){ var hs=b.querySelector("[data-rvhost]"); if(keep&&hs) hs.appendChild(keep); try{ rvPaint(rk); }catch(e){} }
@@ -568,6 +611,7 @@ function barTog(){ var b=box(); if(!b) return; var bar=b.querySelector(".sbar"),
 var listY=0;
 function openDet(id){ var b=box(); if(!b) return; listY=b.scrollTop; S.prod=id; S.det=true; S.gi=0; S.fromAi=false;
   var p=prod(); if(p&&p.hub){ if(!p.free&&p.times.length&&p.times.indexOf(S.time)<0) S.time=p.times[0]; if(S.n>p.max) S.n=p.max; }
+  if(isChr(p)){ if(S.n>CHR.NMAX) S.n=CHR.NMAX; if(!S.date) S.date=CHR.minDate(); CHR.quote(); }   // 차량 대절 (11-11) — 최대 7명 · 날짜는 그대로(일정표에서 고른 날이 3일 안이면 예약 칸에 안내)
   b.scrollTop=0; paintDet(); b.scrollTop=0; try{ if(window.rvLoad) rvLoad("shop:"+id); }catch(e){} barTog(); }
 function toList(){ var b=box(); S.det=false; var o=b&&b.querySelector(".spm"); if(o) o.remove(); paint(); if(b) b.scrollTop=listY; }
 function repaint(){ if(S.det) paintDet(); else paint(); }
@@ -576,20 +620,20 @@ function repaint(){ if(S.det) paintDet(); else paint(); }
 //   🔴 PG 붙일 때 (11-07 사장님 「이니시스로 해」 — 토스 아님): tpg.js 의 SH_PG=true + 허브 PORTONE_TOUR_CHANNEL_KEY → 「결제하기」가 pg:1 로 주문 → KG이니시스 결제창(포트원) → 돌아오면 TPG.onRet("pkg") 아래
 function pgOn(){ return !!(window.TPG&&TPG.on); }
 function mockPay(res,host){ var b=(window.PC_HOME&&host)||box(), p=prod(); if(!b||!p) return; var o=b.querySelector(".spm"); if(o) o.remove();   // host = PC 홈페이지 상품 화면(home/pc_pkg.js, 11-08) — 폰 앱은 늘 box()
-  var unit=unitOf(p,S.n), tot=unit*S.n+(window.SMN?SMN.appSum(p):0), gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0], gnm=gg?gName(gg):(S.gid&&S.gname)||"";
+  var unit=unitOf(p,S.n), tot=totOf(p), gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0], gnm=gg?gName(gg):(S.gid&&S.gname)||"";
   o=document.createElement("div"); o.className="spm"; b.appendChild(o); var agd=false; if(!S.pm) S.pm="card";
   // res = 결제창에서 돌아온 결과 {ok, oid, amount} 또는 {ok:false, err}
-  var draw=function(oid,err,busy){ var done=res&&res.ok;
+  var draw=function(oid,err,busy){ var done=res&&res.ok; tot=totOf(p);   // 차량 대절은 허브가 구간 값을 다시 알려 주면 바뀐다 (11-11)
     o.innerHTML='<div><h3>'+esc(L(done?TX.pdT:TX.pt))+'</h3>'
     +'<b>'+esc(L(TX.ord))+'</b><div class="spick">'+(psrc(p)?'<img src="'+esc(psrc(p))+'" alt="">':'')+'<b>'+esc(L(p.t))+'</b></div>'
     +'<div class="sl"><span>'+esc(L(TX.dtm))+'</span><span>'+esc((S.date||"-")+" "+(S.time||""))+'</span></div><div class="sl"><span>'+esc(L(TX.ppl))+'</span><span>'+S.n+'</span></div>'+(kindOf(p)==="tour"?'<div class="sl"><span>'+esc(L(TX.gd))+'</span><span>'+(gnm?esc(gnm):esc(L(TX.none)))+'</span></div>':'')
-    +(window.HSP?HSP.payRow(p):'')+(window.SMN?SMN.payRows(p,unit*S.n):'')+'<div class="stot"><span>'+esc(L(done?TX.amt:TX.tot))+'</span><span>'+won(done?res.amount:tot)+'</span></div>'+(window.SMN&&SMN.appSum(p)?'':pxHtml(p))
-    +(done?'<div class="sl"><span>'+esc(L(TX.oid))+'</span><b>'+esc(res.oid)+'</b></div><div class="sdone">'+esc(L(res.chat?TX.sent:TX.sentX))+'</div>'+(res.chat&&window.BELL&&BELL.promptHtml?BELL.promptHtml():'')+(res.chat&&res.tk?'<button type="button" class="spay" id="spmChat">'+esc(L(TX.chatGo))+'</button>':'')
+    +(window.HSP?HSP.payRow(p):'')+(window.SMN?SMN.payRows(p,unit*S.n):'')+(isChr(p)?CHR.payRows(p):'')+'<div class="stot"><span>'+esc(L(done?TX.amt:TX.tot))+'</span><span>'+won(done?res.amount:tot)+'</span></div>'+((window.SMN&&SMN.appSum(p))||isChr(p)?'':pxHtml(p))
+    +(done?'<div class="sl"><span>'+esc(L(TX.oid))+'</span><b>'+esc(res.oid)+'</b></div><div class="sdone">'+esc(isChr(p)?CHR.tx("sent"):L(res.chat?TX.sent:TX.sentX))+'</div>'+(res.chat&&window.BELL&&BELL.promptHtml?BELL.promptHtml():'')+(res.chat&&res.tk?'<button type="button" class="spay" id="spmChat">'+esc(L(TX.chatGo))+'</button>':'')
      :'<b>'+esc(L(TX.cu))+'</b>'
      +'<label class="scl">'+esc(L(TX.cn))+'<input type="text" id="spmN" maxlength="40" autocomplete="name" value="'+esc(S.cn)+'"></label>'
      +'<label class="scl">'+esc(L(TX.cp))+'<input type="tel" id="spmP" maxlength="30" autocomplete="tel" value="'+esc(S.cp)+'"></label>'
      +'<label class="scl">'+esc(L(TX.ce))+'<input type="email" id="spmE" maxlength="100" autocomplete="email" value="'+esc(S.ce)+'"></label>'
-     +'<p class="snote">'+esc(L(TX.cpn))+'</p>'
+     +'<p class="snote">'+esc(isChr(p)?CHR.tx("cpn"):L(TX.cpn))+'</p>'   // 차량 대절은 「기사」 (11-11)
      +'<b>'+esc(L(TX.pm))+'</b><label class="sr"><input type="radio" name="spmm" value="card"'+(S.pm!=="paypal"?" checked":"")+'> '+esc(L(TX.card))+'</label><label class="sr"><input type="radio" name="spmm" value="paypal"'+(S.pm==="paypal"?" checked":"")+'> PayPal</label>'
      +mpNote(p)
      +'<label class="sr"><input type="checkbox" id="spmAg"> '+esc(L(TX.agr))+'</label>'
@@ -607,17 +651,20 @@ function mockPay(res,host){ var b=(window.PC_HOME&&host)||box(), p=prod(); if(!b
       if(!S.date||S.date<today||!/^\d{2}:\d{2}$/.test(S.time||"")){ draw(null,L(TX.edt)); return; }
       if(p.hub&&!p.free&&p.days.length&&p.days.indexOf(new Date(S.date+"T00:00:00Z").getUTCDay())<0){ draw(null,L(TX.edy)); return; }   // 진행 요일 (10-29)
       if(window.HSP&&!HSP.ok(p)){ draw(null,HSP.tx("need")); return; }   // 건강검진 병원 고르기 (11-10)
+      if(isChr(p)&&!CHR.ok()){ draw(null,CHR.why()||L(TX.efail)); return; }   // 차량 대절 — 픽업·목적지·구간·날짜(3일 뒤부터) (11-11)
       if(S.pm==="paypal"){ draw(null,L(TX.ppn)); return; }   // 토스 해외간편결제(PayPal)는 USD·별도 계약이라 시험 키에서 COMMON_ERROR (10-29 확인) — 주문 만들지 않고 안내만
       draw(null,"",1); var pm="card";
-      fetch(HUBU+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:p.id,hosp:(window.HSP?HSP.body(p):undefined),menu:(window.SMN?SMN.body(p):undefined),mexp:(window.SMN&&SMN.of(p.id)?SMN.appSum(p):undefined),pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,glang:S.glang||"",lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,pg:pgOn()?1:0,sess:(function(){ try{ return localStorage.getItem("mpv_pg_sess")||undefined; }catch(z){ return undefined; } })()})})
+      fetch(HUBU+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:p.id,chr:(isChr(p)?CHR.body():undefined),cexp:(isChr(p)?CHR.amount():undefined),hosp:(window.HSP?HSP.body(p):undefined),menu:(window.SMN?SMN.body(p):undefined),mexp:(window.SMN&&SMN.of(p.id)?SMN.appSum(p):undefined),pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,glang:S.glang||"",lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,pg:pgOn()?1:0,sess:(function(){ try{ return localStorage.getItem("mpv_pg_sess")||undefined; }catch(z){ return undefined; } })()})})
        .then(function(r){ return r.json(); }).then(function(j){
-         if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err, pe=window.TPG?TPG.errTx(e):""; draw(null,pe||(e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(p.hub&&p.days&&p.days.length?TX.edy:TX.edt):e==="notsale"?L(TX.soon):(e==="hosp"&&window.HSP)?HSP.tx("need"):(e==="menu"&&window.SMN)?SMN.tx("eMenu"):L(TX.efail))); if(e==="menu") loadP().then(function(){ try{ var bx=box(), k=bx&&bx.querySelector(".spm"); if(bx&&S.det&&!host){ paintDet(); if(k) bx.appendChild(k); } }catch(z){} }); return; }
+         if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err, pe=(isChr(p)&&CHR.errTx(e,j))||(window.TPG?TPG.errTx(e):""); if(isChr(p)&&e){ try{ var bx0=box(), k0=bx0&&bx0.querySelector(".spm"); if(bx0&&S.det&&!host){ paintDet(); if(k0) bx0.appendChild(k0); } else document.dispatchEvent(new Event("chrchg")); }catch(z){} }   // 차량 대절 — 허브가 알려 준 구간·오류를 화면에 (11-11)
+           draw(null,pe||(e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(p.hub&&p.days&&p.days.length?TX.edy:TX.edt):e==="notsale"?L(TX.soon):(e==="hosp"&&window.HSP)?HSP.tx("need"):(e==="menu"&&window.SMN)?SMN.tx("eMenu"):L(TX.efail))); if(e==="menu") loadP().then(function(){ try{ var bx=box(), k=bx&&bx.querySelector(".spm"); if(bx&&S.det&&!host){ paintDet(); if(k) bx.appendChild(k); } }catch(z){} }); return; }
          try{ ntap("shop","order_"+p.id); }catch(z){}
-         if(j.pay!=="pg"){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:L(p.t),date:S.date,time:S.time,n:S.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null,hosp:(window.HSP&&HSP.body(p))||""}); }catch(z){}   // 「내 예약」 (11-05)
+         if(j.pay!=="pg"){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:L(p.t),date:S.date,time:S.time,n:S.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null,hosp:(window.HSP&&HSP.body(p))||"",chr:isChr(p)?CHR.pub():undefined}); }catch(z){}   // 「내 예약」 (11-05) · 차량 대절 목적지·픽업 (11-11)
+           if(isChr(p)) try{ CHR.done(); }catch(z){}
            S.cn=nm; S.ce=em; S.cp=ph; mockPay({ok:true,oid:j.orderId,amount:j.amount,tk:j.tdone||"",chat:!!j.chat},host); return; }
          // KG이니시스 결제창 (포트원, 11-07) — 돌아왔을 때 화면을 다시 그릴 주문 내용은 tpg.js 가 이 탭에만 둔다
          draw(null,"",2);
-         return TPG.go(j,{kind:"pkg",oid:j.orderId,amount:j.amount,pid:p.id,mn:(window.SMN?SMN.body(p):[]),hs:(window.HSP&&HSP.body(p))||"",pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,gname:gnm,glang:S.glang||"",cn:nm,ce:em,cp:ph,pm:pm},{name:nm,email:em,phone:ph})
+         return TPG.go(j,{kind:"pkg",oid:j.orderId,amount:j.amount,pid:p.id,chr:isChr(p)?CHR.pub():undefined,mn:(window.SMN?SMN.body(p):[]),hs:(window.HSP&&HSP.body(p))||"",pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,gname:gnm,glang:S.glang||"",cn:nm,ce:em,cp:ph,pm:pm},{name:nm,email:em,phone:ph})
            .then(function(m){ if(m) draw(null,m); }); })
        .catch(function(){ draw(null,L(TX.efail)); }); };
     var sx=o.querySelector("#spmX"); if(sx) sx.onclick=function(){ o.remove(); };
@@ -631,7 +678,7 @@ if(window.TPG) TPG.onRet("pkg",function(v,r){ loadP().then(function(){ shopRet2(
 function shopRet2(v,r){ if(!PL().some(function(x){ return x.id===v.pid; })) return;
   var ok=!!(r&&r.ok), j=(r&&r.j)||{};
   S.date=v.date; S.time=v.time; S.n=v.n; S.gid=v.gid; try{ if(window.SMN) SMN.setPicks(v.pid,v.mn); }catch(z){} try{ if(window.HSP) HSP.set(v.pid,v.hs); }catch(z){} S.gname=v.gname; S.cn=v.cn||""; S.ce=v.ce||""; S.cp=v.cp||""; S.pm=v.pm;
-  if(ok){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:v.pname||"",date:v.date,time:v.time,n:v.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null,hosp:v.hs||""}); }catch(z){} }
+  if(ok){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,kind:"pkg",pname:v.pname||"",date:v.date,time:v.time,n:v.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null,hosp:v.hs||"",chr:v.chr||undefined}); }catch(z){} if(v.chr) try{ window.CHR&&CHR.done(); }catch(z){} }
   var msg=(window.TPG&&TPG.resTx(r))||(L(TX.pfT)+(r&&r.msg?" ("+r.msg+")":"")), res=ok?{ok:true,oid:j.orderId||v.oid,amount:j.amount||v.amount,tk:j.tdone||"",chat:!!j.chat}:{ok:false,err:msg};
   open(); openDet(v.pid); mockPay(res);
   if(v.glang){ S.glang=v.glang; S.guides=null;   // 가이드 목록은 다시 받아 오되, 다 그린 뒤 결제창을 다시 얹는다
@@ -660,7 +707,7 @@ document.addEventListener("click",function(e){ var b=box(); if(!b||!b.contains(e
   else if(t.dataset.s==="go"){ var co=document.getElementById("shopCo"); if(co) co.scrollIntoView({behavior:"smooth",block:"start"}); }
   else if(t.dataset.gl){ S.glang=t.dataset.gl; S.gid=null; loadGuides(); }
   else if(t.dataset.g){ S.gid=t.dataset.g; repaint(); }
-  else if(t.dataset.n){ var pm=prod(); S.n=Math.max(1,Math.min(pm&&pm.hub?pm.max:20,S.n+(+t.dataset.n))); repaint(); }
+  else if(t.dataset.n){ var pm=prod(); S.n=Math.max(1,Math.min(nMax(pm),S.n+(+t.dataset.n))); repaint(); }
   else if(t.dataset.s==="x"){ close(); try{ var nb=window.NEAR&&NEAR.state(); if(nb&&nb.k==="tg") NEAR.close(); }catch(z){} }   // ✕ = 아래 옛 판(빅4·공연관람 목록)까지 닫는다 (사장님 10-28)
   else if(t.dataset.s==="b4map"){ e.preventDefault(); e.stopPropagation(); close(); try{ var nb2=window.NEAR&&NEAR.state(); if(nb2&&nb2.k==="tg") NEAR.close(); }catch(z){} try{ ntap("shop","b4map"); }catch(z){} try{ if(window.b4RouteShow) b4RouteShow(); }catch(z){} }
   else if(t.dataset.s==="mock") mockPay();
@@ -676,15 +723,18 @@ function back(){ var b=box(); if(!b) return false; var o=b.querySelector(".spm")
 window.addEventListener("resize",function(){ try{ barTog(); }catch(e){} });
 document.addEventListener("smnchg",function(){ try{ var b=box(); if(b&&!b.querySelector(".spm")) repaint(); }catch(e){} });   // 가게 메뉴 고르기 (11-10, smenu.js)
 document.addEventListener("hspchg",function(){ try{ var b=box(); if(b&&!b.querySelector(".spm")) repaint(); }catch(e){} });   // 건강검진 병원 고르기 (11-10, hosp.js)
+document.addEventListener("chrchg",function(){ try{ var b=box(); if(b&&S.det&&!b.querySelector(".spm")){ var p=prod(); if(isChr(p)) paintDet(); } }catch(e){} });   // 차량 대절 칸 (11-11, charter.js)
 window.SHOP={open:open,close:close,back:back,
   // 「AI와 일정짜기」 화면 (11-05) — 상품 목록(허브에서 받은 것 있으면 그것)·카드 요약·상세 화면 바로 열기
   load:loadP,items:function(){ return PL(); },
-  brief:function(p){ var u=minUnit(p); return {id:p.id,c:p.c,t:L(p.t),img:psrc(p),cat:(function(){ try{ return catName(p.c); }catch(e){ return ""; } })(),from:u?won(u)+"~ / "+L(TX.per):"",badge:L(p.real?TX.real:TX.ex),real:!!p.real,px:Lx(p.px)}; },
+  st:function(){ return S; },   // 차량 대절 (charter.js) — 날짜·시작 시각·인원
+  set:function(o){ o=o||{}; if(/^\d{4}-\d{2}-\d{2}$/.test(o.date||"")) S.date=o.date; if(/^\d{2}:\d{2}$/.test(o.time||"")) S.time=o.time; if(o.n>0) S.n=Math.min(20,o.n); },
+  brief:function(p){ var u=minUnit(p); return {id:p.id,c:p.c,t:L(p.t),img:psrc(p),cat:(function(){ try{ return catName(p.c); }catch(e){ return ""; } })(),from:u?won(u)+"~ / "+L(perOf(p)):"",per:L(perOf(p)),badge:L(p.real?TX.real:TX.ex),real:!!p.real,px:Lx(p.px)}; },
   det:function(id){ if(!PL().some(function(x){ return x.id===id; })) return; open(); openDet(id); S.fromAi=true; try{ ntap("shop","p_"+id); }catch(z){} }};
 // PC 홈페이지(home/pc_pkg.js, 11-08) — 패키지 화면을 PC 배치로 그릴 때 이 파일의 자료·글·상세 본문·요금·결제창을 그대로 쓴다 (폰 앱은 PC_HOME 이 없어 그대로)
 //   pay(host,id) = 앱 「예약·결제」(mockPay) 를 host 안에 띄움 — 예약자·결제 수단·동의·허브 /shop/order·「내 예약」 저장 모두 앱 그대로
 if(window.PC_HOME) SHOP.pc={TX:TX,CATS:CATS,LGN:LGN,S:S,L:L,Lx:Lx,won:won,unitOf:unitOf,minUnit:minUnit,kindOf:kindOf,isExt:isExt,psrc:psrc,galUrls:galUrls,catName:catName,langTxt:langTxt,
-  detBody:detBody,noteOf:noteOf,mpNote:mpNote,dayLine:dayLine,priceHtml:priceHtml,fromPr:fromPr,gName:gName,
+  detBody:detBody,noteOf:noteOf,mpNote:mpNote,dayLine:dayLine,priceHtml:priceHtml,fromPr:fromPr,gName:gName,isChr:isChr,perOf:perOf,totOf:totOf,totTx:totTx,nMax:nMax,kLab:kLab,fcOf:fcOf,pxHtml:pxHtml,
   pay:function(host,id){ if(!PL().some(function(x){ return x.id===id; })) return; S.prod=id; mockPay(null,host); }};
 // 결제창에서 돌아옴 = tpg.js(?tpres=) → 위 TPG.onRet("pkg") (11-07 — 옛 토스 ?shres= 처리기는 지움)
 })();
