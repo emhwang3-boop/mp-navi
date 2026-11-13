@@ -1320,7 +1320,7 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
         +(warn.length?'<span class="tmemo">'+esc(warn.join(" · "))+'</span>':"")+(memo.length?'<span class="tmemo ti">'+esc(memo.join(" · "))+'</span>':"")
         +'<span class="tdet">'+(det.length?'<span class="tmemo ti">'+esc(det.join(" · "))+'</span>':"")+(fmt?'<span class="tmemo ti">↪ '+esc(fmt)+'</span>':"")+(aiTx(tip)?'<span class="ttip">'+MPIMG("mi_tip",MIS)+esc(aiTx(tip))+'</span>':"")
         +'<span class="tdbt" data-html2canvas-ignore>'+fxRep(r.x)+'<button type="button" class="tsbtn" data-pp="'+esc(r.x.k)+'">'+esc(T5(DG6.det))+'</button></span></span>'
-        +(hk===r.x.k?'<span class="tlvw" data-html2canvas-ignore><button type="button" class="tlvb" data-lvleave="'+esc(r.x.k)+'">'+esc(T5(LV6.leave))+'</button></span>':'')+(window.XTG?XTG.html(op,'',true):'')+'</span></div>';
+        +(hk===r.x.k&&liveMineT()?'<span class="tlvw" data-html2canvas-ignore><button type="button" class="tlvb" data-lvleave="'+esc(r.x.k)+'">'+esc(T5(LV6.leave))+'</button></span>':'')+(window.XTG?XTG.html(op,'',true):'')+'</span></div>';
       prevK=r.x.k; });
     if(lqi===s.rows.length) h+=lunchAskHtml(di);
     if(CE&&!ceD&&dEnd>=CE.end){ h+=chrEndHtml(CE,dEnd,ceO); ceD=true; }   // 숙소로 돌아가는 길에 10시간이 끝남
@@ -2636,7 +2636,14 @@ var LV6={
  x:{ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}};
 function fill6(o,v){ var r={}; ["ko","en","ja","zhs","zht","es"].forEach(function(l){ r[l]=String(o[l]||o.en).replace(/\{(\w)\}/g,function(_,k){ return v[k]; }); }); return r; }
 var LKEY="mpv_trlive", LIVE=(function(){ var o=null; try{ o=JSON.parse(localStorage.getItem(LKEY)||"null"); }catch(e){} return (o&&typeof o==="object")?o:{}; })();
-function liveSave(){ try{ var cut=kstToday(-14); for(var k in (LIVE.d||{})) if(k<cut) delete LIVE.d[k]; for(var s in (LIVE.ack||{})) if(s.slice(0,10)<cut) delete LIVE.ack[s]; ["dr","hq","lq"].forEach(function(f){ for(var q in (LIVE[f]||{})) if(q<cut) delete LIVE[f][q]; }); localStorage.setItem(LKEY,JSON.stringify(LIVE)); }catch(e){} }   // dr·hq·lq = 실시간 구간·숙소 도착 물음·오늘 밤 숙소 물음 (11-06)
+function liveSave(){ try{ var cut=kstToday(-14); for(var k in (LIVE.d||{})) if(k<cut) delete LIVE.d[k]; for(var s in (LIVE.ack||{})) if(s.slice(0,10)<cut) delete LIVE.ack[s]; ["dr","hq","lq","dv"].forEach(function(f){ for(var q in (LIVE[f]||{})) if(q<cut) delete LIVE[f][q]; }); localStorage.setItem(LKEY,JSON.stringify(LIVE)); }catch(e){} try{ if(window.LVSY) LVSY.mark(); }catch(e){} }
+// 11-13 사장님 「관심 장소·여행 날 다닌 기록도 기기끼리 맞추게」(「그래 네 방식대로 수정해줘」) — 다닌 기록도 로그인 계정으로 기기끼리 맞춘다(허브 /ntsync k:"lv") · 기록은 그날 처음 기록한 폰 한 대만(LIVE.dv[날짜]=기기 번호), 다른 기기·홈페이지는 보기만(기록·물음·「여기 떠나요」 없음)
+function liveDev(){ var d=""; try{ d=localStorage.getItem("mpv_devid")||""; if(!d){ d=Date.now().toString(36)+Math.random().toString(36).slice(2,10); localStorage.setItem("mpv_devid",d); } }catch(e){} return d; }
+function liveMine(date){ if(window.PC_HOME) return false; var o=LIVE.dv&&LIVE.dv[date]; return !o||o===liveDev(); }
+function liveMineT(){ var L=liveToday(); return !L||liveMine(L.d.date); }
+function liveClaim(date){ LIVE.dv=LIVE.dv||{}; if(!LIVE.dv[date]) LIVE.dv[date]=liveDev(); }
+window.LVSY=mpSyncSlot({k:"lv",key:LKEY,meta:"mpv_trlive_sync",ro:function(){ return !!window.PC_HOME; },has:function(d){ try{ var o=JSON.parse(d)||{}; return !!(o.d&&Object.keys(o.d).length); }catch(e){ return false; } },
+  take:function(d){ try{ var o=JSON.parse(d); LIVE=(o&&typeof o==="object")?o:{}; }catch(e){} try{ if(document.getElementById("trRep")) repPaint(); }catch(e){} try{ nowPaint(); }catch(e){} }});   // dr·hq·lq = 실시간 구간·숙소 도착 물음·오늘 밤 숙소 물음 (11-06)
 function liveRecs(date,mk){ LIVE.d=LIVE.d||{}; if(!LIVE.d[date]&&mk) LIVE.d[date]={}; return LIVE.d[date]||null; }
 function kminOn(ms,date){ return Math.round((ms-Date.parse(date+"T00:00:00+09:00"))/6e4); }   // 그날 한국 0시부터 분 (자정 넘으면 1440 넘음)
 function liveToday(){ var pl=TR.plan; if(!pl||!pl.days) return null; var td=kstToday(0);
@@ -2660,7 +2667,7 @@ function liveHereK(pl,di,arr,s,lv){ if(!arr.length) return null;
   var now=kminOn(Date.now(),pl.days[di].date), pick=null; if(now>s.end) return null; s.rows.forEach(function(r){ if(r.x&&r.t<=now+15) pick=r.x.k; }); return pick; }
 // 위치 → 도착·출발 (화면 메모리 후보 GF — 1분·2번 넘게 그 상태여야 기록) · GF.h = 숙소 도착 후보 (11-06)
 var GF={c:null,o:null,h:null};
-function liveTick(pos){ var L=liveToday(); if(!L||!L.arr.length||!pos) return; var now=Date.now(), me={lat:+pos[0],lng:+pos[1]}, rec=liveRecs(L.d.date,1), ch="", dk="";
+function liveTick(pos){ var L=liveToday(); if(!L||!L.arr.length||!pos||!liveMine(L.d.date)) return; var now=Date.now(), me={lat:+pos[0],lng:+pos[1]}, rec=liveRecs(L.d.date,1), ch="", dk="";
   var cur=null; L.arr.forEach(function(x){ var q=rec[x.k]; if(q&&q.a!=null&&q.d==null) cur=x; });
   var dCur=cur?km(me,cur)*1000:1e9, nb=null, nd=1e9;
   L.arr.forEach(function(x){ var q=rec[x.k]; if(x===cur||(q&&(q.a!=null||q.d!=null))) return; var dm=km(me,x)*1000; if(dm<=120&&dm<nd){ nd=dm; nb=x; } });
@@ -2670,8 +2677,8 @@ function liveTick(pos){ var L=liveToday(); if(!L||!L.arr.length||!pos) return; v
   if(!ch&&cur){ if(dCur>250){ if(!GF.o||GF.o.k!==cur.k) GF.o={k:cur.k,t:now,n:1}; else GF.o.n++; if(GF.o.n>=2&&now-GF.o.t>=60000){ rec[cur.k].d=GF.o.t; dk=cur.k; GF.o=null; ch="dep"; } } else GF.o=null; }
   // 숙소 도착 (11-06 사장님 D) — 그날 밤 숙소 150m 안에 1분·2번 넘게 → 남은 곳이 있으면 한 번 묻는다
   try{ var X=dayX(L.pl,L.di,liveH()), HE=hE(X.H); if(HE&&HE.hotel&&!HE.here){ if(km(me,HE)*1000<=150){ if(!GF.h) GF.h={t:now,n:1}; else GF.h.n++; if(GF.h.n>=2&&now-GF.h.t>=60000){ GF.h=null; hotelArrive(L); } } else GF.h=null; } }catch(e){}
-  if(ch){ if(dk) pqDone(dk); liveSave(); liveChanged(ch); if(dk&&ch==="dep") liveDrive(L,dk); } }   // 도착으로 알아챈 출발은 이미 다음 곳에 닿은 뒤라 길찾기를 안 부른다
-function liveLeave(k){ var L=liveToday(); if(!L) return; var rec=liveRecs(L.d.date,1), q=rec[k]||(rec[k]={}); if(q.d==null) q.d=Date.now(); GF.c=null; GF.o=null; pqDone(k); liveSave(); liveChanged("leave"); liveDrive(L,k); }
+  if(ch){ liveClaim(L.d.date); if(dk) pqDone(dk); liveSave(); liveChanged(ch); if(dk&&ch==="dep") liveDrive(L,dk); } }   // 도착으로 알아챈 출발은 이미 다음 곳에 닿은 뒤라 길찾기를 안 부른다
+function liveLeave(k){ var L=liveToday(); if(!L||!liveMine(L.d.date)) return; liveClaim(L.d.date); var rec=liveRecs(L.d.date,1), q=rec[k]||(rec[k]={}); if(q.d==null) q.d=Date.now(); GF.c=null; GF.o=null; pqDone(k); liveSave(); liveChanged("leave"); liveDrive(L,k); }
 function liveChanged(why){ try{ if(document.getElementById("trRep")) repPaint(); }catch(e){} try{ liveCheck(why); }catch(e){} try{ nowPaint(); }catch(e){} }
 document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("#trRep [data-lvleave]"); if(!b) return; e.preventDefault(); e.stopPropagation(); liveLeave(b.dataset.lvleave); },true);
 // 그날 틀 (전국 일정 — 출발점·시작 시각·도착점, 11-06) · 옛 일정은 예전 그대로(liveH · pl.from)
@@ -2703,7 +2710,7 @@ function mcRisk(S){ var lv=S.lv, arr=S.L.arr, rows=S.s.rows, dt=S.dt, H=hE(S.H),
     if(H&&p) t+=lmin(lv,p,H)*Math.exp(0.25*nrm());
     if(late||t>E+LVTOL) bad++; }
   return bad/N; }
-function liveCheck(why){ try{ askCheck(why); }catch(e){} var S=liveState(); if(!S||!S.rest.length) return null; var P=mcRisk(S);
+function liveCheck(why){ if(!liveMineT()) return null; try{ askCheck(why); }catch(e){} var S=liveState(); if(!S||!S.rest.length) return null; var P=mcRisk(S);
   var res={p:P,end:S.s.end,lim:S.E,over:S.over,late:S.info.filter(function(q){ return q.late; }).map(function(q){ return q.x.k; }),r:S.lv.r,why:why||""}; window.__trLive=res;
   if(P<0.7) return res; var sig=sigOf(S); LIVE.ack=LIVE.ack||{};
   if(LIVE.ack[sig]){ res.ack=1; return res; }
@@ -2792,7 +2799,7 @@ document.addEventListener("click",function(e){ var a=e.target.closest&&e.target.
 (function(){ var f=window.meSet; if(typeof f!=="function"||f._lv) return; var g=function(p){ var r=f.apply(this,arguments); try{ if(p) liveTick(p); }catch(e){} return r; }; for(var k in f) g[k]=f[k]; g._lv=1; window.meSet=g; })();
 setTimeout(function(){ try{ liveCheck("open"); }catch(e){} try{ nowPaint(); }catch(e){} },4000);
 setInterval(function(){ if(!document.hidden) try{ liveCheck("tick"); }catch(e){} },5*60000);
-setInterval(function(){ try{ askCheck("min"); }catch(e){} if(!document.hidden) try{ nowPaint(); }catch(e){} },60000);
+setInterval(function(){ try{ if(liveMineT()) askCheck("min"); }catch(e){} if(!document.hidden) try{ nowPaint(); }catch(e){} },60000);
 document.addEventListener("visibilitychange",function(){ if(!document.hidden){ try{ liveCheck("show"); }catch(e){} try{ nowPaint(); }catch(e){} } });
 
 // ══ 전국 일정 (사장님 2026-11-06 「AI의 능력을 보여줘」) ══
