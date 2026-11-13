@@ -152,3 +152,19 @@ html.pch[data-theme="dark"] #pcSt .pcs-rt{color:#ffa94d}
   .pcc{padding:10px}
   .pcc-b{max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px);padding:12px 14px 14px}
 }
+
+/* ── 앱(폰) 「숙소」 = 이 화면을 전체 화면 창으로 (11-13 사장님 「웹에서 숙소 버튼 화면과 앱 숙소 화면을 비교해서 웹에 맞춰줘」 · pc_stay.js APPSTAY) ── */
+html:not(.pch){--ph-green:#2f9e44;--ph-green-d:#2b8a3e;--ph-gt:#ebf7ee;--ph-yel:#f5bf2a;--ph-yt:#fff6da;--ph-sea:#96b2c4}
+html:not(.pch)[data-theme="dark"]{--ph-gt:#16301f;--ph-yt:#2a2412;--ph-green-d:#51cf66}
+html.apst-lock,html.apst-lock body{overflow:hidden}
+#apStay{position:fixed;inset:0;z-index:1034;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#apStay .apst-x{position:absolute;top:12px;right:12px;z-index:3;width:40px;height:40px;border:0;border-radius:50%;background:var(--card);color:var(--sub);font-size:20px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+#apStay .pcs-bar{padding-right:62px}
+html[data-theme="dark"] #apStay .pcs-pn{box-shadow:none}
+html[data-theme="dark"] #apStay .pcs-in{color-scheme:dark}
+html[data-theme="dark"] #apStay .pcs-in::placeholder{color:#6b7584}
+html[data-theme="dark"] #apStay .pcs-far{border-color:#5c4a0f;color:#f5d27a}
+html[data-theme="dark"] #apStay .pcs-card:hover{border-color:#2b6b3a}
+html[data-theme="dark"] #apStay .pcs-rt{color:#ffa94d}
+html:not(.pch) #pcCard .nrbook,html:not(.pch) #pcCard .item a.nrbook{background:var(--ph-green)!important}   /* 앱에서도 숙소 화면 「자세히」 창의 「예약하기」는 웹처럼 초록 (11-13) */
+#pcSt .pcs-web a{color:var(--ph-green-d);font-weight:700;display:inline-flex;align-items:center;gap:4px}#pcSt .pcs-wic{width:15px;height:15px;display:block}   /* 숙소 홈페이지 링크 (11-13) */
