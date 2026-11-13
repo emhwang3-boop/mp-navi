@@ -90,11 +90,21 @@ function goMap(){ var h=''; try{ h=sessionStorage.getItem('mpAdmFrom')||''; }cat
 <script>
 var HUB="https://brief-live-hub.emhwang3.workers.dev", CO="주식회사 부만 · 머니퍼즐 내비";
 var TOK=""; try{ TOK=localStorage.getItem("mpadm_tok")||""; }catch(e){}
+var ADM2=""; try{ ADM2=localStorage.getItem("mpadm_t2")||""; }catch(e){}   // 11-14 사장님 「고쳐」 — 관리자 2단계 인증(텔레그램 코드)·접속 알림 — 이 기기 열쇠(30일)
 function $(i){ return document.getElementById(i); }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function kday(add){ return new Date(Date.now()+9*3600e3+(add||0)*864e5).toISOString().slice(0,10); }
-function api(path,opt){ opt=opt||{}; opt.headers={"x-admin":encodeURIComponent(TOK)};   /* 한글 비밀번호도 머리줄에 실리게 */ opt.cache="no-store";
-  return fetch(HUB+path,opt).then(function(r){ if(r.status===403) throw new Error("admin"); if(r.status===429) throw new Error("locked"); return r.json(); }); }
+function api(path,opt){ opt=opt||{}; opt.headers={"x-admin":encodeURIComponent(TOK),"x-adm2":ADM2};   /* 한글 비밀번호도 머리줄에 실리게 */ opt.cache="no-store";
+  return fetch(HUB+path,opt).then(function(r){ if(r.status===403) throw new Error("admin"); if(r.status===429) throw new Error("locked"); if(r.status===401) throw new Error("2fa"); return r.json(); }); }
+// 2단계 — 비밀번호가 맞으면 텔레그램으로 6자리 코드 → 넣으면 이 기기 열쇠(30일)
+function a2post(op,body){ return fetch(HUB+"/nadm2/"+op,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),cache:"no-store"}).then(function(r){ return r.json(); }); }
+function a2ask(){ $("gmsg").textContent="텔레그램으로 코드를 보내는 중…";
+  a2post("code",{a:TOK}).then(function(j){ if(!j||!j.ok){ $("gmsg").innerHTML='<span class="err">'+(j&&j.err==="locked"?"5번 틀려 15분 동안 잠겼습니다.":"비밀번호가 맞지 않습니다.")+'</span>'; TOK=""; return; }
+    $("gmsg").innerHTML=(j.sent?"텔레그램으로 6자리 코드를 보냈습니다(5분 안에).":"방금 보낸 코드를 넣어 주세요(1분 뒤 다시 보낼 수 있어요).")+'<div style="margin-top:8px;display:flex;gap:6px"><input id="a2c" inputmode="numeric" maxlength="6" placeholder="6자리 코드" style="flex:1;padding:8px;font-size:16px"><button type="button" id="a2go">확인</button></div>';
+    var go=function(){ var c=($("a2c").value||"").replace(/[^0-9]/g,""); if(c.length!==6) return; $("a2go").disabled=true;
+      a2post("verify",{a:TOK,code:c}).then(function(v){ if(v&&v.ok&&v.t){ ADM2=v.t; try{ localStorage.setItem("mpadm_t2",ADM2); }catch(e){} login(); return; }
+        $("a2go").disabled=false; $("gmsg").insertAdjacentHTML("beforeend",'<div class="err">'+(v&&v.err==="expired"?"코드 시간이 지났습니다. 다시 들어가 주세요.":"코드가 맞지 않습니다.")+'</div>'); }); };
+    $("a2go").onclick=go; $("a2c").onkeydown=function(e){ if(e.key==="Enter") go(); }; $("a2c").focus(); }).catch(function(){ $("gmsg").innerHTML='<span class="err">허브에 닿지 못했습니다.</span>'; }); }
 
 // ── 들어가기 — 허브가 토큰을 확인해야만 메뉴가 열린다 ──
 function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").textContent="토큰을 넣어 주세요."; return; }
@@ -102,9 +112,9 @@ function login(){ var v=$("tok").value.trim(); if(v) TOK=v; if(!TOK){ $("gmsg").
   api("/ntapstats?from="+kday(0)+"&to="+kday(0)).then(function(j){ if(!j.ok) throw new Error("x");
     try{ localStorage.setItem("mpadm_tok",TOK); }catch(e){} $("tok").value=""; $("gate").hidden=true; $("app").hidden=false; menu(); show("home");
     twCall("/guide/admin/twipe/state").then(function(t){ if(t&&t.ok) twMark(!!t.on); }).catch(function(){});   // 시험 자료 지우기 메뉴에 켜짐·꺼짐 표시 (11-06)
-  }).catch(function(e){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(x){} $("gmsg").innerHTML='<span class="err">'+(e.message==="admin"?"비밀번호가 맞지 않습니다.":e.message==="locked"?"5번 틀려 15분 동안 잠겼습니다. 잠시 뒤 다시 넣어 주세요.":"허브에 닿지 못했습니다.")+'</span>'; });
+  }).catch(function(e){ if(e.message==="2fa"){ a2ask(); return; } TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(x){} $("gmsg").innerHTML='<span class="err">'+(e.message==="admin"?"비밀번호가 맞지 않습니다.":e.message==="locked"?"5번 틀려 15분 동안 잠겼습니다. 잠시 뒤 다시 넣어 주세요.":"허브에 닿지 못했습니다.")+'</span>'; });
 }
-function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }
+function logout(){ TOK=""; try{ localStorage.removeItem("mpadm_tok"); }catch(e){} location.reload(); }   // 이 기기 열쇠(mpadm_t2)는 남긴다 — 30일 동안 코드 없이(사장님 기기)
 
 var MENU=[["home","계기판","오늘 요약"],["lbs","위치 확인자료","위치정보법 16조 · 6개월 보관 · 엑셀 받기"],["tap","그림별 누름 통계","누름·사람 수 · 엑셀 받기"],["paid","유료 콘텐츠","PC방·넷플릭스·유튜브 · 누름·사용 시간"],["visit","방문 통계","내비 방문 · 허브 화면"],["voice","고객의 소리","내비에서 온 글"],["board","고객 게시판","MosaicTrip 손님 글 · 답변·삭제"],["inq","입점 문의","업체 문의 · 엑셀 받기"],["guide","가이드 승인","통역·길안내 가이드 등록·요청"],["greview","가이드 후기 관리","손님 후기 · 악성 숨김·삭제"],["gchat","가이드 대화방","손님↔가이드 대화 · 읽기 전용"],["shop","상품 관리","체험·입장권 상품 · 사진 · 가격 · 판매 상태"],["store","가게·메뉴","가게 등록 · 상품 연결 · 가게 메뉴"],["sset","가게 정산","투어 완료 예약 · 보낼 돈 · 송금함"],["scfee","센터 수수료","센터에서 받을 수수료 · 받음"],["prv","명소 후기 관리","관광 카드·체험 상품 별점·댓글 · 삭제 · 새 그림 후보"],["mis","가이드 장부(MIS)","날짜별 가이드·결제·수수료 · 엑셀"],["inv","초대 링크 발급","7일짜리 초대 링크"],["ptn","제휴 가게","식당 추천 광고 · 추가·수정"],["bingo","이벤트","종류 고르기·시작·닫기 · 빙고 문제 · 보물상자·명소·사진 설정"],["forms","양식함","계약서·서식 내려받기 (PDF·워드)"],["twipe","시험 자료 모두 지우기","론칭 전 시험용 — 실전 뒤 사용 금지"],["pw","비밀번호 변경","관리 비밀번호 바꾸기"]];
 // 홈페이지(moneypuzzle.co.kr) 방문 수 — 허브 /hc (방문 안 늘림). sum=1 이면 최근 7·30일 합계도 (2026-10-24)
@@ -199,7 +209,7 @@ function pwChange(){ var a=$("pw0").value, b=$("pw1").value, c=$("pw2").value, m
   if(b!==c){ m.innerHTML='<span class="err">새 비밀번호와 확인이 다릅니다.</span>'; return; }
   if(b===a){ m.innerHTML='<span class="err">지금 비밀번호와 다른 것으로 정해 주세요.</span>'; return; }
   $("pwb").disabled=true; m.textContent="바꾸는 중…";
-  fetch(HUB+"/nadminpw",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cur:a,"new":b}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ $("pwb").disabled=false;
+  fetch(HUB+"/nadminpw",{method:"POST",headers:{"Content-Type":"application/json","x-adm2":ADM2},body:JSON.stringify({cur:a,"new":b}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ $("pwb").disabled=false;
     if(j.ok){ TOK=b; try{ localStorage.setItem("mpadm_tok",b); }catch(e){} $("pw0").value=$("pw1").value=$("pw2").value="";
       m.innerHTML='<b>바꿨습니다.</b> 이 기기에는 새 비밀번호로 저장했습니다. 다른 기기(폰 등)에서는 새 비밀번호를 다시 넣어 주세요.'; return; }
     m.innerHTML='<span class="err">'+(j.err==="locked"?"5번 틀려 15분 동안 잠겼습니다.":j.err==="admin"?"지금 비밀번호가 맞지 않습니다.":j.err==="weak"?"새 비밀번호가 너무 짧습니다 (10자 이상).":"바꾸지 못했습니다.")+'</span>';
@@ -688,7 +698,7 @@ function grevDel(id){ if(!confirm('이 후기를 삭제할까요? (되돌릴 수
 // ── 시험 자료 모두 지우기 (사장님 11-06) — 론칭 전 시험용 · 실전 뒤 사용 금지 · 허브 /guide/admin/twipe/{state,count,run,switch} ──
 //   개수 보기(드라이런) → 「정말 지울까요」 → 서버가 백업 한 벌(twbak:<시각>)을 남기고 지움 · 메뉴 끄기·켜기는 지금 관리자 비밀번호를 한 번 더 · 꺼지면 서버도 거절
 var TW={tok:"",on:true};
-function twCall(path,body){ var o={method:body?"POST":"GET",headers:{"x-admin":encodeURIComponent(TOK)},cache:"no-store"}; if(body) o.body=JSON.stringify(body);
+function twCall(path,body){ var o={method:body?"POST":"GET",headers:{"x-admin":encodeURIComponent(TOK),"x-adm2":ADM2},cache:"no-store"}; if(body) o.body=JSON.stringify(body);
   return fetch(HUB+path,o).then(function(r){ return r.json().catch(function(){ return {ok:false,err:"http"+r.status}; }).then(function(j){ j=j||{}; j._s=r.status; return j; }); }); }
 function twErr(j){ var e=j&&j.err; return e==="off"?"메뉴가 꺼져 있어 서버가 거절했습니다.":e==="tok"?"개수 보기가 오래됐습니다(10분). 개수 보기부터 다시 눌러 주세요.":e==="pw"?"비밀번호가 맞지 않습니다.":e==="locked"?"5번 틀려 15분 동안 잠겼습니다. 잠시 뒤 다시 해 주세요.":e==="admin"?"관리 비밀번호가 맞지 않습니다. 다시 들어와 주세요.":e==="box"?"다른 칸("+esc(TWBOX[j.box]||j.box||"")+")에 닿지 못해 아무것도 지우지 않았습니다. 다시 눌러 주세요.":"처리하지 못했습니다 ("+esc(e||"")+")."; }
 var TWBOX={ninq:"제휴 문의",npg:"상품 후기",npass:"내비 이용권",nledger:"결제 장부"};   // 허브가 함께 지우는 다른 칸 (11-06)
@@ -1167,7 +1177,7 @@ function pdShrink(file){ return new Promise(function(ok,no){ var u=URL.createObj
         URL.revokeObjectURL(u); ok(b); },"image/jpeg",q); };
     go(); };
   im.onerror=function(){ URL.revokeObjectURL(u); no(new Error("decode")); }; im.src=u; }); }
-function pdUpload(p){ return pdShrink(p.file).then(function(b){ return fetch(HUB+"/shop/admin/img",{method:"POST",headers:{"x-admin":encodeURIComponent(TOK),"Content-Type":"image/jpeg"},body:b,cache:"no-store"}); })
+function pdUpload(p){ return pdShrink(p.file).then(function(b){ return fetch(HUB+"/shop/admin/img",{method:"POST",headers:{"x-admin":encodeURIComponent(TOK),"x-adm2":ADM2,"Content-Type":"image/jpeg"},body:b,cache:"no-store"}); })
   .then(function(r){ return r.json(); }).then(function(j){ if(!j||!j.ok) throw new Error(j&&j.err==="r2"?"사진 저장소(R2) 없음":(j&&j.err)||"올리기 실패"); p.id=j.id; p.st=""; delete p.file; return j.id; }); }
 function pdLines(id){ return ($(id).value||"").split("\n").map(function(s){ return s.trim(); }); }
 function pdSave(){ var x=PD.ed, btn=$("pdSave"), msg=function(s,e){ $("pdMsg").innerHTML=e?'<span class="err">'+esc(s)+'</span>':esc(s); };
