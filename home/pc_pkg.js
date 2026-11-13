@@ -65,10 +65,10 @@ function list(box){ var x=X(), PA=items(), L0=PA.filter(function(p){ return PK.c
 function guideRow(p){ var x=X(), S=x.S, T=x.TX, n=N(), gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0];
   var h='<div class="pk-row pk-gdr" data-pk="gd"><span class="pk-lb">'+E(x.L(T.gd))+'</span><b>'+E(gg?x.gName(gg):x.L(T.none))+'</b>'+XT(PK.gopen,'data-pk="gd"')+'</div>';
   if(!PK.gopen) return h;
-  h+='<div class="pk-gdp"><p class="pk-nt">'+E(x.L(T.gl))+'</p><div class="pg-chips" style="grid-template-columns:repeat(3,minmax(0,1fr))">'+["ko","en","ja","zhs","zht","es"].map(function(l){ return '<button type="button" data-pkgl="'+l+'" class="'+(S.glang===l?"on":"")+'">'+E(x.LGN[l])+'</button>'; }).join("")+'</div>';
+  h+='<div class="pk-gdp"><p class="pk-nt">'+E(x.L(T.gl))+'</p><div class="pg-chips" style="grid-template-columns:repeat(3,minmax(0,1fr))">'+["ko","en","ja","zhs","zht","es"].filter(function(l){ return (!window.svcOn||svcOn(l)); }).map(function(l){ return '<button type="button" data-pkgl="'+l+'" class="'+(S.glang===l?"on":"")+'">'+E(x.LGN[l])+'</button>'; }).join("")+'</div>';
   if(S.glang){ if(S.guides===null) h+='<p class="pk-nt">'+E(x.L(T.gld))+'</p>'; else if(!(S.guides||[]).length) h+='<p class="pk-nt">'+E(x.L(T.gn))+'</p>';
     else h+='<div class="pk-gl">'+S.guides.map(function(g){ var u=n&&n.photo(g); return '<button type="button" class="pk-g'+(S.gid===g.id?' on':'')+'" data-pkg="'+E(g.id)+'">'+(u?'<img src="'+E(u)+'" alt="">':'<span class="pk-gav">'+E(x.gName(g).slice(0,1))+'</span>')
-      +'<span><b>'+E(x.gName(g))+'</b><small>'+E((g.langs||[]).map(function(l){ return x.LGN[l]||l; }).join(" · ")+(g.years&&n?" · "+n.years(g.years):""))+'</small></span></button>'; }).join("")+'</div>'; }
+      +'<span><b>'+E(x.gName(g))+'</b><small>'+E((g.langs||[]).filter(function(l){ return (!window.svcOn||svcOn(l)); }).map(function(l){ return x.LGN[l]||l; }).join(" · ")+(g.years&&n?" · "+n.years(g.years):""))+'</small></span></button>'; }).join("")+'</div>'; }
   return h+'</div>'; }
 function ignBox(p){ var x=X(), t=[x.L(x.noteOf(p))]; if(p.mp) t.push(F(x.TX.mpn,p.mp));
   return '<div class="pg-ign'+(PK.ign?' on':'')+'"><div class="pg-ignh" data-pk="ign"><span>'+E(L6((N()&&N().noteT)||IGN))+'</span>'+XT(PK.ign,'data-pk="ign"')+'</div>'+(PK.ign?'<div class="pg-ignb">'+t.map(E).join("<br>")+'</div>':'')+'</div>'; }
