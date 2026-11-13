@@ -67,8 +67,8 @@ function sigOf(tp){ return tp&&tp.items?tp.items.map(function(x){ return x.k; })
 
 // ── 화면 뼈대 ──
 function shell(box,v){
-  // 11-11 사장님 「가」 — 제목 아이콘도 첫 화면 카드와 같은 배낭(mi_backpack, 옛 나침반)
-  var bar='<div class="pa-barw"><div class="pa-bar" id="pcAiBar"><h1 class="pa-h1">'+img("mi_backpack")+'<span id="paTtl"></span></h1><span class="pa-sub" id="paSub"></span>'
+  // 11-11 사장님 「가」 — 제목 아이콘도 첫 화면 카드와 같은 배낭(mi_backpack, 옛 나침반) → 11-14 사장님 「제목 앞 노랑 막대는 AI 일정짜기에도 배낭 대신 넣어줘」 — 가이드 인솔·패키지 제목과 같은 노란 막대
+  var bar='<div class="pa-barw"><div class="pa-bar" id="pcAiBar"><h1 class="pa-h1"><i class="pa-yb" aria-hidden="true"></i><span id="paTtl"></span></h1><span class="pa-sub" id="paSub"></span>'
     +'<div class="pa-br"><div class="pa-plan" id="paPlan"></div><button type="button" class="pa-cartb" id="paCart">'+cart("28px")+'<b id="paCn">0</b></button></div></div></div>';
   var cols;
   if(v==="cart") cols='<aside class="pa-l pa-pn" id="paL">'
