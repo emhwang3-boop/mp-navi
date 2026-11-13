@@ -83,7 +83,7 @@ function img(n){ return '<img src="img/menu/'+n+'.png" alt="">'; }
 var root=D.createElement("div"); root.id="phRoot";
 root.innerHTML=
   '<header id="phHd"><div class="ph-hd1w"><div class="ph-in ph-hd1">'
- +  '<a class="ph-logo" id="phLogo" href="/home/"><img src="logo.png" alt=""><span id="phTtl"></span></a>'
+ +  '<a class="ph-logo" id="phLogo" href="/home/"><img src="logo.png" alt=""><span id="phTtl"></span><span class="ph-dev" aria-label="개발 중 · Under development"><i>개발 중</i><i>Under development</i></span></a>'
  +  '<div class="ph-tools"><div class="ph-ics" id="phIcs"></div><div class="ph-acts"><button type="button" class="ph-tb" id="phAd" hidden></button><button type="button" class="ph-tb" id="phBd"></button><button type="button" class="ph-tb" id="phBk"></button><button type="button" class="ph-tb pri" id="phIn"></button></div></div>'
  + '</div></div><nav class="ph-hd2" id="phNav">'+NAVK.map(function(x){ return '<button type="button" data-ph="'+x[0]+'">'+img(x[1])+'<span></span></button>'; }).join("")+'</nav></header>'
  +'<main id="phMain">'
