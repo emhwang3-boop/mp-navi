@@ -5,7 +5,8 @@
  */
 (function(){
 "use strict";
-var ORD=["ko","en","es","ja","zhs","zht"], NM={ko:"한국어",en:"English",ja:"日本語",zhs:"简体中文",zht:"繁體中文",es:"Español"};
+var ORD=["ko","en","es","ja","zhs","zht"].filter(function(l){ return !window.LANG_ON||LANG_ON.indexOf(l)>=0; }),   // 11-13 사장님 「한국어와 영어만 남기고 나머지를 숨겨줘」 — 일·중(간·번)·스페인어는 고르는 칸에서만 숨김(번역은 그대로) · 다시 켜려면 여기에 넣는다(index.html LANG_ON)
+    NM={ko:"한국어",en:"English",ja:"日本語",zhs:"简体中文",zht:"繁體中文",es:"Español"};
 var TX={
   ttl:{ko:"도서관 — 사용자 매뉴얼",en:"Library — User manual",ja:"図書館 — ユーザーマニュアル",zhs:"图书馆 — 用户手册",zht:"圖書館 — 使用者手冊",es:"Biblioteca — Manual de usuario"},
   sub:{ko:"앱의 모든 기능을 화면 사진과 함께 차례대로 설명합니다 (PDF).",en:"Every feature of the app, step by step with screenshots (PDF).",ja:"アプリのすべての機能を画面写真とともに順番に説明します（PDF）。",zhs:"配合截图，按顺序介绍本应用的全部功能（PDF）。",zht:"配合截圖，按順序介紹本應用的全部功能（PDF）。",es:"Todas las funciones de la aplicación, paso a paso y con capturas de pantalla (PDF)."},
