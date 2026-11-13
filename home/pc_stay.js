@@ -188,6 +188,7 @@ var TX={
  kind:T6("종류","Type","種類","类型","類型","Tipo"),
  sort:T6("정렬","Sort by","並べ替え","排序","排序","Ordenar"),
  sNear:T6("가까운 순","Nearest","近い順","距离最近","距離最近","Más cercanos"),
+ sLux:T6("고급 호텔 먼저","Luxury hotels first","高級ホテルを先に","高档酒店优先","高檔飯店優先","Hoteles de lujo primero"),   // 11-13 사장님 「5성급 호텔이 잘 안 보인다」→ 정렬 「고급 호텔 먼저」(「이대로 해」)
  sKto:T6("관광공사에 실린 곳 먼저","KTO-listed first","観光公社掲載を先に","韩国观光公社收录优先","韓國觀光公社收錄優先","Primero los de la KTO"),   // 11-08 밤 사장님 — 「관광공사 실린」→「관광공사에 실린」 (다른 언어는 그대로 자연스러움)
  head:T6("{p} 근처 {k} · {s}","{k} near {p} · {s}","{p}周辺の{k}・{s}","{p}附近的{k} · {s}","{p}附近的{k} · {s}","{k} cerca de {p} · {s}"),
  headF:T6("{p} 근처 {k}","{k} near {p}","{p}周辺の{k}","{p}附近的{k}","{p}附近的{k}","{k} cerca de {p}"),
@@ -210,10 +211,26 @@ var WS=Where({id:"psW",trip:true,onSet:function(){ drawLeft(); load(); },redraw:
 function load(){ var n=NS(); if(!n) return; var t=n.tabs[ST.tab], b=WS.base, p=[b.lat,b.lng], my=++ST.seq;
   ST.raw=null; ST.items=null; ST.err=""; ST.far=false; ST.lang=window.LANG; ST.bkey=bkey(); drawMain();
   n.fetch(t,p).then(function(a){ if(my!==ST.seq) return; ST.far=!!(a&&a.far);
-      ST.raw=(a||[]).map(function(x){ var o=Object.assign({},x); o.dist=Math.round(KMs(p,[+x.y,+x.x])*1000); return o; }); sortNow(); drawMain(); },
+      ST.raw=(a||[]).map(function(x){ var o=Object.assign({},x); o.dist=Math.round(KMs(p,[+x.y,+x.x])*1000); return o; }); ST.luxK=""; sortNow(); drawMain(); if(ST.sort==="l") luxLoad(); },
     function(){ if(my!==ST.seq) return; ST.err="net"; drawMain(); }); }
 // 가까운 순 · 관광공사에 실린 곳 먼저(그다음 가까운 순) — 10곳 (앱 목록과 같은 수) · 한옥 먼 곳(별점 순)은 받은 차례 그대로
-function sortNow(){ var a=(ST.raw||[]).slice(); if(!ST.far) a.sort(function(x,y){ if(ST.sort==="k"){ var d=(y.kto?1:0)-(x.kto?1:0); if(d) return d; } return x.dist-y.dist; }); ST.items=a.slice(0,10); }
+// 11-13 사장님 「5성급 호텔이 잘 안 보인다」→ 정렬 「고급 호텔 먼저」(「이대로 해」) — 고급 = 구글 가격대 3·4(비쌈·아주 비쌈) 또는 특급 호텔 이름(일정표 숙소 찾기 LUX 와 같은 갈래, 중급 브랜드는 뺌) · 후보 = 카카오 가까운 숙소 + 구글 그 구 「호텔」 10km 안(이미 받는 자료, 새 호출 없음)
+var LUXH=/특급|5성|하얏트|hyatt|힐튼|hilton|메리어트|marriott|신라호텔|the shilla|롯데호텔|lotte hotel|웨스틴|westin|인터컨티넨탈|intercontinental|포시즌스|four seasons|조선 ?팰리스|그랜드 ?조선|josun|콘래드|conrad|쉐라톤|sheraton|파라다이스|paradise|시그니엘|signiel|반얀트리|banyan|소피텔|sofitel|르메르디앙|meridien|리츠|ritz|워커힐|walkerhill|아난티|ananti|jw ?메리어트|jw marriott|로즈우드|rosewood|안다즈|andaz|몬드리안|mondrian|페어몬트|fairmont|켄싱턴|kensington/i,
+    LUXX=/신라스테이|shilla stay|^l7|엘세븐|이비스|ibis|롯데시티|lotte city|모텔|게스트하우스|호스텔/i;
+function luxS(x){ var s=(x.name||"")+" "+(x.name_en||""), p=+x.pl||0; return x.lux||p>=4?3:(p>=3||(LUXH.test(s)&&!LUXX.test(s)))?2:0; }
+// 「고급 호텔 먼저」를 누를 때만 — 구글 「(그 구) 5성급 호텔」 한 번 (사장님 11-13 「가」 — 한 번 약 50원, 허브가 동네별 7일 저장해 모두 같이 씀)
+//   호텔 종류만(구글 primaryType) · 고른 곳에서 10km 안만 · 카카오 목록에 같은 곳(150m·이름 비슷)이 있으면 합치고 없으면 더한다 · lux=1 은 맨 앞
+function guOf(a){ var c={}, g=""; (a||[]).forEach(function(x){ var w=String(x.addr||"").split(/\s+/)[1]||""; if(/[구군시]$/.test(w)) c[w]=(c[w]||0)+1; }); Object.keys(c).forEach(function(k){ if(!g||c[k]>c[g]) g=k; }); return g; }
+function nmLike(a,b){ try{ a=spinNorm(a); b=spinNorm(b); }catch(e){ a=String(a||""); b=String(b||""); } return !!a&&!!b&&(a.indexOf(b)>=0||b.indexOf(a)>=0||(a.length>=3&&a.slice(0,3)===b.slice(0,3))); }
+function luxLoad(){ if(!ST.raw||!isHotel()) return; var key=bkey(); if(ST.luxK===key) return; ST.luxK=key; var b=WS.base, my=ST.seq, gu=guOf(ST.raw), L=window.LANG||"ko";
+  fetch(hub()+"/gplace?all=1&ty=1&lang=ko&q="+encodeURIComponent((gu?gu+" ":"")+"5성급 호텔")+(L!=="ko"?"&tl="+encodeURIComponent(L):"")+"&lat="+b.lat.toFixed(5)+"&lng="+b.lng.toFixed(5)).then(function(r){ return r.json(); }).then(function(j){
+    if(my!==ST.seq||!ST.raw) return; var p=[b.lat,b.lng], add=0;
+    ((j&&j.ok&&j.items)||[]).forEach(function(g){ if(g.pt&&!/hotel|lodging|resort|inn/i.test(g.pt)) return; var d=KMs(p,[+g.lat,+g.lng]); if(!(d<=10)) return;
+      var hit=null; ST.raw.forEach(function(x){ if(!hit&&KMs([+x.y,+x.x],[+g.lat,+g.lng])<0.15&&nmLike(x.name,g.name)) hit=x; });
+      if(hit){ hit.lux=1; if(!hit.rating&&g.rating){ hit.rating=+g.rating; hit.n=+g.n||0; } if(!hit.tel&&g.tel) hit.tel=g.tel; if(!hit.web&&g.web) hit.web=g.web; add++; return; }
+      ST.raw.push({gid:g.id,name:g.name,addr:g.addr,name_en:g.name_en||undefined,addr_en:g.addr_en||undefined,x:g.lng,y:g.lat,rating:+g.rating||0,n:+g.n||0,pl:g.pl,tel:g.tel,web:g.web,kind:"hotel",cat:"호텔",cat_en:"Hotel",lux:1,dist:Math.round(d*1000)}); add++; });
+    if(add&&ST.sort==="l"){ sortNow(); drawMain(); } }).catch(function(){ ST.luxK=""; }); }
+function sortNow(){ var a=(ST.raw||[]).slice(); if(!ST.far) a.sort(function(x,y){ if(ST.sort==="k"){ var d=(y.kto?1:0)-(x.kto?1:0); if(d) return d; } if(ST.sort==="l"){ var e=luxS(y)-luxS(x); if(e) return e; } return x.dist-y.dist; }); ST.items=a.slice(0,10); }
 function rLbl(){ var t=tabs()[ST.tab]||{r:3000}, mx=0; (ST.items||[]).forEach(function(x){ mx=Math.max(mx,x.dist||0); }); var r=mx>t.r?10000:t.r; if(mx>10000) r=Math.ceil(mx/1000)*1000; return (r/1000)+" km"; }
 
 function draw(box){ ST.box=box;
@@ -227,7 +244,8 @@ function chips(name,list,cur,lab,cls){ return '<div class="pcs-chips'+(cls?" "+c
 function drawLeft(){ var el=$("psL"); if(!el) return; var T=tabs();
   el.innerHTML='<div class="pcs-sec"><h3>'+E(L6(TX.kind))+'</h3>'+chips("tab",T.map(function(t,i){ return i; }),ST.tab,function(i){ return kindL(T[i]); },"pcs-kch")+'</div>'
    +WS.html()
-   +'<div class="pcs-sec"><h3>'+E(L6(TX.sort))+'</h3>'+chips("so",["d","k"],ST.sort,function(v){ return L6(v==="k"?TX.sKto:TX.sNear); })+'</div>'; }
+   +'<div class="pcs-sec"><h3>'+E(L6(TX.sort))+'</h3>'+chips("so",isHotel()?["d","k","l"]:["d","k"],ST.sort,function(v){ return L6(v==="k"?TX.sKto:v==="l"?TX.sLux:TX.sNear); })+'</div>'; }
+function isHotel(){ var t=tabs()[ST.tab]; return !!t&&t.kind==="hotel"; }   // 「고급 호텔 먼저」는 호텔 칸에만
 function msg(t){ return '<div class="pcs-msg">'+E(t)+'</div>'; }
 function card(x,i){ var t=tabs()[ST.tab]||{}, en=FL()&&x.name_en, nm=KSs(en?x.name_en:x.name), ad=en?(x.addr_en||x.addr):x.addr;
   var tel=x.tel?'<div class="pcs-tel"><a href="tel:'+E(telIntl(x.tel))+'">☎ '+E(FL()?(/^0/.test(x.tel)?"+82 "+x.tel.slice(1):"+82 "+x.tel):x.tel)+'</a></div>':'';   // 앱 목록과 같은 꼴(외국어 화면 +82)
@@ -248,7 +266,7 @@ function webOf(x){ var a=[x.web,x.web2]; for(var i=0;i<a.length;i++){ var u=a[i]
   var lb=TX.web; WEBL.forEach(function(w){ if(w[0].test(h)) lb=w[1]; }); return {u:u,l:lb}; } return null; }
 function myLbl(){ try{ return TRIP.stay.label(); }catch(e){ return L6(T6("내 숙소로 정하기","Set as my lodging","宿泊先に設定","设为我的住处","設為我的住處","Elegir como alojamiento")); } }
 function drawMain(){ var c=$("psC"); if(!c) return; var t=tabs()[ST.tab]; if(!t){ c.innerHTML=""; return; }
-  var h='<div class="pcs-ch"><h2>'+E(F(ST.far?TX.headF:TX.head,{p:baseName(WS.base),k:kindL(t),s:L6(ST.sort==="k"?TX.sKto:TX.sNear)}))+'</h2>'
+  var h='<div class="pcs-ch"><h2>'+E(F(ST.far?TX.headF:TX.head,{p:baseName(WS.base),k:kindL(t),s:L6(ST.sort==="k"?TX.sKto:ST.sort==="l"?TX.sLux:TX.sNear)}))+'</h2>'
    +(ST.items&&ST.items.length&&!ST.far?'<div class="pcs-src">'+E(F(TX.src,{r:rLbl()}))+'</div>':'')+'</div>';
   if(ST.err) h+=msg(TT("잠시 뒤 다시 해 주세요.","Please try again shortly."));
   else if(!ST.items) h+=msg(TT("찾는 중…","Searching…"));
@@ -275,8 +293,8 @@ D.addEventListener("keydown",function(e){ if(APP&&e.key==="Escape"&&$("apStay")&
 D.addEventListener("click",function(e){ var t=e.target; if(!t.closest||!t.closest("#pcSt")) return;
   var p=t.closest(".pcm-p"); if(p&&p.closest("#psM")){ e.preventDefault(); var n=+p.getAttribute("data-n"), cd=D.querySelector('#psC .pcs-card[data-i="'+(n-1)+'"]'); if(cd){ try{ cd.scrollIntoView({behavior:"smooth",block:"center"}); }catch(x){} cd.classList.remove("pcs-fl"); void cd.offsetWidth; cd.classList.add("pcs-fl"); } pinOn($("psM"),n); return; }
   var c=t.closest("[data-ps]"); if(!c) return; var a=c.getAttribute("data-ps");
-  if(a==="tab"){ var i=+c.getAttribute("data-v"); if(i===ST.tab) return; ST.tab=i; drawLeft(); load(); return; }
-  if(a==="so"){ var s=c.getAttribute("data-v"); if(s===ST.sort) return; ST.sort=s; drawLeft(); sortNow(); drawMain(); return; }
+  if(a==="tab"){ var i=+c.getAttribute("data-v"); if(i===ST.tab) return; ST.tab=i; if(ST.sort==="l"&&!isHotel()) ST.sort="d"; drawLeft(); load(); return; }
+  if(a==="so"){ var s=c.getAttribute("data-v"); if(s===ST.sort) return; ST.sort=s; drawLeft(); sortNow(); drawMain(); if(s==="l") luxLoad(); return; }
   var x=ST.items&&ST.items[+c.getAttribute("data-i")], tb=tabs()[ST.tab]; if(!x) return;
   if(a==="det"){ try{ NS().tap(tb); }catch(z){}   // 앱 목록에서 한 곳 고를 때와 같은 집계
     pinShow({name:x.name,name_en:x.name_en||x.name,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",y:x.y,x:x.x,tel:x.tel||"",cat:x.cat||"",cat_en:x.cat_en||"",_l:ST.lang!=="ko"&&x.name_en?ST.lang:"ko",oh:x.oh,gt:x.gt}); return; }
