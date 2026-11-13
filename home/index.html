@@ -501,9 +501,13 @@ document.addEventListener("pointerdown",function(e){ try{ if(!e.isPrimary||!e.ta
 document.addEventListener("click",function(e){ if(window._mpLD&&Date.now()-window._mpLD<2000){ e.stopPropagation(); e.preventDefault(); } },true);
 // 언어 (10-18) — ko·en·ja·zhs(简体)·zht(繁體). ?lang= > 저장한 것 > 폰 언어(한국어 폰은 ko, 일본어 ja, 중국어 zh-TW/HK/Hant 는 zht·나머지 zhs, 그 밖은 en)
 var LANGS=["ko","en","ja","zhs","zht","es"];   // es 스페인어 (10-22)
+var SVC_LANG_ON=["ko","en"];   // 11-13 사장님 「가이드나 기사를 고를 때의 언어도 한국어 영어 가능만 남기고 다 숨겨라」 — 가이드 고르기·가이드 등록·패키지 가이드 언어·일정 검토 가이드 언어·차량 대절 기사 언어 · 다시 켜려면 여기에 넣는다
+function svcOn(c){ return SVC_LANG_ON.indexOf(c)>=0; }
+var LANG_ON=["ko","en"];   // 11-13 사장님 「한국어와 영어만 남기고 나머지를 숨겨줘」 — 일·중(간·번)·스페인어는 고르는 칸에서만 숨김(번역은 그대로) · 다시 켜려면 여기에 넣는다
 function langAuto(){ var n=String(navigator.language||""); if(/^ko/i.test(n)) return "ko"; if(/^ja/i.test(n)) return "ja"; if(/^es/i.test(n)) return "es"; if(/^zh/i.test(n)) return /hant|-tw|-hk|-mo/i.test(n)?"zht":"zhs"; return "en"; }
 var LANG="ko", _ql=((location.search.match(/[?&]lang=(ko|en|ja|zhs|zht|es)(?![A-Za-z])/i)||[])[1]||"").toLowerCase();
 try{ if(_ql) localStorage.setItem("mpv_lang",_ql); var _sv=localStorage.getItem("mpv_lang"); LANG=LANGS.indexOf(_sv)>=0?_sv:langAuto(); }catch(e){ LANG=_ql||langAuto(); }
+if(LANG_ON.indexOf(LANG)<0) LANG="en";   // 숨긴 언어(저장·폰 언어·?lang=)는 영어로 (11-13)
 // T(한글, 영어) — 일본어·중국어는 영어 문장을 열쇠로 i18n.js 표(I18N)·약도 자료 표(DTR)에서 찾고, 없으면 영어. 숫자가 든 문장은 숫자를 # 로 바꾼 꼴로도 찾는다
 var DTR={};
 function FG(){ return LANG!=="ko"; }   // 외국어 화면(영·일·중) — 영어 화면과 같은 길(구글 먼저·K.Ride·영어 이름)로
@@ -560,7 +564,7 @@ window.EMO_LEAD=/^(?:[\u{1F000}-\u{1FAFF}☀-➿⬀-⯿℀-⅏⌀-⏿]️?|️|�
 window.MIS="height:1.1em;width:auto;vertical-align:-0.18em;margin-right:4px";
 window.MPIMG=function(n,st){ return '<img class="miic" src="img/menu/'+n+'.png" alt=""'+(st?' style="'+st+'"':'')+'>'; };
 window.MPICO=function(n,l,st){ var s=String(l==null?"":l).replace(EMO_LEAD,""); return (n?MPIMG(n,st):"")+esc(s); };
-function setLang(l){ if(LANGS.indexOf(l)<0) l="ko"; LANG=l; try{ localStorage.setItem("mpv_lang",l); localStorage.setItem("mpv_lang_changed","1"); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} try{ nevPaint(); }catch(e){} try{ b4Draw(); }catch(e){} }
+function setLang(l){ if(LANGS.indexOf(l)<0) l="ko"; if(LANG_ON.indexOf(l)<0) l="en"; LANG=l; try{ localStorage.setItem("mpv_lang",l); localStorage.setItem("mpv_lang_changed","1"); }catch(e){} paint(); try{ infoPaint(); }catch(e){} try{ nmLang(); }catch(e){} try{ lodDraw(); }catch(e){} try{ lblDraw(); }catch(e){} try{ bbDraw(); }catch(e){} try{ meDraw(); }catch(e){} try{ nevPaint(); }catch(e){} try{ b4Draw(); }catch(e){} }
 function paint(){
   var _ls=document.getElementById("lang"); if(_ls) _ls.value=LANG; document.documentElement.lang={ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant",es:"es"}[LANG]||"ko";
   (function(){ var w=document.getElementById("ttlw"), ko=LANG==="ko"; if(w) w.innerHTML=(ko?"모자이크트립":"MosaicTrip")+'<b style="margin-left:4px" id="ttl">'+(ko?"- 대한민국":"for Korea")+'</b>'; })();   /* 11-08 사장님 제목줄 — 한국어 「MosaicTrip - 대한민국」, 외국어는 모두 「MosaicTrip for Korea」 (옛 Money Puzzle Tour for Korea) */
@@ -1754,9 +1758,11 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
   function backClose(){
     if(window.SHOP&&SHOP.back&&SHOP.back()) return true;   /* 체험·입장권 — 결제창 → 상품 상세 → 목록 (10-29) */
     if(window.AIPLAN&&AIPLAN.back&&AIPLAN.back()) return true;   /* AI와 일정짜기 — 읽던 카드 → 목록 → 「완료」와 같음 (11-05) */
-    var c=[].slice.call(document.querySelectorAll("#infopop,.trpop,#nrBk,#inqBox,#shBox,.trsheet,#gfBox,#nrBox,#itB,#abcBox")).filter(vis);
+    var c=[].slice.call(document.querySelectorAll("#infopop,.trpop,#nrBk,#inqBox,#shBox,.trsheet,#gfBox,#nrBox,#itB,#abcBox,#pcCard,#apStay")).filter(vis);   /* 11-13 숙소 화면 장소 카드 창·앱 숙소 창 */
     if(c.length){ c.sort(function(a,b){ return (parseInt(getComputedStyle(a).zIndex)||0)-(parseInt(getComputedStyle(b).zIndex)||0); }); var o=c[c.length-1];
       if(o.id==="shBox"){ o.hidden=true; return true; }
+      if(o.id==="pcCard"){ if(window.PCSTAY&&PCSTAY.close) PCSTAY.close(); else o.remove(); return true; }
+      if(o.id==="apStay"){ if(window.APPSTAY) APPSTAY.close(); else o.remove(); return true; }
       if(o.id==="itB"){ var bg=o.querySelector(".big"); if(bg) bg.remove(); else o.remove(); return true; }   /* 🗣 통역 — 큰 글씨 → 판 차례로 (10-19) */
       if(o.classList.contains("trsheet")){ if(window.TRIP&&TRIP.close) TRIP.close(o.id); else o.remove(); return true; }
       o.remove(); if(o.id==="gfBox") document.documentElement.classList.remove("gflock"); if(o.id==="nrBox") document.documentElement.classList.remove("nrlock"); return true; }
@@ -1796,12 +1802,12 @@ Promise.all([jget("regions.json"),jget("info.json"),mapLoad(NAVI_ROOT)]).then(fu
 })();</script>
 <script src="tpick.js?v=1106tp"></script>
 <script src="tpg.js?v=1110fx"></script>   <!-- 투어앱 결제 = KG이니시스·포트원 (패키지·가이드 인솔·일정 검토 공용, 11-07) — trip·near·shop 보다 먼저 -->
-<script src="trip.js?v=1111blk"></script>
+<script src="trip.js?v=1113s2"></script>
 <script src="gift.js?v=1110fx"></script>
-<script src="near.js?v=1111qr"></script>
-<script src="charter.js?v=1111my"></script>
+<script src="near.js?v=1113wb"></script>
+<script src="charter.js?v=1113sv"></script>
 <script src="vqr.js?v=1111qr"></script>   <!-- 바우처 QR (11-11 「2나」) — 「내 예약」 카드·홈페이지 #/bookings·대화방 요약에 예약 확인 QR (허브 /shop/q) -->   <!-- 차량 대절 (11-11) — 예약 칸·구간 가격·교통 광고 띠·일정표 [차량 대절]·바우처 · shop.js 보다 먼저 (window.CHR) -->
-<script src="shop.js?v=1111qr"></script>
+<script src="shop.js?v=1113s2"></script>
 <script src="smenu.js?v=1110mn"></script>   <!-- 가게 메뉴·바우처·모델 바꾸기 (11-10) — shop.js·near.js·chat.js·홈페이지가 window.SMN 으로 -->
 <script src="hosp.js?v=1110km"></script>   <!-- 건강검진 「병원 고르기」·바우처 병원 (11-10, data/hosp.json) — shop.js·near.js·홈페이지가 window.HSP 로 -->
 <script src="tosspay.js?v=1107p5"></script>
@@ -1971,11 +1977,11 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
     if(_spm&&_spm.getElement){ var r2=_spm.getElement().getBoundingClientRect(); if(r2.width&&Math.hypot(x-(r2.left+r2.width/2),y-(r2.top+r2.height*0.4))<28){ spinCard(); return; } }
   }catch(z){} },true);
 </script>
-<script src="lang.js?v=1110br"></script>
+<script src="lang.js?v=1113ko"></script>
 <script src="interp.js?v=1107p5"></script>
 <script src="chat.js?v=1111qr"></script>   <!-- 손님 ↔ 가이드 대화방 · 말풍선 「가이드 대화」 탭 (11-05) — interp.js 뒤에 -->
 <script src="bell.js?v=1106nt"></script>   <!-- 🔔 앱 알림함 — 머리줄 💬 옆 종 · 알림 판(알림 받기·소리·진동·목록) (11-06) — chat.js 뒤에 -->
-<script src="manual.js?v=1107xt"></script>
+<script src="manual.js?v=1113ko"></script>
 <script src="karaoke.js?v=1110fx"></script>
 <script src="tvid.js?v=1107pp"></script>
 <script src="pcbang.js?v=1026pc5"></script>
@@ -2134,7 +2140,8 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
         return false;
       }catch(e){ return true; }   // 저장소 막히면 한 번만 보여주되 에러 없이
     }
-    function go(){ try{ if(!window.PC_HOME&&shouldShow()) build(true); }catch(e){ try{ endAll(); }catch(x){} } }   /* 11-08 홈페이지(PC_HOME)는 인트로 크롤을 저절로 띄우지 않는다(보물섬을 누르면 그대로 나옴) */
+    function go(){ return;   /* 11-13 사장님 「보물섬 아이콘을 눌러야 나오는 걸로」 — 앱도 인트로를 저절로 띄우지 않는다(홈페이지는 11-08부터) · 보물섬을 누르면 mpCrawlReplay 로 나옴 */
+      try{ if(!window.PC_HOME&&shouldShow()) build(true); }catch(e){ try{ endAll(); }catch(x){} } }
     if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",go); else go();
   }catch(e){ try{ var o=document.getElementById("mpcrawl"); if(o&&o.parentNode) o.parentNode.removeChild(o); document.documentElement.classList.remove("mpc-lock"); }catch(x){} }
 })();
@@ -2160,7 +2167,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script>
 /* 버전 (사장님 11-07 「버전으로 관리하자」 「가」 1.0.5 모양) — 올릴 때마다 배포 도구(navi_fast)가 끝자리를 하나 올린다(version.json · 아래 APPV 를 같이)
    ⋮ 메뉴 맨 아래 「버전 1.0.5」 → 누르면 서버 최신(version.json)과 비교 · 쓰는 중 새 판이 올라오면 위에 「새 버전이 있어요 [새로 받기]」(10분마다·화면으로 돌아올 때 확인) */
-var APPV="1.0.67";
+var APPV="1.0.68";
 (function(){ var L6=function(o){ return o[window.LANG]||o.en; }, W={v:{ko:"버전",en:"Version",ja:"バージョン",zhs:"版本",zht:"版本",es:"Versión"},
   ok:{ko:"최신 버전이에요",en:"You're on the latest version",ja:"最新バージョンです",zhs:"已是最新版本",zht:"已是最新版本",es:"Tienes la última versión"},
   nw:{ko:"새 버전이 있어요",en:"A new version is available",ja:"新しいバージョンがあります",zhs:"有新版本",zht:"有新版本",es:"Hay una nueva versión"},
@@ -2187,7 +2194,7 @@ var APPV="1.0.67";
 })();
 </script>
 <link rel="stylesheet" href="home/pc.css?v=694ca1be">
-<script src="home/pc.js?v=1957c29f"></script>
+<script src="home/pc.js?v=baf7cf14"></script>
 <link rel="stylesheet" href="home/pc_ai.css?v=490cf5ee">
 <link rel="stylesheet" href="home/pc_bk.css?v=eca6e280">
 <link rel="stylesheet" href="home/pc_board.css?v=6bf4602f">
@@ -2197,17 +2204,17 @@ var APPV="1.0.67";
 <link rel="stylesheet" href="home/pc_near.css?v=1a402da5">
 <link rel="stylesheet" href="home/pc_pkg.css?v=840d437c">
 <link rel="stylesheet" href="home/pc_sos.css?v=bac4f9d4">
-<link rel="stylesheet" href="home/pc_stay.css?v=83925a8a">
+<link rel="stylesheet" href="home/pc_stay.css?v=662751d6">
 <script src="home/pc_router.js?v=c02edfc4"></script>
 <script src="home/pc_ai.js?v=eeabab46"></script>
 <script src="home/pc_bk.js?v=09ca4647"></script>
 <script src="home/pc_board.js?v=38398898"></script>
 <script src="home/pc_gift.js?v=aca48c5a"></script>
-<script src="home/pc_guide.js?v=cf860b6b"></script>
+<script src="home/pc_guide.js?v=dfb4c7b5"></script>
 <script src="home/pc_info.js?v=554e8faf"></script>
 <script src="home/pc_near.js?v=6472421e"></script>
-<script src="home/pc_pkg.js?v=dc4150f9"></script>
+<script src="home/pc_pkg.js?v=8b021075"></script>
 <script src="home/pc_sos.js?v=6134ba11"></script>
-<script src="home/pc_stay.js?v=987476ed"></script>
+<script src="home/pc_stay.js?v=d9be9508"></script>
 </body>
 </html>
