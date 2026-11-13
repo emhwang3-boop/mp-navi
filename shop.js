@@ -313,7 +313,7 @@ var PX={
    T6("목적지는 손님이 정하고, 끌어서 순서를 바꿀 수 있어요","You choose the destinations and can drag them to change the order","目的地はお客様が決め、ドラッグで順番を変えられます","目的地由您决定，可拖动调整顺序","目的地由您決定，可拖動調整順序","Tú eliges los destinos y puedes arrastrarlos para cambiar el orden"),
    T6("서울 숙소나 인천·김포공항에서 태우고 내려 드려요","We pick you up and drop you off at your hotel in Seoul or at Incheon or Gimpo Airport","ソウルのホテルか仁川・金浦空港でお迎え・お送りします","在首尔的住处或仁川·金浦机场接送您","在首爾的住處或仁川·金浦機場接送您","Te recogemos y te dejamos en tu hotel de Seúl o en los aeropuertos de Incheon y Gimpo"),
    T6("기름값과 고속도로 통행료가 가격에 들어 있어요","Fuel and highway tolls are included in the price","燃料代と高速道路料金は料金に含まれます","价格已包含油费和高速公路费","價格已包含油費和高速公路費","El combustible y los peajes están incluidos en el precio"),
-   T6("기사 언어는 한국어·영어·일본어·중국어 중에서 골라요 (추가 요금 없음)","Choose your driver's language: Korean, English, Japanese or Chinese (no extra charge)","ドライバーの言語は韓国語・英語・日本語・中国語から選べます（追加料金なし）","司机语言可选韩语、英语、日语或中文（不另收费）","司機語言可選韓語、英語、日語或中文（不另收費）","Elige el idioma del conductor: coreano, inglés, japonés o chino (sin coste extra)")],
+   T6("기사 언어는 한국어·영어 중에서 골라요 (추가 요금 없음)","Choose your driver's language: Korean or English (no extra charge)","ドライバーの言語は韓国語・英語から選べます（追加料金なし）","司机语言可选韩语或英语（不另收费）","司機語言可選韓語或英語（不另收費）","Elige el idioma del conductor: coreano o inglés (sin coste extra)")   /* 11-13 일·중 숨김 — 다시 켜면 「한국어·영어·일본어·중국어」 문구로 되돌린다(백업 shop.js.bak_1113_svc) */],
   steps:[T6("숙소(서울)나 공항에서 기사 만나기","Meet your driver at your hotel (Seoul) or the airport","ホテル（ソウル）か空港でドライバーと合流","在住处（首尔）或机场与司机会合","在住處（首爾）或機場與司機會合","Te encuentras con el conductor en tu hotel (Seúl) o en el aeropuerto"),
    T6("정한 순서대로 목적지 돌기","Visit your destinations in the order you set","決めた順番で目的地を回る","按您定好的顺序前往各目的地","按您定好的順序前往各目的地","Visitas los destinos en el orden que elegiste"),
    T6("숙소나 공항에서 내리기 (픽업부터 10시간)","Drop-off at your hotel or the airport (10 hours from pickup)","ホテルか空港でお送り（お迎えから10時間）","送您回住处或机场（从接您起10小时）","送您回住處或機場（從接您起10小時）","Te dejamos en tu hotel o en el aeropuerto (10 horas desde la recogida)")],
@@ -380,7 +380,7 @@ function kLab(p){ var k=kindOf(p); return k==="car"&&window.CHR?CHR.T.kind:k==="
 function fcOf(p){ return isChr(p)?CHR.T.cfc:TX.fc; }   // 무료 취소 — 차량 대절은 2일 전 17시까지 (11-11)
 function kBadge(p){ var k=kindOf(p); return '<span class="skb skb-'+k+'">'+esc(L(kLab(p)))+'</span>'; }
 function fcBadge(p){ return isExt(p)?'':'<span class="sfc">'+esc(L(fcOf(p)))+'</span>'; }
-function langTxt(p,max){ var a=(p.langs||[]).filter(function(l){ return LGN[l]; }).map(function(l){ return LGN[l]; }); if(!a.length) return ""; return max&&a.length>max?a.slice(0,max).join(" · ")+" +"+(a.length-max):a.join(" · "); }
+function langTxt(p,max){ var a=(p.langs||[]).filter(function(l){ return LGN[l]&&(!window.svcOn||svcOn(l)); }).map(function(l){ return LGN[l]; }); if(!a.length) return ""; return max&&a.length>max?a.slice(0,max).join(" · ")+" +"+(a.length-max):a.join(" · "); }
 function minUnit(p){ if(!p.hub&&p.real==="b4") return 79000; var u=p.price||0; (p.disc||[]).forEach(function(d){ if(d.p&&d.p<u) u=d.p; }); return u; }
 function fromPr(p){ var u=minUnit(p); if(u) return '<div class="spr">'+won(u)+'~ <small>/ '+esc(L(perOf(p)))+'</small></div>'; return isExt(p)?'<div class="spr"><small>'+esc(L(TX.pxt))+'</small></div>':''; }
 // 가격 아래 「별도」 줄 (11-10 도장·건강검진) — 목록 카드·상세 가격·결제 칸·결제창 · 홈페이지 카드(pc.js·pc_pkg.js)·AI 추천 카드(reco.js)도 같은 class
@@ -447,7 +447,7 @@ function detBody(p){ var K=kindOf(p), X=isExt(p), h='', urls=galUrls(p), gi=Math
   var fq=(p.faq||[]).filter(function(x){ return x&&Lx(x.q); });
   if(fq.length) h+='<section class="shbx"><h2>'+esc(L(TX.faq))+'</h2>'+fq.map(function(x){ return '<details class="sfq"><summary><span>'+esc(Lx(x.q))+'</span>'+XTG.html(false,'',1)+'</summary><p>'+esc(Lx(x.a))+'</p></details>'; }).join("")+'</section>';
   return h; }
-var GLANGS=[["en","English"],["ja","日本語"],["zhs","中文(简)"],["zht","中文(繁)"],["es","Español"],["ko","한국어"]];
+var GLANGS=[["en","English"],["ja","日本語"],["zhs","中文(简)"],["zht","中文(繁)"],["es","Español"],["ko","한국어"]].filter(function(l){ return (!window.svcOn||svcOn(l[0])); });   // 11-13 숨긴 서비스 언어 빼기(index.html SVC_LANG_ON)
 var S={cat:"all",prod:null,glang:"",guides:null,gid:null,date:"",n:2,cn:"",ce:"",cp:""};   // cn·ce·cp = 예약자 이름·이메일·전화 (10-28 주문 저장)
 var css=document.createElement("style");
 css.textContent="#shopBox{position:fixed;inset:0;z-index:2147483003;background:#f6f4ef;color:#1d2433;overflow:auto;-webkit-overflow-scrolling:touch;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif}"
@@ -561,7 +561,7 @@ function sideHtml(){ var h='', p0=prod(), tour=!p0||kindOf(p0)==="tour";   // �
   // 가이드
   if(tour){ h+='<section class="shbx"><h2><span class="sstep">1</span>'+esc(L(TX.g1))+'</h2><p class="snote">'+esc(L(TX.gl))+'</p><div class="sgl">'+GLANGS.map(function(l){ return '<button type="button" data-gl="'+l[0]+'" class="'+(S.glang===l[0]?"on":"")+'">'+esc(l[1])+'</button>'; }).join("")+'</div>';
   if(S.glang){ if(S.guides===null) h+='<p class="snote">'+esc(L(TX.gld))+'</p>'; else if(!S.guides.length) h+='<p class="snote">'+esc(L(TX.gn))+'</p>';
-    else h+=S.guides.map(function(g){ return '<button type="button" class="sg'+(S.gid===g.id?" on":"")+'" data-g="'+esc(g.id)+'">'+(g.photo?'<img src="'+esc(g.photo)+'" alt="">':'<span class="sav">'+esc(gName(g).slice(0,1))+'</span>')+'<span><b>'+esc(gName(g))+'</b><small>'+esc((g.langs||[]).map(function(c){ return window.igLangName?igLangName(c):c; }).join(" · "))+(g.years?' · '+esc(window.igYears?igYears(g.years):g.years):'')+(g.region?' · '+esc(window.igRegion?igRegion(g.region):g.region):'')+'</small></span></button>'; }).join(""); }
+    else h+=S.guides.map(function(g){ return '<button type="button" class="sg'+(S.gid===g.id?" on":"")+'" data-g="'+esc(g.id)+'">'+(g.photo?'<img src="'+esc(g.photo)+'" alt="">':'<span class="sav">'+esc(gName(g).slice(0,1))+'</span>')+'<span><b>'+esc(gName(g))+'</b><small>'+esc((g.langs||[]).filter(function(c){ return (!window.svcOn||svcOn(c)); }).map(function(c){ return window.igLangName?igLangName(c):c; }).join(" · "))+(g.years?' · '+esc(window.igYears?igYears(g.years):g.years):'')+(g.region?' · '+esc(window.igRegion?igRegion(g.region):g.region):'')+'</small></span></button>'; }).join(""); }
   h+='</section>'; }
   // 예약·결제
   var p=prod(); h+='<section class="shbx" id="shopCo"><h2><span class="sstep">'+(tour?2:1)+'</span>'+esc(L(TX.g2))+'</h2>';
