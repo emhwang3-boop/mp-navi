@@ -10,7 +10,8 @@
  */
 (function(){
 "use strict";
-if(!window.PC_HOME||!window.PCREG) return;
+var APP=!window.PC_HOME;   // 11-13 사장님 「웹에서 숙소 버튼 화면과 앱 숙소 화면을 비교해서 웹에 맞춰줘」 — 앱(폰)에서도 이 화면을 전체 화면 창(#apStay)으로 띄운다 · near.js open("st") 가 처음 누를 때 이 파일을 받는다
+if(!APP&&!window.PCREG) return;
 var D=document, H=D.documentElement;
 function $(id){ return D.getElementById(id); }
 function L6(o){ return o?(o[window.LANG]||o.en||o.ko||""):""; }
@@ -192,6 +193,7 @@ var TX={
  headF:T6("{p} 근처 {k}","{k} near {p}","{p}周辺の{k}","{p}附近的{k}","{p}附近的{k}","{k} cerca de {p}"),
  src:T6("카카오 숙소 자료 · {r} 안","Kakao lodging data · within {r}","カカオの宿泊データ・{r}以内","Kakao 住宿资料 · {r}以内","Kakao 住宿資料 · {r}以內","Datos de alojamiento de Kakao · a menos de {r}"),
  det:T6("자세히","Details","詳細","详情","詳情","Detalles"),
+ web:T6("홈페이지","Website","ホームページ","官网","官網","Sitio web"),   // 11-13 사장님 「한옥스테이에 뜨는 곳들의 전화번호가 없다 기재해주고 홈페이지도 연결해줘(있으면)」
  mapNo:T6("지도에 표시할 숙소가 없어요","No places to show on the map","地図に表示する宿がありません","没有可在地图上显示的住宿","沒有可在地圖上顯示的住宿","No hay alojamientos para mostrar en el mapa"),
  capP:T6("목록과 같은 번호예요 · 숙소 카드에 마우스를 올리면 번호가 커지고, 번호를 누르면 그 숙소로 가요","Numbers match the list · hover over a card to enlarge its number; click a number to jump to that place","番号はリストと同じです・カードにマウスを合わせると番号が大きくなり、番号を押すとその宿へ移動します","编号与列表一致 · 将鼠标移到卡片上编号会放大，点击编号即可跳到该住宿","編號與列表一致 · 將滑鼠移到卡片上編號會放大，點擊編號即可跳到該住宿","Los números coinciden con la lista · pasa el ratón sobre una tarjeta para agrandar su número; haz clic en un número para ir a ese alojamiento"),
  capT:T6("목록과 같은 번호예요 · 번호를 누르면 그 숙소로 가요","Numbers match the list · tap a number to jump to that place","番号はリストと同じです・番号を押すとその宿へ移動します","编号与列表一致 · 点击编号即可跳到该住宿","編號與列表一致 · 點擊編號即可跳到該住宿","Los números coinciden con la lista · toca un número para ir a ese alojamiento")
@@ -201,7 +203,7 @@ var ST={tab:0,sort:"d",raw:null,items:null,err:"",far:false,seq:0,lang:"",bkey:"
 function NS(){ return window.NEARST||null; }
 function tabs(){ var n=NS(); return n?n.tabs:[]; }
 function kindL(t){ return TT(t.ko,t.en); }
-function mine(){ return /^#\/stay(\/|$)/.test(location.hash||""); }
+function mine(){ return APP?!!$("apStay"):/^#\/stay(\/|$)/.test(location.hash||""); }
 function bkey(){ var b=WS.base; return ST.tab+"|"+b.lat.toFixed(4)+","+b.lng.toFixed(4)+"|"+(window.LANG||""); }
 var WS=Where({id:"psW",trip:true,onSet:function(){ drawLeft(); load(); },redraw:function(){ drawLeft(); }});
 
@@ -233,8 +235,17 @@ function card(x,i){ var t=tabs()[ST.tab]||{}, en=FL()&&x.name_en, nm=KSs(en?x.na
    +'<div class="pcs-nm"><span class="pcs-no">'+(i+1)+'</span><b>'+E(nm)+'</b>'+(x.kto?'<span class="pcs-kto" title="'+E(TT("한국관광공사 관광정보에 실린 숙소","Listed by the Korea Tourism Organization"))+'">'+E(TT("관광공사","KTO"))+'</span>':'')+'</div>'
    +(en&&x.name_en!==x.name?'<div class="pcs-ko">'+E(x.name)+'</div>':'')
    +'<div class="pcs-mt">'+E(kindL(t))+' · '+E(kmD(x.dist))+(x.rating?' · <span class="pcs-rtw"><span class="pcs-rt">★ '+(+x.rating).toFixed(1)+'</span> ('+(+x.n||0)+')</span>':'')+'</div>'
-   +(ad?'<div class="pcs-ad">'+E(ad)+'</div>':'')+tel+'</div>'
+   +(ad?'<div class="pcs-ad">'+E(ad)+'</div>':'')+tel+(function(){ var w=webOf(x); return w?'<div class="pcs-tel pcs-web"><a href="'+E(w.u)+'" target="_blank" rel="noopener">'+ico("mi_globe","pcs-wic")+E(L6(w.l))+' ›</a></div>':''; })()+'</div>'
    +'<div class="pcs-bt"><button type="button" class="pcs-b2" data-ps="det" data-i="'+i+'">'+E(L6(TX.det))+'</button><button type="button" class="pcs-b2" data-ps="my" data-i="'+i+'">'+E(myLbl())+'</button><button type="button" class="pcs-b1" data-ps="bk" data-i="'+i+'">'+E(TT("예약하기","Book"))+'</button></div></article>'; }   // 11-09 사장님 「가」 — [내 숙소로 정하기] · 단추 셋은 카드 폭 한 줄에 같은 크기(오른쪽 맞춤)
+// 숙소 홈페이지 링크 (11-13) — 구글 홈페이지 먼저, 없거나 예약 대행 사이트면 관광공사 예약 주소(web2) · 대행 사이트(부킹닷컴·아고다·구글 등)는 안 보임 · 네이버 예약·지도·에어비앤비·인스타는 그 이름으로
+var WEBL=[[/(^|\.)booking\.naver\.com$/i,T6("네이버 예약","Naver Booking","NAVER予約","Naver 预订","Naver 預訂","Reserva en Naver")],
+ [/(^|\.)(map|place|m\.place|m\.map)\.naver\.com$|^naver\.me$/i,T6("네이버 지도","Naver Map","NAVER地図","Naver 地图","Naver 地圖","Naver Map")],
+ [/(^|\.)airbnb\./i,T6("에어비앤비","Airbnb","Airbnb","Airbnb","Airbnb","Airbnb")],
+ [/(^|\.)stayfolio\.com$/i,T6("스테이폴리오","STAYFOLIO","STAYFOLIO","STAYFOLIO","STAYFOLIO","STAYFOLIO")],
+ [/(^|\.)instagram\.com$/i,T6("인스타그램","Instagram","Instagram","Instagram","Instagram","Instagram")]];
+var WEBX=/(^|\.)(google\.[a-z.]+|booking\.com|agoda\.com|trip\.com|expedia\.[a-z.]+|hotels\.com|hotelskorean\.com|instantroom\.eu|southkrhotel\.com|hostelworld\.com|tripadvisor\.[a-z.]+|kayak\.[a-z.]+|trivago\.[a-z.]+)$/i;
+function webOf(x){ var a=[x.web,x.web2]; for(var i=0;i<a.length;i++){ var u=a[i], h=""; if(!/^https?:\/\//i.test(u||"")) continue; try{ h=new URL(u).hostname.replace(/^www\./i,""); }catch(e){ continue; } if(WEBX.test(h)) continue;
+  var lb=TX.web; WEBL.forEach(function(w){ if(w[0].test(h)) lb=w[1]; }); return {u:u,l:lb}; } return null; }
 function myLbl(){ try{ return TRIP.stay.label(); }catch(e){ return L6(T6("내 숙소로 정하기","Set as my lodging","宿泊先に設定","设为我的住处","設為我的住處","Elegir como alojamiento")); } }
 function drawMain(){ var c=$("psC"); if(!c) return; var t=tabs()[ST.tab]; if(!t){ c.innerHTML=""; return; }
   var h='<div class="pcs-ch"><h2>'+E(F(ST.far?TX.headF:TX.head,{p:baseName(WS.base),k:kindL(t),s:L6(ST.sort==="k"?TX.sKto:TX.sNear)}))+'</h2>'
@@ -251,7 +262,14 @@ function drawMap(){ var m=$("psM"), cap=$("psCap"); if(!m) return; var it=ST.ite
   lmap(m,it.map(function(x,i){ return {lat:+x.y,lng:+x.x,n:i+1}; }),phone()?{asp:1}:{h:Math.max(360,Math.min(720,window.innerHeight-210))});
   if(cap) cap.textContent=L6(touch()?TX.capT:TX.capP); ST.mw=m.clientWidth; }
 
-PCREG("stay",function(box,args){ draw(box); if(!ST.raw||ST.bkey!==bkey()) load(); });
+if(!APP) PCREG("stay",function(box,args){ draw(box); if(!ST.raw||ST.bkey!==bkey()) load(); });
+// 앱 — 전체 화면 창 · 닫기 ✕ · 뒤로 가기는 index.html 뒤로 가기 목록(#pcCard → #apStay 차례)
+else window.APPSTAY={open:function(){ var o=$("apStay"); if(!o){ o=D.createElement("div"); o.id="apStay"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
+    o.innerHTML='<button type="button" class="apst-x" aria-label="'+E(L6(CM.x))+'">✕</button><div id="apStayIn"></div>'; D.body.appendChild(o);
+    o.querySelector(".apst-x").addEventListener("click",function(e){ e.preventDefault(); window.APPSTAY.close(); }); }
+    H.classList.add("apst-lock"); o.scrollTop=0; draw($("apStayIn")); if(!ST.raw||ST.bkey!==bkey()) load(); },
+  close:function(){ cardClose(); var o=$("apStay"); if(o) o.remove(); H.classList.remove("apst-lock"); }};
+D.addEventListener("keydown",function(e){ if(APP&&e.key==="Escape"&&$("apStay")&&!CARD&&!$("nrBk")&&!D.querySelector(".trpop")) window.APPSTAY.close(); });
 
 // ── 누르기 ──
 D.addEventListener("click",function(e){ var t=e.target; if(!t.closest||!t.closest("#pcSt")) return;
@@ -263,7 +281,7 @@ D.addEventListener("click",function(e){ var t=e.target; if(!t.closest||!t.closes
   if(a==="det"){ try{ NS().tap(tb); }catch(z){}   // 앱 목록에서 한 곳 고를 때와 같은 집계
     pinShow({name:x.name,name_en:x.name_en||x.name,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",y:x.y,x:x.x,tel:x.tel||"",cat:x.cat||"",cat_en:x.cat_en||"",_l:ST.lang!=="ko"&&x.name_en?ST.lang:"ko",oh:x.oh,gt:x.gt}); return; }
   if(a==="bk"){ var nm=(x.name_en&&x.name_en!==x.name)?x.name_en:x.name; try{ NS().book(nm,+x.y,+x.x); }catch(z){} return; }   // 앱 카드 「예약하기」와 같은 이름(영어 이름이 있으면 그것)
-  if(a==="my"){ try{ TRIP.stay.mine({type:"addr",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x,addr:x.addr||""},function(){ drawLeft(); }); }catch(z){} return; }   // 11-09 앱 ⋮ 숙소와 같은 길(trip.js myStay — 짠 일정이 있으면 「이 밤들에 넣을까요?」, 없으면 첫날 밤)
+  if(a==="my"){ var bn=(x.name_en&&x.name_en!==x.name)?x.name_en:x.name; try{ TRIP.stay.mine({type:"addr",ko:x.name,en:x.name_en||x.name,lat:+x.y,lng:+x.x,addr:x.addr||""},function(idx){ drawLeft(); try{ NS().book(bn,+x.y,+x.x,idx); }catch(q){} }); }catch(z){} return; }   // 11-13 사장님 「숙소메뉴에서 숙소를 정하면 자동으로 부킹 사이트에 입력이 되도록 해줘」 — 정하면 바로 예약 창(그 밤 날짜·인원을 넣은 아고다·부킹닷컴)   // 11-09 앱 ⋮ 숙소와 같은 길(trip.js myStay — 짠 일정이 있으면 「이 밤들에 넣을까요?」, 없으면 첫날 밤)
 });
 // 숙소 카드에 마우스 → 그 번호 핀이 커진다 (배치도)
 D.addEventListener("mouseover",function(e){ var t=e.target; if(!t.closest) return; var cd=t.closest("#psC .pcs-card"), n=cd?(+cd.getAttribute("data-i")+1):0; if(n===ST.hv) return; if(!cd&&!t.closest("#psC")&&!ST.hv) return; ST.hv=n; pinOn($("psM"),n||""); });
