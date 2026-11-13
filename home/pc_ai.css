@@ -234,3 +234,5 @@ html.pch[data-theme="dark"] #pcAi .item a{background:var(--bg);border-color:var(
   #pcAi #trRep .tday{padding:12px 12px 8px}
   #pcAi #trRep .tdh{margin:-12px -12px 4px;padding:12px 12px 8px}
 }
+
+#pcAi .pa-h1 .pa-yb{display:block;width:6px;height:24px;border-radius:3px;background:var(--ph-yel);flex:0 0 auto}   /* 11-14 제목 앞 노란 막대(가이드 인솔 화면과 같게) */
