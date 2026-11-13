@@ -39,6 +39,7 @@ a{color:var(--blue)}
 <script>
 "use strict";
 var LANGS=["ko","en","ja","zhs","zht","es"];
+var LANG_ON=["ko","en"];   // 11-13 사장님 「한국어와 영어만 남기고 나머지를 숨겨줘」 — 일·중(간·번)·스페인어는 고르는 칸에서만 숨김(번역은 그대로) · 다시 켜려면 여기에 넣는다
 var HLANG={ko:"ko",en:"en",ja:"ja",zhs:"zh-Hans",zht:"zh-Hant",es:"es"};
 var LBL={ko:"한국어",en:"English",ja:"日本語",zhs:"简体",zht:"繁體",es:"Español"};
 
@@ -312,7 +313,8 @@ function render(lang){
   try{ history.replaceState(null,"","?lang="+lang); }catch(e){}
 }
 
-function pick(){
+function pick(){ var r=pick0(); return LANG_ON.indexOf(r)>=0?r:"en"; }   // 숨긴 언어는 영어로 (11-13)
+function pick0(){
   var q=(location.search.match(/[?&]lang=([a-z]+)/)||[])[1];
   if(q&&LANGS.indexOf(q)>=0) return q;
   var st; try{ st=localStorage.getItem("mpv_lang"); }catch(e){}
@@ -327,7 +329,7 @@ function pick(){
 
 (function(){
   var bar=document.getElementById("langbar"),h="";
-  for(var i=0;i<LANGS.length;i++) h+='<button data-l="'+LANGS[i]+'">'+LBL[LANGS[i]]+'</button>';
+  for(var i=0;i<LANG_ON.length;i++) h+='<button data-l="'+LANG_ON[i]+'">'+LBL[LANG_ON[i]]+'</button>';
   bar.innerHTML=h;
   var btns=bar.children;
   for(var j=0;j<btns.length;j++) btns[j].addEventListener("click",function(){ render(this.getAttribute("data-l")); });
