@@ -203,9 +203,9 @@ function stayRate(t,p,a){ var cnt={}, gu=""; a.forEach(function(x){ var w=String
     b.forEach(function(x){ var nb=spinNorm(x.name), best=-1, bd=1e9; if(!nb) return;
       g.forEach(function(q,i){ var n=spinNorm(q.name); if(!n) return; var d=kmLL([+x.y,+x.x],[+q.lat,+q.lng]); if(d>0.2||d>=bd) return;
         if(n.indexOf(nb)>=0||nb.indexOf(n)>=0||(nb.length>=3&&n.slice(0,3)===nb.slice(0,3))){ bd=d; best=i; } });
-      if(best>=0){ used[best]=1; if(g[best].rating){ x.rating=+g[best].rating; x.n=+g[best].n||0; } } });
+      if(best>=0){ used[best]=1; if(g[best].rating){ x.rating=+g[best].rating; x.n=+g[best].n||0; } if(!x.tel&&g[best].tel) x.tel=g[best].tel; if(g[best].web){ if(x.web) x.web2=x.web; x.web=g[best].web; } } });   // 11-13 사장님 「한옥스테이에 뜨는 곳들의 전화번호가 없다 기재해주고 홈페이지도 연결해줘(있으면)」 — 구글 전화·홈페이지(허브 /gplace, 요금 그대로)
     g.forEach(function(q,i){ if(used[i]||!q.rating) return; var d=kmLL(p,[+q.lat,+q.lng]); if(d>10) return;
-      b.push({gid:q.id,name:q.name,addr:q.addr,name_en:q.name_en||undefined,addr_en:q.addr_en||undefined,x:q.lng,y:q.lat,rating:+q.rating,n:+q.n||0,kind:t.kind,cat:t.ko,cat_en:t.en,dist:Math.round(d*1000)}); });
+      b.push({gid:q.id,name:q.name,addr:q.addr,name_en:q.name_en||undefined,addr_en:q.addr_en||undefined,x:q.lng,y:q.lat,rating:+q.rating,n:+q.n||0,tel:q.tel||undefined,web:q.web||undefined,kind:t.kind,cat:t.ko,cat_en:t.en,dist:Math.round(d*1000)}); });
     if(LANG==="ko"||!b.some(function(x){ return x.gid; })) return b;   // 외국어 화면: 구글에서 더한 곳은 그 언어 이름으로 한 번 더 받는다
     return fetch(HUB+"/gplace?all=1&lang="+encodeURIComponent(LANG)+"&q="+encodeURIComponent((gu?gu+" ":"")+t.ko)+"&lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)).then(function(r){ return r.json(); }).then(function(j2){ var m={};
       ((j2&&j2.ok&&j2.items)||[]).forEach(function(q){ m[q.id]=q; }); b.forEach(function(x){ var q=x.gid&&m[x.gid]; if(q){ if(!(cj&&x.name_en&&!cj.test(q.name))) x.name_en=q.name; x.addr_en=q.addr; } }); return b; }).catch(function(){ return b; });
@@ -213,7 +213,7 @@ function stayRate(t,p,a){ var cnt={}, gu=""; a.forEach(function(x){ var w=String
 // 한옥스테이가 10km 안에 없으면 — 멀어도 구글 별점 높은 한옥스테이 (허브 /gplace, 별점 4.0·리뷰 20개 이상만, 사장님 10-23) · 40km 안 먼저, 그 안에서 별점 높은 순. 못 받으면 빈 목록 그대로
 function hanokFar(p,a0){ return fetch(HUB+"/gplace?q="+encodeURIComponent("한옥스테이")+"&lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)+"&lang="+encodeURIComponent(LANG)).then(function(x){ return x.json(); }).then(function(j){
     if(!j||!j.ok||!(j.items||[]).length) return a0;
-    var a=j.items.map(function(g){ return {name:g.name,addr:g.addr,x:g.lng,y:g.lat,rating:g.rating,n:g.n,kind:"hanok"}; })
+    var a=j.items.map(function(g){ return {name:g.name,addr:g.addr,x:g.lng,y:g.lat,rating:g.rating,n:g.n,tel:g.tel||undefined,web:g.web||undefined,kind:"hanok"}; })
       .sort(function(u,v){ var fu=kmLL(p,[u.y,u.x])>40?1:0, fv=kmLL(p,[v.y,v.x])>40?1:0; return (fu-fv)||(v.rating-u.rating)||(v.n-u.n); }); a.far=1; return a; }).catch(function(){ return a0; }); }
 function load(){ var k=KINDS[S.k], t=k.tabs[S.tab]; S.items=null; S.err=""; S.byL={}; S.fl=""; S.gr=0;
   if(S.k==="ig"){ IG={view:"pick",lang:"",guides:null,gid:null,gobj:null,err:"",busy:false,done:false}; S.items=[]; S.base=null; paint(); return; }   // 통역·길안내 = 가이드 매칭 판, 위치·목록 없음 (10-24)
@@ -238,7 +238,14 @@ function relang(){ var k=KINDS[S.k]; if(!k) return; if(S.k==="ig"){ paint(); ret
     S.items=it; S.fl=LANG; S.byL[LANG]=it; paint(); }).catch(function(){}).then(function(){ try{ if(window.KL&&KL.bz) KL.bz(-1); }catch(e){} }); }
 
 // ── 화면 ──
+// 11-13 사장님 「웹에서 숙소 버튼 화면과 앱 숙소 화면을 비교해서 웹에 맞춰줘」 — 앱 「숙소」(첫 화면 칩·⋮ 메뉴)는 홈페이지 숙소 화면(home/pc_stay.js·css)을 전체 화면 창으로 · 처음 누를 때 받는다
+var STAYV="1113wb", STAYL=null;
+function stayApp(){ if(window.APPSTAY) return APPSTAY.open();
+  if(!STAYL) STAYL=Promise.all([new Promise(function(ok){ var l=document.createElement("link"); l.rel="stylesheet"; l.href="home/pc_stay.css?v="+STAYV; l.onload=ok; l.onerror=ok; document.head.appendChild(l); }),
+    new Promise(function(ok,no){ var s=document.createElement("script"); s.src="home/pc_stay.js?v="+STAYV; s.onload=ok; s.onerror=no; document.head.appendChild(s); })]);
+  STAYL.then(function(){ if(window.APPSTAY) APPSTAY.open(); },function(){ STAYL=null; }); }
 function open(k){ css(); var mm=document.getElementById("mm"); if(mm) mm.hidden=true;
+  if(k==="st"&&!window.PC_HOME){ close(); return stayApp(); }
   if(S.k!==k){ S.tab=0; } S.k=k;
   var o=document.getElementById("nrBox"); if(!o){ o=document.createElement("div"); o.id="nrBox"; o.innerHTML='<div class="nrin"></div>'; o.onclick=function(e){ if(e.target===o) close(); }; document.body.appendChild(o); }
   document.documentElement.classList.add("nrlock"); gbTop(); load(); }
@@ -351,6 +358,7 @@ function igNote(){ return LG6({ko:"실제 투어 가이드(관광통역안내사
   es:"Te ponemos en contacto con un guía turístico con licencia real. Son distintos de los guías turísticos de sitios externos de reservas de viaje: solo los guías que presentamos aquí están asociados con MosaicTrip. Un guía seleccionado en nuestra app no puede acompañar los productos de viaje comprados en sitios externos de reservas de viaje. Ten cuidado de no seleccionar guías por duplicado."}); }
 function igDates(){ var out=[]; for(var i=1;i<=2;i++){ var d=new Date(Date.now()+9*3600e3+i*864e5), s=d.toISOString().slice(0,10);
     out.push([s, (i===1?LG6({ko:"내일",en:"Tomorrow",ja:"明日",zhs:"明天",zht:"明天",es:"Mañana"}):LG6({ko:"모레",en:"Day after tomorrow",ja:"明後日",zhs:"后天",zht:"後天",es:"Pasado mañana"}))+" ("+s+")"]); } return out; }
+function igOnL(c){ return (!window.svcOn||svcOn(c)); }   // 11-13 숨긴 서비스 언어는 카드에 안 보임
 function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) return GLANG6[i][0]; return c; }
 // ── 가이드 예약·결제 (사장님 2026-10-30 「가이드를 고르면 맨 위 안내 → 반일·하루·시간·기간 → 메모 → 보내기 및 결제 → 결제 화면까지」) ──
 //   흐름: req(안내문·가이드·이용 시간·날짜·시작 시간·인원·요금·메모·예약자) → gconf(요약 확인) → gpay(결제창) → 「결제하기」 = 바로 확정(PG 전, 11-05 · PG 뒤엔 KG이니시스 결제창 — tpg.js, 11-07) → gdone · 「내 예약」 카드(대화방 입구)
@@ -460,7 +468,7 @@ function gbPriceBox(){ var k=IG.bk, c=gbCalcNow();
   return '<div class="gbl"><span>'+esc(gbModeTxt(k))+'</span><span>'+gbWon(c.base)+'</span></div>'
     +(c.extra?'<div class="gbl"><span>'+esc(gbF(GBT.xtra,{big:GBK.big}))+' ('+gbWon(GBK.bigHr)+' × '+esc(gbF(GBT.hN,{n:c.hours}))+' × '+esc(gbPpl(c.xn))+')</span><span>'+gbWon(c.extra)+'</span></div>':'')
     +'<div class="gbt"><span>'+esc(LG6(GBT.tot))+'</span><span>'+gbWon(c.total)+'</span></div>'; }
-function gbGuideCard(g){ return '<div class="igcard" style="margin-top:8px;cursor:default">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b><div class="igm">'+(g.langs||[]).map(igLangName).map(esc).join(" · ")+(g.years?' · '+esc(igYears(g.years)):"")+(g.region?' · '+esc(igRegion(g.region)):"")+'</div></div></div>'; }
+function gbGuideCard(g){ return '<div class="igcard" style="margin-top:8px;cursor:default">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b><div class="igm">'+(g.langs||[]).filter(igOnL).map(igLangName).map(esc).join(" · ")+(g.years?' · '+esc(igYears(g.years)):"")+(g.region?' · '+esc(igRegion(g.region)):"")+'</div></div></div>'; }
 function gbRefund(){ return '<div class="gbrf">'+esc(LG6(GBT.rf))+' <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(LG6(GBT.rfL))+' ›</a></div>'; }
 function gbForm(g){ var k=IG.bk, L=LG6, mn=gbDay(1), mx=gbDay(365), opt=function(a,b,cur,lab){ var s=""; for(var i=a;i<=b;i++) s+='<option value="'+i+'"'+(i===cur?" selected":"")+'>'+esc(lab(i))+'</option>'; return s; };
   var tms=[]; for(var t=7*60;t<=18*60;t+=30) tms.push(("0"+Math.floor(t/60)).slice(-2)+":"+("0"+t%60).slice(-2));
@@ -560,7 +568,7 @@ function igRender(b){
     b.innerHTML=head+back+gbForm(IG.gobj)+'<div id="igRevWrap">'+igReviewsBlock()+'</div>'; igWire(b); return; }
   if(IG.view==="req_old"&&IG.gobj){ var g=IG.gobj, ds=igDates();   // 옛 무료 요청 폼 (/guide/lead) — 안 쓰지만 남겨 둠
     b.innerHTML=head+back
-      +'<div class="igcard" style="margin-top:8px">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b><div class="igm">'+g.langs.map(igLangName).map(esc).join(" · ")+(g.years?' · '+esc(igYears(g.years)):"")+(g.region?' · '+esc(igRegion(g.region)):"")+'</div></div></div>'
+      +'<div class="igcard" style="margin-top:8px">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b><div class="igm">'+g.langs.filter(igOnL).map(igLangName).map(esc).join(" · ")+(g.years?' · '+esc(igYears(g.years)):"")+(g.region?' · '+esc(igRegion(g.region)):"")+'</div></div></div>'
       +'<div class="iglbl" style="margin-top:12px">'+esc(LG6({ko:"요청 내용을 적어 주세요",en:"Fill in your request",ja:"リクエストを入力してください",zhs:"请填写您的请求",zht:"請填寫您的請求",es:"Completa tu solicitud"}))+'</div>'
       +'<label class="iglb">'+esc(LG6({ko:"이름 *",en:"Your name *",ja:"お名前 *",zhs:"您的姓名 *",zht:"您的姓名 *",es:"Tu nombre *"}))+'</label><input class="igin" id="igqNm" maxlength="30">'
       +'<label class="iglb">'+esc(LG6({ko:"연락처 (이메일 또는 전화) *",en:"Contact (email or phone) *",ja:"連絡先（メールまたは電話）*",zhs:"联系方式（邮箱或电话）*",zht:"聯絡方式（電郵或電話）*",es:"Contacto (correo o teléfono) *"}))+'</label><input class="igin" id="igqCt" maxlength="60" placeholder="'+esc(LG6({ko:"이메일 권장 · 한국 번호는 010 또는 +82",en:"Email recommended · Korean numbers: 010 or +82",ja:"メール推奨 · 韓国の番号は010または+82",zhs:"建议填写邮箱 · 韩国号码请用010或+82",zht:"建議填寫電郵 · 韓國號碼請用010或+82",es:"Se recomienda correo · Números coreanos: 010 o +82"}))+'">'
@@ -574,11 +582,11 @@ function igRender(b){
     if(IG.err) h+='<div class="msg">'+esc(LG6({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again shortly.",ja:"しばらくしてからもう一度お試しください。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo de nuevo en un momento."}))+'</div>';
     else if(!IG.guides) h+='<div class="msg">'+esc(LG6({ko:"찾는 중…",en:"Searching…",ja:"検索中…",zhs:"搜索中…",zht:"搜尋中…",es:"Buscando…"}))+'</div>';
     else if(!IG.guides.length) h+='<div class="ignote">'+esc(LG6({ko:"아직 등록된 가이드가 없습니다. 곧 추가될 예정이에요.",en:"No guides registered yet. More coming soon.",ja:"まだ登録されたガイドがいません。近日追加予定です。",zhs:"暂无已登记的向导，即将新增。",zht:"暫無已登記的嚮導，即將新增。",es:"Aún no hay guías registrados. Pronto habrá más."}))+'</div>';
-    else h+=IG.guides.map(function(g,i){ return '<div class="igcard" data-igpick="'+i+'">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b> '+igBadge(g)+'<div class="igm">'+g.langs.map(igLangName).map(esc).join(" · ")+(g.years?' · '+esc(igYears(g.years)):"")+(g.region?' · '+esc(igRegion(g.region)):"")+'</div>'+(g.intro?'<div class="igi">'+esc(g.intro)+'</div>':"")+'<span class="igpk">'+esc(LG6({ko:"요청하기 ›",en:"Request ›",ja:"依頼する ›",zhs:"请求 ›",zht:"請求 ›",es:"Solicitar ›"}))+'</span></div></div>'; }).join("");
+    else h+=IG.guides.map(function(g,i){ return '<div class="igcard" data-igpick="'+i+'">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b> '+igBadge(g)+'<div class="igm">'+g.langs.filter(igOnL).map(igLangName).map(esc).join(" · ")+(g.years?' · '+esc(igYears(g.years)):"")+(g.region?' · '+esc(igRegion(g.region)):"")+'</div>'+(g.intro?'<div class="igi">'+esc(g.intro)+'</div>':"")+'<span class="igpk">'+esc(LG6({ko:"요청하기 ›",en:"Request ›",ja:"依頼する ›",zhs:"请求 ›",zht:"請求 ›",es:"Solicitar ›"}))+'</span></div></div>'; }).join("");
     b.innerHTML=h; igWire(b); return; }
   // pick
   var FLAG6={ko:"🇰🇷",en:"🇺🇸",ja:"🇯🇵",zhs:"🇨🇳",zht:"🇹🇼",es:"🇪🇸"};   // 언어 고르기 버튼 국기 (사장님 10-24) — MPICO 안 거치는 평범한 <a> 라 그대로 보인다
-  var btns=GLANG6.map(function(l){ return '<a class="iglang" href="#" data-iglang="'+l[1]+'">'+(FLAG6[l[1]]||"")+' '+esc(l[0])+' ›</a>'; }).join("");
+  var btns=GLANG6.filter(function(l){ return igOnL(l[1]); }).map(function(l){ return '<a class="iglang" href="#" data-iglang="'+l[1]+'">'+(FLAG6[l[1]]||"")+' '+esc(l[0])+' ›</a>'; }).join("");
   b.innerHTML=head+bkBlock()+igNoteBox()   // 11-08 사장님 「i 카드는 접었다 펼쳤다로, 기본은 접는다」 · bkBlock = 「내 예약 · 투어 완료」 카드 (11-05, 예약한 폰에만)
     +'<div class="iglbl">'+esc(LG6({ko:"필요한 언어를 고르세요",en:"Choose the language you need",ja:"必要な言語を選んでください",zhs:"请选择您需要的语言",zht:"請選擇您需要的語言",es:"Elige el idioma que necesitas"}))+'</div><div class="iglangs">'+btns+'</div>'
     +'<div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--line)"><a href="#" data-igedit="1" style="display:inline-flex;align-items:center;gap:7px;color:var(--sub);font-size:13.5px;font-weight:700;text-decoration:none"><img src="img/menu/mi_guideperson.png" alt="" style="width:20px;height:20px;object-fit:contain">'+esc(LG6({ko:"가이드이신가요? 내 프로필 수정 ›",en:"Are you a guide? Edit my profile ›",ja:"ガイドの方はこちら：プロフィール編集 ›",zhs:"您是向导吗？修改我的资料 ›",zht:"您是嚮導嗎？修改我的資料 ›",es:"¿Eres guía? Editar mi perfil ›"}))+'</a>'
@@ -750,7 +758,7 @@ function bkCard(x){ var L=LG6, g=x.g||null, cx=x.status==="cancelled"||x.status=
   var when=esc((x.date||"")+" "+(x.time||"")+" (KST)");
   if(cx) foot='<div class="ignt">'+esc(L(BKT.cx))+'</div>';
   else if(pk&&x.chr&&window.CHR) foot=CHR.vchHtml(x);   // 차량 대절 (11-11) — 기사·차(사장님이 확정한 뒤) · 픽업 · 목적지 순서 · 기사 언어 · 따로 내는 것
-  else if(pk){ var gc=g?'<div class="igcard" style="cursor:default;margin:10px 0 0">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b> '+igBadge(g)+'<div class="igm">'+(g.langs||[]).map(igLangName).map(esc).join(" · ")+'</div></div></div>':'<div class="ignt">'+esc(L(BKT.wait))+'</div>';
+  else if(pk){ var gc=g?'<div class="igcard" style="cursor:default;margin:10px 0 0">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b> '+igBadge(g)+'<div class="igm">'+(g.langs||[]).filter(igOnL).map(igLangName).map(esc).join(" · ")+'</div></div></div>':'<div class="ignt">'+esc(L(BKT.wait))+'</div>';
     var rv=""; if(g){ if(x.rvd) rv='<div class="gbdone" style="margin:8px 0 0">✓ '+esc(L(BKT.rvd))+'</div>'; else if(x.rv){ var early=x.rvFrom&&bkToday()<x.rvFrom; rv='<button type="button" class="gbgo g2" style="margin-top:8px" data-bkrv="'+esc(x.oid)+'"'+(early?' disabled':'')+'>★ '+esc(L(BKT.rv))+'</button>'+(early?'<div class="ignt">'+esc(gbF(BKT.rvAt,{d:x.rvFrom}))+'</div>':''); } }
     foot=gc+(window.HSP?HSP.vchHtml(x):'')+(window.SMN?SMN.vchHtml(x):'')+rv+chatBtn; }   // 모바일 바우처 · 모델 바꾸기 · 투어 완료 (11-10, smenu.js — 가게 메뉴가 있는 패키지만)
   else foot=chatBtn;
@@ -813,7 +821,7 @@ function igEditForm(){ var L=LG6;
   if(IG.geDone) return '<div class="ignote">✓ '+esc(L({ko:"수정되었습니다. 바로 반영됩니다.",en:"Saved. Your changes are now live.",ja:"保存しました。すぐに反映されます。",zhs:"已保存，立即生效。",zht:"已儲存，立即生效。",es:"Guardado. Tus cambios ya están activos."}))+'</div>';
   if(IG.geGuide==null) return '<div class="msg">'+esc(L({ko:"불러오는 중…",en:"Loading…",ja:"読み込み中…",zhs:"加载中…",zht:"載入中…",es:"Cargando…"}))+'</div>';
   var g=IG.geGuide;
-  var langsH='<div style="display:flex;flex-wrap:wrap;gap:8px;margin:4px 0">'+GLANG6.map(function(l){ return '<label style="display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--line);border-radius:999px;padding:6px 11px;font-size:13.5px;font-weight:700;cursor:pointer"><input type="checkbox" value="'+l[1]+'" class="geLchk"'+((g.langs||[]).indexOf(l[1])>=0?" checked":"")+' style="width:15px;height:15px;margin:0"> '+esc(l[0])+'</label>'; }).join("")+'</div>';
+  var langsH='<div style="display:flex;flex-wrap:wrap;gap:8px;margin:4px 0">'+GLANG6.map(function(l){ return '<label style="display:'+(igOnL(l[1])?'inline-flex':'none')+';align-items:center;gap:5px;border:1.5px solid var(--line);border-radius:999px;padding:6px 11px;font-size:13.5px;font-weight:700;cursor:pointer"><input type="checkbox" value="'+l[1]+'" class="geLchk"'+((g.langs||[]).indexOf(l[1])>=0?" checked":"")+' style="width:15px;height:15px;margin:0"> '+esc(l[0])+'</label>'; }).join("")+'</div>';
   var pvS='width:56px;height:56px;border-radius:12px;object-fit:cover;background:#e3fafc;border:1px solid var(--line)';
   return '<div class="iglbl" style="margin-top:8px">'+esc(L({ko:"내 프로필 수정",en:"Edit my profile",ja:"プロフィール編集",zhs:"修改我的资料",zht:"修改我的資料",es:"Editar mi perfil"}))+'</div>'
     +'<div class="ignote">'+esc(L({ko:"바꾼 내용은 바로 반영됩니다. 이메일·자격증 번호는 여기서 바꿀 수 없습니다(바꾸려면 관리자에게 문의).",en:"Changes go live immediately. Email and license number can't be changed here (contact admin).",ja:"変更はすぐ反映されます。メール・資格番号はここでは変更できません（変更は管理者へ）。",zhs:"修改立即生效。邮箱和资格证号在此不可修改（如需修改请联系管理员）。",zht:"修改立即生效。電郵和資格證號在此不可修改（如需修改請聯絡管理員）。",es:"Los cambios se aplican de inmediato. El correo y el número de licencia no se pueden cambiar aquí (contacta al administrador)."}))+'</div>'
@@ -906,19 +914,34 @@ var sc0=window.spinCard; if(typeof sc0==="function"&&!sc0._nr){ var sc1=function
 //    아고다는 도시 번호(city)가 있어야 이름 검색이 됨 — 확인한 도시(서울 14690·부산 17172·제주 16901)만 아고다 검색, 그 밖은 구글 「이름 agoda」
 var BOOK_AID={agoda:"",booking:"",trip:""};
 var AGODA_CITY=[[37.5665,126.978,14690,45],[35.1796,129.0756,17172,40],[33.38,126.55,16901,70]];
-function bookUrls(nm,lat,lng){ nm=String(nm||"").split(" · ").pop(); var q=encodeURIComponent(nm), ag=null;   // 「일·중 이름 · 영어 이름」이면 영어 쪽으로 검색 (10-18)
+// 11-13 사장님 「숙소메뉴에서 숙소를 정하면 자동으로 부킹 사이트에 입력이 되도록 해줘」 — 내 일정에서 이 숙소로 정한 밤(처음 이어지는 밤들)의 체크인·체크아웃·인원을 아고다·부킹닷컴 주소에 같이 넣는다
+//   (주소 꼴은 trip.js lgLinks 와 같음, 11-06 확인 · 트립닷컴 이름 검색 주소는 날짜 칸이 없어 이름만) · idx = 방금 고른 밤 번호들(없으면 저장된 숙소 칸에서 찾음)
+function bkStay(lat,lng,idx){ try{ if(!window.TRIP||!TRIP.state||!TRIP.stay) return null; var st=TRIP.state()||{}, pl=st.plan, o=st.opt||{}, a=[], i;
+  if(idx&&idx.length) a=idx.slice().sort(function(x,y){ return x-y; });
+  else { var Lh=TRIP.stay.list()||[]; for(i=0;i<Lh.length;i++){ var h=Lh[i]; if(h&&+h.lat&&kmLL([lat,lng],[+h.lat,+h.lng])<0.15) a.push(i); } }
+  if(!a.length) return null; var n=1; while(n<a.length&&a[n]===a[0]+n) n++;
+  var days=pl&&pl.days, d0=(days&&days[a[0]]&&days[a[0]].date)||(!days&&a[0]===0?o.start:"");
+  if(!d0||!/^\d{4}-\d\d-\d\d$/.test(d0)||d0<new Date(Date.now()+9*3600e3).toISOString().slice(0,10)) return null;
+  var t=new Date(d0+"T00:00:00Z"); t.setUTCDate(t.getUTCDate()+n);
+  return {ci:d0,co:t.toISOString().slice(0,10),n:n,pax:Math.max(0,Math.min(30,Math.round(+o.pax||0)))}; }catch(e){ return null; } }
+var BKD6={ko:"내 일정 날짜로 찾아 드려요: {d} 체크인 · {n}박{p}",en:"Searching with your trip dates: check-in {d} · {n} night(s){p}",ja:"旅程の日付で検索します：{d}チェックイン・{n}泊{p}",zhs:"按您的行程日期搜索：{d}入住 · {n}晚{p}",zht:"依您的行程日期搜尋：{d}入住 · {n}晚{p}",es:"Buscamos con las fechas de tu viaje: entrada {d} · {n} noche(s){p}"},
+    BKP6={ko:" · {p}명",en:" · {p} guest(s)",ja:"・{p}名",zhs:" · {p}人",zht:" · {p}人",es:" · {p} persona(s)"};
+function bkDay(s){ var t=new Date(s+"T00:00:00Z"), m=t.getUTCMonth()+1, d=t.getUTCDate(), l=window.LANG;
+  return l==="ko"?m+"월 "+d+"일":/^(ja|zhs|zht)$/.test(l)?m+"月"+d+"日":l==="es"?d+" "+["ene","feb","mar","abr","may","jun","jul","ago","sept","oct","nov","dic"][m-1]:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m-1]+" "+d; }
+function bookUrls(nm,lat,lng,d){ nm=String(nm||"").split(" · ").pop(); var q=encodeURIComponent(nm), ag=null;
+  var dA=d?"&checkIn="+d.ci+"&los="+d.n+"&rooms=1"+(d.pax?"&adults="+d.pax:""):"", dB=d?"&checkin="+d.ci+"&checkout="+d.co+"&no_rooms=1"+(d.pax?"&group_adults="+d.pax:""):"";   // 「일·중 이름 · 영어 이름」이면 영어 쪽으로 검색 (10-18)
   AGODA_CITY.forEach(function(c){ if(!ag&&kmLL([lat,lng],[c[0],c[1]])<=c[3]) ag=c[2]; });
-  return {agoda:ag?"https://www.agoda.com/search?city="+ag+"&textToSearch="+q+BOOK_AID.agoda:"https://www.google.com/search?q="+encodeURIComponent(nm+" agoda"),
-    booking:"https://www.booking.com/searchresults.html?ss="+q+BOOK_AID.booking,
+  return {agoda:ag?"https://www.agoda.com/search?city="+ag+"&textToSearch="+q+dA+BOOK_AID.agoda:"https://www.google.com/search?q="+encodeURIComponent(nm+" agoda"),
+    booking:"https://www.booking.com/searchresults.html?ss="+q+dB+BOOK_AID.booking,
     trip:"https://www.trip.com/global-search/searchlist/search?keyword="+q+BOOK_AID.trip}; }
 var BK=null;   // 지금 카드의 숙소 {nm, lat, lng, key}
 function isHotelKey(k){ var p=PLACES[k]; return !!p&&(/^h_/.test(k)||k==="shilla"||/호텔/.test(p.ko||"")); }
 function bookBtn(info){ var it=document.querySelector("#res .item"); if(!it||it.querySelector(".nrbook")) return; css(); BK=info;
   var a='<a class="nrbook" href="#" data-nrbk="1">'+MPICO("mi_stay",T("예약하기","Book"),MIS)+'</a>', t=it.querySelector(".nrbig")||it.querySelector(".t");
   if(t) t.insertAdjacentHTML("afterend",'<div>'+a+'</div>'); else it.insertAdjacentHTML("afterbegin",a); }
-function bookOpen(){ if(!BK) return; var u=bookUrls(BK.nm,BK.lat,BK.lng), o=document.getElementById("nrBk"); if(o) o.remove();
+function bookOpen(){ if(!BK) return; var bd=BK.d||bkStay(BK.lat,BK.lng), u=bookUrls(BK.nm,BK.lat,BK.lng,bd), o=document.getElementById("nrBk"); if(o) o.remove();
   o=document.createElement("div"); o.id="nrBk";
-  o.innerHTML='<div class="in"><div class="h">'+MPICO("mi_stay",T("예약하기","Book"),MIS)+' · '+esc(BK.nm)+'</div><div class="s">'+T("예약 사이트에서 이 숙소 이름으로 찾아 드려요 (새 창)","Opens a search for this place on the booking site (new tab)")+'</div>'
+  o.innerHTML='<div class="in"><div class="h">'+MPICO("mi_stay",T("예약하기","Book"),MIS)+' · '+esc(BK.nm)+'</div><div class="s">'+T("예약 사이트에서 이 숙소 이름으로 찾아 드려요 (새 창)","Opens a search for this place on the booking site (new tab)")+'</div>'+(bd?'<div class="s" style="color:var(--ink);font-weight:700">'+esc(LG6(BKD6).replace("{d}",bkDay(bd.ci)).replace("{n}",bd.n).replace("{p}",bd.pax?LG6(BKP6).replace("{p}",bd.pax):""))+'</div>':'')
     +'<a href="'+esc(u.agoda)+'" target="_blank" rel="noopener" data-site="agoda">Agoda</a><a href="'+esc(u.booking)+'" target="_blank" rel="noopener" data-site="booking">Booking.com</a><a href="'+esc(u.trip)+'" target="_blank" rel="noopener" data-site="trip">Trip.com</a>'
     +'<button type="button">'+T("닫기","Close")+'</button></div>';
   o.addEventListener("click",function(e){ var a=e.target.closest("a[data-site]");
@@ -1013,7 +1036,7 @@ function gReg(){ css(); var o=document.getElementById("gregBox"); if(o) o.remove
       +"#gregBox .gx{position:absolute;top:12px;right:14px;width:36px;height:36px;border:0;border-radius:50%;background:var(--card);color:var(--sub);font-size:20px;cursor:pointer}";
     document.head.appendChild(gs); }
   GREGV={photo:null,lic:null,ct:[]};
-  var L=LG6, langsH=GLANG6.map(function(l){ return '<label><input type="checkbox" value="'+l[1]+'" class="gLchk"> '+esc(l[0])+'</label>'; }).join("");
+  var L=LG6, langsH=GLANG6.filter(function(l){ return igOnL(l[1]); }).map(function(l){ return '<label><input type="checkbox" value="'+l[1]+'" class="gLchk"> '+esc(l[0])+'</label>'; }).join("");
   o=document.createElement("div"); o.id="gregBox";
   o.innerHTML='<div class="gin"><button type="button" class="gx" id="gX">✕</button>'
     +'<h3><img src="img/menu/mi_guideperson.png" alt="" style="height:24px;width:auto;vertical-align:-5px;margin-right:7px">'+esc(L({ko:"관광 가이드 등록",en:"Register as a tour guide",ja:"観光ガイド登録",zhs:"导游登记",zht:"導遊登記",es:"Regístrate como guía turístico"}))+'</h3>'
@@ -1062,8 +1085,9 @@ if(window.PC_HOME) window.NEARIG={GBK:GBK,GBT:GBT,LANGS:GLANG6,calc:gbkCalc,mode
   editAsk:function(){ open("ig"); IG.view="editask"; IG.busy=false; paint(); },
   state:function(){ return IG; }};
 // PC 홈페이지 「숙소」 화면(home/pc_stay.js, 11-08 4a) — 앱 숙소 찾기(종류 넷·카카오 숙박+관광공사 표시·구글 별점·한옥 먼 곳)와 예약 창(Agoda·Booking.com·Trip.com)을 그대로 쓴다 (폰 앱은 PC_HOME 이 없어 그대로)
-if(window.PC_HOME) window.NEARST={tabs:KINDS.st.tabs,fetch:fetchKind,km:km,css:css,
-  book:function(nm,lat,lng){ css(); BK={nm:String(nm||""),lat:+lat,lng:+lng,key:""}; bookOpen(); },
+window.NEARST={   // 11-13 앱 「숙소」도 홈페이지 숙소 화면(pc_stay.js)을 쓰므로 앱에서도 내놓는다
+tabs:KINDS.st.tabs,fetch:fetchKind,km:km,css:css,
+  book:function(nm,lat,lng,idx){ css(); BK={nm:String(nm||""),lat:+lat,lng:+lng,key:"",d:bkStay(+lat,+lng,idx)}; bookOpen(); },
   tap:function(t){ try{ ntap(t.kind||t.c.toLowerCase(),KINDS.st.e); }catch(e){} }};
 // PC 홈페이지 「편의시설」·「긴급」 화면(home/pc_near.js · pc_sos.js, 11-08 4b) — 앱과 같은 종류·찾는 거리(KINDS)·대사관 37곳(EMB)·받기(fetchKind, 카카오 /kplace · 음식점 구글 /gnear)·차례(sortIt)를 그대로 쓴다 (폰 앱은 PC_HOME 이 없어 그대로)
 if(window.PC_HOME) window.NEARPC={K:KINDS,EMB:EMB,MENU6:MENU6,ICON:MENU_ICON,fetch:fetchKind,km:km,css:css,embN:embN,embC:embC,embKey:embKey,embL:embL,
