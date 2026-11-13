@@ -75,7 +75,7 @@ function redraw(){ if(!CUR||!mine()||!D.body.contains(CUR.box)) return; var y=wi
 // ── 공통 부품 ──
 function tcard(){ var n=N();
   return '<section class="pg-tc'+(ST.tc?' on':'')+'"><div class="pg-tch" data-pg="tc"><h1>'+E(L6(TX.t))+'</h1>'+XT(ST.tc,'data-pg="tc"')+'</div>'
-   +(ST.tc?'<div class="pg-tcb"><p>'+E(L6(n.desc))+'</p>'+ignBox("ign")+'</div>':'')+'</section>'; }
+   +(ST.tc?'<div class="pg-tcb"><p>'+E(L6(n.desc))+'</p></div>':'')   /* 11-14 사장님 「투어 가이드 화면에서 저 노란 줄은 삭제해」 — 노란 「ⓘ 주의 사항」 상자 없앰 */+'</section>'; }
 // ⓘ 주의 사항 — 처음엔 접힘, 누르면 앱 ⓘ 문구 전문 (규칙서 5장 11-08)
 function ignBox(k){ var n=N(), on=ST[k];
   return '<div class="pg-ign'+(on?' on':'')+'"><div class="pg-ignh" data-pg="'+k+'"><span>'+E(L6(n.noteT))+'</span>'+XT(on,'data-pg="'+k+'"')+'</div>'+(on?'<div class="pg-ignb">'+E(n.note())+'</div>':'')+'</div>'; }
@@ -156,7 +156,7 @@ function book(box,gid,lang){ var n=N();
    +'<button type="button" class="pg-pay" data-pg="pay">'+E(L(n.payT))+'</button>'
    +'<div class="pg-x">'+E(L(T.excl))+'</div>'
    +'<div class="pg-rf">'+E(L(T.rf))+' <a href="refund.html?lang='+E(window.LANG||"en")+'" target="_blank" rel="noopener">'+E(L(T.rfL))+' ›</a></div>'
-   +ignBox("ign2")+'</div></aside>';
+   +'</div></aside>';   /* 11-14 사장님 「투어 가이드 화면에서 저 노란 줄은 삭제해」 — 노란 「ⓘ 주의 사항」 상자 없앰 (예약 칸 쪽도) */
   box.innerHTML='<div id="pcGd" class="pg3 pg-bkp"><div class="pg-g2">'+left+form+right+'</div></div>'; }
 function priceUpd(){ var n=N(); if(!n) return; n.grab(); var k=n.state().bk; if(!k) return; var p=D.getElementById("gbPr"); if(p) p.innerHTML=n.priceBox(); var s=D.getElementById("pgSel"); if(s) s.textContent=sumSel(k); }
 
