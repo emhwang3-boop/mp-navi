@@ -230,3 +230,6 @@ html.pch[data-theme="dark"] #phMapSec .ph-maphint b{color:#51cf66}
   html.pch #tkBox .tkin{width:min(720px,100%);height:auto;min-height:min(560px,calc(100vh - 48px));max-height:calc(100vh - 48px);margin:0;overflow-y:auto;overscroll-behavior:contain;border-radius:18px;padding:20px 26px 24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 }
 #phRoot .ph-gp{display:block;height:58px;width:auto;margin:0 auto}   /* 11-09 구글 공식 배지(가장자리 여백 포함 그림) */
+
+/* 11-13 사장님 「제목 옆에 주황색 글씨로 한글과 영어로 개발 중」 — 앱 제목줄(.ttldev)과 같게 */
+#phHd .ph-logo .ph-dev{display:inline-flex;flex-direction:column;justify-content:center;color:#e8590c;font-size:12px;font-weight:800;line-height:1.15;letter-spacing:0;overflow:visible}#phHd .ph-logo .ph-dev i{font-style:normal}html.pch[data-theme="dark"] #phHd .ph-logo .ph-dev{color:#ff922b}
