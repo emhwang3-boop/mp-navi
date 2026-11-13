@@ -584,6 +584,7 @@ function gCard(g){ var langs=(g.langs||[]).map(gLangNm).join(", ");
     +'<div class="sub">자격증 번호 <b>'+esc(g.lic||'')+'</b> · 접수 '+esc(g.at||'')+(g.status==='approved'?' · <b style="color:var(--ok)">승인됨</b>':g.status==='rejected'?' · 거절됨':'')+'</div>'
     +(g.intro?'<div style="white-space:pre-wrap;margin:4px 0">'+esc(g.intro)+'</div>':'')
     +(g.email?'<div class="sub">연락처 '+esc(g.email)+(g.phone?' · '+esc(g.phone):'')+'</div>':'')
+    +(g.bank&&g.bank.n?'<div class="sub">수당 계좌 '+esc(g.bank.bank||'')+' '+esc(g.bank.n)+' · 예금주 '+esc(g.bank.h||'')+(g.ec&&g.ec.idv&&g.ec.idv.name&&String(g.bank.h||'').replace(/\s/g,'')!==String(g.ec.idv.name).replace(/\s/g,'')?' <span style="color:#e03131">⚠ 본인인증 이름과 다름</span>':'')+'</div>':'')   /* 11-14 사장님 「폰번호 - 없이 입력·필수 · 수당 받을 은행 계좌번호·예금주」 */
     +'<div class="row" style="margin-top:6px"><button class="g" data-id="'+esc(g.id)+'" onclick="gLic(this.dataset.id)">자격증 사본 보기</button>'
     +(g.ec&&g.ec.idv?'<span class="sub" style="align-self:center;color:#2f9e44;font-weight:700">전자계약 동의 '+esc(g.ec.at||'')+' · 본인인증 '+esc(g.ec.idv.name||'')+' ('+esc(String(g.ec.idv.bd||'').replace(/^(\d{4})(\d{2})(\d{2})$/,'$1-$2-$3'))+')'+(g.ec.nm?'':' · <span style="color:#e03131">⚠ 등록 이름과 다름</span>')+' · <a href="../docs/guide_contract_ko.pdf?v='+esc(g.ec.v||'')+'" target="_blank" rel="noopener">계약서</a></span>'   /* 11-13 전자 계약(동의 + 본인인증) — 승인하면 가이드에게 계약서 사본 메일 */
       :g.ct?'<button class="g" data-id="'+esc(g.id)+'" data-n="'+(+g.ct||0)+'" onclick="gCt(this.dataset.id,+this.dataset.n)">계약서 사본 보기 ('+(+g.ct||0)+'장)</button>':'<span class="sub" style="color:#e03131;align-self:center">계약서 없음</span>')
@@ -991,7 +992,7 @@ if(TOK) login();
 // ── 양식함 (사장님 2026-10-30) — 계약서·서식 내려받기. 파일은 admin/forms/ · 새 양식은 FORMS 배열에 한 줄 추가 ──
 var FORMS=[
  {nm:"체험 상품 제휴(공급) 계약서",ds:"체험 업체(공급자)와 맺는 계약 — 외국어 진행·판매가/공급가·월 1회 정산·취소·노쇼·안전·직접 거래 금지 · [별표 1] 상품표",f:[["PDF","forms/experience_contract_ko.pdf","체험상품_제휴계약서.pdf"],["워드","forms/experience_contract_ko.docx","체험상품_제휴계약서.docx"]],dt:"2026-10-30"},
- {nm:"관광가이드 업무위탁 계약서",ds:"관광통역안내사 가이드와 맺는 업무위탁(프리랜서) 계약 — 수당·원천징수·안전·개인정보",f:[["PDF","forms/guide_contract_ko.pdf?v=1113e","관광가이드_업무위탁_계약서.pdf"],["워드","forms/guide_contract_ko.docx?v=1113e","관광가이드_업무위탁_계약서.docx"]],dt:"2026-10-30"}
+ {nm:"관광가이드 업무위탁 계약서",ds:"관광통역안내사 가이드와 맺는 업무위탁(프리랜서) 계약 — 수당·원천징수·안전·개인정보",f:[["PDF","forms/guide_contract_ko.pdf?v=1114b","관광가이드_업무위탁_계약서.pdf"],["워드","forms/guide_contract_ko.docx?v=1114b","관광가이드_업무위탁_계약서.docx"]],dt:"2026-10-30"}
 ];
 function formsLoad(){ $("pane").innerHTML='<div class="card"><b>양식함 ('+FORMS.length+')</b><div class="msg">계약서·서식을 내려받아 출력하거나 고쳐 쓰세요. 빈칸은 계약할 때 채웁니다.</div></div>'
   +FORMS.map(function(x){ return '<div class="card"><b>'+esc(x.nm)+'</b><div class="msg">'+esc(x.ds)+(x.dt?' · '+esc(x.dt)+' 판':"")+'</div><div class="row" style="margin-top:10px;gap:8px">'+x.f.map(function(f){ return '<a href="'+esc(f[1])+'" download="'+esc(f[2])+'"><button>'+esc(f[0])+' 내려받기</button></a>'; }).join("")+'</div></div>'; }).join(""); }
