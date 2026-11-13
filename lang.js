@@ -11,7 +11,7 @@
  */
 (function(){
 "use strict";
-var NM={ko:"한국어",en:"English",ja:"日本語",zhs:"简体中文",zht:"繁體中文",es:"Español"}, ORD=["ko","en","es","ja","zhs","zht"];
+var NM={ko:"한국어",en:"English",ja:"日本語",zhs:"简体中文",zht:"繁體中文",es:"Español"}, ORD=["ko","en","es","ja","zhs","zht"].filter(function(l){ return !window.LANG_ON||LANG_ON.indexOf(l)>=0; });   // 11-13 사장님 「한국어와 영어만 남기고 나머지를 숨겨줘」 — 일·중(간·번)·스페인어는 고르는 칸에서만 숨김(번역은 그대로) · 다시 켜려면 여기에 넣는다(index.html LANG_ON)
 function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){ return null; } }
 function fg(){ var f=ls("mpv_lang_fg"); return ORD.indexOf(f)>0?f:null; }   // 손님 외국어 (마지막으로 쓴 외국어)
 if(window.LANG&&LANG!=="ko") ls("mpv_lang_fg",LANG);
