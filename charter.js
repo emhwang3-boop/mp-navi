@@ -20,7 +20,7 @@ function ico(st){ return '<img class="chr-ic" src="img/menu/mi_charter.png" alt=
 var PID="chr", PRICE=[0,300000,350000,450000,700000], NMAX=7, DMAX=15, LEAD=3, LUGMAX=30;
 var AP={icn:{ko:"인천국제공항",en:"Incheon International Airport",lat:37.4602,lng:126.4407,n:T6("인천공항","Incheon Airport","仁川空港","仁川机场","仁川機場","Aeropuerto de Incheon")},
         gmp:{ko:"김포국제공항",en:"Gimpo International Airport",lat:37.5583,lng:126.7906,n:T6("김포공항","Gimpo Airport","金浦空港","金浦机场","金浦機場","Aeropuerto de Gimpo")}};
-var DLS=["ko","en","ja","zh"];
+var DLS=["ko","en","ja","zh"].filter(function(k){ return !window.svcOn||svcOn(k==="zh"?"zhs":k)||(k==="zh"&&svcOn("zht")); });   // 11-13 숨긴 서비스 언어 빼기(index.html SVC_LANG_ON)
 var DLN={ko:T6("한국어","Korean","韓国語","韩语","韓語","Coreano"),en:T6("영어","English","英語","英语","英語","Inglés"),ja:T6("일본어","Japanese","日本語","日语","日語","Japonés"),zh:T6("중국어","Chinese","中国語","中文","中文","Chino")};
 var ZN=[null,
  T6("서울 시내","Seoul (city)","ソウル市内","首尔市内","首爾市內","Seúl (ciudad)"),
@@ -125,8 +125,8 @@ function zOf(d){ if(!d) return null; if(d.z!=null) return d.z; return zAddr(d.ad
 
 // ── 상태 (날짜·시작 시각·인원은 상품 화면 S 그대로) ──
 var CS={pf:null,pick:null,dests:[],dl:"",lug:0,memo:"",ps:false,pq:"",pr:null,pb:0,pe:0,q:"",r:null,b:0,e:0,qb:0,qe:"",note:"",msg:""};
-function dlDef(){ var l=lg(); return l==="ko"?"ko":l==="ja"?"ja":(l==="zhs"||l==="zht")?"zh":"en"; }
-function dl(){ return CS.dl||dlDef(); }
+function dlDef(){ var l=lg(), d=l==="ko"?"ko":l==="ja"?"ja":(l==="zhs"||l==="zht")?"zh":"en"; return DLS.indexOf(d)>=0?d:"en"; }
+function dl(){ var v=CS.dl||dlDef(); return DLS.indexOf(v)>=0?v:dlDef(); }
 function chg(q){ if(q) quote(); try{ document.dispatchEvent(new Event("chrchg")); }catch(e){} }
 function S(){ try{ return window.SHOP&&SHOP.st?SHOP.st():null; }catch(e){ return null; } }
 function minDate(){ return kstDay(LEAD); }
@@ -194,7 +194,7 @@ function destBlk(){ var h='<div class="chr-blk"><div class="chr-h3">'+esc(L(TX.d
     +resHtml(CS.r,CS.b,CS.e,function(x,i){ return has(x)?'<span class="chr-no">✓ '+esc(L(TX.added))+'</span>':'<button type="button" class="chr-b" data-chr="da" data-i="'+i+'">＋ '+esc(L(TX.add))+'</button>'; });
   else h+='<p class="chr-nt">'+esc(F(TX.dmax,{n:DMAX}))+'</p>';
   return h+'</div>'; }
-function dlBlk(){ var c=dl(); return '<div class="chr-blk"><div class="chr-h3">'+esc(L(TX.dl))+'</div><div class="chr-chips c4">'+DLS.map(function(k){ return '<button type="button" data-chr="dl" data-v="'+k+'" class="'+(c===k?"on":"")+'">'+esc(L(DLN[k]))+'</button>'; }).join("")+'</div><p class="chr-nt">'+esc(L(TX.dln))+'</p></div>'; }
+function dlBlk(){ var c=dl(); return '<div class="chr-blk"><div class="chr-h3">'+esc(L(TX.dl))+'</div><div class="chr-chips c4" style="grid-template-columns:repeat('+DLS.length+',minmax(0,1fr))">'+DLS.map(function(k){ return '<button type="button" data-chr="dl" data-v="'+k+'" class="'+(c===k?"on":"")+'">'+esc(L(DLN[k]))+'</button>'; }).join("")+'</div><p class="chr-nt">'+esc(L(TX.dln))+'</p></div>'; }
 function memoBlk(){ return '<div class="chr-blk"><label class="chr-h3" for="chrMemo">'+esc(L(TX.memo))+'</label><textarea id="chrMemo" rows="2" maxlength="500" placeholder="'+esc(L(TX.memoPh))+'">'+esc(CS.memo)+'</textarea></div>'; }
 function zoneTbl(cur){ return '<div class="chr-zt">'+[1,2,3,4].map(function(z){ return '<div class="'+(cur===z?"on":"")+'"><span>'+ZNO[z]+' '+esc(L(ZN[z]))+'</span><b>'+won(PRICE[z])+'</b></div>'; }).join("")+'</div>'; }
 function zoneBlk(){ var m=zMax(), far=null; CS.dests.forEach(function(d){ var z=zOf(d); if(z>0&&(!far||z>zOf(far))) far=d; });
