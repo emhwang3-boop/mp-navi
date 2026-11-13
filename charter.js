@@ -69,7 +69,13 @@ var TX={
  zeast:T6("동해안은 속초·양양·강릉·동해·삼척·고성이에요. 제주는 갈 수 없어요.","East coast means Sokcho, Yangyang, Gangneung, Donghae, Samcheok and Goseong. No trips to Jeju.","東海岸は束草・襄陽・江陵・東海・三陟・高城です。済州へは行けません。","东海岸指束草、襄阳、江陵、东海、三陟、高城。无法前往济州。","東海岸指束草、襄陽、江陵、東海、三陟、高城。無法前往濟州。","La costa este es Sokcho, Yangyang, Gangneung, Donghae, Samcheok y Goseong. No vamos a Jeju."),
  zfar:T6("가장 먼 목적지: {p}","Farthest destination: {p}","最も遠い目的地：{p}","最远的目的地：{p}","最遠的目的地：{p}","Destino más lejano: {p}"),
  ex:T6("손님이 따로 내는 것","You pay separately","別途お支払いいただくもの","需您另付的费用","需您另付的費用","Lo pagas aparte"),
- exl:[T6("기사 식사 (점심·저녁 — 손님이 사 주세요)","Driver's meals (lunch and dinner — please treat your driver)","ドライバーの食事（昼食・夕食 — お客様のご負担）","司机餐费（午餐·晚餐 — 请您请司机用餐）","司機餐費（午餐·晚餐 — 請您請司機用餐）","Comidas del conductor (almuerzo y cena — invítale tú)"),
+ drvH:T6("기사 안내","About your driver","ドライバーについて","关于司机","關於司機","Sobre el conductor"),   // 11-14 사장님 「클룩이나 타 사이트를 모방 — 기사만·기본 회화 · 투어 가이드 예약 링크」
+ drv1:T6("운전 기사 전용 서비스입니다. 기사는 관광지 안내·해설을 하지 않습니다.","This is a driver-only service. The driver does not act as a tour guide.","ドライバーのみのサービスです。ドライバーは観光地の案内・解説を行いません。","本服务仅含司机，司机不提供景点导览和讲解。","本服務僅含司機，司機不提供景點導覽和講解。","Es un servicio solo de conductor. El conductor no hace de guía turístico."),
+ drv2:T6("기사는 선택한 언어로 기본 회화만 할 수 있습니다.","The driver speaks basic conversational language in the language you choose.","ドライバーは選んだ言語で簡単な会話のみ可能です。","司机可用您选择的语言进行简单日常对话。","司機可用您選擇的語言進行簡單日常對話。","El conductor habla a nivel básico en el idioma que elijas."),
+ gq:T6("관광지 안내가 필요하신가요? 공인 자격을 갖춘 관광통역안내사를 따로 예약할 수 있어요.","Need a tour guide? You can book an officially licensed tour guide separately.","観光案内が必要ですか？国家資格を持つ通訳案内士を別途予約できます。","需要导游讲解吗？可另行预约持有官方资格的导游。","需要導遊講解嗎？可另行預約持有官方資格的導遊。","¿Necesitas un guía? Puedes reservar aparte un guía turístico con licencia oficial."),   // 11-14 사장님 「공인 자를 추가해」
+ gbtn:T6("투어 가이드 예약 ›","Book a tour guide ›","ツアーガイドを予約 ›","预约导游 ›","預約導遊 ›","Reservar un guía ›"),
+ exl:[T6("관광 안내·통역 (필요하면 투어 가이드를 따로 예약)","Tour guiding & interpretation (book a tour guide separately if needed)","観光案内・通訳（必要ならツアーガイドを別途予約）","导游讲解·翻译（如有需要请另行预约导游）","導遊講解·翻譯（如有需要請另行預約導遊）","Guía turístico e interpretación (resérvalo aparte si lo necesitas)"),
+   T6("기사 식사 (점심·저녁 — 손님이 사 주세요)","Driver's meals (lunch and dinner — please treat your driver)","ドライバーの食事（昼食・夕食 — お客様のご負担）","司机餐费（午餐·晚餐 — 请您请司机用餐）","司機餐費（午餐·晚餐 — 請您請司機用餐）","Comidas del conductor (almuerzo y cena — invítale tú)"),
    T6("주차비","Parking fees","駐車料金","停车费","停車費","Aparcamiento"),
    T6("입장료","Admission fees","入場料","门票","門票","Entradas"),
    T6("손님 식사","Your own meals","お客様の食事","您的餐费","您的餐費","Tus comidas"),
@@ -194,6 +200,7 @@ function destBlk(){ var h='<div class="chr-blk"><div class="chr-h3">'+esc(L(TX.d
     +resHtml(CS.r,CS.b,CS.e,function(x,i){ return has(x)?'<span class="chr-no">✓ '+esc(L(TX.added))+'</span>':'<button type="button" class="chr-b" data-chr="da" data-i="'+i+'">＋ '+esc(L(TX.add))+'</button>'; });
   else h+='<p class="chr-nt">'+esc(F(TX.dmax,{n:DMAX}))+'</p>';
   return h+'</div>'; }
+function drvBlk(){ return '<div class="chr-blk chr-drv"><div class="chr-h3">'+esc(L(TX.drvH))+'</div><ul><li>'+esc(L(TX.drv1))+'</li><li>'+esc(L(TX.drv2))+'</li></ul><p class="chr-nt">'+esc(L(TX.gq))+'</p><button type="button" class="chr-gbtn" data-chr="guide">'+esc(L(TX.gbtn))+'</button></div>'; }   // 클룩식 「Driver only」 안내 + 가이드 인솔 예약으로
 function dlBlk(){ var c=dl(); return '<div class="chr-blk"><div class="chr-h3">'+esc(L(TX.dl))+'</div><div class="chr-chips c4" style="grid-template-columns:repeat('+DLS.length+',minmax(0,1fr))">'+DLS.map(function(k){ return '<button type="button" data-chr="dl" data-v="'+k+'" class="'+(c===k?"on":"")+'">'+esc(L(DLN[k]))+'</button>'; }).join("")+'</div><p class="chr-nt">'+esc(L(TX.dln))+'</p></div>'; }
 function memoBlk(){ return '<div class="chr-blk"><label class="chr-h3" for="chrMemo">'+esc(L(TX.memo))+'</label><textarea id="chrMemo" rows="2" maxlength="500" placeholder="'+esc(L(TX.memoPh))+'">'+esc(CS.memo)+'</textarea></div>'; }
 function zoneTbl(cur){ return '<div class="chr-zt">'+[1,2,3,4].map(function(z){ return '<div class="'+(cur===z?"on":"")+'"><span>'+ZNO[z]+' '+esc(L(ZN[z]))+'</span><b>'+won(PRICE[z])+'</b></div>'; }).join("")+'</div>'; }
@@ -203,7 +210,7 @@ function zoneBlk(){ var m=zMax(), far=null; CS.dests.forEach(function(d){ var z=
     +'<p class="chr-nt">'+esc(L(TX.zrule))+'<br>'+esc(L(TX.zeast))+'</p></div>'; }
 function exBlk(){ return '<div class="chr-blk chr-exb"><div class="chr-h3">'+esc(L(TX.ex))+'</div><ul>'+TX.exl.map(function(x){ return '<li>'+esc(L(x))+'</li>'; }).join("")+'</ul></div>'; }
 // 상품 화면 결제 칸에 넣는 것 — 날짜·시작 시각·인원 줄 다음, 합계 앞
-function pickHtml(p){ if(!is(p)) return ""; return '<div class="chr">'+lugRow()+pickBlk()+destBlk()+dlBlk()+memoBlk()+zoneBlk()+exBlk()+'<p class="chr-nt">'+esc(L(TX.lead))+'</p>'+(why()?'<p class="chr-w" id="chrWhy">'+esc(why())+'</p>':'')+'</div>'; }
+function pickHtml(p){ if(!is(p)) return ""; return '<div class="chr">'+lugRow()+pickBlk()+destBlk()+drvBlk()+dlBlk()+memoBlk()+zoneBlk()+exBlk()+'<p class="chr-nt">'+esc(L(TX.lead))+'</p>'+(why()?'<p class="chr-w" id="chrWhy">'+esc(why())+'</p>':'')+'</div>'; }
 // 결제창 주문 내용 줄
 function payRows(p){ if(!is(p)) return ""; var r=function(a,b){ return '<div class="sl"><span>'+esc(L(a))+'</span><span>'+b+'</span></div>'; }, m=zMax();
   return r(TX.lug,esc(F(TX.lugN,{n:CS.lug})))+r(TX.rPk,esc(pkName(CS.pick)))+r(TX.rDs,'<div class="chr-pl">'+CS.dests.map(function(d,i){ return (i+1)+". "+esc(nmOf(d)); }).join("<br>")+'</div>')+r(TX.dl,esc(L(DLN[dl()])))
@@ -229,6 +236,7 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   if(k==="da"){ var y=(CS.r||[])[i]; if(!y||has(y)) return; if(CS.dests.length>=DMAX) return; var d=fromKp(y); d.z=null; CS.dests.push(d); CS.pf=null; CS.r=null; CS.q=""; /* 넣으면 찾은 목록은 닫는다 */ try{ ntap("shop","chr_add"); }catch(z){} chg(true); return; }
   if(k==="dx"){ if(CS.dests[i]) CS.dests.splice(i,1); chg(); return; }
   if(k==="dl"){ CS.dl=t.getAttribute("data-v"); chg(); return; }
+  if(k==="guide"){ try{ ntap("shop","chr_guide"); }catch(z){} if(window.PC_HOME){ location.hash="#/guide"; try{ window.scrollTo(0,0); }catch(z){} return; } try{ if(window.SHOP&&SHOP.close) SHOP.close(); }catch(z){} try{ if(window.NEAR&&NEAR.open) NEAR.open("ig"); }catch(z){} return; }   // 투어 가이드 예약 = 가이드 인솔 화면 (앱 「투어 가이드」 · 홈페이지 #/guide)
 },true);
 document.addEventListener("keydown",function(e){ if(e.key!=="Enter"||!e.target) return; var id=e.target.id; if(id!=="chrPq"&&id!=="chrDq") return; e.preventDefault(); srch(id==="chrPq"?"p":"d"); });
 document.addEventListener("input",function(e){ var t=e.target; if(!t) return; if(t.id==="chrMemo") CS.memo=t.value.slice(0,500); else if(t.id==="chrPq") CS.pq=t.value; else if(t.id==="chrDq") CS.q=t.value; });
@@ -300,7 +308,7 @@ st.textContent=""
  +".chr-row{display:flex;justify-content:space-between;align-items:center;gap:10px}.chr-lb{font-size:14px;color:var(--sub,#5b6474);font-weight:700}#shopBox .chr-lb{font-size:13px;color:#667085;font-weight:400}"
  +"#shopBox .chr-stp{gap:8px}#shopBox .chr-stp button{width:30px;height:30px;border:1px solid #e4e0d6;background:#efece4;font-size:16px}#shopBox .chr-stp b{min-width:0}"   // 앱 인원 칸과 같은 모양
  +".chr-stp{display:flex;align-items:center;gap:10px}.chr-stp b{min-width:22px;text-align:center;font-size:16px}.chr-stp button{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--line,#e4e0d6);background:var(--card,#fff);color:var(--ink,#1d2433);font-size:17px;font-weight:900;cursor:pointer;line-height:1;padding:0}"
- +".chr-blk{border-top:1px dashed var(--line,#e4e0d6);padding-top:10px;display:flex;flex-direction:column;gap:7px}.chr-h3{font-weight:900;font-size:15px;display:block}.chr-h3 small{font-weight:700;color:var(--sub,#5b6474);font-size:12px}"
+ +".chr-blk{border-top:1px dashed var(--line,#e4e0d6);padding-top:10px;display:flex;flex-direction:column;gap:7px}.chr-h3{font-weight:900;font-size:15px;display:block}.chr-drv ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.55}.chr-gbtn{align-self:flex-start;border:1.5px solid #0c8599;background:var(--card,#fff);color:#0c8599;border-radius:10px;padding:8px 14px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit}.chr-h3 small{font-weight:700;color:var(--sub,#5b6474);font-size:12px}"
  +".chr-nt{margin:0;font-size:12.5px;line-height:1.55;color:var(--sub,#5b6474)}.chr-w{margin:0;font-size:13px;font-weight:800;color:#c2410c;line-height:1.5}.chr-ok{margin:0;font-size:13px;font-weight:800;color:#2b8a3e;line-height:1.5}"
  +".chr-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.chr-chips.c4{grid-template-columns:repeat(4,minmax(0,1fr))}"
  +".chr-chips button{border:1.5px solid var(--line,#e4e0d6);background:var(--card,#fff);color:var(--ink,#1d2433);border-radius:10px;padding:8px 4px;font:inherit;font-size:13px;font-weight:800;cursor:pointer;line-height:1.3;word-break:keep-all}"
