@@ -164,7 +164,7 @@ function eqGo(){ var bs=[].slice.call(D.querySelectorAll("#phWaysL .ph-go")); bs
 // ── 대표 패키지 상품 — 앱 상품 자료(SHOP.items) 그대로, 앱 목록과 같은 차례 (11-08 밤 사장님 — 공연 관람도 넣음, 1단계엔 뺐었음) ──
 var PKGLOADED=false;
 function pkgList(){ try{ return (window.SHOP&&SHOP.items?SHOP.items():[]).filter(function(p){ return p&&p.id; }); }catch(e){ return []; } }
-function langOf(p){ var a=(p.langs||[]).filter(function(x){ return /^(ko|en|ja|zhs|zht|es)$/.test(x); }); if(!a.length) return "";
+function langOf(p){ var a=(p.langs||[]).filter(function(x){ return /^(ko|en|ja|zhs|zht|es)$/.test(x)&&(!window.svcOn||svcOn(x)); }); if(!a.length) return "";
   if(a.length>=6) return L6((p.kind||"tour")==="tour"?TX.g6:TX.l6);
   var N={ko:"한국어",en:"English",ja:"日本語",zhs:"中文(简)",zht:"中文(繁)",es:"Español"}; return a.map(function(x){ return N[x]; }).join(" · "); }
 function pkgCard(p){ var b={}; try{ b=SHOP.brief(p)||{}; }catch(e){}
