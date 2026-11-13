@@ -2407,7 +2407,7 @@ function gsPaint(){ var box=document.getElementById("trNextBox"); if(!box||box.d
       +(GS.g?'<div class="gsm">'+esc(GS.g.name)+'</div>':'')+'</div>'; return; }
   if(GS.view==="confirm"&&GS.g){ var g=GS.g;
     box.innerHTML='<div class="item">'+back
-      +'<div class="gscard" style="cursor:default">'+gsFace(g)+'<div class="gsb"><b>'+(window.igName?igName(g):esc(g.name))+'</b><div class="gsm">'+(g.langs||[]).map(gsLangName).map(esc).join(" · ")+(g.region?" · "+esc(gsRegion(g.region)):"")+'</div></div></div>'
+      +'<div class="gscard" style="cursor:default">'+gsFace(g)+'<div class="gsb"><b>'+(window.igName?igName(g):esc(g.name))+'</b><div class="gsm">'+(g.langs||[]).filter(function(l){ return (!window.svcOn||svcOn(l)); }).map(gsLangName).map(esc).join(" · ")+(g.region?" · "+esc(gsRegion(g.region)):"")+'</div></div></div>'
       +'<label class="gslb">'+esc(T5({ko:"손님 이름 (선택)",en:"Your name (optional)",ja:"お名前（任意）",zhs:"您的姓名（可选）",zht:"您的姓名（可選）",es:"Tu nombre (opcional)"}))+'</label><input class="gsin" id="gsName" maxlength="30">'
       +'<label class="gschk"><input type="checkbox" id="gsAg"> '+esc(T5({ko:"내 여행 일정을 이 가이드에게 전달하는 데 동의합니다",en:"I agree to share my trip itinerary with this guide",ja:"私の旅程をこのガイドに伝えることに同意します",zhs:"我同意将我的行程转交给该向导",zht:"我同意將我的行程轉交給該嚮導",es:"Acepto compartir mi itinerario con este guía"}))+'</label>'
       +'<button type="button" class="trbtn big gsgo" id="gsGo" style="margin-top:10px">'+esc(T5({ko:"보내기",en:"Send",ja:"送る",zhs:"发送",zht:"發送",es:"Enviar"}))+'</button>'
@@ -2417,14 +2417,14 @@ function gsPaint(){ var box=document.getElementById("trNextBox"); if(!box||box.d
     if(GS.err) h+='<div class="gsnote">'+esc(T5({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again shortly.",ja:"しばらくしてからもう一度お試しください。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo de nuevo en un momento."}))+'</div>';
     else if(!GS.guides) h+='<div class="gsnote">'+esc(T5({ko:"찾는 중…",en:"Searching…",ja:"検索中…",zhs:"搜索中…",zht:"搜尋中…",es:"Buscando…"}))+'</div>';
     else if(!GS.guides.length) h+='<div class="gsnote">'+esc(T5({ko:"아직 등록된 가이드가 없습니다.",en:"No guides registered yet.",ja:"まだ登録されたガイドがいません。",zhs:"暂无已登记的向导。",zht:"暫無已登記的嚮導。",es:"Aún no hay guías registrados."}))+'</div>';
-    else h+=GS.guides.map(function(g,i){ return '<div class="gscard" data-gspick="'+i+'">'+gsFace(g)+'<div class="gsb"><b>'+(window.igName?igName(g):esc(g.name))+'</b> '+(g.count>0?'<span class="gsrb">★'+(g.avg!=null?g.avg:0)+' ('+g.count+')</span>':'<span class="gsrb gsrb0">'+esc(T5({ko:"후기 없음",en:"No reviews",ja:"レビューなし",zhs:"暂无评价",zht:"暫無評價",es:"Sin reseñas"}))+'</span>')+'<div class="gsm">'+(g.langs||[]).map(gsLangName).map(esc).join(" · ")+(g.region?" · "+esc(gsRegion(g.region)):"")+'</div></div><span class="gspk">'+esc(T5({ko:"고르기 ›",en:"Pick ›",ja:"選ぶ ›",zhs:"选择 ›",zht:"選擇 ›",es:"Elegir ›"}))+'</span></div>'; }).join("");
+    else h+=GS.guides.map(function(g,i){ return '<div class="gscard" data-gspick="'+i+'">'+gsFace(g)+'<div class="gsb"><b>'+(window.igName?igName(g):esc(g.name))+'</b> '+(g.count>0?'<span class="gsrb">★'+(g.avg!=null?g.avg:0)+' ('+g.count+')</span>':'<span class="gsrb gsrb0">'+esc(T5({ko:"후기 없음",en:"No reviews",ja:"レビューなし",zhs:"暂无评价",zht:"暫無評價",es:"Sin reseñas"}))+'</span>')+'<div class="gsm">'+(g.langs||[]).filter(function(l){ return (!window.svcOn||svcOn(l)); }).map(gsLangName).map(esc).join(" · ")+(g.region?" · "+esc(gsRegion(g.region)):"")+'</div></div><span class="gspk">'+esc(T5({ko:"고르기 ›",en:"Pick ›",ja:"選ぶ ›",zhs:"选择 ›",zht:"選擇 ›",es:"Elegir ›"}))+'</span></div>'; }).join("");
     h+='</div>'; box.innerHTML=h; gsWire(); return; }
   // lang
   var last=gsLast();
   h='<div class="item"><div class="t xtrow"><span>'+MPIMG("mi_guideperson",MIS)+esc(T5({ko:"가이드에게 PDF 보내기",en:"Send PDF to a guide",ja:"ガイドにPDFを送る",zhs:"把PDF发给向导",zht:"把PDF傳給嚮導",es:"Enviar PDF a un guía"}))+'</span>'+nbX()+'</div>';
   if(last) h+='<button type="button" class="gscard gsquick" data-gsquick="1" style="width:100%;text-align:left;border:0;font:inherit;cursor:pointer"><span class="gsav gsavx">🧭</span><div class="gsb"><b>'+esc(last.name)+'</b><div class="gsm">'+esc(T5({ko:"최근 고른 가이드에게 바로 보내기",en:"Send to recently chosen guide",ja:"最近選んだガイドに送る",zhs:"发送给最近选择的向导",zht:"傳送給最近選擇的嚮導",es:"Enviar al guía elegido recientemente"}))+'</div></div></button>';
   h+='<div class="gslbl" style="margin-top:8px">'+esc(T5({ko:"가이드 언어를 고르세요",en:"Choose the guide’s language",ja:"ガイドの言語を選んでください",zhs:"请选择向导的语言",zht:"請選擇嚮導的語言",es:"Elige el idioma del guía"}))+'</div><div class="gslangs">'
-    +GSLANG6.map(function(l){ return '<button type="button" class="gslang" data-gslang="'+l[1]+'">'+l[2]+' '+esc(l[0])+' ›</button>'; }).join("")+'</div></div>';
+    +GSLANG6.filter(function(l){ return (!window.svcOn||svcOn(l[1])); }).map(function(l){ return '<button type="button" class="gslang" data-gslang="'+l[1]+'">'+l[2]+' '+esc(l[0])+' ›</button>'; }).join("")+'</div></div>';
   box.innerHTML=h; gsWire(); }
 function gsWire(){ var box=document.getElementById("trNextBox"); if(!box) return;
   var bk=document.getElementById("gsBack"); if(bk) bk.onclick=function(){ GS.view=(GS.view==="confirm")?"list":"lang"; if(GS.view==="lang"){ GS.lang=""; GS.guides=null; } GS.msg=""; gsPaint(); };
@@ -2517,7 +2517,7 @@ function grvPaint(){ var b=document.getElementById("trGrvP"); if(!b) return; grv
       +'<div class="grvr"><span>'+esc(T5(GRV6.em2))+'</span><b>'+esc(r.em||"")+'</b></div>'+(j.due?'<div class="grvr"><span>'+esc(T5(GRV6.due))+'</span><b>'+esc(grvDue(j.due))+' (KST)</b></div>':'')+'</div>';
     else h+='<div class="grvt">'+esc(T5(GRV6.title))+'</div><div class="'+(r.soft?'grvd':'grverr')+'">'+esc(r.msg||T5(GRV6.efail))+'</div>';
     b.innerHTML=h+'<div class="grvbt"><button type="button" class="trbtn" data-grv="x">'+esc(T5(GRV6.x))+'</button></div></div>'; return; }
-  var L0=GRV.langs, pg=!!(window.TPG&&TPG.on), bz=GRV.busy?' disabled':'', dis=GRV.busy||!GRV.ag||!L0||!L0.length;
+  var L0=GRV.langs&&GRV.langs.filter(function(l){ return (!window.svcOn||svcOn(l)); }), pg=!!(window.TPG&&TPG.on), bz=GRV.busy?' disabled':'', dis=GRV.busy||!GRV.ag||!L0||!L0.length;
   h+='<div class="grvt">'+esc(T5(GRV6.title))+' <span class="grvo">'+esc(T5(GRV6.opt))+'</span></div>'
     +'<div class="grvd">'+esc(T5(GRV6.desc))+'</div><ul class="grvl"><li>'+esc(T5(GRV6.b1))+'</li><li>'+esc(T5(GRV6.b2))+'</li><li>'+esc(T5(GRV6.b3))+'</li></ul>'
     +'<div class="grvn">'+esc(T5(GRV6.free))+'</div>'
