@@ -11,7 +11,7 @@
 if(!window.PC_HOME||!window.PCREG) return;
 var D=document;
 function N(){ return window.NEARIG||null; }
-function LANGS(){ return ["ko","en","ja","zhs","zht","es"]; }
+function LANGS(){ return ["ko","en","ja","zhs","zht","es"].filter(function(l){ return (!window.svcOn||svcOn(l)); }); }   // 11-13 숨긴 서비스 언어 빼기
 function L6(o){ return o?(o[window.LANG]||o.en||o.ko||""):""; }
 function E(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function T6(ko,en,ja,zhs,zht,es){ return {ko:ko,en:en,ja:ja,zhs:zhs,zht:zht,es:es}; }
@@ -80,7 +80,7 @@ function tcard(){ var n=N();
 function ignBox(k){ var n=N(), on=ST[k];
   return '<div class="pg-ign'+(on?' on':'')+'"><div class="pg-ignh" data-pg="'+k+'"><span>'+E(L6(n.noteT))+'</span>'+XT(on,'data-pg="'+k+'"')+'</div>'+(on?'<div class="pg-ignb">'+E(n.note())+'</div>':'')+'</div>'; }
 function chips(name,list,cur,lab,cols){ return '<div class="pg-chips" style="grid-template-columns:repeat('+cols+',minmax(0,1fr))">'+list.map(function(v){ return '<button type="button" data-'+name+'="'+E(v)+'" class="'+(v===cur?"on":"")+'">'+E(lab(v))+'</button>'; }).join("")+'</div>'; }
-function meta(g){ var n=N(); return [(g.langs||[]).map(n.langName).join(" · "),g.years?n.years(g.years):"",g.region?n.region(g.region):""].filter(Boolean).map(E).join(" · "); }
+function meta(g){ var n=N(); return [(g.langs||[]).filter(function(l){ return (!window.svcOn||svcOn(l)); }).map(n.langName).join(" · "),g.years?n.years(g.years):"",g.region?n.region(g.region):""].filter(Boolean).map(E).join(" · "); }
 function face(g,cls){ var u=N().photo(g); return u?'<img class="'+cls+'" src="'+E(u)+'" alt="" loading="lazy">':'<span class="'+cls+' pg-noph" aria-hidden="true">🧭</span>'; }
 
 // ── 화면 ① 가이드 고르기 ──
