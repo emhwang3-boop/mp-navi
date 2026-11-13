@@ -203,9 +203,9 @@ function stayRate(t,p,a){ var cnt={}, gu=""; a.forEach(function(x){ var w=String
     b.forEach(function(x){ var nb=spinNorm(x.name), best=-1, bd=1e9; if(!nb) return;
       g.forEach(function(q,i){ var n=spinNorm(q.name); if(!n) return; var d=kmLL([+x.y,+x.x],[+q.lat,+q.lng]); if(d>0.2||d>=bd) return;
         if(n.indexOf(nb)>=0||nb.indexOf(n)>=0||(nb.length>=3&&n.slice(0,3)===nb.slice(0,3))){ bd=d; best=i; } });
-      if(best>=0){ used[best]=1; if(g[best].rating){ x.rating=+g[best].rating; x.n=+g[best].n||0; } if(!x.tel&&g[best].tel) x.tel=g[best].tel; if(g[best].web){ if(x.web) x.web2=x.web; x.web=g[best].web; } } });   // 11-13 사장님 「한옥스테이에 뜨는 곳들의 전화번호가 없다 기재해주고 홈페이지도 연결해줘(있으면)」 — 구글 전화·홈페이지(허브 /gplace, 요금 그대로)
+      if(best>=0){ used[best]=1; if(g[best].rating){ x.rating=+g[best].rating; x.n=+g[best].n||0; } if(!x.tel&&g[best].tel) x.tel=g[best].tel; if(g[best].pl!=null) x.pl=+g[best].pl; if(g[best].web){ if(x.web) x.web2=x.web; x.web=g[best].web; } } });   // 11-13 사장님 「한옥스테이에 뜨는 곳들의 전화번호가 없다 기재해주고 홈페이지도 연결해줘(있으면)」 — 구글 전화·홈페이지(허브 /gplace, 요금 그대로)
     g.forEach(function(q,i){ if(used[i]||!q.rating) return; var d=kmLL(p,[+q.lat,+q.lng]); if(d>10) return;
-      b.push({gid:q.id,name:q.name,addr:q.addr,name_en:q.name_en||undefined,addr_en:q.addr_en||undefined,x:q.lng,y:q.lat,rating:+q.rating,n:+q.n||0,tel:q.tel||undefined,web:q.web||undefined,kind:t.kind,cat:t.ko,cat_en:t.en,dist:Math.round(d*1000)}); });
+      b.push({gid:q.id,name:q.name,addr:q.addr,name_en:q.name_en||undefined,addr_en:q.addr_en||undefined,x:q.lng,y:q.lat,rating:+q.rating,n:+q.n||0,tel:q.tel||undefined,web:q.web||undefined,pl:q.pl!=null?+q.pl:undefined,kind:t.kind,cat:t.ko,cat_en:t.en,dist:Math.round(d*1000)}); });
     if(LANG==="ko"||!b.some(function(x){ return x.gid; })) return b;   // 외국어 화면: 구글에서 더한 곳은 그 언어 이름으로 한 번 더 받는다
     return fetch(HUB+"/gplace?all=1&lang="+encodeURIComponent(LANG)+"&q="+encodeURIComponent((gu?gu+" ":"")+t.ko)+"&lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)).then(function(r){ return r.json(); }).then(function(j2){ var m={};
       ((j2&&j2.ok&&j2.items)||[]).forEach(function(q){ m[q.id]=q; }); b.forEach(function(x){ var q=x.gid&&m[x.gid]; if(q){ if(!(cj&&x.name_en&&!cj.test(q.name))) x.name_en=q.name; x.addr_en=q.addr; } }); return b; }).catch(function(){ return b; });
@@ -239,7 +239,7 @@ function relang(){ var k=KINDS[S.k]; if(!k) return; if(S.k==="ig"){ paint(); ret
 
 // ── 화면 ──
 // 11-13 사장님 「웹에서 숙소 버튼 화면과 앱 숙소 화면을 비교해서 웹에 맞춰줘」 — 앱 「숙소」(첫 화면 칩·⋮ 메뉴)는 홈페이지 숙소 화면(home/pc_stay.js·css)을 전체 화면 창으로 · 처음 누를 때 받는다
-var STAYV="1113wb", STAYL=null;
+var STAYV="1113l2", STAYL=null;
 function stayApp(){ if(window.APPSTAY) return APPSTAY.open();
   if(!STAYL) STAYL=Promise.all([new Promise(function(ok){ var l=document.createElement("link"); l.rel="stylesheet"; l.href="home/pc_stay.css?v="+STAYV; l.onload=ok; l.onerror=ok; document.head.appendChild(l); }),
     new Promise(function(ok,no){ var s=document.createElement("script"); s.src="home/pc_stay.js?v="+STAYV; s.onload=ok; s.onerror=no; document.head.appendChild(s); })]);
@@ -627,7 +627,7 @@ function igWire(b){
   [].forEach.call(b.querySelectorAll("[data-bkplan]"),function(bt){ bt.onclick=function(){ bkPlan(bt.dataset.bkplan,bt.dataset.rev==="1",bt); }; });   // 일정 검토 — 내 일정·고친 일정 (11-08, 로그인 계정 목록)
   [].forEach.call(b.querySelectorAll("[data-igedit]"),function(a){ a.onclick=function(e){ e.preventDefault(); IG.view="editask"; IG.busy=false; paint(); }; });   // 가이드 본인 — 내 프로필 수정
   var ego=b.querySelector("#igeGo"); if(ego) ego.onclick=igEditSendLink;
-  var esv=b.querySelector("#geSave"); if(esv){ esv.onclick=igEditSave; geBind("gePh","gePv","photo"); geBind("geLp","geLv","lic"); gCtBind("geCp","geCv","geCm",GE); }
+  var esv=b.querySelector("#geSave"); if(esv){ esv.onclick=igEditSave; geBind("gePh","gePv","photo"); geBind("geLp","geLv","lic"); }
 }
 // ── 가이드 후기 (사장님 2026-10-24) — 목록 옆 ★평균(후기수) · 상세의 후기 목록 · 완료된 손님만 쓰는 후기 폼(?review 토큰) ──
 function igStars(n){ n=Math.max(0,Math.min(5,Math.round(n||0))); var s=""; for(var i=0;i<5;i++) s+=(i<n?"★":"☆"); return s; }
@@ -833,7 +833,7 @@ function igEditForm(){ var L=LG6;
     +'<label class="iglb">'+esc(L({ko:"자기소개 (짧게)",en:"Short self-introduction",ja:"自己紹介（短く）",zhs:"简短自我介绍",zht:"簡短自我介紹",es:"Breve presentación"}))+'</label><textarea class="igin" id="geIn" maxlength="500" style="min-height:72px">'+esc(g.intro||"")+'</textarea>'
     +'<label class="iglb">'+esc(L({ko:"전화 (선택)",en:"Phone (optional)",ja:"電話（任意）",zhs:"电话（可选）",zht:"電話（可選）",es:"Teléfono (opcional)"}))+'</label><input class="igin" id="geTel" inputmode="tel" maxlength="30" value="'+esc(g.phone||"")+'">'
     +'<label class="iglb">'+esc(L({ko:"사진 (바꾸려면 선택)",en:"Photo (choose to replace)",ja:"写真（変更する場合）",zhs:"照片（如需更换）",zht:"照片（如需更換）",es:"Foto (elige para reemplazar)"}))+'</label><div style="display:flex;align-items:center;gap:10px;margin:4px 0">'+(g.photo?'<img src="'+HUB+'/guide/photo?id='+encodeURIComponent(IG.geId||"")+'&v='+Date.now()+'" style="'+pvS+'" alt="" onerror="this.style.display=\'none\'">':'')+'<img id="gePv" style="'+pvS+';display:none" alt=""><input type="file" accept="image/*" id="gePh"></div>'
-    +'<label class="iglb">'+esc(L({ko:"자격증 사본 (바꾸려면 선택)",en:"License photo (choose to replace)",ja:"資格証の写し（変更する場合）",zhs:"资格证照片（如需更换）",zht:"資格證照片（如需更換）",es:"Foto de licencia (elige para reemplazar)"}))+'</label><div style="display:flex;align-items:center;gap:10px;margin:4px 0"><img id="geLv" style="'+pvS+';display:none" alt=""><input type="file" accept="image/*" id="geLp"></div>'+gCtHtml(true,"geCp","geCv","geCm")
+    +'<label class="iglb">'+esc(L({ko:"자격증 사본 (바꾸려면 선택)",en:"License photo (choose to replace)",ja:"資格証の写し（変更する場合）",zhs:"资格证照片（如需更换）",zht:"資格證照片（如需更換）",es:"Foto de licencia (elige para reemplazar)"}))+'</label><div style="display:flex;align-items:center;gap:10px;margin:4px 0"><img id="geLv" style="'+pvS+';display:none" alt=""><input type="file" accept="image/*" id="geLp"></div>'
     +'<button type="button" class="nrsel" id="geSave" style="background:#0c8599;color:#fff;border-color:#0c8599;margin-top:12px">'+esc(L({ko:"저장",en:"Save",ja:"保存",zhs:"保存",zht:"儲存",es:"Guardar"}))+'</button>'
     +'<div class="ignt" id="geM"></div>'; }
 function igEditAgain(){ return '<button type="button" class="nrsel" data-igedit="1" style="margin-top:10px">'+esc(LG6({ko:"수정 링크 다시 받기",en:"Request a new edit link",ja:"編集リンクを再取得",zhs:"重新获取修改链接",zht:"重新取得修改連結",es:"Pedir un nuevo enlace"}))+'</button>'; }
@@ -994,7 +994,59 @@ function gShrink(file,cb,mxA){ if(!file){ cb(null); return; } var r=new FileRead
       var q=0.85, out=c.toDataURL("image/jpeg",q), guard=0; while(out.length>158000&&q>0.3&&guard<8){ q-=0.1; out=c.toDataURL("image/jpeg",q); guard++; }
       cb(out.indexOf("data:image/jpeg")===0&&out.length<=170000?out:null); }catch(e){ cb(null); } }; img.onerror=function(){ cb(null); }; img.src=r.result; };
   r.onerror=function(){ cb(null); }; r.readAsDataURL(file); }
-// ── 업무위탁 계약서 (사장님 10-29, 토스 카드사 심사용) — 내려받아 서명 → 사진 1~3장(장마다 폰에서 줄인 JPEG) → /guide/join contract:[...] ──
+// ── 업무위탁 계약 = 전자 계약 (11-13 사장님 「동의 난을 체크해서 저장 · 서명은 인증서로 대체」「가로 해 — 지금 방식을 남겨둬서 머하게」「PC와 폰 둘 다 가이드 등록·전자인증」) ──
+//   계약서 전문(docs/guide_contract_ko.html, 회사 쪽 법인인감) → 「동의합니다」 체크 → 본인인증(포트원 · KG이니시스 통합인증 — PASS·카카오·네이버·토스 등) = 서명 대신
+//   PC = 인증 창(팝업) · 폰 = 인증 화면으로 갔다가 ?gidv= 로 돌아옴 → 쓰던 칸은 sessionStorage 에 잠깐 두었다 되살린다 · 허브 /guide/idv/start·done (결과는 허브가 포트원에 직접 확인)
+var GEC_V="1113e";
+var GEC={lbl:{ko:"업무위탁 계약 *",en:"Service agreement *",ja:"業務委託契約 *",zhs:"业务委托合同 *",zht:"業務委託合約 *",es:"Contrato de prestación de servicios *"},
+ note:{ko:"계약서를 끝까지 읽고 동의에 체크한 뒤 본인인증을 해 주세요. 본인인증이 서명을 대신합니다.",en:"Read the agreement to the end, tick the consent box, then verify your identity. Identity verification replaces your signature. (The agreement is in Korean.)",ja:"契約書を最後まで読み、同意にチェックしてから本人認証をしてください。本人認証が署名の代わりになります。（契約書は韓国語です）",zhs:"请读完合同，勾选同意后进行实名认证。实名认证即代替签名。（合同为韩语）",zht:"請讀完合約，勾選同意後進行實名認證。實名認證即代替簽名。（合約為韓語）",es:"Lee el contrato hasta el final, marca la casilla de aceptación y verifica tu identidad. La verificación sustituye a tu firma. (El contrato está en coreano.)"},
+ pdf:{ko:"계약서 PDF로 보기",en:"View agreement as PDF",ja:"契約書をPDFで見る",zhs:"以PDF查看合同",zht:"以PDF查看合約",es:"Ver contrato en PDF"},
+ agree:{ko:"위 업무위탁 계약서의 내용을 모두 읽었으며 이에 동의합니다.",en:"I have read the whole service agreement above and agree to it.",ja:"上記の業務委託契約書の内容をすべて読み、同意します。",zhs:"我已阅读上述业务委托合同的全部内容并同意。",zht:"我已閱讀上述業務委託合約的全部內容並同意。",es:"He leído todo el contrato de prestación de servicios y lo acepto."},
+ go:{ko:"본인인증 하기",en:"Verify my identity",ja:"本人認証する",zhs:"进行实名认证",zht:"進行實名認證",es:"Verificar mi identidad"},
+ first:{ko:"먼저 계약 내용에 동의해 주세요.",en:"Please agree to the agreement first.",ja:"先に契約内容に同意してください。",zhs:"请先同意合同内容。",zht:"請先同意合約內容。",es:"Primero acepta el contrato."},
+ busy:{ko:"본인인증 창을 여는 중…",en:"Opening identity verification…",ja:"本人認証画面を開いています…",zhs:"正在打开实名认证…",zht:"正在開啟實名認證…",es:"Abriendo la verificación…"},
+ ok:{ko:"✓ 본인인증 완료 — {n} · {b}",en:"✓ Identity verified — {n} · {b}",ja:"✓ 本人認証完了 — {n}・{b}",zhs:"✓ 实名认证完成 — {n} · {b}",zht:"✓ 實名認證完成 — {n} · {b}",es:"✓ Identidad verificada — {n} · {b}"},
+ fail:{ko:"본인인증을 마치지 못했습니다. 다시 해 주세요.",en:"Identity verification was not completed. Please try again.",ja:"本人認証が完了しませんでした。もう一度お試しください。",zhs:"实名认证未完成，请重试。",zht:"實名認證未完成，請重試。",es:"No se completó la verificación. Inténtalo de nuevo."},
+ none:{ko:"지금은 본인인증을 할 수 없습니다. 잠시 뒤 다시 해 주세요.",en:"Identity verification is unavailable right now. Please try again later.",ja:"現在、本人認証を利用できません。しばらくしてからお試しください。",zhs:"目前无法进行实名认证，请稍后再试。",zht:"目前無法進行實名認證，請稍後再試。",es:"La verificación no está disponible ahora. Inténtalo más tarde."},
+ need:{ko:"계약 동의와 본인인증을 마쳐 주세요.",en:"Please agree to the agreement and verify your identity.",ja:"契約への同意と本人認証を済ませてください。",zhs:"请完成合同同意和实名认证。",zht:"請完成合約同意和實名認證。",es:"Acepta el contrato y verifica tu identidad."}};
+var GIDV={st:"",ok:null};
+function gEcHtml(){ var L=LG6, v=GEC_V;
+  return '<label class="iglb">'+esc(L(GEC.lbl))+'</label><div class="ghint" style="font-size:13px;line-height:1.5">'+esc(L(GEC.note))+'</div>'
+    +'<iframe src="docs/guide_contract_ko.html?v='+v+'" title="'+esc(L(GEC.lbl))+'" style="display:block;width:100%;height:340px;margin:6px 0 4px;border:1px solid var(--line);border-radius:10px;background:#fff"></iframe>'
+    +'<a href="docs/guide_contract_ko.pdf?v='+v+'" target="_blank" rel="noopener" style="font-size:13px;font-weight:700;color:#0c8599">'+esc(L(GEC.pdf))+' ›</a>'
+    +'<label class="igchk" style="margin-top:8px"><input type="checkbox" id="gCtAg"> '+esc(L(GEC.agree))+'</label>'
+    +'<button type="button" id="gIdv" style="display:block;width:100%;margin:8px 0 2px;padding:11px;border:1.5px solid #0c8599;border-radius:12px;background:var(--card);color:#0c8599;font-size:15px;font-weight:900;cursor:pointer">'+esc(L(GEC.go))+'</button>'
+    +'<div class="ghint" id="gIdvM" style="font-size:13px;font-weight:700"></div>'; }
+function gIdvPaint(t,bad){ var m=document.getElementById("gIdvM"), b=document.getElementById("gIdv"); if(!m) return;
+  if(GIDV.ok){ var bd=String(GIDV.ok.bd||""); m.textContent=LG6(GEC.ok).replace("{n}",GIDV.ok.name).replace("{b}",bd.slice(0,4)+"-"+bd.slice(4,6)+"-"+bd.slice(6,8)); m.style.color="#2f9e44"; if(b) b.style.display="none"; return; }
+  m.textContent=t||""; m.style.color=bad?"#e03131":""; if(b) b.style.display=""; }
+function gDraftSave(){ try{ var g=function(i){ var e=document.getElementById(i); return e?e.value:""; }, d={};
+  ["gNm","gNmEn","gLic","gYr","gRg","gIn","gEm","gTel"].forEach(function(i){ d[i]=g(i); });
+  d.langs=[].map.call(document.querySelectorAll(".gLchk:checked"),function(c){ return c.value; }); d.ag=!!(document.getElementById("gAg")||{}).checked; d.ct=!!(document.getElementById("gCtAg")||{}).checked;
+  d.photo=GREGV.photo; d.lic=GREGV.lic; d.st=GIDV.st; sessionStorage.setItem("mpv_greg_draft",JSON.stringify(d)); }catch(e){} }
+function gDraftLoad(){ var d=null; try{ d=JSON.parse(sessionStorage.getItem("mpv_greg_draft")||"null"); sessionStorage.removeItem("mpv_greg_draft"); }catch(e){} if(!d) return null;
+  ["gNm","gNmEn","gLic","gYr","gRg","gIn","gEm","gTel"].forEach(function(i){ var e=document.getElementById(i); if(e&&d[i]!=null) e.value=d[i]; });
+  [].forEach.call(document.querySelectorAll(".gLchk"),function(c){ c.checked=(d.langs||[]).indexOf(c.value)>=0; });
+  var a=document.getElementById("gAg"); if(a) a.checked=!!d.ag; var c2=document.getElementById("gCtAg"); if(c2) c2.checked=!!d.ct;
+  [["photo","gPv"],["lic","gLv"]].forEach(function(q){ if(d[q[0]]){ GREGV[q[0]]=d[q[0]]; var p=document.getElementById(q[1]); if(p){ p.src=d[q[0]]; p.style.display="inline-block"; } } }); return d; }
+function gIdvSdk(){ if(window.PortOne&&PortOne.requestIdentityVerification) return Promise.resolve();
+  return new Promise(function(ok,no){ var x=document.createElement("script"); x.src="https://cdn.portone.io/v2/browser-sdk.js"; x.onload=ok; x.onerror=no; document.head.appendChild(x); }); }
+function gIdvDone(st){ gIdvPaint("…");
+  return fetch(HUB+"/guide/idv/done",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({st:st}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
+    if(j&&j.ok){ GIDV={st:st,ok:{name:j.name,bd:j.bd}}; gIdvPaint(); } else gIdvPaint(LG6(GEC.fail),true); }).catch(function(){ gIdvPaint(LG6(GEC.fail),true); }); }
+function gIdvGo(){ var ag=document.getElementById("gCtAg"); if(!ag||!ag.checked){ gIdvPaint(LG6(GEC.first),true); return; } gIdvPaint(LG6(GEC.busy));
+  fetch(HUB+"/guide/idv/start",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}",cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){
+    if(!j||!j.ok){ gIdvPaint(LG6(j&&j.err==="noprov"?GEC.none:GEC.fail),true); return; }
+    GIDV={st:j.st,ok:null}; gDraftSave();   // 폰은 인증 화면으로 넘어갔다가 돌아온다 — 쓰던 칸을 잠깐 둔다
+    return gIdvSdk().then(function(){ return PortOne.requestIdentityVerification({storeId:j.s,channelKey:j.c,identityVerificationId:j.st,redirectUrl:location.origin+location.pathname+"?gidv="+j.st}); })
+      .then(function(r){ if(r&&r.code){ try{ sessionStorage.removeItem("mpv_greg_draft"); }catch(e){} gIdvPaint(LG6(GEC.fail),true); return; } try{ sessionStorage.removeItem("mpv_greg_draft"); }catch(e){} return gIdvDone(j.st); }); })
+  .catch(function(){ gIdvPaint(LG6(GEC.fail),true); }); }
+// 폰 — 인증 화면에서 돌아오면(?gidv=…) 등록 창을 다시 열고 쓰던 칸을 되살린 뒤 결과를 확인한다
+(function(){ var m=location.search.match(/[?&]gidv=(gct[0-9a-f]{24})/); if(!m) return; var fail=/[?&]code=/.test(location.search);
+  try{ history.replaceState(null,"",location.pathname+location.hash); }catch(e){}
+  var go=function(){ try{ gReg(); gDraftLoad(); var e=document.getElementById("gIdv"); if(e) e.scrollIntoView({block:"center"}); if(fail) gIdvPaint(LG6(GEC.fail),true); else gIdvDone(m[1]); }catch(e){} };
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",function(){ setTimeout(go,400); }); else setTimeout(go,400); })();
+// (옛) 서명한 계약서 사진 올리기 — 11-13 전자 계약으로 바꿔 등록·수정 화면에서 안 씀(옛 가이드 사진은 관리자 화면에서 그대로 볼 수 있음)
 var GCT={
   lbl:{ko:"업무위탁 계약서 *",en:"Service agreement *",ja:"業務委託契約書 *",zhs:"业务委托合同 *",zht:"業務委託合約 *",es:"Contrato de prestación de servicios *"},
   note:{ko:"계약서를 내려받아 서명한 뒤 스캔하거나 사진으로 찍어 올려 주세요. 회사가 확인하고 승인합니다.",en:"Download the agreement, sign it, then scan or photograph it and upload. The company reviews it before approval. (The agreement is in Korean.)",ja:"契約書をダウンロードして署名し、スキャンまたは写真に撮ってアップロードしてください。会社が確認して承認します。（契約書は韓国語です）",zhs:"请下载合同并签名，然后扫描或拍照上传。公司确认后予以批准。（合同为韩语）",zht:"請下載合約並簽名，然後掃描或拍照上傳。公司確認後予以核准。（合約為韓語）",es:"Descarga el contrato, fírmalo y luego escanéalo o fotografíalo y súbelo. La empresa lo revisa antes de aprobar. (El contrato está en coreano.)"},
@@ -1008,7 +1060,7 @@ var GCT={
   err:{ko:"서명한 계약서 사진을 다시 올려 주세요 (JPG).",en:"Please re-upload the signed agreement photos (JPG).",ja:"署名済み契約書の写真を再アップロードしてください（JPG）。",zhs:"请重新上传已签名合同的照片（JPG）。",zht:"請重新上傳已簽名合約的照片（JPG）。",es:"Vuelve a subir las fotos del contrato firmado (JPG)."} };
 function gCtHtml(edit,pid,bid,mid){ var L=LG6;
   return (edit?'':'<label class="iglb">'+esc(L(GCT.lbl))+'</label><div class="ghint" style="font-size:13px;line-height:1.5">'+esc(L(GCT.note))+'</div>'
-    +'<a href="docs/guide_contract_ko.pdf" target="_blank" rel="noopener" style="display:inline-block;margin:6px 0 2px;padding:8px 14px;border:1.5px solid #0c8599;border-radius:10px;color:#0c8599;font-weight:800;font-size:14px;text-decoration:none">'+esc(L(GCT.dl))+'</a>')
+    +'<a href="docs/guide_contract_ko.pdf?v=1113" target="_blank" rel="noopener" style="display:inline-block;margin:6px 0 2px;padding:8px 14px;border:1.5px solid #0c8599;border-radius:10px;color:#0c8599;font-weight:800;font-size:14px;text-decoration:none">'+esc(L(GCT.dl))+'</a>')
     +'<label class="iglb">'+esc(L(edit?GCT.upE:GCT.up))+'</label><div id="'+bid+'" style="display:flex;flex-wrap:wrap;gap:10px;margin:4px 0"></div><input type="file" accept="image/*" multiple id="'+pid+'">'
     +'<div class="ghint" id="'+mid+'" style="font-size:12px;color:var(--sub);margin:2px 2px 0">'+esc(L(GCT.hint))+'</div>'; }
 function gCtBind(pid,bid,mid,st){ var e=document.getElementById(pid); if(!e) return; if(!st.ct) st.ct=[];
@@ -1046,31 +1098,32 @@ function gReg(){ css(); var o=document.getElementById("gregBox"); if(o) o.remove
     +'<label class="iglb">'+esc(L({ko:"사진 *",en:"Photo *",ja:"写真 *",zhs:"照片 *",zht:"照片 *",es:"Foto *"}))+'</label><div class="gph"><img class="gpv" id="gPv" alt="" style="display:none"><input type="file" accept="image/*" id="gPh"></div>'
     +'<label class="iglb">'+esc(L({ko:"가능 언어 * (여러 개)",en:"Languages spoken * (multiple)",ja:"対応言語 *（複数可）",zhs:"可用语言 *（可多选）",zht:"可用語言 *（可多選）",es:"Idiomas * (varios)"}))+'</label><div class="glg">'+langsH+'</div>'
     +'<label class="iglb">'+esc(L({ko:"관광통역안내사 자격증 번호 *",en:"Tour-guide license number *",ja:"通訳案内士 資格番号 *",zhs:"导游资格证号 *",zht:"導遊資格證號 *",es:"Número de licencia de guía *"}))+'</label><input class="igin" id="gLic" maxlength="40" placeholder="예: A1234567"><div class="ghint">'+esc(L({ko:"자격증에 적힌 번호를 영문·숫자로 적어 주세요.",en:"Enter the alphanumeric number shown on your license.",ja:"資格証の番号を英数字で入力してください。",zhs:"请输入资格证上的英数字号码。",zht:"請輸入資格證上的英數字號碼。",es:"Introduce el número alfanumérico de tu licencia."}))+'</div>'
-    +'<label class="iglb">'+esc(L({ko:"자격증 사본 *",en:"License photo *",ja:"資格証の写し *",zhs:"资格证照片 *",zht:"資格證照片 *",es:"Foto de la licencia *"}))+'</label><div class="gph"><img class="gpv" id="gLv" alt="" style="display:none"><input type="file" accept="image/*" id="gLp"></div>'+gCtHtml(false,"gCp","gCv","gCm")
+    +'<label class="iglb">'+esc(L({ko:"자격증 사본 *",en:"License photo *",ja:"資格証の写し *",zhs:"资格证照片 *",zht:"資格證照片 *",es:"Foto de la licencia *"}))+'</label><div class="gph"><img class="gpv" id="gLv" alt="" style="display:none"><input type="file" accept="image/*" id="gLp"></div>'+gEcHtml()
     +'<label class="iglb">'+esc(L({ko:"경력 (년)",en:"Years of experience",ja:"経験年数",zhs:"从业年数",zht:"從業年數",es:"Años de experiencia"}))+'</label><input class="igin" id="gYr" inputmode="numeric" maxlength="2">'
     +'<label class="iglb">'+esc(L({ko:"활동 지역",en:"Region",ja:"活動地域",zhs:"活动地区",zht:"活動地區",es:"Región"}))+'</label><input class="igin" id="gRg" maxlength="40" placeholder="'+esc(L({ko:"예: 서울, 부산",en:"e.g. Seoul, Busan",ja:"例：ソウル、釜山",zhs:"例：首尔、釜山",zht:"例：首爾、釜山",es:"p. ej. Seúl, Busan"}))+'">'
     +'<label class="iglb">'+esc(L({ko:"자기소개 (짧게)",en:"Short self-introduction",ja:"自己紹介（短く）",zhs:"简短自我介绍",zht:"簡短自我介紹",es:"Breve presentación"}))+'</label><textarea class="igin" id="gIn" maxlength="500"></textarea>'
     +'<label class="iglb">'+esc(L({ko:"이메일 *",en:"Email *",ja:"メール *",zhs:"邮箱 *",zht:"電郵 *",es:"Correo *"}))+'</label><input class="igin" id="gEm" type="email" maxlength="120" autocomplete="email">'
     +'<label class="iglb">'+esc(L({ko:"전화 (선택)",en:"Phone (optional)",ja:"電話（任意）",zhs:"电话（可选）",zht:"電話（可選）",es:"Teléfono (opcional)"}))+'</label><input class="igin" id="gTel" inputmode="tel" maxlength="30">'
-    +'<label class="igchk"><input type="checkbox" id="gAg"> '+esc(L({ko:"개인정보 수집·이용에 동의합니다. (목적: 가이드 등록·승인·손님 연결 · 항목: 이름·사진·언어·자격증 번호·자격증 사본·서명한 계약서 사본·연락처 · 보관: 탈퇴 또는 1년 뒤 가이드 요청으로 삭제 · 연락처는 암호화 보관)",en:"I agree to the collection and use of my personal data. (Purpose: guide registration, approval and traveler matching · Items: name, photo, languages, license number, license photo, copy of the signed agreement, contact · Contact stored encrypted)",ja:"個人情報の収集・利用に同意します。（目的：ガイド登録・承認・お客様とのマッチング／項目：氏名・写真・言語・資格番号・資格証の写し・署名済み契約書の写し・連絡先／連絡先は暗号化保管）",zhs:"我同意收集和使用个人信息。（目的：导游登记·审核·对接游客／项目：姓名·照片·语言·资格证号·资格证照片·已签名合同副本·联系方式／联系方式加密保存）",zht:"我同意收集和使用個人資訊。（目的：嚮導登記·審核·對接旅客／項目：姓名·照片·語言·資格證號·資格證照片·已簽名合約副本·聯絡方式／聯絡方式加密保存）",es:"Acepto la recogida y uso de mis datos personales. (Fin: registro, aprobación y conexión con viajeros · Datos: nombre, foto, idiomas, número de licencia, foto de licencia, copia del contrato firmado, contacto · Contacto cifrado)"}))+'</label>'
+    +'<label class="igchk"><input type="checkbox" id="gAg"> '+esc(L({ko:"개인정보 수집·이용에 동의합니다. (목적: 가이드 등록·승인·손님 연결 · 항목: 이름·사진·언어·자격증 번호·자격증 사본·계약 동의 기록·본인인증 결과(이름·생년월일·휴대폰 번호)·연락처 · 보관: 탈퇴 또는 1년 뒤 가이드 요청으로 삭제 · 연락처는 암호화 보관)",en:"I agree to the collection and use of my personal data. (Purpose: guide registration, approval and traveler matching · Items: name, photo, languages, license number, license photo, agreement consent record and identity verification result (name, date of birth, mobile number), contact · Contact stored encrypted)",ja:"個人情報の収集・利用に同意します。（目的：ガイド登録・承認・お客様とのマッチング／項目：氏名・写真・言語・資格番号・資格証の写し・契約同意の記録・本人認証の結果（氏名・生年月日・携帯番号）・連絡先／連絡先は暗号化保管）",zhs:"我同意收集和使用个人信息。（目的：导游登记·审核·对接游客／项目：姓名·照片·语言·资格证号·资格证照片·合同同意记录·实名认证结果（姓名·出生日期·手机号）·联系方式／联系方式加密保存）",zht:"我同意收集和使用個人資訊。（目的：嚮導登記·審核·對接旅客／項目：姓名·照片·語言·資格證號·資格證照片·合約同意記錄·實名認證結果（姓名·出生日期·手機號碼）·聯絡方式／聯絡方式加密保存）",es:"Acepto la recogida y uso de mis datos personales. (Fin: registro, aprobación y conexión con viajeros · Datos: nombre, foto, idiomas, número de licencia, foto de licencia, registro de aceptación del contrato y resultado de la verificación de identidad (nombre, fecha de nacimiento, móvil), contacto · Contacto cifrado)"}))+'</label>'
     +'<button type="button" class="gbtn" id="gGo">'+esc(L({ko:"등록 신청",en:"Register",ja:"登録申請",zhs:"提交登记",zht:"提交登記",es:"Registrarme"}))+'</button>'
     +'<div class="ignt" id="gMsg"></div></div>';
   document.body.appendChild(o);
   document.getElementById("gX").onclick=function(){ o.remove(); };
   var bindPhoto=function(inp,prev,key){ var e=document.getElementById(inp); e.onchange=function(){ var f=e.files&&e.files[0]; if(!f){ GREGV[key]=null; return; } gShrink(f,function(d){ GREGV[key]=d; var p=document.getElementById(prev); if(d&&p){ p.src=d; p.style.display="inline-block"; } }); }; };
-  bindPhoto("gPh","gPv","photo"); bindPhoto("gLp","gLv","lic"); gCtBind("gCp","gCv","gCm",GREGV);
+  bindPhoto("gPh","gPv","photo"); bindPhoto("gLp","gLv","lic"); GIDV={st:"",ok:null}; document.getElementById("gIdv").onclick=gIdvGo;
   document.getElementById("gGo").onclick=gRegSend;
 }
 function gRegSend(){ var L=LG6, M=document.getElementById("gMsg"), set=function(t){ if(M) M.textContent=t; };
   var g=function(i){ var e=document.getElementById(i); return e?String(e.value||"").trim():""; };
   var langs=[].map.call(document.querySelectorAll(".gLchk:checked"),function(c){ return c.value; });
   var nm=g("gNm"), lic=g("gLic"), em=g("gEm"), rg=g("gRg");
-  if(!nm||!langs.length||!lic||!em||!rg||!GREGV.photo||!GREGV.lic||!GREGV.ct.length){ set(L({ko:"* 칸(이름·사진·언어·자격증 번호·자격증 사본·서명한 계약서·지역·이메일)을 채워 주세요.",en:"Please fill the * fields (name, photo, languages, license number, license photo, signed agreement, region, email).",ja:"*項目（氏名・写真・言語・資格番号・資格証の写し・署名済み契約書・地域・メール）を入力してください。",zhs:"请填写*项（姓名·照片·语言·资格证号·资格证照片·已签名合同·地区·邮箱）。",zht:"請填寫*項（姓名·照片·語言·資格證號·資格證照片·已簽名合約·地區·電郵）。",es:"Completa los campos * (nombre, foto, idiomas, licencia, foto de licencia, contrato firmado, región, correo)."})); return; }
+  if(!nm||!langs.length||!lic||!em||!rg||!GREGV.photo||!GREGV.lic){ set(L({ko:"* 칸(이름·사진·언어·자격증 번호·자격증 사본·지역·이메일)을 채워 주세요.",en:"Please fill the * fields (name, photo, languages, license number, license photo, region, email).",ja:"*項目（氏名・写真・言語・資格番号・資格証の写し・地域・メール）を入力してください。",zhs:"请填写*项（姓名·照片·语言·资格证号·资格证照片·地区·邮箱）。",zht:"請填寫*項（姓名·照片·語言·資格證號·資格證照片·地區·電郵）。",es:"Completa los campos * (nombre, foto, idiomas, licencia, foto de licencia, región, correo)."})); return; }
+  if(!(document.getElementById("gCtAg")||{}).checked||!GIDV.ok){ set(L(GEC.need)); return; }
   if(!document.getElementById("gAg").checked){ set(L({ko:"개인정보 수집·이용에 동의해 주세요.",en:"Please agree to the privacy notice.",ja:"個人情報の取り扱いに同意してください。",zhs:"请同意个人信息处理。",zht:"請同意個人資訊處理。",es:"Acepta el aviso de privacidad."})); return; }
   var go=document.getElementById("gGo"); if(go) go.disabled=true; set("…");
-  fetch(HUB+"/guide/join",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:nm,name_en:g("gNmEn"),langs:langs,lic:lic,years:g("gYr"),region:rg,intro:g("gIn"),email:em,phone:g("gTel"),photo:GREGV.photo,licPhoto:GREGV.lic,contract:GREGV.ct.slice(0,3),consent:true}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ if(go) go.disabled=false;
+  fetch(HUB+"/guide/join",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:nm,name_en:g("gNmEn"),langs:langs,lic:lic,years:g("gYr"),region:rg,intro:g("gIn"),email:em,phone:g("gTel"),photo:GREGV.photo,licPhoto:GREGV.lic,ctAgree:true,ctv:GEC_V,idv:GIDV.st,consent:true}),cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ if(go) go.disabled=false;
     if(j&&j.ok){ var o=document.getElementById("gregBox"); if(o) o.querySelector(".gin").innerHTML='<button type="button" class="gx" onclick="document.getElementById(\'gregBox\').remove()">✕</button><h3>✓ '+esc(L({ko:"등록 신청이 접수되었습니다",en:"Registration received",ja:"登録申請を受け付けました",zhs:"已收到登记申请",zht:"已收到登記申請",es:"Registro recibido"}))+'</h3><div class="gsub">'+esc(L({ko:"담당자가 자격증을 확인한 뒤 승인해 드립니다. 승인되면 손님이 투어 가이드에서 회원님을 볼 수 있어요.",en:"We will approve after verifying your license. Once approved, travelers can find you under Tour guide.",ja:"資格確認後に承認します。承認後、お客様がツアーガイドで見つけられます。",zhs:"核验资格后审核通过。通过后游客可在「旅游向导」中找到您。",zht:"核驗資格後審核通過。通過後旅客可在「旅遊嚮導」中找到您。",es:"Aprobaremos tras verificar tu licencia. Luego los viajeros podrán encontrarte en Guía turístico."}))+'</div><button type="button" class="gbtn" onclick="document.getElementById(\'gregBox\').remove()">'+esc(L({ko:"닫기",en:"Close",ja:"閉じる",zhs:"关闭",zht:"關閉",es:"Cerrar"}))+'</button>'; return; }
-    set(j&&j.err==="contract"?L(GCT.err):j&&j.err==="photo"||j&&j.err==="licphoto"?L({ko:"사진을 다시 올려 주세요 (JPEG).",en:"Please re-upload the photo (JPEG).",ja:"写真を再アップロードしてください（JPEG）。",zhs:"请重新上传照片（JPEG）。",zht:"請重新上傳照片（JPEG）。",es:"Vuelve a subir la foto (JPEG)."}):j&&j.err==="rate"?L({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてから。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):L({ko:"보내지 못했습니다. 칸을 확인해 주세요.",en:"Could not send. Please check the fields.",ja:"送信できませんでした。入力をご確認ください。",zhs:"发送失败，请检查填写。",zht:"發送失敗，請檢查填寫。",es:"No se pudo enviar. Revisa los campos."})); })
+    set(j&&(j.err==="idv"||j.err==="ctagree")?L(GEC.need):j&&j.err==="photo"||j&&j.err==="licphoto"?L({ko:"사진을 다시 올려 주세요 (JPEG).",en:"Please re-upload the photo (JPEG).",ja:"写真を再アップロードしてください（JPEG）。",zhs:"请重新上传照片（JPEG）。",zht:"請重新上傳照片（JPEG）。",es:"Vuelve a subir la foto (JPEG)."}):j&&j.err==="rate"?L({ko:"잠시 뒤 다시 해 주세요.",en:"Please try again later.",ja:"しばらくしてから。",zhs:"请稍后再试。",zht:"請稍後再試。",es:"Inténtalo más tarde."}):L({ko:"보내지 못했습니다. 칸을 확인해 주세요.",en:"Could not send. Please check the fields.",ja:"送信できませんでした。入力をご確認ください。",zhs:"发送失败，请检查填写。",zht:"發送失敗，請檢查填寫。",es:"No se pudo enviar. Revisa los campos."})); })
   .catch(function(){ if(go) go.disabled=false; set(L({ko:"연결에 실패했습니다.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
 window.GUIDEREG=gReg;
 window.NEAR={open:open,close:close,review:openReview,gedit:openGedit,tdone:openTdone,state:function(){ return S; }};
