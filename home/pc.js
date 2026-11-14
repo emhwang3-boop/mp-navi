@@ -48,9 +48,9 @@ var TX={
  w1p:T6("가고 싶은 곳을 내 일정대로 다니고, 현지 가이드가 함께 다니며 안내와 통역을 해 드려요.","Go where you want on your own schedule — a local guide comes along to show you around and interpret.","行きたい場所を自分の日程で回り、現地ガイドが同行して案内と通訳をします。","按自己的行程去想去的地方，当地向导全程陪同，为您讲解和翻译。","按自己的行程去想去的地方，當地嚮導全程陪同，為您講解和翻譯。","Ve adonde quieras con tu propio horario: un guía local te acompaña, te orienta y te hace de intérprete."),
  w1m:T6("반일 · 하루 · 여러 날","Half day · Full day · Several days","半日・1日・複数日","半天 · 一天 · 多天","半天 · 一天 · 多天","Medio día · Un día · Varios días"),
  w1g:T6("가이드 고르기 ›","Choose a guide ›","ガイドを選ぶ ›","选择向导 ›","選擇嚮導 ›","Elige un guía ›"),
- w2t:T6("패키지여행","Group Tour","パッケージツアー","跟团游","跟團遊","Tour en grupo"),
- w2p:T6("정해진 코스와 시간에 다른 여행자들과 함께 떠나요. 날짜와 인원만 고르면 돼요.","Set routes and times, shared with other travelers. Just pick a date and the number of people.","決まったコースと時間に、ほかの旅行者と一緒に出かけます。日付と人数を選ぶだけです。","按固定路线和时间，与其他游客一起出发。只需选择日期和人数。","按固定路線和時間，與其他旅客一起出發。只需選擇日期和人數。","Rutas y horarios fijos, compartidos con otros viajeros. Solo elige la fecha y el número de personas."),
- w2m:T6("가이드 · 입장권 · 체험 포함","Guide · tickets · activities included","ガイド・入場券・体験込み","含向导·门票·体验","含嚮導·門票·體驗","Guía · entradas · actividades incluidas"),
+ w2t:T6("프라이빗 카투어","Private Car Tours","プライベートカーツアー","私人包车游","私人包車遊","Tours privados en coche"),   // 11-14 사장님 「패키지 투어를 프라이빗 카투어로」
+ w2p:T6("기사가 운전하는 전용 승합차로 정해진 코스를 돌아요. 날짜·인원·픽업 숙소만 고르면 돼요.","Set routes in a private minivan with a driver. Just pick a date, the number of people and your hotel.","ドライバーが運転する専用ワゴン車で決まったコースを回ります。日付・人数・お迎えのホテルを選ぶだけ。","由司机驾驶的专属商务车走固定路线。只需选择日期、人数和接送住处。","由司機駕駛的專屬商務車走固定路線。只需選擇日期、人數和接送住處。","Rutas fijas en un monovolumen privado con conductor. Solo elige la fecha, cuántas personas sois y tu hotel."),   // 11-14
+ w2m:T6("서울 · DMZ · 근교 · 경주","Seoul · DMZ · Day trips · Gyeongju","ソウル・DMZ・近郊・慶州","首尔·DMZ·近郊·庆州","首爾·DMZ·近郊·慶州","Seúl · DMZ · Alrededores · Gyeongju"),   // 11-14
  w2g:T6("상품 보기 ›","See tours ›","商品を見る ›","查看产品 ›","查看商品 ›","Ver tours ›"),
  w3t:T6("AI와 자유여행","DIY Trip","DIY旅行","自助游","自助旅行","Viaje a tu aire"),
  w3p:T6("가고 싶은 곳을 담으면 AI가 날짜별 일정을 짜 드려요.","Add the places you want to go, and AI plans your trip day by day.","行きたい場所を追加すると、AIが日ごとの日程を組みます。","加入想去的地方，AI 为您按天安排行程。","加入想去的地方，AI 為您按天安排行程。","Añade los lugares que quieres visitar y la IA arma tu plan día a día."),
@@ -58,7 +58,8 @@ var TX={
  w3g:T6("일정 짜기 ›","Plan a trip ›","日程を作る ›","制定行程 ›","制定行程 ›","Planear viaje ›"),
  free:T6("무료","Free","無料","免费","免費","Gratis"),
  opt:T6("선택","Optional","任意","可选","可選","Opcional"),
- pkg:T6("대표 패키지 상품","Featured group tours","主なパッケージツアー","精选跟团游","精選跟團遊","Tours en grupo destacados"),
+ pkg:T6("프라이빗 카투어 상품","Private car tours","プライベートカーツアー","私人包车游","私人包車遊","Tours privados en coche"),   // 11-14 옛 「대표 패키지 상품」
+ pkgOld:T6("대표 패키지 상품","Featured group tours","主なパッケージツアー","精选跟团游","精選跟團遊","Tours en grupo destacados"),
  all:T6("전체 보기 ›","See all ›","すべて見る ›","查看全部 ›","查看全部 ›","Ver todo ›"),
  prev:T6("이전","Previous","前へ","上一个","上一個","Anterior"),
  next:T6("다음","Next","次へ","下一个","下一個","Siguiente"),
@@ -155,7 +156,7 @@ function paint(){ var lg=window.LANG||"ko";
   chipsPaint(); waysPaint(); pkgPaint(); appPaint(); footPaint();
   setTimeout(eqGo,0); }
 function waysPaint(){ $("phWaysT").textContent=L6(TX.ways);
-  var W=[["mi_guideperson",TX.w1t,"",TX.w1p,E(L6(TX.w1m)),TX.w1g],["mi_guide",TX.w2t,"",TX.w2p,E(L6(TX.w2m)),TX.w2g],["mi_backpack",TX.w3t,' <span class="ph-free">'+E(L6(TX.free))+'</span>',TX.w3p,E(L6(TX.w3m))+' <span class="ph-opt">'+E(L6(TX.opt))+'</span>',TX.w3g]];
+  var W=[["mi_guideperson",TX.w1t,"",TX.w1p,E(L6(TX.w1m)),TX.w1g],["mi_charter",TX.w2t,"",TX.w2p,E(L6(TX.w2m)),TX.w2g],["mi_backpack",TX.w3t,' <span class="ph-free">'+E(L6(TX.free))+'</span>',TX.w3p,E(L6(TX.w3m))+' <span class="ph-opt">'+E(L6(TX.opt))+'</span>',TX.w3g]];
   $("phWaysL").innerHTML=W.map(function(w,i){ return '<div class="ph-way" data-w="'+i+'"><div class="ph-ic">'+img(w[0])+'</div><h3>'+E(L6(w[1]))+w[2]+'</h3><p>'+E(L6(w[3]))+'</p><div class="ph-meta">'+w[4]+'</div><div class="ph-gorow"><button type="button" class="ph-go">'+E(L6(w[5]))+'</button></div></div>'; }).join(""); }
 // 11-11 사장님 「달력 말고 모포 밧줄 등등이 달린 배낭」 — AI와 자유여행 카드 아이콘 mi_backpack (mi_calendar 는 날짜 칸에 그대로)
 // 카드 단추 같은 크기 (사장님 11-08 「카드 단추는 같은 크기·오른쪽 맞춤」)
@@ -169,7 +170,7 @@ function langOf(p){ var a=(p.langs||[]).filter(function(x){ return /^(ko|en|ja|z
   var N={ko:"한국어",en:"English",ja:"日本語",zhs:"中文(简)",zht:"中文(繁)",es:"Español"}; return a.map(function(x){ return N[x]; }).join(" · "); }
 function pkgCard(p){ var b={}; try{ b=SHOP.brief(p)||{}; }catch(e){}
   var m=/₩\s?([\d,]+)/.exec(b.from||""), pr="";
-  var per=(p.id==="chr"&&b.per)?b.per:L6(TX.per);   // 차량 대절은 「차 1대」 (11-11)
+  var per=((p.id==="chr"||(window.CHR&&CHR.isCrs&&CHR.isCrs(p.id)))&&b.per)?b.per:L6(TX.per);   // + 프라이빗 카투어 「차 1대」 (11-14)   // 차량 대절은 「차 1대」 (11-11)
   if(m) pr=window.LANG==="ko"?'<small>'+E(per)+'</small><b>'+E(L6(TX.won).replace("{n}",m[1]))+'</b>':'<b>'+E(L6(TX.won).replace("{n}",m[1]))+'</b><small>'+E(per)+'</small>';
   else try{ var X=SHOP.pc; if(X&&X.isExt(p)) pr='<small>'+E(X.L(X.TX.pxt))+'</small>'; }catch(e){}   // 공연 관람 등 바깥 예매처 — 「가격은 예매처에서」 (앱 카드·패키지 목록과 같은 말)
   var mt=[Lx(p.dur),langOf(p)].filter(Boolean).join(" · "), area=Lx(p.area), rv=window.rvMini?rvMini("shop:"+p.id):"";
