@@ -25,7 +25,7 @@ function wide(){ return !(window.matchMedia&&matchMedia("(max-width:1000px)").ma
 // ── 글 (6개 언어) ──
 var TX={
  t:T6("내 예약","My bookings","予約確認","我的预约","我的預約","Mis reservas"),   // 머리줄 단추와 같은 말 (pc.js TX.bk)
- sub:T6("예약한 가이드 인솔·패키지·일정 검토를 한곳에서","Your guided trips, group tours and plan reviews in one place","予約したガイド同行・パッケージ・日程チェックをまとめて","在这里查看您预约的向导陪同、跟团游和行程检查","在這裡查看您預約的嚮導陪同、跟團遊和行程檢查","Tus viajes con guía, tours en grupo y revisiones del plan en un solo lugar"),
+ sub:T6("예약한 가이드 인솔·프라이빗 카투어·일정 검토를 한곳에서","Your guided trips, private car tours and plan reviews in one place","予約したガイド同行・プライベートカーツアー・日程チェックをまとめて","在这里查看您预约的向导陪同·私人包车游·行程检查","在這裡查看您預約的嚮導陪同·私人包車遊·行程檢查","Tus viajes con guía, tours privados en coche y revisiones del plan en un solo lugar"),   // 11-14
  who:T6("{e} 계정으로 로그인","Signed in as {e}","{e} でログイン中","已登录：{e}","已登入：{e}","Sesión iniciada como {e}"),
  out:T6("로그아웃","Sign out","ログアウト","退出登录","登出","Cerrar sesión"),
  view:T6("보기","Show","表示","查看","查看","Mostrar"),
@@ -34,11 +34,11 @@ var TX={
  kind:T6("종류","Type","種類","类型","類型","Tipo"),
  all:T6("전체","All","すべて","全部","全部","Todas"),
  gbk:T6("가이드 인솔","Travel with Guide","ガイド同行","向导陪同","嚮導陪同","Viaje con guía"),
- pkg:T6("패키지","Group Tour","パッケージ","跟团游","跟團遊","Tour en grupo"),
+ pkg:T6("카투어","Car tour","カーツアー","包车游","包車遊","Tour en coche"),   // 11-14 옛 「패키지」
  grv:T6("일정 검토","Plan review","日程チェック","行程检查","行程檢查","Revisión del plan"),
  // 왼쪽 종류 단추(2×2, 같은 크기 한 줄) — 영어·스페인어는 칸이 좁아 짧게 · 카드 이름표는 위 이름 그대로
  cGbk:T6("가이드 인솔","With guide","ガイド同行","向导陪同","嚮導陪同","Con guía"),
- cPkg:T6("패키지","Group tour","パッケージ","跟团游","跟團遊","En grupo"),
+ cPkg:T6("카투어","Car tour","カーツアー","包车游","包車遊","En coche"),   // 11-14
  cGrv:T6("일정 검토","Plan review","日程チェック","行程检查","行程檢查","Revisión"),
  note:T6("취소·환불된 예약, 후기까지 끝난 예약, 끝난 지 7일이 지난 예약은 「지난 예약」에 있어요.","Cancelled or refunded bookings, bookings you've finished reviewing, and bookings that ended over 7 days ago are under “Past”.","キャンセル・返金された予約、レビューまで終わった予約、終了から7日たった予約は「過去の予約」にあります。","已取消·退款的预约、已写完评价的预约，以及结束超过7天的预约都在「已结束」中。","已取消·退款的預約、已寫完評價的預約，以及結束超過7天的預約都在「已結束」中。","Las reservas canceladas o reembolsadas, las que ya reseñaste y las que terminaron hace más de 7 días están en «Pasadas»."),
  foot:T6("패키지는 투어 날부터 「별점·후기」 단추가 생겨요. 가이드 인솔은 대화방에서 「투어 완료」를 누른 뒤 후기를 남겨요.","For group tours, the “Rate & review” button appears from the tour day. For trips with a guide, tap “Tour done” in the chat, then leave a review.","パッケージはツアー当日から「評価・レビュー」ボタンが表示されます。ガイド同行はチャットで「ツアー完了」を押してからレビューを書きます。","跟团游从导览当天起会出现「评分·评价」按钮。向导陪同请在聊天室点击「导览完成」后再写评价。","跟團遊從導覽當天起會出現「評分·評價」按鈕。嚮導陪同請在聊天室點擊「導覽完成」後再寫評價。","En los tours en grupo, el botón «Valorar y reseñar» aparece desde el día del tour. En los viajes con guía, pulsa «Tour completado» en el chat y luego deja tu reseña."),
@@ -47,7 +47,7 @@ var TX={
  retry:T6("다시 불러오기","Try again","再読み込み","重新加载","重新載入","Reintentar"),
  noUp:T6("다가오는 예약이 없어요.","No upcoming bookings.","これからの予約はありません。","没有即将到来的预约。","沒有即將到來的預約。","No tienes próximas reservas."),
  noPast:T6("지난 예약이 없어요.","No past bookings.","過去の予約はありません。","没有已结束的预约。","沒有已結束的預約。","No tienes reservas pasadas."),
- none:T6("아직 예약이 없어요. 가이드 인솔·패키지·가이드 일정 검토를 예약하면 여기에 모여요.","No bookings yet. Trips with a guide, group tours and plan reviews you book will show up here.","まだ予約はありません。ガイド同行・パッケージ・ガイドによる日程チェックを予約すると、ここにまとまります。","还没有预约。预约向导陪同、跟团游或向导行程检查后，会显示在这里。","還沒有預約。預約嚮導陪同、跟團遊或嚮導行程檢查後，會顯示在這裡。","Aún no tienes reservas. Aquí aparecerán los viajes con guía, los tours en grupo y las revisiones del plan que reserves."),
+ none:T6("아직 예약이 없어요. 가이드 인솔·프라이빗 카투어·가이드 일정 검토를 예약하면 여기에 모여요.","No bookings yet. Trips with a guide, private car tours and plan reviews you book will show up here.","まだ予約はありません。ガイド同行・プライベートカーツアー・ガイドの日程チェックを予約すると、ここにまとまります。","还没有预约。预约向导陪同·私人包车游·向导行程检查后会显示在这里。","還沒有預約。預約嚮導陪同·私人包車遊·嚮導行程檢查後會顯示在這裡。","Aún no tienes reservas. Aquí aparecerán los viajes con guía, los tours privados en coche y las revisiones del plan que reserves."),   // 11-14
  goG:T6("가이드 고르기 ›","Choose a guide ›","ガイドを選ぶ ›","选择向导 ›","選擇嚮導 ›","Elige un guía ›"),   // 첫 화면 세 가지 여행 방법 단추와 같은 말
  goP:T6("상품 보기 ›","See tours ›","商品を見る ›","查看产品 ›","查看商品 ›","Ver tours ›"),
  goA:T6("일정 짜기 ›","Plan a trip ›","日程を作る ›","制定行程 ›","制定行程 ›","Planear viaje ›"),
