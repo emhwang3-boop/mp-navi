@@ -256,7 +256,7 @@ var AX={
   passB:T6("이용권 보기","See passes","パスを見る","查看通行券","查看通行券","Ver pases"),
   none:T6("알맞은 곳을 찾지 못했어요. 다른 말로 찾아 보세요.","Nothing matched. Try other words.","合う場所が見つかりませんでした。別の言葉で探してみてください。","没有找到合适的地方，请换个说法试试。","沒有找到合適的地方，請換個說法試試。","No encontramos nada. Prueba con otras palabras."),
   plc:T6("장소","Places","スポット","地点","地點","Lugares"),
-  pkg:T6("패키지여행","Group Tour","パッケージツアー","跟团游","跟團遊","Tour en grupo"),   // 11-06 칩 이름과 같게
+  pkg:T6("프라이빗 카투어","Private Car Tours","プライベートカーツアー","私人包车游","私人包車遊","Tours privados en coche"),   // 11-14 옛 「패키지여행」   // 11-06 칩 이름과 같게
   more:T6("자세히 ›","Details ›","詳しく ›","详情 ›","詳情 ›","Detalles ›"),
   back:T6("← 목록으로","← Back to list","← 一覧に戻る","← 返回列表","← 返回列表","← Volver a la lista"),
   from:T6("나에게서","From you","現在地から","距您","距您","Desde ti"),
