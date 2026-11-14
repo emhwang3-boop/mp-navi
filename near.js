@@ -97,7 +97,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +"@media (min-width:700px){#nrBox{overflow:hidden}#nrBox .nrin{height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-color:var(--sub,#8a94a6) var(--line,#e6e9ef);padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}}"   // 넓은 화면 — 가운데 칸 자체가 스크롤, 스크롤바가 칸 가장자리에 (사장님 11-06) · 폰은 그대로
   +".nrtop{display:flex;align-items:center;justify-content:space-between;font-size:18px;margin-bottom:8px}.nrx{width:34px;height:34px;border:0;border-radius:50%;background:var(--card);color:var(--sub);font-size:20px;cursor:pointer}"
   +".nrsos{display:flex;gap:8px;margin:0 0 10px}.nrsos a{flex:1;display:block;text-align:center;text-decoration:none;border-radius:12px;padding:10px 6px;font-weight:900;font-size:15px;line-height:1.25}"
-  +".nrsos a small{display:block;font-size:11.5px;font-weight:700;opacity:.85}.nrsos .s119{background:#e03131;color:#fff}.nrsos .s1330{background:#1971c2;color:#fff}.nrsos .s112{background:#1c2f5e;color:#fff}.nrsos a[data-nr]{cursor:pointer}.nrsos a.on{box-shadow:inset 0 0 0 3px #ffd43b}.nrpol b{display:block;font-size:15px;font-weight:900;margin:2px 0 4px}"
+  +".nrsos a small{display:block;font-size:11.5px;font-weight:700;opacity:.85}.nrsos .s119{background:#e03131;color:#fff}.nrsos .s1330{background:#1971c2;color:#fff}.nrsos .s112{background:#1c2f5e;color:#fff}.nrsos a[data-nr]{cursor:pointer}.nrsos a.on{box-shadow:inset 0 0 0 3px #ffd43b}.nrpol b{display:block;font-size:15px;font-weight:900;margin:2px 0 4px}.nrpol a.nrbig,.nrbig.pol,.item a.nrbig.pol{background:#1c2f5e!important}.nrpolv .nrcall{background:#1c2f5e}.nrin.nrpolv .nrrank{background:#1c2f5e}"
   +".nrtabs{display:flex;gap:8px;margin:0 0 8px}.nrtab{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:9px 6px;font-size:15px;font-weight:800;cursor:pointer}"
   +".nrtab.on{border-color:#1971c2;background:#e7f5ff;color:#1864ab}.nrem .nrtab.on{border-color:#e03131;background:#fff5f5;color:#c92a2a}"
   +".nrbase{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--sub);font-size:12.5px;margin:2px 2px 6px}.nrme{border:1px solid #1a73e8;background:none;color:#1a73e8;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:800;cursor:pointer}"
@@ -886,7 +886,7 @@ function embHtml(x){ var en=L(), tel="", lk;
 function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) return;
   if(S.k==="ig"){ b.className="nrin"; igRender(b); return; }   // 통역·길안내 판 (10-24) — 가이드 등록·매칭
   var k=KINDS[S.k], em=S.k==="em";
-  b.className="nrin"+(em?" nrem":"")+(S.k==="st"?" nrst":"");
+  b.className="nrin"+(em?" nrem":"")+(S.k==="st"?" nrst":"")+(polOn()?" nrpolv":"");   // nrpolv = 경찰 목록 (전화 단추 진청색, 11-14)
   var h='<div class="nrtop"><b>'+MPICO(MENU_ICON[S.k],S.k==="tg"?LG6(TOURS6):MENU6[S.k]?LG6(MENU6[S.k]):T(k.t[0],k.t[1]),MIS)+'</b><button type="button" class="nrx" data-nr="x" aria-label="close">✕</button></div>';
   if(em) h+=sos();
   if(S.k==="am"&&k.tabs.length>1) h+='<select class="nrsel" id="nrSel" aria-label="'+T("종류","Type")+'">'+k.tabs.map(function(t,i){ return '<option value="'+i+'"'+(i===S.tab?' selected':'')+'>'+esc(T(t.ko,t.en))+'</option>'; }).join("")+'</select>';   // 편의시설 = 풀다운 (사장님 10-16, 이모지 없이)
@@ -908,12 +908,12 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
 
 // ── 한 곳 고르기 → 기존 검색 핀 ──
 function pick(x){ var t=KINDS[S.k].tabs[S.tab]; try{ ntap(t.kind||t.c.toLowerCase(),KINDS[S.k].e); }catch(e){}
-  PICK={lat:+x.y,lng:+x.x,em:S.k==="em"}; close();
+  PICK={lat:+x.y,lng:+x.x,em:S.k==="em",pol:polOn()}; close();
   spinShow({name:x.name,name_en:x.name_en||x.name,addr:x.addr||"",addr_en:x.addr_en||x.addr||"",y:x.y,x:x.x,tel:x.tel||"",cat:x.cat||"",cat_en:x.cat_en||"",_l:S.fl||(x.name_en?LANG:"ko"),oh:x.oh,gt:x.gt}); }   // oh·gt = 구글 영업시간·종류 → 내 여행에 담을 때 (11-06)
 // 긴급으로 고른 곳은 카드 맨 위에 큰 「전화」 단추
 var sc0=window.spinCard; if(typeof sc0==="function"&&!sc0._nr){ var sc1=function(){ var r=sc0.apply(this,arguments);
     try{ var p=PLACES.__pin; if(PICK&&PICK.em&&p&&p.tel&&Math.abs(+p.lat-PICK.lat)<1e-6&&Math.abs(+p.lng-PICK.lng)<1e-6){ var it=document.querySelector("#res .item");
-      if(it&&!it.querySelector(".nrbig")){ css(); var t=it.querySelector(".t"); var a='<a class="nrbig tel" href="tel:'+esc(telIntl(p.tel))+'">'+PH+T("전화 걸기","Call now")+'</a>'; if(t) t.insertAdjacentHTML("afterend",a); else it.insertAdjacentHTML("afterbegin",a); } } }catch(e){}
+      if(it&&!it.querySelector(".nrbig")){ css(); var t=it.querySelector(".t"); var a='<a class="nrbig tel'+(PICK.pol?' pol':'')+'" href="tel:'+esc(telIntl(p.tel))+'">'+PH+T("전화 걸기","Call now")+'</a>'; if(t) t.insertAdjacentHTML("afterend",a); else it.insertAdjacentHTML("afterbegin",a); } } }catch(e){}
     return r; }; sc1._nr=1; sc1._gf=sc0._gf; sc1._tr=sc0._tr; window.spinCard=sc1; }
 
 // ── 「예약하기 / Book」 (사장님 10-16) — 숙소 카드(검색 핀 중 카카오 분류 「숙박」·숙소 칩에서 고른 곳·그림 있는 호텔)에만.
