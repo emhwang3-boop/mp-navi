@@ -18,6 +18,8 @@ function won(n){ return "₩"+Number(n||0).toLocaleString("ko-KR"); }
 function kstDay(add){ return new Date(Date.now()+9*36e5+(add||0)*864e5).toISOString().slice(0,10); }
 function ico(st){ return '<img class="chr-ic" src="img/menu/mi_charter.png" alt=""'+(st?' style="'+st+'"':'')+'>'; }
 var PID="chr", PRICE=[0,300000,350000,450000,700000], NMAX=7, DMAX=15, LEAD=3, LUGMAX=30;
+// 프라이빗 카투어 코스 자료 (11-14 사장님 「실행해」) — 🔴 직접 고치지 말 것: tour_icons/navi_build/ct_data.json 을 고치고 mk_ct.py (허브 ct_data.js 에도 같이 들어감)
+var CTD=/*CTD:begin*/{"v":"1114a","guide":360000,"dmzOff":["2026-12-25","2027-01-01","2027-02-07","2027-02-09","2027-05-05","2027-05-13","2027-09-14","2027-09-15","2027-09-16"],"stops":{"gbg":{"ko":"경복궁","en":"Gyeongbokgung Palace","ja":"景福宮","zhs":"景福宫","zht":"景福宮","es":"Palacio Gyeongbokgung","lat":37.577613,"lng":126.976898},"bch":{"ko":"북촌한옥마을","en":"Bukchon Hanok Village","ja":"北村韓屋村","zhs":"北村韩屋村","zht":"北村韓屋村","es":"Aldea Hanok de Bukchon","lat":37.581768,"lng":126.984812},"isd":{"ko":"인사동","en":"Insadong","ja":"仁寺洞","zhs":"仁寺洞","zht":"仁寺洞","es":"Insadong","lat":37.574352,"lng":126.984731},"nst":{"ko":"N서울타워","en":"N Seoul Tower","ja":"Nソウルタワー","zhs":"N首尔塔","zht":"N首爾塔","es":"Torre N Seúl","lat":37.551305,"lng":126.988231},"mdg":{"ko":"명동","en":"Myeongdong","ja":"明洞","zhs":"明洞","zht":"明洞","es":"Myeongdong","lat":37.562077,"lng":126.984901},"ssu":{"ko":"성수동 카페거리","en":"Seongsu-dong Cafe Street","ja":"聖水洞カフェ通り","zhs":"圣水洞咖啡街","zht":"聖水洞咖啡街","es":"Calle de cafés de Seongsu","lat":37.542433,"lng":127.056394},"apg":{"ko":"압구정로데오거리","en":"Apgujeong Rodeo Street","ja":"狎鴎亭ロデオ通り","zhs":"狎鸥亭罗德奥街","zht":"狎鷗亭羅德奧街","es":"Calle Rodeo de Apgujeong","lat":37.526756,"lng":127.039152},"sml":{"ko":"코엑스 별마당도서관","en":"Starfield Library (COEX)","ja":"COEX ピョルマダン図書館","zhs":"COEX 星空图书馆","zht":"COEX 星空圖書館","es":"Biblioteca Starfield (COEX)","lat":37.510193,"lng":127.060159},"lwt":{"ko":"롯데월드타워 서울스카이","en":"Lotte World Tower Seoul Sky","ja":"ロッテワールドタワー ソウルスカイ","zhs":"乐天世界塔 首尔天空","zht":"樂天世界塔 首爾天空","es":"Lotte World Tower – Seoul Sky","lat":37.512509,"lng":127.102437},"imj":{"ko":"임진각 평화누리공원","en":"Imjingak Nuri Peace Park","ja":"臨津閣 平和ヌリ公園","zhs":"临津阁和平世界公园","zht":"臨津閣和平世界公園","es":"Parque de la Paz de Imjingak","lat":37.892276,"lng":126.74392},"t3":{"ko":"제3땅굴","en":"3rd Infiltration Tunnel","ja":"第3トンネル","zhs":"第三地道","zht":"第三地道","es":"Tercer Túnel de Infiltración","lat":37.916474,"lng":126.699195},"dora":{"ko":"도라전망대","en":"Dora Observatory","ja":"都羅展望台","zhs":"都罗瞭望台","zht":"都羅瞭望台","es":"Observatorio Dora","lat":37.91099,"lng":126.706034},"cgv":{"ko":"캠프그리브스","en":"Camp Greaves","ja":"キャンプ・グリーブス","zhs":"格里夫斯营地","zht":"格里夫斯營地","es":"Camp Greaves","lat":37.898429,"lng":126.731631},"nami":{"ko":"남이섬","en":"Nami Island","ja":"南怡島","zhs":"南怡岛","zht":"南怡島","es":"Isla Nami","lat":37.803752,"lng":127.526161},"ptf":{"ko":"쁘띠프랑스","en":"Petite France","ja":"プチフランス","zhs":"小法国村","zht":"小法國村","es":"Petite France","lat":37.714995,"lng":127.490537},"acg":{"ko":"아침고요수목원","en":"The Garden of Morning Calm","ja":"朝の静寂樹木園","zhs":"晨静树木园","zht":"晨靜樹木園","es":"Jardín de la Calma Matinal","lat":37.743004,"lng":127.351661},"hsm":{"ko":"수원화성","en":"Suwon Hwaseong Fortress","ja":"水原華城","zhs":"水原华城","zht":"水原華城","es":"Fortaleza Hwaseong de Suwon","lat":37.285573,"lng":127.009687},"hhg":{"ko":"화성행궁","en":"Hwaseong Haenggung Palace","ja":"華城行宮","zhs":"华城行宫","zht":"華城行宮","es":"Palacio Hwaseong Haenggung","lat":37.281914,"lng":127.014041},"kfv":{"ko":"한국민속촌","en":"Korean Folk Village","ja":"韓国民俗村","zhs":"韩国民俗村","zht":"韓國民俗村","es":"Aldea Folclórica Coreana","lat":37.259615,"lng":127.119801},"evl":{"ko":"에버랜드","en":"Everland","ja":"エバーランド","zhs":"爱宝乐园","zht":"愛寶樂園","es":"Everland","lat":37.293101,"lng":127.202198},"lug":{"ko":"강화 루지","en":"Ganghwa Luge","ja":"江華リュージュ","zhs":"江华斜坡滑车","zht":"江華斜坡滑車","es":"Luge de Ganghwa","lat":37.617115,"lng":126.498117},"jyb":{"ko":"조양방직 (카페)","en":"Joyang Bangjik (cafe)","ja":"朝陽紡織（カフェ）","zhs":"朝阳纺织（咖啡馆）","zht":"朝陽紡織（咖啡館）","es":"Joyang Bangjik (cafetería)","lat":37.746953,"lng":126.480317},"cht":{"ko":"인천 차이나타운","en":"Incheon Chinatown","ja":"仁川チャイナタウン","zhs":"仁川中华街","zht":"仁川中華街","es":"Barrio chino de Incheon","lat":37.475604,"lng":126.617936},"wmd":{"ko":"월미도","en":"Wolmido","ja":"月尾島","zhs":"月尾岛","zht":"月尾島","es":"Wolmido","lat":37.471738,"lng":126.599231},"grp":{"ko":"강촌레일파크","en":"Gangchon Rail Park","ja":"江村レールパーク","zhs":"江村铁路公园","zht":"江村鐵路公園","es":"Gangchon Rail Park","lat":37.815773,"lng":127.712332},"alp":{"ko":"알파카월드","en":"Alpaca World","ja":"アルパカワールド","zhs":"羊驼世界","zht":"羊駝世界","es":"Alpaca World","lat":37.82765,"lng":127.883736},"gjm":{"ko":"국립경주박물관","en":"Gyeongju National Museum","ja":"国立慶州博物館","zhs":"国立庆州博物馆","zht":"國立慶州博物館","es":"Museo Nacional de Gyeongju","lat":35.829234,"lng":129.22795},"drw":{"ko":"대릉원","en":"Daereungwon Tomb Complex","ja":"大陵苑","zhs":"大陵苑","zht":"大陵苑","es":"Daereungwon (tumbas reales)","lat":35.838191,"lng":129.213334},"csd":{"ko":"첨성대","en":"Cheomseongdae Observatory","ja":"瞻星台","zhs":"瞻星台","zht":"瞻星臺","es":"Observatorio Cheomseongdae","lat":35.834715,"lng":129.219},"dgw":{"ko":"동궁과 월지","en":"Donggung Palace and Wolji Pond","ja":"東宮と月池","zhs":"东宫与月池","zht":"東宮與月池","es":"Palacio Donggung y estanque Wolji","lat":35.834776,"lng":129.226976},"bgs":{"ko":"불국사","en":"Bulguksa Temple","ja":"仏国寺","zhs":"佛国寺","zht":"佛國寺","es":"Templo Bulguksa","lat":35.789915,"lng":129.331843},"sga":{"ko":"석굴암","en":"Seokguram Grotto","ja":"石窟庵","zhs":"石窟庵","zht":"石窟庵","es":"Gruta Seokguram","lat":35.795242,"lng":129.350521},"hrd":{"ko":"황리단길","en":"Hwangridan-gil","ja":"皇理団通り","zhs":"皇理团路","zht":"皇理團路","es":"Calle Hwangridan","lat":35.839335,"lng":129.209645}},"crs":{"ctsel":{"t":{"ko":"서울 시내 프라이빗 카투어","en":"Seoul City Private Car Tour","ja":"ソウル市内 プライベートカーツアー","zhs":"首尔市区私人包车游","zht":"首爾市區私人包車遊","es":"Tour privado en coche por Seúl"},"g":"opt","ops":[{"k":"cl","n":{"ko":"서울 클래식","en":"Seoul Classic","ja":"ソウル・クラシック","zhs":"首尔经典","zht":"首爾經典","es":"Seúl clásico"},"z":1,"p":300000,"h":10,"tm":"09:00","d":[["gbg","bch","isd","nst","mdg"]]},{"k":"kw","n":{"ko":"한류·쇼핑","en":"K-Culture & Shopping","ja":"韓流・ショッピング","zhs":"韩流·购物","zht":"韓流·購物","es":"Cultura coreana y compras"},"z":1,"p":300000,"h":10,"tm":"10:00","d":[["ssu","apg","sml","lwt"]]}]},"ctdmz":{"t":{"ko":"DMZ 프라이빗 카투어 (가이드 포함)","en":"DMZ Private Car Tour (with guide)","ja":"DMZ プライベートカーツアー（ガイド付き）","zhs":"DMZ私人包车游（含导游）","zht":"DMZ私人包車遊（含導遊）","es":"Tour privado en coche a la DMZ (con guía)"},"g":"inc","tk":12200,"dmz":1,"ops":[{"k":"dmz","n":{"ko":"DMZ","en":"DMZ","ja":"DMZ","zhs":"DMZ","zht":"DMZ","es":"DMZ"},"z":2,"p":710000,"h":8,"tm":"08:00","d":[["imj","t3","dora","cgv"]]}]},"ctsub":{"t":{"ko":"서울 근교 프라이빗 카투어","en":"Private Car Tour near Seoul","ja":"ソウル近郊 プライベートカーツアー","zhs":"首尔近郊私人包车游","zht":"首爾近郊私人包車遊","es":"Tour privado en coche cerca de Seúl"},"g":"opt","ops":[{"k":"gp","n":{"ko":"가평","en":"Gapyeong","ja":"加平","zhs":"加平","zht":"加平","es":"Gapyeong"},"z":2,"p":350000,"h":10,"tm":"08:00","d":[["nami","ptf","acg"]]},{"k":"sw","n":{"ko":"수원","en":"Suwon","ja":"水原","zhs":"水原","zht":"水原","es":"Suwon"},"z":2,"p":350000,"h":10,"tm":"09:00","d":[["hsm","hhg","kfv"]]},{"k":"yi","n":{"ko":"용인","en":"Yongin","ja":"龍仁","zhs":"龙仁","zht":"龍仁","es":"Yongin"},"z":2,"p":350000,"h":10,"tm":"09:00","d":[["evl","kfv"]]},{"k":"ic","n":{"ko":"인천·강화","en":"Incheon & Ganghwa","ja":"仁川・江華","zhs":"仁川·江华","zht":"仁川·江華","es":"Incheon y Ganghwa"},"z":2,"p":350000,"h":10,"tm":"09:00","d":[["lug","jyb","cht","wmd"]]},{"k":"cc","n":{"ko":"춘천","en":"Chuncheon","ja":"春川","zhs":"春川","zht":"春川","es":"Chuncheon"},"z":3,"p":450000,"h":10,"tm":"08:00","d":[["nami","grp","alp"]]}]},"ctgj":{"t":{"ko":"서울–경주 프라이빗 카투어","en":"Seoul–Gyeongju Private Car Tour","ja":"ソウル–慶州 プライベートカーツアー","zhs":"首尔–庆州私人包车游","zht":"首爾–慶州私人包車遊","es":"Tour privado en coche Seúl–Gyeongju"},"g":"opt","ops":[{"k":"d1","n":{"ko":"당일 (12시간)","en":"Day trip (12 hours)","ja":"日帰り（12時間）","zhs":"一日游（12小时）","zht":"一日遊（12小時）","es":"Excursión de un día (12 h)"},"z":4,"p":760000,"h":12,"tm":"07:00","d":[["bgs","sga","drw","csd","hrd"]]},{"k":"d2","n":{"ko":"1박 2일","en":"2 days, 1 night","ja":"1泊2日","zhs":"两天一夜","zht":"兩天一夜","es":"2 días, 1 noche"},"z":4,"p":1500000,"h":10,"tm":"07:30","d":[["gjm","drw","csd","dgw"],["bgs","sga","hrd"]]}]}}}/*CTD:end*/;
 var AP={icn:{ko:"인천국제공항",en:"Incheon International Airport",lat:37.4602,lng:126.4407,n:T6("인천공항","Incheon Airport","仁川空港","仁川机场","仁川機場","Aeropuerto de Incheon")},
         gmp:{ko:"김포국제공항",en:"Gimpo International Airport",lat:37.5583,lng:126.7906,n:T6("김포공항","Gimpo Airport","金浦空港","金浦机场","金浦機場","Aeropuerto de Gimpo")}};
 var DLS=["ko","en","ja","zh"].filter(function(k){ return !window.svcOn||svcOn(k==="zh"?"zhs":k)||(k==="zh"&&svcOn("zht")); });   // 11-13 숨긴 서비스 언어 빼기(index.html SVC_LANG_ON)
@@ -121,6 +123,58 @@ var TX={
  pf:T6("일정표의 {d} 장소 {n}곳을 목적지로 넣었어요. 빼거나 순서를 바꿀 수 있어요.","We added {n} places from your plan for {d} as destinations. You can remove them or change the order.","日程表の{d}の場所{n}か所を目的地に入れました。外したり順番を変えたりできます。","已将行程表中{d}的{n}个地点设为目的地，可删除或调整顺序。","已將行程表中{d}的{n}個地點設為目的地，可刪除或調整順序。","Añadimos como destinos {n} lugares de tu plan del {d}. Puedes quitarlos o cambiar el orden.")
 };
 
+// ── 프라이빗 카투어 글 (11-14) — 정해진 코스 · 가이드(DMZ 포함 · 나머지 선택) · DMZ 입장권 ──
+var TC={
+ crsH:T6("코스","Route","コース","路线","路線","Ruta"),
+ opH:T6("코스 고르기","Choose a route","コースを選ぶ","选择路线","選擇路線","Elige la ruta"),
+ fix:T6("정해진 코스라 장소와 순서는 바꿀 수 없어요. 코스를 직접 짜고 싶으면 「가이드 인솔 자유여행」을 이용하세요.","This is a set route, so the places and their order can't be changed. To plan your own route, use “Travel with Guide”.","決まったコースのため、場所と順番は変えられません。コースを自分で決めたい場合は「ガイド同行の自由旅行」をご利用ください。","这是固定路线，景点和顺序不能更改。如想自己安排路线，请使用「向导陪同自由行」。","這是固定路線，景點和順序不能更改。如想自己安排路線，請使用「嚮導陪同自由行」。","Es una ruta fija: no se pueden cambiar los lugares ni el orden. Si quieres armar tu propia ruta, usa «Viaje con guía»."),
+ fixB:T6("가이드 인솔 자유여행 ›","Travel with Guide ›","ガイド同行の自由旅行 ›","向导陪同自由行 ›","嚮導陪同自由行 ›","Viaje con guía ›"),
+ day:T6("{n}일차","Day {n}","{n}日目","第{n}天","第{n}天","Día {n}"),
+ tmn:T6("코스 출발 시각 (바꿀 수 없어요)","Route start time (can't be changed)","コースの出発時刻（変更できません）","路线出发时间（不可更改）","路線出發時間（不可更改）","Hora de salida de la ruta (no se puede cambiar)"),
+ hrs:T6("픽업부터 {n}시간","{n} hours from pickup","お迎えから{n}時間","从接您起{n}小时","從接您起{n}小時","{n} horas desde la recogida"),
+ hrs2:T6("{d}일 · 날마다 픽업부터 {n}시간","{d} days · {n} hours a day from pickup","{d}日間・毎日お迎えから{n}時間","{d}天·每天从接您起{n}小时","{d}天·每天從接您起{n}小時","{d} días · {n} horas al día desde la recogida"),
+ pkn:T6("서울 시내 숙소에서 태우고, 끝나면 같은 곳에 내려 드려요.","We pick you up at your hotel in Seoul and drop you back there at the end.","ソウル市内のホテルでお迎えし、終わったら同じ場所までお送りします。","在首尔市内的住处接您，结束后送回原处。","在首爾市內的住處接您，結束後送回原處。","Te recogemos en tu hotel en Seúl y al final te dejamos allí mismo."),
+ ePkZ:T6("픽업은 서울 시내 숙소에서만 할 수 있어요.","Pickup is only at a hotel in Seoul.","お迎えはソウル市内のホテルのみです。","仅可在首尔市内的住处上车。","僅可在首爾市內的住處上車。","Solo recogemos en hoteles de Seúl."),
+ gH:T6("가이드","Guide","ガイド","导游","導遊","Guía"),
+ gInc:T6("공인 자격을 갖춘 관광통역안내사가 함께 다니며 안내해요 (가격에 포함).","A licensed tour guide comes along and explains everything (included in the price).","公認資格を持つ通訳案内士が同行して案内します（料金に含まれます）。","持证导游全程陪同讲解（已含在价格中）。","持證導遊全程陪同講解（已含在價格中）。","Te acompaña un guía turístico con licencia (incluido en el precio)."),
+ gOff:T6("기사만 (관광 안내 없음)","Driver only (no guiding)","ドライバーのみ（観光案内なし）","仅司机（无讲解）","僅司機（無講解）","Solo conductor (sin guía)"),
+ gOn:T6("가이드 추가 +{p}","Add a guide +{p}","ガイドを追加 +{p}","加导游 +{p}","加導遊 +{p}","Añadir guía +{p}"),
+ gOpn:T6("기사는 운전만 하고 관광 안내는 하지 않아요. 안내가 필요하면 공인 자격을 갖춘 관광통역안내사를 더할 수 있어요 (하루 {p}).","The driver only drives and doesn't guide. If you'd like explanations, add a licensed tour guide ({p} a day).","ドライバーは運転のみで観光案内はしません。案内が必要なら、公認資格を持つ通訳案内士を追加できます（1日{p}）。","司机只负责驾驶，不提供讲解。如需讲解，可加持证导游（每天{p}）。","司機只負責駕駛，不提供講解。如需講解，可加持證導遊（每天{p}）。","El conductor solo conduce y no hace de guía. Si quieres explicaciones, añade un guía turístico con licencia ({p} al día)."),
+ dlG:T6("기사·가이드 언어","Driver & guide language","ドライバー・ガイドの言語","司机·导游语言","司機·導遊語言","Idioma del conductor y del guía"),
+ prH:T6("가격 (차 1대)","Price (1 car)","料金（車1台）","价格（1辆车）","價格（1輛車）","Precio (1 coche)"),
+ prT:T6("DMZ 입장권 {n}명 × {p}","DMZ admission {n} × {p}","DMZ入場券 {n}名 × {p}","DMZ门票 {n}人 × {p}","DMZ門票 {n}人 × {p}","Entrada a la DMZ {n} × {p}"),
+ prG:T6("가이드 {d}일 × {p}","Guide {d} day(s) × {p}","ガイド {d}日 × {p}","导游 {d}天 × {p}","導遊 {d}天 × {p}","Guía {d} día(s) × {p}"),
+ prGi:T6("가이드 (포함)","Guide (included)","ガイド（込み）","导游（已含）","導遊（已含）","Guía (incluido)"),
+ incH:T6("가격에 들어 있는 것","Included","料金に含まれるもの","价格包含","價格包含","Incluido"),
+ inc1:T6("차·기사·기름값·통행료·주차비·기사 식사","Car, driver, fuel, tolls, parking and the driver's meals","車・ドライバー・燃料代・高速料金・駐車料金・ドライバーの食事","车辆·司机·油费·过路费·停车费·司机餐费","車輛·司機·油費·過路費·停車費·司機餐費","Coche, conductor, combustible, peajes, aparcamiento y comidas del conductor"),
+ inc2:T6("서울 숙소 픽업·내려 드리기","Pickup and drop-off at your hotel in Seoul","ソウルのホテルへのお迎え・お送り","首尔住处接送","首爾住處接送","Recogida y regreso a tu hotel en Seúl"),
+ incG:T6("관광통역안내사 (가이드)","Licensed tour guide","通訳案内士（ガイド）","持证导游","持證導遊","Guía turístico con licencia"),
+ incT:T6("DMZ 입장권 (공식 셔틀·모노레일)","DMZ admission (official shuttle & monorail)","DMZ入場券（公式シャトル・モノレール）","DMZ门票（官方班车·单轨车）","DMZ門票（官方接駁車·單軌車）","Entrada a la DMZ (lanzadera oficial y monorraíl)"),
+ incS:T6("기사 숙박·식사","Driver's accommodation and meals","ドライバーの宿泊・食事","司机住宿·餐费","司機住宿·餐費","Alojamiento y comidas del conductor"),
+ exl:[T6("관광지 입장료","Admission to attractions","観光地の入場料","景点门票","景點門票","Entradas a los lugares"),T6("손님 식사","Your own meals","お客様の食事","您的餐费","您的餐費","Tus comidas"),T6("여행자보험","Travel insurance","旅行保険","旅行保险","旅遊保險","Seguro de viaje"),
+   T6("이용 시간을 넘기면 1시간에 30,000원 · 밤 10시 뒤는 1시간에 50,000원 (현장에서 기사에게)","Over the hours: ₩30,000 per hour · after 10 p.m.: ₩50,000 per hour (paid to the driver on site)","時間を超えると1時間30,000ウォン・夜10時以降は1時間50,000ウォン（現地でドライバーに）","超时每小时30,000韩元·晚上10点后每小时50,000韩元（现场付给司机）","超時每小時30,000韓元·晚上10點後每小時50,000韓元（現場付給司機）","Si te pasas de las horas: ₩30.000 por hora · después de las 22:00: ₩50.000 por hora (se paga al conductor en el momento)")],
+ exT:T6("곤돌라 이용료 (1명 12,000원부터)","Gondola ride (from ₩12,000 per person)","ゴンドラ料金（1名12,000ウォンから）","缆车费用（每人12,000韩元起）","纜車費用（每人12,000韓元起）","Teleférico (desde ₩12.000 por persona)"),
+ exS:T6("손님 숙박 (숙소 메뉴에서 찾을 수 있어요)","Your own accommodation (find it in the Stay menu)","お客様の宿泊（宿泊メニューで探せます）","您的住宿（可在住宿菜单中查找）","您的住宿（可在住宿選單中查找）","Tu alojamiento (búscalo en el menú de alojamiento)"),
+ exP:T6("입장료·손님 식사 별도","Admission & your meals extra","入場料・お客様の食事は別途","门票·您的餐费另付","門票·您的餐費另付","Entradas y tus comidas aparte"),
+ exPT:T6("곤돌라·손님 식사 별도","Gondola & your meals extra","ゴンドラ・お客様の食事は別途","缆车·您的餐费另付","纜車·您的餐費另付","Teleférico y tus comidas aparte"),
+ eDmz:T6("DMZ는 월요일·주중 공휴일·설·추석 당일에 쉬어요. 다른 날을 골라 주세요.","The DMZ is closed on Mondays, weekday public holidays and on the days of Seollal and Chuseok. Please choose another date.","DMZは月曜日・平日の祝日・旧正月と秋夕の当日が休みです。別の日をお選びください。","DMZ逢周一、工作日公休日及春节·中秋当天休息，请选择其他日期。","DMZ逢週一、平日國定假日及春節·中秋當天休息，請選擇其他日期。","La DMZ cierra los lunes, los festivos entre semana y el día de Seollal y de Chuseok. Elige otra fecha."),
+ eCrs:T6("상품 정보를 다시 불러와 주세요.","Please reload the tour details.","商品情報を読み込み直してください。","请重新加载产品信息。","請重新載入商品資訊。","Vuelve a cargar los datos del tour."),
+ vt:T6("프라이빗 카투어 바우처","Private car tour voucher","プライベートカーツアー バウチャー","私人包车游凭证","私人包車遊憑證","Bono del tour privado en coche"),
+ gW:T6("가이드 배정을 기다리는 중이에요.","Waiting for a guide to be assigned.","ガイドの手配を待っています。","正在等待安排导游。","正在等待安排導遊。","Esperando a que se asigne un guía."),
+ d1:T6("기사가 코스 출발 시각에 숙소 앞에서 기다려요.","Your driver waits in front of your hotel at the route's start time.","ドライバーがコースの出発時刻にホテルの前でお待ちします。","司机在路线出发时间于住处门口等候。","司機在路線出發時間於住處門口等候。","El conductor te espera frente a tu hotel a la hora de salida."),
+ d1g:T6("기사와 가이드가 코스 출발 시각에 숙소 앞에서 기다려요.","Your driver and guide wait in front of your hotel at the route's start time.","ドライバーとガイドがコースの出発時刻にホテルの前でお待ちします。","司机和导游在路线出发时间于住处门口等候。","司機和導遊在路線出發時間於住處門口等候。","El conductor y el guía te esperan frente a tu hotel a la hora de salida."),
+ d2:T6("기사(가이드가 있으면 가이드도) 이름·전화와 차 번호는 확정 메일과 「내 예약」에 있어요.","Your driver's (and guide's, if any) name, phone and the car plate are in your confirmation email and “My bookings”.","ドライバー（ガイドがいる場合はガイドも）の名前・電話と車両番号は、確定メールと「私の予約」にあります。","司机（如有导游也包括导游）的姓名·电话和车牌号会写在确认邮件和「我的预约」中。","司機（如有導遊也包括導遊）的姓名·電話和車牌號會寫在確認郵件和「我的預約」中。","El nombre y teléfono del conductor (y del guía, si lo hay) y la matrícula están en el correo de confirmación y en «Mis reservas»."),
+ memo:T6("예: 아이 카시트, 큰 짐","e.g. child seat, large luggage","例：チャイルドシート、大きな荷物","例如：儿童安全座椅、大件行李","例如：兒童安全座椅、大件行李","p. ej., silla infantil, equipaje grande"),
+ memoD:T6("함께 가는 분 모두의 여권 영문 이름·국적 (예: HONG GILDONG, USA)","English name (as on the passport) and nationality of everyone (e.g. JOHN SMITH, USA)","同行者全員のパスポートの英字氏名・国籍（例：TARO YAMADA, JAPAN）","所有同行者的护照英文姓名·国籍（例：ZHANG SAN, CHINA）","所有同行者的護照英文姓名·國籍（例：CHEN DAWEN, TAIWAN）","Nombre en inglés (como en el pasaporte) y nacionalidad de todos (p. ej., JUAN PEREZ, MEXICO)"),
+ incd:T6("포함","Included","込み","已含","已含","Incluido"),
+ gdN:T6("{d}일 × {p}","{d} day(s) × {p}","{d}日 × {p}","{d}天 × {p}","{d}天 × {p}","{d} día(s) × {p}"),
+ tkL:T6("DMZ 입장권","DMZ admission","DMZ入場券","DMZ门票","DMZ門票","Entrada a la DMZ"),
+ tkN:T6("{n}명 × {p}","{n} × {p}","{n}名 × {p}","{n}人 × {p}","{n}人 × {p}","{n} × {p}"),
+ dlnG:T6("가이드는 고른 언어로 안내하고, 기사는 기본 회화만 해요. 추가 요금은 없어요.","The guide explains in the language you choose; the driver speaks basic conversational language. No extra charge.","ガイドは選んだ言語で案内し、ドライバーは簡単な会話のみです。追加料金はありません。","导游用您选择的语言讲解，司机只能简单对话，不另收费。","導遊用您選擇的語言講解，司機只能簡單對話，不另收費。","El guía explica en el idioma que elijas; el conductor habla a nivel básico. Sin coste extra."),
+ lead:T6("이용 3일 전까지 예약할 수 있어요.","Book at least 3 days ahead.","ご利用の3日前まで予約できます。","需在使用日前3天预约。","需在使用日前3天預約。","Reserva con al menos 3 días de antelación."),
+ sentG:T6("예약을 받았어요. 기사와 가이드가 정해지면 이름·전화·차 번호를 메일로 보내 드려요. 「내 예약」에서도 볼 수 있어요.","We've received your booking. Once your driver and guide are assigned, we'll email their names, phone numbers and the car plate. You can also see them in “My bookings”.","ご予約を受け付けました。ドライバーとガイドが決まり次第、名前・電話・車両番号をメールでお送りします。「私の予約」でも確認できます。","已收到您的预约。司机和导游确定后，我们会通过邮件告知姓名·电话·车牌号，也可在「我的预约」中查看。","已收到您的預約。司機和導遊確定後，我們會透過郵件告知姓名·電話·車牌號，也可在「我的預約」中查看。","Hemos recibido tu reserva. Cuando asignemos al conductor y al guía, te enviaremos por correo sus nombres, teléfonos y la matrícula. También lo verás en «Mis reservas».")
+};
+
 // ── 구간 — 시·도(1단계)·시·군·구(2단계) 이름 → ①~④ · 0 = 제주 · -1 = 모름 (허브 chr_hub.js chrZone 과 같은 규칙) ──
 var EAST=["속초시","양양군","강릉시","동해시","삼척시","고성군"];
 function zone(r1,r2){ var a=String(r1||"").replace(/\s/g,""), b=String(r2||"").trim().split(/\s+/)[0]||"";
@@ -130,31 +184,45 @@ function zAddr(a){ var t=String(a||"").trim().split(/\s+/); if(!t[0]) return nul
 function zOf(d){ if(!d) return null; if(d.z!=null) return d.z; return zAddr(d.addr); }
 
 // ── 상태 (날짜·시작 시각·인원은 상품 화면 S 그대로) ──
-var CS={pf:null,pick:null,dests:[],dl:"",lug:0,memo:"",ps:false,pq:"",pr:null,pb:0,pe:0,q:"",r:null,b:0,e:0,qb:0,qe:"",note:"",msg:""};
+var CS={crs:"",ck:"",g:0,pf:null,pick:null,dests:[],dl:"",lug:0,memo:"",ps:false,pq:"",pr:null,pb:0,pe:0,q:"",r:null,b:0,e:0,qb:0,qe:"",note:"",msg:""};
 function dlDef(){ var l=lg(), d=l==="ko"?"ko":l==="ja"?"ja":(l==="zhs"||l==="zht")?"zh":"en"; return DLS.indexOf(d)>=0?d:"en"; }
 function dl(){ var v=CS.dl||dlDef(); return DLS.indexOf(v)>=0?v:dlDef(); }
 function chg(q){ if(q) quote(); try{ document.dispatchEvent(new Event("chrchg")); }catch(e){} }
 function S(){ try{ return window.SHOP&&SHOP.st?SHOP.st():null; }catch(e){ return null; } }
 function minDate(){ return kstDay(LEAD); }
-function is(p){ return !!(p&&p.id===PID); }
+function is(p){ return !!(p&&(p.id===PID||isCrs(p.id))); }
+// ── 프라이빗 카투어 (11-14) — 상품 화면이 고른 상품 id 로 use(id) → 코스면 목적지 = 코스 장소(바꿀 수 없음) · 차량 대절이면 원래대로 ──
+function isCrs(id){ return !!(id&&CTD.crs&&CTD.crs[id]); }
+function crsC(){ return CS.crs?CTD.crs[CS.crs]:null; }
+function crsOp(){ var C=crsC(); if(!C) return null; return C.ops.filter(function(x){ return x.k===CS.ck; })[0]||C.ops[0]; }
+function crsDests(op){ var o=[], L0=lg(); op.d.forEach(function(day,di){ day.forEach(function(k){ var s=CTD.stops[k]; if(s) o.push({k:k,ko:s.ko,en:s.en,nm:s[L0]||s.en,lat:s.lat,lng:s.lng,addr:"",z:op.z,dy:di}); }); }); return o; }
+function crsFill(){ var op=crsOp(); if(!op) return; CS.dests=crsDests(op); try{ if(window.SHOP&&SHOP.set) SHOP.set({time:op.tm}); }catch(e){} }
+function use(id){ if(isCrs(id)){ if(CS.crs!==id){ CS.crs=id; CS.ck=CTD.crs[id].ops[0].k; CS.g=0; CS.pf=null; if(CS.pick&&CS.pick.t!=="place") CS.pick=null; } crsFill(); return; }
+  if(CS.crs){ CS.crs=""; CS.ck=""; CS.g=0; CS.dests=[]; CS.pf=null; } }
+function crsDays(){ var op=crsOp(); return op?op.d.length:1; }
+function crsAmt(){ var C=crsC(), op=crsOp(); if(!C||!op) return 0; var s=S(), n=(s&&s.n)||1; return op.p+(C.g==="opt"&&CS.g?CTD.guide*op.d.length:0)+(C.tk?C.tk*n:0); }
+function dmzOk(d){ var C=crsC(); if(!C||!C.dmz||!d) return true; return new Date(d+"T00:00:00Z").getUTCDay()!==1&&CTD.dmzOff.indexOf(d)<0; }
+function crsNm(id,k){ var C=CTD.crs&&CTD.crs[id]; if(!C) return ""; var op=C.ops.filter(function(x){ return x.k===k; })[0]; return L(C.t)+(op&&C.ops.length>1?" · "+L(op.n):""); }
+function stopNm(d){ var s=d&&d.k&&CTD.stops[d.k]; return s?(s[lg()]||s.en):nmOf(d); }
 function nmOf(x){ if(!x) return ""; if(lg()==="ko") return x.ko||x.nm||x.en||""; return x.nm||x.en||x.ko||""; }
 function pkName(p){ if(!p) return ""; if(p.t==="icn"||p.t==="gmp") return L(AP[p.t].n); return nmOf(p); }
 function dKey(d){ return (+d.lat).toFixed(5)+","+(+d.lng).toFixed(5); }
 function fromKp(x){ var en=x.name_en||"", L0=lg(); return {ko:x.name||"",en:(L0==="en"||L0==="es")?(en||x.name||""):"",nm:L0==="ko"?(x.name||""):(en||x.name||""),lat:+x.y,lng:+x.x,addr:x.addr||""}; }
 function norm(d){ d=d||{}; var o={ko:String(d.ko||d.nm||""),en:String(d.en||""),nm:String(d.nm||d.ko||d.en||""),lat:+d.lat,lng:+d.lng,addr:String(d.addr||"")}; if(d.k) o.k=String(d.k); if(d.z!=null) o.z=d.z; return o; }
 function zMax(){ var z=0, bad=0, unk=0; CS.dests.forEach(function(d){ var q=zOf(d); if(q==null) unk++; else if(q<=0) bad++; else if(q>z) z=q; }); return {z:z,bad:bad,unk:unk}; }
-function amount(){ var m=zMax(); return CS.dests.length&&!m.bad&&!m.unk&&m.z>0?PRICE[m.z]:0; }
-function pickOk(){ var p=CS.pick; if(!p) return false; if(p.t!=="place") return true; var z=zOf(p); return z===1; }
-function dateOk(){ var s=S(); return !!(s&&s.date&&s.date>=minDate()); }
-function ok(){ return CS.dests.length>0&&!!amount()&&pickOk()&&dateOk()&&!CS.qb; }
-function why(){ if(!dateOk()) return F(TX.eLead,{d:minDate()}); if(!CS.pick) return L(TX.ePick); if(!pickOk()) return CS.pick.z==null&&CS.pick.t==="place"?L(TX.zchk):L(TX.ePkZ); if(!CS.dests.length) return L(TX.dsE); var m=zMax(); if(m.bad) return L(TX.eBad); if(m.unk||CS.qb) return CS.qe?L(TX.eNet):L(TX.zchk); return ""; }
+function amount(){ if(CS.crs) return crsAmt(); var m=zMax(); return CS.dests.length&&!m.bad&&!m.unk&&m.z>0?PRICE[m.z]:0; }
+function pickOk(){ var p=CS.pick; if(!p) return false; if(p.t!=="place") return !CS.crs; var z=zOf(p); return z===1; }
+function dateOk(){ var s=S(); return !!(s&&s.date&&s.date>=minDate()&&dmzOk(s.date)); }
+function ok(){ if(CS.crs) return !!crsOp()&&pickOk()&&dateOk()&&!CS.qb; return CS.dests.length>0&&!!amount()&&pickOk()&&dateOk()&&!CS.qb; }
+function why(){ var s0=S(); if(CS.crs&&s0&&s0.date&&s0.date>=minDate()&&!dmzOk(s0.date)) return L(TC.eDmz); if(!dateOk()) return F(TX.eLead,{d:minDate()});
+  if(CS.crs){ if(!CS.pick) return L(TX.ePick); if(!pickOk()) return CS.pick.z==null&&CS.pick.t==="place"?L(TX.zchk):L(TC.ePkZ); return CS.qb?(CS.qe?L(TX.eNet):L(TX.zchk)):""; } if(!CS.pick) return L(TX.ePick); if(!pickOk()) return CS.pick.z==null&&CS.pick.t==="place"?L(TX.zchk):L(TX.ePkZ); if(!CS.dests.length) return L(TX.dsE); var m=zMax(); if(m.bad) return L(TX.eBad); if(m.unk||CS.qb) return CS.qe?L(TX.eNet):L(TX.zchk); return ""; }
 
 // ── 견적 (허브 /shop/chr/quote · 카카오 무료) — 목적지·픽업을 넣고 뺄 때마다 · 못 받으면 주소 어림 그대로(주문 때 허브가 다시 계산) ──
 var QT=0, QSEQ=0;
 function pkBody(p){ if(!p) return null; return p.t==="place"?{t:"place",ko:p.ko,en:p.en,nm:p.nm,lat:p.lat,lng:p.lng,addr:p.addr}:{t:p.t,nm:L(AP[p.t].n)}; }
 function dBody(d){ return {ko:d.ko,en:d.en,nm:d.nm,lat:d.lat,lng:d.lng,addr:d.addr}; }
 function quote(){ clearTimeout(QT); var need=CS.dests.some(function(d){ return d.z==null; })||(CS.pick&&CS.pick.t==="place"&&CS.pick.z==null); if(!need){ CS.qb=0; return; } CS.qb=1; QT=setTimeout(quote0,200); }
-function quote0(){ var seq=++QSEQ, ds=CS.dests.slice(), pk=CS.pick;
+function quote0(){ var seq=++QSEQ, ds=CS.crs?[]:CS.dests.slice(), pk=CS.pick;   /* 코스는 픽업 지역만 확인 (11-14) */
   fetch(hub()+"/shop/chr/quote",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chr:{pick:pkBody(pk),dests:ds.map(dBody)}})}).then(function(r){ return r.json(); }).then(function(j){ if(seq!==QSEQ) return; CS.qb=0;
     if(j&&j.ok&&Array.isArray(j.zs)){ CS.qe=""; ds.forEach(function(d,i){ if(typeof j.zs[i]==="number") d.z=j.zs[i]; }); if(pk&&pk.t==="place"&&typeof j.pz==="number"){ pk.z=j.pz; if(pk.z!==1&&pk.auto){ CS.pick=null; CS.note="pkAuto"; } } }
     else CS.qe=(j&&j.err)||"net";
@@ -185,9 +253,10 @@ function rowsHtml(list,btn){ return list.map(function(x,i){ var en=lg()!=="ko"&&
 function resHtml(r,b,e,btn){ if(b) return '<p class="chr-nt">'+esc(L(TX.srch))+'</p>'; if(e) return '<p class="chr-nt">'+esc(L(TX.err))+'</p>'; if(!r) return ""; if(!r.length) return '<p class="chr-nt">'+esc(L(TX.none))+'</p>'; return '<div class="chr-res">'+rowsHtml(r,btn)+'</div>'; }
 function zTag(d){ var z=zOf(d); if(z==null) return '<em class="chr-z u">'+esc(L(TX.zchk))+'</em>'; if(z===0) return '<em class="chr-z x">'+esc(L(TX.jeju))+'</em>'; if(z<0) return '<em class="chr-z x">'+esc(L(TX.zno))+'</em>'; return '<em class="chr-z">'+ZNO[z]+' '+esc(L(ZN[z]).replace(/\s*[（(].*$/,""))+'</em>'; }
 function lugRow(){ return '<div class="chr-row"><span class="chr-lb">'+esc(L(TX.lug))+'</span><div class="chr-stp"><button type="button" data-chr="lug" data-v="-1" aria-label="-">−</button><b>'+CS.lug+'</b><button type="button" data-chr="lug" data-v="1" aria-label="+">+</button></div></div>'; }
-function pickBlk(){ var p=CS.pick, h='<div class="chr-blk"><div class="chr-h3">'+esc(L(TX.pk))+'</div><p class="chr-nt">'+esc(L(TX.pkn))+'</p>';
+function pickBlk(){ var p=CS.pick, h='<div class="chr-blk"><div class="chr-h3">'+esc(L(TX.pk))+'</div><p class="chr-nt">'+esc(L(CS.crs?TC.pkn:TX.pkn))+'</p>';
   if(CS.note==="pkAuto"&&!p) h+='<p class="chr-w">'+esc(L(TX.pkAuto))+'</p>';
-  h+='<div class="chr-chips"><button type="button" data-chr="ps" class="'+(CS.ps||(p&&p.t==="place")?"on":"")+'">'+esc(L(TX.pkS))+'</button><button type="button" data-chr="icn" class="'+(p&&p.t==="icn"?"on":"")+'">'+esc(L(AP.icn.n))+'</button><button type="button" data-chr="gmp" class="'+(p&&p.t==="gmp"?"on":"")+'">'+esc(L(AP.gmp.n))+'</button></div>';
+  if(CS.crs){ if(!(p&&p.t==="place")) CS.ps=true; }   /* 코스(11-14) = 서울 숙소만 — 공항 단추 없이 바로 찾기 칸 */
+  else h+='<div class="chr-chips"><button type="button" data-chr="ps" class="'+(CS.ps||(p&&p.t==="place")?"on":"")+'">'+esc(L(TX.pkS))+'</button><button type="button" data-chr="icn" class="'+(p&&p.t==="icn"?"on":"")+'">'+esc(L(AP.icn.n))+'</button><button type="button" data-chr="gmp" class="'+(p&&p.t==="gmp"?"on":"")+'">'+esc(L(AP.gmp.n))+'</button></div>';
   if(p) h+='<div class="chr-sel">'+ico()+'<b>'+esc(pkName(p))+'</b>'+(p.t==="place"?(p.z==null?'<em class="chr-z u">'+esc(L(TX.zchk))+'</em>':p.z!==1?'<em class="chr-z x">'+esc(L(TX.pkOut))+'</em>':''):'')+'<button type="button" data-chr="px" aria-label="'+esc(L(TX.pkChg))+'">✕</button></div>';
   if(CS.ps&&!(p&&p.t==="place")){ h+='<div class="chr-q"><input id="chrPq" type="search" enterkeyhint="search" autocomplete="off" placeholder="'+esc(L(TX.pkPh))+'" value="'+esc(CS.pq)+'"><button type="button" data-chr="pgo">'+esc(L(TX.find))+'</button></div>'
     +resHtml(CS.pr,CS.pb,CS.pe,function(x,i){ var z=zAddr(x.addr); return z!=null&&z!==1?'<span class="chr-no">'+esc(L(TX.pkOut))+'</span>':'<button type="button" class="chr-b" data-chr="pp" data-i="'+i+'">'+esc(L(TX.pick))+'</button>'; }); }
@@ -201,28 +270,53 @@ function destBlk(){ var h='<div class="chr-blk"><div class="chr-h3">'+esc(L(TX.d
   else h+='<p class="chr-nt">'+esc(F(TX.dmax,{n:DMAX}))+'</p>';
   return h+'</div>'; }
 function drvBlk(){ return '<div class="chr-blk chr-drv"><div class="chr-h3">'+esc(L(TX.drvH))+'</div><ul><li>'+esc(L(TX.drv1))+'</li><li>'+esc(L(TX.drv2))+'</li></ul><p class="chr-nt">'+esc(L(TX.gq))+'</p><button type="button" class="chr-gbtn" data-chr="guide">'+esc(L(TX.gbtn))+'</button></div>'; }   // 클룩식 「Driver only」 안내 + 가이드 인솔 예약으로
-function dlBlk(){ var c=dl(); return '<div class="chr-blk"><div class="chr-h3">'+esc(L(TX.dl))+'</div><div class="chr-chips c4" style="grid-template-columns:repeat('+DLS.length+',minmax(0,1fr))">'+DLS.map(function(k){ return '<button type="button" data-chr="dl" data-v="'+k+'" class="'+(c===k?"on":"")+'">'+esc(L(DLN[k]))+'</button>'; }).join("")+'</div><p class="chr-nt">'+esc(L(TX.dln))+'</p></div>'; }
-function memoBlk(){ return '<div class="chr-blk"><label class="chr-h3" for="chrMemo">'+esc(L(TX.memo))+'</label><textarea id="chrMemo" rows="2" maxlength="500" placeholder="'+esc(L(TX.memoPh))+'">'+esc(CS.memo)+'</textarea></div>'; }
+function dlBlk(lb){ var c=dl(); return '<div class="chr-blk"><div class="chr-h3">'+esc(L(lb||TX.dl))+'</div><div class="chr-chips c4" style="grid-template-columns:repeat('+DLS.length+',minmax(0,1fr))">'+DLS.map(function(k){ return '<button type="button" data-chr="dl" data-v="'+k+'" class="'+(c===k?"on":"")+'">'+esc(L(DLN[k]))+'</button>'; }).join("")+'</div><p class="chr-nt">'+esc(L(lb?TC.dlnG:TX.dln))+'</p></div>'; }
+function memoBlk(){ var C=crsC(); return '<div class="chr-blk"><label class="chr-h3" for="chrMemo">'+esc(L(TX.memo))+'</label><textarea id="chrMemo" rows="'+(C&&C.dmz?3:2)+'" maxlength="500" placeholder="'+esc(L(C?(C.dmz?TC.memoD:TC.memo):TX.memoPh))+'">'+esc(CS.memo)+'</textarea></div>'; }
 function zoneTbl(cur){ return '<div class="chr-zt">'+[1,2,3,4].map(function(z){ return '<div class="'+(cur===z?"on":"")+'"><span>'+ZNO[z]+' '+esc(L(ZN[z]))+'</span><b>'+won(PRICE[z])+'</b></div>'; }).join("")+'</div>'; }
 function zoneBlk(){ var m=zMax(), far=null; CS.dests.forEach(function(d){ var z=zOf(d); if(z>0&&(!far||z>zOf(far))) far=d; });
   return '<div class="chr-blk"><div class="chr-h3">'+esc(L(TX.zone))+'</div>'+zoneTbl(m.bad||m.unk?0:m.z)
     +(far&&!m.bad&&!m.unk?'<p class="chr-ok">'+esc(F(TX.zfar,{p:nmOf(far)+" ("+ZNO[zOf(far)]+")"}))+'</p>':'')
     +'<p class="chr-nt">'+esc(L(TX.zrule))+'<br>'+esc(L(TX.zeast))+'</p></div>'; }
 function exBlk(){ return '<div class="chr-blk chr-exb"><div class="chr-h3">'+esc(L(TX.ex))+'</div><ul>'+TX.exl.map(function(x){ return '<li>'+esc(L(x))+'</li>'; }).join("")+'</ul></div>'; }
+// ── 프라이빗 카투어 칸 (11-14) — 코스 고르기 · 코스 장소(날마다) · 가이드 · 가격 · 포함/불포함 ──
+function crsOpBlk(){ var C=crsC(); if(!C||C.ops.length<2) return ""; var op=crsOp();
+  return '<div class="chr-blk"><div class="chr-h3">'+esc(L(TC.opH))+'</div><div class="chr-ops">'+C.ops.map(function(o){ return '<button type="button" data-chr="ck" data-v="'+esc(o.k)+'" class="'+(op&&op.k===o.k?"on":"")+'"><b>'+esc(L(o.n))+'</b><small>'+won(o.p)+'</small></button>'; }).join("")+'</div></div>'; }
+function crsStops(op,cls){ var multi=op.d.length>1, h=''; op.d.forEach(function(day,di){ if(multi) h+='<div class="chr-dy">'+esc(F(TC.day,{n:di+1}))+'</div>'; h+='<ol class="chr-cs'+(cls?' '+cls:'')+'">'+day.map(function(k){ var s=CTD.stops[k]; return s?'<li>'+esc(s[lg()]||s.en)+'</li>':''; }).join("")+'</ol>'; }); return h; }
+function crsStopBlk(){ var op=crsOp(); if(!op) return "";
+  return '<div class="chr-blk"><div class="chr-h3">'+esc(L(TC.crsH))+' <small>'+esc(op.d.length>1?F(TC.hrs2,{d:op.d.length,n:op.h}):F(TC.hrs,{n:op.h}))+'</small></div>'+crsStops(op)
+    +'<p class="chr-nt">'+esc(L(TC.fix))+'</p><button type="button" class="chr-gbtn" data-chr="guide">'+esc(L(TC.fixB))+'</button></div>'; }
+function crsGBlk(){ var C=crsC(); if(!C) return ""; if(C.g==="inc") return '<div class="chr-blk chr-drv"><div class="chr-h3">'+esc(L(TC.gH))+'</div><p class="chr-ok">'+esc(L(TC.gInc))+'</p></div>';
+  var gp=won(CTD.guide*crsDays());
+  return '<div class="chr-blk chr-drv"><div class="chr-h3">'+esc(L(TC.gH))+'</div><p class="chr-nt">'+esc(F(TC.gOpn,{p:won(CTD.guide)}))+'</p><div class="chr-chips" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button type="button" data-chr="g" data-v="0" class="'+(CS.g?"":"on")+'">'+esc(L(TC.gOff))+'</button><button type="button" data-chr="g" data-v="1" class="'+(CS.g?"on":"")+'">'+esc(F(TC.gOn,{p:gp}))+'</button></div></div>'; }
+function crsPrBlk(){ var C=crsC(), op=crsOp(); if(!C||!op) return ""; var s=S(), n=(s&&s.n)||1, r=function(a,b){ return '<div><span>'+esc(a)+'</span><b>'+b+'</b></div>'; };
+  return '<div class="chr-blk"><div class="chr-h3">'+esc(L(TC.prH))+'</div><div class="chr-zt">'+r(L(C.t)+(C.ops.length>1?" · "+L(op.n):""),won(op.p))
+    +(C.g==="inc"?r(L(TC.prGi),"—"):CS.g?r(F(TC.prG,{d:op.d.length,p:won(CTD.guide)}),won(CTD.guide*op.d.length)):"")
+    +(C.tk?r(F(TC.prT,{n:n,p:won(C.tk)}),won(C.tk*n)):"")+'</div></div>'; }
+function crsIncList(C,op,g){ return [TC.inc1,TC.inc2].concat(g?[TC.incG]:[]).concat(C.tk?[TC.incT]:[]).concat(op.d.length>1?[TC.incS]:[]); }
+function crsExList(C,op){ return (C.tk?TC.exl.slice(1):TC.exl).concat(C.tk?[TC.exT]:[]).concat(op.d.length>1?[TC.exS]:[]); }
+function crsExBlk(){ var C=crsC(), op=crsOp(); if(!C||!op) return ""; var g=C.g==="inc"||!!CS.g;
+  return '<div class="chr-blk chr-exb"><div class="chr-h3">'+esc(L(TC.incH))+'</div><ul>'+crsIncList(C,op,g).map(function(x){ return '<li>'+esc(L(x))+'</li>'; }).join("")+'</ul><div class="chr-h3" style="margin-top:6px">'+esc(L(TX.ex))+'</div><ul>'+crsExList(C,op).map(function(x){ return '<li>'+esc(L(x))+'</li>'; }).join("")+'</ul></div>'; }
 // 상품 화면 결제 칸에 넣는 것 — 날짜·시작 시각·인원 줄 다음, 합계 앞
-function pickHtml(p){ if(!is(p)) return ""; return '<div class="chr">'+lugRow()+pickBlk()+destBlk()+drvBlk()+dlBlk()+memoBlk()+zoneBlk()+exBlk()+'<p class="chr-nt">'+esc(L(TX.lead))+'</p>'+(why()?'<p class="chr-w" id="chrWhy">'+esc(why())+'</p>':'')+'</div>'; }
+function pickHtml(p){ if(!is(p)) return ""; use(p.id);
+  if(CS.crs){ var C=crsC(); return '<div class="chr">'+crsOpBlk()+crsStopBlk()+lugRow()+pickBlk()+crsGBlk()+dlBlk(C&&(C.g==="inc"||CS.g)?TC.dlG:null)+memoBlk()+crsPrBlk()+crsExBlk()+'<p class="chr-nt">'+esc(L(TC.lead))+'</p>'+(why()?'<p class="chr-w" id="chrWhy">'+esc(why())+'</p>':'')+'</div>'; } return '<div class="chr">'+lugRow()+pickBlk()+destBlk()+drvBlk()+dlBlk()+memoBlk()+zoneBlk()+exBlk()+'<p class="chr-nt">'+esc(L(TX.lead))+'</p>'+(why()?'<p class="chr-w" id="chrWhy">'+esc(why())+'</p>':'')+'</div>'; }
 // 결제창 주문 내용 줄
-function payRows(p){ if(!is(p)) return ""; var r=function(a,b){ return '<div class="sl"><span>'+esc(L(a))+'</span><span>'+b+'</span></div>'; }, m=zMax();
+function payRows(p){ if(!is(p)) return ""; use(p.id); var r=function(a,b){ return '<div class="sl"><span>'+esc(L(a))+'</span><span>'+b+'</span></div>'; }, m=zMax();
+  if(CS.crs){ var C=crsC(), op=crsOp(), s=S(), n=(s&&s.n)||1; if(!C||!op) return "";
+    return (C.ops.length>1?r(TC.crsH,esc(L(op.n))):"")+r(TX.lug,esc(F(TX.lugN,{n:CS.lug})))+r(TX.rPk,esc(pkName(CS.pick)))+r(TC.crsH,'<div class="chr-pl">'+crsStops(op,"chr-csp")+'</div>')
+      +r(TC.gH,esc(C.g==="inc"?L(TC.incd):CS.g?F(TC.gdN,{d:op.d.length,p:won(CTD.guide)}):L(TC.gOff)))+(C.tk?r(TC.tkL,esc(F(TC.tkN,{n:n,p:won(C.tk)}))):"")
+      +r(C.g==="inc"||CS.g?TC.dlG:TX.dl,esc(L(DLN[dl()])))+(CS.memo?r(TX.memo,esc(CS.memo)):"")+'<div class="shpx chr-px">'+esc(L(C.tk?TC.exPT:TC.exP))+'</div>'; }
   return r(TX.lug,esc(F(TX.lugN,{n:CS.lug})))+r(TX.rPk,esc(pkName(CS.pick)))+r(TX.rDs,'<div class="chr-pl">'+CS.dests.map(function(d,i){ return (i+1)+". "+esc(nmOf(d)); }).join("<br>")+'</div>')+r(TX.dl,esc(L(DLN[dl()])))
     +(m.z?r(TX.rZ,esc(ZNO[m.z]+" "+L(ZN[m.z]))):"")+(CS.memo?r(TX.memo,esc(CS.memo)):"")+'<div class="shpx chr-px">'+esc(L(TX.exS))+'</div>'; }
 // 허브 주문 본문 · 「내 예약」에 둘 칸
-function body(){ return {pick:pkBody(CS.pick),dests:CS.dests.map(dBody),dl:dl(),lug:CS.lug,memo:CS.memo}; }
-function pub(){ var p=CS.pick||{}; return {pick:{t:p.t,ko:p.t==="place"?p.ko:(AP[p.t]||{}).ko||"",en:p.t==="place"?p.en:(AP[p.t]||{}).en||"",nm:pkName(p),lat:p.t==="place"?+p.lat:(AP[p.t]||{}).lat,lng:p.t==="place"?+p.lng:(AP[p.t]||{}).lng},dests:CS.dests.map(function(d){ return {ko:d.ko,en:d.en,nm:d.nm,lat:d.lat,lng:d.lng,z:zOf(d),k:d.k||""}; }),dl:dl(),lug:CS.lug,z:zMax().z,memo:CS.memo,drv:null}; }
+function body(){ if(CS.crs){ var op=crsOp(); return {crs:CS.crs,ck:op?op.k:"",g:CS.g?1:0,pick:pkBody(CS.pick),dl:dl(),lug:CS.lug,memo:CS.memo}; }   // 코스(11-14) — 목적지는 허브가 코스 자료로
+  return {pick:pkBody(CS.pick),dests:CS.dests.map(dBody),dl:dl(),lug:CS.lug,memo:CS.memo}; }
+function pub(){ var p=CS.pick||{}; return {pick:{t:p.t,ko:p.t==="place"?p.ko:(AP[p.t]||{}).ko||"",en:p.t==="place"?p.en:(AP[p.t]||{}).en||"",nm:pkName(p),lat:p.t==="place"?+p.lat:(AP[p.t]||{}).lat,lng:p.t==="place"?+p.lng:(AP[p.t]||{}).lng},dests:CS.dests.map(function(d){ return {ko:d.ko,en:d.en,nm:d.nm,lat:d.lat,lng:d.lng,z:zOf(d),k:d.k||"",dy:d.dy||0}; }),dl:dl(),lug:CS.lug,z:CS.crs?((crsOp()||{}).z||0):zMax().z,memo:CS.memo,drv:null,
+  crs:CS.crs?(function(){ var C=crsC(), op=crsOp()||{}; return {id:CS.crs,k:op.k,g:C.g==="inc"||CS.g?1:0,tk:C.tk||0,dn:(op.d||[[]]).length,h:op.h||10}; })():undefined,gd:null}; }
 // 주문이 거절됐을 때 글 (허브 err)
-function errTx(e,j){ if(e==="lead") return F(TX.eLead,{d:minDate()}); if(e==="pick"||e==="pickzone") return L(e==="pick"?TX.ePick:TX.ePkZ); if(e==="dests") return L(TX.dsE);
+function errTx(e,j){ if(e==="lead") return F(TX.eLead,{d:minDate()}); if(e==="pick"||e==="pickzone") return L(e==="pick"?TX.ePick:CS.crs?TC.ePkZ:TX.ePkZ); if(e==="dests") return L(TX.dsE);
   if(e==="jeju"||e==="zone"||e==="dest"){ if(j&&typeof j.i==="number"&&CS.dests[j.i]) CS.dests[j.i].z=e==="jeju"?0:-1; return L(TX.eBad); }
-  if(e==="zonenet") return L(TX.eNet); if(e==="price"){ if(j&&Array.isArray(j.zs)) CS.dests.forEach(function(d,i){ if(typeof j.zs[i]==="number") d.z=j.zs[i]; }); return F(TX.ePrice,{p:won(j&&j.amount)}); }
-  if(e==="dmax") return F(TX.dmax,{n:DMAX}); return ""; }
+  if(e==="zonenet") return L(TX.eNet); if(e==="price"&&CS.crs) return F(TX.ePrice,{p:won(j&&j.amount)}); if(e==="price"){ if(j&&Array.isArray(j.zs)) CS.dests.forEach(function(d,i){ if(typeof j.zs[i]==="number") d.z=j.zs[i]; }); return F(TX.ePrice,{p:won(j&&j.amount)}); }
+  if(e==="dmax") return F(TX.dmax,{n:DMAX}); if(e==="dmzday") return L(TC.eDmz); if(e==="crs") return L(TC.eCrs); return ""; }
 
 // ── 누르기 · 입력 ──
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("[data-chr]"); if(!t) return; var k=t.getAttribute("data-chr"), i=+t.getAttribute("data-i"); e.preventDefault();
@@ -236,6 +330,8 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   if(k==="da"){ var y=(CS.r||[])[i]; if(!y||has(y)) return; if(CS.dests.length>=DMAX) return; var d=fromKp(y); d.z=null; CS.dests.push(d); CS.pf=null; CS.r=null; CS.q=""; /* 넣으면 찾은 목록은 닫는다 */ try{ ntap("shop","chr_add"); }catch(z){} chg(true); return; }
   if(k==="dx"){ if(CS.dests[i]) CS.dests.splice(i,1); chg(); return; }
   if(k==="dl"){ CS.dl=t.getAttribute("data-v"); chg(); return; }
+  if(k==="ck"){ CS.ck=t.getAttribute("data-v"); crsFill(); try{ ntap("shop","ct_"+CS.crs+"_"+CS.ck); }catch(z){} chg(); return; }   // 코스 고르기 (11-14)
+  if(k==="g"){ CS.g=t.getAttribute("data-v")==="1"?1:0; chg(); return; }   // 가이드 추가 (11-14)
   if(k==="guide"){ try{ ntap("shop","chr_guide"); }catch(z){} if(window.PC_HOME){ location.hash="#/guide"; try{ window.scrollTo(0,0); }catch(z){} return; } try{ if(window.SHOP&&SHOP.close) SHOP.close(); }catch(z){} try{ if(window.NEAR&&NEAR.open) NEAR.open("ig"); }catch(z){} return; }   // 투어 가이드 예약 = 가이드 인솔 화면 (앱 「투어 가이드」 · 홈페이지 #/guide)
 },true);
 document.addEventListener("keydown",function(e){ if(e.key!=="Enter"||!e.target) return; var id=e.target.id; if(id!=="chrPq"&&id!=="chrDq") return; e.preventDefault(); srch(id==="chrPq"?"p":"d"); });
@@ -265,7 +361,7 @@ window.addEventListener("click",function(e){ if(Date.now()-DGT<450&&e.target&&e.
 function open(){ if(window.PC_HOME&&typeof window.PCGO==="function"){ PCGO("package/"+PID); setTimeout(function(){ var b=document.querySelector("#pcPk .pk-box .chr"); if(b) try{ b.scrollIntoView({behavior:"smooth",block:"start"}); }catch(e){} },600); return; }
   if(window.SHOP&&SHOP.det){ SHOP.det(PID); setTimeout(function(){ var co=document.getElementById("shopCo"); if(co) try{ co.scrollIntoView({block:"start"}); }catch(e){} },120); } }
 // pref = {date, time, dests:[{ko,en,nm,lat,lng,addr,k}], pick:{t:"place"|"icn"|"gmp", …}} — 일정표 [차량 대절] (trip.js)
-function book(pref){ pref=pref||{}; var ds=(pref.dests||[]).filter(function(d){ return d&&isFinite(+d.lat)&&isFinite(+d.lng); }).map(norm), seen={};
+function book(pref){ pref=pref||{}; use(PID); var ds=(pref.dests||[]).filter(function(d){ return d&&isFinite(+d.lat)&&isFinite(+d.lng); }).map(norm), seen={};
   ds=ds.filter(function(d){ var k=dKey(d); if(seen[k]) return false; seen[k]=1; return true; }).slice(0,DMAX);
   CS.dests=ds; CS.r=null; CS.q=""; CS.pr=null; CS.pq=""; CS.ps=false; CS.note=""; CS.pf=ds.length?{d:pref.lbl||pref.date||"",n:ds.length}:null;
   var p=pref.pick; CS.pick=p?(p.t==="icn"||p.t==="gmp"?{t:p.t}:Object.assign(norm(p),{t:"place",auto:1})):null; if(CS.pick&&CS.pick.t==="place"){ var z=zAddr(CS.pick.addr); if(z!=null&&z!==1){ CS.pick=null; CS.note="pkAuto"; } }
@@ -275,10 +371,12 @@ function book(pref){ pref=pref||{}; var ds=(pref.dests||[]).filter(function(d){ 
 // ── 예약한 날 (일정표 trip.js) — 이 기기 「내 예약」 + 로그인 계정 목록(near.js NEARBK.mine) 가운데 취소 안 된 차량 대절 ──
 function days(){ var a=[]; try{ a=window.NEARBK&&NEARBK.mine?NEARBK.mine():[]; }catch(e){ a=[]; }
   return a.filter(function(x){ return x&&x.chr&&x.date&&x.status!=="cancelled"&&x.status!=="refunded"&&Array.isArray(x.chr.dests); })
-    .map(function(x){ return {oid:x.oid,date:x.date,time:x.time||"",pick:x.chr.pick||null,dests:x.chr.dests.filter(function(d){ return d&&isFinite(+d.lat)&&isFinite(+d.lng); })}; }); }   // pick = 픽업 장소(일정표 출발 자리, 11-11 「가」)
+    .reduce(function(o,x){ var cr=x.chr.crs, dn=(cr&&cr.dn)||1, ok=x.chr.dests.filter(function(d){ return d&&isFinite(+d.lat)&&isFinite(+d.lng); });
+      for(var i=0;i<dn;i++){ var dt=i?new Date(Date.parse(x.date+"T00:00:00Z")+i*864e5).toISOString().slice(0,10):x.date;   // 프라이빗 카투어 여러 날(11-14) = 날마다 그날 코스만
+        o.push({oid:x.oid,date:dt,time:x.time||"",pick:x.chr.pick||null,h:(cr&&cr.h)||10,crs:cr?cr.id:"",dests:dn>1?ok.filter(function(d){ return (d.dy||0)===i; }):ok}); } return o; },[]); }   // pick = 픽업 장소(일정표 출발 자리, 11-11 「가」)
 
 // ── 내 예약 바우처 (near.js 앱 · home/pc_bk.js 홈페이지) ──
-function vchHtml(x){ var c=x&&x.chr; if(!c) return ""; var p=c.pick||{}, d=c.drv, r=function(a,b){ return '<div class="chr-vr"><span>'+esc(L(a))+'</span><b>'+b+'</b></div>'; };
+function vchHtml(x){ var c=x&&x.chr; if(!c) return ""; if(c.crs) return crsVch(x); var p=c.pick||{}, d=c.drv, r=function(a,b){ return '<div class="chr-vr"><span>'+esc(L(a))+'</span><b>'+b+'</b></div>'; };
   var pk=p.t==="icn"||p.t==="gmp"?L(AP[p.t].n):(lg()==="ko"?(p.ko||p.nm||""):(p.nm||p.en||p.ko||""));
   return '<div class="chr-v"><div class="chr-vh">'+ico()+esc(L(TX.vt))+'</div>'
     +(d?'<div class="chr-dv"><div class="chr-vr"><span>'+esc(L(TX.drv))+'</span><b>'+esc(d.nm||"")+'</b></div><div class="chr-vr"><span>'+esc(L(TX.tel))+'</span><b><a href="tel:'+esc(String(d.tel||"").replace(/[^\d+]/g,""))+'">'+esc(d.tel||"")+'</a></b></div><div class="chr-vr"><span>'+esc(L(TX.car))+'</span><b>'+esc(d.car||"")+'</b></div></div>'
@@ -286,6 +384,19 @@ function vchHtml(x){ var c=x&&x.chr; if(!c) return ""; var p=c.pick||{}, d=c.drv
     +r(TX.rPk,esc(pk))+'<div class="chr-vr"><span>'+esc(L(TX.rDs))+'</span></div><ol class="chr-vo">'+(c.dests||[]).map(function(q){ return '<li>'+esc(nmOf(q))+'</li>'; }).join("")+'</ol>'
     +r(TX.dl,esc(L(DLN[c.dl]||DLN.en)))+r(TX.ppl,esc(F(TX.pplN,{n:x.n||1})))+r(TX.lug,esc(F(TX.lugN,{n:c.lug||0})))+(c.z?r(TX.rZ,esc(ZNO[c.z]+" "+L(ZN[c.z]))):"")
     +'<div class="chr-vx">'+esc(L(TX.ex))+': '+esc(TX.exl.map(function(q){ return L(q); }).join(" · "))+'</div></div>'; }
+
+// 프라이빗 카투어 바우처 (11-14) — 상품·코스(날마다)·기사·가이드
+function crsVch(x){ var c=x.chr, cr=c.crs||{}, C=CTD.crs[cr.id]||{t:{},ops:[]}, p=c.pick||{}, d=c.drv, g=c.gd, r=function(a,b){ return '<div class="chr-vr"><span>'+esc(L(a))+'</span><b>'+b+'</b></div>'; };
+  var pk=lg()==="ko"?(p.ko||p.nm||""):(p.nm||p.en||p.ko||""), multi=(cr.dn||1)>1, ds='', last=-1;
+  (c.dests||[]).forEach(function(q){ var dy=q.dy||0; if(multi&&dy!==last){ if(last>=0) ds+='</ol>'; ds+='<div class="chr-dy">'+esc(F(TC.day,{n:dy+1}))+'</div><ol class="chr-vo">'; last=dy; } else if(last<0){ ds+='<ol class="chr-vo">'; last=dy; } ds+='<li>'+esc(stopNm(q))+'</li>'; }); if(last>=0) ds+='</ol>';
+  var op=(C.ops||[]).filter(function(o){ return o.k===cr.k; })[0]||{d:[[]]}, inc=crsIncList(C,op,!!cr.g).map(function(q){ return L(q); }).join(" · "), ex=crsExList(C,op).map(function(q){ return L(q); }).join(" · ");
+  return '<div class="chr-v"><div class="chr-vh">'+ico()+esc(L(TC.vt))+'</div><div class="chr-vn">'+esc(crsNm(cr.id,cr.k))+'</div>'
+    +(d?'<div class="chr-dv"><div class="chr-vr"><span>'+esc(L(TX.drv))+'</span><b>'+esc(d.nm||"")+'</b></div><div class="chr-vr"><span>'+esc(L(TX.tel))+'</span><b><a href="tel:'+esc(String(d.tel||"").replace(/[^\d+]/g,""))+'">'+esc(d.tel||"")+'</a></b></div><div class="chr-vr"><span>'+esc(L(TX.car))+'</span><b>'+esc(d.car||"")+'</b></div></div>'
+      :'<div class="chr-wt">'+esc(L(TX.drvW))+'</div>')
+    +(cr.g?(g?'<div class="chr-dv"><div class="chr-vr"><span>'+esc(L(TC.gH))+'</span><b>'+esc(g.nm||"")+'</b></div><div class="chr-vr"><span>'+esc(L(TX.tel))+'</span><b><a href="tel:'+esc(String(g.tel||"").replace(/[^\d+]/g,""))+'">'+esc(g.tel||"")+'</a></b></div></div>':'<div class="chr-wt">'+esc(L(TC.gW))+'</div>'):'')
+    +r(TX.rPk,esc(pk))+r(TX.tm,esc((x.time||"")+" · "+(multi?F(TC.hrs2,{d:cr.dn,n:cr.h||10}):F(TC.hrs,{n:cr.h||10}))))+'<div class="chr-vr"><span>'+esc(L(TC.crsH))+'</span></div>'+ds
+    +r(cr.g?TC.dlG:TX.dl,esc(L(DLN[c.dl]||DLN.en)))+r(TX.ppl,esc(F(TX.pplN,{n:x.n||1})))+r(TX.lug,esc(F(TX.lugN,{n:c.lug||0})))
+    +'<div class="chr-vx">'+esc(L(TC.incH))+': '+esc(inc)+'</div><div class="chr-vx">'+esc(L(TX.ex))+': '+esc(ex)+'</div></div>'; }
 
 // ── 교통 창 광고 띠 (transit.js — 검색칸 바로 아래) ──
 function adBtn(){ return '<button type="button" class="chr-ad" data-chrad="1">'+ico("height:30px;width:30px;margin:0")+'<span>'+esc(L(TX.adT))+'</span><b>'+esc(L(TX.adGo))+' ›</b></button>'; }
@@ -334,6 +445,10 @@ st.textContent=""
  +".chr-vh{font-weight:900;font-size:14.5px;margin:0 0 6px}.chr-vr{display:flex;justify-content:space-between;gap:10px;padding:2px 0}.chr-vr span{color:var(--sub,#5b6474)}.chr-vr b{text-align:right}.chr-vr a{color:#1f5fa8;text-decoration:none}"
  +".chr-dv{border:1px solid var(--line,#e4e0d6);border-radius:10px;padding:6px 10px;background:var(--card,#fff);margin:0 0 6px}.chr-wt{font-weight:800;color:#8a5a00;background:#fff3bf;border-radius:10px;padding:7px 10px;margin:0 0 6px}"
  +".chr-vo{margin:0 0 4px;padding-left:22px}.chr-vx{margin-top:6px;font-size:12px;color:var(--sub,#5b6474)}"
+ +".chr-ops{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px}.chr-ops button{border:1.5px solid var(--line,#e4e0d6);background:var(--card,#fff);color:var(--ink,#1d2433);border-radius:10px;padding:8px 6px;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px;align-items:center;line-height:1.3;word-break:keep-all}"
+ +".chr-ops button b{font-size:13.5px;font-weight:900}.chr-ops button small{font-size:12px;font-weight:700;color:var(--sub,#5b6474)}.chr-ops button.on{border-color:#2f9e44;background:#2f9e44;color:#fff}.chr-ops button.on small{color:#e6fcf5}"
+ +".chr-cs{margin:0;padding-left:22px;font-size:14px;line-height:1.6;font-weight:700}.chr-csp{text-align:left;font-weight:400;font-size:13px}.chr-dy{font-size:12.5px;font-weight:900;color:#2b8a3e;margin-top:2px}.chr-vn{font-weight:900;font-size:14px;margin:-2px 0 6px}"
+ +".chr-zt>div b{text-align:right}"
  +".chr-ad{display:flex;align-items:center;gap:10px;width:100%;margin:8px 0 2px;border:1.5px solid #f0c419;background:#fff9db;color:#1d2433;border-radius:14px;padding:8px 12px;font:inherit;text-align:left;cursor:pointer;box-sizing:border-box}"
  +".chr-ad span{flex:1;min-width:0;font-size:13.5px;font-weight:800;line-height:1.4}.chr-ad b{flex:0 0 auto;color:#2b8a3e;font-size:13.5px;font-weight:900;white-space:nowrap}"
  +".chr-my{display:flex;align-items:center;gap:8px;width:100%;margin:6px 0 2px;border:1.5px solid #b2dfbc;background:#ebfbee;color:#2b8a3e;border-radius:12px;padding:9px 12px;font:inherit;font-size:13.5px;font-weight:800;text-align:left;cursor:pointer;box-sizing:border-box}.chr-my span{flex:1;min-width:0}.chr-my b{flex:0 0 auto;font-weight:900}"
@@ -343,7 +458,9 @@ st.textContent=""
  +"html[data-theme=\"dark\"] #shopBox .chr-zt>div.on{background:#fff3bf;color:#1d2433}html[data-theme=\"dark\"] #shopBox .chr-ok,html[data-theme=\"dark\"] #shopBox .chr-z{color:#2b8a3e}html[data-theme=\"dark\"] #shopBox .chr-wt{background:#fff3bf;color:#8a5a00}";
 (document.head||document.documentElement).appendChild(st);
 
-window.CHR={PID:PID,PRICE:PRICE,NMAX:NMAX,is:is,ok:ok,why:why,amount:amount,minDate:minDate,pickHtml:pickHtml,payRows:payRows,body:body,pub:pub,errTx:errTx,
+window.CHR={PID:PID,PRICE:PRICE,NMAX:NMAX,is:is,isCrs:isCrs,use:use,crsNm:crsNm,CTD:CTD,TC:TC,
+  crsTm:function(){ var op=CS.crs?crsOp():null; return op?op.tm:""; },crsOn:function(){ return !!CS.crs; },crsG:function(){ var C=crsC(); return !!(C&&(C.g==="inc"||CS.g)); },
+  crsMin:function(id){ var C=CTD.crs&&CTD.crs[id]; return C?Math.min.apply(null,C.ops.map(function(o){ return o.p; })):0; },ok:ok,why:why,amount:amount,minDate:minDate,pickHtml:pickHtml,payRows:payRows,body:body,pub:pub,errTx:errTx,
   vchHtml:vchHtml,adHtml:adHtml,open:open,book:book,days:days,quote:quote,zone:zone,
   pkTx:function(p){ if(!p) return ""; if(p.t==="icn"||p.t==="gmp") return L(AP[p.t].n); return lg()==="ko"?(p.ko||p.nm||p.en||""):(p.nm||p.en||p.ko||""); },   // 예약한 픽업 장소 이름(일정표 픽업 줄, 11-11)
   st:function(){ return CS; }, tx:function(k){ return TX[k]?L(TX[k]):""; }, T:TX, dlTxt:function(){ return DLS.map(function(k){ return L(DLN[k]); }).join(" · "); },
