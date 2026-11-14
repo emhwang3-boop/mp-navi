@@ -21,7 +21,7 @@ var IGN=T6("ⓘ 주의 사항","ⓘ Please note","ⓘ ご注意","ⓘ 注意事�
 var TX={
  won:T6("{n}원~","₩{n}~","₩{n}~","₩{n}~","₩{n}~","₩{n}~"),   // 첫 화면 대표 상품 카드와 같은 모양
  nf:T6("이 상품을 찾을 수 없어요.","We couldn’t find this product.","この商品が見つかりません。","找不到该商品。","找不到該商品。","No encontramos este producto."),
- list:T6("패키지 전체 보기 ›","See all group tours ›","パッケージ一覧を見る ›","查看全部跟团游 ›","查看全部跟團遊 ›","Ver todos los tours en grupo ›"),
+ list:T6("프라이빗 카투어 전체 보기 ›","See all private car tours ›","プライベートカーツアー一覧を見る ›","查看全部私人包车游 ›","查看全部私人包車遊 ›","Ver todos los tours privados en coche ›"),   // 11-14
  load:T6("불러오는 중…","Loading…","読み込み中…","加载中…","載入中…","Cargando…"),
  rt:T6("투어 노선도","Tour route","ツアー路線図","游览路线图","遊覽路線圖","Ruta del tour"),
  perfP:T6("공연장을 고르면 첫 화면 지도에서 그 공연장과 지금 하는 공연을 보여 드려요.","Pick a theater to see it and its current shows on the map on our main page.","劇場を選ぶと、トップページの地図でその劇場と上演中の公演をお見せします。","选择剧场后，会在首页地图上显示该剧场和正在上演的演出。","選擇劇場後，會在首頁地圖上顯示該劇場和正在上演的演出。","Elige un teatro y te lo mostramos en el mapa de la página principal con sus funciones actuales.")
@@ -56,7 +56,8 @@ function card(p){ var x=X(), T=x.TX, img=x.psrc(p), meta=[x.catName(p.c),x.Lx(p.
    +'<div class="pk-cb"><div class="pk-l1">'+E(meta)+'</div><div class="pk-l2">'+E(x.L(p.t))+'</div><div class="pk-l3">'+E(inf)+'</div>'
    +'<div class="pk-l4">'+priceLine(p)+'<span class="pk-rv">'+(window.rvMini?rvMini("shop:"+p.id):'')+'</span></div>'+(x.Lx(p.px)?'<div class="shpx">'+E(x.Lx(p.px))+'</div>':'')+'</div></button>'; }   // shpx = 가격 아래 「별도」 줄 (11-10)
 function list(box){ var x=X(), PA=items(), L0=PA.filter(function(p){ return PK.cat==="all"||p.c===PK.cat; });
-  var cats='<div class="pk-cats"><div class="pk-catg">'+x.CATS.map(function(c){ var n=c[0]==="all"?PA.length:PA.filter(function(p){ return p.c===c[0]; }).length;
+  var CS0=x.CATS.filter(function(c){ return c[0]==="all"||PA.some(function(p){ return p.c===c[0]; }); }); if(CS0.length<=2) PK.cat="all";   // 11-14 — 상품이 있는 분류만, 하나뿐이면 칩 줄 없음
+  var cats=CS0.length<=2?'':'<div class="pk-cats"><div class="pk-catg">'+CS0.map(function(c){ var n=c[0]==="all"?PA.length:PA.filter(function(p){ return p.c===c[0]; }).length;
       return '<button type="button" data-cat="'+c[0]+'" class="'+(PK.cat===c[0]?"on":"")+'">'+E(x.L(c[1]))+' '+n+'</button>'; }).join("")+'</div></div>';
   box.innerHTML='<div id="pcPk" class="pg3">'+tcard()+cats+(PA.length?'<div class="pk-cards">'+L0.map(card).join("")+'</div>':'<div class="pg-msg">'+E(L6(TX.load))+'</div>')+'</div>';
   try{ if(window.rvMiniLoad) rvMiniLoad(L0.map(function(p){ return "shop:"+p.id; })); }catch(e){} }
@@ -80,7 +81,8 @@ function boxHtml(p){ var x=X(), S=x.S, T=x.TX, L=x.L, K=x.kindOf(p);
   if(p.hub&&!p.real) return h+'<p class="pk-nt">'+E(L(T.soon))+'</p>';   // 관리자 상품 「준비 중」 — 주문 안 받음 (앱과 같음)
   if(x.isChr&&x.isChr(p)){   // 차량 대절 (11-11, charter.js) — 날짜(3일 뒤부터)·시작 시각·인원(1~7) + 큰 짐·픽업·목적지(끌어 순서)·기사 언어·요청 사항·구간 가격 · 합계 = 구간 가격
     return h+'<div class="pk-row"><label class="pk-lb" for="pkDt">'+E(L(T.date))+'</label><input class="pg-in" type="date" id="pkDt" min="'+E(CHR.minDate())+'" value="'+E(S.date)+'"></div>'
-     +'<div class="pk-row"><label class="pk-lb" for="pkTm">'+E(CHR.tx("tm"))+'<br><small>'+E(CHR.tx("tmn"))+'</small></label><input class="pg-in" type="time" id="pkTm" step="1800" value="'+E(S.time)+'"></div>'
+     +(CHR.isCrs&&CHR.isCrs(p.id)?(function(){ CHR.use(p.id); var tm=CHR.crsTm(); if(tm) S.time=tm; return '<div class="pk-row"><label class="pk-lb">'+E(CHR.tx("tm"))+'<br><small>'+E(L6(CHR.TC.tmn))+'</small></label><b>'+E(tm)+'</b></div>'; })()   // 프라이빗 카투어 코스 시각 (11-14)
+       :'<div class="pk-row"><label class="pk-lb" for="pkTm">'+E(CHR.tx("tm"))+'<br><small>'+E(CHR.tx("tmn"))+'</small></label><input class="pg-in" type="time" id="pkTm" step="1800" value="'+E(S.time)+'"></div>')
      +'<div class="pk-row"><span class="pk-lb">'+E(L(T.ppl))+'</span><div class="pk-stp"><button type="button" data-pkn="-1" aria-label="-">−</button><b>'+S.n+'</b><button type="button" data-pkn="1" aria-label="+">+</button></div></div>'
      +CHR.pickHtml(p)+'<div class="pk-tot"><span>'+E(L(T.tot))+'</span><b>'+x.totTx(p)+'</b></div>'+x.pxHtml(p)
      +'<button type="button" class="pg-pay" data-pk="pay"'+(CHR.ok()?'':' disabled')+'>'+E(L(T.pay))+'</button>'
@@ -102,6 +104,7 @@ function det(box,id){ var x=X(), p=prod(id), S=x.S, T=x.TX;
   if(!p){ box.innerHTML='<div id="pcPk" class="pg3"><div class="pg-msg">'+E(L6(PK.loaded?TX.nf:TX.load))+'</div>'+(PK.loaded?'<div class="pg-cbr" style="justify-content:flex-start"><button type="button" class="pg-btn" data-pk="list">'+E(L6(TX.list))+'</button></div>':'')+'</div>'; return; }
   // 앱 상세 화면을 열 때와 같은 기본값 (shop.js open·openDet)
   if(!S.time) S.time="09:00"; if(!S.date) S.date=kst(3);
+  if(x.isChr&&x.isChr(p)&&window.CHR){ CHR.use(p.id); var tm0=CHR.crsTm&&CHR.crsTm(); if(tm0) S.time=tm0; if(S.date<CHR.minDate()) S.date=CHR.minDate(); }   // 프라이빗 카투어 코스 시각 (11-14)
   if(p.hub){ if(!p.free&&p.times.length&&p.times.indexOf(S.time)<0) S.time=p.times[0]; if(S.n>p.max) S.n=p.max; }
   if(CUR.pid!==id){ S.gi=0; CUR.pid=id; }
   // 앱 상세 본문(detBody) 그대로 — 사진 · 제목 칸 · 설명 칸으로 나눠 담는다
