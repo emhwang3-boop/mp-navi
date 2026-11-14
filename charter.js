@@ -126,53 +126,54 @@ var TX={
 // ── 프라이빗 카투어 글 (11-14) — 정해진 코스 · 가이드(DMZ 포함 · 나머지 선택) · DMZ 입장권 ──
 var TC={
  crsH:T6("코스","Route","コース","路线","路線","Ruta"),
- opH:T6("코스 고르기","Choose a route","コースを選ぶ","选择路线","選擇路線","Elige la ruta"),
- fix:T6("정해진 코스라 장소와 순서는 바꿀 수 없어요. 코스를 직접 짜고 싶으면 「가이드 인솔 자유여행」을 이용하세요.","This is a set route, so the places and their order can't be changed. To plan your own route, use “Travel with Guide”.","決まったコースのため、場所と順番は変えられません。コースを自分で決めたい場合は「ガイド同行の自由旅行」をご利用ください。","这是固定路线，景点和顺序不能更改。如想自己安排路线，请使用「向导陪同自由行」。","這是固定路線，景點和順序不能更改。如想自己安排路線，請使用「嚮導陪同自由行」。","Es una ruta fija: no se pueden cambiar los lugares ni el orden. Si quieres armar tu propia ruta, usa «Viaje con guía»."),
+ opH:T6("코스 선택","Choose a route","コースを選ぶ","选择路线","選擇路線","Elige la ruta"),
+ fix:T6("정해진 코스라 장소와 순서는 변경할 수 없어요. 코스를 직접 짜고 싶으면 「가이드 인솔 자유여행」을 이용하세요.","This is a set route, so the places and their order can't be changed. To plan your own route, use “Travel with Guide”.","決まったコースのため、場所と順番は変えられません。コースを自分で決めたい場合は「ガイド同行の自由旅行」をご利用ください。","这是固定路线，景点和顺序不能更改。如想自己安排路线，请使用「向导陪同自由行」。","這是固定路線，景點和順序不能更改。如想自己安排路線，請使用「嚮導陪同自由行」。","Es una ruta fija: no se pueden cambiar los lugares ni el orden. Si quieres armar tu propia ruta, usa «Viaje con guía»."),
  fixB:T6("가이드 인솔 자유여행 ›","Travel with Guide ›","ガイド同行の自由旅行 ›","向导陪同自由行 ›","嚮導陪同自由行 ›","Viaje con guía ›"),
  day:T6("{n}일차","Day {n}","{n}日目","第{n}天","第{n}天","Día {n}"),
- tmn:T6("코스 출발 시각 (바꿀 수 없어요)","Route start time (can't be changed)","コースの出発時刻（変更できません）","路线出发时间（不可更改）","路線出發時間（不可更改）","Hora de salida de la ruta (no se puede cambiar)"),
+ tmn:T6("코스 출발 시각 (변경 불가)","Route start time (can't be changed)","コースの出発時刻（変更できません）","路线出发时间（不可更改）","路線出發時間（不可更改）","Hora de salida de la ruta (no se puede cambiar)"),
  hrs:T6("픽업부터 {n}시간","{n} hours from pickup","お迎えから{n}時間","从接您起{n}小时","從接您起{n}小時","{n} horas desde la recogida"),
- hrs2:T6("{d}일 · 날마다 픽업부터 {n}시간","{d} days · {n} hours a day from pickup","{d}日間・毎日お迎えから{n}時間","{d}天·每天从接您起{n}小时","{d}天·每天從接您起{n}小時","{d} días · {n} horas al día desde la recogida"),
- pkn:T6("서울 시내 숙소에서 태우고, 끝나면 같은 곳에 내려 드려요.","We pick you up at your hotel in Seoul and drop you back there at the end.","ソウル市内のホテルでお迎えし、終わったら同じ場所までお送りします。","在首尔市内的住处接您，结束后送回原处。","在首爾市內的住處接您，結束後送回原處。","Te recogemos en tu hotel en Seúl y al final te dejamos allí mismo."),
- ePkZ:T6("픽업은 서울 시내 숙소에서만 할 수 있어요.","Pickup is only at a hotel in Seoul.","お迎えはソウル市内のホテルのみです。","仅可在首尔市内的住处上车。","僅可在首爾市內的住處上車。","Solo recogemos en hoteles de Seúl."),
+ hrs2:T6("{d}일 · 매일 픽업부터 {n}시간","{d} days · {n} hours a day from pickup","{d}日間・毎日お迎えから{n}時間","{d}天·每天从接您起{n}小时","{d}天·每天從接您起{n}小時","{d} días · {n} horas al día desde la recogida"),
+ pkn:T6("서울 시내 숙소에서 픽업하고, 종료 후 같은 장소에서 하차해요.","We pick you up at your hotel in Seoul and drop you back there at the end.","ソウル市内のホテルでお迎えし、終わったら同じ場所までお送りします。","在首尔市内的住处接您，结束后送回原处。","在首爾市內的住處接您，結束後送回原處。","Te recogemos en tu hotel en Seúl y al final te dejamos allí mismo."),
+ ePkZ:T6("픽업은 서울 시내 숙소에서만 가능해요.","Pickup is only at a hotel in Seoul.","お迎えはソウル市内のホテルのみです。","仅可在首尔市内的住处上车。","僅可在首爾市內的住處上車。","Solo recogemos en hoteles de Seúl."),
  gH:T6("가이드","Guide","ガイド","导游","導遊","Guía"),
- gInc:T6("공인 자격을 갖춘 관광통역안내사가 함께 다니며 안내해요 (가격에 포함).","A licensed tour guide comes along and explains everything (included in the price).","公認資格を持つ通訳案内士が同行して案内します（料金に含まれます）。","持证导游全程陪同讲解（已含在价格中）。","持證導遊全程陪同講解（已含在價格中）。","Te acompaña un guía turístico con licencia (incluido en el precio)."),
+ gInc:T6("공인 자격을 갖춘 관광통역안내사가 동행하며 안내해요 (가격에 포함).","A licensed tour guide comes along and explains everything (included in the price).","公認資格を持つ通訳案内士が同行して案内します（料金に含まれます）。","持证导游全程陪同讲解（已含在价格中）。","持證導遊全程陪同講解（已含在價格中）。","Te acompaña un guía turístico con licencia (incluido en el precio)."),
  gOff:T6("기사만 (관광 안내 없음)","Driver only (no guiding)","ドライバーのみ（観光案内なし）","仅司机（无讲解）","僅司機（無講解）","Solo conductor (sin guía)"),
  gOn:T6("가이드 추가 +{p}","Add a guide +{p}","ガイドを追加 +{p}","加导游 +{p}","加導遊 +{p}","Añadir guía +{p}"),
- gOpn:T6("기사는 운전만 하고 관광 안내는 하지 않아요. 안내가 필요하면 공인 자격을 갖춘 관광통역안내사를 더할 수 있어요 (하루 {p}).","The driver only drives and doesn't guide. If you'd like explanations, add a licensed tour guide ({p} a day).","ドライバーは運転のみで観光案内はしません。案内が必要なら、公認資格を持つ通訳案内士を追加できます（1日{p}）。","司机只负责驾驶，不提供讲解。如需讲解，可加持证导游（每天{p}）。","司機只負責駕駛，不提供講解。如需講解，可加持證導遊（每天{p}）。","El conductor solo conduce y no hace de guía. Si quieres explicaciones, añade un guía turístico con licencia ({p} al día)."),
+ gOpn:T6("기사는 운전만 하고 관광 안내는 하지 않아요. 안내가 필요하면 공인 자격을 갖춘 관광통역안내사를 추가할 수 있어요 (하루 {p}).","The driver only drives and doesn't guide. If you'd like explanations, add a licensed tour guide ({p} a day).","ドライバーは運転のみで観光案内はしません。案内が必要なら、公認資格を持つ通訳案内士を追加できます（1日{p}）。","司机只负责驾驶，不提供讲解。如需讲解，可加持证导游（每天{p}）。","司機只負責駕駛，不提供講解。如需講解，可加持證導遊（每天{p}）。","El conductor solo conduce y no hace de guía. Si quieres explicaciones, añade un guía turístico con licencia ({p} al día)."),
  dlG:T6("기사·가이드 언어","Driver & guide language","ドライバー・ガイドの言語","司机·导游语言","司機·導遊語言","Idioma del conductor y del guía"),
  prH:T6("가격 (차 1대)","Price (1 car)","料金（車1台）","价格（1辆车）","價格（1輛車）","Precio (1 coche)"),
  prT:T6("DMZ 입장권 {n}명 × {p}","DMZ admission {n} × {p}","DMZ入場券 {n}名 × {p}","DMZ门票 {n}人 × {p}","DMZ門票 {n}人 × {p}","Entrada a la DMZ {n} × {p}"),
  prG:T6("가이드 {d}일 × {p}","Guide {d} day(s) × {p}","ガイド {d}日 × {p}","导游 {d}天 × {p}","導遊 {d}天 × {p}","Guía {d} día(s) × {p}"),
  prGi:T6("가이드 (포함)","Guide (included)","ガイド（込み）","导游（已含）","導遊（已含）","Guía (incluido)"),
- incH:T6("가격에 들어 있는 것","Included","料金に含まれるもの","价格包含","價格包含","Incluido"),
+ incH:T6("포함 사항","Included","料金に含まれるもの","价格包含","價格包含","Incluido"),
  inc1:T6("차·기사·기름값·통행료·주차비·기사 식사","Car, driver, fuel, tolls, parking and the driver's meals","車・ドライバー・燃料代・高速料金・駐車料金・ドライバーの食事","车辆·司机·油费·过路费·停车费·司机餐费","車輛·司機·油費·過路費·停車費·司機餐費","Coche, conductor, combustible, peajes, aparcamiento y comidas del conductor"),
- inc2:T6("서울 숙소 픽업·내려 드리기","Pickup and drop-off at your hotel in Seoul","ソウルのホテルへのお迎え・お送り","首尔住处接送","首爾住處接送","Recogida y regreso a tu hotel en Seúl"),
+ inc2:T6("서울 숙소 픽업·하차","Pickup and drop-off at your hotel in Seoul","ソウルのホテルへのお迎え・お送り","首尔住处接送","首爾住處接送","Recogida y regreso a tu hotel en Seúl"),
  incG:T6("관광통역안내사 (가이드)","Licensed tour guide","通訳案内士（ガイド）","持证导游","持證導遊","Guía turístico con licencia"),
  incT:T6("DMZ 입장권 (공식 셔틀·모노레일)","DMZ admission (official shuttle & monorail)","DMZ入場券（公式シャトル・モノレール）","DMZ门票（官方班车·单轨车）","DMZ門票（官方接駁車·單軌車）","Entrada a la DMZ (lanzadera oficial y monorraíl)"),
  incS:T6("기사 숙박·식사","Driver's accommodation and meals","ドライバーの宿泊・食事","司机住宿·餐费","司機住宿·餐費","Alojamiento y comidas del conductor"),
  exl:[T6("관광지 입장료","Admission to attractions","観光地の入場料","景点门票","景點門票","Entradas a los lugares"),T6("손님 식사","Your own meals","お客様の食事","您的餐费","您的餐費","Tus comidas"),T6("여행자보험","Travel insurance","旅行保険","旅行保险","旅遊保險","Seguro de viaje"),
-   T6("이용 시간을 넘기면 1시간에 30,000원 · 밤 10시 뒤는 1시간에 50,000원 (현장에서 기사에게)","Over the hours: ₩30,000 per hour · after 10 p.m.: ₩50,000 per hour (paid to the driver on site)","時間を超えると1時間30,000ウォン・夜10時以降は1時間50,000ウォン（現地でドライバーに）","超时每小时30,000韩元·晚上10点后每小时50,000韩元（现场付给司机）","超時每小時30,000韓元·晚上10點後每小時50,000韓元（現場付給司機）","Si te pasas de las horas: ₩30.000 por hora · después de las 22:00: ₩50.000 por hora (se paga al conductor en el momento)")],
+   T6("이용 시간 초과 시 1시간에 30,000원 · 밤 10시 이후 1시간에 50,000원 (현장에서 기사에게 지불)","Over the hours: ₩30,000 per hour · after 10 p.m.: ₩50,000 per hour (paid to the driver on site)","時間を超えると1時間30,000ウォン・夜10時以降は1時間50,000ウォン（現地でドライバーに）","超时每小时30,000韩元·晚上10点后每小时50,000韩元（现场付给司机）","超時每小時30,000韓元·晚上10點後每小時50,000韓元（現場付給司機）","Si te pasas de las horas: ₩30.000 por hora · después de las 22:00: ₩50.000 por hora (se paga al conductor en el momento)")],
  exT:T6("곤돌라 이용료 (1명 12,000원부터)","Gondola ride (from ₩12,000 per person)","ゴンドラ料金（1名12,000ウォンから）","缆车费用（每人12,000韩元起）","纜車費用（每人12,000韓元起）","Teleférico (desde ₩12.000 por persona)"),
- exS:T6("손님 숙박 (숙소 메뉴에서 찾을 수 있어요)","Your own accommodation (find it in the Stay menu)","お客様の宿泊（宿泊メニューで探せます）","您的住宿（可在住宿菜单中查找）","您的住宿（可在住宿選單中查找）","Tu alojamiento (búscalo en el menú de alojamiento)"),
+ exS:T6("손님 숙박 (숙소 메뉴에서 검색 가능)","Your own accommodation (find it in the Stay menu)","お客様の宿泊（宿泊メニューで探せます）","您的住宿（可在住宿菜单中查找）","您的住宿（可在住宿選單中查找）","Tu alojamiento (búscalo en el menú de alojamiento)"),
  exP:T6("입장료·손님 식사 별도","Admission & your meals extra","入場料・お客様の食事は別途","门票·您的餐费另付","門票·您的餐費另付","Entradas y tus comidas aparte"),
  exPT:T6("곤돌라·손님 식사 별도","Gondola & your meals extra","ゴンドラ・お客様の食事は別途","缆车·您的餐费另付","纜車·您的餐費另付","Teleférico y tus comidas aparte"),
- eDmz:T6("DMZ는 월요일·주중 공휴일·설·추석 당일에 쉬어요. 다른 날을 골라 주세요.","The DMZ is closed on Mondays, weekday public holidays and on the days of Seollal and Chuseok. Please choose another date.","DMZは月曜日・平日の祝日・旧正月と秋夕の当日が休みです。別の日をお選びください。","DMZ逢周一、工作日公休日及春节·中秋当天休息，请选择其他日期。","DMZ逢週一、平日國定假日及春節·中秋當天休息，請選擇其他日期。","La DMZ cierra los lunes, los festivos entre semana y el día de Seollal y de Chuseok. Elige otra fecha."),
+ eDmz:T6("DMZ는 월요일·주중 공휴일·설·추석 당일 휴무예요. 다른 날짜를 선택해 주세요.","The DMZ is closed on Mondays, weekday public holidays and on the days of Seollal and Chuseok. Please choose another date.","DMZは月曜日・平日の祝日・旧正月と秋夕の当日が休みです。別の日をお選びください。","DMZ逢周一、工作日公休日及春节·中秋当天休息，请选择其他日期。","DMZ逢週一、平日國定假日及春節·中秋當天休息，請選擇其他日期。","La DMZ cierra los lunes, los festivos entre semana y el día de Seollal y de Chuseok. Elige otra fecha."),
  eCrs:T6("상품 정보를 다시 불러와 주세요.","Please reload the tour details.","商品情報を読み込み直してください。","请重新加载产品信息。","請重新載入商品資訊。","Vuelve a cargar los datos del tour."),
  vt:T6("프라이빗 카투어 바우처","Private car tour voucher","プライベートカーツアー バウチャー","私人包车游凭证","私人包車遊憑證","Bono del tour privado en coche"),
- gW:T6("가이드 배정을 기다리는 중이에요.","Waiting for a guide to be assigned.","ガイドの手配を待っています。","正在等待安排导游。","正在等待安排導遊。","Esperando a que se asigne un guía."),
- d1:T6("기사가 코스 출발 시각에 숙소 앞에서 기다려요.","Your driver waits in front of your hotel at the route's start time.","ドライバーがコースの出発時刻にホテルの前でお待ちします。","司机在路线出发时间于住处门口等候。","司機在路線出發時間於住處門口等候。","El conductor te espera frente a tu hotel a la hora de salida."),
- d1g:T6("기사와 가이드가 코스 출발 시각에 숙소 앞에서 기다려요.","Your driver and guide wait in front of your hotel at the route's start time.","ドライバーとガイドがコースの出発時刻にホテルの前でお待ちします。","司机和导游在路线出发时间于住处门口等候。","司機和導遊在路線出發時間於住處門口等候。","El conductor y el guía te esperan frente a tu hotel a la hora de salida."),
- d2:T6("기사(가이드가 있으면 가이드도) 이름·전화와 차 번호는 확정 메일과 「내 예약」에 있어요.","Your driver's (and guide's, if any) name, phone and the car plate are in your confirmation email and “My bookings”.","ドライバー（ガイドがいる場合はガイドも）の名前・電話と車両番号は、確定メールと「私の予約」にあります。","司机（如有导游也包括导游）的姓名·电话和车牌号会写在确认邮件和「我的预约」中。","司機（如有導遊也包括導遊）的姓名·電話和車牌號會寫在確認郵件和「我的預約」中。","El nombre y teléfono del conductor (y del guía, si lo hay) y la matrícula están en el correo de confirmación y en «Mis reservas»."),
- memo:T6("예: 아이 카시트, 큰 짐","e.g. child seat, large luggage","例：チャイルドシート、大きな荷物","例如：儿童安全座椅、大件行李","例如：兒童安全座椅、大件行李","p. ej., silla infantil, equipaje grande"),
- memoD:T6("함께 가는 분 모두의 여권 영문 이름·국적 (예: HONG GILDONG, USA)","English name (as on the passport) and nationality of everyone (e.g. JOHN SMITH, USA)","同行者全員のパスポートの英字氏名・国籍（例：TARO YAMADA, JAPAN）","所有同行者的护照英文姓名·国籍（例：ZHANG SAN, CHINA）","所有同行者的護照英文姓名·國籍（例：CHEN DAWEN, TAIWAN）","Nombre en inglés (como en el pasaporte) y nacionalidad de todos (p. ej., JUAN PEREZ, MEXICO)"),
+ gW:T6("가이드 배정 대기 중이에요.","Waiting for a guide to be assigned.","ガイドの手配を待っています。","正在等待安排导游。","正在等待安排導遊。","Esperando a que se asigne un guía."),
+ d1:T6("기사가 코스 출발 시각에 숙소 앞에서 대기해요.","Your driver waits in front of your hotel at the route's start time.","ドライバーがコースの出発時刻にホテルの前でお待ちします。","司机在路线出发时间于住处门口等候。","司機在路線出發時間於住處門口等候。","El conductor te espera frente a tu hotel a la hora de salida."),
+ d1g:T6("기사와 가이드가 코스 출발 시각에 숙소 앞에서 대기해요.","Your driver and guide wait in front of your hotel at the route's start time.","ドライバーとガイドがコースの出発時刻にホテルの前でお待ちします。","司机和导游在路线出发时间于住处门口等候。","司機和導遊在路線出發時間於住處門口等候。","El conductor y el guía te esperan frente a tu hotel a la hora de salida."),
+ d2:T6("기사(가이드 포함 상품은 가이드도) 이름·전화와 차량 번호는 확정 메일과 「내 예약」에서 확인할 수 있어요.","Your driver's (and guide's, if any) name, phone and the car plate are in your confirmation email and “My bookings”.","ドライバー（ガイドがいる場合はガイドも）の名前・電話と車両番号は、確定メールと「私の予約」にあります。","司机（如有导游也包括导游）的姓名·电话和车牌号会写在确认邮件和「我的预约」中。","司機（如有導遊也包括導遊）的姓名·電話和車牌號會寫在確認郵件和「我的預約」中。","El nombre y teléfono del conductor (y del guía, si lo hay) y la matrícula están en el correo de confirmación y en «Mis reservas»."),
+ memo:T6("예: 유아 카시트, 큰 짐","e.g. child seat, large luggage","例：チャイルドシート、大きな荷物","例如：儿童安全座椅、大件行李","例如：兒童安全座椅、大件行李","p. ej., silla infantil, equipaje grande"),
+ memoD:T6("동행자 전원의 여권 영문 이름·국적 (예: HONG GILDONG, USA)","English name (as on the passport) and nationality of everyone (e.g. JOHN SMITH, USA)","同行者全員のパスポートの英字氏名・国籍（例：TARO YAMADA, JAPAN）","所有同行者的护照英文姓名·国籍（例：ZHANG SAN, CHINA）","所有同行者的護照英文姓名·國籍（例：CHEN DAWEN, TAIWAN）","Nombre en inglés (como en el pasaporte) y nacionalidad de todos (p. ej., JUAN PEREZ, MEXICO)"),
+ exH:T6("불포함 사항","Not included","含まれないもの","不包含","不包含","No incluido"),
  incd:T6("포함","Included","込み","已含","已含","Incluido"),
  gdN:T6("{d}일 × {p}","{d} day(s) × {p}","{d}日 × {p}","{d}天 × {p}","{d}天 × {p}","{d} día(s) × {p}"),
  tkL:T6("DMZ 입장권","DMZ admission","DMZ入場券","DMZ门票","DMZ門票","Entrada a la DMZ"),
  tkN:T6("{n}명 × {p}","{n} × {p}","{n}名 × {p}","{n}人 × {p}","{n}人 × {p}","{n} × {p}"),
- dlnG:T6("가이드는 고른 언어로 안내하고, 기사는 기본 회화만 해요. 추가 요금은 없어요.","The guide explains in the language you choose; the driver speaks basic conversational language. No extra charge.","ガイドは選んだ言語で案内し、ドライバーは簡単な会話のみです。追加料金はありません。","导游用您选择的语言讲解，司机只能简单对话，不另收费。","導遊用您選擇的語言講解，司機只能簡單對話，不另收費。","El guía explica en el idioma que elijas; el conductor habla a nivel básico. Sin coste extra."),
+ dlnG:T6("가이드는 선택한 언어로 안내하고, 기사는 기본 회화만 가능해요. 추가 요금은 없어요.","The guide explains in the language you choose; the driver speaks basic conversational language. No extra charge.","ガイドは選んだ言語で案内し、ドライバーは簡単な会話のみです。追加料金はありません。","导游用您选择的语言讲解，司机只能简单对话，不另收费。","導遊用您選擇的語言講解，司機只能簡單對話，不另收費。","El guía explica en el idioma que elijas; el conductor habla a nivel básico. Sin coste extra."),
  lead:T6("이용 3일 전까지 예약할 수 있어요.","Book at least 3 days ahead.","ご利用の3日前まで予約できます。","需在使用日前3天预约。","需在使用日前3天預約。","Reserva con al menos 3 días de antelación."),
- sentG:T6("예약을 받았어요. 기사와 가이드가 정해지면 이름·전화·차 번호를 메일로 보내 드려요. 「내 예약」에서도 볼 수 있어요.","We've received your booking. Once your driver and guide are assigned, we'll email their names, phone numbers and the car plate. You can also see them in “My bookings”.","ご予約を受け付けました。ドライバーとガイドが決まり次第、名前・電話・車両番号をメールでお送りします。「私の予約」でも確認できます。","已收到您的预约。司机和导游确定后，我们会通过邮件告知姓名·电话·车牌号，也可在「我的预约」中查看。","已收到您的預約。司機和導遊確定後，我們會透過郵件告知姓名·電話·車牌號，也可在「我的預約」中查看。","Hemos recibido tu reserva. Cuando asignemos al conductor y al guía, te enviaremos por correo sus nombres, teléfonos y la matrícula. También lo verás en «Mis reservas».")
+ sentG:T6("예약이 접수되었어요. 기사와 가이드가 배정되면 이름·전화·차량 번호를 메일로 안내해 드려요. 「내 예약」에서도 확인할 수 있어요.","We've received your booking. Once your driver and guide are assigned, we'll email their names, phone numbers and the car plate. You can also see them in “My bookings”.","ご予約を受け付けました。ドライバーとガイドが決まり次第、名前・電話・車両番号をメールでお送りします。「私の予約」でも確認できます。","已收到您的预约。司机和导游确定后，我们会通过邮件告知姓名·电话·车牌号，也可在「我的预约」中查看。","已收到您的預約。司機和導遊確定後，我們會透過郵件告知姓名·電話·車牌號，也可在「我的預約」中查看。","Hemos recibido tu reserva. Cuando asignemos al conductor y al guía, te enviaremos por correo sus nombres, teléfonos y la matrícula. También lo verás en «Mis reservas».")
 };
 
 // ── 구간 — 시·도(1단계)·시·군·구(2단계) 이름 → ①~④ · 0 = 제주 · -1 = 모름 (허브 chr_hub.js chrZone 과 같은 규칙) ──
@@ -295,7 +296,7 @@ function crsPrBlk(){ var C=crsC(), op=crsOp(); if(!C||!op) return ""; var s=S(),
 function crsIncList(C,op,g){ return [TC.inc1,TC.inc2].concat(g?[TC.incG]:[]).concat(C.tk?[TC.incT]:[]).concat(op.d.length>1?[TC.incS]:[]); }
 function crsExList(C,op){ return (C.tk?TC.exl.slice(1):TC.exl).concat(C.tk?[TC.exT]:[]).concat(op.d.length>1?[TC.exS]:[]); }
 function crsExBlk(){ var C=crsC(), op=crsOp(); if(!C||!op) return ""; var g=C.g==="inc"||!!CS.g;
-  return '<div class="chr-blk chr-exb"><div class="chr-h3">'+esc(L(TC.incH))+'</div><ul>'+crsIncList(C,op,g).map(function(x){ return '<li>'+esc(L(x))+'</li>'; }).join("")+'</ul><div class="chr-h3" style="margin-top:6px">'+esc(L(TX.ex))+'</div><ul>'+crsExList(C,op).map(function(x){ return '<li>'+esc(L(x))+'</li>'; }).join("")+'</ul></div>'; }
+  return '<div class="chr-blk chr-exb"><div class="chr-h3">'+esc(L(TC.incH))+'</div><ul>'+crsIncList(C,op,g).map(function(x){ return '<li>'+esc(L(x))+'</li>'; }).join("")+'</ul><div class="chr-h3" style="margin-top:6px">'+esc(L(TC.exH))+'</div><ul>'+crsExList(C,op).map(function(x){ return '<li>'+esc(L(x))+'</li>'; }).join("")+'</ul></div>'; }
 // 상품 화면 결제 칸에 넣는 것 — 날짜·시작 시각·인원 줄 다음, 합계 앞
 function pickHtml(p){ if(!is(p)) return ""; use(p.id);
   if(CS.crs){ var C=crsC(); return '<div class="chr">'+crsOpBlk()+crsStopBlk()+lugRow()+pickBlk()+crsGBlk()+dlBlk(C&&(C.g==="inc"||CS.g)?TC.dlG:null)+memoBlk()+crsPrBlk()+crsExBlk()+'<p class="chr-nt">'+esc(L(TC.lead))+'</p>'+(why()?'<p class="chr-w" id="chrWhy">'+esc(why())+'</p>':'')+'</div>'; } return '<div class="chr">'+lugRow()+pickBlk()+destBlk()+drvBlk()+dlBlk()+memoBlk()+zoneBlk()+exBlk()+'<p class="chr-nt">'+esc(L(TX.lead))+'</p>'+(why()?'<p class="chr-w" id="chrWhy">'+esc(why())+'</p>':'')+'</div>'; }
@@ -396,7 +397,7 @@ function crsVch(x){ var c=x.chr, cr=c.crs||{}, C=CTD.crs[cr.id]||{t:{},ops:[]}, 
     +(cr.g?(g?'<div class="chr-dv"><div class="chr-vr"><span>'+esc(L(TC.gH))+'</span><b>'+esc(g.nm||"")+'</b></div><div class="chr-vr"><span>'+esc(L(TX.tel))+'</span><b><a href="tel:'+esc(String(g.tel||"").replace(/[^\d+]/g,""))+'">'+esc(g.tel||"")+'</a></b></div></div>':'<div class="chr-wt">'+esc(L(TC.gW))+'</div>'):'')
     +r(TX.rPk,esc(pk))+r(TX.tm,esc((x.time||"")+" · "+(multi?F(TC.hrs2,{d:cr.dn,n:cr.h||10}):F(TC.hrs,{n:cr.h||10}))))+'<div class="chr-vr"><span>'+esc(L(TC.crsH))+'</span></div>'+ds
     +r(cr.g?TC.dlG:TX.dl,esc(L(DLN[c.dl]||DLN.en)))+r(TX.ppl,esc(F(TX.pplN,{n:x.n||1})))+r(TX.lug,esc(F(TX.lugN,{n:c.lug||0})))
-    +'<div class="chr-vx">'+esc(L(TC.incH))+': '+esc(inc)+'</div><div class="chr-vx">'+esc(L(TX.ex))+': '+esc(ex)+'</div></div>'; }
+    +'<div class="chr-vx">'+esc(L(TC.incH))+': '+esc(inc)+'</div><div class="chr-vx">'+esc(L(TC.exH))+': '+esc(ex)+'</div></div>'; }
 
 // ── 교통 창 광고 띠 (transit.js — 검색칸 바로 아래) ──
 function adBtn(){ return '<button type="button" class="chr-ad" data-chrad="1">'+ico("height:30px;width:30px;margin:0")+'<span>'+esc(L(TX.adT))+'</span><b>'+esc(L(TX.adGo))+' ›</b></button>'; }
