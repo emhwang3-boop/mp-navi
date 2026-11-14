@@ -832,6 +832,9 @@ function soGans(x){ return x.gAns&&x.gAns.gid===x.gid?(x.gAns.a==="accept"?"수�
 function soDraw(){ soDraw1("g","soSumG","soTabG"); soDraw1("p","soSum","soTab"); soDrawR(); soDrawC(); }
 // ── 차량 대절 카드 (11-11) — 목적지(순서·시·도)·픽업·기사 언어·인원·짐·요청 · 기사 이름·전화·차 번호 → 「확정」(허브 /shop/admin/chr) ──
 var CHZ=["","① 서울 시내","② 경기·인천","③ 강원·충청","④ 동해안·전라·경상"], CHDL={ko:"한국어",en:"영어",ja:"일본어",zh:"중국어"}, SOSC={pending:"결제 전",paid:"기사 배정 필요",confirmed:"확정",cancelled:"취소",refunded:"환불"};
+// 프라이빗 카투어 (11-14) — 주문 chr.crs{id,k,g,tk,dn,h} · 상품 이름은 허브가 넣은 pnameKo · 가이드 있는 주문은 가이드 이름·전화도 넣어야 확정
+var CTNM={ctsel:"서울 시내 프라이빗 카투어",ctdmz:"DMZ 프라이빗 카투어 (가이드 포함)",ctsub:"서울 근교 프라이빗 카투어",ctgj:"서울–경주 프라이빗 카투어"};
+function chCrs(x){ var c=(x.chr||{}).crs; if(!c) return ""; return '<div style="margin:0 0 4px;padding:4px 8px;border-radius:8px;background:#e6fcf5;font-weight:800">'+esc(x.pnameKo||CTNM[c.id]||c.id)+'</div><span class="sub">'+(c.dn>1?c.dn+"일":c.h+"시간")+' · '+(c.g?'<b style="color:#c92a2a">가이드 '+(c.id==="ctdmz"?"포함":"추가")+'</b>':'기사만')+(c.tk?' · <b>DMZ 입장권 '+(x.n||0)+'장 예매</b>':'')+'</span><br>'; }
 function chPk(c){ var p=(c&&c.pick)||{}; return p.t==="icn"?"인천국제공항":p.t==="gmp"?"김포국제공항":esc(p.ko||p.nm||"")+(p.addr?'<br><span class="sub">'+esc(p.addr)+'</span>':''); }
 function chDs(c){ return '<ol style="margin:0;padding-left:18px">'+((c&&c.dests)||[]).map(function(d){ return '<li>'+esc(d.ko||d.nm||"")+' <span class="sub">'+esc([d.r1,d.r2].filter(Boolean).join(" "))+(d.z?" · "+CHZ[d.z].slice(0,1):"")+'</span></li>'; }).join("")+'</ol>'; }
 function soDrawC(){ var t=$("soTabC"); if(!t) return; var it=soOf("c"), cnt=function(f){ return it.filter(f).length; }, pd=it.filter(function(x){ return x.status==="paid"||x.status==="confirmed"; }), amt=pd.reduce(function(a,x){ return a+(x.amount||0); },0);
@@ -840,11 +843,12 @@ function soDrawC(){ var t=$("soTabC"); if(!t) return; var it=soOf("c"), cnt=func
   var h='<tr><th class="l">주문</th><th class="l">이용 · 손님</th><th class="l">픽업 · 목적지 (순서)</th><th class="l">구간 · 금액 · 요청</th><th class="l">기사 · 차 (넣고 확정)</th><th class="l">상태</th><th></th></tr>';   // 7칸 — 기사 넣는 칸이 옆으로 밀리지 않게
   it.forEach(function(x){ var c=x.chr||{}, d=c.drv||{}, o=esc(x.oid), can=x.status==="paid"||x.status==="confirmed";
     h+='<tr><td class="l" style="min-width:120px">'+o+'<br><span class="sub">'+esc(x.at)+(x.pay==="none"?' · 결제 없음(PG 전)':x.pay==="pg"?' · 카드'+(x.pgTest?"(시험 채널)":""):'')+'</span></td>'
-      +'<td class="l" style="min-width:170px"><b>'+esc(x.date||"")+'</b> '+esc(x.time||"")+' <span class="sub">· 10시간</span><br>'+(x.n||0)+'명 · 큰 짐 '+(c.lug||0)+'개 · 기사 언어 <b>'+esc(CHDL[c.dl]||c.dl||"")+'</b>'
+      +'<td class="l" style="min-width:170px"><b>'+esc(x.date||"")+'</b> '+esc(x.time||"")+' <span class="sub">· '+(c.crs?(c.crs.dn>1?c.crs.dn+"일":c.crs.h+"시간"):"10시간")+'</span><br>'+(x.n||0)+'명 · 큰 짐 '+(c.lug||0)+'개 · 기사 언어 <b>'+esc(CHDL[c.dl]||c.dl||"")+'</b>'
       +'<br>'+esc(x.name||"")+' <span class="sub">('+esc(gLangNm(x.lang))+')</span><br><span class="sub">'+esc(x.email||"")+(x.phone?' · '+esc(x.phone):'')+'</span></td>'
-      +'<td class="l" style="min-width:230px;line-height:1.5"><span class="sub">픽업</span> '+chPk(c)+chDs(c)+'</td>'
+      +'<td class="l" style="min-width:230px;line-height:1.5">'+chCrs(x)+'<span class="sub">픽업</span> '+chPk(c)+chDs(c)+'</td>'
       +'<td class="l" style="min-width:140px">'+esc(CHZ[c.z]||"-")+'<br><b>'+won(x.amount)+'</b>'+(c.memo?'<br><span class="sub">요청:</span> '+esc(c.memo):'')+'</td>'
       +'<td class="l" style="min-width:190px"><div style="display:flex;flex-direction:column;gap:4px"><input id="chN_'+o+'" placeholder="기사 이름" value="'+esc(d.nm||"")+'"'+(can?'':' disabled')+'><input id="chT_'+o+'" placeholder="기사 전화" value="'+esc(d.tel||"")+'"'+(can?'':' disabled')+'><input id="chC_'+o+'" placeholder="차 번호" value="'+esc(d.car||"")+'"'+(can?'':' disabled')+'>'
+      +(c.crs&&c.crs.g?'<input id="chGN_'+o+'" placeholder="가이드 이름" value="'+esc((c.gd||{}).nm||"")+'"'+(can?'':' disabled')+'><input id="chGT_'+o+'" placeholder="가이드 전화" value="'+esc((c.gd||{}).tel||"")+'"'+(can?'':' disabled')+'>':'')
       +(can?'<button data-oid="'+o+'" onclick="chSave(this.dataset.oid)">'+(d.nm?"바꿔서 저장 (메일 다시)":"확정 (손님 메일)")+'</button>':'')+(d.at?'<span class="sub">'+esc(d.at)+' 확정</span>':'')+'</div></td>'
       +'<td class="l"><select data-oid="'+o+'" onchange="soSet(this.dataset.oid,{status:this.value})">'+sopt(x)+'</select></td>'
       +'<td><button class="g" data-oid="'+o+'" onclick="soDel(this.dataset.oid)" title="이 주문 지우기">✕</button></td></tr>'; });
@@ -853,13 +857,15 @@ function soDrawC(){ var t=$("soTabC"); if(!t) return; var it=soOf("c"), cnt=func
 function chSave(oid){ var g=function(p){ var e=$(p+oid); return e?e.value.trim():""; }, drv={nm:g("chN_"),tel:g("chT_"),car:g("chC_")};
   if(!drv.nm||!drv.tel||!drv.car){ alert("기사 이름·전화·차 번호를 모두 넣어 주세요."); return; }
   var x=SO.items.filter(function(y){ return y.oid===oid; })[0]; if(!x) return;
-  if(!confirm((x.chr&&x.chr.drv?"기사 정보를 바꿔 저장할까요? 손님에게 「기사 정보가 바뀌었습니다」 메일이 갑니다.":"이 기사로 확정할까요? 손님에게 확정 메일이 갑니다.")+"\n\n"+drv.nm+" · "+drv.tel+" · "+drv.car)) return;
-  api("/shop/admin/chr",{method:"POST",body:JSON.stringify({oid:oid,drv:drv})}).then(function(j){ if(!j.ok){ alert("저장하지 못했습니다 ("+(j.err||"")+")"); return; }
+  var needG=!!(x.chr&&x.chr.crs&&x.chr.crs.g), gd=needG?{nm:g("chGN_"),tel:g("chGT_")}:null;   // 프라이빗 카투어 가이드 (11-14)
+  if(needG&&(!gd.nm||!gd.tel)){ alert("이 상품은 가이드가 있어요. 가이드 이름·전화도 넣어 주세요."); return; }
+  if(!confirm((x.chr&&x.chr.drv?"기사 정보를 바꿔 저장할까요? 손님에게 「기사 정보가 바뀌었습니다」 메일이 갑니다.":"이 기사로 확정할까요? 손님에게 확정 메일이 갑니다.")+"\n\n"+drv.nm+" · "+drv.tel+" · "+drv.car+(gd?"\n가이드 "+gd.nm+" · "+gd.tel:""))) return;
+  api("/shop/admin/chr",{method:"POST",body:JSON.stringify({oid:oid,drv:drv,gd:gd||undefined})}).then(function(j){ if(!j.ok){ alert("저장하지 못했습니다 ("+(j.err||"")+")"); return; }
     SO.items=SO.items.map(function(y){ return y.oid===oid?j.order:y; }); soDraw(); alert(j.mailed?"확정했습니다. 손님에게 메일을 보냈습니다.":"저장했습니다. (메일은 보내지 않았습니다 — 바뀐 것이 없거나 보내지 못함)"); }).catch(function(){ alert("저장하지 못했습니다."); }); }
 // 차량 대절 엑셀 (11-11)
-function xlsSoC(){ var TT="차량 대절", rows=[[CO],[TT],["만든 날",kday(0)],[],["주문일시","주문번호","이용 날짜","시작 시각","손님 이름","이메일","전화","화면 언어","인원","큰 짐","픽업","목적지(순서)","기사 언어","구간","금액(원)","요청 사항","기사","기사 전화","차 번호","상태","결제"]].concat(soOf("c").map(function(x){ var c=x.chr||{}, d=c.drv||{}, p=c.pick||{};
-    return [x.at,x.oid,x.date,x.time,x.name||"",x.email||"",x.phone||"",gLangNm(x.lang),x.n||0,c.lug||0,p.t==="icn"?"인천국제공항":p.t==="gmp"?"김포국제공항":(p.ko||p.nm||""),(c.dests||[]).map(function(q,i){ return (i+1)+". "+(q.ko||q.nm||"")+" ["+[q.r1,q.r2].filter(Boolean).join(" ")+"]"; }).join(" → "),CHDL[c.dl]||c.dl||"",CHZ[c.z]||"",x.amount||0,c.memo||"",d.nm||"",d.tel||"",d.car||"",SOSC[x.status]||x.status,x.pay==="pg"?"카드":x.pay==="none"?"결제 없음(PG 전)":""]; }));
-  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[16,22,11,6,12,24,14,10,6,6,24,60,8,14,10,30,10,14,12,16,14]),TT); save(wb,"모자이크트립_차량대절_"+kday(0)+".xlsx"); }
+function xlsSoC(){ var TT="차량 대절", rows=[[CO],[TT],["만든 날",kday(0)],[],["주문일시","주문번호","상품","이용 날짜","시작 시각","손님 이름","이메일","전화","화면 언어","인원","큰 짐","픽업","목적지(순서)","기사 언어","구간","금액(원)","요청 사항","기사","기사 전화","차 번호","가이드","가이드 전화","상태","결제"]].concat(soOf("c").map(function(x){ var c=x.chr||{}, d=c.drv||{}, p=c.pick||{};
+    return [x.at,x.oid,x.pnameKo||"차량 대절",x.date,x.time,x.name||"",x.email||"",x.phone||"",gLangNm(x.lang),x.n||0,c.lug||0,p.t==="icn"?"인천국제공항":p.t==="gmp"?"김포국제공항":(p.ko||p.nm||""),(c.dests||[]).map(function(q,i){ return (i+1)+". "+(q.ko||q.nm||"")+" ["+[q.r1,q.r2].filter(Boolean).join(" ")+"]"; }).join(" → "),CHDL[c.dl]||c.dl||"",CHZ[c.z]||"",x.amount||0,c.memo||"",d.nm||"",d.tel||"",d.car||"",(c.gd||{}).nm||"",(c.gd||{}).tel||"",SOSC[x.status]||x.status,x.pay==="pg"?"카드":x.pay==="none"?"결제 없음(PG 전)":""]; }));
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[16,22,26,11,6,12,24,14,10,6,6,24,60,8,14,10,30,10,14,12,10,14,16,14]),TT); save(wb,"모자이크트립_차량대절_"+kday(0)+".xlsx"); }
 // 가이드 일정 검토 카드 (11-07) — 상태 이름은 이 상품에 맞게 · 마감(남은 시간) · 검토 결과(의견·고친 일정·손님 메일) · 손님 일정 링크 · 가이드 바꾸기(새 가이드에게 링크)
 var SOSR={pending:"결제 전",paid:"검토 대기",confirmed:"검토 보냄",cancelled:"취소",refunded:"환불"};
 function soLeft(x){ var g=x.grv||{}, d=g.due||0; if(!d) return '<span class="sub">-</span>'; var t=new Date(d+9*36e5).toISOString().slice(5,16).replace("T"," ");
