@@ -858,7 +858,7 @@ function chSave(oid){ var g=function(p){ var e=$(p+oid); return e?e.value.trim()
   if(!drv.nm||!drv.tel||!drv.car){ alert("기사 이름·전화·차 번호를 모두 넣어 주세요."); return; }
   var x=SO.items.filter(function(y){ return y.oid===oid; })[0]; if(!x) return;
   var needG=!!(x.chr&&x.chr.crs&&x.chr.crs.g), gd=needG?{nm:g("chGN_"),tel:g("chGT_")}:null;   // 프라이빗 카투어 가이드 (11-14)
-  if(needG&&(!gd.nm||!gd.tel)){ alert("이 상품은 가이드가 있어요. 가이드 이름·전화도 넣어 주세요."); return; }
+  if(needG&&(!gd.nm||!gd.tel)){ alert("가이드 포함 상품입니다. 가이드 이름·전화도 입력해 주세요."); return; }
   if(!confirm((x.chr&&x.chr.drv?"기사 정보를 바꿔 저장할까요? 손님에게 「기사 정보가 바뀌었습니다」 메일이 갑니다.":"이 기사로 확정할까요? 손님에게 확정 메일이 갑니다.")+"\n\n"+drv.nm+" · "+drv.tel+" · "+drv.car+(gd?"\n가이드 "+gd.nm+" · "+gd.tel:""))) return;
   api("/shop/admin/chr",{method:"POST",body:JSON.stringify({oid:oid,drv:drv,gd:gd||undefined})}).then(function(j){ if(!j.ok){ alert("저장하지 못했습니다 ("+(j.err||"")+")"); return; }
     SO.items=SO.items.map(function(y){ return y.oid===oid?j.order:y; }); soDraw(); alert(j.mailed?"확정했습니다. 손님에게 메일을 보냈습니다.":"저장했습니다. (메일은 보내지 않았습니다 — 바뀐 것이 없거나 보내지 못함)"); }).catch(function(){ alert("저장하지 못했습니다."); }); }
