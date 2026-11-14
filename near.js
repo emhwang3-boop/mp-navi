@@ -77,7 +77,7 @@ var S={k:"",tab:0,base:null,src:"",items:null,err:""}, CACHE={}, PICK=null;
 function L(){ return window.LANG!=="ko"; }   // 외국어 화면(영·일·중) — 10-18
 function LG6(o){ return o[window.LANG]||o.en; }   // 통역·길안내 새 문구는 6개 언어를 바로 넣는다(i18n.js 안 건드림, 10-24)
 // 「투어·입장권 / Tours & tickets」 (사장님 10-24) — 옛 「투어 가이드」. 내용(Klook·GetYourGuide·Creatrip·Trazy)은 그대로, 이름만 6개 언어로
-var TOURS6={ko:"패키지여행",en:"Group Tour",ja:"パッケージツアー",zhs:"跟团游",zht:"跟團遊",es:"Tour en grupo"};   // 11-06 사장님 — 옛 「체험·입장권」
+var TOURS6={ko:"프라이빗 카투어",en:"Private Car Tours",ja:"プライベートカーツアー",zhs:"私人包车游",zht:"私人包車遊",es:"Tours privados en coche"};   // 11-14 사장님 「패키지 투어를 프라이빗 카투어로」 — 옛 「패키지여행」   // 11-06 사장님 — 옛 「체험·입장권」
 // 「투어 가이드」 칩 글자 (사장님 10-24) — 맨 앞 칩. 누르면 통역·길안내(ig) 가이드 매칭 판이 열린다
 var IG_CHIP6={ko:"가이드인솔 자유여행",en:"Travel with Guide",ja:"ガイド同行の自由旅行",zhs:"向导陪同自由行",zht:"嚮導陪同自由行",es:"Viaje con guía"};   // 11-06 사장님 — 옛 「투어 가이드」 · 칩은 두 줄(IG_CHIP2)
 var IG_CHIP2={ko:["가이드인솔","자유여행"],en:["Travel","with Guide"],ja:["ガイド同行の","自由旅行"],zhs:["向导陪同","自由行"],zht:["嚮導陪同","自由行"],es:["Viaje","con guía"]};   // 줄바꿈 자리 고정 (사장님 11-06)
