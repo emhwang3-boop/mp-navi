@@ -892,7 +892,7 @@ function sched(H,arr,date,from,mo,lv){ var B=(!lv&&!CHRNO&&!OLD())?chrOn(date):n
   A=A.sort(function(a,b){ return a.i-b.i; }).map(function(q){ return q.x; });
   var sk=(mo&&mo.skip)||{}, sA=sched0(H,A,date,from,Object.assign({},mo||{},{lunch:null,dinner:null,rs:null,skip:{lunch:true,dinner:true}}),null);
   sA.chr=1; sA.chrEnd=sA.end; sA.nO=0; if(!O.length) return sA;
-  var E=hE(H), P0=E||(A.length?A[A.length-1]:hS(H)), T2=Math.max(sA.end,t0+600), sB;
+  var E=hE(H), P0=E||(A.length?A[A.length-1]:hS(H)), T2=Math.max(sA.end,t0+(B.h||10)*60), sB;   /* 프라이빗 카투어는 코스 시간(B.h — DMZ 8·경주 당일 12, 11-14) */
   CHRNO++; try{ sB=sched0(hPair(P0,E),O,date,T2,Object.assign({},mo||{},{lunch:null,skip:{lunch:true,dinner:!!sk.dinner}}),null); } finally{ CHRNO--; }
   var rows=sA.rows.slice(); if(A.length&&E) rows.push({rest:1,chrBack:1,t:sA.end,e:T2,p:E,leg:sA.back,k:O[0].k});   // 차량 대절로 숙소 도착 — 10시간 끝까지는 「차량 대절 시간이에요」
   var sum=function(f){ return (sA[f]||0)+(sB[f]||0); };
@@ -946,7 +946,7 @@ function compute0(H,Dn){ if(!OLD()){ var nat=null; try{ nat=natPlan(H,Dn); }catc
     var D2=MD.length?Math.max(P.length?1:0,D-MD.reduce(function(a,x){ return a+udOf(x); },0)):D;
     var dts=[]; for(var q0=0;q0<D2;q0++) dts.push(dayDate(q0));
     var CB=dts.map(function(q1){ return chrOn(q1); }), hasC=CB.some(Boolean);   /* 11-11 차량 대절 날 — 픽업부터 10시간은 비워 두고 그 뒤 남는 시간만(그날 끝까지) · 예약 목적지는 나누기에서 빼고 chrApply 가 그날 맨 앞에 */
-    var P2=hasC?P.filter(function(x){ return !CB.some(function(B){ return B&&chrIx(B,x)>=0; }); }):P, cps=hasC?CB.map(function(B){ var t0=B?hm2m(B.time||""):null; return (B&&t0!=null)?Math.max(0,to-(t0+600)):cap; }):cap;
+    var P2=hasC?P.filter(function(x){ return !CB.some(function(B){ return B&&chrIx(B,x)>=0; }); }):P, cps=hasC?CB.map(function(B){ var t0=B?hm2m(B.time||""):null; return (B&&t0!=null)?Math.max(0,to-(t0+(B.h||10)*60)):cap; }):cap;
     var sq=D2?seqSplit(H,P2,D2,cps):[], pool0={}; P.forEach(function(x){ pool0[x.k]=x; });
     var pl0={v:1,at:Date.now(),from:from,to:to,hotel:nhNewH(),
       days:sq.map(function(g,di){ return {date:dts[di].toISOString().slice(0,10),stops:g.map(function(x){ return x.k; })}; }),pool:pool0,skip:skip.map(function(x){ return x.k; }),ai:null,ord:1};
@@ -1886,11 +1886,11 @@ function chrMvHtml(pl,d){ var L=(pl.chrMv&&pl.chrMv[d.date])||[], by={}, ord=[];
     return '<div class="tmemo ti tchrm">'+MPIMG("mi_charter",MIS)+esc(gTxt(CHB6.mv,{p:ns.map(chrQ).join(sep),j:eul(ns[ns.length-1]),d:dL6(dj)}))+'</div>'; }).join(""); }
 function chrBlkHtml(){ return '<div class="trw h tchrb"><span class="tt"></span><span class="tp">'+MPIMG("mi_charter",MIS)+esc(T5(CHB6.blk))+'</span></div>'; }   // 10시간 안 빈 시간 — 「일정 추가」 칸 대신 회색 줄
 var CHT6={pk:{ko:"차량 대절 픽업 · {p}",en:"Car charter pickup · {p}",ja:"貸切チャーターお迎え・{p}",zhs:"包车接您 · {p}",zht:"包車接您 · {p}",es:"Recogida del coche · {p}"},
- end:{ko:"차량 대절 10시간 끝",en:"10-hour car charter ends",ja:"貸切チャーター10時間終了",zhs:"包车10小时结束",zht:"包車10小時結束",es:"Terminan las 10 horas del coche"},
- over2:{ko:"차량 대절이 {t}에 끝나요. 10시간을 넘어 1시간에 3만 원이 더 들어요.",en:"Your car charter ends at {t}. That's over 10 hours, so it costs ₩30,000 more per hour.",ja:"貸切チャーターは{t}に終わります。10時間を超えるため、1時間ごとに3万ウォンかかります。",zhs:"包车{t}结束。超过10小时，每小时需另付3万韩元。",zht:"包車{t}結束。超過10小時，每小時需另付3萬韓元。",es:"Tu coche con conductor termina a las {t}. Pasa de 10 horas, así que cuesta ₩30.000 más por hora."},
- over:{ko:"일정이 {t}에 끝나요. 10시간을 넘어 1시간에 3만 원이 더 들어요.",en:"Your day ends at {t}. That's over 10 hours, so it costs ₩30,000 more per hour.",ja:"この日の予定は{t}に終わります。10時間を超えるため、1時間ごとに3万ウォンかかります。",zhs:"当天行程{t}结束。超过10小时，每小时需另付3万韩元。",zht:"當天行程{t}結束。超過10小時，每小時需另付3萬韓元。",es:"Tu día termina a las {t}. Pasa de 10 horas, así que cuesta ₩30.000 más por hora."}};
+ end:{ko:"차량 대절 {h}시간 끝",en:"{h}-hour car charter ends",ja:"貸切チャーター{h}時間終了",zhs:"包车{h}小时结束",zht:"包車{h}小時結束",es:"Terminan las {h} horas del coche"},
+ over2:{ko:"차량 대절이 {t}에 끝나요. {h}시간을 넘어 1시간에 3만 원이 더 들어요.",en:"Your car charter ends at {t}. That's over {h} hours, so it costs ₩30,000 more per hour.",ja:"貸切チャーターは{t}に終わります。{h}時間を超えるため、1時間ごとに3万ウォンかかります。",zhs:"包车{t}结束。超过{h}小时，每小时需另付3万韩元。",zht:"包車{t}結束。超過{h}小時，每小時需另付3萬韓元。",es:"Tu coche con conductor termina a las {t}. Pasa de {h} horas, así que cuesta ₩30.000 más por hora."},
+ over:{ko:"일정이 {t}에 끝나요. {h}시간을 넘어 1시간에 3만 원이 더 들어요.",en:"Your day ends at {t}. That's over {h} hours, so it costs ₩30,000 more per hour.",ja:"この日の予定は{t}に終わります。{h}時間を超えるため、1時間ごとに3万ウォンかかります。",zhs:"当天行程{t}结束。超过{h}小时，每小时需另付3万韩元。",zht:"當天行程{t}結束。超過{h}小時，每小時需另付3萬韓元。",es:"Tu día termina a las {t}. Pasa de {h} horas, así que cuesta ₩30.000 más por hora."}};
 function chrPkTx(C,S){ var p=C&&C.pick, n=""; try{ n=p&&window.CHR&&CHR.pkTx?CHR.pkTx(p):""; }catch(e){} return gTxt(CHT6.pk,{p:n||ptNm(S)||""}); }
-function chrEndHtml(C,dEnd,o2){ var ov=dEnd>C.end; return '<div class="trw h tchre'+(ov?' over':'')+'"><span class="tt">'+m2hm(C.end)+'</span><span class="tp">'+MPIMG("mi_charter",MIS)+esc(T5(CHT6.end))+(ov?'<span class="tchro">'+esc(gTxt(o2?CHT6.over2:CHT6.over,{t:m2hm(dEnd)}))+'</span>':'')+'</span></div>'; }
+function chrEndHtml(C,dEnd,o2){ var ov=dEnd>C.end; return '<div class="trw h tchre'+(ov?' over':'')+'"><span class="tt">'+m2hm(C.end)+'</span><span class="tp">'+MPIMG("mi_charter",MIS)+esc(gTxt(CHT6.end,{h:C.h||10}))+(ov?'<span class="tchro">'+esc(gTxt(o2?CHT6.over2:CHT6.over,{t:m2hm(dEnd),h:C.h||10}))+'</span>':'')+'</span></div>'; }
 (function(){ var s=document.createElement("style"); s.textContent=".tchrp .tp{font-weight:800}.tchre .tp{color:var(--sub,#5b6474)}.tchre.over .tp{color:#7a5900;font-weight:800}"
   +".tchro{display:block;margin-top:4px;padding:5px 9px;border-radius:9px;background:#fff3bf;border:1px solid #f0c419;color:#7a5900;font-size:12.5px;font-weight:700;line-height:1.5}"
   +"html[data-theme=dark] .tchre.over .tp{color:#ffe066}html[data-theme=dark] .tchro{background:#3a3210;border-color:#8a7414;color:#ffe066}"
@@ -3079,7 +3079,7 @@ function meFor(d,arr){ if(!d||d.date!==kstToday(0)||OLD()) return null; var me=m
 function dayX(pl,di,H0){ var X=dayX0(pl,di,H0); try{ chrX(pl,di,X); }catch(e){} return X; }
 var CHAP={icn:{ko:"인천국제공항",en:"Incheon International Airport",lat:37.4602,lng:126.4407},gmp:{ko:"김포국제공항",en:"Gimpo International Airport",lat:37.5583,lng:126.7906}};
 function chrX(pl,di,X){ var d=pl.days[di]; if(!d||d.md||!X) return; var B=chrOn(d.date); if(!B) return; var t=hm2m(B.time||""); if(t==null) return;
-  X.chr={t:t,end:t+600,pick:B.pick||null,oid:B.oid}; if(X.pre&&X.pre.length) return;
+  X.chr={t:t,end:t+(B.h||10)*60,h:B.h||10,pick:B.pick||null,oid:B.oid}; if(X.pre&&X.pre.length) return;   /* h = 이용 시간(프라이빗 카투어 코스 시간, 11-14) */
   X.from=t; X.me=0; var p=B.pick, S=hS(X.H), E=hE(X.H), P=null;
   if(p&&CHAP[p.t]) P={type:"addr",ko:CHAP[p.t].ko,en:CHAP[p.t].en,lat:CHAP[p.t].lat,lng:CHAP[p.t].lng,ap:1};
   else if(p&&isFinite(+p.lat)&&isFinite(+p.lng)&&+p.lat) P={type:"addr",ko:p.ko||p.nm||"",en:p.en||p.nm||p.ko||"",lat:+p.lat,lng:+p.lng};
