@@ -61,7 +61,7 @@ var TX={
  load:T6("찾는 중…","Searching…","検索中…","搜索中…","搜尋中…","Buscando…"),
  none:T6("가까운 곳에 없어요.","None found nearby.","近くに見つかりませんでした。","附近没有找到。","附近沒有找到。","No se encontró nada cerca."),
  err:T6("잠시 뒤 다시 해 주세요.","Please try again shortly.","しばらくしてからもう一度お試しください。","请稍后再试。","請稍後再試。","Inténtalo de nuevo en un momento."),
- far:T6("가까운 곳에 없어 10km 안에서 찾았어요.","Nothing close by, so we searched within 10 km.","近くにないため、10km以内で探しました。","附近没有，已在10公里内查找。","附近沒有，已在10公里內查找。","No había nada cerca; buscamos a menos de 10 km."),
+ far:T6("가까운 곳이 적어 {r} 안에서 찾았어요.","Few places nearby, so we searched within {r}.","近くに少ないため、{r}以内で探しました。","附近较少，已在{r}内查找。","附近較少，已在{r}內查找。","Hay pocos cerca; buscamos a menos de {r}."),   // 11-14 {r} — 응급실·경찰은 10km 에도 없으면 20km
  mapHint:T6("목록에 마우스를 올리면 핀이 커져요 · 핀을 누르면 목록의 그곳으로","Hover over the list to enlarge a pin · click a pin to jump to it in the list","リストにマウスを合わせるとピンが大きくなります・ピンを押すとリストのその場所へ","鼠标移到列表上，图钉会放大 · 点击图钉跳到列表中的该处","滑鼠移到列表上，圖釘會放大 · 點擊圖釘跳到列表中的該處","Pasa el ratón por la lista para agrandar un pin · haz clic en un pin para ir a él en la lista"),
  mapHintT:T6("핀을 누르면 목록의 그곳으로","Tap a pin to jump to it in the list","ピンを押すとリストのその場所へ","点击图钉跳到列表中的该处","點擊圖釘跳到列表中的該處","Toca un pin para ir a él en la lista"),
  mapNo:T6("이 동네는 그림 지도가 없어요","There's no illustrated map for this area","この地域のイラストマップはありません","该地区暂无手绘地图","該地區暫無手繪地圖","No hay mapa ilustrado de esta zona"),
@@ -155,9 +155,9 @@ function listPaint(){ if(!CUR) return; var c=CUR.cfg, n=N(), L=D.getElementById(
   lt.textContent=listTitle(c.kind(),c.ordName());
   if(d.items==null&&!d.err){ ls.textContent=""; L.innerHTML='<div class="pn-msg">'+E(L6(TX.load))+'</div>'; mapPaint([]); return; }
   if(d.err){ ls.textContent=""; L.innerHTML='<div class="pn-msg">'+E(L6(TX.err))+'</div>'; mapPaint([]); return; }
-  ls.textContent=F(t.g?TX.srcG:TX.srcK,{r:rkm(d.wide?10000:d.r)});
+  var rw=d.wide?Math.max(10000,+d.r||0):d.r; ls.textContent=F(t.g?TX.srcG:TX.srcK,{r:rkm(rw)});
   CUR.items=d.items;
-  L.innerHTML=d.items.length?(d.wide?'<div class="pn-note">'+E(L6(TX.far))+'</div>':'')+'<div class="pn-grid">'+d.items.map(function(x,i){ return itemHtml(x,i,c.em); }).join("")+'</div>':'<div class="pn-msg">'+E(L6(TX.none))+'</div>';
+  L.innerHTML=d.items.length?(d.wide?'<div class="pn-note">'+E(F(TX.far,{r:rkm(rw)}))+'</div>':'')+'<div class="pn-grid">'+d.items.map(function(x,i){ return itemHtml(x,i,c.em); }).join("")+'</div>':'<div class="pn-msg">'+E(L6(TX.none))+'</div>';
   mapPaint(d.items.map(function(x,i){ return {lat:+x.y,lng:+x.x,n:i+1,i:i}; })); }
 
 // ── 오른쪽 그림 지도 — 앱 날짜 지도(trip.js dayMap)와 같은 그림을 잘라 번호 핀 ──
