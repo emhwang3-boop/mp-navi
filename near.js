@@ -18,7 +18,8 @@ var KINDS={
   eb:{e:"amenity", t:["대사관","Embassies"], tabs:[{c:"EMB",ko:"대사관",en:"Embassies",i:"",fixed:1}]},   // 편의시설은 풀다운 하나 (10-16) · 마트 → 음식점(구글, 별점) (사장님 10-21) · 환전소 = 허브 키워드 검색, 은행 뺌 · 여행사(구글 /gnear?type=travel_agency, 별점, 3→10→30km) — 계획 없이 온 손님이 근처 가이드 투어 찾기 (사장님 10-22)
   // 투어 가이드 (사장님 10-23) — 맨 앞 칩. Klook·GetYourGuide 링크만 (근처 여행사 목록은 아웃바운드라 뺌)
   tg:{e:"tour", t:["🧭 투어 가이드","🧭 Tour guide"], tabs:[{c:"TA",ko:"투어",en:"Tour",i:"🧭"}]},
-  em:{e:"emergency", t:["🚑 긴급","🚑 Emergency"], tabs:[{c:"HP8",ko:"병원",en:"Hospital",i:"🏥",r:2000},{c:"PM9",ko:"약국",en:"Pharmacy",i:"💊",r:2000}]},
+  // 11-14 사장님 「응급실이 있는 병원만 나오게 · 112를 누르면 근처 파출소나 경찰서를 보여줘」(112는 「나」 — 목록 맨 위 「112 전화」 단추) — 병원 탭 = 응급실(허브 /kplace cat=ER), 경찰 = 탭 줄엔 없고 112 칸을 누를 때만(hid)
+  em:{e:"emergency", t:["🚑 긴급","🚑 Emergency"], tabs:[{c:"ER",ko:"응급실",en:"Emergency room",i:"🏥",r:2000,l6:{ko:"응급실",en:"Emergency room",ja:"救急外来",zhs:"急诊室",zht:"急診室",es:"Urgencias"}},{c:"PM9",ko:"약국",en:"Pharmacy",i:"💊",r:2000},{c:"POL",ko:"경찰서·파출소",en:"Police stations",i:"",r:2000,hid:1,l6:{ko:"경찰서·파출소",en:"Police stations",ja:"警察署・交番",zhs:"警察局·派出所",zht:"警察局·派出所",es:"Comisarías de policía"}}]},
   // 숙소 (사장님 10-16) — 카카오 숙박(AD5)을 허브가 종류로 나눔 + 관광공사 관광정보에 실린 숙소는 kto=1 (「관광공사」 표시)
   st:{e:"stay", t:["🏨 숙소","🏨 Stay"], tabs:[{c:"AD5",kind:"hotel",ko:"호텔",en:"Hotel",i:"🏨",r:3000},{c:"AD5",kind:"motel",ko:"모텔",en:"Motel",i:"🛏",r:3000},{c:"AD5",kind:"gh",ko:"게스트하우스",en:"Guesthouse",i:"🎒",r:3000},{c:"AD5",kind:"hanok",ko:"한옥스테이",en:"Hanok stay",i:"🏯",r:3000}]},
   // 통역·길안내 (사장님 10-24) — 우리 가이드(관광통역안내사) 등록·매칭 판. 무료. 언어 고르기→승인된 가이드 목록→요청 (GoWithGuide 외부 링크 대신)
@@ -30,7 +31,8 @@ var MENU={tg:["투어 가이드","Tour guide"],am:["🏪 편의시설 (편의점
 var MENU_ICON={tg:"mi_guide",am:"mi_amenity",fd:"mi_food",fx:"mi_exchange",eb:"mi_embassy",em:"mi_emergency",st:"mi_stay"};   // 11-08 환전소·대사관 그림 = 나노바나나(메뉴 아이콘 후보 3 그림체)
 // 11-08 ⋮ 메뉴·창 제목 6개 언어 (편의점·음식점·환전소·대사관)
 var MENU6={am:{ko:"편의점",en:"Convenience stores",ja:"コンビニ",zhs:"便利店",zht:"便利商店",es:"Tiendas de conveniencia"},fd:{ko:"음식점",en:"Restaurants",ja:"飲食店",zhs:"餐厅",zht:"餐廳",es:"Restaurantes"},fx:{ko:"환전소",en:"Currency exchange",ja:"両替所",zhs:"货币兑换",zht:"貨幣兌換",es:"Casas de cambio"},eb:{ko:"대사관",en:"Embassies",ja:"大使館",zhs:"大使馆",zht:"大使館",es:"Embajadas"}};   // ⋮ 메뉴 라벨 앞 그림 아이콘 (후보3, 사장님 10-23)
-function miLbl(k){ var lbl=k==="tg"?LG6(TOURS6):MENU6[k]?LG6(MENU6[k]):T(MENU[k][0],MENU[k][1]).replace(/^[\u{1F000}-\u{1FAFF}☀-➿⬀-⯿️]+\s*/u,""); return '<img class="miic" src="img/menu/'+MENU_ICON[k]+'.png" alt="">'+esc(lbl); }
+var EM6={ko:"긴급 (응급실·약국·경찰)",en:"Emergency (ER · pharmacy · police)",ja:"緊急（救急外来・薬局・警察）",zhs:"紧急（急诊室·药店·警察）",zht:"緊急（急診室·藥局·警察）",es:"Emergencias (urgencias · farmacia · policía)"};   // 메뉴 이름 (11-14 응급실·경찰)
+function miLbl(k){ var lbl=k==="tg"?LG6(TOURS6):k==="em"?LG6(EM6):MENU6[k]?LG6(MENU6[k]):T(MENU[k][0],MENU[k][1]).replace(/^[\u{1F000}-\u{1FAFF}☀-➿⬀-⯿️]+\s*/u,""); return '<img class="miic" src="img/menu/'+MENU_ICON[k]+'.png" alt="">'+esc(lbl); }
 // 대사관 (사장님 10-16) — 고정 목록 37곳(G20·동남아·고용허가제 송출국). 나라 영문 이름 알파벳 순(거리로 줄 세우지 않음)
 //  이름·주소·전화: 외교부 「주한공관주소록」 국문·영문판(mofa.go.kr inKoEmblgbdAdres, 2026-10-16 읽음) · 전화는 첫 번호만
 //  좌표: 허브 /kplace 카카오 「<나라> 대사관」 자리(전화 또는 외교부 주소 검색 자리와 맞춘 것). 몽골은 카카오 자리와 외교부 주소가 580m 어긋나 좌표 비움(주소로 지도 검색)
@@ -95,7 +97,7 @@ function css(){ if(document.getElementById("nrCss")) return; var s=document.crea
   +"@media (min-width:700px){#nrBox{overflow:hidden}#nrBox .nrin{height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-color:var(--sub,#8a94a6) var(--line,#e6e9ef);padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}}"   // 넓은 화면 — 가운데 칸 자체가 스크롤, 스크롤바가 칸 가장자리에 (사장님 11-06) · 폰은 그대로
   +".nrtop{display:flex;align-items:center;justify-content:space-between;font-size:18px;margin-bottom:8px}.nrx{width:34px;height:34px;border:0;border-radius:50%;background:var(--card);color:var(--sub);font-size:20px;cursor:pointer}"
   +".nrsos{display:flex;gap:8px;margin:0 0 10px}.nrsos a{flex:1;display:block;text-align:center;text-decoration:none;border-radius:12px;padding:10px 6px;font-weight:900;font-size:15px;line-height:1.25}"
-  +".nrsos a small{display:block;font-size:11.5px;font-weight:700;opacity:.85}.nrsos .s119{background:#e03131;color:#fff}.nrsos .s1330{background:#1971c2;color:#fff}.nrsos .s112{background:#1c2f5e;color:#fff}"
+  +".nrsos a small{display:block;font-size:11.5px;font-weight:700;opacity:.85}.nrsos .s119{background:#e03131;color:#fff}.nrsos .s1330{background:#1971c2;color:#fff}.nrsos .s112{background:#1c2f5e;color:#fff}.nrsos a[data-nr]{cursor:pointer}.nrsos a.on{box-shadow:inset 0 0 0 3px #ffd43b}.nrpol b{display:block;font-size:15px;font-weight:900;margin:2px 0 4px}"
   +".nrtabs{display:flex;gap:8px;margin:0 0 8px}.nrtab{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:9px 6px;font-size:15px;font-weight:800;cursor:pointer}"
   +".nrtab.on{border-color:#1971c2;background:#e7f5ff;color:#1864ab}.nrem .nrtab.on{border-color:#e03131;background:#fff5f5;color:#c92a2a}"
   +".nrbase{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--sub);font-size:12.5px;margin:2px 2px 6px}.nrme{border:1px solid #1a73e8;background:none;color:#1a73e8;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:800;cursor:pointer}"
@@ -185,12 +187,13 @@ function sortIt(it,t){ if(!t.g) return it.sort(function(a,c){ return a.dist-c.di
   return it.sort(function(a,c){ var ba=Math.floor(a.dist/200), bc=Math.floor(c.dist/200); if(ba!==bc) return ba-bc; var ta=(a.n||0)>=10?1:0, tc=(c.n||0)>=10?1:0; if(ta!==tc) return tc-ta; if((c.rating||0)!==(a.rating||0)) return (c.rating||0)-(a.rating||0); if((c.dt||0)!==(a.dt||0)) return (c.dt||0)-(a.dt||0); if((c.n||0)!==(a.n||0)) return (c.n||0)-(a.n||0); return a.dist-c.dist; }); }
 function fetchKind(t,p){ if(t.g){ var gk="g|"+(t.gt||"")+"|"+p[0].toFixed(3)+","+p[1].toFixed(3)+"|"+LANG; if(CACHE[gk]) return CACHE[gk];
     return CACHE[gk]=fetch(HUB+"/gnear?lat="+p[0].toFixed(5)+"&lng="+p[1].toFixed(5)+"&lang="+encodeURIComponent(LANG)+(t.gt?"&type="+t.gt:"")).then(function(x){ return x.json(); }).then(function(j){ if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); var a=j.items||[]; a.r=+j.r||t.r; return a; }).catch(function(e){ delete CACHE[gk]; throw e; }); }
-  var en=kpL(), key=t.c+(t.kind||"")+"|"+p[0].toFixed(3)+","+p[1].toFixed(3)+en, need=t.c==="HP8"||t.c==="PM9"?10:3;
+  var en=kpL(), key=t.c+(t.kind||"")+"|"+p[0].toFixed(3)+","+p[1].toFixed(3)+en, far2=t.c==="ER"||t.c==="POL", need=t.c==="HP8"||t.c==="PM9"||far2?10:3;
   var cnt=function(j){ return ((j&&j.items)||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }).length; };
   if(CACHE[key]) return CACHE[key];
-  var one=function(r){ return fetch(HUB+"/kplace?cat="+t.c+"&x="+p[1].toFixed(5)+"&y="+p[0].toFixed(5)+"&radius="+r+en).then(function(x){ return x.json(); }); };
-  return CACHE[key]=one(t.r).then(function(j){ if(j&&j.ok&&cnt(j)>=need) return j; return one(10000); }).then(function(j){
-    if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); return (j.items||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }); },function(e){ delete CACHE[key]; throw e; })
+  var one=function(r){ return fetch(HUB+"/kplace?cat="+t.c+"&x="+p[1].toFixed(5)+"&y="+p[0].toFixed(5)+"&radius="+r+en).then(function(x){ return x.json(); }).then(function(j){ if(j) j._r=r; return j; }); };
+  // 2km → 모자라면 10km · 응급실·경찰은 10km 에도 없으면 20km (11-14 — 남이섬은 10km 안에 응급실이 없다) · 찾은 거리(a.r)를 같이 넘긴다
+  return CACHE[key]=one(t.r).then(function(j){ if(j&&j.ok&&cnt(j)>=need) return j; return one(10000).then(function(j2){ return (far2&&j2&&j2.ok&&!cnt(j2))?one(20000):j2; }); }).then(function(j){
+    if(!j||!j.ok) throw new Error((j&&j.err)||"fail"); var a=(j.items||[]).filter(function(x){ return !t.kind||x.kind===t.kind; }); a.r=j._r; return a; },function(e){ delete CACHE[key]; throw e; })
     .then(function(a){ return (t.kind==="hanok"&&!a.length)?hanokFar(p,a):a; })
     // 숙소(AD5) = 구글 별점 높은 순 → 같으면 가까운 순 (사장님 10-23)
     .then(function(a){ if(a.far||!/^AD5$/.test(t.c)||!a.length||!window.gRate) return a; var f=a.far; return stayRate(t,p,a).then(function(b){ b.far=f; return b; }); }).catch(function(e){ delete CACHE[key]; throw e; }); }
@@ -246,12 +249,15 @@ function stayApp(){ if(window.APPSTAY) return APPSTAY.open();
   STAYL.then(function(){ if(window.APPSTAY) APPSTAY.open(); },function(){ STAYL=null; }); }
 function open(k){ css(); var mm=document.getElementById("mm"); if(mm) mm.hidden=true;
   if(k==="st"&&!window.PC_HOME){ close(); return stayApp(); }
-  if(S.k!==k){ S.tab=0; } S.k=k;
+  if(S.k!==k||(k==="em"&&S.tab===polI())){ S.tab=0; } S.k=k;   // 긴급을 새로 열면 응급실 탭부터 (경찰 목록은 112 칸으로만)
   var o=document.getElementById("nrBox"); if(!o){ o=document.createElement("div"); o.id="nrBox"; o.innerHTML='<div class="nrin"></div>'; o.onclick=function(e){ if(e.target===o) close(); }; document.body.appendChild(o); }
   document.documentElement.classList.add("nrlock"); gbTop(); load(); }
 function close(){ var o=document.getElementById("nrBox"); if(o) o.remove(); document.documentElement.classList.remove("nrlock"); }
+function polI(){ var a=KINDS.em.tabs; for(var i=0;i<a.length;i++) if(a[i].c==="POL") return i; return -1; }
+function polOn(){ return S.k==="em"&&S.tab===polI(); }
+var CALL112={ko:"112 전화",en:"Call 112",ja:"112に電話",zhs:"拨打112",zht:"撥打112",es:"Llamar al 112"};
 function sos(){ return '<div class="nrsos"><a class="s119" href="tel:119">'+PH+T("응급 119","Emergency 119")+'<small>'+T("구급·화재","Ambulance · Fire")+'</small></a>'
-  +'<a class="s112" href="tel:112">'+PH+T("경찰 112","Police 112")+'<small>'+T("도난·분실·사건","Theft · Loss · Crime")+'</small></a>'   // 11-08 사장님 「경찰도 칸을 만들어」
+  +'<a class="s112'+(polOn()?' on':'')+'" data-nr="pol" role="button" tabindex="0">'+PH+T("경찰 112","Police 112")+'<small>'+T("도난·분실·사건","Theft · Loss · Crime")+'</small></a>'   // 11-08 사장님 「경찰도 칸을 만들어」 · 11-14 「나」 — 누르면 근처 경찰서·파출소 목록(전화는 목록 맨 위 「112 전화」)
   +'<a class="s1330" href="tel:+82-2-1330">'+PH+'1330<small>'+T("관광통역안내 (24시간)","Travel helpline · English 24h")+'</small></a></div>'; }
 function itemHtml(x,i,em){ var en=L()&&x.name_en, nm=KS(en?x.name_en:x.name), ad=en?(x.addr_en||x.addr):x.addr, ct=en?(x.gid?T(x.cat||"",x.cat_en||""):(x.cat_en||"")):String(x.cat||"").split(">").pop().trim();   /* 11-10 구글에서 더한 숙소는 분류가 영어(Hotel)로만 있어 화면 언어로 */
   var tel=""; if(x.tel){ var shown=L()?(/^0/.test(x.tel)?"+82 "+x.tel.slice(1):"+82 "+x.tel):x.tel;
@@ -885,7 +891,8 @@ function paint(){ var b=document.querySelector("#nrBox .nrin"); if(!b||!S.k) ret
   if(em) h+=sos();
   if(S.k==="am"&&k.tabs.length>1) h+='<select class="nrsel" id="nrSel" aria-label="'+T("종류","Type")+'">'+k.tabs.map(function(t,i){ return '<option value="'+i+'"'+(i===S.tab?' selected':'')+'>'+esc(T(t.ko,t.en))+'</option>'; }).join("")+'</select>';   // 편의시설 = 풀다운 (사장님 10-16, 이모지 없이)
   else if(S.k==="tg"){ b.innerHTML=h+tgHtml(); return; }   // 투어 가이드 — Klook·GetYourGuide 두 칸, 그 아래 설명 세 줄 (사장님 10-23)
-  else if(k.tabs.length>1) h+='<div class="nrtabs">'+k.tabs.map(function(t,i){ return '<button type="button" class="nrtab'+(i===S.tab?' on':'')+'" data-nr="tab" data-i="'+i+'">'+MPICO(({"🏥":"mi_emergency","💊":"mi_pharmacy","🏨":"mi_stay","🛏":"mi_motel","🎒":"mi_guesthouse","🏯":"mi_hanok"})[t.i]||"",T(t.ko,t.en),MIS)+'</button>'; }).join("")+'</div>';
+  else if(k.tabs.length>1) h+='<div class="nrtabs">'+k.tabs.map(function(t,i){ if(t.hid) return ""; return '<button type="button" class="nrtab'+(i===S.tab?' on':'')+'" data-nr="tab" data-i="'+i+'">'+MPICO(({"🏥":"mi_emergency","💊":"mi_pharmacy","🏨":"mi_stay","🛏":"mi_motel","🎒":"mi_guesthouse","🏯":"mi_hanok"})[t.i]||"",t.l6?LG6(t.l6):T(t.ko,t.en),MIS)+'</button>'; }).join("")+'</div>';   // hid = 탭 줄에 안 보임(경찰 — 112 칸으로만, 11-14)
+  if(polOn()) h+='<div class="nrpol"><b>'+esc(LG6(KINDS.em.tabs[S.tab].l6))+'</b><a class="nrbig tel" href="tel:112">'+PH+esc(LG6(CALL112))+'</a></div>';   // 11-14 「나」 — 목록 맨 위 「112 전화」
   if(S.err==="loc") h+='<div class="msg">'+T("위치를 받을 수 없습니다 — 폰 설정에서 위치 권한을 켜 주세요. 또는 지도를 보고 싶은 동네로 옮긴 뒤 다시 눌러 주세요.","Could not get your location — please allow location access, or move the map to the area you want and try again.")+'</div><div class="nrbase"><button type="button" class="nrme" data-nr="me">'+MPICO("mi_pin",T("내 위치 다시 받기","Try my location again"),MIS)+'</button></div>';
   else if(S.err) h+='<div class="msg">'+T("잠시 뒤 다시 해 주세요.","Please try again shortly.")+'</div>';
   else if(k.tabs[S.tab].fixed&&S.items) h+='<div class="nrbase">'+(embL()?TE("Sorted by country name (local order)"):T("나라 영문 이름 순","Sorted by country name (A–Z)"))+'</div>'+S.items.map(embHtml).join("");
@@ -965,6 +972,7 @@ document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.
   if(g==="tg"||g==="am"||g==="fd"||g==="fx"||g==="eb"||g==="em"||g==="st"||g==="ig") return open(g);
   if(g==="x") return close();
   if(g==="tab"){ S.tab=+t.dataset.i; load(); return; }
+  if(g==="pol"){ var pi=polI(); if(pi>=0&&S.k==="em"){ S.tab=pi; load(); } return; }   // 112 칸 → 근처 경찰서·파출소 (11-14 「나」)
   if(g==="mine"){ var xm=S.items&&S.items[+t.dataset.i]; if(xm&&window.TRIP&&TRIP.stay) TRIP.stay.mine({type:"addr",ko:xm.name,en:xm.name_en||xm.name,lat:+xm.y,lng:+xm.x,addr:xm.addr||""}); return; }   // 11-09 내 숙소로 정하기 — 짠 일정이 있으면 「이 밤들에 넣을까요?」(가운데 창), 없으면 첫날 밤
   if(g==="ord"){ S.ord=t.dataset.o==="r"?"r":"d"; var kt=KINDS[S.k].tabs[S.tab]; if(S.raw){ S.items=sortIt(S.raw.slice(),kt).slice(0,10); S.byL={}; S.byL[LANG]=S.items; } paint(); return; }
   if(g==="me"){ S.items=null; S.err=""; paint(); myPos().then(function(p){ if(p){ try{ meSet(p); }catch(z){} } load(); }); return; }
