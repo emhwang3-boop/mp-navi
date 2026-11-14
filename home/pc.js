@@ -49,7 +49,7 @@ var TX={
  w1m:T6("반일 · 하루 · 여러 날","Half day · Full day · Several days","半日・1日・複数日","半天 · 一天 · 多天","半天 · 一天 · 多天","Medio día · Un día · Varios días"),
  w1g:T6("가이드 고르기 ›","Choose a guide ›","ガイドを選ぶ ›","选择向导 ›","選擇嚮導 ›","Elige un guía ›"),
  w2t:T6("프라이빗 카투어","Private Car Tours","プライベートカーツアー","私人包车游","私人包車遊","Tours privados en coche"),   // 11-14 사장님 「패키지 투어를 프라이빗 카투어로」
- w2p:T6("기사가 운전하는 전용 승합차로 정해진 코스를 돌아요. 날짜·인원·픽업 숙소만 고르면 돼요.","Set routes in a private minivan with a driver. Just pick a date, the number of people and your hotel.","ドライバーが運転する専用ワゴン車で決まったコースを回ります。日付・人数・お迎えのホテルを選ぶだけ。","由司机驾驶的专属商务车走固定路线。只需选择日期、人数和接送住处。","由司機駕駛的專屬商務車走固定路線。只需選擇日期、人數和接送住處。","Rutas fijas en un monovolumen privado con conductor. Solo elige la fecha, cuántas personas sois y tu hotel."),   // 11-14
+ w2p:T6("기사가 운전하는 전용 승합차로 정해진 코스를 운행해요. 날짜·인원·픽업 숙소만 선택하면 돼요.","Set routes in a private minivan with a driver. Just pick a date, the number of people and your hotel.","ドライバーが運転する専用ワゴン車で決まったコースを回ります。日付・人数・お迎えのホテルを選ぶだけ。","由司机驾驶的专属商务车走固定路线。只需选择日期、人数和接送住处。","由司機駕駛的專屬商務車走固定路線。只需選擇日期、人數和接送住處。","Rutas fijas en un monovolumen privado con conductor. Solo elige la fecha, cuántas personas sois y tu hotel."),   // 11-14
  w2m:T6("서울 · DMZ · 근교 · 경주","Seoul · DMZ · Day trips · Gyeongju","ソウル・DMZ・近郊・慶州","首尔·DMZ·近郊·庆州","首爾·DMZ·近郊·慶州","Seúl · DMZ · Alrededores · Gyeongju"),   // 11-14
  w2g:T6("상품 보기 ›","See tours ›","商品を見る ›","查看产品 ›","查看商品 ›","Ver tours ›"),
  w3t:T6("AI와 자유여행","DIY Trip","DIY旅行","自助游","自助旅行","Viaje a tu aire"),
