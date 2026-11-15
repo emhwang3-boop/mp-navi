@@ -367,15 +367,16 @@ function igDates(){ var out=[]; for(var i=1;i<=2;i++){ var d=new Date(Date.now()
 function igOnL(c){ return (!window.svcOn||svcOn(c)); }   // 11-13 숨긴 서비스 언어는 카드에 안 보임
 function igLangName(c){ for(var i=0;i<GLANG6.length;i++) if(GLANG6[i][1]===c) return GLANG6[i][0]; return c; }
 // ── 가이드 예약·결제 (사장님 2026-10-30 「가이드를 고르면 맨 위 안내 → 반일·하루·시간·기간 → 메모 → 보내기 및 결제 → 결제 화면까지」) ──
-//   흐름: req(안내문·가이드·이용 시간·날짜·시작 시간·인원·요금·메모·예약자) → gconf(요약 확인) → gpay(결제창) → 「결제하기」 = 바로 확정(PG 전, 11-05 · PG 뒤엔 KG이니시스 결제창 — tpg.js, 11-07) → gdone · 「내 예약」 카드(대화방 입구)
-//   주문 = 허브 POST /shop/order {pid:"gbk", sess?} (11-05 실전: 서버가 GBK_PRICE 로 금액 계산 → pay:"none" 확정 → 가이드 메일·문자 · 손님 메일·문자 · 텔레그램 · 대화방 열림)
+//   흐름: req(안내문·가이드·이용 시간·날짜·시작 시간·인원·요금·메모·예약자) → gconf(요약 확인) → gpay(결제창) → 「결제하기」 = KG이니시스 결제창(tpg.js) → 결제 확인 = 확정 → gdone (11-15 사장님 「실전과 다르게 가지 말라」 — 결제 없이 끝나는 길 없음) · 「내 예약」 카드(대화방 입구)
+//   주문 = 허브 POST /shop/order {pid:"gbk", sess?} (서버가 GBK_PRICE 로 금액 계산 → 결제창 값 → 결제 확인(markPaid) = 확정 → 가이드 메일·문자 · 텔레그램 · 대화방 열림 · 채널 키 전이면 허브가 pgoff)
 //   🔴 요금 바꿀 땐 여기 GBK 와 허브 worker.js GBK_PRICE 둘 다. 숫자는 「일단 보고 고치자」 임시값
-var GBK={hr:50000, half:190000, full:360000, big:5, bigHr:10000, hMin:4, hMax:12, dMin:2, dMax:7, dayH:8, nMax:10};   // hMin 2→4 (11-08 밤 사장님 「시간 직접 선택은 4시간부터」 — 요금은 그대로)
+var GBK={hr:50000, half:190000, full:360000, big:5, bigHr:10000, hMin:4, hMax:12, dMin:2, dMax:7, dayH:8, nMax:10, car:{4:272000,8:544000}, carN:6, carLead:3};   // hMin 2→4 (11-08 밤 사장님 「시간 직접 선택은 4시간부터」 — 요금은 그대로)
+//   car = 프라이빗 차량 추가 (11-15 사장님 「실행해」) — 서울 시내 · 기사 포함 차 1대 · 최대 carN(6)명 · 차량 대절 서울 시내 680,000원(10시간)의 시간 비례: 4시간 272,000 · 8시간 544,000 · 여러 날이면 × 날 수 · 🔴 허브 GBK_PRICE.car 와 같게
+function gbCarCalc(car,mode,d,n){ var h=+car; if(!(h===4||h===8)||n>GBK.carN) return null; var dn=mode==="days"?Math.max(1,+d||1):1; return {h:h,d:dn,unit:GBK.car[h],amt:GBK.car[h]*dn}; }
 function gbkCalc(mode,h,d,n){ var P=GBK, hb=function(x){ return x>=8?P.full+(x-8)*P.hr:x>=4?P.half+(x-4)*P.hr:x*P.hr; };
   var hours=mode==="half"?4:mode==="full"?8:mode==="days"?d*P.dayH:h, base=mode==="days"?d*P.full:hb(hours), xn=Math.max(0,n-(P.big-1)), extra=xn*P.bigHr*hours;   // 4명을 넘는 1명마다 시간당 bigHr (사장님 11-05 — 옛: 5인 이상이면 한 번만)
   return {hours:hours,base:base,xn:xn,extra:extra,total:base+extra}; }
-// 🔴 PG = KG이니시스 · 포트원 (사장님 11-07 「왜 토스로 하냐 이니시스로 해」) — 스위치는 tpg.js 의 SH_PG 하나(패키지·가이드 인솔·일정 검토 같이) · 지금은 「결제하기」 = 바로 확정(허브 pay:"none")
-function gbPgOn(){ return !!(window.TPG&&TPG.on); }
+// 🔴 PG = KG이니시스 · 포트원 (사장님 11-07 「왜 토스로 하냐 이니시스로 해」) — 앱 스위치 없음: 늘 결제창 주문(pg:1) · 허브에 투어 채널 키가 없으면 허브가 pgoff → 결제창을 열 수 없다는 안내 (11-15 사장님 「나중에 실전 올릴 때 바꾸고 되돌리고 하지 말라」)
 function T6(ko,en,ja,zhs,zht,es){ return {ko:ko,en:en,ja:ja,zhs:zhs,zht:zht,es:es}; }
 var GBT={
  note:T6("자유여행을 하고 싶은 관광객이 반일, 하루 또는 원하는 기간만큼 투어 가이드와 함께 자유롭게 여행할 수 있는 메뉴입니다. 원하는 가이드를 고르신 뒤 가고 싶은 곳이나 원하는 관광 내용을 간단히 적고 「보내기 및 결제」를 누른 다음 결제해 주세요.",
@@ -394,7 +395,21 @@ var GBT={
  dN:T6("{n}일 (하루 8시간)","{n} days (8 h a day)","{n}日（1日8時間）","{n}天（每天8小时）","{n}天（每天8小時）","{n} días (8 h al día)"),
  hSel:T6("몇 시간","How many hours","何時間","几小时","幾小時","Cuántas horas"),
  dSel:T6("며칠","How many days","何日","几天","幾天","Cuántos días"),
- date:T6("날짜 (여러 날이면 첫날 · 당일 예약은 받지 않습니다)","Date (first day if several · no same-day booking)","日付（複数日の場合は初日・当日予約不可）","日期（多天则为第一天 · 不接受当天预约）","日期（多天則為第一天 · 不接受當天預約）","Fecha (primer día si son varios · no el mismo día)"),
+ date:T6("시작 날짜 (여러 날이면 첫날)","Start date (first day if several days)","開始日（複数日の場合は初日）","开始日期（多天则为第一天）","開始日期（多天則為第一天）","Fecha de inicio (el primer día si son varios)"),   // 11-15 사장님 — 옛 「날짜 (여러 날이면 첫날 · 당일 예약은 받지 않습니다)」를 둘로 나눔(아래 dtN)
+ dtN:T6("오늘 날짜는 예약할 수 없어요. 내일부터 선택해 주세요.","You can't book for today. Please choose a date from tomorrow.","本日のご予約はできません。明日以降の日付を選んでください。","无法预约今天，请选择明天及以后的日期。","無法預約今天，請選擇明天及以後的日期。","No se puede reservar para hoy. Elige una fecha a partir de mañana."),
+ // 프라이빗 차량 추가 (11-15 사장님) — 고르기 칸·안내 세 줄·6명 초과·요금 줄
+ car:T6("프라이빗 차량 추가 (선택)","Add a private car (optional)","プライベート車両を追加（任意）","加订私人包车（可选）","加訂私人包車（可選）","Añadir coche privado (opcional)"),
+ car0:T6("차량 없음","No car","車両なし","不用车","不用車","Sin coche"),
+ carDay:T6("하루 {p}","{p} a day","1日 {p}","每天 {p}","每天 {p}","{p} al día"),
+ carInf:T6("서울 시내 · 기사 포함 차 1대 · 최대 6명","Within Seoul · 1 car with driver · up to 6 people","ソウル市内・ドライバー付き車1台・最大6名","首尔市内 · 1辆车含司机 · 最多6人","首爾市內 · 1輛車含司機 · 最多6人","Dentro de Seúl · 1 coche con conductor · hasta 6 personas"),
+ carOt:T6("예약 시간을 넘기면 1시간마다 30,000원(밤 10시 이후 50,000원)이 추가됩니다.","If you go over the booked hours, ₩30,000 is added for each extra hour (₩50,000 after 10 p.m.).","予約時間を超えると、1時間ごとに30,000ウォン（夜10時以降は50,000ウォン）が追加されます。","超出预约时间后，每小时加收30,000韩元（晚上10点后为50,000韩元）。","超出預約時間後，每小時加收30,000韓元（晚上10點後為50,000韓元）。","Si te pasas de las horas reservadas, se añaden ₩30.000 por cada hora extra (₩50.000 después de las 22:00)."),
+ carRf:T6("차량 요금은 이용 2일 전 17시(한국 시간)까지 취소하면 전액 환불되며, 이후에는 환불되지 않습니다.","The car is fully refunded if you cancel by 5 p.m. (Korea time) 2 days before; after that, it is not refunded.","車両料金は、ご利用2日前の17時（韓国時間）までの取消で全額返金となり、それ以降は返金されません。","用车费用在使用日前2天17点（韩国时间）前取消可全额退款，之后不予退款。","用車費用在使用日前2天17點（韓國時間）前取消可全額退款，之後不予退款。","El coche se reembolsa por completo si cancelas antes de las 17:00 (hora de Corea) de 2 días antes; después, no se reembolsa."),
+ carMax:T6("차량은 6명까지 탈 수 있어요","The car seats up to 6 people","車両は6名様までご乗車いただけます","车辆最多可乘坐6人","車輛最多可乘坐6人","En el coche caben hasta 6 personas"),
+ carLd:T6("차량은 이용 3일 전까지 예약할 수 있어요.","The car must be booked at least 3 days ahead.","車両はご利用の3日前までにご予約ください。","车辆需在使用日前3天预约。","車輛需在使用日前3天預約。","El coche se reserva con al menos 3 días de antelación."),   // 11-15 사장님 「3일 뒤부터」
+ carDt:T6("차량을 넣으면 {d}부터 예약할 수 있어요.","With a car, you can book from {d}.","車両を追加する場合は{d}からご予約いただけます。","加订车辆时，可预约{d}及以后的日期。","加訂車輛時，可預約{d}及以後的日期。","Con coche, puedes reservar a partir del {d}."),
+ carNm:T6("프라이빗 차량","Private car","プライベート車両","私人包车","私人包車","Coche privado"),
+ carD:T6("{n}일","{n} days","{n}日","{n}天","{n}天","{n} días"),
+ ePrice:T6("요금이 변경되었습니다: {p}. 확인 후 다시 눌러 주세요.","The price has changed: {p}. Please check and tap again.","料金が変更されました：{p}。ご確認のうえもう一度押してください。","费用已变更：{p}。请确认后再点一次。","費用已變更：{p}。請確認後再點一次。","El precio cambió: {p}. Revísalo y vuelve a pulsar."),
  tm:T6("시작 시간","Start time","開始時間","开始时间","開始時間","Hora de inicio"),
  ppl:T6("인원","People","人数","人数","人數","Personas"),
  pN:T6("{n}명","{n}","{n}名","{n}人","{n}人","{n}"),
@@ -463,20 +478,41 @@ function gbRateTbl(){   /* 11-10 사장님 「가」 — 인원별 총액표(요
   var b=row(gbF(GBT.pN,{n:'1~'+(P.big-1)}),P.big-1); for(var n=P.big;n<=P.nMax;n++) b+=row(gbF(GBT.pN,{n:n}),n);
   return '<table class="gbtbl">'+h+b+'</table>'; }
 function gbDay(add){ return new Date(Date.now()+9*3600e3+add*864e5).toISOString().slice(0,10); }
-function gbInit(){ var o=IG.bk||{}; IG.bk={mode:o.mode||"half",h:Math.max(GBK.hMin,o.h||GBK.hMin),d:o.d||2,date:(o.date&&o.date>=gbDay(1))?o.date:gbDay(3),time:o.time||"09:00",n:o.n||2,memo:o.memo||"",cn:o.cn||"",ce:o.ce||"",cp:o.cp||"",pm:"card",err:""}; }
+function gbInit(){ var o=IG.bk||{}; IG.bk={mode:o.mode||"half",h:Math.max(GBK.hMin,o.h||GBK.hMin),d:o.d||2,date:(o.date&&o.date>=gbDay(1))?o.date:gbDay(3),time:o.time||"09:00",n:o.n||2,car:(o.car===4||o.car===8)?o.car:0,memo:o.memo||"",cn:o.cn||"",ce:o.ce||"",cp:o.cp||"",pm:"card",err:""}; }
 function gbPpl(n){ return n===1?({ko:"1명",en:"1 person",ja:"1名",zhs:"1人",zht:"1人",es:"1 persona"}[LANG]||"1 person"):gbF(T6("{n}명","{n} people","{n}名","{n}人","{n}人","{n} personas"),{n:n}); }   // 추가 인원 (11-05)
-function gbCalcNow(){ var k=IG.bk; return gbkCalc(k.mode,k.mode==="hours"?k.h:0,k.mode==="days"?k.d:0,k.n); }
+function gbCalcNow(){ var k=IG.bk, c=gbkCalc(k.mode,k.mode==="hours"?k.h:0,k.mode==="days"?k.d:0,k.n), cr=gbCarCalc(k.car,k.mode,k.d,k.n); c.gTotal=c.total; c.car=cr; if(cr) c.total+=cr.amt; return c; }   // 11-15 total = 가이드(gTotal) + 프라이빗 차량(car.amt)
+// 차량 글자 — 「프라이빗 차량 8시간 × 2일」 (noNm = 「8시간 × 2일」만) · 내 예약 카드·확인 창·대화방·홈페이지가 같이 쓴다 (11-15)
+function gbCarTx(c,noNm){ if(!c||!(+c.h)) return ""; var s=gbF(GBT.hN,{n:c.h})+((+c.d||1)>1?" × "+gbF(GBT.carD,{n:c.d}):""); return noNm?s:LG6(GBT.carNm)+" "+s; }
+// 프라이빗 차량 추가 칸 (11-15 사장님) — 앱 예약 칸·홈페이지(pc=1)가 같이 씀 · 6명 넘으면 고르기 막고 「차량은 6명까지」 · 안내 세 줄(서울 시내·초과 요금·차량 취소 규정)
+function gbCarBox(pc){ var k=IG.bk||{}, L=LG6, over=(+k.n||0)>GBK.carN, cur=over?0:(+k.car||0), dd=k.mode==="days";
+  var o=function(v,lab){ return '<option value="'+v+'"'+(v===cur?" selected":"")+'>'+esc(lab)+'</option>'; }, pr=function(h){ var p=gbWon(GBK.car[h]); return gbF(GBT.hN,{n:h})+" · "+(dd?gbF(GBT.carDay,{p:p}):p); };
+  return '<div id="gbCarW"><label class="'+(pc?"pg-lb":"iglb")+'" for="gbCar">'+esc(L(GBT.car))+'</label>'
+    +'<select class="'+(pc?"pg-in":"igin")+'" id="gbCar"'+(pc?' style="max-width:380px"':'')+(over?" disabled":"")+'>'+o(0,L(GBT.car0))+o(4,pr(4))+o(8,pr(8))+'</select>'
+    +(over?'<div class="'+(pc?"pg-x":"gbx")+'">'+esc(L(GBT.carMax))+'</div>':'')
+    +(gbCarLate(k)?'<div class="'+(pc?"pg-x":"gbx")+'" id="gbCarDt">'+esc(gbF(GBT.carDt,{d:gbDay(GBK.carLead)}))+'</div>':'')   // 고른 날짜가 3일 뒤보다 이르면 (11-15 사장님 「3일 뒤부터」)
+    +'<div class="'+(pc?"pg-nt":"ignt")+'" style="margin-top:6px">'+esc(L(GBT.carInf))+'<br>'+esc(L(GBT.carLd))+'<br>'+esc(L(GBT.carOt))+'<br>'+esc(L(GBT.carRf))+'</div></div>'; }
+// 차량 예약 마감 (11-15 사장님 「3일 뒤부터」) — 차량을 고르면 시작 날짜(여러 날이면 첫날)는 오늘(한국) + carLead(3)일부터 · 차량 없음이면 가이드 규칙 그대로 내일부터 · 🔴 허브 GBK_PRICE.carLead 와 같게
+function gbCarOn(k){ return !!(k&&(+k.car===4||+k.car===8)&&(+k.n||0)<=GBK.carN); }
+function gbMinDay(k){ return gbDay(gbCarOn(k)?GBK.carLead:1); }
+function gbCarLate(k){ return gbCarOn(k)&&/^\d{4}-\d{2}-\d{2}$/.test(k.date||"")&&k.date<gbDay(GBK.carLead); }
+function gbDtFix(){ var e=document.getElementById("gbDt"); if(e&&IG.bk) e.min=gbMinDay(IG.bk); }   // 날짜 고르기의 가장 이른 날을 그 자리에서 (차량 고르면 3일 뒤, 빼면 내일)
+// 인원·차량·날짜를 바꾸면 차량 칸만 다시 (6명 넘으면 막힘 · 3일 안이면 안내) — 앱은 새 칸에 onchange 를 다시 단다 · 홈페이지는 문서 전체 change 로 받는다
+function gbCarUpd(pc){ gbDtFix(); var w=document.getElementById("gbCarW"); if(!w) return; var t=document.createElement("div"); t.innerHTML=gbCarBox(pc); var nw=t.firstChild; w.parentNode.replaceChild(nw,w); if(!pc){ var s=nw.querySelector("#gbCar"); if(s) s.onchange=gbChg; } }
+function gbChg(){ gbGrab(); var p=document.getElementById("gbPr"); if(p) p.innerHTML=gbPriceBox(); gbCarUpd(0); }
 function gbModeTxt(k){ return k.mode==="hours"?gbF(GBT.hN,{n:k.h}):k.mode==="days"?gbF(GBT.dN,{n:k.d}):LG6(GBT[k.mode]); }
 function gbGrab(){ var k=IG.bk; if(!k) return; var v=function(i){ var e=document.getElementById(i); return e?e.value:null; };
   var x; if((x=v("gbDt"))!=null) k.date=x; if((x=v("gbTm"))!=null) k.time=x; if((x=v("gbN"))!=null) k.n=+x; if((x=v("gbH"))!=null) k.h=+x; if((x=v("gbD"))!=null) k.d=+x;
+  if((x=v("gbCar"))!=null) k.car=(+x===4||+x===8)?+x:0; if(k.n>GBK.carN) k.car=0;   // 프라이빗 차량 (11-15) — 7명부터는 차량 없음
   if((x=v("gbMemo"))!=null) k.memo=x.slice(0,500); if((x=v("gbCn"))!=null) k.cn=x; if((x=v("gbCe"))!=null) k.ce=x; if((x=v("gbCp"))!=null) k.cp=x; }
 function gbPriceBox(){ var k=IG.bk, c=gbCalcNow();
   return '<div class="gbl"><span>'+esc(gbModeTxt(k))+'</span><span>'+gbWon(c.base)+'</span></div>'
     +(c.extra?'<div class="gbl"><span>'+esc(gbF(GBT.xtra,{big:GBK.big}))+' ('+gbWon(GBK.bigHr)+' × '+esc(gbF(GBT.hN,{n:c.hours}))+' × '+esc(gbPpl(c.xn))+')</span><span>'+gbWon(c.extra)+'</span></div>':'')
+    +(c.car?'<div class="gbl"><span>'+esc(gbCarTx(c.car))+'</span><span>'+gbWon(c.car.amt)+'</span></div>':'')   // 프라이빗 차량 따로 한 줄 (11-15)
     +'<div class="gbt"><span>'+esc(LG6(GBT.tot))+'</span><span>'+gbWon(c.total)+'</span></div>'; }
 function gbGuideCard(g){ return '<div class="igcard" style="margin-top:8px;cursor:default">'+igFace(g)+'<div class="igb"><b>'+igName(g)+'</b><div class="igm">'+(g.langs||[]).filter(igOnL).map(igLangName).map(esc).join(" · ")+(g.years?' · '+esc(igYears(g.years)):"")+(g.region?' · '+esc(igRegion(g.region)):"")+'</div></div></div>'; }
 function gbRefund(){ return '<div class="gbrf">'+esc(LG6(GBT.rf))+' <a href="refund.html?lang='+esc(window.LANG||"en")+'" target="_blank" rel="noopener">'+esc(LG6(GBT.rfL))+' ›</a></div>'; }
-function gbForm(g){ var k=IG.bk, L=LG6, mn=gbDay(1), mx=gbDay(365), opt=function(a,b,cur,lab){ var s=""; for(var i=a;i<=b;i++) s+='<option value="'+i+'"'+(i===cur?" selected":"")+'>'+esc(lab(i))+'</option>'; return s; };
+function gbCarRf(){ return IG.bk&&gbCalcNow().car?'<div class="gbrf" style="margin-top:4px">'+esc(LG6(GBT.carRf))+'</div>':''; }   // 차량을 고른 예약만 — 차량 취소 규정 한 줄 (확인·결제 창, 11-15)
+function gbForm(g){ var k=IG.bk, L=LG6, mn=gbMinDay(k), mx=gbDay(365),   /* mn = 차량 고르면 3일 뒤 (11-15) */ opt=function(a,b,cur,lab){ var s=""; for(var i=a;i<=b;i++) s+='<option value="'+i+'"'+(i===cur?" selected":"")+'>'+esc(lab(i))+'</option>'; return s; };
   var tms=[]; for(var t=7*60;t<=18*60;t+=30) tms.push(("0"+Math.floor(t/60)).slice(-2)+":"+("0"+t%60).slice(-2));
   return '<div class="ignote" style="margin-top:6px">'+esc(L(GBT.note))+'</div>'
     +gbGuideCard(g)
@@ -484,8 +520,10 @@ function gbForm(g){ var k=IG.bk, L=LG6, mn=gbDay(1), mx=gbDay(365), opt=function
     +(k.mode==="hours"?'<label class="iglb">'+esc(L(GBT.hSel))+'</label><select class="igin" id="gbH">'+opt(GBK.hMin,GBK.hMax,k.h,function(i){ return gbF(GBT.hN,{n:i}); })+'</select>':'')
     +(k.mode==="days"?'<label class="iglb">'+esc(L(GBT.dSel))+'</label><select class="igin" id="gbD">'+opt(GBK.dMin,GBK.dMax,k.d,function(i){ return gbF(GBT.dN,{n:i}); })+'</select>':'')
     +'<label class="iglb">'+esc(L(GBT.date))+'</label><input class="igin" type="date" id="gbDt" min="'+mn+'" max="'+mx+'" value="'+esc(k.date)+'">'
+    +'<div class="ignt" style="margin-top:4px">'+esc(L(GBT.dtN))+'</div>'   // 11-15 사장님 — 당일 예약 안내는 칸 아래 따로
     +'<div class="gbrow"><div><label class="iglb">'+esc(L(GBT.tm))+'</label><select class="igin" id="gbTm">'+tms.map(function(x){ return '<option'+(x===k.time?" selected":"")+'>'+x+'</option>'; }).join("")+'</select></div>'
     +'<div><label class="iglb">'+esc(L(GBT.ppl))+'</label><select class="igin" id="gbN">'+opt(1,GBK.nMax,k.n,function(i){ return gbF(GBT.pN,{n:i}); })+'</select></div></div>'
+    +gbCarBox(0)   // 프라이빗 차량 추가 (11-15)
     +'<label class="iglb">'+esc(L(GBT.fee))+'</label><div class="gbpr" style="margin-top:0" id="gbPr">'+gbPriceBox()+'</div>'
     +gbRateTbl()
     +'<div class="gbx">'+esc(L(GBT.excl))+'</div>'
@@ -498,13 +536,14 @@ function gbForm(g){ var k=IG.bk, L=LG6, mn=gbDay(1), mx=gbDay(365), opt=function
     +(k.err?'<div class="gberr" id="gbM">'+esc(k.err)+'</div>':'<div class="gberr" id="gbM"></div>')
     +'<div class="gbcx"><button type="button" class="gbcxb" data-igback="1">'+esc(L(CX6))+'</button><button type="button" class="gbgo" id="gbSend">'+esc(L(GBT.send))+'</button></div>'
     +gbRefund(); }
-function gbRows(g){ var k=IG.bk, L=LG6, row=function(a,b,cls){ return '<div class="gbl"><span>'+esc(L(a))+'</span><span'+(cls?' class="'+cls+'"':'')+'>'+b+'</span></div>'; };
+function gbRows(g){ var k=IG.bk, L=LG6, cr=gbCalcNow().car, row=function(a,b,cls){ return '<div class="gbl"><span>'+esc(L(a))+'</span><span'+(cls?' class="'+cls+'"':'')+'>'+b+'</span></div>'; };
   return row(GBT.gd,igName(g))+row(T6("날짜","Date","日付","日期","日期","Fecha"),esc(k.date))+row(GBT.tm,esc(k.time)+" (KST)")+row(GBT.dur,esc(gbModeTxt(k)))+row(GBT.ppl,esc(gbF(GBT.pN,{n:k.n})))
+    +(cr?row(GBT.carNm,esc(gbCarTx(cr,1))):'')   // 프라이빗 차량 (11-15)
     +(k.memo?'<div class="gbl"><span>'+esc(L(GBT.memoL))+'</span></div><div style="white-space:pre-wrap;word-break:break-word;font-size:13.5px;margin:2px 0 6px;padding:8px 10px;border-radius:8px;background:var(--bg)">'+esc(k.memo)+'</div>':'')
     +row(GBT.who,esc(k.cn)+'<br><small>'+esc(k.cp)+' · '+esc(k.ce)+'</small>'); }
 function gbConf(g){ var L=LG6;
   return '<div class="iglbl" style="margin-top:8px;font-size:16px;color:var(--ink)">'+esc(L(GBT.cfT))+'</div><div class="ignt" style="margin-top:0">'+esc(L(GBT.cfS))+'</div>'
-    +'<div class="gbpr">'+gbRows(g)+'</div><div class="gbpr">'+gbPriceBox()+'</div><div class="gbx">'+esc(L(GBT.excl))+'</div>'+gbRefund()
+    +'<div class="gbpr">'+gbRows(g)+'</div><div class="gbpr">'+gbPriceBox()+'</div><div class="gbx">'+esc(L(GBT.excl))+'</div>'+gbRefund()+gbCarRf()
     +'<div class="gbcx"><button type="button" class="gbcxb" data-igback="req">'+esc(L(CX6))+'</button><button type="button" class="gbgo" id="gbCf">'+esc(L(GBT.cfGo))+' ›</button></div>'; }   // 11-05 사장님 「고치기」 뺌 — 「취소」와 같은 동작(신청서로)
 function gbPayHtml(g,busy){ var k=IG.bk, L=LG6, c=gbCalcNow();
   return ''
@@ -513,7 +552,7 @@ function gbPayHtml(g,busy){ var k=IG.bk, L=LG6, c=gbCalcNow();
     +'<div class="iglbl" style="margin-top:14px">'+esc(L(GBT.pm))+'</div>'
     +'<label class="gbr"><input type="radio" name="gbpm" value="card"'+(k.pm!=="paypal"?" checked":"")+'> '+esc(L(GBT.card))+'</label><label class="gbr"><input type="radio" name="gbpm" value="paypal"'+(k.pm==="paypal"?" checked":"")+'> PayPal</label>'
     +'<label class="igchk"><input type="checkbox" id="gbAg"'+(busy?" checked disabled":"")+'> '+esc(L(GBT.agr))+'</label>'
-    +gbRefund()
+    +gbRefund()+gbCarRf()
     +(k.err?'<div class="gberr">'+esc(k.err)+'</div>':'')
     +'<div class="gbcx"><button type="button" class="gbcxb" data-igback="gconf">'+esc(L(CX6))+'</button><button type="button" class="gbgo" id="gbPay" disabled>'+(busy?esc(L(busy===2?GBT.opn:GBT.sav)):gbWon(c.total)+' '+esc(L(GBT.payb)))+'</button></div>'; }   // 아래 「돌아가기」는 뺌 — 옆 「취소」가 같은 동작 (사장님 11-05)
 function gbDone(g){ var L=LG6, r=IG.gbRes||{};
@@ -531,21 +570,22 @@ function gbSend(){ gbGrab(); var k=IG.bk, L=LG6, err="";
   else if(!/^[\d\s+()-]{7,30}$/.test(k.cp.trim())) err=L(GBT.eph);   // 휴대폰 필수 (체험·입장권과 같은 규칙)
   else if(!/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/.test(k.ce.trim())) err=L(GBT.eem);
   else if(!/^\d{4}-\d{2}-\d{2}$/.test(k.date)||k.date<gbDay(1)||k.date>gbDay(365)) err=L(GBT.edt);
+  else if(gbCarLate(k)) err=gbF(GBT.carDt,{d:gbDay(GBK.carLead)});   // 차량은 3일 뒤부터 (11-15 사장님) — 막고 안내
   k.err=err; if(err){ var m=document.getElementById("gbM"); if(m){ m.textContent=err; try{ m.scrollIntoView({block:"center",behavior:"smooth"}); }catch(e){} } return; }
   IG.view="gconf"; paint(); gbTop(); try{ ntap("guide","gbk_conf"); }catch(e){} }
 function gbTop(){ var o=document.getElementById("nrBox"); if(o){ o.scrollTop=0; var i=o.querySelector(".nrin"); if(i) i.scrollTop=0; } }   // 넓은 화면은 .nrin 이 스크롤 (11-06)
-// 결제창 「결제하기」 — 허브 /shop/order(실전 주문) → PG 전이면 바로 확정 화면 · PG 뒤(tpg.js SH_PG)면 받은 결제 값으로 KG이니시스 결제창(포트원, 11-07 — shop.js 와 같은 길)
+// 결제창 「결제하기」 — 허브 /shop/order(실전 주문) → 받은 결제 값으로 KG이니시스 결제창(포트원, tpg.js — shop.js 와 같은 길) · 채널 키 전이면 허브 pgoff → 안내만 (11-15 — 결제 없이 확정하는 길 없음)
 function gbGv(g){ return {id:g.id,name:g.name,name_en:g.name_en,name_ja:g.name_ja,name_zh:g.name_zh,langs:g.langs,years:g.years,region:g.region,photo:g.photo}; }
-function gbDoneSet(k,g,j){ IG.busy=0; if(j.tdone) bkPut({oid:j.orderId,tk:j.tdone,qv:j.qv||"",kind:"gbk",date:k.date,time:k.time,end:+j.end||0,k:{mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0},n:k.n,amount:j.amount,status:j.status||"confirmed",g:gbGv(g),room:{n:0,unread:0}});
+function gbDoneSet(k,g,j){ IG.busy=0; var cr=gbCarCalc(k.car,k.mode,k.d,k.n); if(j.tdone) bkPut({oid:j.orderId,tk:j.tdone,qv:j.qv||"",kind:"gbk",date:k.date,time:k.time,end:+j.end||0,k:{mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0,car:cr?{h:cr.h,d:cr.d,amt:cr.amt}:undefined},n:k.n,amount:j.amount,status:j.status||"confirmed",g:gbGv(g),room:{n:0,unread:0}});
   IG.gbRes={oid:j.orderId,amount:j.amount,end:+j.end||0,tk:j.tdone||""}; IG.view="gdone"; paint(); gbTop(); try{ window.CHAT&&CHAT.dot(); }catch(z){} }
 function gbPay(){ var k=IG.bk, g=IG.gobj, L=LG6; if(!k||!g||IG.busy) return;
   if(k.pm==="paypal"){ k.err=L(GBT.ppn); paint(); return; }
   k.err=""; IG.busy=1; gbPaint(1);
-  var body={pid:"gbk",pname:L(GBT.gd)+" · "+gbModeTxt(k),mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0,n:k.n,date:k.date,time:k.time,memo:k.memo,gid:g.id,glang:IG.lang||"",lang:window.LANG||"en",name:k.cn.trim(),email:k.ce.trim(),phone:k.cp.trim(),consent:true,pg:gbPgOn()?1:0,sess:bkSess()||undefined};
+  var cc=gbCalcNow(), body={pid:"gbk",pname:L(GBT.gd)+" · "+gbModeTxt(k)+(cc.car?" + "+gbCarTx(cc.car):""),mode:k.mode,h:k.mode==="hours"?k.h:0,d:k.mode==="days"?k.d:0,n:k.n,car:cc.car?cc.car.h:0,cexp:cc.total,date:k.date,time:k.time,memo:k.memo,gid:g.id,glang:IG.lang||"",lang:window.LANG||"en",name:k.cn.trim(),email:k.ce.trim(),phone:k.cp.trim(),consent:true,pg:1,sess:bkSess()||undefined};   // car = 프라이빗 차량 시간(0·4·8) · cexp = 화면 합계(허브가 다시 계산해 다르면 409 price, 11-15) · pg 늘 1 (11-15)
   fetch(HUB+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){ return r.json(); }).then(function(j){
-    if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err, pe=window.TPG?TPG.errTx(e):""; IG.busy=0; k.err=pe||(e==="name"?L(GBT.enm):e==="email"?L(GBT.eem):e==="phone"?L(GBT.eph):(e==="date"||e==="time")?L(GBT.edt):e==="guide"?L(GBT.egd):L(GBT.efail)); paint(); return; }
+    if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err, pe=window.TPG?TPG.errTx(e):""; IG.busy=0; k.err=pe||(e==="name"?L(GBT.enm):e==="email"?L(GBT.eem):e==="phone"?L(GBT.eph):(e==="date"||e==="time")?L(GBT.edt):e==="guide"?L(GBT.egd):e==="price"?gbF(GBT.ePrice,{p:gbWon(j&&j.amount)}):e==="carn"?L(GBT.carMax):e==="carday"?gbF(GBT.carDt,{d:gbDay(GBK.carLead)}):L(GBT.efail)); paint(); return; }
     try{ ntap("guide","gbk_order"); }catch(z){}
-    if(j.pay!=="pg"){ gbDoneSet(k,g,j); return; }
+    if(j.pay!=="pg"){ IG.busy=0; k.err=(window.TPG&&TPG.errTx("pgoff"))||L(GBT.efail); paint(); return; }   // 결제창 없이 확정되는 길은 없다 (11-15)
     gbPaint(2);
     return TPG.go(j,{kind:"gbk",oid:j.orderId,amount:j.amount,g:gbGv(g),lang:IG.lang,bk:k},{name:k.cn,email:k.ce,phone:k.cp})
       .then(function(m){ if(m){ IG.busy=0; k.err=m; paint(); } }); })
@@ -620,7 +660,7 @@ function igWire(b){
   var go=b.querySelector("#igqGo"); if(go) go.onclick=igSend;
   // 가이드 예약 화면 (10-30)
   [].forEach.call(b.querySelectorAll("[data-gbm]"),function(bt){ bt.onclick=function(){ gbGrab(); IG.bk.mode=bt.dataset.gbm; IG.bk.err=""; paint(); }; });
-  ["gbH","gbD","gbN"].forEach(function(id){ var s=b.querySelector("#"+id); if(s) s.onchange=function(){ gbGrab(); var p=document.getElementById("gbPr"); if(p) p.innerHTML=gbPriceBox(); }; });
+  ["gbH","gbD","gbN","gbCar","gbDt"].forEach(function(id){ var s=b.querySelector("#"+id); if(s) s.onchange=gbChg; });   // gbDt — 날짜를 바꾸면 차량 3일 안내도 (11-15)   // 인원·차량을 바꾸면 요금 + 차량 칸 (11-15)
   var gs=b.querySelector("#gbSend"); if(gs) gs.onclick=gbSend;
   var gc=b.querySelector("#gbCf"); if(gc) gc.onclick=function(){ IG.bk.err=""; IG.busy=0; IG.view="gpay"; paint(); gbTop(); };
   [].forEach.call(b.querySelectorAll('input[name="gbpm"]'),function(r){ r.onchange=function(){ if(r.checked){ IG.bk.pm=r.value; IG.bk.err=""; } }; });
@@ -770,7 +810,7 @@ function bkCard(x){ var L=LG6, g=x.g||null, cx=x.status==="cancelled"||x.status=
   else foot=chatBtn;
   if(!cx&&window.VQR) foot=VQR.html(Object.assign({},x,{pname:x.pname||(x.kind==="gbk"?L(BKT.gbkT):"")}))+foot;   // 바우처 QR — 예약마다 하나, 가이드·가게·기사가 폰 카메라로 찍으면 예약 확인 화면 (11-11 「2나」, vqr.js)
   var head=pk?'<b>'+esc(x.pname||"")+'</b><div class="igm">'+when+' · '+esc(gbF(GBT.pN,{n:x.n||1}))+'</div>'
-    :'<div style="display:flex;gap:11px;align-items:flex-start">'+igFace(g||{})+'<div class="igb"><b>'+igName(g||{})+'</b><div class="igm">'+when+' · '+esc(gbModeTxt({mode:(x.k&&x.k.mode)||"half",h:x.k&&x.k.h,d:x.k&&x.k.d}))+' · '+esc(gbF(GBT.pN,{n:x.n||1}))+'</div></div></div>';
+    :'<div style="display:flex;gap:11px;align-items:flex-start">'+igFace(g||{})+'<div class="igb"><b>'+igName(g||{})+'</b><div class="igm">'+when+' · '+esc(gbModeTxt({mode:(x.k&&x.k.mode)||"half",h:x.k&&x.k.h,d:x.k&&x.k.d}))+' · '+esc(gbF(GBT.pN,{n:x.n||1}))+'</div>'+(x.k&&x.k.car?'<div class="igm" style="color:var(--ink);font-weight:700">'+esc(gbCarTx(x.k.car))+'</div>':'')+'</div></div>';   // 프라이빗 차량 (11-15)
   return '<div class="igcard" style="cursor:default;display:block'+hi+'">'+head+(x.cust?'<div class="igm">'+esc(L(BKT.bkr))+' '+esc(x.cust)+'</div>':'')+'<div class="igm">'+esc(L(GBT.oid))+' '+esc(x.oid)+'</div>'+foot+'</div>'; }
 function bkBlock(){ var my=bkShown(), m=IG.bkMsg; if(!my.length&&!m) return "";
   // 가이드 언어별로 묶기 (사장님 11-05 「4-가」) · 많으면(3건 넘음) 칸 안에서 스크롤 (「3」)
@@ -791,7 +831,7 @@ function openTdone(token){ var tk=String(token||"").replace(/[^a-f0-9]/gi,"").to
     if(j&&j.ok){ BKS[j.oid]=1; bkPut(bkFrom(j,tk)); IG.bkHi=j.oid; IG.bkMsg=""; } else IG.bkMsg="bad";
     if(S.k==="ig"&&IG.view==="pick") paint(); }).catch(function(){ IG.bkMsg="net"; if(S.k==="ig"&&IG.view==="pick") paint(); }); }
 document.addEventListener("smnvch",function(){ try{ if(S.k==="ig"&&IG.view==="pick") paint(); }catch(e){} });   // 바우처가 바뀌면 「내 예약」 다시 (11-10, smenu.js)
-window.NEARBK={all:bkAll,put:bkPut,get:bkGet,from:bkFrom,when:bkWhen,sess:bkSess,mine:bkMine,srv:bkSrv,plan:bkPlan,TX:BKT};   // chat.js 가 같이 쓴다 · mine·srv·plan = 로그인 계정 목록 (11-08, chat.js·홈페이지 pc_bk.js)
+window.NEARBK={all:bkAll,put:bkPut,get:bkGet,from:bkFrom,when:bkWhen,sess:bkSess,mine:bkMine,srv:bkSrv,plan:bkPlan,TX:BKT,carTx:gbCarTx,carNm:GBT.carNm};   // carTx·carNm = 프라이빗 차량 글자 (11-15, chat.js·pc_bk.js)   // chat.js 가 같이 쓴다 · mine·srv·plan = 로그인 계정 목록 (11-08, chat.js·홈페이지 pc_bk.js)
 function openReview(token){ open("ig"); IG.view="review"; IG.rvToken=String(token||""); IG.rvGuide=null; IG.rvErr=""; IG.rvDone=false; IG.rvStars=0; IG.rvText=""; IG.rvName=""; IG.busy=false; paint(); igRvCheck(); }
 function igLoad(){ var lang=IG.lang; fetch(HUB+"/guide/guides?lang="+encodeURIComponent(lang)).then(function(r){ return r.json(); }).then(function(j){ if(IG.lang!==lang||IG.view!=="list") return;
     if(j&&j.ok){ IG.guides=j.items||[]; } else IG.err="x"; paint(); }).catch(function(){ if(IG.lang===lang&&IG.view==="list"){ IG.err="net"; paint(); } }); }
@@ -1161,6 +1201,7 @@ window.NEAR={open:open,close:close,review:openReview,gedit:openGedit,tdone:openT
 // PC 홈페이지(home/pc_guide.js · pc_pkg.js, 11-08) — 가이드 인솔을 PC 배치로 그릴 때 이 파일의 요금·검사·주문·확인창을 그대로 쓴다 (폰 앱은 PC_HOME 이 없어 그대로)
 //   pick = 가이드 고르기(앱 「요청하기」와 같음) · send = 앱 「보내기 및 결제」 검사(gbSend, 칸 id 같음) → 통과하면 앱 확인 창(gconf → 결제 → 확정)
 if(window.PC_HOME) window.NEARIG={GBK:GBK,GBT:GBT,LANGS:GLANG6,calc:gbkCalc,modeTxt:gbModeTxt,F:gbF,won:gbWon,day:gbDay,priceBox:gbPriceBox,grab:gbGrab,rateTbl:gbRateTbl,
+  carBox:gbCarBox,carTx:gbCarTx,minDay:gbMinDay,dtFix:gbDtFix,   // 프라이빗 차량 칸·글자 · 차량 3일 뒤부터 날짜 (11-15)
   title:IG_CHIP6,desc:IG_DESC6,noteT:IGN_T,note:igNote,payT:PAYB6,cx:CX6,name:igName,badge:igBadge,stars:igStars,langName:igLangName,region:igRegion,years:igYears,css:css,perf:TG_PERF,tgPick:tgPick,
   photo:function(g){ return g&&g.photo?HUB+"/guide/photo?id="+encodeURIComponent(g.id)+"&v="+encodeURIComponent(g.pv||0):""; },   // &v= 사진 판 번호 (11-09 — 폰 캐시)
   pick:function(g,lang){ IG.lang=lang||""; IG.gobj=g; IG.gid=g.id; IG.view="req"; IG.busy=0; gbInit(); return IG.bk; },
