@@ -713,10 +713,9 @@ function openDet(id){ var b=box(); if(!b) return; listY=b.scrollTop; S.prod=id; 
   b.scrollTop=0; paintDet(); b.scrollTop=0; try{ if(window.rvLoad) rvLoad("shop:"+id); }catch(e){} barTog(); }
 function toList(){ var b=box(); S.det=false; var o=b&&b.querySelector(".spm"); if(o) o.remove(); paint(); if(b) b.scrollTop=listY; }
 function repaint(){ if(S.det) paintDet(); else paint(); }
-// 결제창 — 11-05 실전(사장님 「시험 판 운영하지 마… 결제도 막 눌러」): 「결제하기」 = 허브 /shop/order 실전 주문 → PG 전(SH_PG=false)이라 허브가 pay:"none" 으로 바로 결제 완료
-//   → 손님 메일·문자 · 고른 가이드에게 수락·거절 링크(거절하면 다른 가이드 자동 배정) · 사장님 텔레그램 · 이 폰 「내 예약」에 저장(배정 가이드 카드·별점·후기)
-//   🔴 PG 붙일 때 (11-07 사장님 「이니시스로 해」 — 토스 아님): tpg.js 의 SH_PG=true + 허브 PORTONE_TOUR_CHANNEL_KEY → 「결제하기」가 pg:1 로 주문 → KG이니시스 결제창(포트원) → 돌아오면 TPG.onRet("pkg") 아래
-function pgOn(){ return !!(window.TPG&&TPG.on); }
+// 결제창 — 「결제하기」 = 허브 /shop/order 실전 주문(pg:1) → KG이니시스 결제창(포트원, tpg.js) → 돌아오면 TPG.onRet("pkg") 아래(결제 확인 → 결제 완료·「내 예약」)
+//   → 고른 가이드에게 수락·거절 링크(거절하면 다른 가이드 자동 배정) · 사장님 텔레그램 · 이 폰 「내 예약」에 저장(배정 가이드 카드·별점·후기)
+//   🔴 11-15 사장님 「실전과 다르게 가지 말라」 — 앱 스위치 없음, 결제 없이 완료되는 길 없음 · 허브에 투어 채널 키가 없으면 허브가 pgoff → 「결제창을 열 수 없었습니다」 안내만
 function mockPay(res,host){ var b=(window.PC_HOME&&host)||box(), p=prod(); if(!b||!p) return; var o=b.querySelector(".spm"); if(o) o.remove();   // host = PC 홈페이지 상품 화면(home/pc_pkg.js, 11-08) — 폰 앱은 늘 box()
   var unit=unitOf(p,S.n), tot=totOf(p), gg=(S.guides||[]).filter(function(g){ return g.id===S.gid; })[0], gnm=gg?gName(gg):(S.gid&&S.gname)||"";
   o=document.createElement("div"); o.className="spm"; b.appendChild(o); var agd=false; if(!S.pm) S.pm="card";
@@ -752,14 +751,12 @@ function mockPay(res,host){ var b=(window.PC_HOME&&host)||box(), p=prod(); if(!b
       if(isChr(p)){ CHR.use(p.id); if(!CHR.ok()){ draw(null,CHR.why()||L(TX.efail)); return; } }   // 11-15 결제하는 상품의 칸으로 맞춤 · 차량 대절 — 픽업·목적지·구간·날짜(3일 뒤부터) (11-11)
       if(S.pm==="paypal"){ draw(null,L(TX.ppn)); return; }   // 토스 해외간편결제(PayPal)는 USD·별도 계약이라 시험 키에서 COMMON_ERROR (10-29 확인) — 주문 만들지 않고 안내만
       draw(null,"",1); var pm="card";
-      fetch(HUBU+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:(isChr(p)?CHR.PID:p.id),chr:(isChr(p)?CHR.body():undefined),cexp:(isChr(p)?CHR.amount():undefined),hosp:(window.HSP?HSP.body(p):undefined),menu:(window.SMN?SMN.body(p):undefined),mexp:(window.SMN&&SMN.of(p.id)?SMN.appSum(p):undefined),pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,glang:S.glang||"",lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,pg:pgOn()?1:0,sess:(function(){ try{ return localStorage.getItem("mpv_pg_sess")||undefined; }catch(z){ return undefined; } })()})})
+      fetch(HUBU+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:(isChr(p)?CHR.PID:p.id),chr:(isChr(p)?CHR.body():undefined),cexp:(isChr(p)?CHR.amount():undefined),hosp:(window.HSP?HSP.body(p):undefined),menu:(window.SMN?SMN.body(p):undefined),mexp:(window.SMN&&SMN.of(p.id)?SMN.appSum(p):undefined),pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,glang:S.glang||"",lang:window.LANG||"en",name:nm,email:em,phone:ph,consent:true,pg:1,sess:(function(){ try{ return localStorage.getItem("mpv_pg_sess")||undefined; }catch(z){ return undefined; } })()})})
        .then(function(r){ return r.json(); }).then(function(j){
          if(!(j&&j.ok&&j.orderId&&j.amount)){ var e=j&&j.err, pe=(isChr(p)&&CHR.errTx(e,j))||(window.TPG?TPG.errTx(e):""); if(isChr(p)&&e){ try{ var bx0=box(), k0=bx0&&bx0.querySelector(".spm"); if(bx0&&S.det&&!host){ paintDet(); if(k0) bx0.appendChild(k0); } else document.dispatchEvent(new Event("chrchg")); }catch(z){} }   // 차량 대절 — 허브가 알려 준 구간·오류를 화면에 (11-11)
            draw(null,pe||(e==="name"?L(TX.enm):e==="email"?L(TX.eem):e==="phone"?L(TX.eph):(e==="date"||e==="time")?L(p.hub&&p.days&&p.days.length?TX.edy:TX.edt):e==="notsale"?L(TX.soon):(e==="hosp"&&window.HSP)?HSP.tx("need"):(e==="menu"&&window.SMN)?SMN.tx("eMenu"):L(TX.efail))); if(e==="menu") loadP().then(function(){ try{ var bx=box(), k=bx&&bx.querySelector(".spm"); if(bx&&S.det&&!host){ paintDet(); if(k) bx.appendChild(k); } }catch(z){} }); return; }
          try{ ntap("shop","order_"+p.id); }catch(z){}
-         if(j.pay!=="pg"){ try{ if(window.NEARBK&&j.tdone) NEARBK.put({oid:j.orderId,tk:j.tdone,qv:j.qv||"",kind:"pkg",pname:(isCt(p)?CHR.crsNm(p.id,(CHR.pub().crs||{}).k):L(p.t)),date:S.date,time:S.time,n:S.n,amount:j.amount,status:j.status||"paid",end:0,g:null,room:null,hosp:(window.HSP&&HSP.body(p))||"",chr:isChr(p)?CHR.pub():undefined}); }catch(z){}   // 「내 예약」 (11-05) · 차량 대절 목적지·픽업 (11-11)
-           if(isChr(p)) try{ CHR.done(); }catch(z){}
-           S.cn=nm; S.ce=em; S.cp=ph; mockPay({ok:true,oid:j.orderId,amount:j.amount,tk:j.tdone||"",chat:!!j.chat},host); return; }
+         if(j.pay!=="pg"){ draw(null,(window.TPG&&TPG.errTx("pgoff"))||L(TX.efail)); return; }   // 결제창 없이 완료되는 길은 없다 (11-15 — 옛 pay:"none" 바로 완료 지움)
          // KG이니시스 결제창 (포트원, 11-07) — 돌아왔을 때 화면을 다시 그릴 주문 내용은 tpg.js 가 이 탭에만 둔다
          draw(null,"",2);
          return TPG.go(j,{kind:"pkg",oid:j.orderId,amount:j.amount,pid:p.id,chr:isChr(p)?CHR.pub():undefined,mn:(window.SMN?SMN.body(p):[]),hs:(window.HSP&&HSP.body(p))||"",pname:L(p.t),date:S.date,time:S.time,n:S.n,gid:S.gid||null,gname:gnm,glang:S.glang||"",cn:nm,ce:em,cp:ph,pm:pm},{name:nm,email:em,phone:ph})
