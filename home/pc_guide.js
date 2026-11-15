@@ -131,7 +131,7 @@ function book(box,gid,lang){ var n=N();
   var s=n.state(), same=s.gid===g.id&&s.bk;
   if(!(same&&D.getElementById("nrBox"))){ if(same) n.grab(); n.pick(g,lang); }   // 앱 확인 창이 떠 있으면 그 예약 그대로 (창 단계를 건드리지 않음)
   var k=n.state().bk; loadRv(g.id);
-  var L=L6, T=n.GBT, mn=n.day(1), mx=n.day(365);
+  var L=L6, T=n.GBT, mn=n.minDay?n.minDay(k):n.day(1), mx=n.day(365);   // mn = 차량을 고르면 3일 뒤 (11-15 사장님 「3일 뒤부터」)
   var left='<aside class="pg-gl"><div class="pg-gbig">'+face(g,"pg-gbim")+'</div>'
    +'<div class="pg-l1 pg-big"><b>'+n.name(g)+'</b>'+n.badge(g)+'</div><div class="pg-l2">'+meta(g)+'</div>'+(g.intro?'<div class="pg-intro">'+E(g.intro)+'</div>':'')
    +'<div class="pg-rvw">'+rvHtml(g.id)+'</div>'
@@ -143,6 +143,8 @@ function book(box,gid,lang){ var n=N();
    +'<div class="pg-r3"><div><label class="pg-lb" for="gbDt">'+E(L(T.date))+'</label><input class="pg-in" type="date" id="gbDt" min="'+mn+'" max="'+mx+'" value="'+E(k.date)+'"></div>'
    +'<div><label class="pg-lb" for="gbTm">'+E(L(T.tm))+'</label><select class="pg-in" id="gbTm">'+tms().map(function(x){ return '<option'+(x===k.time?" selected":"")+'>'+x+'</option>'; }).join("")+'</select></div>'
    +'<div><label class="pg-lb" for="gbN">'+E(L(T.ppl))+'</label><select class="pg-in" id="gbN">'+opts(1,n.GBK.nMax,k.n,function(i){ return n.F(T.pN,{n:i}); })+'</select></div></div>'
+   +'<div class="pg-nt" style="margin-top:6px">'+E(L(T.dtN))+'</div>'   // 11-15 사장님 — 당일 예약 안내는 날짜 칸 아래 따로 (앱 near.js GBT.dtN)
+   +(n.carBox?n.carBox(1):'')   // 프라이빗 차량 추가 (11-15, 앱 near.js gbCarBox — 칸·안내·6명 초과)
    +'<label class="pg-lb" for="gbMemo">'+E(L(T.memo))+'</label><textarea class="pg-in" id="gbMemo" maxlength="500" rows="5" placeholder="'+E(L(T.memoPh))+'">'+E(k.memo)+'</textarea>'
    +'<h3>'+E(L(T.cu))+'</h3>'
    +'<div class="pg-r3 pg-rc"><div><label class="pg-lb" for="gbCn">'+E(L(T.cn))+'</label><input class="pg-in" id="gbCn" maxlength="40" autocomplete="name" value="'+E(k.cn)+'"></div>'
@@ -158,7 +160,8 @@ function book(box,gid,lang){ var n=N();
    +'<div class="pg-rf">'+E(L(T.rf))+' <a href="refund.html?lang='+E(window.LANG||"en")+'" target="_blank" rel="noopener">'+E(L(T.rfL))+' ›</a></div>'
    +'</div></aside>';   /* 11-14 사장님 「투어 가이드 화면에서 저 노란 줄은 삭제해」 — 노란 「ⓘ 주의 사항」 상자 없앰 (예약 칸 쪽도) */
   box.innerHTML='<div id="pcGd" class="pg3 pg-bkp"><div class="pg-g2">'+left+form+right+'</div></div>'; }
-function priceUpd(){ var n=N(); if(!n) return; n.grab(); var k=n.state().bk; if(!k) return; var p=D.getElementById("gbPr"); if(p) p.innerHTML=n.priceBox(); var s=D.getElementById("pgSel"); if(s) s.textContent=sumSel(k); }
+function priceUpd(){ var n=N(); if(!n) return; n.grab(); var k=n.state().bk; if(!k) return; var p=D.getElementById("gbPr"); if(p) p.innerHTML=n.priceBox(); var s=D.getElementById("pgSel"); if(s) s.textContent=sumSel(k);
+  var w=D.getElementById("gbCarW"); if(w&&n.carBox){ var t=D.createElement("div"); t.innerHTML=n.carBox(1); w.parentNode.replaceChild(t.firstChild,w); } if(n.dtFix) n.dtFix(); }   // dtFix = 날짜 고르기 가장 이른 날(차량 3일 뒤 · 없으면 내일, 11-15)   // 인원이 6명을 넘으면 차량 칸 막힘 (11-15)
 
 function draw(box,args){ CUR={box:box,args:args||[]}; if(!N()){ box.innerHTML=""; return; } try{ N().css(); }catch(e){}
   if(args&&args[0]) book(box,args[0],args[1]||gLang()); else list(box); }
@@ -182,7 +185,7 @@ D.addEventListener("click",function(e){ var t=e.target; if(!t.closest) return; v
   if(c.hasAttribute("data-gid")){ var gid=c.getAttribute("data-gid"); try{ ntap("guide","gbk_open"); }catch(x){} PCGO("guide/"+encodeURIComponent(gid)+"/"+gLang()); return; }
 });
 D.addEventListener("keydown",function(e){ if(e.key!=="Enter"&&e.key!==" ") return; var c=e.target.closest&&e.target.closest("#pcGd .pg-gc"); if(!c||e.target!==c) return; e.preventDefault(); c.click(); });
-D.addEventListener("change",function(e){ if(!e.target.closest||!e.target.closest("#pcGd")) return; if(/^gb(H|D|N|Dt|Tm)$/.test(e.target.id||"")) priceUpd(); });
+D.addEventListener("change",function(e){ if(!e.target.closest||!e.target.closest("#pcGd")) return; if(/^gb(H|D|N|Dt|Tm|Car)$/.test(e.target.id||"")) priceUpd(); });   // Car = 프라이빗 차량 (11-15)
 // 앱 확인 창(#nrBox.pcg)의 「취소」·「‹ 뒤로」(신청서로) = 창만 닫고 이 PC 예약 칸으로 (앱 신청서를 창 안에 다시 그리지 않는다)
 window.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest('#nrBox.pcg [data-igback="req"]'); if(!t) return; var n=N(); if(!n) return;
   e.preventDefault(); e.stopPropagation(); var s=n.state(); if(s.busy) return; s.view="req"; if(s.bk) s.bk.err=""; try{ NEAR.close(); }catch(x){} },true);
