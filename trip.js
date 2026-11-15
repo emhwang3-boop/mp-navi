@@ -2448,8 +2448,8 @@ function gsSend(){ if(GS.busy||!GS.g) return; var nmEl=document.getElementById("
   .catch(function(e){ GS.busy=false; if(go) go.disabled=false; window.__trSendPlanErr=String(e); set(T5({ko:"연결에 실패했어요.",en:"Connection failed.",ja:"接続に失敗しました。",zhs:"连接失败。",zht:"連接失敗。",es:"Error de conexión."})); }); }
 // ── 가이드 일정 검토 (사장님 11-07 「나로 하자, 옵션이지 필수는 아님」) — 선택 · 10만 원(외국어 화면 USD 100, 결제는 KRW 100,000) ──
 //   카트 맨 위 작은 칸 → 가운데 창: 받는 것 · 결과 받을 이메일(필수) · 가이드 언어(가이드가 있는 말만 — 허브 GET /shop/grv/info) · 메모 · 금액 · 「결제하기」
-//   「결제하기」 = 허브 /shop/order {pid:"grv", tp(공유 링크 #tp= 뒤 — 가이드가 앱에서 그대로 엶), start, days, glang, email, note} → PG 전이면 바로 결제 완료·가이드 배정·24시간 마감
-//   PG 뒤(tpg.js SH_PG)면 KG이니시스 결제창 → 돌아오면 TPG.onRet("grv") · AI 일정은 무료 그대로라 이 칸을 안 눌러도 모든 기능이 그대로
+//   「결제하기」 = 허브 /shop/order {pid:"grv", tp(공유 링크 #tp= 뒤 — 가이드가 앱에서 그대로 엶), start, days, glang, email, note, pg:1} → KG이니시스 결제창 → 결제 확인 = 가이드 배정·24시간 마감
+//   돌아오면 TPG.onRet("grv") · 🔴 11-15 앱 스위치 없음 — 허브에 채널 키가 없으면 pgoff 안내만(결제 없이 완료 없음) · AI 일정은 무료 그대로라 이 칸을 안 눌러도 모든 기능이 그대로
 var GRV6={
   card:{ko:"가이드에게 일정 검토 받기",en:"Get your plan checked by a guide",ja:"ガイドに日程をチェックしてもらう",zhs:"请向导检查行程",zht:"請嚮導檢查行程",es:"Que un guía revise tu plan"},
   cardS:{ko:"(선택 · 10만 원)",en:"(optional · USD 100)",ja:"（任意・USD 100）",zhs:"（可选 · USD 100）",zht:"（可選 · USD 100）",es:"(opcional · USD 100)"},
@@ -2528,7 +2528,7 @@ function grvPaint(){ var b=document.getElementById("trGrvP"); if(!b) return; grv
   else { if(L0.indexOf(GRV.gl)<0) GRV.gl=L0.indexOf(LANG)>=0?LANG:L0[0];   // 처음엔 앱 언어 — 그 언어 가이드가 없으면 있는 말 중 첫째
     h+='<select class="gsin" id="grvGl"'+bz+'>'+L0.map(function(l){ return '<option value="'+esc(l)+'"'+(l===GRV.gl?' selected':'')+'>'+esc(gsLangName(l))+'</option>'; }).join("")+'</select>'; }
   h+='<label class="gslb" for="grvNt">'+esc(T5(GRV6.nt))+'</label><textarea class="gsin" id="grvNt" maxlength="1000" rows="2" placeholder="'+esc(T5(GRV6.ntp))+'"'+bz+'>'+esc(GRV.nt)+'</textarea>';
-  if(pg) h+='<label class="gslb" for="grvNm">'+esc(T5(GRV6.nm))+'</label><input class="gsin" id="grvNm" maxlength="40" autocomplete="name" value="'+esc(GRV.nm)+'"'+bz+'>'   // KG이니시스 PC 결제 = 이름·전화·이메일 필요 (PG 켠 뒤에만 보임)
+  if(pg) h+='<label class="gslb" for="grvNm">'+esc(T5(GRV6.nm))+'</label><input class="gsin" id="grvNm" maxlength="40" autocomplete="name" value="'+esc(GRV.nm)+'"'+bz+'>'   // KG이니시스 PC 결제 = 이름·전화·이메일 필요 (11-15 — 늘 결제창이라 늘 보임)
     +'<label class="gslb" for="grvPh">'+esc(T5(GRV6.ph))+'</label><input class="gsin" id="grvPh" type="tel" maxlength="30" autocomplete="tel" value="'+esc(GRV.ph)+'"'+bz+'><div class="grvn">'+esc(T5(GRV6.pgn))+'</div>';
   h+='<div class="grvp"><span>'+esc(T5(GRV6.amt))+'</span><span><b>'+esc(grvPrice())+'</b>'+(LANG!=="ko"?'<i>'+esc(T5(GRV6.krw))+'</i>':'')+'</span></div>'
     +'<label class="gschk"><input type="checkbox" id="grvAg"'+(GRV.ag?' checked':'')+bz+'><span>'+esc(T5(GRV6.agr))+' · <a href="refund.html?lang='+esc(LANG)+'" target="_blank" rel="noopener">'+esc(T5(GRV6.rf))+' ›</a></span></label>'
@@ -2536,20 +2536,20 @@ function grvPaint(){ var b=document.getElementById("trGrvP"); if(!b) return; grv
     +'<div class="grvbt"><button type="button" class="trbtn" data-grv="x"'+bz+'>'+esc(T5(GRV6.cx))+'</button><button type="button" class="trbtn pri" data-grv="go"'+(dis?' disabled':'')+'>'+esc(GRV.busy===2?((window.TPG&&TPG.tx("opn"))||"…"):GRV.busy?T5(GRV6.sav):T5(GRV6.pay))+'</button></div></div>';
   b.innerHTML=h;
   var ag=b.querySelector("#grvAg"); if(ag) ag.onchange=function(){ GRV.ag=ag.checked; var g=b.querySelector('[data-grv="go"]'); if(g) g.disabled=!!GRV.busy||!GRV.ag||!GRV.langs||!GRV.langs.length; }; }
-// 「결제하기」 — 이메일 확인 → 지금 일정의 공유 링크 → 허브 /shop/order (PG 전 = 바로 결제 완료 · PG 뒤 = 결제창)
+// 「결제하기」 — 이메일 확인 → 지금 일정의 공유 링크 → 허브 /shop/order(pg:1) → 결제창 (11-15 — 결제 없이 완료되는 길 없음)
 function grvGo(){ if(GRV.busy||!TR.plan) return; grvGrab(); var em=String(GRV.em||"").trim(), pg=!!(window.TPG&&TPG.on), pl=TR.plan;
   if(!GRV_EM.test(em)){ GRV.err=T5(GRV6.eem); grvPaint(); try{ document.getElementById("grvEm").focus(); }catch(e){} return; }
   if(!GRV.ag||!GRV.langs||GRV.langs.indexOf(GRV.gl)<0) return;
   GRV.err=""; GRV.busy=1; grvPaint();
   tripUrl().then(function(u){ var tp=String(u).split("#tp=")[1]||"", d0=(pl.days&&pl.days[0]&&pl.days[0].date)||"";
     return fetch(HUB+"/shop/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:"grv",pname:T5(GRV6.title),tp:tp,start:d0,days:pl.days.length,glang:GRV.gl,lang:window.LANG||"en",email:em,note:String(GRV.nt||"").trim().slice(0,1000),
-      name:String(GRV.nm||"").trim()||undefined,phone:String(GRV.ph||"").trim()||undefined,consent:true,pg:pg?1:0,sess:sySess()||undefined})}); })
+      name:String(GRV.nm||"").trim()||undefined,phone:String(GRV.ph||"").trim()||undefined,consent:true,pg:1,sess:sySess()||undefined})}); })
     .then(function(r){ return r.json(); }).then(function(j){
       if(!(j&&j.ok&&j.orderId)){ var e=j&&j.err, pe=window.TPG?TPG.errTx(e):""; GRV.busy=0;
         if(e==="noguide"){ grvOpen({ok:false,msg:T5(GRV6.enog)}); return; }
         GRV.err=pe||T5(e==="email"?GRV6.eem:e==="guide"?GRV6.egd:(e==="plan"||e==="long")?GRV6.eplan:e==="phone"?GRV6.eph:GRV6.efail); grvPaint(); return; }
       try{ localStorage.setItem("mpv_grv_em",em); }catch(z){} try{ ntap("_trip","grv_order"); }catch(z){}
-      if(j.pay!=="pg"){ grvOpen({ok:true,j:j,em:em}); return; }
+      if(j.pay!=="pg"){ GRV.busy=0; GRV.err=(window.TPG&&TPG.errTx("pgoff"))||T5(GRV6.efail); grvPaint(); return; }   // 결제창 없이 완료되는 길은 없다 (11-15)
       GRV.busy=2; grvPaint();   // KG이니시스 결제창 (tpg.js) — 돌아오면 아래 TPG.onRet("grv")
       return TPG.go(j,{kind:"grv",oid:j.orderId,em:em},{name:GRV.nm,email:em,phone:GRV.ph}).then(function(m){ if(m){ GRV.busy=0; GRV.err=m; grvPaint(); } }); })
     .catch(function(){ GRV.busy=0; GRV.err=T5(GRV6.efail); grvPaint(); }); }
