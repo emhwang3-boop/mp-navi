@@ -2,7 +2,7 @@
  *  · 상품마다 「가게 메뉴」(관리자 → 가게·메뉴) — 「하나만」(도장 등) / 「여러 개·수량」(식당 등) · 메뉴마다 「앱에서 결제」 또는 「현장에서 결제」(건강검진 추가 검사 등, 값 안내·미리 고르기만)
  *  · 결제 금액 = 패키지 여행비(지금 계산 그대로) + 앱에서 결제하는 메뉴 합계 — 허브 /shop/order 가 서버 값으로 다시 계산 · 메뉴가 없는 상품은 지금과 똑같다
  *  · 「내 예약」(near.js)·홈페이지 내 예약(home/pc_bk.js)·대화방 예약 내용(chat.js)에 바우처 · 「모델 바꾸기」 = 손님(예약 토큰 /shop/mchg)·동행 가이드(/guide/gme op mchg)
- *    더 비싸면 차액 결제(PG 전이면 바로 완료 · PG 뒤면 KG이니시스 결제창 tpg.js kind "mchg") · 더 싸면 결제 카드 부분 취소 → 바우처 다시 · 가게에 문자
+ *    더 비싸면 차액 결제(KG이니시스 결제창 tpg.js kind "mchg" · 11-15 채널 키 전엔 허브 pgoff — 결제 없이 바꾸지 않음) · 더 싸면 결제 카드 부분 취소 → 바우처 다시 · 가게에 문자
  *  · 가게 메뉴가 있는 패키지는 「내 예약」에 「투어 완료」(예약 시작 시각부터) — 가게 정산은 손님이 투어 완료를 누른 예약만
  *  · shop.js·near.js·chat.js·home/pc_pkg.js·home/pc_bk.js 가 window.SMN 으로 부른다(없으면 지금 그대로) · 고르기를 바꾸면 document 에 「smnchg」, 바우처가 바뀌면 「smnvch」 */
 (function(){
@@ -138,7 +138,6 @@ function sumHtml(sm,side){ var m=sm&&sm.menu; if(!m) return ""; var cx=sm.status
 // ── 「모델 바꾸기」 가운데 창 — o = {side:"c", tk} | {side:"g", oid} ──
 var MC=null;
 function api(o,b){ if(o.side==="g") return post("/guide/gme",Object.assign({sess:sess(),op:"mchg",oid:o.oid},b)); return post("/shop/mchg",Object.assign({tk:o.tk},b)); }
-function pgOn(){ return !!(window.TPG&&TPG.on); }
 function shell(){ var b=document.getElementById("smnM"); if(!b){ b=document.createElement("div"); b.id="smnM"; b.onclick=function(e){ if(e.target===b&&!(MC&&MC.busy)) closeM(); }; document.body.appendChild(b); } return b; }
 function closeM(){ var b=document.getElementById("smnM"); if(b) b.remove(); MC=null; }
 function eTx(e){ var pe=window.TPG&&TPG.errTx?TPG.errTx(e):""; return pe||L(e==="again"?TX.eAgain:e==="same"?TX.eSame:e==="done"?TX.eDone:e==="status"?TX.eStat:e==="notyet"?TX.eNot:e==="busy"?TX.eBusy:e==="menu"?TX.eMenu:TX.err); }
@@ -161,7 +160,7 @@ function doneVch(o,r){ try{ if(o.side==="c"&&window.NEARBK&&r&&r.oid){ var x=NEA
   try{ document.dispatchEvent(new CustomEvent("smnvch",{detail:{oid:r&&r.oid}})); }catch(e){} }
 function applyM(){ if(!MC||!MC.j||MC.busy) return; var o=MC.o, j=MC.j, m={mode:j.mode,items:j.base}, items=linesOf(m,MC.k).map(function(x){ return {id:x.id,q:x.q}; });
   MC.busy=1; MC.msg=""; paintM();
-  api(o,{sub:"apply",items:items,v:j.v,pg:pgOn()?1:0}).then(function(r){ if(!MC||MC.o!==o) return;
+  api(o,{sub:"apply",items:items,v:j.v,pg:1}).then(function(r){ if(!MC||MC.o!==o) return;
     if(r&&r.ok&&r.pay==="pg"){ MC.busy=2; paintM();   // 차액 결제 — KG이니시스 결제창 (돌아오면 아래 TPG.onRet("mchg"))
       return TPG.go(r,{kind:"mchg",side:o.side,tk:o.tk||"",oid:o.oid||j.oid,pname:j.pname,pnameKo:j.pnameKo,date:j.date,time:j.time},r.cu||{}).then(function(e){ if(e&&MC){ MC.busy=false; MC.msg=e; paintM(); } }); }
     MC.busy=false; if(r&&r.ok){ MC.res=r; paintM(); doneVch(o,r); return; }
