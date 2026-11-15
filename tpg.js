@@ -1,13 +1,13 @@
 /* 투어앱 결제 = KG이니시스 · 포트원 V2 (사장님 2026-11-07 「왜 토스로 하냐 이니시스로 해」) — 패키지(shop.js)·가이드 인솔(near.js)·가이드 일정 검토(trip.js) 공용
  *  · 노래방(karaoke.js kPortGo·kptReturn)과 같은 방식: 허브 /shop/order 가 준 storeId·channelKey·paymentId(=주문번호)·금액으로 PortOne.requestPayment
  *    → redirectUrl(?tpres=1&paymentId, 실패면 &code&message)로 돌아오면 허브 /shop/port/confirm {paymentId, ck} — 허브가 포트원에서 다시 읽어 확정(앱이 보낸 금액은 안 믿는다)
- *  · 🔴 SH_PG=false — 지금은 「결제하기」 = 바로 결제 완료(허브 pay:"none"). 허브 wrangler.toml 에 PORTONE_TOUR_CHANNEL_KEY(투어앱 KG이니시스 채널)를 넣을 때 여기를 true 로 같이 올린다
- *    (허브는 채널 키가 생기면 결제 없는 주문을 거절 — 앱이 pg:1 을 보내야 결제창 주문이 만들어진다)
+ *  · 🔴 앱에 결제 스위치 없음 (11-15 사장님 「실전과 다르게 가지 말라」「나중에 실전 올릴 때 바꾸고 되돌리고 하지 말라」) — 모든 주문은 늘 결제창 주문(pg:1)
+ *    허브에 투어 채널 키(PORTONE_TOUR_CHANNEL_KEY)가 없으면 허브가 주문을 만들지 않고 pgoff(503) → 「결제창을 열 수 없었습니다」 안내 · 결제 없이 완료되는 길은 없다
+ *    실전 = 허브 wrangler.toml 에 채널 키 한 줄만 넣고 배포 (앱은 그대로)
  *  · 돌아왔을 때 화면은 상품마다 TPG.onRet(kind, fn(ctx, res)) 로 단 함수가 다시 그린다 — kind "pkg" | "gbk" | "grv" · res = {ok:true, j(확인 답)} | {ok:false, err:"fail"|"amount"|"noguide"|"wait", msg}
  *  index.html 은 <script src="tpg.js"> 한 줄 (shop.js·near.js·trip.js 보다 먼저) */
 (function(){
 "use strict";
-var SH_PG=false;   // 🔴 PG 붙이면 true (KG이니시스 결제창) — 허브 PORTONE_TOUR_CHANNEL_KEY 와 같이
 var PSDK="https://cdn.portone.io/v2/browser-sdk.js", RK="mpv_tpg", HUBU="https://brief-live-hub.emhwang3.workers.dev", H={};
 function T6(ko,en,ja,zhs,zht,es){ return {ko:ko,en:en,ja:ja,zhs:zhs,zht:zht,es:es}; }
 function L6(o){ return o[window.LANG]||o.en; }
@@ -16,7 +16,7 @@ var TX={
  need:T6("PC에서 카드 결제를 하려면 이름·휴대폰 번호·이메일이 필요해요.","Card payment on a computer needs your name, mobile number and email.","パソコンでのカード決済には、お名前・携帯電話番号・メールアドレスが必要です。","在电脑上刷卡付款需要填写姓名、手机号码和邮箱。","在電腦上刷卡付款需要填寫姓名、手機號碼和電子郵件。","Para pagar con tarjeta en un ordenador necesitas tu nombre, tu móvil y tu correo."),
  fail:T6("결제창을 열지 못했어요. 잠시 뒤 다시 눌러 주세요.","Could not open the payment window. Please try again shortly.","決済画面を開けませんでした。しばらくしてからもう一度お試しください。","无法打开付款窗口，请稍后再试。","無法開啟付款視窗，請稍後再試。","No se pudo abrir la ventana de pago. Inténtalo de nuevo en un momento."),
  wait:T6("결제 결과를 확인하고 있어요. 확정되면 메일로 알려 드려요.","We are still confirming your payment. We'll email you once it is confirmed.","決済結果を確認しています。確定したらメールでお知らせします。","正在确认付款结果，确认后会通过邮件通知您。","正在確認付款結果，確認後會透過電子郵件通知您。","Aún estamos confirmando tu pago. Te avisaremos por correo cuando se confirme."),
- pgoff:T6("카드 결제를 준비하고 있어요. 잠시 뒤 다시 해 주세요.","Card payment is being set up. Please try again later.","カード決済を準備中です。しばらくしてからもう一度お試しください。","刷卡付款正在准备中，请稍后再试。","刷卡付款正在準備中，請稍後再試。","Estamos preparando el pago con tarjeta. Inténtalo más tarde."),
+ pgoff:T6("결제창을 열 수 없었습니다. 잠시 뒤 다시 해 주세요. 계속 안 되면 admin@moneypuzzle.co.kr 로 알려 주세요.","We couldn't open the payment window. Please try again shortly. If it keeps happening, contact admin@moneypuzzle.co.kr.","決済画面を開けませんでした。しばらくしてからもう一度お試しください。解決しない場合は admin@moneypuzzle.co.kr までご連絡ください。","无法打开付款窗口，请稍后再试。如仍无法付款，请联系 admin@moneypuzzle.co.kr。","無法開啟付款視窗，請稍後再試。如仍無法付款，請聯絡 admin@moneypuzzle.co.kr。","No pudimos abrir la ventana de pago. Inténtalo de nuevo en un momento. Si sigue pasando, escríbenos a admin@moneypuzzle.co.kr."),   // 허브 pgoff(채널 키 전) — 결제 안 됨 (11-15)
  pgreq:T6("결제 방식이 바뀌었어요. 앱을 새로 받은 뒤 다시 해 주세요.","Payment has been updated. Please reload the app and try again.","決済方法が更新されました。アプリを再読み込みしてからもう一度お試しください。","付款方式已更新，请重新加载应用后再试。","付款方式已更新，請重新載入應用程式後再試。","El pago se ha actualizado. Vuelve a cargar la app e inténtalo de nuevo."),
  amount:T6("결제 금액이 주문과 달라 확정하지 않았어요. 고객센터로 알려 주세요.","The paid amount did not match the order, so it was not confirmed. Please contact us.","決済金額が注文と異なるため確定していません。お問い合わせください。","付款金额与订单不符，未确认。请联系我们。","付款金額與訂單不符，未確認。請聯絡我們。","El importe pagado no coincide con el pedido, así que no se confirmó. Contáctanos.")};
 function psdk(){ return new Promise(function(ok,no){ if(window.PortOne) return ok(); var s=document.createElement("script"); s.src=PSDK; s.onload=function(){ ok(); }; s.onerror=no; document.head.appendChild(s); }); }
@@ -52,7 +52,7 @@ function ret(){ var sp=new URLSearchParams(location.search); if(!sp.get("tpres")
     .catch(function(){ ss(null); fin({ok:false,err:"wait"}); }); }
 // 허브 /shop/order 오류 → 화면 글자 (결제 관문만 — 나머지는 상품 화면이 자기 글자로)
 function errTx(e){ return e==="pgoff"?L6(TX.pgoff):e==="pgreq"?L6(TX.pgreq):""; }
-window.TPG={on:SH_PG,go:go,onRet:function(k,f){ H[k]=f; },pc:pc,errTx:errTx,tx:function(k){ return TX[k]?L6(TX[k]):""; },
+window.TPG={on:true,go:go,onRet:function(k,f){ H[k]=f; },pc:pc,errTx:errTx,tx:function(k){ return TX[k]?L6(TX[k]):""; },
   resTx:function(res){ return !res||res.ok?"":res.err==="wait"?L6(TX.wait):res.err==="amount"?L6(TX.amount):""; }};
 if(/[?&]tpres=/.test(location.search)){ var _t=function(){ setTimeout(function(){ try{ ret(); }catch(e){ window.__tpgRetErr=String(e); } },900); }; if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",_t); else _t(); }
 })();
