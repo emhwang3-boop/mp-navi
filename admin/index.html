@@ -589,7 +589,7 @@ function guideLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>가이�
   }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+').</div></div>'; }); }
 function gCard(g){ var langs=(g.langs||[]).map(gLangNm).join(", ");
   return '<div class="inv"><div class="row" style="align-items:flex-start;gap:10px">'
-    +'<img src="'+HUB+'/guide/photo?id='+encodeURIComponent(g.id)+'" style="width:64px;height:64px;border-radius:10px;object-fit:cover;background:var(--bg)" onerror="this.style.display=\'none\'">'
+    +'<img src="'+HUB+'/guide/photo?id='+encodeURIComponent(g.id)+'&v='+encodeURIComponent(g.pv||0)+'" style="width:64px;height:64px;border-radius:10px;object-fit:cover;background:var(--bg)" onerror="this.style.display=\'none\'">'
     +'<div style="flex:1;min-width:0"><div><b>'+esc(g.name)+'</b> <span class="sub">'+esc(langs)+(g.years?' · 경력 '+g.years+'년':'')+(g.region?' · '+esc(g.region):'')+'</span></div>'
     +'<div class="sub">자격증 번호 <b>'+esc(g.lic||'')+'</b> · 접수 '+esc(g.at||'')+(g.status==='approved'?' · <b style="color:var(--ok)">승인됨</b>':g.status==='rejected'?' · 거절됨':'')+'</div>'
     +(g.intro?'<div style="white-space:pre-wrap;margin:4px 0">'+esc(g.intro)+'</div>':'')
