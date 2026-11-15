@@ -100,6 +100,7 @@ function won(n){ var a=Number(n||0).toLocaleString("ko-KR"); return window.LANG=
 function gName(g){ if(!g) return ""; var l=window.LANG||"en", nm=g.name||""; if(l==="ko") return nm; var f=l==="ja"?(g.name_ja||g.name_en):(l==="zhs"||l==="zht")?(g.name_zh||g.name_en):g.name_en; return f||nm; }
 function lgName(l){ try{ return NI()&&NI().langName?NI().langName(l):l; }catch(e){ return l||""; } }
 function modeTx(k){ try{ return NI()&&k&&k.mode?NI().modeTxt({mode:k.mode,h:k.h,d:k.d}):""; }catch(e){ return ""; } }
+function carTx(k,noNm){ try{ return BK()&&BK().carTx&&k&&k.car?BK().carTx(k.car,noNm):""; }catch(e){ return ""; } }   // 프라이빗 차량 「프라이빗 차량 8시간 × 2일」 (11-15, 앱 near.js gbCarTx)
 function pplTx(n){ n=+n||1; return F6(n===1?TX.ppl1:TX.ppl,{n:n}); }
 function kstHm(ms){ return new Date((+ms||0)+9*36e5).toISOString().slice(11,16); }
 
@@ -124,7 +125,7 @@ function stTx(x){ if(x.status==="refunded") return [TX.sRf,"x"]; if(x.status==="
   if(x.done) return [TX.sDone,"ok"]; if(x.kind==="pkg"&&!x.g) return [TX.sWait,"w"]; return [TX.sConf,"ok"]; }
 function card(x){ var B=BK(), st=stTx(x), ttl="", meta="", btn=[], badge=x.chr&&window.CHR?CHR.tx("t"):L6(TX[x.kind]||TX.pkg);   // 차량 대절 이름표 (11-11)
   if(x.kind==="gbk"){ ttl=[modeTx(x.k),gName(x.g),x.glang?lgName(x.glang):""].filter(Boolean).join(" · ");
-    meta=fDate(x.date,1)+" "+(x.time||"")+" (KST) · "+pplTx(x.n)+" · "+F6(TX.paid,{a:won(x.amount)}); }
+    meta=fDate(x.date,1)+" "+(x.time||"")+" (KST) · "+pplTx(x.n)+(carTx(x.k)?" · "+carTx(x.k):"")+" · "+F6(TX.paid,{a:won(x.amount)}); }   // 프라이빗 차량 (11-15)
   else if(x.kind==="grv"){ var g=x.grv||{}, n=g.days||1; ttl=L6(B.TX.grvT)+" · "+(n===1?L6(TX.day1):F6(TX.days,{n:n}));
     meta=(x.paid?F6(TX.paidOn,{d:fDate(String(x.paid).slice(0,10)),a:won(x.amount)}):F6(TX.paid,{a:won(x.amount)}))+(g.sent||cx(x)?"":" · "+F6(B.TX.grvWait,{t:B.when(g.due||0)})); }
   else { ttl=x.pname||""; meta=fDate(x.date,1)+" "+(x.time||"")+" (KST) · "+pplTx(x.n)+" · "+F6(TX.paid,{a:won(x.amount)})+(x.g?" · "+L6(TX.rGuide)+" "+gName(x.g):""); }
@@ -174,7 +175,7 @@ function roomPaint(x){ var r=D.getElementById("bkRoom"); if(!r) return; var C=wi
 function detOpen(x){ var B=BK(), rows=[], r=function(a,b){ rows.push('<div class="bk-dr"><span>'+E(L6(a))+'</span><b>'+E(b)+'</b></div>'); }, st=stTx(x);
   r(TX.rKind,x.chr&&window.CHR?CHR.tx("t"):L6(TX[x.kind]||TX.pkg));
   if(x.chr&&x.chr.drv&&window.CHR){ r(CHR.T.drv,x.chr.drv.nm||""); r(CHR.T.tel,x.chr.drv.tel||""); r(CHR.T.car,x.chr.drv.car||""); }   // 차량 대절 기사 (11-11)
-  if(x.kind==="gbk"){ r(TX.rGuide,[gName(x.g),modeTx(x.k)].filter(Boolean).join(" · ")); }
+  if(x.kind==="gbk"){ r(TX.rGuide,[gName(x.g),modeTx(x.k)].filter(Boolean).join(" · ")); if(carTx(x.k)&&BK().carNm) r(BK().carNm,carTx(x.k,1)+" · "+won(x.k.car.amt||0)); }   // 프라이빗 차량 (11-15)
   else if(x.kind==="grv"){ r(TX.rProd,L6(B.TX.grvT)); r(TX.rTrip,F6(B.TX.grvD,{d:fDate(x.date),n:(x.grv&&x.grv.days)||1})); if(x.grv&&x.grv.due&&!x.grv.sent&&!cx(x)) r(TX.rDue,B.when(x.grv.due)+" (KST)"); }
   else { r(TX.rProd,x.pname||""); if(x.g) r(TX.rGuide,gName(x.g)); }
   if(x.cust) r(TX.rBy,x.cust);
