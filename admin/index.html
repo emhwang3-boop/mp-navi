@@ -584,7 +584,7 @@ function guideLoad(){ var P=$("pane"); P.innerHTML='<div class="card"><b>가이�
     if(pend.length) H+='<div class="card"><b>승인 대기 ('+pend.length+')</b><div class="msg">자격증 번호·사본과 전자계약 동의·본인인증을 확인하고 승인/거절하세요. 승인하면 가이드에게 계약서 사본 메일이 갑니다.</div>'+pend.map(gCard).join("")+'</div>';   // 새 신청이 있을 때만 (사장님 11-05)
     H+='<div class="card"><b>승인된 가이드 ('+appr.length+')</b>'+(appr.length?appr.map(gCard).join(""):'<div class="msg">아직 없습니다.</div>')+'</div>';
     if(rej.length) H+='<div class="card"><b>거절 ('+rej.length+')</b>'+rej.map(gCard).join("")+'</div>';
-    var wd=j.withdrawn||[]; if(wd.length) H+='<div class="card"><b>탈퇴한 가이드 ('+wd.length+')</b><div class="msg">이름·언어·자격증 번호·등록일·탈퇴일만 보관합니다. 연락처·사진·자격증 사본·계약서는 탈퇴 때 지웠습니다.</div>'+wd.map(function(w){ return '<div class="inv"><b>'+esc(w.name||"")+'</b> <span class="sub">'+esc((w.langs||[]).map(gLangNm).join(", "))+' · 자격증 번호 '+esc(w.lic||"")+' · 등록 '+esc(w.at||"")+' · 탈퇴 '+esc(w.wdAt||"")+'</span></div>'; }).join("")+'</div>';   // 손님 요청 칸은 뺌 — 대화는 「가이드 대화방」에서 (사장님 11-05)
+    var wd=j.withdrawn||[]; window._gWd=wd; if(wd.length) H+='<div class="card"><b>탈퇴한 가이드 ('+wd.length+')</b><div class="msg">이름·언어·자격증 번호·등록일·탈퇴일만 보관합니다. 연락처·사진·자격증 사본·계약서는 탈퇴 때 지웠습니다.</div>'+wd.map(function(w){ return '<div class="inv"><b>'+esc(w.name||"")+'</b> <span class="sub">'+esc((w.langs||[]).map(gLangNm).join(", "))+' · 자격증 번호 '+esc(w.lic||"")+' · 등록 '+esc(w.at||"")+' · 탈퇴 '+esc(w.wdAt||"")+'</span> <button class="g" onclick="gRestore(&quot;'+esc(w.id||"")+'&quot;)">백업에서 되살리기</button></div>'; }).join("")+'</div>';   // 손님 요청 칸은 뺌 — 대화는 「가이드 대화방」에서 (사장님 11-05)
     P.innerHTML=H;
   }).catch(function(e){ P.innerHTML='<div class="card"><div class="msg err">불러오지 못했습니다 ('+esc(e.message)+').</div></div>'; }); }
 function gCard(g){ var langs=(g.langs||[]).map(gLangNm).join(", ");
@@ -746,6 +746,17 @@ function gLic(id){ var box=$("glic_"+id); if(!box) return; if(box.innerHTML){ bo
 function gCt(id,n){ var box=$("gct_"+id); if(!box) return; if(box.innerHTML){ box.innerHTML=''; return; } n=Math.max(1,Math.min(3,n||1)); box.innerHTML='<div class="msg">불러오는 중…</div>';
   var ps=[]; for(var i=0;i<n;i++) ps.push(api("/guide/admin/contract?id="+encodeURIComponent(id)+"&n="+i).catch(function(){ return null; }));
   Promise.all(ps).then(function(a){ box.innerHTML=a.map(function(j,i){ return j&&j.ok&&j.data?'<div class="sub" style="margin-top:6px">계약서 '+(i+1)+'/'+n+'</div><img src="'+j.data+'" style="max-width:100%;border-radius:10px;margin-top:4px;border:1px solid var(--line)">':'<div class="msg">'+(i+1)+'번째 장을 불러오지 못했습니다.</div>'; }).join(""); }); }
+// 탈퇴 되살리기 (사장님 11-15 「전현진만 살리고」「한국어 영어로」) — PC 백업(MIS백업\날짜\가이드.json)에서 그 사람 기록을 골라 허브 /guide/admin/restore 로 · 언어는 한국어·영어 · 사진·자격증 사본·계약서는 탈퇴 때 지워져 없음
+function gRestore(id){ var w=(window._gWd||[]).filter(function(x){ return x&&x.id===id; })[0]; if(!w) return;
+  var inp=document.createElement('input'); inp.type='file'; inp.accept='.json,application/json';
+  inp.onchange=function(){ var f=inp.files&&inp.files[0]; if(!f) return; var rd=new FileReader();
+    rd.onload=function(){ var j; try{ j=JSON.parse(rd.result); }catch(e){ alert('백업 파일을 읽지 못했습니다.'); return; }
+      var all=[].concat(j.approved||[],j.pending||[],j.rejected||[]), rec=all.filter(function(g){ return g&&g.id===id; })[0];
+      if(!rec){ alert('이 백업 파일에는 '+(w.name||'')+' 님 기록이 없습니다.\n탈퇴 전 날짜의 백업(예: C:\\kiwoom_work\\MIS백업\\20261114\\가이드.json)을 선택해 주세요.'); return; }
+      if(!confirm((rec.name||w.name||'')+' 님을 되살릴까요?\n\n· 상태: 승인 (앱·홈페이지 가이드 목록에 다시 나옴)\n· 언어: 한국어·영어\n· 이름·소개·경력·지역·연락처·자격증 번호: 백업 기록 그대로\n· 사진·자격증 사본·계약서: 탈퇴 때 지워져 없음 — 사진은 「수정」에서 다시 올려 주세요')) return;
+      api("/guide/admin/restore",{method:"POST",body:JSON.stringify({id:id,rec:rec,langs:["ko","en"]})}).then(function(r){ if(r&&r.ok){ alert('되살렸습니다. 「수정」에서 사진을 올려 주세요.'); guideLoad(); } else alert('되살리지 못했습니다 ('+((r&&r.err)||'')+').'); }).catch(function(e){ alert('되살리지 못했습니다 ('+(e&&e.message||'')+').'); }); };
+    rd.readAsText(f,'utf-8'); };
+  inp.click(); }
 function gAct(a,id){ if(a==='withdraw'&&!confirm('이 가이드를 탈퇴 처리할까요?\n이름·언어·자격증 번호·등록일만 「탈퇴한 가이드」 목록에 남기고, 연락처·사진·자격증 사본·계약서는 지웁니다. 앱 가이드 목록과 자동 배정에서도 빠집니다.')) return; if(a==='delete'&&!confirm('이 신청을 삭제할까요?\n신청서와 첨부한 사진·자격증 사본·계약서가 모두 지워집니다.')) return; if(a==='reject'&&!confirm('이 신청을 거절할까요?')) return;
   api("/guide/admin/"+a,{method:"POST",body:JSON.stringify({id:id})}).then(function(j){ if(j&&j.ok) guideLoad(); else alert('처리하지 못했습니다.'); }).catch(function(){ alert('처리하지 못했습니다.'); }); }
 
