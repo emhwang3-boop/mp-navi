@@ -91,6 +91,7 @@ function shown(r){ return !(r.status==="cancelled"||r.status==="refunded"||(r.re
 var MD={half:T6("반일 (4시간)","Half day (4 h)","半日（4時間）","半天（4小时）","半天（4小時）","Medio día (4 h)"),full:T6("하루 (8시간)","Full day (8 h)","1日（8時間）","一天（8小时）","一天（8小時）","Día completo (8 h)"),
  hours:T6("{n}시간","{n} h","{n}時間","{n}小时","{n}小時","{n} h"),days:T6("{n}일 (하루 8시간)","{n} days (8 h a day)","{n}日（1日8時間）","{n}天（每天8小时）","{n}天（每天8小時）","{n} días (8 h al día)")};
 function mdTx(k){ if(!k||!k.mode) return ""; return F(MD[k.mode]||MD.half,{n:k.mode==="days"?k.d:k.h}); }
+function carTx(k,noNm){ return k&&k.car&&window.NEARBK&&NEARBK.carTx?NEARBK.carTx(k.car,noNm):""; }   // 프라이빗 차량 (11-15, near.js gbCarTx) — 「프라이빗 차량 8시간 × 2일」
 var LGN={ko:"한국어",en:"English",ja:"日本語",zhs:"中文(简)",zht:"中文(繁)",es:"Español"};
 function gName(g){ if(!g) return ""; var l=window.LANG||"en", nm=g.name||""; if(l==="ko") return nm; var f=l==="ja"?(g.name_ja||g.name_en):(l==="zhs"||l==="zht")?(g.name_zh||g.name_en):g.name_en; return f&&f!==nm?f+" ("+nm+")":nm; }
 
@@ -166,7 +167,7 @@ function paintList(){ var bd=body(); if(!bd||X.view!=="list") return; var h="", 
     else if(X.gerr) h+='<div class="chnote">'+esc(L(TX.err))+'</div>';
     else if(!X.gme) h+='<div class="chnote">'+esc(L(TX.load))+'</div>';
     else { var now=Date.now(), up=X.gme.items.filter(function(x){ return x.end>=now; }), past=X.gme.items.filter(function(x){ return x.end<now; });
-      var row=function(x){ var pk=x.kind==="pkg", t=esc(pk?(x.pnameKo||x.pname):(L(T6("자유 가이드 예약","Guide booking","ガイド予約","向导预约","嚮導預約","Reserva de guía"))+" · "+mdTx(x.k)));
+      var row=function(x){ var pk=x.kind==="pkg", t=esc(pk?(x.pnameKo||x.pname):(L(T6("자유 가이드 예약","Guide booking","ガイド予約","向导预约","嚮導預約","Reserva de guía"))+" · "+mdTx(x.k)+(carTx(x.k)?" + "+carTx(x.k):"")));   // 가이드 화면 목록에도 차량 (11-15)
         var meta=esc(x.date+" "+x.time+" · "+x.n+" · "+(x.cust||"")+" · "+(LGN[x.lang]||x.lang||""));
         var act=x.pend?'<div class="chnote" style="margin-top:6px">'+esc(L(TX.pend))+'</div><div class="chab"><button type="button" class="a" data-chans="accept" data-oid="'+esc(x.oid)+'">'+esc(L(TX.acc))+'</button><button type="button" class="r" data-chans="reject" data-oid="'+esc(x.oid)+'">'+esc(L(TX.rej))+'</button></div>':'';
         return '<div class="chit" style="flex-wrap:wrap'+(x.room?'':';cursor:default')+'"'+(x.room?' data-chgroom="'+esc(x.oid)+'"':'')+'><span class="av">'+(pk?'🎫':'🧭')+'</span><div class="b"><b>'+t+'</b><div class="m">'+meta+'</div>'+(x.ans==="accept"?'<div class="m" style="color:#2b8a3e;font-weight:800">✓ '+esc(L(TX.accd))+'</div>':'')+'</div>'+(x.room&&x.room.unread>0?'<span class="u">'+x.room.unread+'</span>':'')+(act?'<div style="flex-basis:100%">'+act+'</div>':'')+'</div>'; };
@@ -186,7 +187,7 @@ function loginThen(cb){ if(!window.mpPG) return; window.mpPG.open(); var bx=docu
 function sumRows(sm,side){ var r=function(a,b){ return '<div class="r"><span>'+esc(L(a))+'</span><span>'+b+'</span></div>'; }, pk=sm.kind==="pkg";
   return '<div class="chsum"><div style="font-weight:800;font-size:13.5px;margin-bottom:3px">'+esc(L(TX.sum))+'</div>'
     +(pk?r(T6("상품","Product","商品","商品","商品","Producto"),esc(side==="g"?(sm.pnameKo||sm.pname):sm.pname))+(side==="c"?r(TX.gd,X.room&&X.room.g?esc(gName(X.room.g)):'<span class="chpend" style="margin:0">'+esc(L(TX.wait))+'</span>'):''):r(TX.gd,esc(side==="g"?(X.gme&&X.gme.guide?X.gme.guide.name:""):gName(X.room&&X.room.g))+(sm.k?' · '+esc(mdTx(sm.k)):'')))
-    +(side==="c"&&sm.cust?r(TX.bkr,esc(sm.cust)):'')+r(TX.dt,esc(sm.date+" "+sm.time+" (KST)"))+(sm.end?r(TX.endL,esc(window.NEARBK?NEARBK.when(sm.end):hm(sm.end))):'')+r(TX.ppl,esc(String(sm.n)))+r(TX.amt,esc(won(sm.amount)))+r(TX.oid,esc(sm.oid))
+    +(side==="c"&&sm.cust?r(TX.bkr,esc(sm.cust)):'')+(carTx(sm.k)&&NEARBK.carNm?r(NEARBK.carNm,esc(carTx(sm.k,1)+" · "+won(sm.k.car.amt||0))):'')+r(TX.dt,esc(sm.date+" "+sm.time+" (KST)"))+(sm.end?r(TX.endL,esc(window.NEARBK?NEARBK.when(sm.end):hm(sm.end))):'')+r(TX.ppl,esc(String(sm.n)))+r(TX.amt,esc(won(sm.amount)))+r(TX.oid,esc(sm.oid))
     +(side==="g"?r(TX.cust,esc(sm.cust||""))+r(TX.lang,esc(LGN[sm.lang]||sm.lang||""))+(sm.memo?r(TX.memo,esc(sm.memo)):''):'')+(window.SMN&&sm.menu?SMN.sumHtml(sm,side):'')+(side==="c"&&window.VQR&&!(X.room&&X.room.emb)?VQR.html(sm):'')+'</div>'; }   /* 바우처 QR — 손님 쪽만 (11-11 「2나」, vqr.js) */   // 바우처 · 가이드 「모델 바꾸기」 (11-10)
 function room(tk){ var r=(X.rooms||[]).filter(function(x){ return x.tk===tk; })[0]||null; openRoom({side:"c",tk:tk,g:r&&r.g}); }
 function groom(oid){ openRoom({side:"g",oid:oid}); }
