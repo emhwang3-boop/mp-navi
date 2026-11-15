@@ -797,25 +797,30 @@ function misLoad(){ var P=$("pane"); var r=misMonth(0); MIS.from=r.from; MIS.to=
     +'<div class="msec"><b>날짜별</b><div class="tw"><table id="misTab"></table></div></div>'
     +'<div class="msec"><b>가이드별 합계 (고른 기간 · 결제완료·완료 건)</b><div class="tw"><table id="misG"></table></div></div></div>'
     +'<div class="mgrp">앱 주문</div>'
-    // 주문 카드 둘로 (사장님 11-07): 가이드 인솔 자유여행(pid gbk = 앱 「투어 가이드」) / 패키지 투어(체험·입장권 상품) · 안내 글은 지금 방식(결제 연결 전 「결제하기」 = 실전 주문)
+    // 주문 카드 둘로 (사장님 11-07): 가이드 인솔 자유여행(pid gbk = 앱 「투어 가이드」) / 패키지 투어(체험·입장권 상품) · 11-15 결제 없이 완료되는 길 없음 — 카드마다 맨 위 「카드 결제:」 줄(허브 pg = 투어 채널 키 있나)
     +'<div class="card" id="soCardG"><div class="row"><b style="flex:1">가이드 인솔 자유여행</b><button onclick="soFetch()">새로고침</button><button class="g" onclick="xlsSo(\'g\')">엑셀 받기</button></div>'
-    +'<div class="msg">앱 「투어 가이드」에서 손님이 가이드를 골라 예약한 주문입니다. 결제 연결 전이라 「결제하기」를 누르면 바로 <b>확정</b>되고(가이드 수락·거절 없음), '
-    +'가이드에게 메일·문자가 가며 손님↔가이드 대화방이 열립니다. 손님에게는 메일·문자 없이 앱 💬 말풍선으로 안내합니다.</div>'
+    +'<div class="msg pgln" style="font-weight:800"></div>'
+    +'<div class="msg">앱 「투어 가이드」에서 손님이 가이드를 골라 예약한 주문입니다. 손님의 카드 결제가 확인되면 바로 <b>확정</b>되고(가이드 수락·거절 없음), '
+    +'가이드에게 메일·문자가 가며 손님↔가이드 대화방이 열립니다. 손님에게는 메일·문자 없이 앱 💬 말풍선으로 안내합니다. '
+    +'<b>프라이빗 차량</b>을 추가한 예약은 금액 칸에 「차량 8시간 × 2일 1,088,000원」처럼 보이고 텔레그램에도 알림이 갑니다 — 기사는 직접 배정해 주세요(서울 시내 · 최대 6명).</div>'
     +'<div id="soSumG"></div><div class="tw"><table id="soTabG"></table></div></div>'
     +'<div class="card" id="soCard"><div class="row"><b style="flex:1">패키지 투어</b><button onclick="soFetch()">새로고침</button><button class="g" onclick="xlsSo(\'p\')">엑셀 받기</button><button class="g" onclick="soClearTest()">시험 주문 지우기</button></div>'
-    +'<div class="msg">앱 「체험·입장권」 상품 결제창에서 들어온 주문입니다. 결제 연결 전이라 「결제하기」를 누르면 바로 <b>결제 완료</b>가 되고, 고른 가이드에게 메일·문자(수락/거절 링크)가 갑니다. '
+    +'<div class="msg pgln" style="font-weight:800"></div>'
+    +'<div class="msg">앱 「체험·입장권」 상품 결제창에서 들어온 주문입니다. 손님의 카드 결제가 확인되면 <b>결제 완료</b>가 되고, 고른 가이드에게 메일·문자(수락/거절 링크)가 갑니다. '
     +'가이드를 「고르지 않음」으로 산 가이드 투어 상품은 결제 순간 자동 배정합니다. 가이드가 수락하면 「확정」, 거절하면 다른 가이드로 다시 배정하고, 붙일 가이드가 없으면 주문을 취소하고 손님에게 알립니다. 가이드 칸을 바꾸면(결제 완료 건) 새 가이드에게 알림이 갑니다.</div>'
     +'<div id="soSum"></div><div class="tw"><table id="soTab"></table></div></div>'
     // 차량 대절 (11-11 사장님 「그대로 해」) — pid chr · 결제 뒤 기사 이름·전화·차 번호를 넣어 「확정」 → 손님 확정 메일(손님 언어) · 내 예약 바우처
     +'<div class="card" id="soCardC"><div class="row"><b style="flex:1">차량 대절</b><button onclick="soFetch()">새로고침</button><button class="g" onclick="xlsSo(\'c\')">엑셀 받기</button></div>'
-    +'<div class="msg">앱·홈페이지 「차량 대절」(기사 딸린 승합차 하루 10시간) 결제 주문입니다. 결제 연결 전이라 「결제하기」를 누르면 바로 <b>결제 완료</b>가 됩니다. '
+    +'<div class="msg pgln" style="font-weight:800"></div>'
+    +'<div class="msg">앱·홈페이지 「차량 대절」(기사 딸린 승합차 하루 10시간) 결제 주문입니다. 손님의 카드 결제가 확인되면 <b>결제 완료</b>가 됩니다. '
     +'가격은 목적지 가운데 가장 먼 곳의 구간(① 서울 680,000원 · ② 경기·인천 853,300원 · ③ 강원·충청 853,300원 · ④ 동해안·전라·경상 1,106,700원)으로 허브가 계산했습니다. '
     +'<b>기사 이름·전화·차 번호</b>를 넣고 「확정」을 누르면 상태가 확정으로 바뀌고 손님에게 확정 메일(손님 언어 — 기사·차·목적지 순서·따로 내는 것·취소 규정)이 갑니다. 확정 뒤 기사 정보를 바꿔 저장하면 「기사 정보가 바뀌었습니다」 메일이 다시 갑니다.</div>'
     +'<div id="soSumC"></div><div class="tw"><table id="soTabC"></table></div></div>'
     // 셋째 카드 (11-07) — 가이드 일정 검토 (pid grv = 카트 맨 위 「가이드에게 일정 검토 받기 (선택 · 10만 원)」)
     +'<div class="card" id="soCardR"><div class="row"><b style="flex:1">가이드 일정 검토</b><button onclick="soFetch()">새로고침</button><button class="g" onclick="xlsSo(\'r\')">엑셀 받기</button></div>'
-    +'<div class="msg">카트(내 여행 일정) 맨 위 「가이드에게 일정 검토 받기 (선택 · 10만 원)」에서 손님이 결제한 주문입니다. 결제 연결 전이라 「결제하기」를 누르면 바로 <b>결제 완료</b>가 되고, 손님이 고른 언어를 하는 가이드에게 자동 배정됩니다(메일·문자로 검토 화면 링크). '
-    +'가이드가 검토 화면에서 의견(필요하면 고친 일정 링크)을 보내면 손님이 넣은 이메일로 손님 언어 메일이 갑니다. 결제 후 <b>24시간</b> 안에 보내지 않으면 자동 환불(결제 연결 전에는 표시만)하고 손님에게 메일, 사장님에게 텔레그램이 갑니다. '
+    +'<div class="msg pgln" style="font-weight:800"></div>'
+    +'<div class="msg">카트(내 여행 일정) 맨 위 「가이드에게 일정 검토 받기 (선택 · 10만 원)」에서 손님이 결제한 주문입니다. 손님의 카드 결제가 확인되면 <b>결제 완료</b>가 되고, 손님이 고른 언어를 하는 가이드에게 자동 배정됩니다(메일·문자로 검토 화면 링크). '
+    +'가이드가 검토 화면에서 의견(필요하면 고친 일정 링크)을 보내면 손님이 넣은 이메일로 손님 언어 메일이 갑니다. 결제 후 <b>24시간</b> 안에 보내지 않으면 자동 환불(카드 결제 취소 · 옛 「결제 없음」 주문은 표시만)하고 손님에게 메일, 사장님에게 텔레그램이 갑니다. '
     +'가이드 칸을 바꾸면(검토 대기 건) 새 가이드에게 링크가 가고 옛 링크는 막힙니다 — 마감은 처음 결제 후 24시간 그대로입니다.</div>'
     +'<div id="soSumR"></div><div class="tw"><table id="soTabR"></table></div></div>';
   $("misP_this").classList.add("on");
@@ -823,7 +828,7 @@ function misLoad(){ var P=$("pane"); var r=misMonth(0); MIS.from=r.from; MIS.to=
 // ── 체험·입장권 주문 (10-28) — 허브 /shop/admin/orders · /shop/admin/order · /shop/admin/order/del · /shop/admin/order/cleartest ──
 var SO={items:[]}, SOS={test:"시험",pending:"결제 전",paid:"결제 완료",confirmed:"확정(가이드 수락)",cancelled:"취소",refunded:"환불"};
 function soFetch(){ var SS=[$("soSum"),$("soSumG"),$("soSumR")]; SS.forEach(function(S){ if(S) S.innerHTML='<div class="msg">불러오는 중…</div>'; });
-  api("/shop/admin/orders").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); SO.items=j.items||[]; soDraw(); })
+  api("/shop/admin/orders").then(function(j){ if(!j.ok) throw new Error(j.err||"x"); SO.items=j.items||[]; SO.pg=j.pg; soDraw(); })
   .catch(function(e){ SS.forEach(function(S){ if(S) S.innerHTML='<div class="msg err">불러오지 못했습니다 ('+esc(e.message)+')</div>'; }); }); }
 // 카드 나누기 (11-07) — g = 가이드 인솔 자유여행(pid gbk) · r = 가이드 일정 검토(pid grv) · p = 패키지 투어(그 밖 상품)
 function soOf(k){ return SO.items.filter(function(x){ return k==="g"?x.pid==="gbk":k==="r"?x.pid==="grv":k==="c"?x.pid==="chr":(x.pid!=="gbk"&&x.pid!=="grv"&&x.pid!=="chr"); }); }   // c = 차량 대절 (11-11)
@@ -840,7 +845,12 @@ function soHist(x){ var nm=function(id){ var g=(MIS.guides||[]).filter(function(
     if(txt) out.push(esc(txt)+' <span class="sub">'+esc(t)+'</span>'); });
   return out.join(" → "); }
 function soGans(x){ return x.gAns&&x.gAns.gid===x.gid?(x.gAns.a==="accept"?"수락":"거절")+" "+x.gAns.at:""; }
-function soDraw(){ soDraw1("g","soSumG","soTabG"); soDraw1("p","soSum","soTab"); soDrawR(); soDrawC(); }
+function soDraw(){ soDraw1("g","soSumG","soTabG"); soDraw1("p","soSum","soTab"); soDrawR(); soDrawC(); pgLn(); }
+// 카드 결제 줄 (11-15 사장님 「실전과 다르게 가지 말라」) — 결제 없이 완료되는 길 없음 · 허브에 투어 채널 키가 있으면 결제창, 없으면 결제 안 됨 (채널 키만 넣으면 이 줄도 저절로 바뀐다)
+function pgLn(){ var t=SO.pg===true?"카드 결제: KG이니시스 결제창 사용 중 (채널 키 있음)":SO.pg===false?"카드 결제: 채널 키 전 — 손님이 결제를 눌러도 결제창이 안 열림(결제 안 됨)":"";
+  [].forEach.call(document.querySelectorAll(".pgln"),function(e){ e.textContent=t; e.style.color=SO.pg===false?"#c2410c":""; }); }
+// 가이드 인솔 프라이빗 차량 (11-15) — 주문 gbk.car{h,d,unit,amt} · gbk.gAmt = 가이드 몫
+function soCar(x){ var c=x&&x.gbk&&x.gbk.car; return c&&c.h?"차량 "+c.h+"시간"+((c.d||1)>1?" × "+c.d+"일":"")+" "+won(c.amt||0):""; }
 // ── 차량 대절 카드 (11-11) — 목적지(순서·시·도)·픽업·기사 언어·인원·짐·요청 · 기사 이름·전화·차 번호 → 「확정」(허브 /shop/admin/chr) ──
 var CHZ=["","① 서울 시내","② 경기·인천","③ 강원·충청","④ 동해안·전라·경상"], CHDL={ko:"한국어",en:"영어",ja:"일본어",zh:"중국어"}, SOSC={pending:"결제 전",paid:"기사 배정 필요",confirmed:"확정",cancelled:"취소",refunded:"환불"};
 // 프라이빗 카투어 (11-14) — 주문 chr.crs{id,k,g,tk,dn,h} · 상품 이름은 허브가 넣은 pnameKo · 가이드 있는 주문은 가이드 이름·전화도 넣어야 확정
@@ -909,11 +919,12 @@ function xlsSoR(){ var TT="가이드 일정 검토", rows=[[CO],[TT],["만든 �
   var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[16,22,24,10,10,11,6,10,30,10,16,10,16,8,8,50,14,40,40]),TT); save(wb,"머니퍼즐_일정검토_"+kday(0)+".xlsx"); }
 function soDraw1(k,sumId,tabId){ var t=$(tabId); if(!t) return; var it=soOf(k), real=it.filter(function(x){ return !x.test; }), paid=real.filter(function(x){ return x.status==="paid"||x.status==="confirmed"; });
   var amt=paid.reduce(function(s,x){ return s+(x.amount||0); },0), need=paid.filter(function(x){ return !x.gid||(x.gAns&&x.gAns.a==="reject"&&x.gAns.gid===x.gid); }).length;
-  $(sumId).innerHTML='<div class="tiles">'+tile(it.length+"건","전체 주문 (시험 "+(it.length-real.length)+")")+tile(paid.length+"건","결제 완료·확정")+tile(won(amt),"결제 금액 합계")+tile(need+"건","가이드 배정 필요")+'</div>';
+  var carP=k==="g"?paid.filter(function(x){ return x.gbk&&x.gbk.car; }):[], carAmt=carP.reduce(function(s,x){ return s+(x.gbk.car.amt||0); },0);   // 프라이빗 차량 (11-15)
+  $(sumId).innerHTML='<div class="tiles">'+tile(it.length+"건","전체 주문 (시험 "+(it.length-real.length)+")")+tile(paid.length+"건","결제 완료·확정")+tile(won(amt),"결제 금액 합계")+tile(need+"건","가이드 배정 필요")+(k==="g"?tile(carP.length+"건 · "+won(carAmt),"그중 프라이빗 차량 (기사 직접 배정)"):'')+'</div>';
   var gopt=function(sel){ return '<option value="">(미배정)</option>'+(MIS.guides||[]).map(function(g){ return '<option value="'+esc(g.id)+'"'+(g.id===sel?' selected':'')+'>'+esc(g.name)+'</option>'; }).join(""); };
   var sopt=function(x){ var ks=x.test?["test","cancelled"]:["pending","paid","confirmed","cancelled","refunded"]; if(ks.indexOf(x.status)<0) ks.unshift(x.status); return ks.map(function(k){ return '<option value="'+k+'"'+(k===x.status?' selected':'')+'>'+esc(SOS[k]||k)+'</option>'; }).join(""); };
   var h='<tr><th class="l">주문일시</th><th class="l">주문번호</th><th class="l">투어 날짜·시간</th><th class="l">상품</th><th>인원</th><th>금액</th><th class="l">손님</th><th class="l">언어</th><th class="l">가이드</th><th class="l">가이드 답</th><th class="l">배정 이력</th><th class="l">상태</th><th></th></tr>';
-  it.forEach(function(x){ h+='<tr'+(x.test?' style="opacity:.75"':'')+'><td class="l">'+esc(x.at)+'</td><td class="l">'+esc(x.oid)+(x.test?' <span class="sub">[시험]</span>':'')+(x.pay==="none"?' <span class="sub">[결제 없음·PG 전]</span>':'')+(x.done?' <span class="sub">[투어 완료]</span>':'')+'</td><td class="l">'+esc(x.date+" "+x.time)+'</td><td class="l">'+esc(x.pnameKo||x.pid)+'</td><td>'+x.n+'</td><td>'+won(x.amount)+(x.menu?'<br><span class="sub">여행비 '+won(x.tAmt||0)+' · 가게 메뉴 '+won(x.menu.app||0)+(x.menu.v>1?' · 바우처 '+x.menu.v+'번째':'')+'</span>':'')+'</td>'
+  it.forEach(function(x){ h+='<tr'+(x.test?' style="opacity:.75"':'')+'><td class="l">'+esc(x.at)+'</td><td class="l">'+esc(x.oid)+(x.test?' <span class="sub">[시험]</span>':'')+(x.pay==="none"?' <span class="sub">[결제 없음·PG 전]</span>':'')+(x.done?' <span class="sub">[투어 완료]</span>':'')+'</td><td class="l">'+esc(x.date+" "+x.time)+'</td><td class="l">'+esc(x.pnameKo||x.pid)+'</td><td>'+x.n+'</td><td>'+won(x.amount)+(soCar(x)?'<br><b style="color:#c92a2a">'+esc(soCar(x))+'</b><br><span class="sub">가이드 '+won(x.gbk.gAmt||0)+'</span>':'')+(x.menu?'<br><span class="sub">여행비 '+won(x.tAmt||0)+' · 가게 메뉴 '+won(x.menu.app||0)+(x.menu.v>1?' · 바우처 '+x.menu.v+'번째':'')+'</span>':'')+'</td>'
     +'<td class="l">'+esc(x.name||"")+'<br><span class="sub">'+esc(x.email||"")+(x.phone?' · '+esc(x.phone):'')+'</span></td><td class="l">'+esc(gLangNm(x.lang))+(x.glang&&x.glang!==x.lang?' / 가이드 '+esc(gLangNm(x.glang)):'')+'</td>'
     +'<td class="l"><select data-oid="'+esc(x.oid)+'" onchange="soSet(this.dataset.oid,{gid:this.value})">'+gopt(x.gid)+'</select>'+(x.gid&&!(MIS.guides||[]).some(function(g){ return g.id===x.gid; })?'<br><span class="sub">'+esc(x.gname||x.gid)+'</span>':'')+'</td>'
     +'<td class="l">'+esc(soGans(x))+'</td><td class="l" style="min-width:220px;line-height:1.5">'+(soHist(x)||'<span class="sub">-</span>')+'</td><td class="l"><select data-oid="'+esc(x.oid)+'" onchange="soSet(this.dataset.oid,{status:this.value})">'+sopt(x)+'</select></td>'
@@ -929,9 +940,9 @@ function soSet(oid,ch){ var x=SO.items.filter(function(y){ return y.oid===oid; }
 function soDel(oid){ if(!confirm("이 주문을 지울까요? ("+oid+")")) return; api("/shop/admin/order/del",{method:"POST",body:JSON.stringify({oid:oid})}).then(function(j){ if(j&&j.ok) soFetch(); else alert("지우지 못했습니다."); }).catch(function(){ alert("지우지 못했습니다."); }); }
 function soClearTest(){ if(!confirm("시험 주문을 모두 지울까요?")) return; api("/shop/admin/order/cleartest",{method:"POST",body:JSON.stringify({})}).then(function(j){ if(j&&j.ok){ alert((j.removed||0)+"건을 지웠습니다."); soFetch(); } else alert("지우지 못했습니다."); }).catch(function(){ alert("지우지 못했습니다."); }); }
 function xlsSo(k){ if(!window.XLSX){ alert("엑셀 도구를 아직 못 불렀습니다."); return; } if(k==="r"){ xlsSoR(); return; } if(k==="c"){ xlsSoC(); return; } k=k==="g"?"g":"p"; var TT=k==="g"?"가이드 인솔 자유여행":"패키지 투어";
-  var rows=[[CO],[TT],["만든 날",kday(0)],[],["주문일시","주문번호","투어 날짜","시간","상품","인원","1인 금액(원)","합계(원)","손님 이름","이메일","전화","손님 언어","가이드 언어","가이드","가이드 답","상태","시험","결제 시각"]].concat(soOf(k).map(function(x){
-    return [x.at,x.oid,x.date,x.time,x.pnameKo||x.pid,x.n,x.unit||0,x.amount||0,x.name||"",x.email||"",x.phone||"",gLangNm(x.lang),x.glang?gLangNm(x.glang):"",x.gname||"",soGans(x),SOS[x.status]||x.status,x.test?"시험":"",x.paidAt||""]; }));
-  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[16,22,11,6,30,6,11,11,12,24,14,10,10,10,18,12,6,16]),TT); save(wb,"머니퍼즐_"+(k==="g"?"자유여행":"패키지투어")+"_"+kday(0)+".xlsx"); }
+  var rows=[[CO],[TT],["만든 날",kday(0)],[],["주문일시","주문번호","투어 날짜","시간","상품","인원","1인 금액(원)","합계(원)","손님 이름","이메일","전화","손님 언어","가이드 언어","가이드","가이드 답","상태","시험","결제 시각","가이드 요금(원)","프라이빗 차량","차량 금액(원)"]].concat(soOf(k).map(function(x){ var c=x.gbk&&x.gbk.car;   // 프라이빗 차량 (11-15)
+    return [x.at,x.oid,x.date,x.time,x.pnameKo||x.pid,x.n,x.unit||0,x.amount||0,x.name||"",x.email||"",x.phone||"",gLangNm(x.lang),x.glang?gLangNm(x.glang):"",x.gname||"",soGans(x),SOS[x.status]||x.status,x.test?"시험":"",x.paidAt||"",c?(x.gbk.gAmt||0):(x.pid==="gbk"?(x.amount||0):""),c?c.h+"시간"+((c.d||1)>1?" × "+c.d+"일":""):"",c?(c.amt||0):""]; }));
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheet(rows,[16,22,11,6,30,6,11,11,12,24,14,10,10,10,18,12,6,16,12,14,12]),TT); save(wb,"머니퍼즐_"+(k==="g"?"자유여행":"패키지투어")+"_"+kday(0)+".xlsx"); }
 function misFetch(){ var S=$("misSum"); if(S) S.innerHTML='<div class="msg">불러오는 중…</div>';
   api("/guide/admin/bookings?from="+MIS.from+"&to="+MIS.to).then(function(j){ if(!j.ok) throw new Error("x");
     MIS.items=j.items||[]; MIS.prices=j.prices||null; MIS.gbk=j.gbk||null; misDraw(); if($("maA")&&!$("maA").value) maAmt();
