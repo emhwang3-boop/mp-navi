@@ -76,7 +76,7 @@ function shell(box,v){
     +'<section class="pa-c"><div class="pa-pn pa-ask"><h2 id="paAsk"></h2><div id="paAip"></div></div></section>'
     +'<aside class="pa-r"><div class="pa-pn pa-cartp" id="paCartP"><div class="pa-ch">'+cart("22px")+'<b id="paCt"></b><span id="paCs"></span></div><div class="pa-host"></div></div></aside>';
   else cols='<aside class="pa-l"><div class="pa-pn pa-days"><h3 id="paDt"></h3><div class="pa-dl" id="paDl"></div><div class="pa-lb" id="paLb">'
-      +["edit","share","pdf","grv","rst"].map(function(k){ return '<button type="button" class="pa-lbt'+(k==="rst"?" g":"")+'" data-lb="'+k+'"></button>'; }).join("")+'</div></div></aside>'
+      +(window.MP_PAID?["edit","share","pdf","grv","rst"]:["edit","share","pdf","rst"]).map(function(k){ return '<button type="button" class="pa-lbt'+(k==="rst"?" g":"")+'" data-lb="'+k+'"></button>'; }).join("")+'</div></div></aside>'
     +'<section class="pa-c"><div class="pa-host"></div></section>'
     +'<aside class="pa-r"><div class="pa-pn pa-map"><div class="pa-mw"><div class="pa-mi" id="paMi"></div><div class="pa-mo" id="paMo"></div></div><div class="pa-mc" id="paMc"></div></div></aside>';
   box.innerHTML='<div id="pcAi" class="pa-v'+(v==="cart"?1:2)+'" data-v="'+v+'">'+bar+'<div class="pa-cols">'+cols+'</div></div>';
