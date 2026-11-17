@@ -30,13 +30,13 @@ var TX={
  about:T6("회사 소개","About us","会社案内","关于我们","關於我們","Sobre nosotros"),
  contact:T6("문의","Contact","お問い合わせ","联系我们","聯絡我們","Contacto"),
  nav:T6("메뉴","Menu","メニュー","菜单","選單","Menú"),
- h1:T6('한국 여행, <em>일정부터 <br class="mbr">가이드까지</em> 한 곳에서',
-       'Korea travel — <em>from your plan to your guide</em>, all in one place',
-       '韓国旅行、<em>日程づくりからガイドまで</em>ひとつの場所で',
-       '韩国旅行，<em>从行程到向导</em>，一站搞定',
-       '韓國旅行，<em>從行程到嚮導</em>，一站搞定',
-       'Viaja por Corea: <em>del plan al guía</em>, todo en un solo lugar'),   // 폰 줄바꿈 자리(mbr)는 시안대로 한국어만
- desc:T6("한국 여행, 일정부터 가이드까지 한 곳에서","Korea travel — from your plan to your guide, all in one place","韓国旅行、日程づくりからガイドまでひとつの場所で","韩国旅行，从行程到向导，一站搞定","韓國旅行，從行程到嚮導，一站搞定","Viaja por Corea: del plan al guía, todo en un solo lugar"),
+ h1:T6('한국 여행, <em>지도부터 <br class="mbr">일정까지</em> 한 곳에서',
+       'Korea travel — <em>from the map to your plan</em>, all in one place',
+       '韓国旅行、<em>地図から日程づくりまで</em>ひとつの場所で',
+       '韩国旅行，<em>从地图到行程</em>，一站搞定',
+       '韓國旅行，<em>從地圖到行程</em>，一站搞定',
+       'Viaja por Corea: <em>del mapa a tu plan</em>, todo en un solo lugar'),   // 폰 줄바꿈 자리(mbr)는 시안대로 한국어만
+ desc:T6("한국 여행, 지도부터 일정까지 한 곳에서","Korea travel — from the map to your plan, all in one place","韓国旅行、地図から日程づくりまでひとつの場所で","韩国旅行，从地图到行程，一站搞定","韓國旅行，從地圖到行程，一站搞定","Viaja por Corea: del mapa a tu plan, todo en un solo lugar"),
  q:T6("가고 싶은 곳 · 하고 싶은 것 (예: 경복궁, 해운대 맛집)","Places to go · things to do (e.g. Gyeongbokgung, Haeundae food)","行きたい場所・やりたいこと（例：景福宮、海雲台グルメ）","想去的地方 · 想做的事（例：景福宫、海云台美食）","想去的地方 · 想做的事（例：景福宮、海雲台美食）","Lugares y planes (p. ej., Gyeongbokgung, comida en Haeundae)"),
  qs:T6("가고 싶은 곳 · 하고 싶은 것 (예: 경복궁)","Places to go · things to do","行きたい場所・やりたいこと","想去的地方 · 想做的事","想去的地方 · 想做的事","Lugares y planes"),   // 폰 — 칸이 좁아 짧게
  qa:T6("검색","Search","検索","搜索","搜尋","Buscar"),
@@ -68,7 +68,7 @@ var TX={
  g6:T6("가이드 6개 언어","Guide in 6 languages","ガイド6言語","向导 6 种语言","嚮導 6 種語言","Guía en 6 idiomas"),
  l6:T6("6개 언어","6 languages","6言語","6种语言","6種語言","6 idiomas"),
  app:T6("앱 받기","Get the app","アプリを入手","下载应用","下載應用程式","Descarga la app"),
- appp:T6("여행 중에는 앱이 편해요. 지도, 내 일정, 가이드 대화방을 폰에서 바로 열어요.","On the road, the app is easier. Open the map, your plan and your guide chat right on your phone.","旅行中はアプリが便利です。地図・日程・ガイドとのチャットをスマホですぐ開けます。","旅途中用应用更方便。在手机上直接打开地图、我的行程和向导聊天。","旅途中用應用程式更方便。在手機上直接打開地圖、我的行程和嚮導聊天。","De viaje, la app es más cómoda. Abre el mapa, tu plan y el chat con tu guía en el móvil."),
+ appp:T6("여행 중에는 앱이 편해요. 지도, 내 일정, AI 음성 안내를 폰에서 바로 열어요.","On the road, the app is easier. Open the map, your plan and AI audio guides right on your phone.","旅行中はアプリが便利です。地図・日程・AI音声ガイドをスマホですぐ開けます。","旅途中用应用更方便。在手机上直接打开地图、我的行程和 AI 语音导览。","旅途中用應用程式更方便。在手機上直接打開地圖、我的行程和 AI 語音導覽。","De viaje, la app es más cómoda. Abre el mapa, tu plan y las audioguías con IA en el móvil."),
  ios:T6("App Store는 출시 후 안내","App Store: coming after launch","App Storeはリリース後にご案内","App Store 上架后另行通知","App Store 上架後另行通知","App Store: disponible tras el lanzamiento"),
  qr:T6("폰 카메라로 찍으면 앱이 열려요","Scan with your phone camera to open the app","スマホのカメラで読み取るとアプリが開きます","用手机相机扫描即可打开应用","用手機相機掃描即可打開應用程式","Escanéalo con la cámara del móvil para abrir la app"),
  ver:T6("버전","Version","バージョン","版本","版本","Versión"),
@@ -147,7 +147,7 @@ $("phLogo").onclick=function(e){ if(e.ctrlKey||e.metaKey||e.shiftKey||e.button) 
 // ── 그리기 (언어를 바꾸면 다시) ──
 function paint(){ var lg=window.LANG||"ko";
   $("phTtl").textContent=ttl(); D.title=ttl();
-  $("phBk").textContent=L6(TX.bk); $("phBd").textContent=L6(TX.bd); $("phAd").textContent=L6(T6("관리자","Admin","管理者","管理员","管理員","Admin")); inPaint(1);
+  $("phBk").textContent=L6(TX.bk); $("phBk").style.display=window.MP_PAID?"":"none";   /* 11-17 무료 — 「내 예약」 없앰 */ $("phBd").textContent=L6(TX.bd); $("phAd").textContent=L6(T6("관리자","Admin","管理者","管理员","管理員","Admin")); inPaint(1);
   $("phNav").setAttribute("aria-label",L6(TX.nav));
   [].forEach.call($("phNav").children,function(b){ b.querySelector("span").textContent=navLbl(b.dataset.ph); });
   $("phH1").innerHTML=L6(TX.h1);
@@ -157,7 +157,8 @@ function paint(){ var lg=window.LANG||"ko";
   setTimeout(eqGo,0); }
 function waysPaint(){ $("phWaysT").textContent=L6(TX.ways);
   var W=[["mi_guideperson",TX.w1t,"",TX.w1p,E(L6(TX.w1m)),TX.w1g],["mi_charter",TX.w2t,"",TX.w2p,E(L6(TX.w2m)),TX.w2g],["mi_backpack",TX.w3t,' <span class="ph-free">'+E(L6(TX.free))+'</span>',TX.w3p,E(L6(TX.w3m))+' <span class="ph-opt">'+E(L6(TX.opt))+'</span>',TX.w3g]];
-  $("phWaysL").innerHTML=W.map(function(w,i){ return '<div class="ph-way" data-w="'+i+'"><div class="ph-ic">'+img(w[0])+'</div><h3>'+E(L6(w[1]))+w[2]+'</h3><p>'+E(L6(w[3]))+'</p><div class="ph-meta">'+w[4]+'</div><div class="ph-gorow"><button type="button" class="ph-go">'+E(L6(w[5]))+'</button></div></div>'; }).join(""); }
+  var PD=!!window.MP_PAID; $("phWays").classList.toggle("one",!PD); $("phWaysT").parentNode.style.display=PD?"":"none";   // 11-17 사장님 「투어앱은 무료」 — 가이드 인솔·카투어 카드·제목·일정 검토 줄 없앰
+  $("phWaysL").innerHTML=W.map(function(w,i){ if(!PD&&i<2) return ""; if(!PD) w=w.slice(0,4).concat(["",w[5]]); return '<div class="ph-way" data-w="'+i+'"><div class="ph-ic">'+img(w[0])+'</div><h3>'+E(L6(w[1]))+w[2]+'</h3><p>'+E(L6(w[3]))+'</p><div class="ph-meta">'+w[4]+'</div><div class="ph-gorow"><button type="button" class="ph-go">'+E(L6(w[5]))+'</button></div></div>'; }).join(""); }
 // 11-11 사장님 「달력 말고 모포 밧줄 등등이 달린 배낭」 — AI와 자유여행 카드 아이콘 mi_backpack (mi_calendar 는 날짜 칸에 그대로)
 // 카드 단추 같은 크기 (사장님 11-08 「카드 단추는 같은 크기·오른쪽 맞춤」)
 function eqGo(){ var bs=[].slice.call(D.querySelectorAll("#phWaysL .ph-go")); bs.forEach(function(b){ b.style.minWidth=""; }); var w=0; bs.forEach(function(b){ w=Math.max(w,b.offsetWidth); }); if(w) bs.forEach(function(b){ b.style.minWidth=Math.ceil(w)+"px"; }); }
@@ -177,7 +178,8 @@ function pkgCard(p){ var b={}; try{ b=SHOP.brief(p)||{}; }catch(e){}
   return '<button type="button" class="ph-pc" data-p="'+E(p.id)+'"><div class="ph-ph">'+(b.img?'<img src="'+E(b.img)+'" alt="" loading="lazy">':'')+(b.badge?'<span class="ph-st'+(b.real?' on':'')+'">'+E(b.badge)+'</span>':'')+(area?'<span class="ph-area">'+E(area)+'</span>':'')+'</div>'
    +'<div class="ph-bd"><div class="ph-nm">'+E(b.t||Lx(p.t))+'</div>'+(mt?'<div class="ph-mt">'+E(mt)+'</div>':'')+'<div class="ph-pr">'+pr+'<span class="ph-rv">'+rv+'</span></div>'+(b.px?'<div class="shpx">'+E(b.px)+'</div>':'')+'</div></button>'; }   // shpx = 가격 아래 「별도」 줄 (11-10)
 function pkgPaint(){ $("phPkgT").textContent=L6(TX.pkg); $("phPkgAll").textContent=L6(TX.all); $("phPv").setAttribute("aria-label",L6(TX.prev)); $("phNx").setAttribute("aria-label",L6(TX.next));
-  var it=pkgList(), tk=$("phTk"); $("phPkg").hidden=!it.length; if(!it.length) return;
+  var it=window.MP_PAID?pkgList():[], tk=$("phTk");   // 11-17 무료 — 상품 줄 없음
+  $("phPkg").hidden=!it.length; if(!it.length) return;
   var sl=tk.scrollLeft; tk.innerHTML=it.map(pkgCard).join(""); tk.scrollLeft=sl;
   try{ if(window.rvMiniLoad) rvMiniLoad(it.map(function(p){ return "shop:"+p.id; })); }catch(e){}
   arrUpd(); }
