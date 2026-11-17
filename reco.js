@@ -344,7 +344,7 @@ function apGo(q){ if(!q){ try{ $("aipQ").focus(); }catch(e){} return; }
     return kGet(AP.kw,AP.nm,AP.picks.length,AP).then(function(kits){ if(AP.q!==q) return; kits.forEach(function(x){ x._l=lg; }); AP.kits=kits; AP.pk=apPk(); AP.busy=false; apPaint(); });
   }).catch(function(){ if(AP.q!==q) return; AP.busy=false; AP.st="err"; apPaint(); }); }
 // 11-09 사장님 「밤문화 쿠킹 클라스 나오는건 고치고」 — 관심 버튼으로 찾은 것은 버튼 질문 글만 보고 상품을 고른다(AI 가 붙인 낱말·장소 이름에 「먹거리」가 섞여 밤문화에 쿠킹 클래스가 붙던 것)
-function apPk(){ if(!window.SHOP||!SHOP.items) return []; var chip=!!chOn(), hay=[AP.q].concat(chip?[]:AP.kw,chip?[]:AP.nm);
+function apPk(){ if(!window.MP_PAID||!window.SHOP||!SHOP.items) return [];   /* 11-17 무료 — 상품 카드 없음 */ var chip=!!chOn(), hay=[AP.q].concat(chip?[]:AP.kw,chip?[]:AP.nm);
   if(!chip) AP.picks.forEach(function(p){ var P=PLACES[p.k]; if(P) hay.push(P.ko||"",P.en||""); }); hay=hay.join(" ");
   var out=[]; try{ SHOP.items().forEach(function(p){ var re=PKW[p.id]||PKW[PCAT[p.c]]; if(re&&re.test(hay)&&out.indexOf(p.id)<0) out.push(p.id); }); }catch(e){} return out.slice(0,6); }
 function apPkList(){ if(!window.SHOP||!SHOP.items) return []; var all=[]; try{ all=SHOP.items(); }catch(e){} return AP.pk.map(function(id){ return all.filter(function(p){ return p.id===id; })[0]; }).filter(Boolean); }
