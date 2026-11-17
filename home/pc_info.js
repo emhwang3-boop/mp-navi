@@ -28,13 +28,13 @@ var TX={
  contact:T6("문의","Contact","お問い合わせ","联系我们","聯絡我們","Contacto"),
  close:T6("닫기","Close","閉じる","关闭","關閉","Cerrar"),
  ask:T6("문의하기 ›","Contact us ›","お問い合わせ ›","联系我们 ›","聯絡我們 ›","Contáctanos ›"),
- lead:T6(" — 한국 여행, <em>일정부터 가이드까지</em> 한 곳에서"," — Korea travel, <em>from your plan to your guide</em>, all in one place"," — 韓国旅行、<em>日程づくりからガイドまで</em>ひとつの場所で"," — 韩国旅行，<em>从行程到向导</em>，一站搞定"," — 韓國旅行，<em>從行程到嚮導</em>，一站搞定",": viaja por Corea <em>del plan al guía</em>, todo en un solo lugar"),   // 첫 화면 한 줄 소개(pc.js h1)와 같은 말
- body:T6("외국인 여행객이 가고 싶은 곳을 고르면 AI가 일정을 짜고, 필요하면 현지 가이드가 함께 다니며 안내해 드립니다. 그림 지도로 둘러보고, 숙소·선물·편의시설·긴급 연락처까지 한 화면에서 찾을 수 있습니다.",
-   "Choose the places you want to visit and AI plans your trip. If you like, a local guide comes along to show you around. Explore our illustrated map and find lodging, gifts, convenience services and emergency contacts on one screen.",
-   "行きたい場所を選ぶとAIが日程を組み、必要なら現地ガイドが同行してご案内します。イラストマップで見て回り、宿・お土産・生活施設・緊急連絡先までひとつの画面で探せます。",
-   "选好想去的地方，AI 就会为您安排行程；如有需要，当地向导还会全程陪同讲解。用手绘地图浏览，住处、礼物、便利设施和紧急联系方式都能在同一个页面找到。",
-   "選好想去的地方，AI 就會為您安排行程；如有需要，當地嚮導還會全程陪同導覽。用手繪地圖瀏覽，住處、禮物、生活機能和緊急聯絡方式都能在同一個頁面找到。",
-   "Elige los lugares que quieres visitar y la IA arma tu plan. Si quieres, un guía local te acompaña. Explora nuestro mapa ilustrado y encuentra alojamiento, regalos, servicios y contactos de emergencia en una sola pantalla."),
+ lead:T6(" — 한국 여행, <em>지도부터 일정까지</em> 한 곳에서"," — Korea travel, <em>from the map to your plan</em>, all in one place"," — 韓国旅行、<em>地図から日程づくりまで</em>ひとつの場所で"," — 韩国旅行，<em>从地图到行程</em>，一站搞定"," — 韓國旅行，<em>從地圖到行程</em>，一站搞定",": viaja por Corea <em>del mapa a tu plan</em>, todo en un solo lugar"),   // 첫 화면 한 줄 소개(pc.js h1)와 같은 말
+ body:T6("외국인 여행객이 가고 싶은 곳을 고르면 AI가 일정을 짜 드립니다. 그림 지도로 둘러보고, 숙소·선물·편의시설·긴급 연락처까지 한 화면에서 찾을 수 있습니다. 모든 기능은 무료입니다.",
+   "Choose the places you want to visit and AI plans your trip. Explore our illustrated map and find lodging, gifts, convenience services and emergency contacts on one screen. Everything is free.",
+   "行きたい場所を選ぶとAIが日程を組みます。イラストマップで見て回り、宿・お土産・生活施設・緊急連絡先までひとつの画面で探せます。すべて無料でご利用いただけます。",
+   "选好想去的地方，AI 就会为您安排行程。用手绘地图浏览，住处、礼物、便利设施和紧急联系方式都能在同一个页面找到。所有功能均可免费使用。",
+   "選好想去的地方，AI 就會為您安排行程。用手繪地圖瀏覽，住處、禮物、生活機能和緊急聯絡方式都能在同一個頁面找到。所有功能均可免費使用。",
+   "Elige los lugares que quieres visitar y la IA arma tu plan. Explora nuestro mapa ilustrado y encuentra alojamiento, regalos, servicios y contactos de emergencia en una sola pantalla. Todo es gratis."),
  w1:T6("가이드 인솔 자유여행","Travel with Guide","ガイド同行の自由旅行","向导陪同自由行","嚮導陪同自由行","Viaje con guía"),   // 첫 화면 세 가지 여행 방법 카드와 같은 이름
  w2:T6("패키지여행","Group Tour","パッケージツアー","跟团游","跟團遊","Tour en grupo"),
  w3:T6("AI와 자유여행","DIY Trip","DIY旅行","自助游","自助旅行","Viaje a tu aire"),
@@ -55,6 +55,7 @@ var TX={
  c1T:T6("예약한 여행·가이드에 대해","About your booked trip or guide","予約した旅行・ガイドについて","关于已预约的行程·向导","關於已預約的行程·嚮導","Sobre tu viaje o guía reservado"),
  c1P:T6("「내 예약」에서 그 예약의 대화방으로 바로 물어보세요 (가이드·우리 직원이 답해요)","Ask right in that booking's chat under “My bookings” (your guide or our staff will reply)","「予約確認」からその予約のチャットで直接お尋ねください（ガイドまたは当社スタッフがお答えします）","请在“我的预约”中通过该预约的聊天室直接提问（向导或我们的工作人员会回复）","請在「我的預約」中透過該預約的聊天室直接提問（嚮導或我們的工作人員會回覆）","Pregunta directamente en el chat de esa reserva en «Mis reservas» (te responderá tu guía o nuestro equipo)"),
  bk:T6("내 예약 ›","My bookings ›","予約確認 ›","我的预约 ›","我的預約 ›","Mis reservas ›"),   // pc.js 머리줄 「내 예약」과 같은 말
+ c2F:T6("이메일·전화 문의","Email or phone","メール・電話でのお問い合わせ","邮件·电话咨询","郵件·電話諮詢","Por correo o teléfono"),   // 11-17 무료 — 「그 밖의 문의(…환불…)」 대신
  c2T:T6("그 밖의 문의 (여행 상담·환불·사이트 사용)","Other questions (trip advice, refunds, using the site)","その他のお問い合わせ（旅行相談・返金・サイトの使い方）","其他咨询（旅行咨询·退款·网站使用）","其他諮詢（旅行諮詢·退款·網站使用）","Otras consultas (consejos de viaje, reembolsos, uso del sitio)"),
  em:T6("이메일","Email","メール","邮箱","電郵","Correo"),
  cs:T6("고객센터","Support","カスタマーセンター","客服","客服","Atención al cliente"),
@@ -88,16 +89,16 @@ function aboutPaint(p){
   p.innerHTML=hd(TX.about)
    +'<div class="pi-lead">'+E(AGN())+L6(TX.lead)+'</div>'
    +'<p class="pi-p">'+E(L6(TX.body))+'</p>'
-   +'<div class="pi-ways">'+[["guide",TX.w1],["package",TX.w2],["ai",TX.w3]].map(function(w){ return '<button type="button" data-pi="go" data-r="'+w[0]+'">'+E(L6(w[1]))+'</button>'; }).join("")+'</div>'
+   +'<div class="pi-ways">'+(window.MP_PAID?[["guide",TX.w1],["package",TX.w2],["ai",TX.w3]]:[["ai",TX.w3]]).map(function(w){ return '<button type="button" data-pi="go" data-r="'+w[0]+'">'+E(L6(w[1]))+'</button>'; }).join("")+'</div>'
    +'<table class="pi-tb"><tbody>'+rows().map(function(r){ return '<tr><th scope="row">'+E(L6(r[0]))+'</th><td>'+r[1]+'</td></tr>'; }).join("")+'</tbody></table>'
    +'<div class="pi-ft"><button type="button" class="pi-b g" data-pi="x">'+E(L6(TX.close))+'</button><button type="button" class="pi-b" data-pi="ask">'+E(L6(TX.ask))+'</button></div>'; }
 
 // ── 문의 ──
-var TABS=[["cust",TX.tCust],["ptn",null],["guide",TX.tGuide]];
+var TABS=window.MP_PAID?[["cust",TX.tCust],["ptn",null],["guide",TX.tGuide]]:[["cust",TX.tCust],["ptn",null]];   // 11-17 무료 — 가이드 등록 탭 없앰
 function tabLbl(k){ return k==="ptn"?T2("제휴 문의","Partner with us"):L6(k==="cust"?TX.tCust:TX.tGuide); }   // 제휴 문의 = 앱 창 제목과 같은 말
 function custHtml(){ var ko=LG()==="ko";
-  return '<div class="pi-box"><b>'+E(L6(TX.c1T))+'</b><div class="pi-r"><span>'+E(L6(TX.c1P))+'</span><button type="button" class="pi-b" data-pi="bk">'+E(L6(TX.bk))+'</button></div></div>'
-   +'<div class="pi-box"><b>'+E(L6(TX.c2T))+'</b>'
+  return (window.MP_PAID?'<div class="pi-box"><b>'+E(L6(TX.c1T))+'</b><div class="pi-r"><span>'+E(L6(TX.c1P))+'</span><button type="button" class="pi-b" data-pi="bk">'+E(L6(TX.bk))+'</button></div></div>':'')   /* 11-17 무료 — 「내 예약」 대화방 칸 없앰 */
+   +'<div class="pi-box"><b>'+E(L6(window.MP_PAID?TX.c2T:TX.c2F))+'</b>'
    +'<div class="pi-r"><span>'+E(L6(TX.em))+' <a href="mailto:'+MAIL+'">'+MAIL+'</a></span><a class="pi-b w" href="mailto:'+MAIL+'">'+E(L6(TX.mailB))+'</a></div>'
    +'<div class="pi-r"><span>'+E(L6(TX.cs))+' <a href="tel:'+TELI+'">'+E(ko?TEL:TELI)+'</a></span><a class="pi-b w" href="tel:'+TELI+'">'+E(L6(TX.callB))+'</a></div></div>'; }
 function contactPaint(p){
