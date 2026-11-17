@@ -90,6 +90,12 @@ html.pch[data-theme="dark"] #phMapSec .ph-maphint b{color:#51cf66}
 /* 세 가지 여행 방법 — 카드 단추는 같은 크기·오른쪽 맞춤 (사장님 11-08) */
 #phRoot .ph-ways{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 #phWays.one .ph-ways{grid-template-columns:1fr}   /* 11-17 무료 — AI와 자유여행 카드 하나 */
+#phWays.one .ph-ways{justify-items:center}   /* 11-18 사장님 「정사각형으로 가운데」 */
+#phWays.one .ph-way{width:min(360px,100%);aspect-ratio:1/1;min-height:auto;align-items:center;justify-content:center;text-align:center;box-sizing:border-box}
+#phWays.one .ph-way h3{justify-content:center}
+#phWays.one .ph-way p{text-wrap:balance;word-break:keep-all}
+#phWays.one .ph-way .ph-meta:empty{display:none}
+#phWays.one .ph-way .ph-gorow{margin-top:20px;padding-top:0;justify-content:center}
 #phRoot #phWays{margin-top:30px}   /* 11-11 사장님 「지도 위에 올려줘」 — 검색칸 바로 밑 */
 #phMapSec{margin-top:36px}
 #phRoot .ph-way{position:relative;border:1px solid var(--line);border-radius:18px;padding:26px 26px 22px;background:var(--card);min-height:200px;display:flex;flex-direction:column;transition:box-shadow .15s,border-color .15s}
