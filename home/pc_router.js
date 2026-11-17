@@ -9,7 +9,8 @@
     b=document.createElement("div"); b.id="pcPage"; m.parentNode.insertBefore(b,m); return b; }
   function cur(){ var p=(location.hash||"").replace(/^#\/?/,"").split("/"); return {n:p[0]||"",a:p.slice(1).map(function(x){ try{ return decodeURIComponent(x); }catch(e){ return x; } })}; }
   var last="";
-  function go(force){ var b=box(); if(!b) return false; var c=cur(), f=c.n&&R[c.n], key=location.hash;
+  var OFF={guide:1,package:1,bookings:1};   // 11-17 사장님 「투어앱은 무료」 — 유료 화면 주소는 첫 화면으로
+  function go(force){ var b=box(); if(!b) return false; var c=cur(), f=c.n&&!(!window.MP_PAID&&OFF[c.n])&&R[c.n], key=location.hash;
     if(!f){ document.body.classList.remove("pcpg"); b.innerHTML=""; last=""; return true; }
     if(!force&&key===last) return true; last=key;
     document.body.classList.add("pcpg"); b.innerHTML=""; try{ f(b,c.a); }catch(e){ try{ console.error("PCR "+c.n,e); }catch(x){} }
