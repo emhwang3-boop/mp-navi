@@ -81,7 +81,7 @@ function eq(){ if(!POP) return; [".pi-r .pi-b",".pi-ft .pi-b"].forEach(function(
 // ── 회사 소개 ──
 function rows(){ var ko=LG()==="ko", blank='<span class="pi-bl">(     )</span>';
   return [[TX.rCo,E(L6(TX.co).replace("{b}",AGN()))],[TX.rCeo,E(L6(TX.ceo))],[TX.rBiz,"297-81-03712"],
-    [TX.rTr,NO.travel?E(NO.travel):blank],[TX.rMail,NO.mail?E(NO.mail):blank],[TX.rLbs,E(L6(TX.lbs))],
+    [TX.rTr,NO.travel?E(NO.travel):blank],[TX.rLbs,E(L6(TX.lbs))],
     [TX.rAddr,E(ko?"경기도 남양주시 진접읍 해밀예당1로 220, 707호 씨64호(엠타워)":ADDR_EN)],
     [TX.rCs,'<a href="tel:'+TELI+'">'+E(ko?TEL:TELI)+'</a> · <a href="mailto:'+MAIL+'">'+MAIL+'</a>']]; }
 function aboutPaint(p){
