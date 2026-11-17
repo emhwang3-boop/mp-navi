@@ -695,7 +695,7 @@ function rtKey0(a,b){ var x=rkPt(a), y=rkPt(b); return (x<y?x+"|"+y:y+"|"+x)+"|t
 // ── 차량 대절 (11-11 사장님 「그대로 해」) — 예약한 날(charter.js CHR.days = 이 기기 + 로그인 계정 「내 예약」)은 그날 이동 줄이 모두 「차량 대절 · 25분」(mi_charter)
 //   시간 = 택시와 같은 계산(네이버 길찾기 저장분 DR 이 있으면 그것, 없으면 어림 taxiMin) — 새 호출 없음 · simDay 가 그날 날짜로 CHRD 를 켠다
 var CHRD=null, CHRC=null;
-function chrMap(){ if(CHRC&&Date.now()-CHRC.t<1500) return CHRC; var m={}, n=0; try{ (window.CHR&&CHR.days?CHR.days():[]).forEach(function(b){ if(b&&b.date&&!m[b.date]){ m[b.date]=b; n++; } }); }catch(e){} CHRC={t:Date.now(),m:m,n:n}; return CHRC; }
+function chrMap(){ if(CHRC&&Date.now()-CHRC.t<1500) return CHRC; var m={}, n=0; try{ (window.MP_PAID&&window.CHR&&CHR.days?CHR.days():[]).forEach(function(b){ if(b&&b.date&&!m[b.date]){ m[b.date]=b; n++; } }); }catch(e){} CHRC={t:Date.now(),m:m,n:n}; return CHRC; }
 function chrOn(date){ var M=chrMap(); if(!M.n||!date) return null; var k=typeof date==="string"?date:(date.toISOString?date.toISOString().slice(0,10):""); return M.m[k]||null; }
 function chrLeg(a,b){ var d=km(a,b), dr=DR[rtKey(a,b)]; return {mode:"chr",km:d,min:(dr&&dr.min>0)?dr.min:chrMin(d)}; }
 function chrMin(d){ return d<=20?taxiMin(d):Math.round(taxiMin(20)+(d-20)*1.3/75*60); }   /* 시내(직선 20km 안)는 택시 어림 그대로 · 그 밖은 고속도로(도로 = 직선 × 1.3, 시속 약 75km) — 택시 어림(시속 25km)을 먼 곳에 쓰면 남이섬이 4시간이 된다 */
@@ -1240,7 +1240,7 @@ function repPaint0(){ var box=document.querySelector("#trRep .trin"), pl=TR.plan
     +'<div class="trbar" data-html2canvas-ignore><button type="button" class="trbtn" id="trNext">'+T("➡ 다음 갈 곳","➡ Next stop")+'</button><button type="button" class="trbtn" id="trPdf">'+MPICO("mi_device",T5(SAVE6),MIS)+'</button><button type="button" class="trbtn" id="trMail">'+MPICO("mi_doc",T5(MAIL6),MIS)+'</button><button type="button" class="trbtn" id="trShare">'+SHSVG+T("공유","Share")+'</button><button type="button" class="trbtn" id="trEdit">'+T("✏ 고치기","✏ Edit")+'</button><button type="button" class="trbtn ib" id="trInfo" aria-label="info">ⓘ</button></div>'
     +'<div id="trNextBox" data-html2canvas-ignore></div>'
     +(pl.days.some(function(d){ return d.stops.length; })?'<div class="d tdhint" data-html2canvas-ignore>'+esc(T5(DGC()?DG6.hT:DG6.hM))+'</div>':'')   // 11-08 끌어 옮기기 안내
-    +grvCard()   // 가이드 일정 검토 (선택 · 11-07) — 누르지 않아도 일정은 그대로
+    +(window.MP_PAID?grvCard():"")   // 11-17 무료 — 일정 검토 카드 없앰 · 가이드 일정 검토 (선택 · 11-07) — 누르지 않아도 일정은 그대로
     +'<div class="d" id="trAiS" data-html2canvas-ignore'+(pl.ai&&!(pl.ai.pend&&pl.ai.pend.length)?" hidden":"")+'>'+T("설명을 쓰는 중… (없어도 일정은 그대로 쓸 수 있어요)","Writing notes… (the plan works without them)")+'</div>'
     +(pl.skip&&pl.skip.length?'<div class="d">'+T("일정에서 뺀 곳(숙소·교통시설): ","Skipped (lodging/transport): ")+esc(pl.skip.map(function(k){ var it=TR.items.filter(function(x){ return x.k===k; })[0]; return it?nm(it):k; }).join(", "))+'</div>':"");
   // 날마다 시간표 먼저 — ⚠(하루 끝 넘김)가 하나라도 있으면 늘리기, 없으면 줄이기 판단 (11-06) · 오늘 실제 기록이 있거나 손님이 이미 정한 날(일찍 감·추가 일정)·「이대로 둘게요」면 줄이기는 안 묻는다
@@ -1824,7 +1824,7 @@ var TD6={t:{ko:"오늘 일정",en:"Today's plan",ja:"今日の予定",zhs:"今�
  cxDd:{ko:"{d} 일정을 취소했어요",en:"Cancelled the plan for {d}",ja:"{d}の予定を取り消しました",zhs:"已取消{d}的行程",zht:"已取消{d}的行程",es:"Cancelamos el plan del {d}"},
  cxD:{ko:"오늘 일정을 취소했어요",en:"Cancelled today's plan",ja:"今日の予定を取り消しました",zhs:"已取消今天的行程",zht:"已取消今天的行程",es:"Cancelamos el plan de hoy"}};
 function dL6(di){ var n=di+1; return T5({ko:n+"일차",en:"Day "+n,ja:n+"日目",zhs:"第"+n+"天",zht:"第"+n+"天",es:"Día "+n}); }
-function tdBar(di,today,ed){ var pl0=TR.plan, d0=pl0&&pl0.days[di], B0=d0?chrOn(d0.date):null, cb=window.CHR?'<button type="button" class="trbtn tchr'+(B0?' on':'')+'" data-td="chr" data-d="'+di+'">'+MPIMG("mi_charter",MIS)+esc(B0?CHR.tx("bkd"):CHR.tx("t"))+'</button>':'';   // 11-11 사장님 — 날마다 [차량 대절]
+function tdBar(di,today,ed){ var pl0=TR.plan, d0=pl0&&pl0.days[di], B0=d0?chrOn(d0.date):null, cb=window.MP_PAID&&window.CHR?'<button type="button" class="trbtn tchr'+(B0?' on':'')+'" data-td="chr" data-d="'+di+'">'+MPIMG("mi_charter",MIS)+esc(B0?CHR.tx("bkd"):CHR.tx("t"))+'</button>':'';   // 11-11 사장님 — 날마다 [차량 대절]
   var bt='<button type="button" class="trbtn'+(ed?' ted':'')+'" data-td="ed" data-d="'+di+'">'+esc(T5(ed?TD6.edX:TD6.ed))+'</button><button type="button" class="trbtn" data-td="push" data-d="'+di+'">'+esc(T5(TD6.push))+'</button><button type="button" class="trbtn" data-td="cx" data-d="'+di+'">'+esc(T5(today?TD6.cx:TD6.cxd))+'</button>'+cb;
   return today?'<div class="ttoday" data-html2canvas-ignore><b>'+esc(T5(TD6.t))+'</b><div class="tgr">'+bt+'</div></div>':'<div class="tdays" data-html2canvas-ignore>'+bt+'</div>'; }
 // ── 차량 대절 (11-11) — [차량 대절] 미리 채우기 · 예약한 날 목적지를 예약 순서대로 그날 일정에 · 내 예약 열기 ──
