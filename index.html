@@ -516,7 +516,7 @@ document.addEventListener("click",function(e){ if(window._mpLD&&Date.now()-windo
 var LANGS=["ko","en","ja","zhs","zht","es"];   // es 스페인어 (10-22)
 var SVC_LANG_ON=["ko","en"];   // 11-13 사장님 「가이드나 기사를 고를 때의 언어도 한국어 영어 가능만 남기고 다 숨겨라」 — 가이드 고르기·가이드 등록·패키지 가이드 언어·일정 검토 가이드 언어·차량 대절 기사 언어 · 다시 켜려면 여기에 넣는다
 function svcOn(c){ return SVC_LANG_ON.indexOf(c)>=0; }
-var LANG_ON=["ko","en"];   // 11-13 사장님 「한국어와 영어만 남기고 나머지를 숨겨줘」 — 일·중(간·번)·스페인어는 고르는 칸에서만 숨김(번역은 그대로) · 다시 켜려면 여기에 넣는다
+var LANG_ON=["ko","en","ja","zhs","zht"];   // 11-20 사장님 「원안대로 일본어 중국어간체 번체도 다 뜨게 해줘」 — 스페인어만 숨김 · (옛) 11-13 사장님 「한국어와 영어만 남기고 나머지를 숨겨줘」 — 일·중(간·번)·스페인어는 고르는 칸에서만 숨김(번역은 그대로) · 다시 켜려면 여기에 넣는다
 function langAuto(){ var n=String(navigator.language||""); if(/^ko/i.test(n)) return "ko"; if(/^ja/i.test(n)) return "ja"; if(/^es/i.test(n)) return "es"; if(/^zh/i.test(n)) return /hant|-tw|-hk|-mo/i.test(n)?"zht":"zhs"; return "en"; }
 var LANG="ko", _ql=((location.search.match(/[?&]lang=(ko|en|ja|zhs|zht|es)(?![A-Za-z])/i)||[])[1]||"").toLowerCase();
 try{ if(_ql) localStorage.setItem("mpv_lang",_ql); var _sv=localStorage.getItem("mpv_lang"); LANG=LANGS.indexOf(_sv)>=0?_sv:langAuto(); }catch(e){ LANG=_ql||langAuto(); }
@@ -2181,7 +2181,7 @@ document.addEventListener("click",function(e){ try{ if(!DET||!_nm||!e.target.clo
 <script>
 /* 버전 (사장님 11-07 「버전으로 관리하자」 「가」 1.0.5 모양) — 올릴 때마다 배포 도구(navi_fast)가 끝자리를 하나 올린다(version.json · 아래 APPV 를 같이)
    ⋮ 메뉴 맨 아래 「버전 1.0.5」 → 누르면 서버 최신(version.json)과 비교 · 쓰는 중 새 판이 올라오면 위에 「새 버전이 있어요 [새로 받기]」(10분마다·화면으로 돌아올 때 확인) */
-var APPV="1.0.92";
+var APPV="1.0.93";
 (function(){ var L6=function(o){ return o[window.LANG]||o.en; }, W={v:{ko:"버전",en:"Version",ja:"バージョン",zhs:"版本",zht:"版本",es:"Versión"},
   ok:{ko:"최신 버전이에요",en:"You're on the latest version",ja:"最新バージョンです",zhs:"已是最新版本",zht:"已是最新版本",es:"Tienes la última versión"},
   nw:{ko:"새 버전이 있어요",en:"A new version is available",ja:"新しいバージョンがあります",zhs:"有新版本",zht:"有新版本",es:"Hay una nueva versión"},
