@@ -20,7 +20,7 @@ function AGN(){ var a=window.AGN||T6("모자이크트립","MosaicTrip","MosaicTr
 
 // 등록·신고 번호 — 나오면 여기만 채운다 (사장님 11-08 「여행업·통신판매업 번호는 등록 후 채움」)
 var NO={travel:"",mail:""};
-var MAIL="admin@moneypuzzle.co.kr", TEL="010-4221-7066", TELI="+82-10-4221-7066";   // 앱 맨 아래 줄과 같음
+var MAIL="admin@mosaictrip.com", TEL="010-4221-7066", TELI="+82-10-4221-7066";   // 앱 맨 아래 줄과 같음
 var ADDR_EN="220 Haemilyedang 1-ro, Jinjeop-eup, Namyangju-si, Gyeonggi-do, Rm 707 C64 (M Tower), Korea";
 
 var TX={
