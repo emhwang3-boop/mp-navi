@@ -75,7 +75,7 @@ var KRULES={
  sudoku:[   // 스도쿠 (10-28)
   {ko:"9×9 판의 빈칸에 1~9를 채웁니다. 가로줄·세로줄·굵은 선으로 나뉜 3×3 상자마다 1~9가 한 번씩만 들어갑니다.",en:"Fill the empty squares of the 9×9 board with 1–9. Each row, each column and each 3×3 box (thick lines) must contain 1–9 exactly once.",ja:"9×9の盤の空きマスに1〜9を入れます。各行・各列・太線で区切られた3×3のブロックに1〜9が1回ずつ入ります。",zhs:"在9×9棋盘的空格中填入1~9。每一行、每一列以及粗线划分的每个3×3宫内，1~9各出现一次。",zht:"在9×9盤面的空格中填入1~9。每個橫列、每個直行以及粗線劃分的每個3×3宮內，1~9各出現一次。",es:"Rellena las casillas vacías del tablero de 9×9 con los números del 1 al 9. Cada fila, cada columna y cada caja de 3×3 (líneas gruesas) debe tener del 1 al 9 una sola vez."},
   {ko:"「시작」을 누르면 판이 열리고 시간이 갑니다. 창을 닫거나 다른 탭으로 가면 시간이 멈추고, 돌아오면 이어서 갑니다. 다 채우고 「확인」을 누르면 끝납니다. 틀린 칸이 있으면 빨갛게 표시되고 걸린 시간에 30초가 더해집니다.",en:"Press “Start” to open the board and start the clock. The clock pauses when you close the window or switch tabs, and resumes when you come back. Fill every square and press “Check” to finish. If any square is wrong, it turns red and 30 seconds are added to your time.",ja:"「スタート」を押すと盤が開き、時間が計測されます。画面を閉じたり他のタブに移ると時間が止まり、戻ると続きから進みます。すべて埋めて「確認」を押すと終了です。間違ったマスがあると赤く表示され、時間に30秒が加算されます。",zhs:"按「开始」打开棋盘并开始计时。关闭窗口或切换到其他标签时计时暂停，回来后继续。填满后按「检查」即完成。如有错误的格子会标红，并在用时上加30秒。",zht:"按「開始」打開盤面並開始計時。關閉視窗或切換到其他分頁時計時暫停，回來後繼續。填滿後按「檢查」即完成。如有錯誤的格子會標紅，並在用時上加30秒。",es:"Pulsa «Empezar» para abrir el tablero y poner en marcha el reloj. El reloj se detiene si cierras la ventana o cambias de pestaña, y sigue cuando vuelves. Rellena todas las casillas y pulsa «Comprobar» para terminar. Si alguna está mal, se marca en rojo y se suman 30 segundos a tu tiempo."},
-  {ko:"하루 12판까지 할 수 있습니다. 「새 판」을 누르면 지금 판을 끝내고 새 판을 바로 시작합니다. 판은 매일 한국 시간 밤 12시에 바뀝니다.",en:"You can play up to 12 boards a day. “New board” ends the current one and starts a new one right away. Boards change every day at midnight Korea time.",ja:"1日12盤までプレイできます。「新しい盤」を押すと今の盤を終えてすぐ新しい盤を始めます。盤は毎日韓国時間の夜12時に変わります。",zhs:"每天最多可玩12盘。按「换新盘」会结束当前一盘并立即开始新的一盘。棋盘每天韩国时间午夜12点更换。",zht:"每天最多可玩12盤。按「換新盤」會結束目前這盤並立即開始新的一盤。盤面每天韓國時間午夜12點更換。",es:"Puedes jugar hasta 12 tableros al día. «Nuevo tablero» termina el actual y empieza otro al instante. Los tableros cambian cada día a medianoche, hora de Corea."},
+  {ko:"「새 판」을 누르면 지금 판을 끝내고 새 판을 바로 시작합니다. 판은 매일 한국 시간 밤 12시에 바뀝니다.",en:"“New board” ends the current one and starts a new one right away. Boards change every day at midnight Korea time.",ja:"「新しい盤」を押すと今の盤を終えてすぐ新しい盤を始めます。盤は毎日韓国時間の夜12時に変わります。",zhs:"按「换新盘」会结束当前一盘并立即开始新的一盘。棋盘每天韩国时间午夜12点更换。",zht:"按「換新盤」會結束目前這盤並立即開始新的一盤。盤面每天韓國時間午夜12點更換。",es:"«Nuevo tablero» termina el actual y empieza otro al instante. Los tableros cambian cada día a medianoche, hora de Corea."},
  ],
  dspot:[   // 오늘의 명소 맞히기 (10-29) — 첫 줄(null)은 아래에서 주간 명소 맞히기 첫 줄(지도·지역 안내)로 채운다
   null,
@@ -544,18 +544,18 @@ function sdPut(n){ if(!SD||!SD.me||SD.me.done||SDSEL<0||SD.puz[SDSEL]!=="0") ret
   var nw=[]; U.forEach(function(u,k){ if(!was[k]&&sdUnitOk(u)) nw=nw.concat(u); });
   if(nw.length){ fxSnd("line"); fxFlash(nw.map(cel),"fxl"); } else { fxSnd("ok"); fxFlash([cel(i)],"fxg"); } }
 function sdTick(){ clearInterval(SDTI); SDTI=setInterval(function(){ var c=document.getElementById("sdClk"); if(!c||!SD||!SD.me||SD.me.done){ clearInterval(SDTI); return; } c.textContent=elTxt(sdElapsed()); },1000); }
-function sdPaint(){ var e=document.getElementById("evBody"); if(!e||!SD) return; setHead("sudoku"); var me=SD.me, h=tabsH(), max=SD.max||12;
+function sdPaint(){ var e=document.getElementById("evBody"); if(!e||!SD) return; setHead("sudoku"); var me=SD.me, h=tabsH(), max=SD.max||0;   // max 0 = 한도 없음 (11-23)
   if(SD.ko){}   // 11-05 사장님: 게임 위 파란 띠(한국인 판) 삭제
   else if(SD.test){}   // 11-05 사장님: 게임 위 노란 띠(TEST) 삭제
   h+=needIn(SD);
   if(me&&me.agreed){
     if(!me.st||!SD.puz){ h+='<div class="ecard" style="text-align:center"><div style="font-size:13px;color:#666;margin-bottom:8px">'+esc(L(SDT.ln))+'</div><button type="button" class="ebtn" data-ev="sdgo" style="background:#ff7a1a">'+esc(L(SDT.go))+'</button></div>'; }
     else { sdLoadG();
-      h+='<div class="est"><div><b>'+esc(L(SDT.bn).replace("{n}",me.n))+'</b>/ '+max+'</div><div><b id="sdClk">'+elTxt(sdElapsed())+'</b>'+esc(L(TMX))+'</div><div><b>'+leftTxt(SD.end)+'</b>'+esc(L(TNX))+'</div></div>';
+      h+='<div class="est"><div><b>'+esc(L(SDT.bn).replace("{n}",me.n))+'</b>'+(max?'/ '+max:'')+'</div><div><b id="sdClk">'+elTxt(sdElapsed())+'</b>'+esc(L(TMX))+'</div><div><b>'+leftTxt(SD.end)+'</b>'+esc(L(TNX))+'</div></div>';
       if(me.done) h+='<div class="ecard" style="text-align:center;font-weight:900;color:#1d7a35;font-size:17px">'+esc(L(SDT.ok))+' '+elTxt(me.el)+'</div>';
       h+='<div id="sdW">'+sdGridH()+'</div>';
       if(!me.done) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="sdchk" style="background:#27a745"'+(SDG.indexOf(0)>=0?' disabled':'')+'>'+esc(L(SDT.chk))+'</button><div style="font-size:12px;color:#888;margin-top:6px;text-align:center">'+esc(L(SDT.fill))+'</div></div>';
-      if(me.n<max) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="sdnew" style="background:'+(me.done?'#ff7a1a':'#fff;color:#ff7a1a;border:2px solid #ff7a1a')+'">'+esc(L(me.done?SDT.nx:SDT.nw))+'</button></div>';
+      if(!max||me.n<max) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="sdnew" style="background:'+(me.done?'#ff7a1a':'#fff;color:#ff7a1a;border:2px solid #ff7a1a')+'">'+esc(L(me.done?SDT.nx:SDT.nw))+'</button></div>';
       else if(me.done) h+='<div class="ecard"><button type="button" class="ebtn" disabled style="background:#bbb">'+esc(L(RPA))+'</button></div>'; }
     if(me.best) h+='<div class="ecard" style="font-size:14px"><b>'+esc(L(SDT.my))+'</b> · '+elTxt(me.best)+'</div>';
     if(me.st||me.best) h+='<div class="ecard"><button type="button" class="ebtn" data-ev="share" style="background:#7a3cff">'+esc(L(SHX.btn))+'</button></div>'; }   // 결과 공유 — 빙고와 같은 단추 (10-28)
