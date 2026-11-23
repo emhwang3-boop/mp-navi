@@ -90,6 +90,7 @@ function wrap(name){
   if (!orig0) return;
   var orig = function(success, error, options){ return orig0(function(){ lbsLog(name); return success&&success.apply(this,arguments); }, error, options); };
   navigator.geolocation[name] = function(success, error, options){
+    if (window.GAMEAPP) { if (error) setTimeout(function(){ try{ error({code:1,message:"denied"}); }catch(x){} },0); return undefined; }   // 11-24 게임앱(?app=puzzle)은 위치를 쓰지 않는다 — 동의 창도 안 띄움
     if (okAlready()) return orig(success, error, options);
     ask(function(agree){
       if (agree) { try{ orig(success, error, options); }catch(e){ if(error) try{ error({code:2,message:"geo"}); }catch(x){} } }
