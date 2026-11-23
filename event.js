@@ -8,6 +8,16 @@
 (function(){
 "use strict";
 var H=window.HUB||"https://brief-live-hub.emhwang3.workers.dev";
+var GM=!!window.GAMEAPP;   // 11-24 게임앱(머니퍼즐투어 데일리퍼즐 · 안드로이드 시작 주소 /?app=puzzle) — 게임 창이 첫 화면 · ✕ 자리에 언어 선택 · 맨 아래 「sponsored by viphola.com」(게임앱에만, 투어앱 게임 창엔 없음)
+var GMLANG=[["ko","한국어"],["en","English"],["es","Español"],["ja","日本語"],["zhs","简体中文"],["zht","繁體中文"]];   // 보이는 것은 투어앱이 켠 언어만(LANG_ON · 11-20 사장님 스페인어 숨김)
+var GMURL="https://navi.moneypuzzle.co.kr/puzzle/";   // 11-24 사장님 「공유마크를 달아서 이 게임을 공유할 수 있게」 — 받는 쪽 미리보기는 /puzzle/ 의 게임 소개(제목·그림), 열면 /?app=puzzle 로
+var GMSHT={ko:"이 게임 공유하기",en:"Share this game",ja:"このゲームを共有",zhs:"分享这个游戏",zht:"分享這個遊戲",es:"Compartir este juego"};
+var GMSHX={ko:"매일 새 판이 열리는 빙고·스도쿠·명소 맞히기·보물상자 — 무료로 즐겨 보세요!",en:"Bingo, sudoku, spot the sight & treasure box — new Korea puzzles every day. Play free!",ja:"ビンゴ・ナンプレ・名所当てクイズ・宝箱 — 毎日新しい韓国パズル。無料で遊べます！",zhs:"宾果、数独、猜景点、宝箱——每天都有新的韩国益智游戏，免费畅玩！",zht:"賓果、數獨、猜景點、寶箱——每天都有新的韓國益智遊戲，免費暢玩！",es:"Bingo, sudoku, adivina el lugar y cofre del tesoro: nuevos juegos de Corea cada día. ¡Juega gratis!"};
+var GMSHI='<svg viewBox="0 -960 960 960" width="22" height="22" fill="currentColor" aria-hidden="true" style="display:block"><path d="M720-80q-50 0-85-35t-35-85q0-7 1-14.5t3-13.5L322-392q-17 15-38 23.5t-44 8.5q-50 0-85-35t-35-85q0-50 35-85t85-35q23 0 44 8.5t38 23.5l282-164q-2-6-3-13.5t-1-14.5q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35q-23 0-44-8.5T638-672L356-508q2 6 3 13.5t1 14.5q0 7-1 14.5t-3 13.5l282 164q17-15 38-23.5t44-8.5q50 0 85 35t35 85q0 50-35 85t-85 35Zm0-640q17 0 28.5-11.5T760-760q0-17-11.5-28.5T720-800q-17 0-28.5 11.5T680-760q0 17 11.5 28.5T720-720ZM240-440q17 0 28.5-11.5T280-480q0-17-11.5-28.5T240-520q-17 0-28.5 11.5T200-480q0 17 11.5 28.5T240-440Zm480 280q17 0 28.5-11.5T760-200q0-17-11.5-28.5T720-240q-17 0-28.5 11.5T680-200q0 17 11.5 28.5T720-160Zm0-600ZM240-480Zm480 280Z"/></svg>';   // 투어앱 머리줄 공유 아이콘과 같은 모양(규칙서 4장)
+function gmShare(){ try{ ntap("_puzzle_share","puzzle_app"); }catch(e){}   // 투어앱 공유 창(#shBox) 단추를 그대로 — 카카오톡·X·문자·텔레그램·LINE·페이스북·밴드·왓츠앱·위챗·링크 복사·다른 앱으로
+  var bx=document.getElementById("shBox"), p=document.getElementById("shIn"); if(!bx||!p||typeof window.shareInto!=="function") return;
+  window.shareInto(p,{url:GMURL,txt:L(GMSHX)}); var hd=document.createElement("div"); hd.className="shhd"; hd.style.cssText="font-size:15px;font-weight:800;color:inherit;margin:0 2px 12px"; hd.textContent=L(GMSHT); p.insertBefore(hd,p.firstChild); bx.hidden=false; }
+function gmLangH(){ var c=lg(), on=window.LANG_ON||["ko","en","ja","zhs","zht"]; return '<select class="eglang" aria-label="Language">'+GMLANG.filter(function(x){ return on.indexOf(x[0])>=0; }).map(function(x){ return '<option value="'+x[0]+'"'+(x[0]===c?' selected':'')+'>'+x[1]+'</option>'; }).join("")+'</select>'; }
 function lg(){ return ["ko","en","ja","zhs","zht","es"].indexOf(window.LANG)>=0?window.LANG:"en"; }
 function L(o){ return o[lg()]||o.en; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
@@ -319,6 +329,8 @@ css.textContent="#evIsle{position:absolute;z-index:4;width:7.2%;left:58.6%;top:9
  +"#evBox .ehd{position:sticky;top:0;z-index:3;background:#fff;border-bottom:3px solid #ff7a1a;display:flex;align-items:center;gap:10px;padding:10px 14px}#evBox .elogo{width:34px;height:34px;border-radius:9px;background:#ff7a1a;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto}"
  +"#evBox .egrac{height:46px;width:auto;margin-left:auto;flex:none;transition:height .5s}#evBox .egrac.big{height:clamp(76px,18vw,120px)}#evBox .egrac+.ex{margin-left:8px}"   /* 11-17 이용등급 마크 */
  +"#evBox .egfoot{margin:22px 14px 28px;font-size:12px;color:#444}#evBox .eghd{font-weight:800;margin:0 0 6px}#evBox .egtb{width:100%;border-collapse:collapse;background:#e8f5e9;border:1px solid #4caf50}#evBox .egtb th,#evBox .egtb td{border:1px solid #4caf50;padding:6px 8px;text-align:left;vertical-align:middle;line-height:1.4}#evBox .egtb th{background:#43a047;color:#fff;font-weight:700;width:38%}#evBox .egmk{height:26px;vertical-align:middle;margin-right:6px}"   /* 11-17 상표·제작정보 표(전체이용가 = 초록 바탕) */
+ +"#evBox .egsh{margin-left:6px;flex:none;width:38px;height:38px;border:1px solid #ddd;background:#fff;border-radius:50%;color:#555;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}"   /* 11-24 게임앱 공유 */
+ +"#evBox .eglang{margin-left:8px;flex:none;border:1px solid #ddd;background:#fff;border-radius:999px;padding:6px 8px;font-weight:700;font-size:13px;color:#555;max-width:112px}#evBox .egsp{text-align:center;margin:26px 14px 0;font-size:12.5px;letter-spacing:.03em}#evBox .egsp a{color:#8a7a66;text-decoration:none;border-bottom:1px solid rgba(138,122,102,.4);padding-bottom:1px}"   /* 11-24 게임앱 언어 선택 · sponsored by viphola.com */
  +"#evBox .ehd h1{font-size:18px;font-weight:800;margin:0}#evBox .ehd small{display:block;font-size:11px;color:#888;font-weight:600}#evBox .ex{margin-left:auto;border:1px solid #ddd;background:#fff;border-radius:999px;padding:6px 12px;font-weight:800;cursor:pointer;color:#555}"
  +"#evBox .ecard{margin:12px 14px 0;background:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);font-size:14px;line-height:1.55}#evBox .ewk{display:flex;justify-content:space-between;gap:8px;font-size:13px}#evBox .ewk b{color:#ff7a1a}"
  +"#evBox .ebtn{display:block;width:100%;margin-top:10px;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:15px;cursor:pointer;background:#ff7a1a;color:#fff}#evBox .ebtn.g{background:#fff;color:#2b2b2b;border:1.5px solid #e0d6cc}#evBox .elink{background:none;border:0;color:#ff7a1a;font-weight:800;cursor:pointer;padding:6px 0;font-size:13.5px}"
@@ -396,8 +408,12 @@ var GRAC={"h": {"ko": "게임물 등급분류 정보", "en": "Game rating inform
 function gracFoot(){ var f=document.getElementById("evFoot"); if(!f) return; var r=function(k,v){ return '<tr><th>'+esc(L(GRAC[k]))+'</th><td>'+v+'</td></tr>'; };
   f.innerHTML='<div class="eghd">'+esc(L(GRAC.h))+'</div><table class="egtb">'+r("title",esc("머니퍼즐투어 데일리퍼즐(빙고·스도쿠·명소맞히기·보물상자)"))+r("co",esc(L(GRAC.coV)))+r("rate",'<img src="img/grac_all.png" alt="" class="egmk">'+esc(L(GRAC.all)))
     +r("no","제GC-CC-NM-261117-005호")+r("date","2026. 11. 17.")+r("reg","2026-000039")+'</table>'; var m=document.querySelector("#evBox .egrac"); if(m) m.alt=L(GRAC.alt); }
-function open(){ close(); var b=document.createElement("div"); b.id="evBox"; b.innerHTML='<div class="ein"><div class="ehd"><div class="elogo">EV</div><div><h1>'+esc(L(EVT))+'</h1><small id="evWk"></small></div><img class="egrac big" src="img/grac_all.png" alt=""><button type="button" class="ex">✕ '+esc(L(T.x))+'</button></div><div id="evBody"><div class="ecard">'+esc(L(T.load))+'</div></div><div id="evFoot" class="egfoot"></div></div>';
-  document.body.appendChild(b); document.documentElement.style.overflow="hidden"; b.querySelector(".ex").onclick=close;
+function open(){ close(); var b=document.createElement("div"); b.id="evBox"; b.innerHTML='<div class="ein"><div class="ehd"><div class="elogo">EV</div><div><h1>'+esc(L(EVT))+'</h1><small id="evWk"></small></div><img class="egrac big" src="img/grac_all.png" alt="">'+(GM?'<button type="button" class="egsh" aria-label="'+esc(L(GMSHT))+'" title="'+esc(L(GMSHT))+'">'+GMSHI+'</button>'+gmLangH():'<button type="button" class="ex">✕ '+esc(L(T.x))+'</button>')+'</div><div id="evBody"><div class="ecard">'+esc(L(T.load))+'</div></div>'
+    +(GM?'<div class="egsp"><a href="https://viphola.com/" target="_blank" rel="noopener">sponsored by viphola.com</a></div>':'')+'<div id="evFoot" class="egfoot"></div></div>';
+  document.body.appendChild(b); document.documentElement.style.overflow="hidden"; var bx=b.querySelector(".ex"); if(bx) bx.onclick=close;
+  var bs=b.querySelector(".egsh"); if(bs) bs.onclick=gmShare;
+  var bl=b.querySelector(".eglang"); if(bl) bl.onchange=function(){ var v=bl.value; try{ if(window.setLang) window.setLang(v); }catch(e){} };
+  var sp=b.querySelector(".egsp a"); if(sp) sp.addEventListener("click",function(){ try{ ntap("_sp_viphola","puzzle_app"); }catch(e){} });   // 몇 명이 viphola.com 으로 넘어갔는지 — 관리자 누름 통계
   try{ gracFoot(); }catch(e){} setTimeout(function(){ var m=b.querySelector(".egrac"); if(m) m.classList.remove("big"); },3200);   /* 11-17 등급 마크: 처음 3초 넘게 크게(화면 폭 15% 이상) 뒤 작게 계속 */
   try{ ntap("_event","open_area"); }catch(e){}
   load(); }
@@ -478,7 +494,11 @@ function bgLines(S){ if(!B||!B.cells) return []; var on=B.cells.map(function(c){
 function toast(t,bg,big){ var o=document.getElementById("evToast"); if(o) o.remove(); o=document.createElement("div"); o.id="evToast"; if(big) o.className="big"; else o.style.background=bg; o.textContent=t; document.body.appendChild(o); setTimeout(function(){ o.remove(); },big?2200:1100); }
 window.evOpen=open;
 if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",function(){ bbMk(); mk(); }); else { bbMk(); mk(); }
-var _gb=window.guBack; window.guBack=function(){ if(box()){ close(); return true; } return _gb?_gb.apply(this,arguments):false; };
+var _gb=window.guBack; window.guBack=function(){ if(box()){ if(GM){ var s=document.getElementById("evSheet"); if(s){ s.remove(); return true; } return false; } close(); return true; }   // 게임앱: 게임 창이 첫 화면 — 뒤로 가기는 규칙 창만 닫고, 그 밖엔 「한 번 더 누르면 종료」
+  if(_gb&&_gb.apply(this,arguments)) return true;
+  if(GM&&MODE&&(typeof VIEW!=="string"||VIEW==="kr")){ modeEnd(); open(); return true; }   // 게임앱: 지도 게임(명소 맞히기·보물상자) 중 뒤로 가기 → 게임 창으로
+  return false; };
+if(GM){ var gmGo=function(){ if(!box()&&!MODE) open(); }; if(document.readyState==="complete") setTimeout(gmGo,200); else window.addEventListener("load",function(){ setTimeout(gmGo,200); }); }   // 게임앱은 게임 창부터
 var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ evRelang(); }catch(e){} return r; };
 // 언어 바꾸면 열린 이벤트 화면 전부 그 언어로 (사장님 10-27 「다른 이벤트도 다 그렇게」) — 새 이벤트 화면을 만들면 여기에 더한다
 // 효과 — 맞음·틀림·줄 완성 소리와 번쩍임, 다 풀면 팡파레+폭죽 (사장님 10-28). 소리는 코드로 내는 음(파일 없음), 폭죽은 캔버스 불꽃
@@ -649,6 +669,7 @@ function thAns(k){ if(MODE!=="thunt"||TBUSY) return; TBUSY=1; post("/npg/th/ans"
   var q=j.q||{}; if(q.wait){ modeEnd(); setTimeout(function(){ toast(L(THT.wait),"#888"); open(); },900); return; }
   setTimeout(function(){ if(MODE==="thunt") thShow(q); },500); }).catch(function(){ TBUSY=0; var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(T.err); }); }
 function evRelang(){ var s=document.getElementById("evSheet"); if(s) s.remove(); if(box()) load(); try{ status(); }catch(e){}
+  if(GM){ var q=document.querySelector("#evBox .egsh"); if(q){ q.title=L(GMSHT); q.setAttribute("aria-label",L(GMSHT)); } }   // 게임앱 공유 단추 이름도 그 언어로
   if(MODE==="treasure") treasureMode();
   else if(MODE==="spot"&&SQ&&SQ._end) spotShow(Object.assign({},SQ,{left:Math.max(0,SQ._end-Date.now())}));
   else if(MODE==="thunt") post("/npg/th/start",{sess:sess(),l:lg()}).then(function(j){ if(j&&j.ok&&j.q&&!j.q.done&&!j.q.wait) thShow(j.q); }).catch(function(){}); }
