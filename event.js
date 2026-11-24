@@ -196,6 +196,7 @@ function evPaint(){ var e=document.getElementById("evBody"); if(!e||!E) return; 
 var MODE=null;
 function modeBar(html){ var o=document.getElementById("evMode"); if(!html){ if(o) o.remove(); return null; } if(!o){ o=document.createElement("div"); o.id="evMode"; o.style.cssText="position:fixed;left:50%;top:8px;transform:translateX(-50%);z-index:2147483002;width:min(94vw,480px);background:#fff8f0;color:#2b2b2b;border:2px solid #ff7a1a;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);padding:10px 12px;font:600 14px/1.45 'Segoe UI','Malgun Gothic',system-ui,sans-serif"; document.body.appendChild(o); } o.innerHTML=html; return o; }
 function modeEnd(){ MODE=null; modeBar(null); }
+try{ Object.defineProperty(window,"EVMODE",{get:function(){ return MODE; },configurable:true}); }catch(e){}   /* 11-24 gu.js 가 게임(지도 누르기) 중인지 앎 — 게임 중 서울 지도엔 구 이름 전부 (사장님 「투어앱도 고쳐」) */
 function treasureMode(){ close(); MODE="treasure"; try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){}
   var m=document.getElementById("map"); if(m) try{ m.scrollIntoView({behavior:"smooth",block:"center"}); }catch(e){}
   var o=modeBar('<div>'+esc(L(TX3.tmode))+'</div><div id="evMm" style="color:#e8322f;font-weight:700"></div><button type="button" id="evMq" style="margin-top:6px;border:1px solid #ddd;background:#fff;border-radius:999px;padding:5px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.quit))+'</button>');
