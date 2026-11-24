@@ -57,7 +57,7 @@ function post(path,b){ return fetch(PH+path,{method:"POST",headers:{"Content-Typ
 var CFG=null;
 function cfg(){ if(CFG) return Promise.resolve(CFG); return fetch(PH+"/npg/cfg",{cache:"no-store"}).then(function(r){ return r.json(); }).then(function(j){ CFG=j||{}; return CFG; }).catch(function(){ return {cid:""}; }); }
 function css(){ if(document.getElementById("pgCss")) return; var s=document.createElement("style"); s.id="pgCss";
-  s.textContent="#pgBox{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:12px;box-sizing:border-box}#pgBox[hidden]{display:none}"
+  s.textContent="#pgBox{position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:12px;box-sizing:border-box}#pgBox.kb{align-items:flex-start;padding-top:calc(8px + env(safe-area-inset-top,0px))}#pgBox[hidden]{display:none}"
   +"#pgIn{background:var(--card);color:var(--ink);width:100%;max-width:520px;border-radius:18px;padding:16px 16px calc(26px + env(safe-area-inset-bottom,0px));max-height:85vh;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;box-sizing:border-box}"
   +"@media (min-width:700px){#pgBox{align-items:center;padding:7.5vh 16px;box-sizing:border-box}#pgIn{border-radius:18px;max-height:85vh;padding-bottom:22px;box-shadow:0 12px 40px rgba(0,0,0,.3)}}"
   +"#pgIn h3{margin:0 0 8px;font-size:18px;display:flex;align-items:center;gap:8px}#pgIn h3 img{flex:none}#pgIn .pgx{margin-left:auto;border:0;background:none;color:var(--sub);font-size:15px;cursor:pointer}"
@@ -79,6 +79,7 @@ function css(){ if(document.getElementById("pgCss")) return; var s=document.crea
   document.head.appendChild(s); }
 function box(){ var b=document.getElementById("pgBox"); if(b) return b; css(); b=document.createElement("div"); b.id="pgBox"; b.hidden=true; b.innerHTML='<div id="pgIn"></div>';
   b.addEventListener("click",function(e){ if(e.target===b) close(); var a=e.target.closest&&e.target.closest("[data-pg]"); if(!a) return; var k=a.dataset.pg; if(k==="x") close(); else if(k==="out") logout(); });
+  if(/iP(hone|ad|od)/.test(navigator.userAgent||"")||natIOS()){ var kbT=0; b.addEventListener("focusin",function(e){ if(e.target&&/^(INPUT|TEXTAREA)$/.test(e.target.tagName)){ clearTimeout(kbT); b.classList.add("kb"); setTimeout(function(){ try{ window.scrollTo(0,0); }catch(x){} },350); } }); b.addEventListener("focusout",function(){ clearTimeout(kbT); kbT=setTimeout(function(){ var a=document.activeElement; if(!(a&&b.contains(a)&&/^(INPUT|TEXTAREA)$/.test(a.tagName))) b.classList.remove("kb"); },150); }); }   /* 11-25 아이폰 자판 — 입력 칸을 누르면 창을 시계 바로 아래로(아이폰이 화면을 밀어 올려 창 윗부분이 시계와 겹치던 것) · 자판이 내려가면 다시 가운데 (사장님 「고치고 배포해」) */
   document.body.appendChild(b); return b; }
 function ttl(px){ if(PGS&&PGS.simple) return esc(t("title")); return esc(t("login")); }   /* 11-08 — 「내 ★배지」 대신 「로그인」 */
 function head(){ return '<h3><span>'+ttl(20)+'</span><button type="button" class="pgx" data-pg="x">'+esc(t("close"))+' ✕</button></h3>'; }
