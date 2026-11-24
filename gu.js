@@ -64,7 +64,7 @@
     if(!GU.g){   // 묶음: 구마다 대표 1개 + 배지 · 명소 없는 구는 이름표 · 서울 밖(북한산·남한산성)은 그림 그대로
       var fs=Math.max(4,w*0.019), labs=[];
       GU.d.gus.forEach(function(o){
-        if(!o.rep){ labs.push(o); return; }
+        if(!o.rep||window.GAMEAPP) labs.push(o); if(!o.rep) return;   /* 11-24 사장님 「보물찾기 지도에 서울시 구별이 전부 표시가 안 된다(중구·종로·송파·강남)」「모든 구가 다 보이게 고쳐」 — 게임앱은 대표 그림 있는 구도 이름표 */
         var b=P[o.rep].b, x=b[0]*W, y=b[1]*H, bw=(b[2]-b[0])*W, bh=(b[3]-b[1])*H, e=img(o.rep); e.dataset.g=o.g; e.removeAttribute("data-k"); e.title=LP(o.n); put(e,x,y,bw,bh); L.appendChild(e);
         var n=o.keys.length-1; if(n>0){ var t=document.createElement("div"); t.className="gb"; t.dataset.g=o.g; t.textContent="+"+n; t.title=LP(o.n); t.style.fontSize=fs+"px"; t.style.height=(fs*1.55)+"px"; t.style.padding="0 "+(fs*0.45)+"px"; t.style.borderWidth=Math.max(0.5,fs*0.12)+"px";
           if(GU.d.bz) t.style.zIndex="3";   /* 부산(10-28): 「+N」이 옆 대표 그림에 가리지 않게 — 서울 자료엔 bz 없음 */
@@ -138,7 +138,7 @@
         if(best) done=best; }
       if(!done){ var tw2=e.offsetWidth, th2=e.offsetHeight; done=[cx-tw2/2,cy-th2/2,tw2,th2]; }
       e.style.left=done[0]+"px"; e.style.top=done[1]+"px"; e.style.visibility=""; occ.push([done[0],done[1],done[0]+done[2],done[1]+done[3]]);
-      var n=(o.keys||[]).length; if(n>0){ var fb=Math.max(4,w*0.019), t=document.createElement("div"); t.className="gb"; t.dataset.g=o.g; t.textContent="+"+n; t.title=LP(o.n);   /* 대표 그림 없는 구도 그림 수 배지 (사장님 10-26) */
+      var n=o.rep?0:(o.keys||[]).length; if(n>0){ var fb=Math.max(4,w*0.019), t=document.createElement("div"); t.className="gb"; t.dataset.g=o.g; t.textContent="+"+n; t.title=LP(o.n);   /* 대표 그림 없는 구도 그림 수 배지 (사장님 10-26) */
         t.style.fontSize=fb+"px"; t.style.height=(fb*1.55)+"px"; t.style.padding="0 "+(fb*0.45)+"px"; t.style.borderWidth=Math.max(0.5,fb*0.12)+"px"; L.appendChild(t);
         var bw2=t.offsetWidth||fb*2.4; t.style.left=(done[0]+done[2]-bw2*0.2)+"px"; t.style.top=(done[1]-fb*1.35)+"px"; t.style.zIndex="3"; occ.push([done[0]+done[2]-bw2*0.2,done[1]-fb*1.35,done[0]+done[2]+bw2*0.8,done[1]+fb*0.2]); } }); }
   // 「나」 누르기로 내 자리 가기 (10-20) — 서울이면 내가 있는 구 화면으로 들어가 나를 가운데
