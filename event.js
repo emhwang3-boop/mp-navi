@@ -220,7 +220,7 @@ function evPaint(){ var e=document.getElementById("evBody"); if(!e||!E) return; 
   if(k==="treasure"&&me&&me.lock&&me.lock>Date.now()) setTimeout(function(){ if(box()&&E&&E.kind==="treasure"&&cur()===E) evPaint(); },1000); }
 // 보물상자 — 지도 누르기
 var MODE=null;
-function modeBar(html){ var o=document.getElementById("evMode"); if(!html){ if(o) o.remove(); return null; } if(!o){ o=document.createElement("div"); o.id="evMode"; o.style.cssText="position:fixed;left:50%;top:8px;transform:translateX(-50%);z-index:2147483002;width:min(94vw,480px);background:#fff8f0;color:#2b2b2b;border:2px solid #ff7a1a;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);padding:10px 12px;font:600 14px/1.45 'Segoe UI','Malgun Gothic',system-ui,sans-serif"; document.body.appendChild(o); } o.innerHTML=html; return o; }
+function modeBar(html){ var o=document.getElementById("evMode"); if(!html){ if(o) o.remove(); return null; } if(!o){ o=document.createElement("div"); o.id="evMode"; o.style.cssText="position:fixed;left:50%;top:calc(8px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:2147483002;width:min(94vw,480px);background:#fff8f0;color:#2b2b2b;border:2px solid #ff7a1a;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);padding:10px 12px;font:600 14px/1.45 'Segoe UI','Malgun Gothic',system-ui,sans-serif"; document.body.appendChild(o); } o.innerHTML=html; return o; }
 function modeEnd(){ MODE=null; modeBar(null); }
 try{ Object.defineProperty(window,"EVMODE",{get:function(){ return MODE; },configurable:true}); }catch(e){}   /* 11-24 gu.js 가 게임(지도 누르기) 중인지 앎 — 게임 중 서울 지도엔 구 이름 전부 (사장님 「투어앱도 고쳐」) */
 function treasureMode(){ close(); MODE="treasure"; try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){}
