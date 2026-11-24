@@ -137,11 +137,12 @@ function onApple(d){ var au=d&&d.authorization; if(!au||!au.id_token||!AS||au.st
   login({prov:"apple",cred:au.id_token,nonce:AS.nonce,name:nm}); }
 /* 게임물관리위원회 심사용 로그인 (사장님 10-29) — ?grac=1 로 들어온 창에서만 아이디·비밀번호 칸이 보인다. 허브 /npg/rvlogin */
 var GR=false; try{ GR=/[?&]grac=1(?![0-9a-z])/i.test(location.search)||sessionStorage.getItem("mp_grac")==="1"; if(GR) sessionStorage.setItem("mp_grac","1"); }catch(e){}
-function rvHtml(){ if(!GR) return ""; var st="width:100%;box-sizing:border-box;padding:8px;margin:4px 0;border:1px solid #ccc;border-radius:8px;font-size:15px";
-  return '<div class="pgsec" style="margin-top:12px">심사용 로그인 (GRAC)</div><input id="pgRvId" autocomplete="username" placeholder="아이디" style="'+st+'"><input id="pgRvPw" type="password" autocomplete="current-password" placeholder="비밀번호" style="'+st+'"><button type="button" class="pgbtn" id="pgRvGo">로그인</button>'; }
-function rvWire(){ var g=document.getElementById("pgRvGo"); if(!g) return; g.onclick=function(){ var i=document.getElementById("pgRvId"), w=document.getElementById("pgRvPw"); rvLogin(i&&i.value, w&&w.value); }; }
+function rvHtml(){ if(!GR) return window.GAMEAPP?'<div style="text-align:center;margin-top:16px"><button type="button" id="pgRvShow" style="border:0;background:none;color:#999;font-size:12.5px;text-decoration:underline;cursor:pointer">Reviewer sign-in · 심사용 로그인</button></div>':"";   /* 11-24 게임앱: 구글 플레이 심사원이 앱 안에서 쓸 수 있게 작은 글자로 */ var st="width:100%;box-sizing:border-box;padding:8px;margin:4px 0;border:1px solid #ccc;border-radius:8px;font-size:15px";
+  return '<div class="pgsec" style="margin-top:12px">Reviewer sign-in · 심사용 로그인</div><input id="pgRvId" autocomplete="username" placeholder="ID · 아이디" style="'+st+'"><input id="pgRvPw" type="password" autocomplete="current-password" placeholder="Password · 비밀번호" style="'+st+'"><button type="button" class="pgbtn" id="pgRvGo">Sign in · 로그인</button>'; }
+function rvWire(){ var sh=document.getElementById("pgRvShow"); if(sh) sh.onclick=function(){ GR=true; try{ sessionStorage.setItem("mp_grac","1"); }catch(e){} paintLogin(); };
+  var g=document.getElementById("pgRvGo"); if(!g) return; g.onclick=function(){ var i=document.getElementById("pgRvId"), w=document.getElementById("pgRvPw"); rvLogin(i&&i.value, w&&w.value); }; }
 function rvLogin(id,pw){ var I=document.getElementById("pgIn"); if(I) I.innerHTML=head()+'<div class="pgp">'+esc(t("load"))+'</div>';
-  post("/npg/rvlogin",{id:id||"",pw:pw||""}).then(function(j){ if(!j||!j.ok||!j.sess){ paintLogin("아이디 또는 비밀번호가 맞지 않습니다."); return; } ls("mpv_pg_sess",j.sess); paintMe(j.me); menuPaint(); })
+  post("/npg/rvlogin",{id:id||"",pw:pw||""}).then(function(j){ if(!j||!j.ok||!j.sess){ paintLogin("아이디 또는 비밀번호가 맞지 않습니다. · Wrong ID or password."); return; } ls("mpv_pg_sess",j.sess); paintMe(j.me); menuPaint(); })
     .catch(function(){ paintLogin(t("lerr")); }); }
 function login(b){ var I=document.getElementById("pgIn"); if(I) I.innerHTML=head()+'<div class="pgp">'+esc(t("load"))+'</div>';
   var own=0; try{ own=localStorage.getItem("mp_owner")?1:0; }catch(e){} b.dev=dev(); b.own=own;
