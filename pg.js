@@ -120,7 +120,7 @@ function natPaint(){ var g=document.getElementById("pgGbtn"), a=document.getElem
     .catch(function(e){ var m=String(e&&(e.message||e.code)||e||""); if(/cancel/i.test(m)){ paintLogin(); return; } paintLogin(t("lerr")); }); }; }
 // ── Apple로 로그인 (사장님 2026-10-26) — Sign in with Apple JS 공식 스크립트(판 1)·공식 검정 단추·팝업 · state·nonce 는 창 열 때마다 새로 ──
 //   Services ID kr.co.moneypuzzle.navi.web · Return URL https://navi.moneypuzzle.co.kr/ · 허브 /npg/login {prov:"apple"} 가 애플 JWKS 로 검사
-var ACID="kr.co.moneypuzzle.navi.web", AREDIR=(PGS&&PGS.aredir)||"https://navi.moneypuzzle.co.kr/", ALOC={ko:"ko_KR",en:"en_US",ja:"ja_JP",zhs:"zh_CN",zht:"zh_TW",es:"es_ES"}, AS=null, AJS=null;
+var ACID="kr.co.moneypuzzle.navi.web", AREDIR=(PGS&&PGS.aredir)||(window.PZ_APP?"https://puzzle.moneypuzzle.co.kr/":"https://navi.moneypuzzle.co.kr/"), ALOC={ko:"ko_KR",en:"en_US",ja:"ja_JP",zhs:"zh_CN",zht:"zh_TW",es:"es_ES"}, AS=null, AJS=null;
 function rnd(n){ return Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(n)),function(v){ return ("0"+v.toString(16)).slice(-2); }).join(""); }
 function appleLoad(){ if(window.AppleID&&AppleID.auth) return Promise.resolve(); if(AJS) return AJS;
   AJS=new Promise(function(ok,no){ var s=document.createElement("script"); s.src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/"+(ALOC[lg()]||"en_US")+"/appleid.auth.js"; s.async=true; s.onload=ok; s.onerror=function(){ AJS=null; no(); }; document.head.appendChild(s); });
