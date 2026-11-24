@@ -540,7 +540,7 @@ var _gb=window.guBack; window.guBack=function(){ if(box()){ if(GM){ var s=docume
   if(_gb&&_gb.apply(this,arguments)) return true;
   if(GM&&MODE&&(typeof VIEW!=="string"||VIEW==="kr")){ modeEnd(); open(); return true; }   // 게임앱: 지도 게임(명소 맞히기·보물상자) 중 뒤로 가기 → 게임 창으로
   return false; };
-if(GM){ var gmGo=function(){ if(!box()&&!MODE) open(); }; if(document.readyState==="complete") setTimeout(gmGo,200); else window.addEventListener("load",function(){ setTimeout(gmGo,200); }); }   // 게임앱은 게임 창부터
+if(GM){ var gmGo=function(){ try{ if(!box()&&!MODE) open(); }finally{ document.documentElement.classList.remove("gm0"); } }; if(document.readyState!=="loading") setTimeout(gmGo,0); else document.addEventListener("DOMContentLoaded",function(){ setTimeout(gmGo,0); }); }   // 게임앱은 게임 창부터 — 11-24 사장님 「맨 처음 지도가 2-3초 뜨는데 안 뜨게」: 그림 다 받기(load) 기다리지 않고 화면 틀 서자마자 · 그 전엔 크림색 덮개(html.gm0)
 var _sl=window.setLang; if(_sl) window.setLang=function(){ var r=_sl.apply(this,arguments); try{ evRelang(); }catch(e){} return r; };
 // 언어 바꾸면 열린 이벤트 화면 전부 그 언어로 (사장님 10-27 「다른 이벤트도 다 그렇게」) — 새 이벤트 화면을 만들면 여기에 더한다
 // 효과 — 맞음·틀림·줄 완성 소리와 번쩍임, 다 풀면 팡파레+폭죽 (사장님 10-28). 소리는 코드로 내는 음(파일 없음), 폭죽은 캔버스 불꽃
