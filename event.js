@@ -236,11 +236,11 @@ var SHX={
  install:{ko:"앱 설치",en:"Install app",ja:"アプリを入れる",zhs:"安装应用",zht:"安裝應用",es:"Instalar app"}
 };
 function shLine(){ var c=cur(); if(!c||!c.open||!c.me) return null; var me=c.me, k=c.kind||"bingo", t=L(KT[k]||EVT), l=lg();
-  if(k==="bingo"&&c.daily&&c.day) t+=" "+c.day.slice(5).replace("-","/");   // 매일 빙고 = 그날 날짜
+  if(k==="bingo"&&c.daily&&c.day&&!GM) t+=" "+c.day.slice(5).replace("-","/");   // 게임앱 카드는 날짜 뺌 (11-24 사장님)   // 매일 빙고 = 그날 날짜
   if(k==="bingo"&&(me.best!=null||me.done)) return [t, L(RNK.all)+" · "+elTxt(me.best!=null?me.best:me.done-(me.f0||me.done))];   // 그날 가장 빠른 기록 (하루 여러 판, 10-27 밤)   // 판 완성 + 걸린 시간 (10-27)
   if(k==="bingo") return [t, (me.s||[]).length+"/24 · "+L(T.stamps)];
-  if(k==="sudoku"){ if(c.day) t+=" "+c.day.slice(5).replace("-","/"); return [t, me.best?L(SDT.ok).replace(/[!！]$/,"")+" · "+elTxt(me.best):L(SDT.bn).replace("{n}",me.n||1)]; }   // 스도쿠 — 그날 가장 빠른 기록, 없으면 몇 번째 판 (10-28)
-  if(k==="dspot"){ if(c.day) t+=" "+c.day.slice(5).replace("-","/"); var bs=me.best; return [t, bs?dsRes(bs.ok,c.total).replace(/[!！]$/,"")+" · "+elTxt(bs.t*1000):L(DST.bn).replace("{n}",me.n||1)]; }   // 오늘의 명소 맞히기 — 그날 가장 좋은 기록 (10-29)
+  if(k==="sudoku"){ if(c.day&&!GM) t+=" "+c.day.slice(5).replace("-","/"); return [t, me.best?L(SDT.ok).replace(/[!！]$/,"")+" · "+elTxt(me.best):L(SDT.bn).replace("{n}",me.n||1)]; }   // 스도쿠 — 그날 가장 빠른 기록, 없으면 몇 번째 판 (10-28)
+  if(k==="dspot"){ if(c.day&&!GM) t+=" "+c.day.slice(5).replace("-","/"); var bs=me.best; return [t, bs?dsRes(bs.ok,c.total).replace(/[!！]$/,"")+" · "+elTxt(bs.t*1000):L(DST.bn).replace("{n}",me.n||1)]; }   // 오늘의 명소 맞히기 — 그날 가장 좋은 기록 (10-29)
   if(k==="thunt") return [t, (me.done?L(THT.max)+" · ":"")+L(THT.lvn).replace("{n}",me.lv||0)+" · "+L(THT.hint)+" "+(me.ht||0)];   // 보물상자 — 내 레벨·쓴 힌트 (10-29)
   if(k==="treasure") return [t, me.ft?L(SHX.found):L(SHX.hunt)];
   if(k==="spot") return [t, (me.ok||0)+"/"+(c.total||10)+" "+L(SHX.spot)];
@@ -249,6 +249,7 @@ function shLine(){ var c=cur(); if(!c||!c.open||!c.me) return null; var me=c.me,
 /* 11-24 crossOrigin: 게임앱은 그림을 투어앱 주소에서 받아 캔버스가 오염되면 결과 카드가 안 만들어졌다(「결과 공유 먹통」) */ function shImg(src){ return new Promise(function(ok){ var i=new Image(); i.crossOrigin="anonymous"; i.onload=function(){ ok(i); }; i.onerror=function(){ ok(null); }; i.src=src; }); }
 function shName(){ var s=sess(); if(!s) return Promise.resolve(""); return post("/npg/me",{sess:s}).then(function(j){ var nm=j&&j.ok&&j.me?String(j.me.name||"").trim():""; if(!nm) return ""; var a=Array.from(nm); return a.length<=1?a[0]+"***":a[0]+"***"+a[a.length-1]; }).catch(function(){ return ""; }); }
 function shDraw(){ var ln=shLine(); if(!ln) return Promise.resolve(null);
+  if(GM) return shDrawG(ln);   // 게임앱 카드 = 하얀 바탕·목탑 섬·고급 글꼴 (11-24) — 투어앱 카드는 아래 그대로
   return Promise.all([shImg("img/kr_extra/event_bb.jpg?v=1026"),shImg("img/kr_extra/event_isle.webp?v=1026"),shName()]).then(function(a){ var bg=a[0], isle=a[1], nm=a[2], S=1080, c=document.createElement("canvas"); c.width=S; c.height=S; var x=c.getContext("2d");
     if(bg){ var k=Math.max(S/bg.width,S/bg.height), w=bg.width*k, h=bg.height*k; x.drawImage(bg,(S-w)/2,(S-h)/2,w,h); } else { x.fillStyle="#1b1030"; x.fillRect(0,0,S,S); }
     var g=x.createLinearGradient(0,0,0,S); g.addColorStop(0,"rgba(10,6,24,.82)"); g.addColorStop(.55,"rgba(10,6,24,.55)"); g.addColorStop(1,"rgba(10,6,24,.88)"); x.fillStyle=g; x.fillRect(0,0,S,S);
@@ -263,6 +264,28 @@ function shDraw(){ var ln=shLine(); if(!ln) return Promise.resolve(null);
     if(nm){ x.fillStyle="#c9c2e6"; x.font="700 44px "+F; x.fillText("— "+nm,70,680); }
     x.fillStyle="#39d5ff"; x.font="800 44px "+F; x.fillText(GM?"puzzle.moneypuzzle.co.kr":"navi.moneypuzzle.co.kr",70,S-70);
     return c; }); }
+// ── 게임앱 결과 카드 (11-24 사장님) ① 하얀 바탕 + 목탑 섬(섬 둘레 파도는 그림에 든 것) ② 날짜 뺌 ③ 이름·아이디(이메일) 그대로 ④ 고급 글꼴(명조 계열 Noto Serif + Playfair Display) ⑤ 성과 줄 자리에 「같이 풀어요!」(언어별)
+var SHF={ja:"Noto+Serif+JP",zhs:"Noto+Serif+SC",zht:"Noto+Serif+TC"}, SHFL={};
+function shFonts(){ var cj=SHF[lg()]||"Noto+Serif+KR", nm=cj.replace(/\+/g," ");
+  if(!SHFL[cj]) SHFL[cj]=new Promise(function(ok){ var k=document.createElement("link"); k.rel="stylesheet"; k.href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family="+cj+":wght@600;900&display=swap"; k.onload=function(){ ok(); }; k.onerror=function(){ ok(); }; document.head.appendChild(k); setTimeout(ok,3000); });
+  return SHFL[cj].then(function(){ return nm; }); }
+function shWho(){ var s=sess(); if(!s) return Promise.resolve(null); return post("/npg/me",{sess:s}).then(function(j){ return j&&j.ok&&j.me?[String(j.me.name||"").trim(),String(j.me.email||"").trim()]:null; }).catch(function(){ return null; }); }
+function shDrawG(ln){ var title=ln[0], beat=L(SHX.beat), brand=lg()==="ko"?"머니퍼즐투어 데일리퍼즐":"MoneyPuzzle Tour Daily Puzzle", url="sponsored by viphola.com";   /* 11-24 사장님 「아래 url 주소를 sponsored by viphola.com 으로」 — 그림 안 글씨라 누를 수는 없고, 결과 페이지(허브 /bs/)에 같은 글 링크 */
+  return Promise.all([shImg("img/kr_extra/event_isle.webp?v=1026"),shWho(),shFonts()]).then(function(a){ var isle=a[0], who=a[1]||["",""], F='"Playfair Display","'+a[2]+'",serif', all=[brand,title,beat,who[0],who[1],url].join(" ");
+    var fl=(document.fonts&&document.fonts.load)?Promise.all(["600 40px ","700 40px ","900 100px "].map(function(w){ return document.fonts.load(w+F,all).catch(function(){}); })):Promise.resolve();
+    return Promise.race([fl,new Promise(function(r){ setTimeout(r,3500); })]).then(function(){
+      var S=1080, c=document.createElement("canvas"); c.width=S; c.height=S; var x=c.getContext("2d");
+      x.fillStyle="#ffffff"; x.fillRect(0,0,S,S);
+      if(isle){ var ih=560, iw=isle.width*ih/isle.height; x.drawImage(isle,S-iw-34,S-ih-44,iw,ih); }
+      var fit=function(t,max,size,w){ x.font=w+" "+size+"px "+F; while(x.measureText(t).width>max&&size>28){ size-=4; x.font=w+" "+size+"px "+F; } };
+      x.textAlign="left"; x.textBaseline="alphabetic";
+      x.fillStyle="#a08a6c"; fit(brand,900,40,"600"); x.fillText(brand,72,130);
+      x.fillStyle="#1f1f1f"; fit(title,936,96,"900"); x.fillText(title,72,300);
+      x.fillStyle="#ff7a1a"; fit(beat,936,112,"900"); x.fillText(beat,72,450);
+      if(who[0]){ x.fillStyle="#2b2b2b"; fit(who[0],540,50,"600"); x.fillText(who[0],72,590); }
+      if(who[1]){ x.fillStyle="#777777"; fit(who[1],540,34,"600"); x.fillText(who[1],72,644); }
+      x.fillStyle="#2f9e44"; fit(url,560,40,"700"); x.fillText(url,72,S-72);
+      return c; }); }); }
 // 결과 공유 (사장님 10-27) — 그림을 허브(/bshare)에 올려 링크 하나로: 미리보기에 결과 그림이 뜨고, 그 쪽에 「코리아 빙고 같이 풀어요」·「투어앱 설치」 단추
 //   카톡(그림+단추 2개) · 왓츠앱 · 라인 · 텔레그램 · 위챗(링크 복사) · 페북 · X · 틱톡·인스타(그림을 폰 공유창으로) · 다른 앱 · 링크 복사 · 그림 저장
 var SHY={
@@ -331,7 +354,7 @@ css.textContent="#evIsle{position:absolute;z-index:4;width:7.2%;left:58.6%;top:9
  +"#evBox .egrac{height:46px;width:auto;margin-left:auto;flex:none;transition:height .5s}#evBox .egrac.big{height:clamp(76px,18vw,120px)}#evBox .egrac+.ex{margin-left:8px}"   /* 11-17 이용등급 마크 */
  +"#evBox .egfoot{margin:22px 14px 28px;font-size:12px;color:#444}#evBox .eghd{font-weight:800;margin:0 0 6px}#evBox .egtb{width:100%;border-collapse:collapse;background:#e8f5e9;border:1px solid #4caf50}#evBox .egtb th,#evBox .egtb td{border:1px solid #4caf50;padding:6px 8px;text-align:left;vertical-align:middle;line-height:1.4}#evBox .egtb th{background:#43a047;color:#fff;font-weight:700;width:38%}#evBox .egmk{height:26px;vertical-align:middle;margin-right:6px}"   /* 11-17 상표·제작정보 표(전체이용가 = 초록 바탕) */
  +"#evBox .egsh{margin-left:6px;flex:none;width:38px;height:38px;border:1px solid #ddd;background:#fff;border-radius:50%;color:#555;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}"   /* 11-24 게임앱 공유 */
- +"#evBox .eglang{margin-left:8px;flex:none;border:1px solid #ddd;background:#fff;border-radius:999px;padding:6px 8px;font-weight:700;font-size:13px;color:#555;max-width:112px}#evBox .egsp{text-align:center;margin:26px 14px 0;font-size:12.5px;letter-spacing:.03em}#evBox .egsp a{color:#8a7a66;text-decoration:none;border-bottom:1px solid rgba(138,122,102,.4);padding-bottom:1px}"   /* 11-24 게임앱 언어 선택 · sponsored by viphola.com */
+ +"#evBox .eglang{margin-left:8px;flex:none;border:1px solid #ddd;background:#fff;border-radius:999px;padding:6px 8px;font-weight:700;font-size:13px;color:#555;max-width:112px}#evBox .egsp{text-align:center;margin:26px 14px 0;font-size:12.5px;letter-spacing:.03em}#evBox .egsp a{color:#2f9e44;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(47,158,68,.45);padding-bottom:1px}"   /* 11-24 게임앱 언어 선택 · sponsored by viphola.com (초록 = 앱 --green, 사장님 11-24) */
  +"#evBox .ehd h1{font-size:18px;font-weight:800;margin:0}#evBox .ehd small{display:block;font-size:11px;color:#888;font-weight:600}#evBox .ex{margin-left:auto;border:1px solid #ddd;background:#fff;border-radius:999px;padding:6px 12px;font-weight:800;cursor:pointer;color:#555}"
  +"#evBox .ecard{margin:12px 14px 0;background:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);font-size:14px;line-height:1.55}#evBox .ewk{display:flex;justify-content:space-between;gap:8px;font-size:13px}#evBox .ewk b{color:#ff7a1a}"
  +"#evBox .ebtn{display:block;width:100%;margin-top:10px;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:15px;cursor:pointer;background:#ff7a1a;color:#fff}#evBox .ebtn.g{background:#fff;color:#2b2b2b;border:1.5px solid #e0d6cc}#evBox .elink{background:none;border:0;color:#ff7a1a;font-weight:800;cursor:pointer;padding:6px 0;font-size:13.5px}"
