@@ -19,6 +19,7 @@ var W={
  err:{ko:"불러오지 못했습니다. 잠시 뒤 다시 해 주세요.",en:"Could not load. Please try again shortly.",ja:"読み込めませんでした。しばらくしてからもう一度お試しください。",zhs:"无法加载，请稍后再试。",zht:"無法載入，請稍後再試。",es:"No se pudo cargar. Inténtalo de nuevo en un momento."},
  lerr:{ko:"로그인하지 못했습니다. 다시 해 주세요.",en:"Sign-in failed. Please try again.",ja:"ログインできませんでした。もう一度お試しください。",zhs:"登录失败，请重试。",zht:"登入失敗，請重試。",es:"No se pudo iniciar sesión. Inténtalo de nuevo."},
  sess:{ko:"로그인이 끝났습니다. 다시 로그인해 주세요.",en:"Your session has ended. Please sign in again.",ja:"ログインの有効期限が切れました。もう一度ログインしてください。",zhs:"登录已过期，请重新登录。",zht:"登入已過期，請重新登入。",es:"Tu sesión ha terminado. Vuelve a iniciar sesión."},
+ aIos:{ko:"Apple로 로그인",en:"Sign in with Apple",ja:"Appleでサインイン",zhs:"通过 Apple 登录",zht:"使用 Apple 登入",es:"Iniciar sesión con Apple"},   /* 11-24 아이폰 앱 애플 기본 로그인 단추 */
  gNat:{ko:"Google로 로그인",en:"Sign in with Google",ja:"Googleでログイン",zhs:"使用Google登录",zht:"使用Google登入",es:"Iniciar sesión con Google"},
  aNat:{ko:"앱에서는 Apple 로그인을 지원하지 않습니다. Google로 로그인하거나, 웹 브라우저의 사이트에서 Apple로 로그인해 주세요.",en:"Sign in with Apple is not available in the app. Please sign in with Google, or use Apple sign-in on the website in your web browser.",ja:"アプリではAppleでのログインはご利用いただけません。Googleでログインするか、ウェブブラウザのサイトでAppleでログインしてください。",zhs:"应用内不支持Apple登录。请使用Google登录，或在网页浏览器的网站上使用Apple登录。",zht:"App 內不支援 Apple 登入。請使用 Google 登入，或在網頁瀏覽器的網站上使用 Apple 登入。",es:"El inicio de sesión con Apple no está disponible en la app. Inicia sesión con Google o usa Apple en el sitio web desde tu navegador."},
  iosNo:{ko:"아이폰 앱(App Store)은 당분간 지원하지 않습니다. 아이폰에서는 웹 브라우저로 이용해 주세요.",en:"The iPhone app (App Store) is not available for now. On iPhone, please use this website in your web browser.",ja:"iPhoneアプリ（App Store）は当面ご利用いただけません。iPhoneではウェブブラウザでご利用ください。",zhs:"暂不支持iPhone应用（App Store）。在iPhone上请使用网页浏览器访问。",zht:"暫不支援 iPhone App（App Store）。在 iPhone 上請使用網頁瀏覽器瀏覽。",es:"La app para iPhone (App Store) no está disponible por ahora. En iPhone, usa este sitio web desde tu navegador."},
@@ -107,7 +108,19 @@ function natApp(){ try{ var C=window.Capacitor; return !!(C&&C.isNativePlatform&
 function natSL(){ try{ var C=window.Capacitor; return C.getPlatform&&C.getPlatform()==="android"&&C.Plugins&&C.Plugins.SocialLogin||null; }catch(e){ return null; } }
 var GSV='<svg viewBox="0 0 48 48" width="18" height="18" style="vertical-align:-4px;margin-right:8px"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
 var SLI=null;
-function natPaint(){ var g=document.getElementById("pgGbtn"), a=document.getElementById("pgAbtn"), P=natSL();
+/* 11-24 아이폰 앱(게임앱 iOS, Capacitor) — 애플 기본 로그인 창 · 구글은 iOS 클라이언트 ID 만들기 전이라 아직 없음 */
+function natIOS(){ try{ var C=window.Capacitor; return C.getPlatform&&C.getPlatform()==="ios"&&C.Plugins&&C.Plugins.SocialLogin||null; }catch(e){ return null; } }
+var ASV='<svg viewBox="0 0 814 1000" width="15" height="18" style="vertical-align:-3px;margin-right:8px" fill="#fff"><path d="M788 340c-6 4-108 62-108 190 0 148 130 200 134 202-1 3-21 72-69 142-43 62-88 124-156 124s-86-40-165-40c-77 0-104 41-166 41s-106-57-156-127C44 790 0 663 0 543c0-194 126-297 250-297 66 0 121 43 162 43 39 0 101-46 176-46 29 0 131 3 200 97zM554 158c31-37 53-88 53-140 0-7-1-14-2-20-50 2-110 34-146 76-28 32-55 83-55 135 0 8 1 16 2 18 3 1 9 1 14 1 45 0 102-30 134-70z"/></svg>';
+var SLA=null;
+function iosPaint(P){ var g=document.getElementById("pgGbtn"), a=document.getElementById("pgAbtn"); if(g) g.innerHTML="";
+  if(!a) return; a.innerHTML='<button type="button" class="pgbtn" id="pgAnat" style="min-width:240px;font-weight:600;background:#000;color:#fff;border-color:#000">'+ASV+esc(t("aIos"))+'</button>';
+  document.getElementById("pgAnat").onclick=function(){ var b=this, nonce=rnd(16); b.disabled=true;
+    if(!SLA) SLA=P.initialize({apple:{}}).catch(function(e){ SLA=null; throw e; });
+    SLA.then(function(){ return P.login({provider:"apple",options:{scopes:["name","email"],nonce:nonce}}); })
+    .then(function(r){ var x=r&&r.result||{}, tk=x.idToken; if(!tk){ paintLogin(t("lerr")); return; } var p=x.profile||{}, nm=[p.givenName,p.familyName].filter(Boolean).join(" ");
+      login({prov:"apple",cred:tk,nonce:nonce,name:nm}); })
+    .catch(function(e){ var m=String(e&&(e.message||e.code)||e||""); if(/cancel|1001/i.test(m)){ paintLogin(); return; } paintLogin(t("lerr")); }); }; }
+function natPaint(){ var g=document.getElementById("pgGbtn"), a=document.getElementById("pgAbtn"), P=natSL(), PI=natIOS(); if(PI){ iosPaint(PI); return; }
   if(a) a.innerHTML=P?'<div class="pgp">'+esc(t("aNat"))+'</div>':"";
   if(!g) return;
   if(!P){ g.innerHTML='<div class="pgp" style="color:#c92a2a">'+esc(t("natUpd"))+'</div>'; return; }
