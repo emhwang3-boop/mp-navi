@@ -283,7 +283,9 @@ var SHF={ja:"Noto+Serif+JP",zhs:"Noto+Serif+SC",zht:"Noto+Serif+TC"}, SHFL={};
 function shFonts(){ var cj=SHF[lg()]||"Noto+Serif+KR", nm=cj.replace(/\+/g," ");
   if(!SHFL[cj]) SHFL[cj]=new Promise(function(ok){ var k=document.createElement("link"); k.rel="stylesheet"; k.href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family="+cj+":wght@600;900&display=swap"; k.onload=function(){ ok(); }; k.onerror=function(){ ok(); }; document.head.appendChild(k); setTimeout(ok,3000); });
   return SHFL[cj].then(function(){ return nm; }); }
-function shWho(){ var s=sess(); if(!s) return Promise.resolve(null); return post("/npg/me",{sess:s}).then(function(j){ return j&&j.ok&&j.me?[String(j.me.name||"").trim(),String(j.me.email||"").trim()]:null; }).catch(function(){ return null; }); }
+var NMI18N={"황의만":{en:"Euiman Hwang",es:"Euiman Hwang",ja:"黃義晩",zhs:"黄义晚",zht:"黃義晚"}}; NMI18N["의만황"]=NMI18N["황의만"];   /* 11-24 사장님 「타 언어로 쉐어하면 내 이름만 한글 — 영문과 한자로」(옳을 의 義·늦을 만 晩) · 영문 = 명함 */
+function nmL(n){ var m=NMI18N[String(n||"").replace(/\s+/g,"")]; return (m&&m[lg()])||n; }
+function shWho(){ var s=sess(); if(!s) return Promise.resolve(null); return post("/npg/me",{sess:s}).then(function(j){ return j&&j.ok&&j.me?[nmL(String(j.me.name||"").trim()),String(j.me.email||"").trim()]:null; }).catch(function(){ return null; }); }
 function shDrawG(ln){ var title=ln[0], beat=L(SHX.beat), brand=lg()==="ko"?"VIPHola.com 데일리퍼즐":"VIPHola.com Daily Puzzle", url="sponsored by viphola.com";   /* 11-24 사장님 「아래 url 주소를 sponsored by viphola.com 으로」 — 그림 안 글씨라 누를 수는 없고, 결과 페이지(허브 /bs/)에 같은 글 링크 */
   return Promise.all([shImg("img/kr_extra/event_isle.webp?v=1026"),shWho(),shFonts()]).then(function(a){ var isle=a[0], who=a[1]||["",""], F='"Playfair Display","'+a[2]+'",serif', all=[brand,title,beat,who[0],who[1],url].join(" ");
     var fl=(document.fonts&&document.fonts.load)?Promise.all(["600 40px ","700 40px ","900 100px "].map(function(w){ return document.fonts.load(w+F,all).catch(function(){}); })):Promise.resolve();
