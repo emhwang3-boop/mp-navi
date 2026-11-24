@@ -58,13 +58,13 @@
     [].forEach.call(s.querySelectorAll("line"),function(l){ l.style.strokeWidth=(2*Math.max(k,0.5/Math.max(1,ZM.s/4)))+"px"; l.setAttribute("stroke-dasharray",(6*k)+" "+(5*k)); }); }
   function draw(){ try{ dlFix(); }catch(e){} var m=document.getElementById("map"); if(!m) return; var L=document.getElementById("gul");
     if(!on()){ if(L) L.hidden=true; m.classList.remove("gumode"); if(GU.d) chip().hidden=true; GU.key=null; return; }
-    m.classList.add("gumode"); L=layer(); L.hidden=false; var w=m.clientWidth, as=ASP(), W=w*as, H=w, key=LANG+"|"+w+"|"+(GU.g||"");
+    m.classList.add("gumode"); L=layer(); L.hidden=false; var w=m.clientWidth, as=ASP(), W=w*as, H=w, key=LANG+"|"+w+"|"+(GU.g||"")+(window.EVMODE?"|ev":"");
     title(); if(GU.key===key){ if(GU.g){ try{ chunks(); }catch(e){} var sw=String(3/ZM.s); [].forEach.call(L.querySelectorAll("path.gs"),function(p){ p.setAttribute("stroke-width",sw); }); try{ cabLines(); labScale(); }catch(e){} } return; }
     GU.key=key; L.innerHTML=""; var P=GU.d.P;
     if(!GU.g){   // 묶음: 구마다 대표 1개 + 배지 · 명소 없는 구는 이름표 · 서울 밖(북한산·남한산성)은 그림 그대로
       var fs=Math.max(4,w*0.019), labs=[];
       GU.d.gus.forEach(function(o){
-        if(!o.rep||window.GAMEAPP) labs.push(o); if(!o.rep) return;   /* 11-24 사장님 「보물찾기 지도에 서울시 구별이 전부 표시가 안 된다(중구·종로·송파·강남)」「모든 구가 다 보이게 고쳐」 — 게임앱은 대표 그림 있는 구도 이름표 */
+        if(!o.rep||window.GAMEAPP||window.EVMODE) labs.push(o); if(!o.rep) return;   /* 11-24 사장님 「보물찾기 지도에 서울시 구별이 전부 표시가 안 된다(중구·종로·송파·강남)」「모든 구가 다 보이게 고쳐」 — 게임앱은 대표 그림 있는 구도 이름표 · 「투어앱도 고쳐」 투어앱은 게임 중(EVMODE: 보물상자·명소 맞히기)에만 */
         var b=P[o.rep].b, x=b[0]*W, y=b[1]*H, bw=(b[2]-b[0])*W, bh=(b[3]-b[1])*H, e=img(o.rep); e.dataset.g=o.g; e.removeAttribute("data-k"); e.title=LP(o.n); put(e,x,y,bw,bh); L.appendChild(e);
         var n=o.keys.length-1; if(n>0){ var t=document.createElement("div"); t.className="gb"; t.dataset.g=o.g; t.textContent="+"+n; t.title=LP(o.n); t.style.fontSize=fs+"px"; t.style.height=(fs*1.55)+"px"; t.style.padding="0 "+(fs*0.45)+"px"; t.style.borderWidth=Math.max(0.5,fs*0.12)+"px";
           if(GU.d.bz) t.style.zIndex="3";   /* 부산(10-28): 「+N」이 옆 대표 그림에 가리지 않게 — 서울 자료엔 bz 없음 */
