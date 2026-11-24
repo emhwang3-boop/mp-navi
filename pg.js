@@ -24,6 +24,7 @@ var W={
  iosNo:{ko:"아이폰 앱(App Store)은 당분간 지원하지 않습니다. 아이폰에서는 웹 브라우저로 이용해 주세요.",en:"The iPhone app (App Store) is not available for now. On iPhone, please use this website in your web browser.",ja:"iPhoneアプリ（App Store）は当面ご利用いただけません。iPhoneではウェブブラウザでご利用ください。",zhs:"暂不支持iPhone应用（App Store）。在iPhone上请使用网页浏览器访问。",zht:"暫不支援 iPhone App（App Store）。在 iPhone 上請使用網頁瀏覽器瀏覽。",es:"La app para iPhone (App Store) no está disponible por ahora. En iPhone, usa este sitio web desde tu navegador."},
  natUpd:{ko:"이 앱 버전에서는 로그인을 지원하지 않습니다. 앱을 최신 버전으로 업데이트해 주세요.",en:"Sign-in is not supported in this app version. Please update the app to the latest version.",ja:"このアプリのバージョンではログインできません。アプリを最新バージョンに更新してください。",zhs:"此应用版本不支持登录，请将应用更新到最新版本。",zht:"此 App 版本不支援登入，請將 App 更新到最新版本。",es:"Esta versión de la app no admite el inicio de sesión. Actualiza la app a la última versión."},
  // ── 이메일 인증번호 로그인 (사장님 11-08 「로그인·내 예약」 통과 — 배치도 11) ──
+ subG:{ko:"로그인하면 게임 기록이 저장되고, PC·폰 어디서든 이어서 할 수 있어요.",en:"Sign in to save your game records and keep playing on any PC or phone.",ja:"ログインするとゲームの記録が保存され、PCでもスマホでも続きから遊べます。",zhs:"登录后会保存游戏记录，在电脑和手机上都能接着玩。",zht:"登入後會保存遊戲紀錄，在電腦和手機上都能接著玩。",es:"Inicia sesión para guardar tus partidas y seguir jugando en cualquier PC o móvil."},   // 11-24 게임앱(GAMEAPP)은 게임 글로
  sub:{ko:"로그인하면 PC·폰 어디서든 같은 카트·플랜·예약을 볼 수 있어요.",en:"Sign in to see the same cart, plans and bookings on any PC or phone.",ja:"ログインすると、PCでもスマホでも同じカート・プラン・予約を見られます。",zhs:"登录后，在电脑和手机上都能看到同样的购物车、行程和预约。",zht:"登入後，在電腦和手機上都能看到同樣的購物車、行程和預約。",es:"Inicia sesión para ver el mismo carrito, planes y reservas en cualquier PC o móvil."},
  or:{ko:"또는 이메일로",en:"or with email",ja:"またはメールで",zhs:"或使用邮箱",zht:"或使用電子郵件",es:"o con tu correo"},
  emPh:{ko:"이메일 주소",en:"Email address",ja:"メールアドレス",zhs:"电子邮箱",zht:"電子郵件地址",es:"Correo electrónico"},
@@ -87,7 +88,7 @@ function gisLoad(){ if(window.google&&google.accounts&&google.accounts.id) retur
   GIS=new Promise(function(ok,no){ var s=document.createElement("script"); s.src="https://accounts.google.com/gsi/client"; s.async=true; s.onload=ok; s.onerror=function(){ GIS=null; no(); }; document.head.appendChild(s); }); return GIS; }
 var GLOC={ko:"ko",en:"en",ja:"ja",zhs:"zh_CN",zht:"zh_TW",es:"es"};
 function paintLogin(msg){ var I=document.getElementById("pgIn");
-  I.innerHTML=head()+(t("intro")?'<div class="pgp">'+esc(t("intro"))+'</div>':'')+(t("ask")?'<div class="pgp" style="color:var(--ink)">'+esc(t("ask"))+'</div>':'')+(PGS?'':'<div class="pgp">'+esc(t("sub"))+'</div>')+(msg?'<div class="pgp" style="color:#c92a2a">'+esc(msg)+'</div>':'')
+  I.innerHTML=head()+(t("intro")?'<div class="pgp">'+esc(t("intro"))+'</div>':'')+(t("ask")?'<div class="pgp" style="color:var(--ink)">'+esc(t("ask"))+'</div>':'')+(PGS?'':'<div class="pgp">'+esc(t(window.GAMEAPP?"subG":"sub"))+'</div>')+(msg?'<div class="pgp" style="color:#c92a2a">'+esc(msg)+'</div>':'')
     +'<div id="pgGbtn"><button type="button" class="pgbtn" disabled>'+esc(t("load"))+'</button></div><div id="pgAbtn"></div>'
     +(natApp()?'':'<div class="pgp" style="color:var(--ink)">'+esc(t("iosNo"))+'</div>')   /* 아이폰 앱 없음 안내 — 웹만 (사장님 11-04 「가」, 노래방·투어앱 둘 다) */
     +emHtml()+rvHtml()+privHtml();
