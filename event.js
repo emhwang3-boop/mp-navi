@@ -246,7 +246,7 @@ function shLine(){ var c=cur(); if(!c||!c.open||!c.me) return null; var me=c.me,
   if(k==="spot") return [t, (me.ok||0)+"/"+(c.total||10)+" "+L(SHX.spot)];
   if(k==="photo") return [t, L(SHX.photo)];
   return null; }
-function shImg(src){ return new Promise(function(ok){ var i=new Image(); i.onload=function(){ ok(i); }; i.onerror=function(){ ok(null); }; i.src=src; }); }
+/* 11-24 crossOrigin: 게임앱은 그림을 투어앱 주소에서 받아 캔버스가 오염되면 결과 카드가 안 만들어졌다(「결과 공유 먹통」) */ function shImg(src){ return new Promise(function(ok){ var i=new Image(); i.crossOrigin="anonymous"; i.onload=function(){ ok(i); }; i.onerror=function(){ ok(null); }; i.src=src; }); }
 function shName(){ var s=sess(); if(!s) return Promise.resolve(""); return post("/npg/me",{sess:s}).then(function(j){ var nm=j&&j.ok&&j.me?String(j.me.name||"").trim():""; if(!nm) return ""; var a=Array.from(nm); return a.length<=1?a[0]+"***":a[0]+"***"+a[a.length-1]; }).catch(function(){ return ""; }); }
 function shDraw(){ var ln=shLine(); if(!ln) return Promise.resolve(null);
   return Promise.all([shImg("img/kr_extra/event_bb.jpg?v=1026"),shImg("img/kr_extra/event_isle.webp?v=1026"),shName()]).then(function(a){ var bg=a[0], isle=a[1], nm=a[2], S=1080, c=document.createElement("canvas"); c.width=S; c.height=S; var x=c.getContext("2d");
@@ -256,12 +256,12 @@ function shDraw(){ var ln=shLine(); if(!ln) return Promise.resolve(null);
     var F="'Arial Black','Segoe UI','Malgun Gothic','Hiragino Sans','PingFang SC','Microsoft YaHei',sans-serif";
     var fit=function(t,max,size){ x.font="900 "+size+"px "+F; while(x.measureText(t).width>max&&size>30){ size-=4; x.font="900 "+size+"px "+F; } return size; };
     x.textAlign="left"; x.textBaseline="alphabetic";
-    x.fillStyle="#ffd6f4"; x.font="800 40px "+F; x.fillText("MosaicTrip for Korea",70,120);
+    x.fillStyle="#ffd6f4"; x.font="800 40px "+F; x.fillText(GM?(lg()==="ko"?"머니퍼즐투어 데일리퍼즐":"MoneyPuzzle Tour Daily Puzzle"):"MosaicTrip for Korea",70,120);
     x.shadowColor="#ff4fd8"; x.shadowBlur=30; x.fillStyle="#ffffff"; fit(ln[0],940,86); x.fillText(ln[0],70,300);
     x.shadowColor="#ffb000"; x.shadowBlur=26; x.fillStyle="#ffe28a"; fit(ln[1],940,104); x.fillText(ln[1],70,450);
     x.shadowBlur=0; x.fillStyle="#ffffff"; fit(L(SHX.beat),900,70); x.fillText(L(SHX.beat),70,600);
     if(nm){ x.fillStyle="#c9c2e6"; x.font="700 44px "+F; x.fillText("— "+nm,70,680); }
-    x.fillStyle="#39d5ff"; x.font="800 44px "+F; x.fillText("navi.moneypuzzle.co.kr",70,S-70);
+    x.fillStyle="#39d5ff"; x.font="800 44px "+F; x.fillText(GM?"puzzle.moneypuzzle.co.kr":"navi.moneypuzzle.co.kr",70,S-70);
     return c; }); }
 // 결과 공유 (사장님 10-27) — 그림을 허브(/bshare)에 올려 링크 하나로: 미리보기에 결과 그림이 뜨고, 그 쪽에 「코리아 빙고 같이 풀어요」·「투어앱 설치」 단추
 //   카톡(그림+단추 2개) · 왓츠앱 · 라인 · 텔레그램 · 위챗(링크 복사) · 페북 · X · 틱톡·인스타(그림을 폰 공유창으로) · 다른 앱 · 링크 복사 · 그림 저장
@@ -281,7 +281,7 @@ var ELU={ko:["시간 ","분 ","초"],en:["h ","m ","s"],ja:["時間","分","秒"
 function elTxt(ms){ var s=Math.max(0,Math.round((ms||0)/1000)), h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60, u=ELU[lg()]||ELU.en; var t=(h?h+u[0]:"")+(m?m+u[1]:"")+(x||!(h||m)?x+u[2]:""); return t.trim(); }
 var TMX={ko:"걸린 시간",en:"Your time",ja:"経過時間",zhs:"用时",zht:"用時",es:"Tu tiempo"};
 function shareResult(){ shDraw().then(function(c){ if(!c){ alert(L(T.err)); return; }
-  var ln=shLine(), cc=cur(), TOG=L(cc&&cc.kind&&cc.kind!=="bingo"?SHY.join:SHY.together), APP="https://navi.moneypuzzle.co.kr/", txt=ln[0]+" · "+ln[1]+" — "+L(SHX.beat),   /* 아래 줄(TOG) 뺌 — 같은 말 두 번 (사장님 10-29) */ d=c.toDataURL("image/png"), jp=c.toDataURL("image/jpeg",0.8);
+  var ln=shLine(), cc=cur(), TOG=L(cc&&cc.kind&&cc.kind!=="bingo"?SHY.join:SHY.together), APP=GM?"https://puzzle.moneypuzzle.co.kr/":"https://navi.moneypuzzle.co.kr/", txt=ln[0]+" · "+ln[1]+" — "+L(SHX.beat),   /* 아래 줄(TOG) 뺌 — 같은 말 두 번 (사장님 10-29) */ d=c.toDataURL("image/png"), jp=c.toDataURL("image/jpeg",0.8);
   var BT='width:100%;border:0;border-radius:12px;padding:11px 6px;font-weight:900;font-size:14px;color:#fff;cursor:pointer';
   var btn=function(id,bg,lab,fg){ return '<button type="button" data-sh="'+id+'" style="'+BT+';background:'+bg+(fg?';color:'+fg:'')+'">'+esc(lab)+'</button>'; };
   var s=sheet('<h3>'+esc(L(SHX.btn))+'</h3><img src="'+d+'" alt="" style="width:100%;border-radius:12px;margin:6px 0 8px"><div id="shMsg" style="font-size:13px;color:#888;text-align:center;min-height:18px">'+esc(L(SHY.prep))+'</div>'
@@ -292,7 +292,7 @@ function shareResult(){ shDraw().then(function(c){ if(!c){ alert(L(T.err)); retu
     +'<a download="money-puzzle-event.png" href="'+d+'" style="'+BT+';display:block;text-align:center;text-decoration:none;background:#fff;color:#2b2b2b;border:1.5px solid #e0d6cc;box-sizing:border-box">'+esc(L(SHX.save))+'</a></div>'
     +'<button type="button" data-sh="x0" style="display:block;width:100%;margin-top:8px;border:0;background:none;font-weight:700;color:#888">'+esc(L(T.x))+'</button>');
   var S={page:APP,img:"",id:""}, msg=function(t){ var m=s.querySelector("#shMsg"); if(m) m.textContent=t||""; };
-  post("/bshare",{img:jp,t:ln[0]+" · "+ln[1],d:L(SHX.beat),l:lg()}).then(function(j){ if(j&&j.ok){ S.page=j.page+"?l="+lg(); S.img=j.img; S.id=j.id; } msg(""); }).catch(function(){ msg(""); });
+  post("/bshare",{img:jp,t:ln[0]+" · "+ln[1],d:L(SHX.beat),l:lg(),src:GM?"puzzle":""}).then(function(j){ if(j&&j.ok){ S.page=j.page+"?l="+lg(); S.img=j.img; S.id=j.id; } msg(""); }).catch(function(){ msg(""); });
   var go=function(u){ window.open(u,"_blank","noopener"); }, E=encodeURIComponent, cp=function(t,ok){ try{ navigator.clipboard.writeText(t).then(function(){ msg(ok); },function(){ prompt("",t); }); }catch(e){ prompt("",t); } };
   var file=function(){ return new Promise(function(r){ c.toBlob(function(b){ r(new File([b],"money-puzzle-event.png",{type:"image/png"})); },"image/png"); }); };
   [].forEach.call(s.querySelectorAll("[data-sh]"),function(b){ b.onclick=function(){ var k=b.dataset.sh, u=S.page, full=txt+"\n"+u;
