@@ -31,7 +31,7 @@ function gcVal(c){ if(!c||!c.me) return null; var me=c.me, k=c.kind||"bingo";
   if(k==="thunt") return me.lv>0?me.lv:null; return null; }
 function gcSync(){ if(!IOSAPP) return; [B,SD,DS,TH].forEach(function(c){ var v=gcVal(c), id=c&&GCID[c.kind||"bingo"]; if(!id||v==null) return; var key="pz_gc_"+id+"_"+(c.day||""), last=null; try{ last=localStorage.getItem(key); }catch(e){} if(String(v)===last) return;
   gcIn().then(function(ok){ var G=capP("GameCenter"); if(!ok||!G) return; return G.submitScore({leaderboardId:id,score:v}).then(function(){ try{ localStorage.setItem(key,String(v)); }catch(e){} }); }).catch(function(){}); }); }
-function gcShow(){ var c=cur(), id=GCID[(c&&c.kind)||"bingo"]; gcIn().then(function(){ var G=capP("GameCenter"); if(G) return G.showLeaderboard({leaderboardId:id}); }).catch(function(){}); }
+function gcShow(){ var c=cur(), id=GCID[(c&&c.kind)||"bingo"]; gcIn().then(function(){ var G=capP("GameCenter"); if(G) return G.showLeaderboard({leaderboardId:id,timeScope:(c&&c.kind)==="thunt"?"allTime":"today"}); }).catch(function(){}); }   /* 보물상자는 쌓이는 게임 = 전체 기간 */
 var NTF={on:{ko:"🔔 매일 새 판 알림 받기",en:"🔔 Remind me of each new daily puzzle",ja:"🔔 毎日の新しいパズルを通知",zhs:"🔔 每天新题提醒",zht:"🔔 每天新題提醒",es:"🔔 Avisarme de cada nuevo reto diario"},off:{ko:"🔕 새 판 알림 끄기",en:"🔕 Turn off daily reminders",ja:"🔕 通知をオフにする",zhs:"🔕 关闭每日提醒",zht:"🔕 關閉每日提醒",es:"🔕 Desactivar avisos diarios"},body:{ko:"오늘의 새 판이 열렸어요! 빙고·스도쿠·명소 맞히기",en:"Today's new puzzles are ready! Bingo · Sudoku · Spot the Sight",ja:"今日の新しいパズルが始まりました！ビンゴ・ナンプレ・名所当て",zhs:"今天的新题来了！宾果 · 数独 · 猜景点",zht:"今天的新題來了！賓果 · 數獨 · 猜景點",es:"¡Ya están los retos de hoy! Bingo · Sudoku · Adivina el lugar"}};
 function ntOn(){ try{ return localStorage.getItem("pz_nt")==="1"; }catch(e){ return false; } }
 function ntH(){ return IOSAPP?'<div class="egnt"><button type="button" id="evNt">'+esc(L(ntOn()?NTF.off:NTF.on))+'</button></div>':""; }
@@ -151,7 +151,8 @@ var TABJ={bingo:{ja:["今日の","ビンゴ"],zhs:["今日","宾果"],zht:["今�
 var TAB="bingo"; try{ var _t0=ls("mpv_ev_tab"); if(_t0==="ev"||_t0==="sd"||_t0==="dsp"||_t0==="th") TAB=_t0; }catch(e){}
 function tabList(){ var a=[]; if(B) a.push(["bingo",TABS.bingo]); if(SD) a.push(["sd",TABS.sd]); if(DS) a.push(["dsp",TABS.dsp]); if(TH) a.push(["th",TABS.th]); if(E) a.push(["ev",TABS.ev]); return a; }   // 빙고·스도쿠·이번 주 이벤트 (10-28)
 function tabsH(){ var a=tabList(); if(a.length<2) return ""; return '<div class="etab">'+a.map(function(t){ return '<button type="button" data-tab="'+t[0]+'" class="'+(TAB===t[0]?"on":"")+'">'+(t[0]==="bingo"&&lg()==="ko"?'<span class="etj"><span>오늘의</span><span>빙고</span></span>':t[0]==="dsp"&&lg()==="ko"?'<span class="etj"><span>오늘의</span><span>명소</span><span>맞히기</span></span>':t[0]==="sd"&&lg()==="ko"?'<span class="etj"><span class="etjs"><i>오</i><i>늘</i><i>의</i></span><span class="etjs"><i>스</i><i>도</i><i>쿠</i></span></span>':TABJ[t[0]]&&TABJ[t[0]][lg()]?'<span class="etj">'+TABJ[t[0]][lg()].map(function(x){ return '<span>'+esc(x)+'</span>'; }).join("")+'</span>':esc(L(t[1])))+(t[0]==="ev"&&E?'<small>'+esc(L(KT[E.kind]||EVT))+'</small>':'')+'</button>'; }).join("")+'</div>'; }
-function render(){ try{ gcSync(); }catch(e){} if(TAB==="ev"&&E) evPaint(); else if(TAB==="sd"&&SD) sdPaint(); else if(TAB==="dsp"&&DS) dsPaint(); else if(TAB==="th"&&TH) thPaint(); else if(B) paint(); else if(SD) sdPaint(); else if(DS) dsPaint(); else if(TH) thPaint(); else if(E) evPaint(); }
+function tabTop(){ try{ var hd=document.querySelector("#evBox .ehd"), t=document.querySelector("#evBox .etab"); if(hd&&t) t.style.top=hd.offsetHeight+"px"; }catch(e){} }   /* 11-24 게임 단추 줄이 멈추는 높이 = 제목 줄 실제 높이 (두 줄 제목·등급 마크 크기에 따라 달라짐 — 고정 58px 이면 가려짐) */
+function render(){ try{ gcSync(); }catch(e){} setTimeout(tabTop,0); if(TAB==="ev"&&E) evPaint(); else if(TAB==="sd"&&SD) sdPaint(); else if(TAB==="dsp"&&DS) dsPaint(); else if(TAB==="th"&&TH) thPaint(); else if(B) paint(); else if(SD) sdPaint(); else if(DS) dsPaint(); else if(TH) thPaint(); else if(E) evPaint(); }
 var TX3={
  hint:{ko:"힌트",en:"Hint",ja:"ヒント",zhs:"提示",zht:"提示",es:"Pista"},
  day:{ko:"일째",en:"Day",ja:"日目",zhs:"第几天",zht:"第幾天",es:"Día"},
@@ -481,6 +482,7 @@ function open(){ close(); var b=document.createElement("div"); b.id="evBox"; b.i
     +(GM?'<div class="egsp"><a href="https://viphola.com/" target="_blank" rel="noopener">sponsored by viphola.com</a></div>':'')+ntH()+'<div id="evFoot" class="egfoot"></div></div>';
   document.body.appendChild(b); document.documentElement.style.overflow="hidden"; var bx=b.querySelector(".ex"); if(bx) bx.onclick=close;
   var bs=b.querySelector(".egsh"); if(bs) bs.onclick=gmShare;
+  try{ var hdo=b.querySelector(".ehd"); if(hdo&&window.ResizeObserver) new ResizeObserver(tabTop).observe(hdo); }catch(e){}   /* 제목 줄 높이가 바뀌면(등급 마크 작아짐·언어) 단추 줄 위치도 */
   var nb=b.querySelector("#evNt"); if(nb) nb.onclick=function(){ var on=!ntOn(); nb.disabled=true; ntSet(on).then(function(r){ nb.disabled=false; nb.textContent=L(r?NTF.off:NTF.on); }); };   /* 11-24 아이폰 앱 매일 새 판 알림 */
   if(IOSAPP) setTimeout(gcIn,1500);   /* Game Center 로그인(환영 배너) */
   var bl=b.querySelector(".eglang"); if(bl) bl.onchange=function(){ var v=bl.value; try{ if(window.setLang) window.setLang(v); }catch(e){} };
