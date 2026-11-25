@@ -242,7 +242,7 @@ function evPaint(){ var e=document.getElementById("evBody"); if(!e||!E) return; 
 // 보물상자 — 지도 누르기
 var MODE=null;
 function modeBar(html){ var o=document.getElementById("evMode"); if(!html){ if(o) o.remove(); return null; } if(!o){ o=document.createElement("div"); o.id="evMode"; o.style.cssText="position:fixed;left:50%;top:calc(8px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:2147483002;width:min(94vw,480px);background:#fff8f0;color:#2b2b2b;border:2px solid #ff7a1a;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);padding:10px 12px;font:600 14px/1.45 'Segoe UI','Malgun Gothic',system-ui,sans-serif"; document.body.appendChild(o); } o.innerHTML=html; return o; }
-function modeEnd(){ MODE=null; modeBar(null); }
+function modeEnd(){ MODE=null; modeBar(null); try{ zEnd(); }catch(e){} }
 try{ Object.defineProperty(window,"EVMODE",{get:function(){ return MODE; },configurable:true}); }catch(e){}   /* 11-24 gu.js 가 게임(지도 누르기) 중인지 앎 — 게임 중 서울 지도엔 구 이름 전부 (사장님 「투어앱도 고쳐」) */
 function treasureMode(){ close(); MODE="treasure"; try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){}
   var m=document.getElementById("map"); if(m) try{ m.scrollIntoView({behavior:"smooth",block:"center"}); }catch(e){}
@@ -262,7 +262,7 @@ var SQ=null, ST=null, SPD=0, DSN=0;   // DSN = 오늘의 명소 맞히기 지금
 function spotStart(){ post("/npg/ev/spot/start",{sess:sess(),l:lg()}).then(function(j){ if(!j||!j.ok){ alert(L(T.err)); return; } if(j.done){ load(); return; } close(); MODE="spot"; SPD=0; spotShow(j.q); try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){} }).catch(function(){ alert(L(T.err)); }); }
 function spotShow(q){ SQ=q; if(!q){ modeEnd(); open(); return; } clearInterval(ST);
   var o=modeBar('<div style="display:flex;gap:10px;align-items:center"><img src="'+q.img+'" alt="" style="width:110px;height:84px;object-fit:contain;background:#fff;border-radius:8px;flex:0 0 auto"><div style="flex:1"><b>'+(q.i+1)+' / '+q.total+'</b> · <span id="evSt" style="color:#e8322f;font-weight:900"></span><div style="font-size:13px">'+esc(L(TX3.smode))+(q.gu?' · '+esc(L({ko:q.gu.ko||"",en:q.gu.en||"",ja:q.gu.ja||"",zhs:q.gu.zhs||"",zht:q.gu.zht||"",es:q.gu.en||""})):'')+'</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px"><button type="button" id="evSk" style="border:1px solid #ddd;background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.skip))+'</button><button type="button" id="evMq" style="border:1px solid #ddd;background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.quit))+'</button>'+(SPD&&DSN<((DS&&DS.max)||12)?'<button type="button" id="evDn" style="border:1px solid #ff7a1a;background:#fff;color:#ff7a1a;border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer">'+esc(L(DST.nw))+'</button>':'')+'</div></div></div>');   // 11-25 사장님 「명소맞히기에도 그만하기 버튼을 넣어줘」「새판 버튼으로 판을 버리는 버튼」
-  var end=Date.now()+q.left; q._end=end; var tick=function(){ var s=Math.max(0,Math.ceil((end-Date.now())/1000)), el=document.getElementById("evSt"); if(el) el.textContent=s+"s"; if(s<=0){ clearInterval(ST); spotAns("",1); } }; tick(); ST=setInterval(tick,500);
+  var end=Date.now()+q.left; q._end=end; var tick=function(){ var s=Math.max(0,Math.ceil((end-Date.now())/1000)), el=document.getElementById("evSt"); if(el) el.textContent=s+"s"; if(s<=0){ clearInterval(ST); spotAns("",1); return; } zSpotTick(q,end); }; if(SPD&&q.z) zGo(q.z); tick(); ST=setInterval(tick,500);   // 11-25 확대 단계 (10초마다 허브에 묻는다)
   o.querySelector("#evSk").onclick=function(){ spotAns("",1); };
   o.querySelector("#evMq").onclick=function(){ clearInterval(ST); modeEnd(); open(); };   // 그만하기 = 게임 창으로 (판은 그대로 — 「이어서 하기」)
   var dn=o.querySelector("#evDn"); if(dn) dn.onclick=dsNew; }
@@ -696,7 +696,53 @@ function sdCheck(){ if(!SDG||SDG.indexOf(0)>=0){ toast(L(SDT.fill),"#888"); retu
 document.addEventListener("keydown",function(ev){ if(!box()||TAB!=="sd"||!SD||!SD.me||SD.me.done||!SD.puz) return; var k=ev.key;
   if(/^[1-9]$/.test(k)){ sdPut(+k); ev.preventDefault(); } else if(k==="Backspace"||k==="Delete"||k==="0"){ sdPut(0); ev.preventDefault(); }
   else if(SDSEL>=0&&/^Arrow/.test(k)){ var r=Math.floor(SDSEL/9), q=SDSEL%9; if(k==="ArrowUp") r=(r+8)%9; else if(k==="ArrowDown") r=(r+1)%9; else if(k==="ArrowLeft") q=(q+8)%9; else q=(q+1)%9; SDSEL=r*9+q; sdRepaintGrid(); ev.preventDefault(); } });
-// 오늘의 명소 맞히기 (사장님 10-29 「준비한 게임을 그냥 골라서 할 수 있게 다 올려줘」) — 스도쿠처럼 매일 판 탭. 문제·정답·시간은 허브(/npg/dsp/*), 푸는 화면은 주간 명소 맞히기(spotShow) 그대로
+// ── 11-25 사장님 「힌트 한개마다 줌인 하나」「더 이상 줄일 데가 없으면 그 장소를 중심으로」「그 장소 포함 주변 그림들의 이름」
+//   허브가 준 확대 단계 z = {v:지도, g:구 화면, b:정답 그림 상자(확대 단계부터), t:확대 정도 0~1, o:가운데를 정답에서 비킨 정도, nm:이름표}
+//   보물상자 = 힌트 n개면 n번째 단계(thQ) · 명소 맞히기 = 지역 지도부터 10초마다 한 단계(/npg/dsp/zoom) · 이름표는 모양이 모두 같다(정답 표시 아님)
+var ZG={last:"",raf:0,lab:null,pl:0,tk:0};
+function zEnd(){ ZG.tk++; ZG.last=""; try{ cancelAnimationFrame(ZG.raf); }catch(e){} zLab(null); }
+function zReady(z,cb,n){ n=n||0; var ok=window.VIEW===z.v&&(!z.g||(window.GU&&GU.all&&GU.all[z.v])); if(ok||n>50) return cb(); setTimeout(function(){ zReady(z,cb,n+1); },120); }
+function zHome(){ try{ var w0=document.getElementById("map").clientWidth, c=CITY[window.VIEW], s0=ZB(); zTo(s0,w0/2-((c&&c.fx)||0.5)*w0*((c&&c.aspect)||1)*s0,0); }catch(e){} }
+function zGo(z){ if(!z||!z.v) return; var key=JSON.stringify(z); if(key===ZG.last) return; ZG.last=key; var tk=++ZG.tk; zLab(null);
+  try{ if(window.DET) detSet(false); }catch(e){}
+  var g0=(window.GU&&GU.g)||"";
+  if(z.v==="kr"){ if(g0) try{ guBack(); }catch(e){} if(window.VIEW!=="kr") viewSet("kr"); else zHome(); return; }
+  if(window.VIEW!==z.v){ if(g0) try{ guBack(); }catch(e){} g0=""; viewSet(z.v); }
+  zReady(z,function(){ if(tk!==ZG.tk) return;
+    if(z.g&&(!z.b||g0!==z.g)) try{ guEnter(z.g); }catch(e){}   // 구 화면 단계 = 구 화면 처음 모습 · 확대 단계인데 아직 구 밖이면 먼저 들어간다
+    else if(!z.g&&window.GU&&GU.g) try{ guBack(); }catch(e){}
+    if(z.b) setTimeout(function(){ if(tk===ZG.tk) zFit(z,tk); },z.g&&g0!==z.g?300:60);
+    else if(!z.g) zHome(); }); }
+function zVis(){ var m=document.getElementById("map"), r=m.getBoundingClientRect(), bar=document.getElementById("evMode"), t=Math.max(r.top,bar?bar.getBoundingClientRect().bottom+6:r.top), b=Math.min(r.bottom,window.innerHeight||r.bottom);   // 문제 창(위)에 가리지 않는 지도 칸 (지도 안쪽 좌표)
+  if(b-t<80){ t=r.top; b=Math.min(r.bottom,window.innerHeight||r.bottom); } return {y0:t-r.top,y1:b-r.top,h:b-t}; }
+function zFit(z,tk){ var m=document.getElementById("map"); if(!m) return; var w=m.clientWidth, as=ASP(), gu=!!(z.g&&window.GU&&GU.g===z.g&&GU.zmax), vs=zVis();
+  var s0=gu?GU.zmax/4:ZB(), sf=gu?s0*2.5:Math.min(ZMAX(),s0*2.2); if(!(sf>s0)) sf=s0;   // 끝 단계 = 그 그림과 주변 그림 몇 개가 한 화면에
+  var s=s0*Math.pow(sf/s0,z.t||1), bx=(z.b[0]+z.b[2])/2, by=(z.b[1]+z.b[3])/2, o=z.o||[0,0], cx=bx+o[0]/(2*as*s), cy=by+o[1]*vs.h/(2*w*s);
+  zTo(s,w/2-cx*w*as*s,(vs.y0+vs.y1)/2-cy*w*s,function(){ if(z.nm&&tk===ZG.tk) zLab(z); }); }
+function zTo(s,tx,ty,done){ try{ cancelAnimationFrame(ZG.raf); }catch(e){} var a={s:ZM.s,tx:ZM.tx,ty:ZM.ty}, t0=Date.now(), D=500;
+  var f=function(){ var k=Math.min(1,(Date.now()-t0)/D), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; ZM={s:a.s*Math.pow(s/a.s,e),tx:a.tx+(tx-a.tx)*e,ty:a.ty+(ty-a.ty)*e}; try{ zApply(); }catch(x){}
+    if(k<1){ ZG.raf=requestAnimationFrame(f); return; } try{ lodAuto(); }catch(x){} if(done) done(); }; f(); }
+function zNamesLoad(cb){ if(ZG.pl) return cb(); var ids=[]; for(var id in CITY) if(CITY[id]&&CITY[id].data) ids.push(id);   // 이름만 받는다 — mapLoad 는 전국 지도 누름 자리(HIT)를 덮을 수 있어 안 쓴다
+  Promise.all(ids.map(function(id){ return (MAPD[id]||jget("maps/"+id+".json")).then(function(d){ var pl=(d&&d.places)||{}; for(var k in pl) if(!PLACES[k]) PLACES[k]=pl[k]; },function(){}); })).then(function(){ ZG.pl=1; cb(); },function(){ cb(); }); }
+function zLab(z){ var old=document.getElementById("gzl"); if(old) old.remove(); ZG.lab=null; if(!z) return; var key=JSON.stringify(z);
+  zNamesLoad(function(){ if(ZG.last!==key) return; var m=document.getElementById("map"); if(!m) return;
+    var w=m.clientWidth, vs=zVis(), W=w*ASP(), H=w, src={}, gu=!!(z.g&&window.GU&&GU.g===z.g);
+    if(gu) (GU.d&&GU.d.gus||[]).forEach(function(o){ if(o.g===z.g) src=o.ic||{}; }); else { var c=CITY[window.VIEW]; src=(c&&c.spots)||{}; }
+    var bx=(z.b[0]+z.b[2])/2, by=(z.b[1]+z.b[3])/2, seen={}, a=[];
+    for(var k in src){ var k0=k.split("@")[0], b=src[k]; if(k0==="adinq"||k0==="mpstat"||seen[k0]||!PLACES[k0]) continue; var cx=(b[0]+b[2])/2, cy=(b[1]+b[3])/2, sx=ZM.tx+cx*W*ZM.s, sy=ZM.ty+cy*H*ZM.s;
+      if(sx<-8||sx>w+8||sy<vs.y0-8||sy>vs.y1+8) continue; seen[k0]=1; a.push({k:k0,b:b,d:Math.hypot((cx-bx)*ASP(),cy-by)}); }
+    a.sort(function(x,y){ return x.d-y.d; }); a=a.slice(0,14);
+    var Ly=document.createElement("div"); Ly.id="gzl"; Ly.style.cssText="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;z-index:25";   // 지도(#map) 위 화면 좌표 칸 — 크게 확대한 #mz 안에 넣으면 그려지는 자리가 어긋났다
+    a.forEach(function(x){ var t=document.createElement("div"), b=x.b; t.className="gzn"; t.textContent=L(PLACES[x.k]); t.dataset.fx=(b[0]+b[2])/2; t.dataset.fy=(b[1]+b[3])/2+(b[3]-b[1])*0.22; t.style.cssText="position:absolute;left:0;top:0;background:rgba(20,24,32,.72);color:#fff;font:800 12px/1.25 system-ui,sans-serif;padding:3px 8px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.3)"; Ly.appendChild(t); });
+    m.appendChild(Ly); ZG.lab={v:window.VIEW,g:(window.GU&&GU.g)||""}; zLabScale();
+    var put=[]; [].forEach.call(Ly.children,function(t){ for(var n=0;n<4;n++){ var r=t.getBoundingClientRect(); if(!put.some(function(p){ return r.left<p.right&&r.right>p.left&&r.top<p.bottom&&r.bottom>p.top; })) break; t.dataset.dy=(+t.dataset.dy||0)+r.height+2; zLabScale(); } put.push(t.getBoundingClientRect()); }); }); }   // 겹치는 이름표는 아래로 비킴 (가까운 그림 먼저)
+function zLabScale(){ var Ly=document.getElementById("gzl"); if(!Ly) return; if(!ZG.lab||ZG.lab.v!==window.VIEW||ZG.lab.g!==((window.GU&&GU.g)||"")){ Ly.remove(); ZG.lab=null; return; }   // 다른 지도로 가면 이름표 치움
+  var w=document.getElementById("map").clientWidth, W=w*ASP(), H=w; [].forEach.call(Ly.children,function(t){ t.style.left=(ZM.tx+(+t.dataset.fx)*W*ZM.s)+"px"; t.style.top=(ZM.ty+(+t.dataset.fy)*H*ZM.s)+"px"; t.style.transform="translate(-50%,"+(2+(+t.dataset.dy||0))+"px)"; }); }
+function zHook(){ var _ld=window.lodDraw; if(typeof _ld!=="function"||_ld._gz) return; var f=function(){ var r=_ld.apply(this,arguments); try{ zLabScale(); }catch(e){} return r; }; f._gz=1; window.lodDraw=f; }   // 확대·이동할 때마다 이름표 크기 그대로
+zHook(); window.addEventListener("load",function(){ setTimeout(zHook,0); });
+function zSpotTick(q,end){ if(!SPD||!q.zl||SQ!==q||q._zb) return; var zi=q.zi||0; if(zi>=q.zl-1) return; var want=Math.min(q.zl-1,1+Math.floor((60000-(end-Date.now()))/10000)); if(want<=zi||Date.now()<(q._zn||0)) return;
+  q._zb=1; post("/npg/dsp/zoom",{sess:sess(),qi:q.i}).then(function(j){ q._zb=0; if(SQ!==q||MODE!=="spot") return; if(j&&j.ok&&j.zi>zi){ q.zi=j.zi; q.z=j.z; zGo(j.z); } else q._zn=Date.now()+2000; }).catch(function(){ q._zb=0; q._zn=Date.now()+3000; }); }
+// 오늘의 명소 맞히기 (사장님 10-29「준비한 게임을 그냥 골라서 할 수 있게 다 올려줘」) — 스도쿠처럼 매일 판 탭. 문제·정답·시간은 허브(/npg/dsp/*), 푸는 화면은 주간 명소 맞히기(spotShow) 그대로
 var DS=null;
 var DST={res:{ko:"{t}문제 중 {n}개!",en:"{n} out of {t}!",ja:"{t}問中{n}問正解！",zhs:"{t}题中答对{n}题！",zht:"{t}題中答對{n}題！",es:"¡{n} de {t}!"},
  go2:{ko:"이어서 하기",en:"Continue",ja:"続きから",zhs:"继续",zht:"繼續",es:"Continuar"},
@@ -724,7 +770,7 @@ function dsPaint(){ var e=document.getElementById("evBody"); if(!e||!DS) return;
   h+='<div class="ecard"><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   e.innerHTML=h; wire(e); }
 function dsStart(force){ var me=DS&&DS.me; if(force&&me&&me.st&&!me.done&&!confirm(L(DST.ask))) return; var b=document.querySelector('#evBody [data-ev="'+(force?"dsnew":"dsgo")+'"]'); if(b) b.disabled=true;
-  post("/npg/dsp/start",{sess:sess(),l:lg(),force:force?1:0}).then(function(j){ if(j&&j.ok&&j.q){ close(); MODE="spot"; SPD=1; DSN=j.n||0; spotShow(j.q); try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){} return; }
+  post("/npg/dsp/start",{sess:sess(),l:lg(),force:force?1:0}).then(function(j){ if(j&&j.ok&&j.q){ close(); MODE="spot"; SPD=1; DSN=j.n||0; spotShow(j.q); if(!j.q.z) try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){} return; }   // 확대 단계가 오면 그 지도로 (11-25)
     if(j&&j.ok&&j.done){ fxWin(dsRes(j.okN,j.total)); load(); return; } if(j&&j.err==="all"){ load(); return; } alert(L(T.err)); if(b) b.disabled=false; }).catch(function(){ alert(L(T.err)); if(b) b.disabled=false; }); }
 // 보물상자 (레벨 판, 사장님 10-29) — 판마다 힌트 1개 → 「다음 힌트」 최대 10개 → 지도에서 그 명소 그림 누르기. 정답·힌트·레벨은 허브(/npg/th/*)만 안다
 var TH=null, TQ=null, TBUSY=0;
@@ -767,6 +813,7 @@ function thShow(q){ TQ=q; var hs=q.hints||[], n=hs.length;
     +'<div style="font-size:12.5px;color:#666">'+esc(L(THT.tap))+'</div><div id="evMm" style="color:#e8322f;font-weight:700;min-height:1.2em"></div>'
     +'<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px"><button type="button" id="evThN" style="border:0;background:#ff7a1a;color:#fff;border-radius:999px;padding:6px 14px;font-weight:800;cursor:pointer"'+(n>=(q.max||10)?' disabled':'')+'>'+esc(L(THT.nh))+'</button><button type="button" id="evMq" style="border:1px solid #ddd;background:#fff;border-radius:999px;padding:5px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.quit))+'</button><button type="button" id="evThR" style="border:1px solid #ff7a1a;background:#fff;color:#ff7a1a;border-radius:999px;padding:5px 12px;font-weight:800;cursor:pointer">'+esc(L(DST.nw))+'</button></div>');   // 11-25 새 판 = 레벨 1부터 다시 (사장님 「나」)
   var hh=document.getElementById("evThH"); if(hh) hh.scrollTop=hh.scrollHeight;
+  if(q.z) zGo(q.z);   // 11-25 힌트 n개 = 확대 n번째 단계
   o.querySelector("#evMq").onclick=function(){ modeEnd(); open(); };
   o.querySelector("#evThR").onclick=thNew;
   o.querySelector("#evThN").onclick=function(){ if(TBUSY) return; TBUSY=1; post("/npg/th/hint",{sess:sess(),l:lg()}).then(function(j){ TBUSY=0; if(!j||!j.ok){ modeEnd(); open(); return; } var q2=j.q||{}; if(q2.done||q2.wait){ modeEnd(); open(); return; } thShow(q2); }).catch(function(){ TBUSY=0; var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(T.err); }); }; }
