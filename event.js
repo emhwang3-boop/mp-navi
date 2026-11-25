@@ -258,12 +258,17 @@ document.addEventListener("click",function(ev){ if(MODE!=="treasure") return; va
     if(j.err==="lock"||j.lock){ if(mm) mm.textContent=(j.far==="near"?L(TX3.near)+" ":"")+L(TX3.miss); var t=setInterval(function(){ var s=Math.ceil((j.lock-Date.now())/1000); if(!document.getElementById("evMm")){ clearInterval(t); return; } if(s<=0){ clearInterval(t); document.getElementById("evMm").textContent=""; return; } document.getElementById("evMm").textContent=(j.far==="near"?L(TX3.near)+" ":"")+L(TX3.wait)+" "+s+"s"; },1000); }
   }).catch(function(){ if(mm) mm.textContent=L(T.err); }); },true);
 // 명소 맞히기 — 사진 보며 지도 그림 누르기
-var SQ=null, ST=null, SPD=0;   // SPD = 오늘의 명소 맞히기(매일 판, 10-29)면 1
+var SQ=null, ST=null, SPD=0, DSN=0;   // DSN = 오늘의 명소 맞히기 지금 몇 번째 판   // SPD = 오늘의 명소 맞히기(매일 판, 10-29)면 1
 function spotStart(){ post("/npg/ev/spot/start",{sess:sess(),l:lg()}).then(function(j){ if(!j||!j.ok){ alert(L(T.err)); return; } if(j.done){ load(); return; } close(); MODE="spot"; SPD=0; spotShow(j.q); try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){} }).catch(function(){ alert(L(T.err)); }); }
 function spotShow(q){ SQ=q; if(!q){ modeEnd(); open(); return; } clearInterval(ST);
-  var o=modeBar('<div style="display:flex;gap:10px;align-items:center"><img src="'+q.img+'" alt="" style="width:110px;height:84px;object-fit:contain;background:#fff;border-radius:8px;flex:0 0 auto"><div style="flex:1"><b>'+(q.i+1)+' / '+q.total+'</b> · <span id="evSt" style="color:#e8322f;font-weight:900"></span><div style="font-size:13px">'+esc(L(TX3.smode))+(q.gu?' · '+esc(L({ko:q.gu.ko||"",en:q.gu.en||"",ja:q.gu.ja||"",zhs:q.gu.zhs||"",zht:q.gu.zht||"",es:q.gu.en||""})):'')+'</div><button type="button" id="evSk" style="margin-top:4px;border:1px solid #ddd;background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.skip))+'</button></div></div>');
+  var o=modeBar('<div style="display:flex;gap:10px;align-items:center"><img src="'+q.img+'" alt="" style="width:110px;height:84px;object-fit:contain;background:#fff;border-radius:8px;flex:0 0 auto"><div style="flex:1"><b>'+(q.i+1)+' / '+q.total+'</b> · <span id="evSt" style="color:#e8322f;font-weight:900"></span><div style="font-size:13px">'+esc(L(TX3.smode))+(q.gu?' · '+esc(L({ko:q.gu.ko||"",en:q.gu.en||"",ja:q.gu.ja||"",zhs:q.gu.zhs||"",zht:q.gu.zht||"",es:q.gu.en||""})):'')+'</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px"><button type="button" id="evSk" style="border:1px solid #ddd;background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.skip))+'</button><button type="button" id="evMq" style="border:1px solid #ddd;background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.quit))+'</button>'+(SPD&&DSN<((DS&&DS.max)||12)?'<button type="button" id="evDn" style="border:1px solid #ff7a1a;background:#fff;color:#ff7a1a;border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer">'+esc(L(DST.nw))+'</button>':'')+'</div></div></div>');   // 11-25 사장님 「명소맞히기에도 그만하기 버튼을 넣어줘」「새판 버튼으로 판을 버리는 버튼」
   var end=Date.now()+q.left; q._end=end; var tick=function(){ var s=Math.max(0,Math.ceil((end-Date.now())/1000)), el=document.getElementById("evSt"); if(el) el.textContent=s+"s"; if(s<=0){ clearInterval(ST); spotAns("",1); } }; tick(); ST=setInterval(tick,500);
-  o.querySelector("#evSk").onclick=function(){ spotAns("",1); }; }
+  o.querySelector("#evSk").onclick=function(){ spotAns("",1); };
+  o.querySelector("#evMq").onclick=function(){ clearInterval(ST); modeEnd(); open(); };   // 그만하기 = 게임 창으로 (판은 그대로 — 「이어서 하기」)
+  var dn=o.querySelector("#evDn"); if(dn) dn.onclick=dsNew; }
+function dsNew(){ if(MODE!=="spot"||!SPD) return; if(!confirm(L(DST.ask))) return; clearInterval(ST); var b=document.getElementById("evDn"); if(b) b.disabled=true;   // 새 판 = 지금 판 버리고(기록 안 됨) 새 판 바로 시작
+  post("/npg/dsp/start",{sess:sess(),l:lg(),force:1}).then(function(j){ if(j&&j.ok&&j.q){ DSN=j.n||DSN; spotShow(j.q); return; }
+    modeEnd(); if(j&&j.ok&&j.done) fxWin(dsRes(j.okN,j.total)); else if(!(j&&j.err==="all")) alert(L(T.err)); open(); }).catch(function(){ modeEnd(); alert(L(T.err)); open(); }); }
 function spotAns(k,skip){ if(MODE!=="spot") return; clearInterval(ST); post(SPD?"/npg/dsp/ans":"/npg/ev/spot/ans",{sess:sess(),k:k,skip:skip?1:0,l:lg()}).then(function(j){ if(!j||!j.ok){ modeEnd(); open(); return; }
   if(!skip) toast(j.right?L(T.right):L(T.wrong).split(" — ")[0],j.right?"#27a745":"#e8322f");
   if(j.done){ modeEnd(); if(SPD) setTimeout(function(){ fxWin(dsRes(j.okN,j.total)); },500); setTimeout(open,900); return; } setTimeout(function(){ spotShow(j.q); },400); }).catch(function(){ modeEnd(); open(); }); }
@@ -719,12 +724,13 @@ function dsPaint(){ var e=document.getElementById("evBody"); if(!e||!DS) return;
   h+='<div class="ecard"><button type="button" class="elink" data-ev="rules">'+esc(L(T.rules))+' ›</button></div>';
   e.innerHTML=h; wire(e); }
 function dsStart(force){ var me=DS&&DS.me; if(force&&me&&me.st&&!me.done&&!confirm(L(DST.ask))) return; var b=document.querySelector('#evBody [data-ev="'+(force?"dsnew":"dsgo")+'"]'); if(b) b.disabled=true;
-  post("/npg/dsp/start",{sess:sess(),l:lg(),force:force?1:0}).then(function(j){ if(j&&j.ok&&j.q){ close(); MODE="spot"; SPD=1; spotShow(j.q); try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){} return; }
+  post("/npg/dsp/start",{sess:sess(),l:lg(),force:force?1:0}).then(function(j){ if(j&&j.ok&&j.q){ close(); MODE="spot"; SPD=1; DSN=j.n||0; spotShow(j.q); try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){} return; }
     if(j&&j.ok&&j.done){ fxWin(dsRes(j.okN,j.total)); load(); return; } if(j&&j.err==="all"){ load(); return; } alert(L(T.err)); if(b) b.disabled=false; }).catch(function(){ alert(L(T.err)); if(b) b.disabled=false; }); }
 // 보물상자 (레벨 판, 사장님 10-29) — 판마다 힌트 1개 → 「다음 힌트」 최대 10개 → 지도에서 그 명소 그림 누르기. 정답·힌트·레벨은 허브(/npg/th/*)만 안다
 var TH=null, TQ=null, TBUSY=0;
 var THSUB={ko:"레벨이 계속 쌓여요 · 날마다 초기화되지 않아요",en:"Your level keeps adding up · never resets daily",ja:"レベルは積み上がります・毎日リセットされません",zhs:"等级持续累计 · 不会每天重置",zht:"等級持續累計 · 不會每天重置",es:"Tu nivel se acumula · no se reinicia cada día"};
-var THT={lvn:{ko:"레벨 {n}",en:"Level {n}",ja:"レベル{n}",zhs:"等级 {n}",zht:"等級 {n}",es:"Nivel {n}"},
+var THT={rs:{ko:"레벨 1부터 다시 시작할까요? 지금까지의 레벨과 사용한 힌트 수가 모두 초기화됩니다.",en:"Start again from Level 1? Your level and hints used so far will be reset.",ja:"レベル1からやり直しますか？これまでのレベルと使ったヒントの数はすべてリセットされます。",zhs:"要从第1关重新开始吗？目前的等级和已用提示数将全部清零。",zht:"要從第1關重新開始嗎？目前的等級和已用提示數將全部歸零。",es:"¿Empezar de nuevo desde el nivel 1? Tu nivel y las pistas usadas hasta ahora se reiniciarán."},   // 11-25 새 판 확인 창
+ lvn:{ko:"레벨 {n}",en:"Level {n}",ja:"レベル{n}",zhs:"等级 {n}",zht:"等級 {n}",es:"Nivel {n}"},
  lv:{ko:"내 레벨",en:"My level",ja:"自分のレベル",zhs:"我的等级",zht:"我的等級",es:"Mi nivel"},
  hint:{ko:"힌트",en:"Hints",ja:"ヒント",zhs:"提示",zht:"提示",es:"Pistas"},
  hu:{ko:"쓴 힌트",en:"Hints used",ja:"使ったヒント",zhs:"已用提示",zht:"已用提示",es:"Pistas usadas"},
@@ -759,10 +765,14 @@ function thShow(q){ TQ=q; var hs=q.hints||[], n=hs.length;
   var o=modeBar('<div style="display:flex;justify-content:space-between;gap:8px"><b>'+esc(L(THT.stage).replace("{n}",(q.lv||0)+1))+' / '+(q.total||0)+'</b><span style="color:#ff7a1a;font-weight:800">'+esc(L(THT.hint))+' '+n+' / '+(q.max||10)+'</span></div>'
     +'<div id="evThH" style="max-height:32vh;overflow:auto;margin:6px 0">'+hs.map(function(t,i){ return '<div style="'+(i===n-1?'font-weight:800;font-size:15px;color:#2b2b2b':'font-weight:600;font-size:13px;color:#777')+';margin-top:3px">'+(i+1)+'. '+esc(t)+'</div>'; }).join("")+'</div>'
     +'<div style="font-size:12.5px;color:#666">'+esc(L(THT.tap))+'</div><div id="evMm" style="color:#e8322f;font-weight:700;min-height:1.2em"></div>'
-    +'<div style="display:flex;gap:8px;margin-top:4px"><button type="button" id="evThN" style="border:0;background:#ff7a1a;color:#fff;border-radius:999px;padding:6px 14px;font-weight:800;cursor:pointer"'+(n>=(q.max||10)?' disabled':'')+'>'+esc(L(THT.nh))+'</button><button type="button" id="evMq" style="border:1px solid #ddd;background:#fff;border-radius:999px;padding:5px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.quit))+'</button></div>');
+    +'<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px"><button type="button" id="evThN" style="border:0;background:#ff7a1a;color:#fff;border-radius:999px;padding:6px 14px;font-weight:800;cursor:pointer"'+(n>=(q.max||10)?' disabled':'')+'>'+esc(L(THT.nh))+'</button><button type="button" id="evMq" style="border:1px solid #ddd;background:#fff;border-radius:999px;padding:5px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.quit))+'</button><button type="button" id="evThR" style="border:1px solid #ff7a1a;background:#fff;color:#ff7a1a;border-radius:999px;padding:5px 12px;font-weight:800;cursor:pointer">'+esc(L(DST.nw))+'</button></div>');   // 11-25 새 판 = 레벨 1부터 다시 (사장님 「나」)
   var hh=document.getElementById("evThH"); if(hh) hh.scrollTop=hh.scrollHeight;
   o.querySelector("#evMq").onclick=function(){ modeEnd(); open(); };
+  o.querySelector("#evThR").onclick=thNew;
   o.querySelector("#evThN").onclick=function(){ if(TBUSY) return; TBUSY=1; post("/npg/th/hint",{sess:sess(),l:lg()}).then(function(j){ TBUSY=0; if(!j||!j.ok){ modeEnd(); open(); return; } var q2=j.q||{}; if(q2.done||q2.wait){ modeEnd(); open(); return; } thShow(q2); }).catch(function(){ TBUSY=0; var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(T.err); }); }; }
+function thNew(){ if(MODE!=="thunt"||TBUSY) return; if(!confirm(L(THT.rs))) return; TBUSY=1;   // 새 판 = 레벨 1부터 다시 (허브 /npg/th/start force)
+  post("/npg/th/start",{sess:sess(),l:lg(),force:1}).then(function(j){ TBUSY=0; var q=j&&j.ok?(j.q||{}):null; if(!q){ modeEnd(); alert(L(T.err)); open(); return; }
+    if(q.done||q.wait){ modeEnd(); if(q.wait) toast(L(THT.wait),"#888"); open(); return; } thShow(q); }).catch(function(){ TBUSY=0; var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(T.err); }); }
 function thAns(k){ if(MODE!=="thunt"||TBUSY) return; TBUSY=1; post("/npg/th/ans",{sess:sess(),k:k,l:lg()}).then(function(j){ TBUSY=0; if(!j||!j.ok){ modeEnd(); open(); return; }
   if(!j.right){ if(j.q&&(j.q.wait||j.q.done)){ modeEnd(); open(); return; } fxSnd("bad"); var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(THT.miss); return; }
   if(j.done){ modeEnd(); fxWin(L(THT.max)); setTimeout(open,1800); return; }   // 마지막 판까지 — 팡파레 + 만렙 성공
