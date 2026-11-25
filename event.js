@@ -242,7 +242,7 @@ function evPaint(){ var e=document.getElementById("evBody"); if(!e||!E) return; 
 // 보물상자 — 지도 누르기
 var MODE=null;
 function modeBar(html){ var o=document.getElementById("evMode"); if(!html){ if(o) o.remove(); return null; } if(!o){ o=document.createElement("div"); o.id="evMode"; o.style.cssText="position:fixed;left:50%;top:calc(8px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:2147483002;width:min(94vw,480px);background:#fff8f0;color:#2b2b2b;border:2px solid #ff7a1a;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);padding:10px 12px;font:600 14px/1.45 'Segoe UI','Malgun Gothic',system-ui,sans-serif"; document.body.appendChild(o); } o.innerHTML=html; return o; }
-function modeEnd(){ MODE=null; modeBar(null); try{ zEnd(); }catch(e){} }
+function modeEnd(){ MODE=null; modeBar(null); try{ zEnd(); }catch(e){} try{ zcEnd(); }catch(e){} }
 try{ Object.defineProperty(window,"EVMODE",{get:function(){ return MODE; },configurable:true}); }catch(e){}   /* 11-24 gu.js 가 게임(지도 누르기) 중인지 앎 — 게임 중 서울 지도엔 구 이름 전부 (사장님 「투어앱도 고쳐」) */
 function treasureMode(){ close(); MODE="treasure"; try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){}
   var m=document.getElementById("map"); if(m) try{ m.scrollIntoView({behavior:"smooth",block:"center"}); }catch(e){}
@@ -262,17 +262,31 @@ var SQ=null, ST=null, SPD=0, DSN=0;   // DSN = 오늘의 명소 맞히기 지금
 function spotStart(){ post("/npg/ev/spot/start",{sess:sess(),l:lg()}).then(function(j){ if(!j||!j.ok){ alert(L(T.err)); return; } if(j.done){ load(); return; } close(); MODE="spot"; SPD=0; spotShow(j.q); try{ if(window.VIEW!=="seoulall") viewSet("seoulall"); }catch(e){} }).catch(function(){ alert(L(T.err)); }); }
 function spotShow(q){ SQ=q; if(!q){ modeEnd(); open(); return; } clearInterval(ST);
   var o=modeBar('<div style="display:flex;gap:10px;align-items:center"><img src="'+q.img+'" alt="" style="width:110px;height:84px;object-fit:contain;background:#fff;border-radius:8px;flex:0 0 auto"><div style="flex:1"><b>'+(q.i+1)+' / '+q.total+'</b> · <span id="evSt" style="color:#e8322f;font-weight:900"></span><div style="font-size:13px">'+esc(L(TX3.smode))+(q.gu?' · '+esc(L({ko:q.gu.ko||"",en:q.gu.en||"",ja:q.gu.ja||"",zhs:q.gu.zhs||"",zht:q.gu.zht||"",es:q.gu.en||""})):'')+'</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px"><button type="button" id="evSk" style="border:1px solid #ddd;background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.skip))+'</button><button type="button" id="evMq" style="border:1px solid #ddd;background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer">'+esc(L(TX3.quit))+'</button>'+(SPD&&DSN<((DS&&DS.max)||12)?'<button type="button" id="evDn" style="border:1px solid #ff7a1a;background:#fff;color:#ff7a1a;border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer">'+esc(L(DST.nw))+'</button>':'')+'</div></div></div>');   // 11-25 사장님 「명소맞히기에도 그만하기 버튼을 넣어줘」「새판 버튼으로 판을 버리는 버튼」
-  var end=Date.now()+q.left; q._end=end; var tick=function(){ var s=Math.max(0,Math.ceil((end-Date.now())/1000)), el=document.getElementById("evSt"); if(el) el.textContent=s+"s"; if(s<=0){ clearInterval(ST); spotAns("",1); return; } zSpotTick(q,end); }; if(SPD&&q.z) zGo(q.z); tick(); ST=setInterval(tick,500);   // 11-25 확대 단계 (10초마다 허브에 묻는다)
+  var end=Date.now()+Math.min(60000,q.left); q._end=end; var tick=function(){ var s=Math.max(0,Math.ceil((end-Date.now())/1000)), el=document.getElementById("evSt"); if(el) el.textContent=s+"s"; if(s<=0){ clearInterval(ST); spotAns("",1); return; } zSpotTick(q,end); }; if(SPD&&q.z) zGo(q.z); tick(); ST=setInterval(tick,500);   // 11-25 확대 단계 (10초마다 허브에 묻는다)
   o.querySelector("#evSk").onclick=function(){ spotAns("",1); };
   o.querySelector("#evMq").onclick=function(){ clearInterval(ST); modeEnd(); open(); };   // 그만하기 = 게임 창으로 (판은 그대로 — 「이어서 하기」)
   var dn=o.querySelector("#evDn"); if(dn) dn.onclick=dsNew; }
 function dsNew(){ if(MODE!=="spot"||!SPD) return; if(!confirm(L(DST.ask))) return; clearInterval(ST); var b=document.getElementById("evDn"); if(b) b.disabled=true;   // 새 판 = 지금 판 버리고(기록 안 됨) 새 판 바로 시작
   post("/npg/dsp/start",{sess:sess(),l:lg(),force:1}).then(function(j){ if(j&&j.ok&&j.q){ DSN=j.n||DSN; spotShow(j.q); return; }
     modeEnd(); if(j&&j.ok&&j.done) fxWin(dsRes(j.okN,j.total)); else if(!(j&&j.err==="all")) alert(L(T.err)); open(); }).catch(function(){ modeEnd(); alert(L(T.err)); open(); }); }
-function spotAns(k,skip){ if(MODE!=="spot") return; clearInterval(ST); post(SPD?"/npg/dsp/ans":"/npg/ev/spot/ans",{sess:sess(),k:k,skip:skip?1:0,l:lg()}).then(function(j){ if(!j||!j.ok){ modeEnd(); open(); return; }
-  if(!skip) toast(j.right?L(T.right):L(T.wrong).split(" — ")[0],j.right?"#27a745":"#e8322f");
-  if(j.done){ modeEnd(); if(SPD) setTimeout(function(){ fxWin(dsRes(j.okN,j.total)); },500); setTimeout(open,900); return; } setTimeout(function(){ spotShow(j.q); },400); }).catch(function(){ modeEnd(); open(); }); }
-function spotTap(k){ if((MODE!=="spot"&&MODE!=="thunt")||!k||String(k).indexOf("__")===0) return false; k=String(k);   // 보물상자(thunt)도 같은 방식 (10-29)   // 명소 맞히기 중 지도 그림 누름 = 답
+function spotAns(k,skip){ if(MODE!=="spot"||ZC.on) return; clearInterval(ST); post(SPD?"/npg/dsp/ans":"/npg/ev/spot/ans",{sess:sess(),k:k,skip:skip?1:0,l:lg()}).then(function(j){ if(!j||!j.ok){ modeEnd(); open(); return; }
+  var go=function(){ if(j.done){ modeEnd(); if(SPD) setTimeout(function(){ fxWin(dsRes(j.okN,j.total)); },500); setTimeout(open,900); return; } spotShow(j.q); };
+  if(j.right&&!skip){ zcShow(k,L(T.right),function(ms){ if(MODE!=="spot") return; if(j.q) j.q.left=Math.max(0,(j.q.left||0)-ms); go(); }); return; }   // 11-25 정답 = 이름·설명 카드 4초 (다음 문제 1분은 허브가 카드 뒤부터 잰다)
+  if(!skip) toast(L(T.wrong).split(" — ")[0],"#e8322f");
+  if(j.done) go(); else setTimeout(go,400); }).catch(function(){ modeEnd(); open(); }); }
+// 11-25 사장님 「보물상자와 명소맞히기에서 정답을 맞추면 그 장소의 이름을 각국어로 보여주고 설명도 간단하게」(「가」 = 화면 언어만) — 문제 창 자리를 4초 동안 덮는 카드: 「정답!」·이름·한 줄 설명(지도 자료 places 의 ko/en/ja/zhs/zht/es · dko/den/…)
+var ZC={on:0,t:0,n:0}, ZC_MS=4000;
+function zcEnd(){ ZC.on=0; ZC.n++; clearTimeout(ZC.t); var o=document.getElementById("evZc"); if(o) o.remove(); }
+function zcFind(k,cb){ var p=window.PLACES&&PLACES[k]; if(p&&(p.dko||p.den)) return cb(p); var ids=[], hit=0; try{ for(var id in CITY) if(CITY[id]&&CITY[id].data) ids.push(id); }catch(e){}   // 아직 안 받은 지도면 그 지도 자료에서 찾는다
+  Promise.all(ids.map(function(id){ return (MAPD[id]||jget("maps/"+id+".json")).then(function(d){ var q=d&&d.places&&d.places[k]; if(q&&!hit){ hit=1; cb(q); } },function(){}); })).then(function(){ if(!hit) cb(p||null); },function(){ if(!hit) cb(p||null); }); }
+function zcShow(k,head,next){ zcEnd(); ZC.on=1; var n=ZC.n, t0=Date.now(); k=String(k||"").split("@")[0];
+  var bar=document.getElementById("evMode"), o=document.createElement("div"); o.id="evZc";
+  o.style.cssText="position:fixed;left:50%;top:calc(8px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:2147483004;box-sizing:border-box;width:min(94vw,480px);min-height:"+(bar?bar.offsetHeight:0)+"px;background:#fff;color:#2b2b2b;border:2px solid #27a745;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);padding:12px 14px 16px;font:600 14px/1.45 'Segoe UI','Malgun Gothic',system-ui,sans-serif;overflow:hidden";
+  o.innerHTML='<div style="color:#27a745;font-weight:900;font-size:16px">✔ '+esc(head)+'</div><div id="evZcN" style="font-size:20px;font-weight:900;line-height:1.3;margin-top:4px"></div><div id="evZcD" style="font-size:14px;color:#444;margin-top:4px"></div><div style="position:absolute;left:0;bottom:0;height:4px;width:100%;background:#e6f4ea"><i id="evZcB" style="display:block;height:100%;width:100%;background:#27a745;transition:width '+ZC_MS+'ms linear"></i></div>';
+  document.body.appendChild(o); var bb=document.getElementById("evZcB"); if(bb){ void bb.offsetWidth; bb.style.width="0"; }   // 아래 줄 = 남은 시간
+  zcFind(k,function(p){ if(ZC.n!==n||!p) return; var l=lg(), nm=l==="ko"?p.ko:(p[l]||p.en||p.ko), ds=l==="ko"?p.dko:(p["d"+l]||p.den), a=document.getElementById("evZcN"), d=document.getElementById("evZcD"); if(a) a.textContent=nm||""; if(d) d.textContent=ds||""; });
+  ZC.t=setTimeout(function(){ if(ZC.n!==n) return; zcEnd(); next(Date.now()-t0); },ZC_MS); }
+function spotTap(k){ if((MODE!=="spot"&&MODE!=="thunt")||!k||String(k).indexOf("__")===0) return false; k=String(k); if(ZC.on) return true;   // 정답 카드 4초 동안은 지도 누름 막음   // 보물상자(thunt)도 같은 방식 (10-29)   // 명소 맞히기 중 지도 그림 누름 = 답
   var c=null; if(window.VIEW==="kr"){ try{ c=cityFor(k); }catch(e){} }   // 전국 지도의 지역 그림(해운대·설악산·한라산 등)은 답이 아니라 그 지역 약도로 들어가기 (10-27 전국 확대)
   if(c){ try{ clearTimeout(_tapT); }catch(e){} try{ viewSet(c); }catch(e){} return true; }
   if(MODE==="thunt") thAns(k); else spotAns(k,0); return true; }
@@ -816,19 +830,22 @@ function thShow(q){ TQ=q; var hs=q.hints||[], n=hs.length;
   if(q.z) zGo(q.z);   // 11-25 힌트 n개 = 확대 n번째 단계
   o.querySelector("#evMq").onclick=function(){ modeEnd(); open(); };
   o.querySelector("#evThR").onclick=thNew;
-  o.querySelector("#evThN").onclick=function(){ if(TBUSY) return; TBUSY=1; post("/npg/th/hint",{sess:sess(),l:lg()}).then(function(j){ TBUSY=0; if(!j||!j.ok){ modeEnd(); open(); return; } var q2=j.q||{}; if(q2.done||q2.wait){ modeEnd(); open(); return; } thShow(q2); }).catch(function(){ TBUSY=0; var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(T.err); }); }; }
+  o.querySelector("#evThN").onclick=function(){ if(TBUSY||ZC.on) return; TBUSY=1; post("/npg/th/hint",{sess:sess(),l:lg()}).then(function(j){ TBUSY=0; if(!j||!j.ok){ modeEnd(); open(); return; } var q2=j.q||{}; if(q2.done||q2.wait){ modeEnd(); open(); return; } thShow(q2); }).catch(function(){ TBUSY=0; var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(T.err); }); }; }
 function thNew(){ if(MODE!=="thunt"||TBUSY) return; if(!confirm(L(THT.rs))) return; TBUSY=1;   // 새 판 = 레벨 1부터 다시 (허브 /npg/th/start force)
   post("/npg/th/start",{sess:sess(),l:lg(),force:1}).then(function(j){ TBUSY=0; var q=j&&j.ok?(j.q||{}):null; if(!q){ modeEnd(); alert(L(T.err)); open(); return; }
     if(q.done||q.wait){ modeEnd(); if(q.wait) toast(L(THT.wait),"#888"); open(); return; } thShow(q); }).catch(function(){ TBUSY=0; var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(T.err); }); }
-function thAns(k){ if(MODE!=="thunt"||TBUSY) return; TBUSY=1; post("/npg/th/ans",{sess:sess(),k:k,l:lg()}).then(function(j){ TBUSY=0; if(!j||!j.ok){ modeEnd(); open(); return; }
+function thAns(k){ if(MODE!=="thunt"||TBUSY||ZC.on) return; TBUSY=1; post("/npg/th/ans",{sess:sess(),k:k,l:lg()}).then(function(j){ TBUSY=0; if(!j||!j.ok){ modeEnd(); open(); return; }
   if(!j.right){ if(j.q&&(j.q.wait||j.q.done)){ modeEnd(); open(); return; } fxSnd("bad"); var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(THT.miss); return; }
-  if(j.done){ modeEnd(); fxWin(L(THT.max)); setTimeout(open,1800); return; }   // 마지막 판까지 — 팡파레 + 만렙 성공
-  fxSnd("ok"); toast(L(THT.up),"#27a745");   // 판 하나 = 짧은 맞음 효과만
-  var q=j.q||{}; if(q.wait){ modeEnd(); setTimeout(function(){ toast(L(THT.wait),"#888"); open(); },900); return; }
-  setTimeout(function(){ if(MODE==="thunt") thShow(q); },500); }).catch(function(){ TBUSY=0; var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(T.err); }); }
+  fxSnd("ok"); var q=j.q||{}, l0=lg();   // 11-25 정답 = 이름·설명 카드 4초 뒤 다음 판
+  zcShow(k,L(j.done?T.right:THT.up),function(){ if(MODE!=="thunt") return;
+    if(j.done){ modeEnd(); fxWin(L(THT.max)); setTimeout(open,1800); return; }   // 마지막 판까지 — 팡파레 + 만렙 성공
+    if(q.wait){ modeEnd(); toast(L(THT.wait),"#888"); open(); return; }
+    if(lg()!==l0){ post("/npg/th/start",{sess:sess(),l:lg()}).then(function(j2){ if(MODE==="thunt"&&j2&&j2.ok&&j2.q&&!j2.q.done&&!j2.q.wait) thShow(j2.q); else if(MODE==="thunt") thShow(q); }).catch(function(){ if(MODE==="thunt") thShow(q); }); return; }   // 카드 중에 언어를 바꿨으면 힌트를 새 언어로
+    thShow(q); }); }).catch(function(){ TBUSY=0; var mm=document.getElementById("evMm"); if(mm) mm.textContent=L(T.err); }); }
 function evRelang(){ var s=document.getElementById("evSheet"); if(s) s.remove(); if(box()) load(); try{ status(); }catch(e){}
   if(GM){ var q=document.querySelector("#evBox .egsh"); if(q){ q.title=L(GMSHT); q.setAttribute("aria-label",L(GMSHT)); } }   // 게임앱 공유 단추 이름도 그 언어로
   if(MODE==="treasure") treasureMode();
+  else if(ZC.on) return;   // 정답 카드 중엔 다시 그리지 않는다 — 카드 뒤 다음 문제가 새 언어로 (보물상자는 thAns 가 힌트를 새 언어로 다시 받음)
   else if(MODE==="spot"&&SQ&&SQ._end) spotShow(Object.assign({},SQ,{left:Math.max(0,SQ._end-Date.now())}));
   else if(MODE==="thunt") post("/npg/th/start",{sess:sess(),l:lg()}).then(function(j){ if(j&&j.ok&&j.q&&!j.q.done&&!j.q.wait) thShow(j.q); }).catch(function(){}); }
 })();
